@@ -46,22 +46,27 @@ if user_input:
         detail_lines: list[str] = []
 
         final_state = None
-        for step_event in compiled_graph.stream(default_state(user_input)):
-            for node_name, node_state in step_event.items():
-                msg = f"- `{node_name}` 执行完成"
-                detail_lines.append(msg)
+        try:
+            for step_event in compiled_graph.stream(default_state(user_input)):
+                for node_name, node_state in step_event.items():
+                    msg = f"- `{node_name}` 执行完成"
+                    detail_lines.append(msg)
 
-                if "messages" in node_state and node_state["messages"]:
-                    latest = _message_text(node_state["messages"][-1])
-                    detail_lines.append(f"  - {latest}")
+                    if "messages" in node_state and node_state["messages"]:
+                        latest = _message_text(node_state["messages"][-1])
+                        detail_lines.append(f"  - {latest}")
 
-                if "efficiency_score" in node_state or "off_target_genes" in node_state:
-                    eff = node_state.get("efficiency_score", "N/A")
-                    off = node_state.get("off_target_genes", "N/A")
-                    detail_lines.append(f"  - tool结果: efficiency={eff}, off_target_genes={off}")
+                    if "efficiency_score" in node_state or "off_target_genes" in node_state:
+                        eff = node_state.get("efficiency_score", "N/A")
+                        off = node_state.get("off_target_genes", "N/A")
+                        detail_lines.append(f"  - tool结果: efficiency={eff}, off_target_genes={off}")
 
-                detail_box.markdown("\n".join(detail_lines))
-                final_state = node_state
+                    detail_box.markdown("\n".join(detail_lines))
+                    final_state = node_state
+        except Exception as exc:
+            status_box.error("工作流执行失败。请检查 LLM 网关连通性和 .env 配置。")
+            st.exception(exc)
+            st.stop()
 
         final_report = "流程执行完成，但未生成最终报告。"
         if final_state and final_state.get("final_report"):

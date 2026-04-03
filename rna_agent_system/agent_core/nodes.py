@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 from typing import Any
 
 from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
@@ -32,14 +33,22 @@ def router_node(state: AgentState) -> AgentState:
         "- unsupported (for anything else)\n"
         "No extra words."
     )
-    decision = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
-    text = _msg_text(decision).strip().lower()
-    route = "sirna_specialist" if "sirna_specialist" in text else "unsupported"
+    try:
+        decision = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
+        text = _msg_text(decision).strip().lower()
+        route = "sirna_specialist" if "sirna_specialist" in text else "unsupported"
+        decision_note = f"Router decision: {route}"
+    except Exception as exc:
+        route = "sirna_specialist"
+        decision_note = (
+            "Router fallback: LLM connection failed, default to sirna_specialist. "
+            f"error={exc}"
+        )
 
     state["current_task"] = "sirna_design" if route == "sirna_specialist" else "unsupported"
     state["route"] = "sirna" if route == "sirna_specialist" else "unsupported"
     state["messages"] = state.get("messages", []) + [
-        AIMessage(content=f"Router decision: {route}")
+        AIMessage(content=decision_note)
     ]
     return state
 
@@ -53,7 +62,30 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
         "2) You MUST call both tools: predict_sirna_efficiency and check_off_target.\n"
         "3) Keep output concise."
     )
-    ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
+    try:
+        ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
+    except Exception:
+        seq = state.get("input_sequence", "").upper().replace("T", "U")
+        seq = "".join(ch for ch in seq if ch in {"A", "U", "G", "C"})[:21]
+        if not seq:
+            seq = "AUGCUAACGUAGCUAUGCUA"
+        ai_msg = AIMessage(
+            content="Specialist fallback: generated deterministic candidate and tool calls.",
+            tool_calls=[
+                {
+                    "name": "predict_sirna_efficiency",
+                    "args": {"sequence": seq},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+                {
+                    "name": "check_off_target",
+                    "args": {"sequence": seq},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+            ],
+        )
     state["messages"] = state.get("messages", []) + [ai_msg]
     return state
 
@@ -112,10 +144,19 @@ def critic_node(state: AgentState) -> AgentState:
         f"retry_count={retry_count}\n"
         f"max_retries={max_retries}"
     )
-    critic_msg = llm.invoke(
-        [SystemMessage(content=critic_prompt), AIMessage(content=critic_input)]
-    )
-    critic_text = _msg_text(critic_msg)
+    try:
+        critic_msg = llm.invoke(
+            [SystemMessage(content=critic_prompt), AIMessage(content=critic_input)]
+        )
+        critic_text = _msg_text(critic_msg)
+    except Exception as exc:
+        decision = "retry" if (off_target > 0 and retry_count < max_retries) else "finish"
+        critic_text = (
+            "Connection fallback critic. "
+            f"off_target_genes={off_target}, retry_count={retry_count}. error={exc}\n"
+            f"DECISION={decision}"
+        )
+        critic_msg = AIMessage(content=critic_text)
 
     llm_retry = "decision=retry" in critic_text.lower()
     if (off_target > 0 and retry_count < max_retries) or (
