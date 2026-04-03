@@ -26,6 +26,12 @@ def _message_text(message_obj) -> str:
     return str(message_obj)
 
 
+def _truncate(text: str, limit: int = 220) -> str:
+    if len(text) <= limit:
+        return text
+    return text[:limit] + "...(truncated)"
+
+
 for item in st.session_state.chat_history:
     with st.chat_message(item["role"]):
         st.markdown(item["content"])
@@ -54,7 +60,7 @@ if user_input:
 
                     if "messages" in node_state and node_state["messages"]:
                         latest = _message_text(node_state["messages"][-1])
-                        detail_lines.append(f"  - {latest}")
+                        detail_lines.append(f"  - {_truncate(latest)}")
 
                     if "efficiency_score" in node_state or "off_target_genes" in node_state:
                         eff = node_state.get("efficiency_score", "N/A")

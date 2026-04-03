@@ -23,6 +23,12 @@ def _msg_text(message: Any) -> str:
     return str(message)
 
 
+def _extract_rna_sequence(text: str) -> str:
+    normalized = text.upper().replace("T", "U")
+    seq = "".join(ch for ch in normalized if ch in {"A", "U", "G", "C"})
+    return seq[:21] if seq else "AUGCUAACGUAGCUAUGCUA"
+
+
 def router_node(state: AgentState) -> AgentState:
     """Use LLM to choose downstream node name."""
     llm = get_llm()
@@ -58,19 +64,38 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
     llm = get_llm().bind_tools(TOOLS)
     prompt = (
         "You are a siRNA specialist.\n"
-        "1) Propose one siRNA candidate sequence from user input.\n"
-        "2) You MUST call both tools: predict_sirna_efficiency and check_off_target.\n"
-        "3) Keep output concise."
+        "You must perform ONLY tool calls, no long prose, no code block.\n"
+        "Steps:\n"
+        "1) Extract one RNA sequence candidate (A/U/G/C, length <= 21) from user request.\n"
+        "2) MUST call predict_sirna_efficiency with that sequence.\n"
+        "3) MUST call check_off_target with that sequence.\n"
+        "If user input is invalid, use default AUGCUAACGUAGCUAUGCUA."
     )
     try:
         ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
     except Exception:
-        seq = state.get("input_sequence", "").upper().replace("T", "U")
-        seq = "".join(ch for ch in seq if ch in {"A", "U", "G", "C"})[:21]
-        if not seq:
-            seq = "AUGCUAACGUAGCUAUGCUA"
+        seq = _extract_rna_sequence(state.get("input_sequence", ""))
         ai_msg = AIMessage(
             content="Specialist fallback: generated deterministic candidate and tool calls.",
+            tool_calls=[
+                {
+                    "name": "predict_sirna_efficiency",
+                    "args": {"sequence": seq},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+                {
+                    "name": "check_off_target",
+                    "args": {"sequence": seq},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+            ],
+        )
+    if not ai_msg.tool_calls:
+        seq = _extract_rna_sequence(state.get("input_sequence", ""))
+        ai_msg = AIMessage(
+            content="Specialist repaired: model returned no tool_calls, injected required calls.",
             tool_calls=[
                 {
                     "name": "predict_sirna_efficiency",
@@ -98,6 +123,26 @@ def tool_execution_node(state: AgentState) -> AgentState:
 
     ai_msg = messages[-1]
     out_messages: list[Any] = []
+    if not ai_msg.tool_calls:
+        seq = _extract_rna_sequence(state.get("input_sequence", ""))
+        ai_msg = AIMessage(
+            content="Tool executor repaired missing tool calls.",
+            tool_calls=[
+                {
+                    "name": "predict_sirna_efficiency",
+                    "args": {"sequence": seq},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+                {
+                    "name": "check_off_target",
+                    "args": {"sequence": seq},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+            ],
+        )
+        messages = messages + [ai_msg]
     for call in ai_msg.tool_calls:
         tool_name = call["name"]
         tool_args = call.get("args", {})
@@ -134,7 +179,8 @@ def critic_node(state: AgentState) -> AgentState:
 
     critic_prompt = (
         "You are a critic for siRNA candidates.\n"
-        "Given current scores, provide a short assessment sentence.\n"
+        "Given current scores, provide one short sentence in Chinese only.\n"
+        "Do not provide unrelated content, code, or examples.\n"
         "Then on a new line output exactly: DECISION=retry or DECISION=finish."
     )
     critic_input = (
@@ -149,6 +195,11 @@ def critic_node(state: AgentState) -> AgentState:
             [SystemMessage(content=critic_prompt), AIMessage(content=critic_input)]
         )
         critic_text = _msg_text(critic_msg)
+        if len(critic_text) > 400:
+            raise ValueError("critic output too long")
+        suspicious = ("class ", "public:", "题目", "```")
+        if any(flag in critic_text.lower() for flag in [s.lower() for s in suspicious]):
+            raise ValueError("critic output suspicious")
     except Exception as exc:
         decision = "retry" if (off_target > 0 and retry_count < max_retries) else "finish"
         critic_text = (
