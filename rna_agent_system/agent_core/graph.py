@@ -4,6 +4,7 @@ from langgraph.graph import END, START, StateGraph
 
 from agent_core.nodes import (
     critic_node,
+    mrna_specialist_node,
     route_after_critic,
     route_after_router,
     router_node,
@@ -19,6 +20,7 @@ def build_graph():
 
     workflow.add_node("router", router_node)
     workflow.add_node("sirna_specialist", sirna_specialist_node)
+    workflow.add_node("mrna_specialist", mrna_specialist_node)
     workflow.add_node("tool_execution", tool_execution_node)
     workflow.add_node("critic", critic_node)
 
@@ -28,16 +30,19 @@ def build_graph():
         route_after_router,
         {
             "sirna_specialist": "sirna_specialist",
+            "mrna_specialist": "mrna_specialist",
             "end": END,
         },
     )
     workflow.add_edge("sirna_specialist", "tool_execution")
+    workflow.add_edge("mrna_specialist", "tool_execution")
     workflow.add_edge("tool_execution", "critic")
     workflow.add_conditional_edges(
         "critic",
         route_after_critic,
         {
             "sirna_specialist": "sirna_specialist",
+            "mrna_specialist": "mrna_specialist",
             "end": END,
         },
     )

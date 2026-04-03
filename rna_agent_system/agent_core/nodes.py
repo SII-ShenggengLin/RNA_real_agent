@@ -8,11 +8,19 @@ from typing import Any
 
 from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 
+from agent_core.file_manager import save_sequence
 from agent_core.llm_config import get_llm
 from agent_core.state import AgentState
-from agent_core.tools import check_off_target, predict_sirna_efficiency
+from agent_core.tools import (
+    check_off_target,
+    mock_codon_optimization,
+    mock_rna_fold,
+    predict_sirna_efficiency,
+)
 
-TOOLS = [predict_sirna_efficiency, check_off_target]
+SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
+MRNA_TOOLS = [mock_codon_optimization, mock_rna_fold]
+TOOLS = SIRNA_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 
 
@@ -35,14 +43,20 @@ def router_node(state: AgentState) -> AgentState:
     prompt = (
         "You are a router for an RNA design workflow.\n"
         "Read the latest user request and output exactly one token:\n"
-        "- sirna_specialist (for siRNA design/evaluation requests)\n"
+        "- sirna_specialist (for siRNA design, siRNA efficacy, off-target analysis)\n"
+        "- mrna_specialist (for mRNA design, codon optimization, structure/folding prediction)\n"
         "- unsupported (for anything else)\n"
         "No extra words."
     )
     try:
         decision = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
         text = _msg_text(decision).strip().lower()
-        route = "sirna_specialist" if "sirna_specialist" in text else "unsupported"
+        if "mrna_specialist" in text:
+            route = "mrna_specialist"
+        elif "sirna_specialist" in text:
+            route = "sirna_specialist"
+        else:
+            route = "unsupported"
         decision_note = f"Router decision: {route}"
     except Exception as exc:
         route = "sirna_specialist"
@@ -51,8 +65,14 @@ def router_node(state: AgentState) -> AgentState:
             f"error={exc}"
         )
 
-    state["current_task"] = "sirna_design" if route == "sirna_specialist" else "unsupported"
-    state["route"] = "sirna" if route == "sirna_specialist" else "unsupported"
+    state["current_task"] = (
+        "sirna_design"
+        if route == "sirna_specialist"
+        else "mrna_design" if route == "mrna_specialist" else "unsupported"
+    )
+    state["route"] = (
+        "sirna" if route == "sirna_specialist" else "mrna" if route == "mrna_specialist" else "unsupported"
+    )
     state["messages"] = state.get("messages", []) + [
         AIMessage(content=decision_note)
     ]
@@ -60,52 +80,118 @@ def router_node(state: AgentState) -> AgentState:
 
 
 def sirna_specialist_node(state: AgentState) -> AgentState:
-    """Use LLM + tool binding to produce tool calls and candidate."""
-    llm = get_llm().bind_tools(TOOLS)
+    """Use LLM + siRNA tools to produce tool calls."""
+    llm = get_llm().bind_tools(SIRNA_TOOLS)
+    filepath = state.get("current_filepath")
+    if not filepath:
+        filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="sirna")
+        state["current_filepath"] = filepath
+        state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+    state["active_specialist"] = "sirna_specialist"
+
     prompt = (
         "You are a siRNA specialist.\n"
-        "You must perform ONLY tool calls, no long prose, no code block.\n"
-        "Steps:\n"
-        "1) Extract one RNA sequence candidate (A/U/G/C, length <= 21) from user request.\n"
-        "2) MUST call predict_sirna_efficiency with that sequence.\n"
-        "3) MUST call check_off_target with that sequence.\n"
-        "If user input is invalid, use default AUGCUAACGUAGCUAUGCUA."
+        "You must perform ONLY tool calls.\n"
+        "Tool parameters MUST use workspace filepath, not raw sequence.\n"
+        f"Current sequence filepath: {filepath}\n"
+        "MUST call:\n"
+        "1) predict_sirna_efficiency(filepath=...)\n"
+        "2) check_off_target(filepath=...)\n"
     )
     try:
         ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
     except Exception:
-        seq = _extract_rna_sequence(state.get("input_sequence", ""))
         ai_msg = AIMessage(
             content="Specialist fallback: generated deterministic candidate and tool calls.",
             tool_calls=[
                 {
                     "name": "predict_sirna_efficiency",
-                    "args": {"sequence": seq},
+                    "args": {"filepath": filepath},
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
                 },
                 {
                     "name": "check_off_target",
-                    "args": {"sequence": seq},
+                    "args": {"filepath": filepath},
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
                 },
             ],
         )
     if not ai_msg.tool_calls:
-        seq = _extract_rna_sequence(state.get("input_sequence", ""))
         ai_msg = AIMessage(
             content="Specialist repaired: model returned no tool_calls, injected required calls.",
             tool_calls=[
                 {
                     "name": "predict_sirna_efficiency",
-                    "args": {"sequence": seq},
+                    "args": {"filepath": filepath},
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
                 },
                 {
                     "name": "check_off_target",
-                    "args": {"sequence": seq},
+                    "args": {"filepath": filepath},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+            ],
+        )
+    state["messages"] = state.get("messages", []) + [ai_msg]
+    return state
+
+
+def mrna_specialist_node(state: AgentState) -> AgentState:
+    """Use LLM + mRNA tools to produce tool calls."""
+    llm = get_llm().bind_tools(MRNA_TOOLS)
+    filepath = state.get("current_filepath")
+    if not filepath:
+        filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="mrna")
+        state["current_filepath"] = filepath
+        state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+    state["active_specialist"] = "mrna_specialist"
+
+    prompt = (
+        "You are an mRNA specialist.\n"
+        "You must perform ONLY tool calls.\n"
+        "Tool parameters MUST use workspace filepath, not raw sequence.\n"
+        f"Current mRNA filepath: {filepath}\n"
+        "MUST call:\n"
+        "1) mock_codon_optimization(filepath=...)\n"
+        "2) mock_rna_fold(filepath=...)\n"
+    )
+    try:
+        ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
+    except Exception:
+        ai_msg = AIMessage(
+            content="mRNA specialist fallback: generated deterministic tool calls.",
+            tool_calls=[
+                {
+                    "name": "mock_codon_optimization",
+                    "args": {"filepath": filepath},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+                {
+                    "name": "mock_rna_fold",
+                    "args": {"filepath": filepath},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+            ],
+        )
+    if not ai_msg.tool_calls:
+        ai_msg = AIMessage(
+            content="mRNA specialist repaired missing tool calls.",
+            tool_calls=[
+                {
+                    "name": "mock_codon_optimization",
+                    "args": {"filepath": filepath},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                },
+                {
+                    "name": "mock_rna_fold",
+                    "args": {"filepath": filepath},
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
                 },
@@ -124,22 +210,32 @@ def tool_execution_node(state: AgentState) -> AgentState:
     ai_msg = messages[-1]
     out_messages: list[Any] = []
     if not ai_msg.tool_calls:
-        seq = _extract_rna_sequence(state.get("input_sequence", ""))
+        filepath = state.get("current_filepath")
+        if not filepath:
+            filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="seq")
+            state["current_filepath"] = filepath
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        fallback_calls = (
+            [
+                {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
+                {"name": "check_off_target", "args": {"filepath": filepath}},
+            ]
+            if state.get("active_specialist") == "sirna_specialist"
+            else [
+                {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
+                {"name": "mock_rna_fold", "args": {"filepath": filepath}},
+            ]
+        )
         ai_msg = AIMessage(
             content="Tool executor repaired missing tool calls.",
             tool_calls=[
                 {
-                    "name": "predict_sirna_efficiency",
-                    "args": {"sequence": seq},
+                    "name": call["name"],
+                    "args": call["args"],
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
-                },
-                {
-                    "name": "check_off_target",
-                    "args": {"sequence": seq},
-                    "id": f"call_{uuid.uuid4().hex[:8]}",
-                    "type": "tool_call",
-                },
+                }
+                for call in fallback_calls
             ],
         )
         messages = messages + [ai_msg]
@@ -161,34 +257,54 @@ def tool_execution_node(state: AgentState) -> AgentState:
         if tool_name == "predict_sirna_efficiency":
             state["efficiency_score"] = float(tool_result.get("efficiency_score", 0.0))
             state["candidate_sequence"] = str(tool_result.get("sequence", ""))
+            state["current_filepath"] = str(tool_result.get("filepath", state.get("current_filepath", "")))
         elif tool_name == "check_off_target":
             state["off_target_genes"] = int(tool_result.get("off_target_genes", 0))
             if not state.get("candidate_sequence"):
                 state["candidate_sequence"] = str(tool_result.get("sequence", ""))
+            state["current_filepath"] = str(tool_result.get("filepath", state.get("current_filepath", "")))
+        elif tool_name == "mock_codon_optimization":
+            state["cai_score"] = float(tool_result.get("cai_score", 0.0))
+            optimized_filepath = str(tool_result.get("optimized_filepath", ""))
+            if optimized_filepath:
+                state["current_filepath"] = optimized_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [optimized_filepath]
+        elif tool_name == "mock_rna_fold":
+            state["mfe"] = float(tool_result.get("mfe", 0.0))
+            structure_filepath = str(tool_result.get("structure_filepath", ""))
+            if structure_filepath:
+                state["structure_filepath"] = structure_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
 
     state["messages"] = messages + out_messages
     return state
 
 
 def critic_node(state: AgentState) -> AgentState:
-    """Use LLM to assess risk and choose retry/finish."""
+    """Use LLM + hard constraints to decide pass/reject and retry loop."""
     off_target = state.get("off_target_genes", 0)
+    mfe = state.get("mfe", 0.0)
+    cai_score = state.get("cai_score", 0.0)
     retry_count = state.get("retry_count", 0)
-    max_retries = state.get("max_retries", 2)
+    max_retries = state.get("max_retries", 3)
+    specialist = state.get("active_specialist", "")
     llm = get_llm()
 
     critic_prompt = (
-        "You are a critic for siRNA candidates.\n"
-        "Given current scores, provide one short sentence in Chinese only.\n"
-        "Do not provide unrelated content, code, or examples.\n"
-        "Then on a new line output exactly: DECISION=retry or DECISION=finish."
+        "你是RNA工作流的Critic。\n"
+        "请基于给定指标输出两行：\n"
+        "第1行：简短评估和修改建议。\n"
+        "第2行：VERDICT=pass 或 VERDICT=reject。\n"
+        "禁止输出无关内容。"
     )
     critic_input = (
+        f"active_specialist={specialist}\n"
         f"candidate={state.get('candidate_sequence', '')}\n"
         f"efficiency={state.get('efficiency_score', 0.0)}\n"
         f"off_target_genes={off_target}\n"
-        f"retry_count={retry_count}\n"
-        f"max_retries={max_retries}"
+        f"cai_score={cai_score}\n"
+        f"mfe={mfe}\n"
+        f"retry_count={retry_count}, max_retries={max_retries}"
     )
     try:
         critic_msg = llm.invoke(
@@ -209,20 +325,31 @@ def critic_node(state: AgentState) -> AgentState:
         )
         critic_msg = AIMessage(content=critic_text)
 
-    llm_retry = "decision=retry" in critic_text.lower()
-    if (off_target > 0 and retry_count < max_retries) or (
-        llm_retry and retry_count < max_retries
-    ):
+    hard_reject = False
+    if specialist == "sirna_specialist" and off_target > 0:
+        hard_reject = True
+    if specialist == "mrna_specialist" and mfe > -20.0:
+        hard_reject = True
+
+    llm_reject = "verdict=reject" in critic_text.lower()
+    should_retry = (hard_reject or llm_reject) and retry_count < 3
+
+    if should_retry:
         state["retry_count"] = retry_count + 1
         state["next_action"] = "retry"
+        state["critic_verdict"] = "reject"
         state["messages"] = state.get("messages", []) + [critic_msg]
     else:
         state["next_action"] = "finish"
+        state["critic_verdict"] = "pass"
         state["final_report"] = (
-            f"Final candidate: {state.get('candidate_sequence', '')}; "
+            f"specialist={specialist}; "
+            f"filepath={state.get('current_filepath', '')}; "
             f"efficiency={state.get('efficiency_score', 0.0)}; "
             f"off_target_genes={off_target}; "
-            f"retries={retry_count}."
+            f"cai_score={cai_score}; "
+            f"mfe={mfe}; "
+            f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [critic_msg]
     return state
@@ -230,9 +357,15 @@ def critic_node(state: AgentState) -> AgentState:
 
 def route_after_router(state: AgentState) -> str:
     """Choose downstream branch after routing."""
-    return "sirna_specialist" if state.get("route") == "sirna" else "end"
+    if state.get("route") == "sirna":
+        return "sirna_specialist"
+    if state.get("route") == "mrna":
+        return "mrna_specialist"
+    return "end"
 
 
 def route_after_critic(state: AgentState) -> str:
     """Choose whether to retry or finish."""
-    return "sirna_specialist" if state.get("next_action") == "retry" else "end"
+    if state.get("next_action") != "retry":
+        return "end"
+    return state.get("active_specialist", "sirna_specialist")

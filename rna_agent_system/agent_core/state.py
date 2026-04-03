@@ -12,13 +12,19 @@ class AgentState(TypedDict, total=False):
     current_task: str
     workspace_files: list[str]
     input_sequence: str
+    current_filepath: str
     candidate_sequence: str
     efficiency_score: float
     off_target_genes: int
+    cai_score: float
+    mfe: float
+    structure_filepath: str
     retry_count: int
     max_retries: int
-    route: Literal["sirna", "unsupported"]
+    active_specialist: Literal["sirna_specialist", "mrna_specialist", ""]
+    route: Literal["sirna", "mrna", "unsupported"]
     next_action: Literal["retry", "finish"]
+    critic_verdict: Literal["pass", "reject"]
     final_report: str
 
 
@@ -29,6 +35,7 @@ def default_state(user_text: str) -> AgentState:
         current_task="sirna_design",
         workspace_files=[],
         input_sequence=user_text.strip(),
+        active_specialist="",
         retry_count=0,
-        max_retries=2,
+        max_retries=3,
     )
