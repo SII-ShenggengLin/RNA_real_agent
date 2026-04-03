@@ -1,12 +1,14 @@
 """State definitions for the MVP LangGraph workflow."""
 
-from typing import Literal, TypedDict
+from typing import Any, Literal, TypedDict
+
+from langchain_core.messages import HumanMessage
 
 
 class AgentState(TypedDict, total=False):
     """Shared state across all LangGraph nodes."""
 
-    messages: list[dict[str, str]]
+    messages: list[Any]
     current_task: str
     workspace_files: list[str]
     input_sequence: str
@@ -23,7 +25,7 @@ class AgentState(TypedDict, total=False):
 def default_state(user_text: str) -> AgentState:
     """Create a default state object for one user request."""
     return AgentState(
-        messages=[{"role": "user", "content": user_text}],
+        messages=[HumanMessage(content=user_text)],
         current_task="sirna_design",
         workspace_files=[],
         input_sequence=user_text.strip(),

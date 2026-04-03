@@ -17,6 +17,15 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 
+def _message_text(message_obj) -> str:
+    if hasattr(message_obj, "content"):
+        content = message_obj.content
+        return content if isinstance(content, str) else str(content)
+    if isinstance(message_obj, dict):
+        return str(message_obj.get("content", ""))
+    return str(message_obj)
+
+
 for item in st.session_state.chat_history:
     with st.chat_message(item["role"]):
         st.markdown(item["content"])
@@ -43,7 +52,7 @@ if user_input:
                 detail_lines.append(msg)
 
                 if "messages" in node_state and node_state["messages"]:
-                    latest = node_state["messages"][-1].get("content", "")
+                    latest = _message_text(node_state["messages"][-1])
                     detail_lines.append(f"  - {latest}")
 
                 if "efficiency_score" in node_state or "off_target_genes" in node_state:

@@ -2,84 +2,128 @@
 
 from __future__ import annotations
 
+import json
+from typing import Any
+
+from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
+
+from agent_core.llm_config import get_llm
 from agent_core.state import AgentState
 from agent_core.tools import check_off_target, predict_sirna_efficiency
 
-RNA_ALPHABET = ("A", "U", "G", "C")
+TOOLS = [predict_sirna_efficiency, check_off_target]
+TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
+
+
+def _msg_text(message: Any) -> str:
+    if hasattr(message, "content"):
+        content = message.content
+        return content if isinstance(content, str) else str(content)
+    return str(message)
 
 
 def router_node(state: AgentState) -> AgentState:
-    """Route request to siRNA pipeline for this MVP."""
-    text = state.get("input_sequence", "").upper()
-    task = "sirna_design" if any(base in text for base in RNA_ALPHABET) else "sirna_design"
-    state["current_task"] = task
-    state["route"] = "sirna"
+    """Use LLM to choose downstream node name."""
+    llm = get_llm()
+    prompt = (
+        "You are a router for an RNA design workflow.\n"
+        "Read the latest user request and output exactly one token:\n"
+        "- sirna_specialist (for siRNA design/evaluation requests)\n"
+        "- unsupported (for anything else)\n"
+        "No extra words."
+    )
+    decision = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
+    text = _msg_text(decision).strip().lower()
+    route = "sirna_specialist" if "sirna_specialist" in text else "unsupported"
+
+    state["current_task"] = "sirna_design" if route == "sirna_specialist" else "unsupported"
+    state["route"] = "sirna" if route == "sirna_specialist" else "unsupported"
     state["messages"] = state.get("messages", []) + [
-        {"role": "assistant", "content": "Router: route to siRNA specialist."}
+        AIMessage(content=f"Router decision: {route}")
     ]
     return state
 
 
 def sirna_specialist_node(state: AgentState) -> AgentState:
-    """Produce candidate sequence; mutate slightly when retrying."""
-    source = state.get("input_sequence", "").upper().replace("T", "U")
-    source = "".join(ch for ch in source if ch in RNA_ALPHABET)
-    if not source:
-        source = "AUGCUAACGUAGCUA"
-
-    retry_count = state.get("retry_count", 0)
-    candidate = source[:21] if len(source) > 21 else source
-    if retry_count > 0 and candidate:
-        idx = retry_count % len(candidate)
-        replacement = RNA_ALPHABET[retry_count % len(RNA_ALPHABET)]
-        candidate = candidate[:idx] + replacement + candidate[idx + 1 :]
-
-    state["candidate_sequence"] = candidate
-    state["messages"] = state.get("messages", []) + [
-        {
-            "role": "assistant",
-            "content": f"siRNA Specialist: propose candidate (attempt {retry_count + 1}).",
-        }
-    ]
+    """Use LLM + tool binding to produce tool calls and candidate."""
+    llm = get_llm().bind_tools(TOOLS)
+    prompt = (
+        "You are a siRNA specialist.\n"
+        "1) Propose one siRNA candidate sequence from user input.\n"
+        "2) You MUST call both tools: predict_sirna_efficiency and check_off_target.\n"
+        "3) Keep output concise."
+    )
+    ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
+    state["messages"] = state.get("messages", []) + [ai_msg]
     return state
 
 
 def tool_execution_node(state: AgentState) -> AgentState:
-    """Call both mock tools and write outputs into state."""
-    seq = state["candidate_sequence"]
-    efficiency_payload = predict_sirna_efficiency.invoke({"sequence": seq})
-    off_target_payload = check_off_target.invoke({"sequence": seq})
+    """Execute tool calls emitted by specialist LLM message."""
+    messages = state.get("messages", [])
+    if not messages or not isinstance(messages[-1], AIMessage):
+        return state
 
-    state["efficiency_score"] = float(efficiency_payload["efficiency_score"])
-    state["off_target_genes"] = int(off_target_payload["off_target_genes"])
-    state["messages"] = state.get("messages", []) + [
-        {
-            "role": "assistant",
-            "content": (
-                "Tool Executor: "
-                f"efficiency={state['efficiency_score']}, "
-                f"off_target_genes={state['off_target_genes']}."
-            ),
-        }
-    ]
+    ai_msg = messages[-1]
+    out_messages: list[Any] = []
+    for call in ai_msg.tool_calls:
+        tool_name = call["name"]
+        tool_args = call.get("args", {})
+        tool_obj = TOOLS_BY_NAME.get(tool_name)
+        if not tool_obj:
+            continue
+        tool_result = tool_obj.invoke(tool_args)
+        out_messages.append(
+            ToolMessage(
+                content=json.dumps(tool_result, ensure_ascii=True),
+                tool_call_id=call["id"],
+                name=tool_name,
+            )
+        )
+
+        if tool_name == "predict_sirna_efficiency":
+            state["efficiency_score"] = float(tool_result.get("efficiency_score", 0.0))
+            state["candidate_sequence"] = str(tool_result.get("sequence", ""))
+        elif tool_name == "check_off_target":
+            state["off_target_genes"] = int(tool_result.get("off_target_genes", 0))
+            if not state.get("candidate_sequence"):
+                state["candidate_sequence"] = str(tool_result.get("sequence", ""))
+
+    state["messages"] = messages + out_messages
     return state
 
 
 def critic_node(state: AgentState) -> AgentState:
-    """Judge output quality and decide retry or finish."""
+    """Use LLM to assess risk and choose retry/finish."""
     off_target = state.get("off_target_genes", 0)
     retry_count = state.get("retry_count", 0)
     max_retries = state.get("max_retries", 2)
+    llm = get_llm()
 
-    if off_target > 0 and retry_count < max_retries:
+    critic_prompt = (
+        "You are a critic for siRNA candidates.\n"
+        "Given current scores, provide a short assessment sentence.\n"
+        "Then on a new line output exactly: DECISION=retry or DECISION=finish."
+    )
+    critic_input = (
+        f"candidate={state.get('candidate_sequence', '')}\n"
+        f"efficiency={state.get('efficiency_score', 0.0)}\n"
+        f"off_target_genes={off_target}\n"
+        f"retry_count={retry_count}\n"
+        f"max_retries={max_retries}"
+    )
+    critic_msg = llm.invoke(
+        [SystemMessage(content=critic_prompt), AIMessage(content=critic_input)]
+    )
+    critic_text = _msg_text(critic_msg)
+
+    llm_retry = "decision=retry" in critic_text.lower()
+    if (off_target > 0 and retry_count < max_retries) or (
+        llm_retry and retry_count < max_retries
+    ):
         state["retry_count"] = retry_count + 1
         state["next_action"] = "retry"
-        state["messages"] = state.get("messages", []) + [
-            {
-                "role": "assistant",
-                "content": "Critic: off-target risk detected, regenerate candidate.",
-            }
-        ]
+        state["messages"] = state.get("messages", []) + [critic_msg]
     else:
         state["next_action"] = "finish"
         state["final_report"] = (
@@ -88,9 +132,7 @@ def critic_node(state: AgentState) -> AgentState:
             f"off_target_genes={off_target}; "
             f"retries={retry_count}."
         )
-        state["messages"] = state.get("messages", []) + [
-            {"role": "assistant", "content": "Critic: candidate accepted."}
-        ]
+        state["messages"] = state.get("messages", []) + [critic_msg]
     return state
 
 
