@@ -19,5 +19,5 @@ def get_llm() -> ChatOpenAI:
         base_url=os.getenv("OPENAI_API_BASE"),
         temperature=0.1,
         http_client=httpx.Client(verify=False),
-        max_retries=3,
+        max_retries=1,
     )

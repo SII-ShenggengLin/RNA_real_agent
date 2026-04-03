@@ -134,22 +134,37 @@ def mock_codon_optimization(filepath: str) -> dict[str, Any]:
 
 
 @tool(args_schema=MrnaToolInput)
-def mock_rna_fold(filepath: str) -> dict[str, Any]:
-    """Mock mRNA secondary structure prediction.
+def predict_rna_secondary_structure(
+    filepath: str, service_url: str = "http://localhost:8003/fold"
+) -> str:
+    """Predict RNA secondary structure and MFE using ViennaRNA service.
 
     Args:
-        filepath: Workspace file path holding mRNA sequence.
-            IMPORTANT: pass workspace filepath only, never inline long sequence in tool args.
+        filepath: Workspace file path containing RNA sequence content.
+            IMPORTANT: You must pass a filepath in workspace, NOT raw sequence text.
+        service_url: REST endpoint for ViennaRNA fold microservice.
 
     Returns:
-        Dict with MFE and generated mock structure file path.
+        Formatted string that contains RNA secondary structure and MFE.
+
+    Raises:
+        ValueError: If ViennaRNA API request fails or response payload is invalid.
     """
-    _ = read_sequence(filepath)
-    time.sleep(0.3)
-    structure_filepath = save_sequence("(((..((...))..)))", prefix="structure")
-    return {
-        "input_filepath": filepath,
-        "mfe": -25.4,
-        "structure_filepath": structure_filepath,
-        "model": "mock_rna_fold_v1",
-    }
+    sequence = read_sequence(filepath).strip()
+    try:
+        response = requests.post(
+            service_url,
+            json={"sequence": sequence},
+            timeout=20,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "structure" not in payload or "mfe" not in payload:
+            raise ValueError("Missing `structure` or `mfe` in ViennaRNA response.")
+        return (
+            f"filepath={filepath}; "
+            f"structure={payload['structure']}; "
+            f"mfe={payload['mfe']}"
+        )
+    except requests.RequestException as exc:
+        raise ValueError(f"ViennaRNA service request failed: {exc}") from exc

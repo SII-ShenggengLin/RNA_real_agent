@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import uuid
 from typing import Any
 
@@ -14,12 +15,12 @@ from agent_core.state import AgentState
 from agent_core.tools import (
     check_off_target,
     mock_codon_optimization,
-    mock_rna_fold,
+    predict_rna_secondary_structure,
     predict_sirna_efficiency,
 )
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
-MRNA_TOOLS = [mock_codon_optimization, mock_rna_fold]
+MRNA_TOOLS = [mock_codon_optimization, predict_rna_secondary_structure]
 TOOLS = SIRNA_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 
@@ -157,7 +158,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         f"Current mRNA filepath: {filepath}\n"
         "MUST call:\n"
         "1) mock_codon_optimization(filepath=...)\n"
-        "2) mock_rna_fold(filepath=...)\n"
+        "2) predict_rna_secondary_structure(filepath=...)\n"
     )
     try:
         ai_msg = llm.invoke([SystemMessage(content=prompt), *state.get("messages", [])])
@@ -172,7 +173,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
                     "type": "tool_call",
                 },
                 {
-                    "name": "mock_rna_fold",
+                    "name": "predict_rna_secondary_structure",
                     "args": {"filepath": filepath},
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
@@ -190,7 +191,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
                     "type": "tool_call",
                 },
                 {
-                    "name": "mock_rna_fold",
+                    "name": "predict_rna_secondary_structure",
                     "args": {"filepath": filepath},
                     "id": f"call_{uuid.uuid4().hex[:8]}",
                     "type": "tool_call",
@@ -223,7 +224,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if state.get("active_specialist") == "sirna_specialist"
             else [
                 {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
-                {"name": "mock_rna_fold", "args": {"filepath": filepath}},
+                {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}},
             ]
         )
         ai_msg = AIMessage(
@@ -269,10 +270,14 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if optimized_filepath:
                 state["current_filepath"] = optimized_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [optimized_filepath]
-        elif tool_name == "mock_rna_fold":
-            state["mfe"] = float(tool_result.get("mfe", 0.0))
-            structure_filepath = str(tool_result.get("structure_filepath", ""))
-            if structure_filepath:
+        elif tool_name == "predict_rna_secondary_structure":
+            mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(tool_result))
+            structure_match = re.search(r"structure=([^;]+)", str(tool_result))
+            if mfe_match:
+                state["mfe"] = float(mfe_match.group(1))
+            if structure_match:
+                structure = structure_match.group(1).strip()
+                structure_filepath = save_sequence(structure, prefix="structure")
                 state["structure_filepath"] = structure_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
 
