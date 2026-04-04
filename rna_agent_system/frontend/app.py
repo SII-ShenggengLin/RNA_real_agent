@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import streamlit as st
+
+# Make sibling modules importable when Streamlit runs this file directly.
+APP_ROOT = Path(__file__).resolve().parents[1]
+if str(APP_ROOT) not in sys.path:
+    sys.path.insert(0, str(APP_ROOT))
 
 from agent_core.graph import compiled_graph
 from agent_core.state import default_state
