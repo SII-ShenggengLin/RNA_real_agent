@@ -5,3 +5,4 @@
 rna_agent_system/workspace/*
 !rna_agent_system/workspace/.gitkeep
 *.pt
+*.fasta
