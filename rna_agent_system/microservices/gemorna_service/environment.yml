@@ -1,0 +1,21 @@
+name: gemorna_service_env
+channels:
+  - defaults
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy=1.26.4
+  - pip
+  - pip:
+      - pandas==2.0.2
+      - tqdm==4.66.5
+      - torch==2.2.0
+      - torchvision==0.17.0
+      - torchaudio==2.2.0
+      - torchtext==0.6.0
+      - biopython==1.72
+      - fastapi
+      - uvicorn
+      - pydantic

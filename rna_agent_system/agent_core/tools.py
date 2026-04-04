@@ -110,6 +110,22 @@ class MrnaToolInput(BaseModel):
     )
 
 
+class GemornaCdsInput(BaseModel):
+    """Input schema for GEMORNA CDS design tool."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing a protein sequence for GEMORNA CDS design. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8004/generate/cds",
+        description="REST endpoint for the GEMORNA CDS generation microservice.",
+    )
+
+
 @tool(args_schema=MrnaToolInput)
 def mock_codon_optimization(filepath: str) -> dict[str, Any]:
     """Mock codon optimization for mRNA sequence.
@@ -168,3 +184,43 @@ def predict_rna_secondary_structure(
         )
     except requests.RequestException as exc:
         raise ValueError(f"ViennaRNA service request failed: {exc}") from exc
+
+
+@tool(args_schema=GemornaCdsInput)
+def design_mrna_cds_with_gemorna(
+    filepath: str, service_url: str = "http://127.0.0.1:8004/generate/cds"
+) -> dict[str, Any]:
+    """Design an mRNA CDS sequence from a protein sequence using GEMORNA.
+
+    Args:
+        filepath: Workspace file path containing the input protein sequence.
+            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
+        service_url: REST endpoint for the GEMORNA microservice.
+
+    Returns:
+        Dict containing the generated CDS sequence, raw GEMORNA stdout, and a new workspace filepath.
+
+    Raises:
+        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
+    """
+    protein_sequence = read_sequence(filepath).strip()
+    try:
+        response = requests.post(
+            service_url,
+            json={"protein_sequence": protein_sequence},
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "generated_sequence" not in payload:
+            raise ValueError("Missing `generated_sequence` in GEMORNA response.")
+        output_filepath = save_sequence(payload["generated_sequence"], prefix="gemorna_cds")
+        return {
+            "input_filepath": filepath,
+            "output_filepath": output_filepath,
+            "generated_sequence": payload["generated_sequence"],
+            "raw_output": payload.get("raw_output", ""),
+            "model": payload.get("model", "GEMORNA-cds"),
+        }
+    except requests.RequestException as exc:
+        raise ValueError(f"GEMORNA service request failed: {exc}") from exc

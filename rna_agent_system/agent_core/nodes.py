@@ -13,13 +13,14 @@ from agent_core.file_manager import save_sequence
 from agent_core.state import AgentState
 from agent_core.tools import (
     check_off_target,
+    design_mrna_cds_with_gemorna,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_sirna_efficiency,
 )
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
-MRNA_TOOLS = [mock_codon_optimization, predict_rna_secondary_structure]
+MRNA_TOOLS = [mock_codon_optimization, predict_rna_secondary_structure, design_mrna_cds_with_gemorna]
 TOOLS = SIRNA_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 
@@ -37,10 +38,34 @@ def _extract_rna_sequence(text: str) -> str:
     return seq[:21] if seq else "AUGCUAACGUAGCUAUGCUA"
 
 
+def _extract_protein_sequence(text: str) -> str:
+    candidates = re.findall(r"[A-Za-z\*]{8,}", text)
+    if not candidates:
+        return "MVSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDA"
+    return max(candidates, key=len).upper()
+
+
 def router_node(state: AgentState) -> AgentState:
     """Route by deterministic rules without LLM."""
     user_text = state.get("input_sequence", "").lower()
-    if any(k in user_text for k in ["mrna", "rnafold", "fold", "structure", "二级结构", "密码子", "codon"]):
+    if any(
+        k in user_text
+        for k in [
+            "mrna",
+            "rnafold",
+            "fold",
+            "structure",
+            "二级结构",
+            "密码子",
+            "codon",
+            "design",
+            "设计",
+            "gemorna",
+            "protein",
+            "cds",
+            "utr",
+        ]
+    ):
         route = "mrna_specialist"
     elif any(k in user_text for k in ["sirna", "脱靶", "off-target"]):
         route = "sirna_specialist"
@@ -94,15 +119,30 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
 
 def mrna_specialist_node(state: AgentState) -> AgentState:
     """Emit deterministic mRNA tool calls without LLM."""
-    filepath = state.get("current_filepath")
-    if not filepath:
-        filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="mrna")
+    user_text = state.get("input_sequence", "").lower()
+    state["active_specialist"] = "mrna_specialist"
+    design_mode = any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"])
+
+    if design_mode:
+        filepath = save_sequence(_extract_protein_sequence(state.get("input_sequence", "")), prefix="protein")
         state["current_filepath"] = filepath
         state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-    state["active_specialist"] = "mrna_specialist"
-    ai_msg = AIMessage(
-        content="mRNA specialist (rule-based): dispatch tool calls.",
-        tool_calls=[
+        tool_calls = [
+            {
+                "name": "design_mrna_cds_with_gemorna",
+                "args": {"filepath": filepath},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch GEMORNA design."
+    else:
+        filepath = state.get("current_filepath")
+        if not filepath:
+            filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="mrna")
+            state["current_filepath"] = filepath
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
             {
                 "name": "mock_codon_optimization",
                 "args": {"filepath": filepath},
@@ -115,8 +155,10 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             },
-        ],
-    )
+        ]
+        content = "mRNA specialist (rule-based): dispatch tool calls."
+
+    ai_msg = AIMessage(content=content, tool_calls=tool_calls)
     state["messages"] = state.get("messages", []) + [ai_msg]
     return state
 
@@ -135,17 +177,21 @@ def tool_execution_node(state: AgentState) -> AgentState:
             filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="seq")
             state["current_filepath"] = filepath
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-        fallback_calls = (
-            [
+        user_text = state.get("input_sequence", "").lower()
+        if state.get("active_specialist") == "sirna_specialist":
+            fallback_calls = [
                 {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
                 {"name": "check_off_target", "args": {"filepath": filepath}},
             ]
-            if state.get("active_specialist") == "sirna_specialist"
-            else [
+        elif any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"]):
+            fallback_calls = [
+                {"name": "design_mrna_cds_with_gemorna", "args": {"filepath": filepath}},
+            ]
+        else:
+            fallback_calls = [
                 {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
                 {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}},
             ]
-        )
         ai_msg = AIMessage(
             content="Tool executor repaired missing tool calls.",
             tool_calls=[
@@ -199,6 +245,32 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 structure_filepath = save_sequence(structure, prefix="structure")
                 state["structure_filepath"] = structure_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+        elif tool_name == "design_mrna_cds_with_gemorna":
+            output_filepath = str(tool_result.get("output_filepath", ""))
+            if output_filepath:
+                state["current_filepath"] = output_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
+            state["candidate_sequence"] = str(tool_result.get("generated_sequence", ""))
+
+            user_text = state.get("input_sequence", "").lower()
+            if any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"]):
+                fold_result = predict_rna_secondary_structure.invoke({"filepath": state["current_filepath"]})
+                out_messages.append(
+                    ToolMessage(
+                        content=json.dumps(fold_result, ensure_ascii=True),
+                        tool_call_id=f"call_{uuid.uuid4().hex[:8]}",
+                        name="predict_rna_secondary_structure",
+                    )
+                )
+                mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(fold_result))
+                structure_match = re.search(r"structure=([^;]+)", str(fold_result))
+                if mfe_match:
+                    state["mfe"] = float(mfe_match.group(1))
+                if structure_match:
+                    structure = structure_match.group(1).strip()
+                    structure_filepath = save_sequence(structure, prefix="structure")
+                    state["structure_filepath"] = structure_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
 
     state["messages"] = messages + out_messages
     return state
@@ -216,7 +288,8 @@ def critic_node(state: AgentState) -> AgentState:
     hard_reject = False
     if specialist == "sirna_specialist" and off_target > 0:
         hard_reject = True
-    if specialist == "mrna_specialist" and mfe > -20.0:
+    user_text = state.get("input_sequence", "").lower()
+    if specialist == "mrna_specialist" and any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"]) and mfe > -20.0:
         hard_reject = True
     should_retry = hard_reject and retry_count < max_retries
 
