@@ -5,6 +5,7 @@ from __future__ import annotations
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -34,15 +35,15 @@ class RhoFoldPredictRequest(BaseModel):
         default=True,
         description="Use sequence-only mode. Keep true unless you explicitly provide an A3M file.",
     )
-    input_a3m_path: str | None = Field(
+    input_a3m_path: Optional[str] = Field(
         default=None,
         description="Optional absolute or repo-relative A3M path. Used only when single_seq_pred is false.",
     )
-    checkpoint_path: str | None = Field(
+    checkpoint_path: Optional[str] = Field(
         default=None,
         description="Optional checkpoint path. If omitted, common pretrained paths are checked.",
     )
-    device: str | None = Field(
+    device: Optional[str] = Field(
         default=None,
         description="Optional device string such as cpu, cuda, or cuda:0.",
     )
@@ -62,11 +63,11 @@ class RhoFoldPredictRequest(BaseModel):
 class RhoFoldPredictResponse(BaseModel):
     sequence: str
     output_pdb_path: str
-    secondary_structure_ct_path: str | None = None
-    results_npz_path: str | None = None
-    log_path: str | None = None
+    secondary_structure_ct_path: Optional[str] = None
+    results_npz_path: Optional[str] = None
+    log_path: Optional[str] = None
     service_output_dir: str
-    mean_plddt: float | None = None
+    mean_plddt: Optional[float] = None
     model: str = "RhoFold+"
     stdout: str = ""
     stderr: str = ""
@@ -92,7 +93,7 @@ def _normalize_sequence(sequence: str) -> str:
     return normalized
 
 
-def _resolve_checkpoint_path(checkpoint_path: str | None) -> Path:
+def _resolve_checkpoint_path(checkpoint_path: Optional[str]) -> Path:
     if checkpoint_path:
         resolved = _resolve_repo_path(checkpoint_path)
         if not resolved.exists():
@@ -112,8 +113,8 @@ def _resolve_checkpoint_path(checkpoint_path: str | None) -> Path:
     return DEFAULT_CHECKPOINT_CANDIDATES[0]
 
 
-def _mean_plddt_from_pdb(pdb_path: Path) -> float | None:
-    scores: list[float] = []
+def _mean_plddt_from_pdb(pdb_path: Path) -> Optional[float]:
+    scores: List[float] = []
     with pdb_path.open(encoding="utf-8") as handle:
         for line in handle:
             if line.startswith("ATOM"):
@@ -137,7 +138,7 @@ def _require_runtime_assets() -> None:
 
 
 @app.get("/health")
-def health() -> dict[str, str | bool]:
+def health() -> dict:
     checkpoint_exists = any(candidate.exists() for candidate in DEFAULT_CHECKPOINT_CANDIDATES)
     return {
         "status": "ok",
