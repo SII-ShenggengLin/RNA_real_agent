@@ -3,8 +3,9 @@ set -e
 
 # 1. 首次创建环境:
 #    conda env create -f environment.yml
-# 2. 确保 GEMORNA 权重已拉取:
-#    cd ../../external_repos/GEMORNA && git lfs pull
+# 2. 确保 GEMORNA 权重已就位，二选一:
+#    A. cd ../../external_repos/GEMORNA && git lfs pull
+#    B. 手动将真实 `.pt` 文件放到 ../../external_repos/GEMORNA/checkpoints/
 # 3. 启动服务:
 #    bash start.sh
 

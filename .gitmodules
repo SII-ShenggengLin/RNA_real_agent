@@ -1,0 +1,3 @@
+[submodule "rna_agent_system/external_repos/GEMORNA"]
+	path = rna_agent_system/external_repos/GEMORNA
+	url = https://github.com/RainaBio/GEMORNA.git

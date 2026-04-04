@@ -56,7 +56,11 @@ def _require_runtime_assets() -> None:
     if _is_lfs_pointer(CHECKPOINT_DIR / "gemorna_cds.pt"):
         raise HTTPException(
             status_code=503,
-            detail="GEMORNA checkpoint is still a Git LFS pointer. Run `git lfs pull` first.",
+            detail=(
+                "GEMORNA checkpoint is still a Git LFS pointer. "
+                "Run `git lfs pull` or manually copy real `.pt` files into "
+                "`external_repos/GEMORNA/checkpoints/`."
+            ),
         )
 
 

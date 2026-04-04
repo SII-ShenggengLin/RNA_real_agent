@@ -19,6 +19,7 @@
 2. Run inside `external_repos/GEMORNA`:
    - `git lfs install`
    - `git lfs pull`
+   - or manually place real `.pt` checkpoint files into `external_repos/GEMORNA/checkpoints/`
 3. Create the microservice environment:
    - `cd microservices/gemorna_service`
    - `conda env create -f environment.yml`
@@ -30,6 +31,7 @@
 - `checkpoints/*.pt` must be real model files, not Git LFS pointer files.
 - The current service validates LFS status before attempting generation.
 - The first integrated ability is CDS design from a protein sequence.
+- `external_repos/GEMORNA` is tracked as a git submodule in the main repository.
 
 ## Planned next steps
 
