@@ -1,0 +1,33 @@
+name: rhofold_service_env
+channels:
+  - pytorch
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.7.12
+  - pytorch=1.10.2
+  - cudatoolkit=11.3.1
+  - openmm=7.7.0
+  - numpy=1.21.2
+  - scipy=1.7.1
+  - pandas=1.3.5
+  - matplotlib=3.5.3
+  - biopython=1.79
+  - transformers=4.29.2
+  - tokenizers=0.13.1
+  - datasets=2.6.1
+  - pyarrow=8.0.0
+  - pyyaml=6.0
+  - pip
+  - pip:
+      - Bio==1.4.0
+      - dm-tree==0.1.7
+      - einops==0.5.0
+      - fastapi
+      - huggingface-hub==0.16.4
+      - ml-collections==0.1.1
+      - pydantic
+      - python-box==6.0.2
+      - requests==2.26.0
+      - tqdm==4.62.2
+      - uvicorn

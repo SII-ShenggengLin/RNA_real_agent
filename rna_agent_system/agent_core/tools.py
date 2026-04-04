@@ -8,7 +8,12 @@ from typing import Any
 import requests
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
-from agent_core.file_manager import read_sequence, save_sequence
+from agent_core.file_manager import (
+    copy_file_to_workspace,
+    read_sequence,
+    save_sequence,
+    save_text_file,
+)
 
 
 class SirnaEfficiencyInput(BaseModel):
@@ -126,6 +131,27 @@ class GemornaCdsInput(BaseModel):
     )
 
 
+class RhoFoldInput(BaseModel):
+    """Input schema for RhoFold tertiary structure prediction."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing an RNA sequence for RhoFold. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8005/predict",
+        description="REST endpoint for the RhoFold prediction microservice.",
+    )
+    relax_steps: int = Field(
+        default=0,
+        ge=0,
+        description="Amber relaxation steps. Use 0 to skip relaxation and reduce runtime.",
+    )
+
+
 @tool(args_schema=MrnaToolInput)
 def mock_codon_optimization(filepath: str) -> dict[str, Any]:
     """Mock codon optimization for mRNA sequence.
@@ -224,3 +250,84 @@ def design_mrna_cds_with_gemorna(
         }
     except requests.RequestException as exc:
         raise ValueError(f"GEMORNA service request failed: {exc}") from exc
+
+
+@tool(args_schema=RhoFoldInput)
+def predict_rna_tertiary_structure_with_rhofold(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8005/predict",
+    relax_steps: int = 0,
+) -> dict[str, Any]:
+    """Predict RNA tertiary structure using the RhoFold microservice.
+
+    Args:
+        filepath: Workspace file path containing the input RNA sequence.
+            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
+        service_url: REST endpoint for the RhoFold microservice.
+        relax_steps: Amber relaxation iterations. Default 0 keeps inference lighter.
+
+    Returns:
+        Dict containing workspace paths for generated artifacts and a mean pLDDT summary.
+
+    Raises:
+        ValueError: If the RhoFold service is unreachable or returns an invalid payload.
+    """
+    sequence = read_sequence(filepath).strip()
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sequence": sequence,
+                "single_seq_pred": True,
+                "relax_steps": relax_steps,
+            },
+            timeout=1800,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "output_pdb_path" not in payload:
+            raise ValueError("Missing `output_pdb_path` in RhoFold response.")
+
+        mean_plddt = payload.get("mean_plddt")
+        output_pdb_filepath = copy_file_to_workspace(payload["output_pdb_path"], prefix="rhofold_model")
+        result: dict[str, Any] = {
+            "input_filepath": filepath,
+            "output_pdb_filepath": output_pdb_filepath,
+            "mean_plddt": float(mean_plddt) if mean_plddt is not None else 0.0,
+            "model": payload.get("model", "RhoFold+"),
+            "service_output_dir": payload.get("service_output_dir", ""),
+        }
+
+        secondary_ct_path = payload.get("secondary_structure_ct_path")
+        if secondary_ct_path:
+            result["secondary_structure_ct_filepath"] = copy_file_to_workspace(
+                secondary_ct_path,
+                prefix="rhofold_ss",
+            )
+
+        results_npz_path = payload.get("results_npz_path")
+        if results_npz_path:
+            result["results_npz_filepath"] = copy_file_to_workspace(
+                results_npz_path,
+                prefix="rhofold_results",
+            )
+
+        log_path = payload.get("log_path")
+        if log_path:
+            result["log_filepath"] = copy_file_to_workspace(log_path, prefix="rhofold_log")
+
+        if payload.get("stdout"):
+            result["stdout_filepath"] = save_text_file(
+                str(payload["stdout"]),
+                prefix="rhofold_stdout",
+                suffix=".log",
+            )
+        if payload.get("stderr"):
+            result["stderr_filepath"] = save_text_file(
+                str(payload["stderr"]),
+                prefix="rhofold_stderr",
+                suffix=".log",
+            )
+        return result
+    except requests.RequestException as exc:
+        raise ValueError(f"RhoFold service request failed: {exc}") from exc

@@ -16,11 +16,17 @@ from agent_core.tools import (
     design_mrna_cds_with_gemorna,
     mock_codon_optimization,
     predict_rna_secondary_structure,
+    predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
 )
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
-MRNA_TOOLS = [mock_codon_optimization, predict_rna_secondary_structure, design_mrna_cds_with_gemorna]
+MRNA_TOOLS = [
+    mock_codon_optimization,
+    predict_rna_secondary_structure,
+    predict_rna_tertiary_structure_with_rhofold,
+    design_mrna_cds_with_gemorna,
+]
 TOOLS = SIRNA_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 
@@ -45,6 +51,14 @@ def _extract_protein_sequence(text: str) -> str:
     return max(candidates, key=len).upper()
 
 
+def _needs_secondary_structure(text: str) -> bool:
+    return any(k in text for k in ["structure", "fold", "rnafold", "二级结构"])
+
+
+def _needs_tertiary_structure(text: str) -> bool:
+    return any(k in text for k in ["rhofold", "3d", "3-d", "tertiary", "三级结构", "三维结构", "三维", "pdb"])
+
+
 def router_node(state: AgentState) -> AgentState:
     """Route by deterministic rules without LLM."""
     user_text = state.get("input_sequence", "").lower()
@@ -55,6 +69,11 @@ def router_node(state: AgentState) -> AgentState:
             "rnafold",
             "fold",
             "structure",
+            "tertiary",
+            "3d",
+            "三级结构",
+            "三维结构",
+            "rhofold",
             "二级结构",
             "密码子",
             "codon",
@@ -156,6 +175,15 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
                 "type": "tool_call",
             },
         ]
+        if _needs_tertiary_structure(user_text):
+            tool_calls.append(
+                {
+                    "name": "predict_rna_tertiary_structure_with_rhofold",
+                    "args": {"filepath": filepath},
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                }
+            )
         content = "mRNA specialist (rule-based): dispatch tool calls."
 
     ai_msg = AIMessage(content=content, tool_calls=tool_calls)
@@ -192,6 +220,10 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
                 {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}},
             ]
+            if _needs_tertiary_structure(user_text):
+                fallback_calls.append(
+                    {"name": "predict_rna_tertiary_structure_with_rhofold", "args": {"filepath": filepath}}
+                )
         ai_msg = AIMessage(
             content="Tool executor repaired missing tool calls.",
             tool_calls=[
@@ -245,6 +277,24 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 structure_filepath = save_sequence(structure, prefix="structure")
                 state["structure_filepath"] = structure_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+        elif tool_name == "predict_rna_tertiary_structure_with_rhofold":
+            output_pdb_filepath = str(tool_result.get("output_pdb_filepath", ""))
+            if output_pdb_filepath:
+                state["tertiary_structure_filepath"] = output_pdb_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_pdb_filepath]
+            secondary_ct_filepath = str(tool_result.get("secondary_structure_ct_filepath", ""))
+            if secondary_ct_filepath:
+                state["tertiary_structure_ct_filepath"] = secondary_ct_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [secondary_ct_filepath]
+            results_npz_filepath = str(tool_result.get("results_npz_filepath", ""))
+            if results_npz_filepath:
+                state["tertiary_results_filepath"] = results_npz_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [results_npz_filepath]
+            log_filepath = str(tool_result.get("log_filepath", ""))
+            if log_filepath:
+                state["tertiary_log_filepath"] = log_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [log_filepath]
+            state["mean_plddt"] = float(tool_result.get("mean_plddt", 0.0))
         elif tool_name == "design_mrna_cds_with_gemorna":
             output_filepath = str(tool_result.get("output_filepath", ""))
             if output_filepath:
@@ -253,7 +303,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["candidate_sequence"] = str(tool_result.get("generated_sequence", ""))
 
             user_text = state.get("input_sequence", "").lower()
-            if any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"]):
+            if _needs_secondary_structure(user_text):
                 fold_result = predict_rna_secondary_structure.invoke({"filepath": state["current_filepath"]})
                 out_messages.append(
                     ToolMessage(
@@ -271,6 +321,34 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     structure_filepath = save_sequence(structure, prefix="structure")
                     state["structure_filepath"] = structure_filepath
                     state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+            if _needs_tertiary_structure(user_text):
+                tertiary_result = predict_rna_tertiary_structure_with_rhofold.invoke(
+                    {"filepath": state["current_filepath"]}
+                )
+                out_messages.append(
+                    ToolMessage(
+                        content=json.dumps(tertiary_result, ensure_ascii=True),
+                        tool_call_id=f"call_{uuid.uuid4().hex[:8]}",
+                        name="predict_rna_tertiary_structure_with_rhofold",
+                    )
+                )
+                output_pdb_filepath = str(tertiary_result.get("output_pdb_filepath", ""))
+                if output_pdb_filepath:
+                    state["tertiary_structure_filepath"] = output_pdb_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [output_pdb_filepath]
+                secondary_ct_filepath = str(tertiary_result.get("secondary_structure_ct_filepath", ""))
+                if secondary_ct_filepath:
+                    state["tertiary_structure_ct_filepath"] = secondary_ct_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [secondary_ct_filepath]
+                results_npz_filepath = str(tertiary_result.get("results_npz_filepath", ""))
+                if results_npz_filepath:
+                    state["tertiary_results_filepath"] = results_npz_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [results_npz_filepath]
+                log_filepath = str(tertiary_result.get("log_filepath", ""))
+                if log_filepath:
+                    state["tertiary_log_filepath"] = log_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [log_filepath]
+                state["mean_plddt"] = float(tertiary_result.get("mean_plddt", 0.0))
 
     state["messages"] = messages + out_messages
     return state
@@ -281,6 +359,7 @@ def critic_node(state: AgentState) -> AgentState:
     off_target = state.get("off_target_genes", 0)
     mfe = state.get("mfe", 0.0)
     cai_score = state.get("cai_score", 0.0)
+    mean_plddt = state.get("mean_plddt", 0.0)
     retry_count = state.get("retry_count", 0)
     max_retries = state.get("max_retries", 3)
     specialist = state.get("active_specialist", "")
@@ -315,6 +394,8 @@ def critic_node(state: AgentState) -> AgentState:
             f"off_target_genes={off_target}; "
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
+            f"tertiary_structure_filepath={state.get('tertiary_structure_filepath', '')}; "
+            f"mean_plddt={mean_plddt}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

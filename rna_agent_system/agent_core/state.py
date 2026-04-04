@@ -19,6 +19,11 @@ class AgentState(TypedDict, total=False):
     cai_score: float
     mfe: float
     structure_filepath: str
+    tertiary_structure_filepath: str
+    tertiary_structure_ct_filepath: str
+    tertiary_results_filepath: str
+    tertiary_log_filepath: str
+    mean_plddt: float
     retry_count: int
     max_retries: int
     active_specialist: Literal["sirna_specialist", "mrna_specialist", ""]
