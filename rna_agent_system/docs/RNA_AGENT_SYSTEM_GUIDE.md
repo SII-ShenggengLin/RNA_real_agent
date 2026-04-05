@@ -201,7 +201,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `sirna`、`脱靶`、`off-target`
   - 路由到 `sirna_specialist`
@@ -216,7 +216,18 @@ User Input
 
 ### 5.3 mRNA Specialist
 
-分三种模式：
+分四种模式：
+
+- 如果用户文本偏“RNA-ligand 打分型”
+  - 触发 `score_rna_ligand_binding_with_rnasmol(filepath, smiles, checkpoint_path=None)`
+  - 输入是 RNA 序列文件路径 + ligand `SMILES`
+  - 当前规则解析优先要求用户在文本里显式给出：
+    - `SMILES=...`
+    - 或 `SMILES: ...`
+  - RNA 输入可以是：
+    - 文本中的 RNA 序列
+    - 或 `.fasta/.fa/.txt/.seq` 文件路径
+  - 如果未提供 `SMILES`，当前会直接报错，而不是猜测
 
 - 如果用户文本偏“结构到序列设计型”
   - 触发 `design_rna_sequence_with_rhodesign(pdb_filepath, secondary_structure_filepath=None)`
@@ -263,6 +274,10 @@ User Input
 - `tertiary_results_filepath`
 - `tertiary_log_filepath`
 - `mean_plddt`
+- `ligand_smiles`
+- `rnasmol_probability`
+- `rnasmol_predicted_label`
+- `rnasmol_checkpoint_path`
 
 ### 5.5 Critic
 
@@ -850,6 +865,175 @@ pip install --no-cache-dir torch-geometric==2.5.0
 
 ---
 
+## 10B. RNAsmol 的接入方式
+
+### 10B.1 上游源码层
+
+目录：
+
+```text
+external_repos/RNAsmol
+```
+
+来源：
+
+- 上游仓库：[hongli-ma/RNAsmol](https://github.com/hongli-ma/RNAsmol)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 `git add .`
+
+### 10B.2 当前微服务能力
+
+目录：
+
+```text
+microservices/rnasmol_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /score`
+
+输入：
+
+- `rna_sequence`
+- `smiles`
+- `checkpoint_path`（可选）
+- `device`（可选）
+
+输出：
+
+- `probability_positive`
+- `predicted_label`
+- `raw_logits`
+- `checkpoint_path`
+- `device`
+
+### 10B.3 当前 Agent 工具能力
+
+工具函数：
+
+- `score_rna_ligand_binding_with_rnasmol(filepath, smiles, service_url="http://127.0.0.1:8007/score", checkpoint_path=None)`
+
+输入：
+
+- `filepath`，其中保存的是 RNA 序列
+- `smiles`
+
+输出：
+
+- `probability_positive`
+- `predicted_label`
+- `checkpoint_path`
+- `input_filepath`
+
+当前实现会把 RNA 输入仍然统一落到 `workspace/` 文件路径，再由 Agent 工具通过 HTTP 调用 `RNAsmol` 微服务。
+
+### 10B.4 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已经接入 `RNAsmol`：
+
+- `router_node` 会识别 `rnasmol`、`smiles`、`ligand`、`配体` 等语义
+- `mrna_specialist_node` 会优先把这类请求路由到 `RNAsmol`
+- 当前支持两种 RNA 输入方式：
+  - 直接在文本里给 RNA 序列
+  - 直接给 `.fasta/.fa/.txt/.seq` 路径
+- 当前 `SMILES` 建议显式写成：
+  - `SMILES=...`
+  - 或 `SMILES: ...`
+
+当前 `tool_execution_node` 还会更新这些额外状态：
+
+- `ligand_smiles`
+- `rnasmol_probability`
+- `rnasmol_predicted_label`
+- `rnasmol_checkpoint_path`
+
+### 10B.5 RNAsmol 的实际运行注意事项
+
+#### checkpoint
+
+当前 `RNAsmol` 服务默认会优先检查：
+
+```text
+external_repos/RNAsmol/saved_model/*.pt
+```
+
+如果不想使用默认目录，也可以在启动服务前设置：
+
+```bash
+export RNASMOL_CHECKPOINT_PATH=/absolute/path/to/model.pt
+```
+
+#### 4090 / 新卡 GPU 兼容性
+
+`RNAsmol` 上游原始环境更偏旧，例如：
+
+- `python=3.7`
+- `pytorch=1.7.1`
+- `cudatoolkit=10.2`
+
+这套组合在较新的 GPU（例如 `RTX 4090`, `sm_89`）上并不稳妥，常见现象包括：
+
+- `torch.cuda.is_available()` 为 `True`
+- 但真正执行 CUDA tensor 或模型推理时卡住
+- 控制台提示 `sm_89 is not compatible with the current PyTorch installation`
+
+因此当前项目里实际采用的是两套并行方案：
+
+- `environment.yml`
+  - 偏旧版本组合
+  - 可作为 CPU 或旧卡兼容方案
+- `environment.gpu.yml`
+  - 面向新 GPU 的独立环境
+  - 当前实际用于 `RTX 4090` 成功跑通
+
+#### 设备选择
+
+当前 `rnasmol_service/main.py` 支持：
+
+- 请求体里显式传 `device`
+- 或启动服务前设置环境变量：
+
+```bash
+export RNASMOL_DEVICE=cpu
+export RNASMOL_DEVICE=cuda:0
+```
+
+服务默认逻辑是：
+
+- 如果设置了 `RNASMOL_DEVICE`，优先使用它
+- 否则自动退回到：
+  - 有 CUDA 就用 `cuda:0`
+  - 没 CUDA 就用 `cpu`
+
+### 10B.6 当前验证状态
+
+`RNAsmol` 目前已经在 Linux 服务器上完成最小闭环验证：
+
+- 上游源码已成功以 submodule 形式接入
+- `rnasmol_service` 已成功启动
+- `GET /health` 成功
+- checkpoint 已成功识别
+- `POST /score` 在 `cpu` 模式成功
+- `POST /score` 在 `RTX 4090 + 独立 GPU 环境` 下成功
+- Agent 自然语言请求已成功触发 `RNAsmol`
+- Agent 最终报告已能返回 `rnasmol_probability` 等字段
+
+这意味着：
+
+- `RNAsmol` 已经通过“上游源码 -> 微服务接口 -> Agent 工作流”这一层验证
+- 后续如果再次报错，优先检查的应该是：
+  - checkpoint 路径
+  - PyG 版本匹配
+  - GPU 环境是否使用了 `environment.gpu.yml`
+  - `RNASMOL_DEVICE` 是否配置正确
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -959,6 +1143,7 @@ microservices/new_tool_service/
 - `GEMORNA`
 - `RhoFold`
 - `RhoDesign`
+- `RNAsmol`
 
 新 clone：
 
@@ -993,18 +1178,20 @@ git submodule update --init --recursive
 - `external_repos/GEMORNA/checkpoints/*.pt`
 - `external_repos/RhoFold/pretrained/*.pt`
 - `external_repos/RhoDesign/checkpoint/*.pth`
+- `external_repos/RNAsmol/saved_model/*.pt`
 
 推荐方案：
 
 - 用上游 `git lfs pull`
 - 或你手动复制到服务器对应目录
 
-当前 `RhoDesign` 也属于这种情况。
+当前 `RhoDesign` 和 `RNAsmol` 也都属于这种情况。
 
 例如你在本机已经放好的：
 
 - `external_repos/RhoDesign/checkpoint/ss_apexp_best.pth`
 - `external_repos/RhoDesign/checkpoint/no_ss_apexp_best.pth`
+- `external_repos/RNAsmol/saved_model/*.pt`
 
 不应默认指望通过主仓库 Git 历史传到 Linux 服务器，更推荐在服务器侧单独补齐，或确认是否需要额外的大文件传输方案。
 
@@ -1115,6 +1302,31 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 RNAsmol：
+
+1. 启动 `rnasmol_service`
+2. `curl /health`
+3. `curl /score`
+
+推荐优先测试 payload：
+
+```json
+{
+  "rna_sequence": "AUGGCUACGUAGCUAGCUAG",
+  "smiles": "CCO"
+}
+```
+
+如果服务器是新卡（例如 `RTX 4090`），且需要显式覆盖设备，推荐再测：
+
+```json
+{
+  "rna_sequence": "AUGGCUACGUAGCUAGCUAG",
+  "smiles": "CCO",
+  "device": "cuda:0"
+}
+```
+
 ### 13.2 智能体集成测试
 
 在微服务都启动后，再启动：
@@ -1142,6 +1354,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - RNA 三级结构预测请求
 - GEMORNA 设计 + RhoFold 联合请求
 - RhoDesign 结构到序列设计请求
+- RNAsmol RNA-ligand 打分请求
 
 ---
 
@@ -1267,6 +1480,36 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 - 它更偏“开发期默认行为”
 - 后续如果进入更正式的使用阶段，建议改成“没有结构文件就明确报错”，避免隐式使用示例输入
 
+### 14.10 `RNAsmol` 的环境兼容性依赖实际 GPU
+
+当前 `RNAsmol` 最容易踩坑的地方之一不是业务代码，而是环境代际差异：
+
+- 上游原始依赖偏旧
+- 新 GPU（例如 `RTX 4090`）对老版 `torch 1.7.1 + cu102` 不兼容
+
+当前已知现象包括：
+
+- 服务 `/health` 正常
+- `cpu` 推理正常
+- 但默认走 `cuda:0` 时卡住或无响应
+
+当前更稳妥的部署原则是：
+
+- 旧卡 / CPU：优先使用 `environment.yml`
+- 新卡 / 4090：优先使用 `environment.gpu.yml`
+- 显式设置 `RNASMOL_DEVICE`
+
+### 14.11 `RNAsmol` 当前更适合作为评分工具而不是训练工具
+
+当前主项目已经接通的是：
+
+- 单条 RNA 序列 + 单条 ligand `SMILES` 的打分服务
+
+这意味着：
+
+- 作为 Agent 底层评分工具已经可用
+- 但还没有把 `RNAsmol` 的完整训练、数据预处理、批量评估链路纳入主项目标准部署流程
+
 ---
 
 ## 15. 后续最推荐的发展路线
@@ -1275,7 +1518,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
@@ -1286,6 +1529,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
    - 用真实密码子优化工具替换 `mock_codon_optimization`
    - 为 `RhoFold` 增加可选的 MSA 模式
   - 优化 `RhoDesign` 的输入文件校验与错误提示
+  - 优化 `RNAsmol` 的输入解析与批量评分模式
    - 优化前端结果展示与文件下载体验
 
 ---
