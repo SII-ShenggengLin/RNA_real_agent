@@ -20,10 +20,12 @@ from agent_core.tools import (
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
+    score_rna_ligand_binding_with_rnasmol,
 )
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
 MRNA_TOOLS = [
+    score_rna_ligand_binding_with_rnasmol,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
@@ -48,6 +50,13 @@ def _extract_rna_sequence(text: str) -> str:
     return seq[:21] if seq else "AUGCUAACGUAGCUAUGCUA"
 
 
+def _extract_long_rna_sequence(text: str) -> Optional[str]:
+    matches = re.findall(r"[ACGUTacgut]{12,}", text)
+    if not matches:
+        return None
+    return max(matches, key=len).upper().replace("T", "U")
+
+
 def _extract_protein_sequence(text: str) -> str:
     candidates = re.findall(r"[A-Za-z\*]{8,}", text)
     if not candidates:
@@ -61,6 +70,21 @@ def _needs_secondary_structure(text: str) -> bool:
 
 def _needs_tertiary_structure(text: str) -> bool:
     return any(k in text for k in ["rhofold", "3d", "3-d", "tertiary", "三级结构", "三维结构", "三维", "pdb"])
+
+
+def _needs_rnasmol_scoring(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "rnasmol",
+            "smiles",
+            "ligand",
+            "rna-ligand",
+            "配体",
+            "结合打分",
+            "结合评分",
+        ]
+    )
 
 
 def _extract_path_with_suffixes(text: str, suffixes: Tuple[str, ...]) -> Optional[str]:
@@ -99,6 +123,39 @@ def _needs_structure_to_sequence_design(text: str) -> bool:
             ".cif",
         ]
     )
+
+
+def _extract_smiles(text: str) -> Optional[str]:
+    patterns = [
+        re.compile(r"""smiles?\s*[:=]\s*["']([^"']+)["']""", re.IGNORECASE),
+        re.compile(r"""smiles?\s*[:=]\s*([A-Za-z0-9@+\-\[\]\(\)=#$\\/%.]+)""", re.IGNORECASE),
+    ]
+    for pattern in patterns:
+        match = pattern.search(text)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
+def _resolve_rnasmol_inputs(text: str) -> Tuple[str, str, bool]:
+    smiles = _extract_smiles(text)
+    if not smiles:
+        raise ValueError(
+            "RNAsmol scoring requires a ligand SMILES string. "
+            "Please provide it like `SMILES=CCO` or `SMILES: C1=CC=CC=C1`."
+        )
+
+    filepath = _extract_path_with_suffixes(text, ("fasta", "fa", "txt", "seq"))
+    if filepath:
+        return filepath, smiles, False
+
+    rna_sequence = _extract_long_rna_sequence(text)
+    if not rna_sequence:
+        raise ValueError(
+            "RNAsmol scoring requires an RNA sequence or a `.fasta/.fa/.txt/.seq` filepath."
+        )
+
+    return save_sequence(rna_sequence, prefix="rnasmol_rna"), smiles, True
 
 
 def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
@@ -153,6 +210,10 @@ def router_node(state: AgentState) -> AgentState:
             "protein",
             "cds",
             "utr",
+            "rnasmol",
+            "smiles",
+            "ligand",
+            "配体",
         ]
     ):
         route = "mrna_specialist"
@@ -211,10 +272,26 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     raw_text = state.get("input_sequence", "")
     user_text = raw_text.lower()
     state["active_specialist"] = "mrna_specialist"
+    rnasmol_mode = _needs_rnasmol_scoring(user_text)
     structure_design_mode = _needs_structure_to_sequence_design(user_text)
     design_mode = any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"])
 
-    if structure_design_mode:
+    if rnasmol_mode:
+        filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
+        state["current_filepath"] = filepath
+        state["ligand_smiles"] = smiles
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
+            {
+                "name": "score_rna_ligand_binding_with_rnasmol",
+                "args": {"filepath": filepath, "smiles": smiles},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch RNAsmol RNA-ligand scoring."
+    elif structure_design_mode:
         pdb_path, ss_path = _extract_structure_design_inputs(raw_text)
         state["design_input_pdb_filepath"] = pdb_path
         if ss_path:
@@ -299,6 +376,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
             fallback_calls = [
                 {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
                 {"name": "check_off_target", "args": {"filepath": filepath}},
+            ]
+        elif _needs_rnasmol_scoring(user_text):
+            filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
+            state["current_filepath"] = filepath
+            state["ligand_smiles"] = smiles
+            if created_workspace_file or filepath.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            fallback_calls = [
+                {
+                    "name": "score_rna_ligand_binding_with_rnasmol",
+                    "args": {"filepath": filepath, "smiles": smiles},
+                }
             ]
         elif _needs_structure_to_sequence_design(user_text):
             pdb_path, ss_path = _extract_structure_design_inputs(state.get("input_sequence", ""))
@@ -484,6 +573,15 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["candidate_sequence"] = str(tool_result.get("predicted_sequence", ""))
             if "recovery_rate" in tool_result:
                 state["sequence_recovery_rate"] = float(tool_result.get("recovery_rate", 0.0))
+        elif tool_name == "score_rna_ligand_binding_with_rnasmol":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            state["candidate_sequence"] = str(tool_result.get("rna_sequence", ""))
+            state["ligand_smiles"] = str(tool_result.get("smiles", ""))
+            state["rnasmol_probability"] = float(tool_result.get("probability_positive", 0.0))
+            state["rnasmol_predicted_label"] = int(tool_result.get("predicted_label", 0))
+            state["rnasmol_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
 
     state["messages"] = messages + out_messages
     return state
@@ -495,6 +593,8 @@ def critic_node(state: AgentState) -> AgentState:
     mfe = state.get("mfe", 0.0)
     cai_score = state.get("cai_score", 0.0)
     mean_plddt = state.get("mean_plddt", 0.0)
+    rnasmol_probability = state.get("rnasmol_probability", 0.0)
+    rnasmol_predicted_label = state.get("rnasmol_predicted_label", 0)
     retry_count = state.get("retry_count", 0)
     max_retries = state.get("max_retries", 3)
     specialist = state.get("active_specialist", "")
@@ -539,6 +639,10 @@ def critic_node(state: AgentState) -> AgentState:
             f"sequence_recovery_rate={state.get('sequence_recovery_rate', 0.0)}; "
             f"tertiary_structure_filepath={state.get('tertiary_structure_filepath', '')}; "
             f"mean_plddt={mean_plddt}; "
+            f"ligand_smiles={state.get('ligand_smiles', '')}; "
+            f"rnasmol_probability={rnasmol_probability}; "
+            f"rnasmol_predicted_label={rnasmol_predicted_label}; "
+            f"rnasmol_checkpoint_path={state.get('rnasmol_checkpoint_path', '')}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

@@ -28,6 +28,10 @@ class AgentState(TypedDict, total=False):
     tertiary_results_filepath: str
     tertiary_log_filepath: str
     mean_plddt: float
+    ligand_smiles: str
+    rnasmol_probability: float
+    rnasmol_predicted_label: int
+    rnasmol_checkpoint_path: str
     retry_count: int
     max_retries: int
     active_specialist: Literal["sirna_specialist", "mrna_specialist", ""]

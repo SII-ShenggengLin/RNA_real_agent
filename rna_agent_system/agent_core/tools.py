@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import time
 from typing import Any, Optional
 
@@ -14,6 +15,17 @@ from agent_core.file_manager import (
     save_sequence,
     save_text_file,
 )
+
+
+def _normalize_nucleic_sequence(raw_text: str) -> str:
+    """Normalize plain-text or FASTA-like nucleotide input for downstream tools."""
+    sequence_lines = [
+        line.strip()
+        for line in raw_text.splitlines()
+        if line.strip() and not line.lstrip().startswith(">")
+    ]
+    merged = "".join(sequence_lines).upper().replace("T", "U")
+    return re.sub(r"[^A-Z]", "", merged)
 
 
 class SirnaEfficiencyInput(BaseModel):
@@ -182,6 +194,34 @@ class RhoDesignInput(BaseModel):
         default=0,
         ge=0,
         description="CUDA device index for the upstream RhoDesign script.",
+    )
+
+
+class RNAsmolScoreInput(BaseModel):
+    """Input schema for RNAsmol RNA-ligand scoring."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace or repo-relative file containing the RNA sequence. "
+            "Do not pass raw RNA sequence text directly."
+        ),
+    )
+    smiles: str = Field(
+        ...,
+        min_length=1,
+        description="Ligand SMILES string scored by RNAsmol.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8007/score",
+        description="REST endpoint for the RNAsmol microservice.",
+    )
+    checkpoint_path: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional checkpoint path passed through to RNAsmol. "
+            "Use this when the service should not rely on its default checkpoint lookup."
+        ),
     )
 
 
@@ -456,3 +496,61 @@ def design_rna_sequence_with_rhodesign(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"RhoDesign service request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=RNAsmolScoreInput)
+def score_rna_ligand_binding_with_rnasmol(
+    filepath: str,
+    smiles: str,
+    service_url: str = "http://127.0.0.1:8007/score",
+    checkpoint_path: Optional[str] = None,
+) -> dict[str, Any]:
+    """Score RNA-ligand binding probability using the RNAsmol microservice.
+
+    Args:
+        filepath: Path to a file containing the RNA sequence.
+            IMPORTANT: pass a filepath rather than long inline sequence text.
+        smiles: Ligand SMILES string to score against the RNA sequence.
+        service_url: REST endpoint for the RNAsmol microservice.
+        checkpoint_path: Optional checkpoint override for the RNAsmol service.
+
+    Returns:
+        Dict with the positive-class probability, predicted label, and checkpoint metadata.
+
+    Raises:
+        ValueError: If the RNAsmol service is unreachable or returns an invalid payload.
+    """
+    sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    try:
+        request_payload: dict[str, Any] = {
+            "rna_sequence": sequence,
+            "smiles": smiles.strip(),
+        }
+        if checkpoint_path:
+            request_payload["checkpoint_path"] = checkpoint_path
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "probability_positive" not in payload or "predicted_label" not in payload:
+            raise ValueError(
+                "Missing `probability_positive` or `predicted_label` in RNAsmol response."
+            )
+        payload["input_filepath"] = filepath
+        payload["smiles"] = smiles.strip()
+        payload["rna_sequence"] = sequence
+        return payload
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"RNAsmol service request failed: {exc}{suffix}") from exc

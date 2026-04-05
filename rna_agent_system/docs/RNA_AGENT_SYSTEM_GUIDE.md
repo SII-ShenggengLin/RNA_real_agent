@@ -141,6 +141,13 @@ rna_agent_system/
   - 输入是 `pdb`，可选 `secondary structure .npy`
   - 输出是预测 RNA 序列及对应 FASTA / 日志路径
 
+- `rnasmol_service/`
+  - RNAsmol 的 RNA-ligand 打分服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8007`
+  - 输入是 RNA sequence + ligand SMILES
+  - 输出是正类概率、预测标签、checkpoint 路径等摘要信息
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -150,6 +157,7 @@ rna_agent_system/
 - `GEMORNA/`
 - `RhoFold/`
 - `RhoDesign/`
+- `RNAsmol/`
 
 **重要：**
 
@@ -287,11 +295,12 @@ User Input
 - `8004`: `gemorna_service`
 - `8005`: `rhofold_service`
 - `8006`: `rhodesign_service`
+- `8007`: `rnasmol_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8007`: 新工具 A
-- `8008`: 新工具 B
+- `8008`: 新工具 A
+- `8009`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
