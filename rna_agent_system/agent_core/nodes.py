@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import re
 import uuid
-from typing import Any
+from typing import Any, Optional, Tuple
 
 from langchain_core.messages import AIMessage, ToolMessage
 
@@ -63,7 +63,7 @@ def _needs_tertiary_structure(text: str) -> bool:
     return any(k in text for k in ["rhofold", "3d", "3-d", "tertiary", "三级结构", "三维结构", "三维", "pdb"])
 
 
-def _extract_path_with_suffixes(text: str, suffixes: tuple[str, ...]) -> str | None:
+def _extract_path_with_suffixes(text: str, suffixes: Tuple[str, ...]) -> Optional[str]:
     suffix_pattern = "|".join(re.escape(suffix.lstrip(".")) for suffix in suffixes)
 
     quoted_pattern = re.compile(r"""["']([^"']+)["']""")
@@ -101,7 +101,7 @@ def _needs_structure_to_sequence_design(text: str) -> bool:
     )
 
 
-def _extract_structure_design_inputs(text: str) -> tuple[str, str | None]:
+def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
     pdb_path = _extract_path_with_suffixes(text, ("pdb", "cif"))
     ss_path = _extract_path_with_suffixes(text, ("npy",))
 

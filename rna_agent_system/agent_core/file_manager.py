@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
+from typing import Optional
 from uuid import uuid4
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +29,7 @@ def save_text_file(content: str, prefix: str, suffix: str) -> str:
     return f"workspace/{filename}"
 
 
-def copy_file_to_workspace(source_path: str, prefix: str, suffix: str | None = None) -> str:
+def copy_file_to_workspace(source_path: str, prefix: str, suffix: Optional[str] = None) -> str:
     """Copy an existing file into workspace and return the relative filepath."""
     WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
     source = Path(source_path)

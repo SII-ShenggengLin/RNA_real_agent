@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any
+from typing import Any, Optional
 
 import requests
 from langchain_core.tools import tool
@@ -162,7 +162,7 @@ class RhoDesignInput(BaseModel):
             "This can be an absolute path or a repo-relative path."
         ),
     )
-    secondary_structure_filepath: str | None = Field(
+    secondary_structure_filepath: Optional[str] = Field(
         default=None,
         description=(
             "Optional path to a secondary-structure contact map `.npy` file. "
@@ -369,7 +369,7 @@ def predict_rna_tertiary_structure_with_rhofold(
 @tool(args_schema=RhoDesignInput)
 def design_rna_sequence_with_rhodesign(
     pdb_filepath: str,
-    secondary_structure_filepath: str | None = None,
+    secondary_structure_filepath: Optional[str] = None,
     service_url: str = "http://127.0.0.1:8006/design/from-structure",
     temperature: float = 1e-5,
     device: int = 0,
