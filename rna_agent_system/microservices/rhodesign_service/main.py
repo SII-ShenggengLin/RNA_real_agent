@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = PROJECT_ROOT.parent
 RHODESIGN_ROOT = PROJECT_ROOT / "external_repos" / "RhoDesign"
 RHODESIGN_SRC = RHODESIGN_ROOT / "src"
 CHECKPOINT_DIR = RHODESIGN_ROOT / "checkpoint"
@@ -85,7 +86,23 @@ def _resolve_repo_path(path_str: str) -> Path:
     path = Path(path_str)
     if path.is_absolute():
         return path
-    return PROJECT_ROOT / path
+
+    candidate_paths = [
+        PROJECT_ROOT / path,
+        REPO_ROOT / path,
+    ]
+
+    path_text = str(path)
+    if path_text.startswith("rna_agent_system/"):
+        candidate_paths.insert(0, REPO_ROOT / path)
+    elif path_text.startswith(("workspace/", "external_repos/", "microservices/", "agent_core/", "docs/")):
+        candidate_paths.insert(0, PROJECT_ROOT / path)
+
+    for candidate in candidate_paths:
+        if candidate.exists():
+            return candidate
+
+    return candidate_paths[0]
 
 
 def _require_existing_path(path_str: str, label: str) -> Path:

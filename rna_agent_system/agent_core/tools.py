@@ -447,4 +447,12 @@ def design_rna_sequence_with_rhodesign(
             )
         return result
     except requests.RequestException as exc:
-        raise ValueError(f"RhoDesign service request failed: {exc}") from exc
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"RhoDesign service request failed: {exc}{suffix}") from exc
