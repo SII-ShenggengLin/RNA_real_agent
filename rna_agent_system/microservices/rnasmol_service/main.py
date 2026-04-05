@@ -307,15 +307,23 @@ def _build_single_example(smiles: str, rna_sequence: str) -> Data:
     return data
 
 
+def _default_device_name() -> str:
+    requested = os.environ.get("RNASMOL_DEVICE", "").strip()
+    if requested:
+        return requested
+    return "cuda:0" if torch.cuda.is_available() else "cpu"
+
+
 def _resolve_device(device_name: Optional[str]) -> torch.device:
-    if device_name:
-        if device_name.startswith("cuda") and not torch.cuda.is_available():
+    resolved_name = device_name or _default_device_name()
+    if resolved_name:
+        if resolved_name.startswith("cuda") and not torch.cuda.is_available():
             raise HTTPException(
                 status_code=503,
-                detail=f"Requested device `{device_name}` but CUDA is not available.",
+                detail=f"Requested device `{resolved_name}` but CUDA is not available.",
             )
-        return torch.device(device_name)
-    return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        return torch.device(resolved_name)
+    return torch.device("cpu")
 
 
 def _resolve_checkpoint_path(checkpoint_path: Optional[str] = None) -> Path:
@@ -379,6 +387,7 @@ def health() -> Dict[str, object]:
         "checkpoint_ready": checkpoint_ready,
         "checkpoint_path": checkpoint_path,
         "rnasmol_root": str(RNASMOL_ROOT),
+        "default_device": _default_device_name(),
         "detail": detail,
     }
 
