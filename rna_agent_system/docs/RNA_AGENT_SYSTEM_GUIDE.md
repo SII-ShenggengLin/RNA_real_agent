@@ -134,6 +134,13 @@ rna_agent_system/
   - 默认端口 `8005`
   - 当前默认走单序列预测模式，不依赖本地 MSA 数据库
 
+- `rhodesign_service/`
+  - RhoDesign 的 RNA structure-to-sequence 设计服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8006`
+  - 输入是 `pdb`，可选 `secondary structure .npy`
+  - 输出是预测 RNA 序列及对应 FASTA / 日志路径
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -142,11 +149,13 @@ rna_agent_system/
 
 - `GEMORNA/`
 - `RhoFold/`
+- `RhoDesign/`
 
 **重要：**
 
 - `external_repos/GEMORNA` 应作为 **git submodule** 管理
 - `external_repos/RhoFold` 也应作为 **git submodule** 管理
+- `external_repos/RhoDesign` 也建议作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -158,6 +167,7 @@ rna_agent_system/
 - 生成后的 CDS
 - 结构字符串文件
 - `RhoFold` 生成的 `pdb` / `ct` / `npz` / `log`
+- `RhoDesign` 生成的 `fasta` / `stdout log` / `stderr log`
 - 其他中间输出
 
 所有长序列原则上都应先保存到 `workspace/`，然后在 Agent 内只传 `filepath`。
@@ -183,7 +193,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `sirna`、`脱靶`、`off-target`
   - 路由到 `sirna_specialist`
@@ -198,7 +208,13 @@ User Input
 
 ### 5.3 mRNA Specialist
 
-分两种模式：
+分三种模式：
+
+- 如果用户文本偏“结构到序列设计型”
+  - 触发 `design_rna_sequence_with_rhodesign(pdb_filepath, secondary_structure_filepath=None)`
+  - 输入是 `pdb` 文件路径
+  - 如果用户文本里给了 `.npy` 路径，则自动走带 2D 约束的模式
+  - 如果没有提供结构文件，当前会回退到 `external_repos/RhoDesign/example/2zh6_B.pdb` 作为默认调试输入
 
 - 如果用户文本偏“设计型”
   - 触发 `design_mrna_cds_with_gemorna(filepath)`
@@ -230,6 +246,10 @@ User Input
 - `cai_score`
 - `mfe`
 - `structure_filepath`
+- `design_input_pdb_filepath`
+- `design_input_secondary_structure_filepath`
+- `designed_sequence_fasta_filepath`
+- `sequence_recovery_rate`
 - `tertiary_structure_filepath`
 - `tertiary_structure_ct_filepath`
 - `tertiary_results_filepath`
@@ -246,6 +266,9 @@ User Input
   - 如果 `off_target_genes > 0`，则 reject 并重试
 - mRNA 结构预测：
   - 如果用户请求里有结构相关语义，并且 `mfe > -20.0`，则 reject 并重试
+- `RhoDesign` 结构到序列设计：
+  - 当前不走基于 `mfe` 的 reject 规则
+  - 只要微服务成功返回即可 pass
 - 否则 pass
 
 最大重试次数：
@@ -263,11 +286,12 @@ User Input
 - `8003`: `viennarna_fold`
 - `8004`: `gemorna_service`
 - `8005`: `rhofold_service`
+- `8006`: `rhodesign_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8006`: 新工具 A
-- `8007`: 新工具 B
+- `8007`: 新工具 A
+- `8008`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -612,6 +636,211 @@ external_repos/RhoFold/pretrained/RhoFold_pretrained.pt
 
 ---
 
+## 10A. RhoDesign 的接入方式
+
+### 10A.1 上游源码层
+
+目录：
+
+```text
+external_repos/RhoDesign
+```
+
+来源：
+
+- 上游仓库：[ml4bio/RhoDesign](https://github.com/ml4bio/RhoDesign)
+
+当前建议：
+
+- 优先通过 **git submodule** 管理
+- 不要把整个上游仓库直接 vendoring 进主仓库历史
+
+### 10A.2 当前微服务能力
+
+目录：
+
+```text
+microservices/rhodesign_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /design/from-structure`
+
+输入：
+
+- `pdb_path`
+- `secondary_structure_path`（可选，`.npy`）
+- `temperature`
+- `device`
+
+输出：
+
+- `output_fasta_path`
+- `predicted_sequence`
+- `recovery_rate`
+- `service_output_dir`
+- `checkpoint_path`
+- `stdout`
+- `stderr`
+
+### 10A.3 当前 Agent 工具能力
+
+工具函数：
+
+- `design_rna_sequence_with_rhodesign(pdb_filepath, secondary_structure_filepath=None, service_url="http://127.0.0.1:8006/design/from-structure")`
+
+输入：
+
+- `pdb_filepath`
+- `secondary_structure_filepath`（可选）
+
+输出：
+
+- `predicted_sequence`
+- `output_filepath`
+- `output_fasta_filepath`
+- `recovery_rate`
+- `stdout_filepath`
+- `stderr_filepath`
+
+当前实现会把 `RhoDesign` 生成的关键结果复制回主项目 `workspace/`，这样上层 Agent 仍然只保留路径，不直接搬运大结果内容。
+
+### 10A.4 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已经接入 `RhoDesign`：
+
+- `router_node` 会识别 `rhodesign`、`pdb`、`cif`、`结构到序列` 等语义
+- `mrna_specialist_node` 会优先把这类请求路由到 `RhoDesign`
+- 如果文本中带有 `.npy` 路径，会自动把它作为 `secondary_structure_filepath`
+- 如果用户没有提供结构文件，当前默认回退到：
+
+```text
+rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
+```
+
+当前 `tool_execution_node` 还会更新这些额外状态：
+
+- `design_input_pdb_filepath`
+- `design_input_secondary_structure_filepath`
+- `designed_sequence_fasta_filepath`
+- `sequence_recovery_rate`
+
+### 10A.5 RhoDesign 的实际运行注意事项
+
+#### 运行环境
+
+当前实际验证通过的运行方式是：
+
+- Linux
+- NVIDIA GPU
+- Conda
+- Python 3.9
+- PyTorch 1.12.1 + `cudatoolkit=11.3.1`
+
+注意：
+
+- 即使服务器宿主机是 CUDA 12.x，也**不需要**把 `RhoDesign` 环境强行升到 `cu12x`
+- 当前更稳的做法是：宿主机驱动较新，Conda 环境内部仍然维持 `torch 1.12.1 + cu113`
+
+#### checkpoint
+
+当前需要至少准备这两个权重：
+
+```text
+external_repos/RhoDesign/checkpoint/ss_apexp_best.pth
+external_repos/RhoDesign/checkpoint/no_ss_apexp_best.pth
+```
+
+说明：
+
+- `ss_apexp_best.pth` 用于带 2D 输入的模式
+- `no_ss_apexp_best.pth` 用于仅 `pdb` 输入的模式
+
+#### PyG 依赖安装方式
+
+`RhoDesign` 依赖：
+
+- `torch-scatter`
+- `torch-sparse`
+- `torch-cluster`
+- `torch-spline-conv`
+- `torch-geometric`
+
+这组依赖不建议直接放进 `conda env create` 的 `pip:` 列表里一起装。
+
+当前实际验证通过的做法是：
+
+1. 先创建基础 Conda 环境，只安装 `torch 1.12.1 + cu113`
+2. 再单独通过 `data.pyg.org` 安装匹配 wheel
+
+当前已验证可用的版本组合为：
+
+```bash
+pip install --no-cache-dir \
+  torch-scatter==2.1.0+pt112cu113 \
+  torch-sparse==0.6.16+pt112cu113 \
+  torch-cluster==1.6.0+pt112cu113 \
+  torch-spline-conv==1.2.1+pt112cu113 \
+  -f https://data.pyg.org/whl/torch-1.12.1+cu113.html
+
+pip install --no-cache-dir torch-geometric==2.5.0
+```
+
+原因：
+
+- 如果直接装不匹配的版本，`pip` 可能回退到源码构建
+- 回退到源码构建后，常见报错是 build isolation 阶段的 `ModuleNotFoundError: No module named 'torch'`
+
+#### 路径解析注意事项
+
+当前 `rhodesign_service` 已专门兼容以下路径形式：
+
+- 绝对路径
+- `rna_agent_system/...`
+- `external_repos/...`
+- `workspace/...`
+
+这样做的原因是：
+
+- 前端自然语言请求里经常会直接写 `rna_agent_system/external_repos/...`
+- 如果微服务只按单一路径前缀拼接，容易出现 `rna_agent_system/rna_agent_system/...` 这种错误路径
+
+#### Python 3.9 兼容性
+
+主 Agent 当前常用环境仍是 `py39`。
+
+因此在 `agent_core/` 里新增类型注解时，要避免直接写：
+
+- `str | None`
+- `tuple[str, ...]`
+
+更稳妥的写法是：
+
+- `Optional[str]`
+- `Tuple[str, ...]`
+
+否则在 `py39 + pydantic` 环境里可能导致前端启动阶段直接报错。
+
+### 10A.6 当前验证状态
+
+`RhoDesign` 目前已经在 Linux + GPU 服务器上完成最小闭环验证：
+
+- 微服务环境创建成功
+- `PyG` 依赖安装成功
+- `GET /health` 成功
+- `POST /design/from-structure` 成功
+- 前端自然语言请求已成功触发 `RhoDesign`
+- Agent 集成链路已能返回设计结果
+
+这意味着：
+
+- `RhoDesign` 已经通过“上游命令封装 -> 微服务接口 -> Agent 工作流”这一层验证
+- 后续如果再次出现报错，优先检查的应该是环境漂移、路径输入、或部署流程，而不是先怀疑 `RhoDesign` 主体不能跑
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -720,6 +949,7 @@ microservices/new_tool_service/
 
 - `GEMORNA`
 - `RhoFold`
+- `RhoDesign`
 
 新 clone：
 
@@ -860,6 +1090,22 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 RhoDesign：
+
+1. 启动 `rhodesign_service`
+2. `curl /health`
+3. `curl /design/from-structure`
+
+推荐优先测试 payload：
+
+```json
+{
+  "pdb_path": "rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb",
+  "temperature": 1e-5,
+  "device": 0
+}
+```
+
 ### 13.2 智能体集成测试
 
 在微服务都启动后，再启动：
@@ -886,6 +1132,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - GEMORNA 设计 + RNAfold 联合请求
 - RNA 三级结构预测请求
 - GEMORNA 设计 + RhoFold 联合请求
+- RhoDesign 结构到序列设计请求
 
 ---
 
@@ -970,6 +1217,47 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - 首次运行建议保证服务器网络可访问相关源
 - 或后续在服务器上做好本地缓存
 
+### 14.8 `RhoDesign` 的 PyG 版本匹配较脆弱
+
+当前 `RhoDesign` 最容易踩坑的地方之一是：
+
+- `torch-scatter`
+- `torch-sparse`
+- `torch-cluster`
+- `torch-spline-conv`
+
+这些包必须和：
+
+- Python 版本
+- PyTorch 版本
+- CUDA 版本
+
+同时匹配。
+
+如果版本不匹配，常见现象包括：
+
+- `pip` 回退到源码构建
+- build isolation 阶段报 `No module named 'torch'`
+- wheel 找不到
+
+因此部署时优先原则是：
+
+- 先锁定 `torch 1.12.1 + cu113`
+- 再去 `data.pyg.org` 安装对应 wheel
+
+### 14.9 `RhoDesign` 当前默认调试输入带有 fallback
+
+当前如果用户请求触发了 `RhoDesign`，但没有明确提供 `.pdb` 路径，工作流会默认回退到：
+
+```text
+rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
+```
+
+这有利于当前接入阶段快速调试，但也意味着：
+
+- 它更偏“开发期默认行为”
+- 后续如果进入更正式的使用阶段，建议改成“没有结构文件就明确报错”，避免隐式使用示例输入
+
 ---
 
 ## 15. 后续最推荐的发展路线
@@ -978,7 +1266,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
@@ -988,6 +1276,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 6. 后续再考虑：
    - 用真实密码子优化工具替换 `mock_codon_optimization`
    - 为 `RhoFold` 增加可选的 MSA 模式
+  - 优化 `RhoDesign` 的输入文件校验与错误提示
    - 优化前端结果展示与文件下载体验
 
 ---
