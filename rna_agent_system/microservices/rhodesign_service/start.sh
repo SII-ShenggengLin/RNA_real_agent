@@ -6,11 +6,11 @@ set -e
 # 2. 激活环境后单独安装 PyG 预编译 wheel:
 #    conda activate rhodesign_service_env
 #    pip install --no-cache-dir \
-#      torch-scatter==2.1.2 \
-#      torch-sparse==0.6.18 \
-#      torch-cluster==1.6.3 \
-#      torch-spline-conv==1.2.2 \
-#      -f https://data.pyg.org/whl/torch-1.12.0+cu113.html
+#      torch-scatter==2.1.0+pt112cu113 \
+#      torch-sparse==0.6.16+pt112cu113 \
+#      torch-cluster==1.6.0+pt112cu113 \
+#      torch-spline-conv==1.2.1+pt112cu113 \
+#      -f https://data.pyg.org/whl/torch-1.12.1+cu113.html
 #    pip install --no-cache-dir torch-geometric==2.5.0
 # 3. 确认 RhoDesign 权重已就位:
 #    ../../external_repos/RhoDesign/checkpoint/ss_apexp_best.pth
