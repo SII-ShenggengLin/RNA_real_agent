@@ -4,6 +4,9 @@
 [submodule "rna_agent_system/external_repos/RhoFold"]
 	path = rna_agent_system/external_repos/RhoFold
 	url = https://github.com/ml4bio/RhoFold.git
+[submodule "rna_agent_system/external_repos/RhoDesign"]
+	path = rna_agent_system/external_repos/RhoDesign
+	url = https://github.com/ml4bio/RhoDesign.git
 [submodule "rna_agent_system/external_repos/RNAsmol"]
 	path = rna_agent_system/external_repos/RNAsmol
 	url = https://github.com/hongli-ma/RNAsmol.git
