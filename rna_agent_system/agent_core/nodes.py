@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import re
 import uuid
 from typing import Any
@@ -13,6 +14,7 @@ from agent_core.file_manager import save_sequence
 from agent_core.state import AgentState
 from agent_core.tools import (
     check_off_target,
+    design_rna_sequence_with_rhodesign,
     design_mrna_cds_with_gemorna,
     mock_codon_optimization,
     predict_rna_secondary_structure,
@@ -26,9 +28,11 @@ MRNA_TOOLS = [
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     design_mrna_cds_with_gemorna,
+    design_rna_sequence_with_rhodesign,
 ]
 TOOLS = SIRNA_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _msg_text(message: Any) -> str:
@@ -59,6 +63,69 @@ def _needs_tertiary_structure(text: str) -> bool:
     return any(k in text for k in ["rhofold", "3d", "3-d", "tertiary", "三级结构", "三维结构", "三维", "pdb"])
 
 
+def _extract_path_with_suffixes(text: str, suffixes: tuple[str, ...]) -> str | None:
+    suffix_pattern = "|".join(re.escape(suffix.lstrip(".")) for suffix in suffixes)
+
+    quoted_pattern = re.compile(r"""["']([^"']+)["']""")
+    for match in quoted_pattern.finditer(text):
+        candidate = match.group(1).strip()
+        if re.search(rf"\.({suffix_pattern})$", candidate, re.IGNORECASE):
+            return candidate
+
+    unquoted_pattern = re.compile(
+        rf"((?:/|\.{{1,2}}/|workspace/|rna_agent_system/)?[A-Za-z0-9_./-]+\.({suffix_pattern}))",
+        re.IGNORECASE,
+    )
+    for match in unquoted_pattern.finditer(text):
+        candidate = match.group(1).strip()
+        if candidate:
+            return candidate
+    return None
+
+
+def _needs_structure_to_sequence_design(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "rhodesign",
+            "structure-to-sequence",
+            "结构到序列",
+            "根据结构设计",
+            "从结构设计",
+            "基于结构设计",
+            "根据pdb设计",
+            "从pdb设计",
+            ".pdb",
+            ".cif",
+        ]
+    )
+
+
+def _extract_structure_design_inputs(text: str) -> tuple[str, str | None]:
+    pdb_path = _extract_path_with_suffixes(text, ("pdb", "cif"))
+    ss_path = _extract_path_with_suffixes(text, ("npy",))
+
+    if not pdb_path:
+        pdb_path = "rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb"
+
+    if not ss_path:
+        pdb_candidate = Path(pdb_path)
+        derived_npy = pdb_candidate.with_suffix(".npy")
+        if derived_npy.is_absolute():
+            if derived_npy.exists():
+                ss_path = str(derived_npy)
+        else:
+            repo_relative_npy = (
+                Path("rna_agent_system") / derived_npy
+                if not str(derived_npy).startswith("rna_agent_system/")
+                else derived_npy
+            )
+            if (PROJECT_ROOT.parent / repo_relative_npy).exists():
+                ss_path = str(repo_relative_npy)
+
+    return pdb_path, ss_path
+
+
 def router_node(state: AgentState) -> AgentState:
     """Route by deterministic rules without LLM."""
     user_text = state.get("input_sequence", "").lower()
@@ -74,12 +141,15 @@ def router_node(state: AgentState) -> AgentState:
             "三级结构",
             "三维结构",
             "rhofold",
+            "rhodesign",
             "二级结构",
             "密码子",
             "codon",
             "design",
             "设计",
             "gemorna",
+            "pdb",
+            "cif",
             "protein",
             "cds",
             "utr",
@@ -138,11 +208,30 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
 
 def mrna_specialist_node(state: AgentState) -> AgentState:
     """Emit deterministic mRNA tool calls without LLM."""
-    user_text = state.get("input_sequence", "").lower()
+    raw_text = state.get("input_sequence", "")
+    user_text = raw_text.lower()
     state["active_specialist"] = "mrna_specialist"
+    structure_design_mode = _needs_structure_to_sequence_design(user_text)
     design_mode = any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"])
 
-    if design_mode:
+    if structure_design_mode:
+        pdb_path, ss_path = _extract_structure_design_inputs(raw_text)
+        state["design_input_pdb_filepath"] = pdb_path
+        if ss_path:
+            state["design_input_secondary_structure_filepath"] = ss_path
+        tool_args: dict[str, Any] = {"pdb_filepath": pdb_path}
+        if ss_path:
+            tool_args["secondary_structure_filepath"] = ss_path
+        tool_calls = [
+            {
+                "name": "design_rna_sequence_with_rhodesign",
+                "args": tool_args,
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch RhoDesign structure-to-sequence design."
+    elif design_mode:
         filepath = save_sequence(_extract_protein_sequence(state.get("input_sequence", "")), prefix="protein")
         state["current_filepath"] = filepath
         state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -201,21 +290,41 @@ def tool_execution_node(state: AgentState) -> AgentState:
     out_messages: list[Any] = []
     if not ai_msg.tool_calls:
         filepath = state.get("current_filepath")
-        if not filepath:
-            filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="seq")
-            state["current_filepath"] = filepath
-            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
         user_text = state.get("input_sequence", "").lower()
         if state.get("active_specialist") == "sirna_specialist":
+            if not filepath:
+                filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="sirna")
+                state["current_filepath"] = filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
             fallback_calls = [
                 {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
                 {"name": "check_off_target", "args": {"filepath": filepath}},
             ]
+        elif _needs_structure_to_sequence_design(user_text):
+            pdb_path, ss_path = _extract_structure_design_inputs(state.get("input_sequence", ""))
+            structure_call: dict[str, Any] = {
+                "name": "design_rna_sequence_with_rhodesign",
+                "args": {"pdb_filepath": pdb_path},
+            }
+            if ss_path:
+                structure_call["args"]["secondary_structure_filepath"] = ss_path
+            fallback_calls = [structure_call]
         elif any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"]):
+            if not filepath:
+                filepath = save_sequence(
+                    _extract_protein_sequence(state.get("input_sequence", "")),
+                    prefix="protein",
+                )
+                state["current_filepath"] = filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
             fallback_calls = [
                 {"name": "design_mrna_cds_with_gemorna", "args": {"filepath": filepath}},
             ]
         else:
+            if not filepath:
+                filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="seq")
+                state["current_filepath"] = filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
             fallback_calls = [
                 {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
                 {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}},
@@ -349,6 +458,32 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     state["tertiary_log_filepath"] = log_filepath
                     state["workspace_files"] = state.get("workspace_files", []) + [log_filepath]
                 state["mean_plddt"] = float(tertiary_result.get("mean_plddt", 0.0))
+        elif tool_name == "design_rna_sequence_with_rhodesign":
+            state["design_input_pdb_filepath"] = str(tool_result.get("input_pdb_filepath", ""))
+            secondary_structure_filepath = str(tool_result.get("secondary_structure_filepath", ""))
+            if secondary_structure_filepath:
+                state["design_input_secondary_structure_filepath"] = secondary_structure_filepath
+
+            output_filepath = str(tool_result.get("output_filepath", ""))
+            if output_filepath:
+                state["current_filepath"] = output_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
+
+            output_fasta_filepath = str(tool_result.get("output_fasta_filepath", ""))
+            if output_fasta_filepath:
+                state["designed_sequence_fasta_filepath"] = output_fasta_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_fasta_filepath]
+
+            stdout_filepath = str(tool_result.get("stdout_filepath", ""))
+            if stdout_filepath:
+                state["workspace_files"] = state.get("workspace_files", []) + [stdout_filepath]
+            stderr_filepath = str(tool_result.get("stderr_filepath", ""))
+            if stderr_filepath:
+                state["workspace_files"] = state.get("workspace_files", []) + [stderr_filepath]
+
+            state["candidate_sequence"] = str(tool_result.get("predicted_sequence", ""))
+            if "recovery_rate" in tool_result:
+                state["sequence_recovery_rate"] = float(tool_result.get("recovery_rate", 0.0))
 
     state["messages"] = messages + out_messages
     return state
@@ -368,7 +503,12 @@ def critic_node(state: AgentState) -> AgentState:
     if specialist == "sirna_specialist" and off_target > 0:
         hard_reject = True
     user_text = state.get("input_sequence", "").lower()
-    if specialist == "mrna_specialist" and any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"]) and mfe > -20.0:
+    if (
+        specialist == "mrna_specialist"
+        and not _needs_structure_to_sequence_design(user_text)
+        and any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"])
+        and mfe > -20.0
+    ):
         hard_reject = True
     should_retry = hard_reject and retry_count < max_retries
 
@@ -394,6 +534,9 @@ def critic_node(state: AgentState) -> AgentState:
             f"off_target_genes={off_target}; "
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
+            f"design_input_pdb_filepath={state.get('design_input_pdb_filepath', '')}; "
+            f"designed_sequence_fasta_filepath={state.get('designed_sequence_fasta_filepath', '')}; "
+            f"sequence_recovery_rate={state.get('sequence_recovery_rate', 0.0)}; "
             f"tertiary_structure_filepath={state.get('tertiary_structure_filepath', '')}; "
             f"mean_plddt={mean_plddt}; "
             f"retries={retry_count}"

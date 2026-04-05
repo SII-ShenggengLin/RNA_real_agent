@@ -152,6 +152,39 @@ class RhoFoldInput(BaseModel):
     )
 
 
+class RhoDesignInput(BaseModel):
+    """Input schema for RhoDesign structure-to-sequence design."""
+
+    pdb_filepath: str = Field(
+        ...,
+        description=(
+            "Path to the input PDB or CIF structure file for RhoDesign. "
+            "This can be an absolute path or a repo-relative path."
+        ),
+    )
+    secondary_structure_filepath: str | None = Field(
+        default=None,
+        description=(
+            "Optional path to a secondary-structure contact map `.npy` file. "
+            "Provide it when using the with-2D RhoDesign mode."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8006/design/from-structure",
+        description="REST endpoint for the RhoDesign microservice.",
+    )
+    temperature: float = Field(
+        default=1e-5,
+        gt=0.0,
+        description="Sampling temperature passed through to RhoDesign.",
+    )
+    device: int = Field(
+        default=0,
+        ge=0,
+        description="CUDA device index for the upstream RhoDesign script.",
+    )
+
+
 @tool(args_schema=MrnaToolInput)
 def mock_codon_optimization(filepath: str) -> dict[str, Any]:
     """Mock codon optimization for mRNA sequence.
@@ -331,3 +364,87 @@ def predict_rna_tertiary_structure_with_rhofold(
         return result
     except requests.RequestException as exc:
         raise ValueError(f"RhoFold service request failed: {exc}") from exc
+
+
+@tool(args_schema=RhoDesignInput)
+def design_rna_sequence_with_rhodesign(
+    pdb_filepath: str,
+    secondary_structure_filepath: str | None = None,
+    service_url: str = "http://127.0.0.1:8006/design/from-structure",
+    temperature: float = 1e-5,
+    device: int = 0,
+) -> dict[str, Any]:
+    """Design an RNA sequence from a structure file using the RhoDesign microservice.
+
+    Args:
+        pdb_filepath: Path to the input PDB/CIF structure file.
+        secondary_structure_filepath: Optional `.npy` contact-map path for the 2D-assisted mode.
+        service_url: REST endpoint for the RhoDesign microservice.
+        temperature: Sampling temperature for sequence generation.
+        device: CUDA device index used by the upstream RhoDesign script.
+
+    Returns:
+        Dict containing the designed RNA sequence, a new workspace sequence filepath,
+        copied FASTA/log artifacts when available, and summary metadata.
+
+    Raises:
+        ValueError: If the RhoDesign service is unreachable or returns an invalid payload.
+    """
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "pdb_path": pdb_filepath,
+                "secondary_structure_path": secondary_structure_filepath,
+                "temperature": temperature,
+                "device": device,
+            },
+            timeout=3600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "predicted_sequence" not in payload or "output_fasta_path" not in payload:
+            raise ValueError(
+                "Missing `predicted_sequence` or `output_fasta_path` in RhoDesign response."
+            )
+
+        output_filepath = save_sequence(payload["predicted_sequence"], prefix="rhodesign_seq")
+        result: dict[str, Any] = {
+            "input_pdb_filepath": pdb_filepath,
+            "output_filepath": output_filepath,
+            "predicted_sequence": payload["predicted_sequence"],
+            "used_secondary_structure": bool(payload.get("used_secondary_structure", False)),
+            "model": payload.get("model", "RhoDesign"),
+            "service_output_dir": payload.get("service_output_dir", ""),
+            "checkpoint_path": payload.get("checkpoint_path", ""),
+        }
+
+        recovery_rate = payload.get("recovery_rate")
+        if recovery_rate is not None:
+            result["recovery_rate"] = float(recovery_rate)
+
+        if secondary_structure_filepath:
+            result["secondary_structure_filepath"] = secondary_structure_filepath
+
+        output_fasta_path = payload.get("output_fasta_path")
+        if output_fasta_path:
+            result["output_fasta_filepath"] = copy_file_to_workspace(
+                output_fasta_path,
+                prefix="rhodesign_fasta",
+            )
+
+        if payload.get("stdout"):
+            result["stdout_filepath"] = save_text_file(
+                str(payload["stdout"]),
+                prefix="rhodesign_stdout",
+                suffix=".log",
+            )
+        if payload.get("stderr"):
+            result["stderr_filepath"] = save_text_file(
+                str(payload["stderr"]),
+                prefix="rhodesign_stderr",
+                suffix=".log",
+            )
+        return result
+    except requests.RequestException as exc:
+        raise ValueError(f"RhoDesign service request failed: {exc}") from exc

@@ -19,6 +19,10 @@ class AgentState(TypedDict, total=False):
     cai_score: float
     mfe: float
     structure_filepath: str
+    design_input_pdb_filepath: str
+    design_input_secondary_structure_filepath: str
+    designed_sequence_fasta_filepath: str
+    sequence_recovery_rate: float
     tertiary_structure_filepath: str
     tertiary_structure_ct_filepath: str
     tertiary_results_filepath: str

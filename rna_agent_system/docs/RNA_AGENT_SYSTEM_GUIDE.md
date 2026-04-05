@@ -696,11 +696,25 @@ microservices/new_tool_service/
 
 你当前不是在本地最终运行，而是在另一台 Linux 服务器上运行，因此要特别注意“仓库怎么传”和“哪些文件不应该靠 Git 传”。
 
-### 12.1 主仓库传输
+### 12.1 开发机与运行机分离
+
+当前推荐的实际工作方式是：
+
+- macOS 机器只负责开发、改代码、提交到 GitHub
+- 带 GPU 的 Linux 服务器负责 `git pull` 后创建环境、启动微服务和运行 Agent
+- 如果 Linux 服务器运行时报错，应以服务器上的真实报错为准进行排查
+
+这样做的原因是：
+
+- 当前多个生信工具依赖 Linux / CUDA / Conda
+- macOS 更适合作为代码编辑与仓库中转环境
+- 不应把“在 macOS 上无法运行”误判为工具本身无法接入
+
+### 12.2 主仓库传输
 
 主仓库正常 `git push / git pull`
 
-### 12.2 submodule 传输
+### 12.3 submodule 传输
 
 像下面这些外部源码仓库，应通过 submodule 管理：
 
@@ -727,7 +741,7 @@ git -c submodule.recurse=false pull
 git submodule update --init --recursive
 ```
 
-### 12.3 大文件传输
+### 12.4 大文件传输
 
 大权重文件不建议依赖主仓库传输。
 
@@ -739,13 +753,23 @@ git submodule update --init --recursive
 
 - `external_repos/GEMORNA/checkpoints/*.pt`
 - `external_repos/RhoFold/pretrained/*.pt`
+- `external_repos/RhoDesign/checkpoint/*.pth`
 
 推荐方案：
 
 - 用上游 `git lfs pull`
 - 或你手动复制到服务器对应目录
 
-### 12.4 应该避免提交的内容
+当前 `RhoDesign` 也属于这种情况。
+
+例如你在本机已经放好的：
+
+- `external_repos/RhoDesign/checkpoint/ss_apexp_best.pth`
+- `external_repos/RhoDesign/checkpoint/no_ss_apexp_best.pth`
+
+不应默认指望通过主仓库 Git 历史传到 Linux 服务器，更推荐在服务器侧单独补齐，或确认是否需要额外的大文件传输方案。
+
+### 12.5 应该避免提交的内容
 
 以下内容不要继续进入主仓库：
 
@@ -759,7 +783,7 @@ git submodule update --init --recursive
 
 当前主仓库已经补了基础 `.gitignore`，但历史上误提交的缓存文件如果仍在索引中，需要后续手动清理。
 
-### 12.5 提交流程建议
+### 12.6 提交流程建议
 
 这个仓库里同时存在：
 
@@ -779,7 +803,7 @@ git commit -m "meaningful message"
 git push origin main
 ```
 
-### 12.6 GEMORNA 权重导致子模块脏状态时的处理
+### 12.7 GEMORNA 权重导致子模块脏状态时的处理
 
 `GEMORNA` 的 `checkpoints/*.pt` 可能因为本地真实权重文件而表现为“子模块脏状态”，但这不一定代表代码真的变了。
 
