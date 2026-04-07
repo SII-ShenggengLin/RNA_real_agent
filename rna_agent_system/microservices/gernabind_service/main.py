@@ -595,6 +595,37 @@ def _move_batch_to_device(batch: Tuple[object, ...], device: torch.device) -> Tu
     return tuple(item.to(device) for item in batch)
 
 
+def _run_gernabind_model(model: GerNA, batch: Tuple[object, ...]):
+    (
+        batch_rna_repre,
+        batch_seq_mask,
+        batch_mol_graph,
+        batch_rna_graph,
+        batch_rna_feats,
+        batch_rna_c4_coors,
+        batch_rna_coors,
+        batch_rna_mask,
+        batch_mol_feats,
+        batch_mol_coors,
+        batch_mol_mask,
+        batch_mol_las,
+    ) = batch
+    return model(
+        batch_rna_repre,
+        batch_seq_mask,
+        batch_rna_graph,
+        batch_mol_graph,
+        batch_rna_feats,
+        batch_rna_c4_coors,
+        batch_rna_coors,
+        batch_rna_mask,
+        batch_mol_feats,
+        batch_mol_coors,
+        batch_mol_mask,
+        batch_mol_las,
+    )
+
+
 @lru_cache(maxsize=8)
 def _load_affinity_model(checkpoint_path: str, device_name: str) -> GerNA:
     net = GerNA([4, 2, 128, 128], trigonometry=True, rna_graph=True, coors=True, coors_3_bead=True, uncertainty=True)
@@ -687,7 +718,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
     batch = _move_batch_to_device(_custom_collate_fn([example]), device)
 
     with torch.no_grad():
-        affinity_pred, _ = model(*batch)
+        affinity_pred, _ = _run_gernabind_model(model, batch)
 
     raw_alpha = affinity_pred[0].detach().cpu().numpy().tolist()
     probability_positive = float(raw_alpha[1] / max(sum(raw_alpha), 1e-8))
@@ -726,7 +757,7 @@ def predict_binding_site(payload: BindingSiteRequest) -> BindingSiteResponse:
     batch = _move_batch_to_device(_custom_collate_fn([example]), device)
 
     with torch.no_grad():
-        _, interaction = model(*batch)
+        _, interaction = _run_gernabind_model(model, batch)
 
     interaction_scores = interaction[0].detach().cpu().numpy()
     per_residue_scores = np.round(np.max(interaction_scores, axis=1), 4).tolist()
