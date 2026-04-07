@@ -166,6 +166,21 @@ rna_agent_system/
     - `rna_agent_system/external_repos/RNARL/checkpoints/`
     - `rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D/`
 
+- `rnastop_service/`
+  - RNASTOP 的 mRNA 稳定性 / 降解预测服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8009`
+  - 当前只封装**稳定性预测**，不封装上游仓库里的优化流程
+  - 服务当前采用的是**项目内自建推理封装**
+  - 会在服务层自动补齐：
+    - ViennaRNA 二级结构
+    - loop type
+    - RNASTOP 所需图特征
+  - 当前默认运行资源目录：
+    - `rna_agent_system/external_repos/RNASTOP/models/`
+    - `rna_agent_system/external_repos/RNASTOP/DNABERT6/`
+    - `rna_agent_system/external_repos/RNASTOP/RNA-FM_pretrained.pth`
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -174,6 +189,7 @@ rna_agent_system/
 
 - `GEMORNA/`
 - `RNARL/`
+- `RNASTOP/`
 - `RhoFold/`
 - `RhoDesign/`
 - `RNAsmol/`
@@ -181,6 +197,7 @@ rna_agent_system/
 **重要：**
 
 - `external_repos/GEMORNA` 应作为 **git submodule** 管理
+- `external_repos/RNASTOP` 也应作为 **git submodule** 管理
 - `external_repos/RhoFold` 也应作为 **git submodule** 管理
 - `external_repos/RhoDesign` 也建议作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
@@ -220,7 +237,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `sirna`、`脱靶`、`off-target`
   - 路由到 `sirna_specialist`
@@ -235,7 +252,7 @@ User Input
 
 ### 5.3 mRNA Specialist
 
-分四种模式：
+分五种模式：
 
 - 如果用户文本偏“RNA-ligand 打分型”
   - 触发 `score_rna_ligand_binding_with_rnasmol(filepath, smiles, checkpoint_path=None)`
@@ -247,6 +264,22 @@ User Input
     - 文本中的 RNA 序列
     - 或 `.fasta/.fa/.txt/.seq` 文件路径
   - 如果未提供 `SMILES`，当前会直接报错，而不是猜测
+
+- 如果用户文本偏“mRNA 稳定性 / 降解预测型”
+  - 触发 `predict_mrna_stability_with_rnastop(filepath, checkpoint_path=None, device=None)`
+  - 输入是 RNA 序列文件路径
+  - RNA 输入可以是：
+    - 文本中的 RNA 序列
+    - 或 `.fasta/.fa/.txt/.seq` 文件路径
+  - 当前服务端会自动补齐：
+    - `structure`
+    - `loop_type`
+    - RNASTOP 图特征
+  - 当前返回的核心摘要包括：
+    - `mean_reactivity`
+    - `mean_deg_Mg_pH10`
+    - `mean_deg_Mg_50C`
+  - 当前不会触发 RNASTOP 上游仓库里的 beam / MCTS 优化逻辑
 
 - 如果用户文本偏“结构到序列设计型”
   - 触发 `design_rna_sequence_with_rhodesign(pdb_filepath, secondary_structure_filepath=None)`
@@ -297,6 +330,12 @@ User Input
 - `rnasmol_probability`
 - `rnasmol_predicted_label`
 - `rnasmol_checkpoint_path`
+- `rnastop_prediction_filepath`
+- `rnastop_mean_reactivity`
+- `rnastop_mean_deg_mg_ph10`
+- `rnastop_mean_deg_mg_50c`
+- `rnastop_mfe`
+- `rnastop_checkpoint_path`
 
 ### 5.5 Critic
 
@@ -331,11 +370,12 @@ User Input
 - `8006`: `rhodesign_service`
 - `8007`: `rnasmol_service`
 - `8008`: `rnarl_service`
+- `8009`: `rnastop_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8009`: 新工具 A
-- `8010`: 新工具 B
+- `8010`: 新工具 A
+- `8011`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -1245,6 +1285,199 @@ export RNASMOL_DEVICE=cuda:0
 
 ---
 
+## 10C. RNASTOP 的接入方式
+
+### 10C.1 上游源码层
+
+目录：
+
+```text
+external_repos/RNASTOP
+```
+
+来源：
+
+- 上游仓库：[SII-ShenggengLin/RNASTOP](https://github.com/SII-ShenggengLin/RNASTOP.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 vendoring 进主仓库历史
+
+### 10C.2 为什么当前采用“项目内推理封装”
+
+当前接入的 RNASTOP 不是直接调用上游训练 / 分析脚本，而是采用：
+
+- 保留上游源码仓库
+- 在 `microservices/rnastop_service/` 中重建单条序列稳定性预测推理流程
+
+这样做的原因是：
+
+- 上游仓库没有直接提供适合 Agent 调用的单条序列 REST 入口
+- 上游脚本更偏训练、分析和论文复现实验
+- 当前项目只需要“mRNA 稳定性 / 降解预测”，不需要优化模块
+
+### 10C.3 当前微服务能力
+
+目录：
+
+```text
+microservices/rnastop_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /predict/stability`
+
+输入：
+
+- `sequence`
+- `checkpoint_path`（可选）
+- `rnafm_model_path`（可选）
+- `dnabert_model_path`（可选）
+- `structure`（可选）
+- `loop_type`（可选）
+- `device`（可选）
+
+输出：
+
+- `mean_reactivity`
+- `mean_deg_Mg_pH10`
+- `mean_deg_Mg_50C`
+- `per_position_predictions`
+- `structure`
+- `loop_type`
+- `mfe`
+- `checkpoint_path`
+- `rnafm_model_path`
+- `dnabert_model_path`
+- `use_dnabert`
+
+### 10C.4 当前 Agent 工具能力
+
+工具函数：
+
+- `predict_mrna_stability_with_rnastop(filepath, service_url="http://127.0.0.1:8009/predict/stability", checkpoint_path=None, device=None)`
+
+输入：
+
+- `filepath`，其中保存的是 RNA 序列
+
+输出：
+
+- `prediction_filepath`
+- `mean_reactivity`
+- `mean_deg_mg_ph10`
+- `mean_deg_mg_50c`
+- `mfe`
+- `checkpoint_path`
+
+当前实现会把完整预测结果保存为 `workspace/*.json`，这样上层 Agent 仍然主要通过 `filepath` 和摘要字段工作，而不是把长结果直接塞进消息。
+
+### 10C.5 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已经接入 `RNASTOP`：
+
+- `router_node` 会识别 `rnastop`、`stability`、`degradation`、`稳定性`、`降解`、`半衰期` 等语义
+- `mrna_specialist_node` 会优先把这类请求路由到 `RNASTOP`
+- 当前支持两种 RNA 输入方式：
+  - 直接在文本里给 RNA 序列
+  - 直接给 `.fasta/.fa/.txt/.seq` 路径
+- 当前 `tool_execution_node` 还会更新这些额外状态：
+  - `rnastop_prediction_filepath`
+  - `rnastop_mean_reactivity`
+  - `rnastop_mean_deg_mg_ph10`
+  - `rnastop_mean_deg_mg_50c`
+  - `rnastop_mfe`
+  - `rnastop_checkpoint_path`
+
+### 10C.6 RNASTOP 的实际运行注意事项
+
+#### 当前默认运行资源
+
+当前服务默认会优先检查：
+
+```text
+external_repos/RNASTOP/models/best_model_weights
+external_repos/RNASTOP/models/best_model_weights_withoutDNABERT
+external_repos/RNASTOP/RNA-FM_pretrained.pth
+external_repos/RNASTOP/DNABERT6/
+```
+
+说明：
+
+- `best_model_weights` 对应完整模型路径，需要 `RNA-FM + DNABERT`
+- `best_model_weights_withoutDNABERT` 是兼容降级路径
+- `best_model_weights_withoutstrloopdnabert` 当前**不用于**这个稳定性预测服务
+
+#### RNA-FM 本地优先
+
+当前服务已经改成：
+
+- 优先从本地 `RNA-FM_pretrained.pth` 加载
+- 不依赖首次运行时在线下载
+
+当前默认还兼容以下位置：
+
+```text
+external_repos/RNASTOP/RNA-FM-main/pretrained/RNA-FM_pretrained.pth
+external_repos/RNASTOP/pretrained/RNA-FM_pretrained.pth
+external_repos/RNASTOP/RNA-FM_pretrained.pth
+```
+
+#### DNABERT 当前兼容性处理
+
+当前服务优先尝试：
+
+- `AutoTokenizer.from_pretrained(local_dir)`
+- `AutoModel.from_pretrained(local_dir)`
+
+如果当前运行环境里的 `torch` / `transformers` 组合触发了本地加载限制，则会回退到：
+
+- 读取本地 `config.json`
+- 读取本地 `model.safetensors` 或 `pytorch_model.bin`
+- 手动装载为 `BertModel` 或 `BertForMaskedLM`
+- 推理时只取编码器输出
+
+#### loop type 大小写处理
+
+当前服务已经兼容：
+
+- ViennaRNA / RNAlib 可能返回的小写 loop 标签
+
+服务内部会自动转成 RNASTOP 训练代码使用的大写 token 集合，以避免 `loop_type contains unsupported characters` 这类报错。
+
+#### 推荐运行环境
+
+当前实际推荐的运行方式是：
+
+- Linux
+- Conda
+- Python 3.10
+- GPU 环境
+- `transformers==4.34.0`
+
+### 10C.7 当前验证状态
+
+RNASTOP 目前已经完成最小闭环验证：
+
+- `rnastop_service` 成功启动
+- `GET /health` 成功
+- 本地 `best_model_weights` 已成功识别
+- 本地 `RNA-FM_pretrained.pth` 已成功识别
+- 本地 `DNABERT6/` 已成功识别
+- `POST /predict/stability` 已成功
+- 前端自然语言请求已成功触发 `RNASTOP`
+
+这意味着：
+
+- `RNASTOP` 已经通过“上游源码 -> 微服务接口 -> Agent 工作流”这一层验证
+- 当前项目里已经具备真实的 mRNA 稳定性预测能力
+- 但当前还没有把 RNASTOP 的优化模块纳入主项目标准工作流
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -1355,6 +1588,7 @@ microservices/new_tool_service/
 - `RhoFold`
 - `RhoDesign`
 - `RNAsmol`
+- `RNASTOP`
 
 新 clone：
 
@@ -1390,6 +1624,8 @@ git submodule update --init --recursive
 - `external_repos/RhoFold/pretrained/*.pt`
 - `external_repos/RhoDesign/checkpoint/*.pth`
 - `external_repos/RNAsmol/saved_model/*.pt`
+- `external_repos/RNASTOP/models/*`
+- `external_repos/RNASTOP/RNA-FM_pretrained.pth`
 
 推荐方案：
 
@@ -1403,6 +1639,10 @@ git submodule update --init --recursive
 - `external_repos/RhoDesign/checkpoint/ss_apexp_best.pth`
 - `external_repos/RhoDesign/checkpoint/no_ss_apexp_best.pth`
 - `external_repos/RNAsmol/saved_model/*.pt`
+- `external_repos/RNASTOP/models/best_model_weights`
+- `external_repos/RNASTOP/models/best_model_weights_withoutDNABERT`
+- `external_repos/RNASTOP/RNA-FM_pretrained.pth`
+- `external_repos/RNASTOP/DNABERT6/`
 
 不应默认指望通过主仓库 Git 历史传到 Linux 服务器，更推荐在服务器侧单独补齐，或确认是否需要额外的大文件传输方案。
 
@@ -1528,6 +1768,20 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 RNASTOP：
+
+1. 启动 `rnastop_service`
+2. `curl /health`
+3. `curl /predict/stability`
+
+推荐优先测试 payload：
+
+```json
+{
+  "sequence": "AUGGCUACGUAGCUAGCUAGCUAGCUGA"
+}
+```
+
 如果服务器是新卡（例如 `RTX 4090`），且需要显式覆盖设备，推荐再测：
 
 ```json
@@ -1566,6 +1820,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - GEMORNA 设计 + RhoFold 联合请求
 - RhoDesign 结构到序列设计请求
 - RNAsmol RNA-ligand 打分请求
+- RNASTOP mRNA 稳定性预测请求
 
 ---
 
@@ -1720,6 +1975,18 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 - 作为 Agent 底层评分工具已经可用
 - 但还没有把 `RNAsmol` 的完整训练、数据预处理、批量评估链路纳入主项目标准部署流程
+
+### 14.12 `RNASTOP` 当前只接了稳定性预测，不接优化
+
+当前主项目已经接通的是：
+
+- 单条 RNA 序列的稳定性 / 降解预测
+
+这意味着：
+
+- 作为 Agent 底层预测工具已经可用
+- 但还没有把 RNASTOP 的 beam search / MCTS 优化模块纳入标准部署流程
+- 当前也没有把 RNASTOP 的训练、论文复现实验脚本纳入主项目默认工作流
 
 ---
 
