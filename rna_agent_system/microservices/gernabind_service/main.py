@@ -25,6 +25,8 @@ from torch_geometric.data import Batch, Data
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GERNABIND_ROOT = PROJECT_ROOT / "external_repos" / "GerNA-Bind"
 GERNABIND_MODEL_DIR = GERNABIND_ROOT / "Model"
+RNASTOP_ROOT = PROJECT_ROOT / "external_repos" / "RNASTOP"
+GERNABIND_RNAFM_FILENAME = "RNA-FM_pretrained.pth"
 DEFAULT_RHOFOLD_SERVICE_URL = os.environ.get("GERNABIND_RHOFOLD_URL", "http://127.0.0.1:8005/predict")
 
 if str(GERNABIND_ROOT) not in sys.path:
@@ -229,15 +231,49 @@ def _resolve_binding_checkpoint(checkpoint_path: Optional[str] = None) -> Path:
     )
 
 
+def _rnafm_candidates() -> List[Path]:
+    candidates: List[Path] = []
+    env_path = os.environ.get("GERNABIND_RNAFM_PATH")
+    if env_path:
+        candidates.append(_resolve_path(env_path))
+    candidates.extend(
+        [
+            GERNABIND_MODEL_DIR / GERNABIND_RNAFM_FILENAME,
+            RNASTOP_ROOT / GERNABIND_RNAFM_FILENAME,
+            RNASTOP_ROOT / "RNA-FM-main" / "pretrained" / GERNABIND_RNAFM_FILENAME,
+            RNASTOP_ROOT / "pretrained" / GERNABIND_RNAFM_FILENAME,
+        ]
+    )
+    return candidates
+
+
+def _resolve_rnafm_path(path_override: Optional[str] = None) -> Path:
+    if path_override:
+        return _resolve_path(path_override)
+    for candidate in _rnafm_candidates():
+        if candidate.exists() and candidate.is_file():
+            return candidate
+    return _rnafm_candidates()[0]
+
+
 @lru_cache(maxsize=1)
-def _load_rna_fm():
-    model, alphabet = fm.pretrained.rna_fm_t12()
+def _load_rna_fm(rnafm_model_path: str):
+    try:
+        model, alphabet = fm.pretrained.rna_fm_t12(rnafm_model_path)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Failed to initialize RNA-FM from the configured local checkpoint. "
+                f"path={rnafm_model_path}; error={exc}"
+            ),
+        ) from exc
     model.eval()
     return model, alphabet
 
 
-def _get_rna_embeddings(rna_sequence: str) -> torch.Tensor:
-    model, alphabet = _load_rna_fm()
+def _get_rna_embeddings(rna_sequence: str, rnafm_model_path: Path) -> torch.Tensor:
+    model, alphabet = _load_rna_fm(str(rnafm_model_path))
     batch_converter = alphabet.get_batch_converter()
     _, _, batch_tokens = batch_converter([("RNA", rna_sequence)])
     with torch.no_grad():
@@ -444,6 +480,7 @@ def _build_single_example(
     pdb_path: Optional[str],
     secondary_structure: Optional[str],
     rhofold_service_url: Optional[str],
+    rnafm_model_path: Path,
 ) -> Tuple[Tuple[object, ...], str, str]:
     with TemporaryDirectory(prefix="gernabind_") as tmp_dir:
         tmp_dir_path = Path(tmp_dir)
@@ -460,7 +497,7 @@ def _build_single_example(
         if not used_pdb_path.exists():
             raise HTTPException(status_code=503, detail=f"PDB file does not exist: {used_pdb_path}")
 
-        rna_embedding = _get_rna_embeddings(rna_sequence)
+        rna_embedding = _get_rna_embeddings(rna_sequence, rnafm_model_path)
         edge_index = torch.tensor(
             np.array(_parse_rna_structure(used_secondary_structure)).T,
             dtype=torch.long,
@@ -588,10 +625,13 @@ def _load_binding_model(checkpoint_path: str, device_name: str) -> GerNA:
 def health() -> Dict[str, object]:
     affinity_checkpoint = ""
     binding_checkpoint = ""
+    rnafm_model_path = ""
     affinity_ready = False
     binding_ready = False
+    rnafm_ready = False
     affinity_detail = ""
     binding_detail = ""
+    rnafm_detail = ""
 
     try:
         affinity_checkpoint = str(_resolve_affinity_checkpoint())
@@ -605,6 +645,12 @@ def health() -> Dict[str, object]:
     except HTTPException as exc:
         binding_detail = str(exc.detail)
 
+    try:
+        rnafm_model_path = str(_resolve_rnafm_path())
+        rnafm_ready = Path(rnafm_model_path).exists()
+    except Exception as exc:
+        rnafm_detail = str(exc)
+
     return {
         "status": "ok",
         "gernabind_root": str(GERNABIND_ROOT),
@@ -614,6 +660,9 @@ def health() -> Dict[str, object]:
         "binding_checkpoint_ready": binding_ready,
         "binding_checkpoint_path": binding_checkpoint,
         "binding_detail": binding_detail,
+        "rnafm_model_ready": rnafm_ready,
+        "rnafm_model_path": rnafm_model_path,
+        "rnafm_detail": rnafm_detail,
         "default_rhofold_service_url": DEFAULT_RHOFOLD_SERVICE_URL,
     }
 
@@ -622,6 +671,7 @@ def health() -> Dict[str, object]:
 def score(payload: ScoreRequest) -> ScoreResponse:
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
     checkpoint = _resolve_affinity_checkpoint(payload.checkpoint_path)
+    rnafm_model_path = _resolve_rnafm_path()
     device = _resolve_device(payload.device)
 
     example, preprocessing_pdb_path, used_secondary_structure = _build_single_example(
@@ -630,6 +680,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
         pdb_path=payload.pdb_path,
         secondary_structure=payload.secondary_structure,
         rhofold_service_url=payload.rhofold_service_url,
+        rnafm_model_path=rnafm_model_path,
     )
 
     model = _load_affinity_model(str(checkpoint), str(device))
@@ -659,6 +710,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
 def predict_binding_site(payload: BindingSiteRequest) -> BindingSiteResponse:
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
     checkpoint = _resolve_binding_checkpoint(payload.checkpoint_path)
+    rnafm_model_path = _resolve_rnafm_path()
     device = _resolve_device(payload.device)
 
     example, preprocessing_pdb_path, used_secondary_structure = _build_single_example(
@@ -667,6 +719,7 @@ def predict_binding_site(payload: BindingSiteRequest) -> BindingSiteResponse:
         pdb_path=payload.pdb_path,
         secondary_structure=payload.secondary_structure,
         rhofold_service_url=payload.rhofold_service_url,
+        rnafm_model_path=rnafm_model_path,
     )
 
     model = _load_binding_model(str(checkpoint), str(device))
