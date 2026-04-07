@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import pickle
 import re
 import sys
 from pathlib import Path
@@ -168,6 +169,33 @@ def _ensure_runtime_assets(checkpoint_path: Path, esm2_model_path: Path) -> None
         )
 
 
+def _extract_state_dict(loaded_checkpoint: Any) -> Dict[str, torch.Tensor]:
+    if isinstance(loaded_checkpoint, dict):
+        if loaded_checkpoint and all(torch.is_tensor(value) for value in loaded_checkpoint.values()):
+            return loaded_checkpoint
+        for key in ("state_dict", "model_state_dict", "model"):
+            nested = loaded_checkpoint.get(key)
+            if isinstance(nested, dict) and nested and all(torch.is_tensor(value) for value in nested.values()):
+                return nested
+    raise HTTPException(
+        status_code=500,
+        detail=(
+            "RNARL checkpoint loaded successfully but did not contain a recognizable state_dict. "
+            "Expected either a raw state_dict or one nested under `state_dict` / `model_state_dict` / `model`."
+        ),
+    )
+
+
+def _load_checkpoint_state_dict(checkpoint_path: Path) -> Dict[str, torch.Tensor]:
+    try:
+        loaded_checkpoint = torch.load(str(checkpoint_path), map_location="cpu", weights_only=True)
+    except (pickle.UnpicklingError, RuntimeError, TypeError, ValueError):
+        # The author-provided RNARL checkpoints can use an older pickle-based format.
+        # These files are treated as trusted runtime assets supplied by the user.
+        loaded_checkpoint = torch.load(str(checkpoint_path), map_location="cpu", weights_only=False)
+    return _extract_state_dict(loaded_checkpoint)
+
+
 def _load_runtime(checkpoint_path: Path, esm2_model_path: Path, device_name: str) -> Dict[str, Any]:
     cache_key = (str(checkpoint_path), str(esm2_model_path), device_name)
     cached = _MODEL_CACHE.get(cache_key)
@@ -194,7 +222,7 @@ def _load_runtime(checkpoint_path: Path, esm2_model_path: Path, device_name: str
             MODEL_CONFIG["top_k_experts"],
             device,
         ).to(device)
-        state_dict = torch.load(str(checkpoint_path), map_location="cpu", weights_only=True)
+        state_dict = _load_checkpoint_state_dict(checkpoint_path)
         actor_model.load_state_dict(state_dict, strict=True)
         actor_model.eval()
 
