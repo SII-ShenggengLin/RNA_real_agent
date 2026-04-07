@@ -14,5 +14,6 @@ dependencies:
       - fastapi
       - uvicorn
       - pydantic
+      - transformers
       - ViennaRNA
       - git+https://github.com/ml4bio/RNA-FM.git

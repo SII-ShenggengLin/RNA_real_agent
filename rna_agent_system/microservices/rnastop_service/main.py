@@ -16,14 +16,20 @@ import torch
 import torch.nn as nn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from transformers import AutoModel, AutoTokenizer
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RNASTOP_ROOT = PROJECT_ROOT / "external_repos" / "RNASTOP"
 RNASTOP_MODELS_DIR = RNASTOP_ROOT / "models"
+RNASTOP_DNABERT_DIR = RNASTOP_ROOT / "DNABERT6"
+RNASTOP_SCRIPTS_DNABERT_DIR = RNASTOP_ROOT / "scripts" / "DNABERT6"
+RNASTOP_RNAFM_PRETRAINED_DIR = RNASTOP_ROOT / "RNA-FM-main" / "pretrained"
+RNASTOP_SCRIPTS_RNAFM_PRETRAINED_DIR = RNASTOP_ROOT / "scripts" / "RNA-FM-main" / "pretrained"
+RNASTOP_RNAFM_FILENAME = "RNA-FM_pretrained.pth"
 
 MAX_SEQUENCE_LENGTH = 1022
 DEFAULT_MODEL_NAME = "RNASTOP"
-DEFAULT_CHECKPOINT_NAME = "best_model_weights_withoutDNABERT"
+DEFAULT_CHECKPOINT_NAME = "best_model_weights"
 DEFAULT_DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 TOKENS = "ACGU().BEHIMSXDF"
@@ -57,6 +63,14 @@ class StabilityPredictionRequest(BaseModel):
         default=None,
         description="Optional override for the RNASTOP checkpoint path.",
     )
+    rnafm_model_path: Optional[str] = Field(
+        default=None,
+        description="Optional override for the local RNA-FM checkpoint `.pth` file.",
+    )
+    dnabert_model_path: Optional[str] = Field(
+        default=None,
+        description="Optional override for the local DNABERT model directory.",
+    )
     structure: Optional[str] = Field(
         default=None,
         description="Optional dot-bracket structure. If omitted, ViennaRNA MFE structure is used.",
@@ -85,6 +99,9 @@ class StabilityPredictionResponse(BaseModel):
     mean_deg_Mg_50C: float
     per_position_predictions: Dict[str, List[float]]
     checkpoint_path: str
+    rnafm_model_path: str
+    dnabert_model_path: str
+    use_dnabert: bool
     device: str
     model: str = DEFAULT_MODEL_NAME
 
@@ -141,6 +158,26 @@ class RNASTOPModel(nn.Module):
             num_layers=NUM_ENCODER_LAYERS,
         )
         self.conv_encoder_seq_fm = nn.Sequential(
+            nn.Conv1d(EMBEDDING_DIM, EMBEDDING_DIM, CONV_KERNEL),
+            nn.BatchNorm1d(num_features=EMBEDDING_DIM),
+            nn.ReLU(inplace=True),
+            nn.Dropout(DROPOUT),
+            nn.ConvTranspose1d(EMBEDDING_DIM, EMBEDDING_DIM, CONV_KERNEL),
+            nn.BatchNorm1d(num_features=EMBEDDING_DIM),
+            nn.ReLU(inplace=True),
+            nn.Dropout(DROPOUT),
+        )
+        encoder_layer_seq_dnapt2 = nn.TransformerEncoderLayer(
+            d_model=EMBEDDING_DIM,
+            nhead=NHEAD,
+            dropout=DROPOUT,
+            batch_first=True,
+        )
+        self.transformer_encoder_seq_dnapt2 = nn.TransformerEncoder(
+            encoder_layer_seq_dnapt2,
+            num_layers=NUM_ENCODER_LAYERS,
+        )
+        self.conv_encoder_seq_dnapt2 = nn.Sequential(
             nn.Conv1d(EMBEDDING_DIM, EMBEDDING_DIM, CONV_KERNEL),
             nn.BatchNorm1d(num_features=EMBEDDING_DIM),
             nn.ReLU(inplace=True),
@@ -231,7 +268,13 @@ class RNASTOPModel(nn.Module):
             nn.Linear(EMBEDDING_DIM, 5),
         )
 
-    def forward(self, loop: torch.Tensor, features: torch.Tensor, fm_seq: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self,
+        loop: torch.Tensor,
+        features: torch.Tensor,
+        fm_seq: torch.Tensor,
+        dnapt2_seq: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
         embedded_seq_fm = self.embeddingSeq_fm(fm_seq)
         embedded_loop = self.embeddingloop(loop)
 
@@ -241,6 +284,15 @@ class RNASTOPModel(nn.Module):
         embedded_seq_fm_share = self.transformer_encoder_share(embedded_seq_fm)
         embedded_seq_fm_1 = self.transformer_encoder_seq_fm(embedded_seq_fm_share)
         embedded_seq_fm_2 = self.conv_encoder_seq_fm(embedded_seq_fm_share.transpose(1, 2)).transpose(1, 2)
+        embedded_seq_dnapt2_1 = None
+        embedded_seq_dnapt2_2 = None
+        if dnapt2_seq is not None:
+            embedded_seq_dnapt2 = self.embeddingSeq_dnapt2(dnapt2_seq)
+            embedded_seq_dnapt2_share = self.transformer_encoder_share(embedded_seq_dnapt2)
+            embedded_seq_dnapt2_1 = self.transformer_encoder_seq_dnapt2(embedded_seq_dnapt2_share)
+            embedded_seq_dnapt2_2 = self.conv_encoder_seq_dnapt2(
+                embedded_seq_dnapt2_share.transpose(1, 2)
+            ).transpose(1, 2)
 
         embedded_loop = self.transformer_encoder_share(embedded_loop)
         embedded_loop_1 = self.transformer_encoder_loop(embedded_loop)
@@ -252,6 +304,9 @@ class RNASTOPModel(nn.Module):
 
         embedded_fus_trans = embedded_seq_fm_1 + embedded_loop_1 + embedded_str_1
         embedded_fus_conv = embedded_seq_fm_2 + embedded_loop_2 + embedded_str_2
+        if embedded_seq_dnapt2_1 is not None and embedded_seq_dnapt2_2 is not None:
+            embedded_fus_trans = embedded_fus_trans + embedded_seq_dnapt2_1
+            embedded_fus_conv = embedded_fus_conv + embedded_seq_dnapt2_2
 
         embedded_fus_trans = self.transformer_encoder_fustrans(embedded_fus_trans)
         embedded_fus_conv = self.conv_encoder_fusconv(embedded_fus_conv.transpose(1, 2)).transpose(1, 2)
@@ -297,7 +352,9 @@ def _checkpoint_candidates() -> List[Path]:
     candidates.extend(
         [
             (RNASTOP_MODELS_DIR / DEFAULT_CHECKPOINT_NAME).resolve(),
+            (RNASTOP_MODELS_DIR / "best_model_weights_withoutDNABERT").resolve(),
             (RNASTOP_ROOT / "scripts" / DEFAULT_CHECKPOINT_NAME).resolve(),
+            (RNASTOP_ROOT / "scripts" / "best_model_weights_withoutDNABERT").resolve(),
         ]
     )
     return candidates
@@ -310,6 +367,67 @@ def _resolve_checkpoint_path(path_override: Optional[str]) -> Path:
         if candidate.exists():
             return candidate
     return _checkpoint_candidates()[0]
+
+
+def _rnafm_candidates() -> List[Path]:
+    candidates: List[Path] = []
+    env_override = os.environ.get("RNASTOP_RNAFM_PATH")
+    if env_override:
+        candidates.append(Path(env_override).expanduser().resolve())
+    candidates.extend(
+        [
+            (RNASTOP_RNAFM_PRETRAINED_DIR / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_SCRIPTS_RNAFM_PRETRAINED_DIR / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_ROOT / "pretrained" / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_ROOT / RNASTOP_RNAFM_FILENAME).resolve(),
+        ]
+    )
+    return candidates
+
+
+def _resolve_rnafm_path(path_override: Optional[str]) -> Path:
+    if path_override:
+        return Path(path_override).expanduser().resolve()
+    for candidate in _rnafm_candidates():
+        if candidate.exists():
+            return candidate
+    return _rnafm_candidates()[0]
+
+
+def _dnabert_candidates() -> List[Path]:
+    candidates: List[Path] = []
+    env_override = os.environ.get("RNASTOP_DNABERT_PATH")
+    if env_override:
+        candidates.append(Path(env_override).expanduser().resolve())
+    candidates.extend(
+        [
+            RNASTOP_DNABERT_DIR.resolve(),
+            RNASTOP_SCRIPTS_DNABERT_DIR.resolve(),
+        ]
+    )
+    return candidates
+
+
+def _resolve_dnabert_path(path_override: Optional[str]) -> Path:
+    if path_override:
+        return Path(path_override).expanduser().resolve()
+    for candidate in _dnabert_candidates():
+        if candidate.exists():
+            return candidate
+    return _dnabert_candidates()[0]
+
+
+def _checkpoint_uses_dnabert(checkpoint_path: Path) -> bool:
+    checkpoint_name = checkpoint_path.name.lower()
+    if "withoutstrloopdnabert" in checkpoint_name:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "The `best_model_weights_withoutstrloopdnabert` checkpoint is not supported by "
+                "this stability-prediction endpoint because it corresponds to a different inference path."
+            ),
+        )
+    return "withoutdnabert" not in checkpoint_name
 
 
 def _extract_state_dict(loaded_checkpoint: Any) -> Dict[str, torch.Tensor]:
@@ -337,22 +455,36 @@ def _load_checkpoint_state_dict(checkpoint_path: Path) -> Dict[str, torch.Tensor
     return _extract_state_dict(loaded_checkpoint)
 
 
-def _ensure_runtime_assets(checkpoint_path: Path) -> None:
-    required_paths = [RNASTOP_ROOT, checkpoint_path]
+def _ensure_runtime_assets(
+    checkpoint_path: Path,
+    rnafm_model_path: Path,
+    use_dnabert: bool,
+    dnabert_model_path: Path,
+) -> None:
+    required_paths = [RNASTOP_ROOT, checkpoint_path, rnafm_model_path]
+    if use_dnabert:
+        required_paths.append(dnabert_model_path)
     missing = [str(path) for path in required_paths if not path.exists()]
     if missing:
         raise HTTPException(
             status_code=503,
             detail=(
                 "RNASTOP runtime assets are missing. Expected the upstream repository clone and a "
-                "downloaded checkpoint such as `best_model_weights_withoutDNABERT`. Missing: "
+                "downloaded checkpoint such as `best_model_weights` or `best_model_weights_withoutDNABERT`. "
+                "Missing: "
                 f"{missing}"
             ),
         )
 
 
-def _load_runtime(checkpoint_path: Path, device_name: str) -> Dict[str, Any]:
-    cache_key = (str(checkpoint_path), device_name)
+def _load_runtime(
+    checkpoint_path: Path,
+    rnafm_model_path: Path,
+    dnabert_model_path: Path,
+    device_name: str,
+) -> Dict[str, Any]:
+    use_dnabert = _checkpoint_uses_dnabert(checkpoint_path)
+    cache_key = (str(checkpoint_path), f"{rnafm_model_path}|{dnabert_model_path}|{device_name}")
     cached = _RUNTIME_CACHE.get(cache_key)
     if cached is not None:
         return cached
@@ -362,23 +494,22 @@ def _load_runtime(checkpoint_path: Path, device_name: str) -> Dict[str, Any]:
         if cached is not None:
             return cached
 
-        _ensure_runtime_assets(checkpoint_path)
+        _ensure_runtime_assets(checkpoint_path, rnafm_model_path, use_dnabert, dnabert_model_path)
         device = torch.device(device_name)
 
         model = RNASTOPModel().to(device)
         state_dict = _load_checkpoint_state_dict(checkpoint_path)
-        model.load_state_dict(state_dict, strict=True)
+        model.load_state_dict(state_dict, strict=use_dnabert)
         model.eval()
 
         try:
-            fm_model, fm_alphabet = fm.pretrained.rna_fm_t12()
+            fm_model, fm_alphabet = fm.pretrained.rna_fm_t12(str(rnafm_model_path))
         except Exception as exc:
             raise HTTPException(
                 status_code=503,
                 detail=(
-                    "Failed to initialize RNA-FM. On first startup the server may need internet access "
-                    "to download model weights, or a pre-populated torch cache. "
-                    f"Original error: {exc}"
+                    "Failed to initialize RNA-FM from the configured local checkpoint. "
+                    f"path={rnafm_model_path}; error={exc}"
                 ),
             ) from exc
         fm_batch_converter = fm_alphabet.get_batch_converter()
@@ -387,10 +518,39 @@ def _load_runtime(checkpoint_path: Path, device_name: str) -> Dict[str, Any]:
         for parameter in fm_model.parameters():
             parameter.requires_grad = False
 
+        dnabert_tokenizer = None
+        dnabert_model = None
+        if use_dnabert:
+            try:
+                dnabert_tokenizer = AutoTokenizer.from_pretrained(
+                    str(dnabert_model_path),
+                    local_files_only=True,
+                )
+                dnabert_model = AutoModel.from_pretrained(
+                    str(dnabert_model_path),
+                    local_files_only=True,
+                ).to(device)
+            except Exception as exc:
+                raise HTTPException(
+                    status_code=503,
+                    detail=(
+                        "Failed to initialize DNABERT from the configured local directory. "
+                        f"path={dnabert_model_path}; error={exc}"
+                    ),
+                ) from exc
+            dnabert_model.eval()
+            for parameter in dnabert_model.parameters():
+                parameter.requires_grad = False
+
         runtime = {
             "model": model,
             "fm_model": fm_model,
             "fm_batch_converter": fm_batch_converter,
+            "rnafm_model_path": str(rnafm_model_path),
+            "dnabert_tokenizer": dnabert_tokenizer,
+            "dnabert_model": dnabert_model,
+            "dnabert_model_path": str(dnabert_model_path),
+            "use_dnabert": use_dnabert,
             "device": device,
         }
         _RUNTIME_CACHE[cache_key] = runtime
@@ -567,6 +727,25 @@ def _encode_with_rna_fm(sequence: str, runtime: Dict[str, Any]) -> torch.Tensor:
     return fm_results["representations"][12][:, 1:-1, :]
 
 
+def _encode_with_dnabert(sequence: str, runtime: Dict[str, Any]) -> Optional[torch.Tensor]:
+    if not runtime.get("use_dnabert"):
+        return None
+    tokenizer = runtime["dnabert_tokenizer"]
+    model = runtime["dnabert_model"]
+    device = runtime["device"]
+    if tokenizer is None or model is None:
+        return None
+
+    input_ids = tokenizer(sequence, return_tensors="pt")["input_ids"].tolist()[0]
+    if len(input_ids) < len(sequence):
+        input_ids = input_ids + [3] * (len(sequence) - len(input_ids))
+    elif len(input_ids) > len(sequence):
+        input_ids = input_ids[: len(sequence)]
+    input_tensor = torch.as_tensor(np.array([input_ids]), device=device)
+    with torch.no_grad():
+        return model(input_tensor)[0]
+
+
 def _predict_profile(
     sequence: str,
     structure: str,
@@ -578,23 +757,31 @@ def _predict_profile(
     device = runtime["device"]
     model = runtime["model"]
     fm_seq = _encode_with_rna_fm(sequence, runtime)
+    dnabert_seq = _encode_with_dnabert(sequence, runtime)
 
     loop_tensor = torch.tensor(_preprocess_tokens(loop_type), dtype=torch.long, device=device).unsqueeze(0)
     features_tensor = torch.tensor(features, dtype=torch.float32, device=device).unsqueeze(0)
 
     with torch.no_grad():
-        predictions = model(loop_tensor, features_tensor, fm_seq)
+        predictions = model(loop_tensor, features_tensor, fm_seq, dnapt2_seq=dnabert_seq)
     return predictions[0, :, :3].detach().cpu().numpy()
 
 
 @app.get("/health")
 def health() -> dict[str, Any]:
     checkpoint_path = _resolve_checkpoint_path(None)
+    rnafm_model_path = _resolve_rnafm_path(None)
+    dnabert_model_path = _resolve_dnabert_path(None)
     return {
         "status": "ok",
         "repo_exists": RNASTOP_ROOT.exists(),
         "default_checkpoint_path": str(checkpoint_path),
         "default_checkpoint_exists": checkpoint_path.exists(),
+        "default_rnafm_model_path": str(rnafm_model_path),
+        "default_rnafm_model_exists": rnafm_model_path.exists(),
+        "default_use_dnabert": _checkpoint_uses_dnabert(checkpoint_path),
+        "default_dnabert_model_path": str(dnabert_model_path),
+        "default_dnabert_model_exists": dnabert_model_path.exists(),
         "max_sequence_length": MAX_SEQUENCE_LENGTH,
         "default_device": DEFAULT_DEVICE,
         "prediction_columns": list(PREDICTION_COLUMNS),
@@ -607,7 +794,14 @@ def predict_stability(payload: StabilityPredictionRequest) -> StabilityPredictio
     truncated = len(sequence) > MAX_SEQUENCE_LENGTH
     used_sequence = sequence[:MAX_SEQUENCE_LENGTH]
     checkpoint_path = _resolve_checkpoint_path(payload.checkpoint_path)
-    runtime = _load_runtime(checkpoint_path, _resolve_device(payload.device))
+    rnafm_model_path = _resolve_rnafm_path(payload.rnafm_model_path)
+    dnabert_model_path = _resolve_dnabert_path(payload.dnabert_model_path)
+    runtime = _load_runtime(
+        checkpoint_path,
+        rnafm_model_path,
+        dnabert_model_path,
+        _resolve_device(payload.device),
+    )
 
     structure, loop_type, mfe, features = _prepare_structure_features(
         used_sequence,
@@ -638,5 +832,8 @@ def predict_stability(payload: StabilityPredictionRequest) -> StabilityPredictio
             "deg_Mg_50C": predictions[:, 2].astype(float).tolist(),
         },
         checkpoint_path=str(checkpoint_path),
+        rnafm_model_path=str(runtime.get("rnafm_model_path", "")),
+        dnabert_model_path=str(runtime.get("dnabert_model_path", "")),
+        use_dnabert=bool(runtime.get("use_dnabert", False)),
         device=str(runtime["device"]),
     )
