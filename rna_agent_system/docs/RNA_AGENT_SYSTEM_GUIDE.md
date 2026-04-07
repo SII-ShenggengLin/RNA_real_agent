@@ -181,6 +181,20 @@ rna_agent_system/
     - `rna_agent_system/external_repos/RNASTOP/DNABERT6/`
     - `rna_agent_system/external_repos/RNASTOP/RNA-FM_pretrained.pth`
 
+- `gernabind_service/`
+  - GerNA-Bind 的 RNA-ligand 打分 / binding-site 预测服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 额外提供 `install_pyg_gpu.sh`
+  - 默认端口 `8010`
+  - 输入是 RNA sequence + ligand SMILES
+  - 可选输入：
+    - `pdb_path`
+    - `secondary_structure`
+    - `device`
+  - 当前默认运行资源目录：
+    - `rna_agent_system/external_repos/GerNA-Bind/Model/`
+    - 其中会优先读取本地 `RNA-FM_pretrained.pth`
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -188,6 +202,7 @@ rna_agent_system/
 当前已有：
 
 - `GEMORNA/`
+- `GerNA-Bind/`
 - `RNARL/`
 - `RNASTOP/`
 - `RhoFold/`
@@ -197,6 +212,7 @@ rna_agent_system/
 **重要：**
 
 - `external_repos/GEMORNA` 应作为 **git submodule** 管理
+- `external_repos/GerNA-Bind` 也应作为 **git submodule** 管理
 - `external_repos/RNASTOP` 也应作为 **git submodule** 管理
 - `external_repos/RhoFold` 也应作为 **git submodule** 管理
 - `external_repos/RhoDesign` 也建议作为 **git submodule** 管理
@@ -237,7 +253,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `sirna`、`脱靶`、`off-target`
   - 路由到 `sirna_specialist`
@@ -252,7 +268,24 @@ User Input
 
 ### 5.3 mRNA Specialist
 
-分五种模式：
+分六种模式：
+
+- 如果用户文本显式提到 `GerNA-Bind` / `gernabind`
+  - 触发 `score_rna_ligand_binding_with_gernabind(filepath, smiles, checkpoint_path=None, pdb_path=None, secondary_structure=None, device=None)`
+  - 输入是 RNA 序列文件路径 + ligand `SMILES`
+  - 当前规则解析优先要求用户在文本里显式给出：
+    - `SMILES=...`
+    - 或 `SMILES: ...`
+  - RNA 输入可以是：
+    - 文本中的 RNA 序列
+    - 或 `.fasta/.fa/.txt/.seq` 文件路径
+  - 当前还支持从自然语言中额外解析：
+    - `.pdb/.cif` 路径
+    - `secondary_structure=...`
+    - `dot-bracket=...`
+    - `二级结构=...`
+  - 如果未提供 `pdb_path`，服务端会自动调用 `rhofold_service`
+  - 如果未提供二级结构，服务端会自动补齐 ViennaRNA 2D 结构
 
 - 如果用户文本偏“RNA-ligand 打分型”
   - 触发 `score_rna_ligand_binding_with_rnasmol(filepath, smiles, checkpoint_path=None)`
@@ -327,6 +360,10 @@ User Input
 - `tertiary_log_filepath`
 - `mean_plddt`
 - `ligand_smiles`
+- `gernabind_probability`
+- `gernabind_predicted_label`
+- `gernabind_checkpoint_path`
+- `gernabind_preprocessing_pdb_path`
 - `rnasmol_probability`
 - `rnasmol_predicted_label`
 - `rnasmol_checkpoint_path`
@@ -371,11 +408,12 @@ User Input
 - `8007`: `rnasmol_service`
 - `8008`: `rnarl_service`
 - `8009`: `rnastop_service`
+- `8010`: `gernabind_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8010`: 新工具 A
-- `8011`: 新工具 B
+- `8011`: 新工具 A
+- `8012`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -1478,6 +1516,239 @@ RNASTOP 目前已经完成最小闭环验证：
 
 ---
 
+## 10D. GerNA-Bind 的接入方式
+
+### 10D.1 上游源码层
+
+目录：
+
+```text
+external_repos/GerNA-Bind
+```
+
+来源：
+
+- 上游仓库：[GENTEL-lab/GerNA-Bind](https://github.com/GENTEL-lab/GerNA-Bind)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 `git add .`
+
+### 10D.2 为什么当前采用“项目内微服务封装”
+
+当前接入的 GerNA-Bind 不是直接调用上游的 `inference_affinity.py` / `inference_binding_site.py`，而是采用：
+
+- 保留上游源码仓库
+- 在 `microservices/gernabind_service/` 中重建在线推理入口
+
+这样做的原因是：
+
+- 上游推理脚本默认直接读写 `data/new_data.pkl`
+- `train_model.py` / `test_model.py` 含有硬编码的 `/data/...` 路径
+- `inference_affinity.py` 默认读取 `Model/Robin_Model_baseline.pth`，但上游下载脚本实际提供的是 `Model/Robin_random.pth`
+- `inference_binding_site.py` 默认依赖 `Model/Hariboss_Model_baseline.pth`，但该权重不在上游下载脚本中
+- 预处理链路依赖：
+  - RNA-FM
+  - ViennaRNA
+  - RNA 3D 结构
+- 更适合通过本项目已有的微服务体系来隔离依赖与运行时资源
+
+### 10D.3 当前微服务能力
+
+目录：
+
+```text
+microservices/gernabind_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /score`
+- `POST /predict-binding-site`
+
+输入：
+
+- `rna_sequence`
+- `smiles`
+- `checkpoint_path`（可选）
+- `pdb_path`（可选）
+- `secondary_structure`（可选）
+- `device`（可选）
+- `rhofold_service_url`（可选）
+
+输出：
+
+- `/score`
+  - `probability_positive`
+  - `predicted_label`
+  - `raw_alpha`
+  - `checkpoint_path`
+  - `preprocessing_pdb_path`
+  - `secondary_structure`
+  - `device`
+- `/predict-binding-site`
+  - `per_residue_scores`
+  - `checkpoint_path`
+  - `preprocessing_pdb_path`
+  - `secondary_structure`
+  - `device`
+
+### 10D.4 当前 Agent 工具能力
+
+工具函数：
+
+- `score_rna_ligand_binding_with_gernabind(filepath, smiles, service_url="http://127.0.0.1:8010/score", checkpoint_path=None, pdb_path=None, secondary_structure=None, device=None)`
+
+输入：
+
+- `filepath`，其中保存的是 RNA 序列
+- `smiles`
+- `pdb_path`（可选）
+- `secondary_structure`（可选）
+
+输出：
+
+- `probability_positive`
+- `predicted_label`
+- `checkpoint_path`
+- `preprocessing_pdb_path`
+- `input_filepath`
+
+当前实现会把 RNA 输入统一落到 `workspace/` 文件路径，再由 Agent 工具通过 HTTP 调用 `GerNA-Bind` 微服务。
+
+### 10D.5 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已经接入 `GerNA-Bind`：
+
+- `router_node` 会识别 `GerNA-Bind`、`gernabind`、`smiles`、`ligand`、`配体` 等语义
+- `mrna_specialist_node` 在用户显式提到 `GerNA-Bind` 时，会优先路由到 `GerNA-Bind`
+- 当前支持两种 RNA 输入方式：
+  - 直接在文本里给 RNA 序列
+  - 直接给 `.fasta/.fa/.txt/.seq` 路径
+- 当前 `SMILES` 建议显式写成：
+  - `SMILES=...`
+  - 或 `SMILES: ...`
+- 当前前端自然语言还支持透传：
+  - `.pdb/.cif` 路径
+  - `secondary_structure=...`
+  - `dot-bracket=...`
+  - `二级结构=...`
+
+当前 `tool_execution_node` 还会更新这些额外状态：
+
+- `ligand_smiles`
+- `gernabind_probability`
+- `gernabind_predicted_label`
+- `gernabind_checkpoint_path`
+- `gernabind_preprocessing_pdb_path`
+
+### 10D.6 GerNA-Bind 的实际运行注意事项
+
+#### checkpoint
+
+当前 `GerNA-Bind` affinity 服务默认会优先检查：
+
+```text
+external_repos/GerNA-Bind/Model/Robin_random.pth
+external_repos/GerNA-Bind/Model/Biosensor_random.pth
+external_repos/GerNA-Bind/Model/Robin_Model_baseline.pth
+```
+
+说明：
+
+- 当前项目内默认优先使用 `Robin_random.pth`
+- 上游 `Model/get_weights.sh` 可下载 Robin / Biosensor 的 affinity 权重
+- `Hariboss_Model_baseline.pth` 需要你手动补齐，或通过环境变量显式指定
+
+#### RNA-FM 本地优先
+
+当前服务已经改成：
+
+- 优先从本地 `RNA-FM_pretrained.pth` 加载
+- 不依赖首次运行时在线下载
+
+当前默认会优先检查：
+
+```text
+external_repos/GerNA-Bind/Model/RNA-FM_pretrained.pth
+external_repos/RNASTOP/RNA-FM_pretrained.pth
+external_repos/RNASTOP/RNA-FM-main/pretrained/RNA-FM_pretrained.pth
+```
+
+也可以在启动前设置：
+
+```bash
+export GERNABIND_RNAFM_PATH=/absolute/path/to/RNA-FM_pretrained.pth
+```
+
+#### RhoFold 作为默认 3D 预处理
+
+当前服务默认行为是：
+
+- 如果请求里提供了 `pdb_path`
+  - 直接使用该结构文件
+- 如果未提供 `pdb_path`
+  - 自动调用已存在的 `rhofold_service`
+
+因此：
+
+- 想要更快调试时，优先显式传 `pdb_path`
+- 想要走全自动链路时，再让服务自动调用 `RhoFold`
+
+#### GPU 环境
+
+当前 `gernabind_service` 已补成面向新 GPU 的环境：
+
+- `environment.yml`
+  - 使用 `pytorch + nvidia` channel
+  - 固定 `pytorch 2.1.x + pytorch-cuda=11.8`
+- `install_pyg_gpu.sh`
+  - 安装与 `torch 2.1.0 + cu118` 对应的 `PyG` wheel
+
+如果希望服务默认跑 GPU，可在启动前设置：
+
+```bash
+export GERNABIND_DEVICE=cuda:0
+```
+
+#### binding-site 权重
+
+当前 `predict-binding-site` 端点还依赖：
+
+```text
+external_repos/GerNA-Bind/Model/Hariboss_Model_baseline.pth
+```
+
+这个文件是上游脚本引用的权重，但不会被 `Model/get_weights.sh` 自动下载。
+
+### 10D.7 当前验证状态
+
+GerNA-Bind 目前已经在 Linux + GPU 服务器上完成最小闭环验证：
+
+- 上游源码已成功以 submodule 形式接入
+- `gernabind_service` 已成功启动
+- `GET /health` 成功
+- affinity checkpoint 已成功识别
+- 本地 `RNA-FM_pretrained.pth` 已成功识别
+- `POST /score` 在 `cpu` 模式成功
+- `POST /score` 在 `RTX 4090 + cuda:0` 下成功
+- Agent 自然语言请求已成功触发 `GerNA-Bind`
+- 前端自然语言中的 `pdb_path` / `secondary_structure` 透传已成功生效
+
+这意味着：
+
+- `GerNA-Bind` 已经通过“上游源码 -> 微服务接口 -> Agent 工作流 -> 前端自然语言触发”这一层验证
+- 当前项目里已经具备真实的 RNA-ligand 打分能力，并且可在 `GerNA-Bind` 与 `RNAsmol` 两条链路之间并行保留
+- 后续如果再次报错，优先检查的应该是：
+  - checkpoint 路径
+  - 本地 RNA-FM 权重路径
+  - `PyG` GPU wheel 是否与 torch/CUDA 匹配
+  - `GERNABIND_DEVICE` 是否配置正确
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -1585,6 +1856,7 @@ microservices/new_tool_service/
 像下面这些外部源码仓库，应通过 submodule 管理：
 
 - `GEMORNA`
+- `GerNA-Bind`
 - `RhoFold`
 - `RhoDesign`
 - `RNAsmol`
@@ -1626,13 +1898,15 @@ git submodule update --init --recursive
 - `external_repos/RNAsmol/saved_model/*.pt`
 - `external_repos/RNASTOP/models/*`
 - `external_repos/RNASTOP/RNA-FM_pretrained.pth`
+- `external_repos/GerNA-Bind/Model/*.pth`
+- `external_repos/GerNA-Bind/Model/RNA-FM_pretrained.pth`
 
 推荐方案：
 
 - 用上游 `git lfs pull`
 - 或你手动复制到服务器对应目录
 
-当前 `RhoDesign` 和 `RNAsmol` 也都属于这种情况。
+当前 `RhoDesign`、`RNAsmol` 和 `GerNA-Bind` 也都属于这种情况。
 
 例如你在本机已经放好的：
 
@@ -1643,6 +1917,10 @@ git submodule update --init --recursive
 - `external_repos/RNASTOP/models/best_model_weights_withoutDNABERT`
 - `external_repos/RNASTOP/RNA-FM_pretrained.pth`
 - `external_repos/RNASTOP/DNABERT6/`
+- `external_repos/GerNA-Bind/Model/Robin_random.pth`
+- `external_repos/GerNA-Bind/Model/Biosensor_random.pth`
+- `external_repos/GerNA-Bind/Model/Hariboss_Model_baseline.pth`
+- `external_repos/GerNA-Bind/Model/RNA-FM_pretrained.pth`
 
 不应默认指望通过主仓库 Git 历史传到 Linux 服务器，更推荐在服务器侧单独补齐，或确认是否需要额外的大文件传输方案。
 
@@ -1782,6 +2060,34 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 GerNA-Bind：
+
+1. 启动 `gernabind_service`
+2. `curl /health`
+3. `curl /score`
+
+推荐优先测试 payload：
+
+```json
+{
+  "rna_sequence": "AUGGCUACGUAGCUAGCUAG",
+  "smiles": "CCO",
+  "device": "cuda:0"
+}
+```
+
+如果你希望绕开 `RhoFold`，优先再测：
+
+```json
+{
+  "rna_sequence": "AUGGCUACGUAGCUAGCUAG",
+  "smiles": "CCO",
+  "secondary_structure": "....................",
+  "pdb_path": "/absolute/path/to/unrelaxed_model.pdb",
+  "device": "cuda:0"
+}
+```
+
 如果服务器是新卡（例如 `RTX 4090`），且需要显式覆盖设备，推荐再测：
 
 ```json
@@ -1821,6 +2127,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - RhoDesign 结构到序列设计请求
 - RNAsmol RNA-ligand 打分请求
 - RNASTOP mRNA 稳定性预测请求
+- GerNA-Bind RNA-ligand 打分请求
 
 ---
 
@@ -1988,6 +2295,32 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 - 但还没有把 RNASTOP 的 beam search / MCTS 优化模块纳入标准部署流程
 - 当前也没有把 RNASTOP 的训练、论文复现实验脚本纳入主项目默认工作流
 
+### 14.13 `GerNA-Bind` 当前更适合作为推理服务而不是直接复用上游脚本
+
+当前主项目已经接通的是：
+
+- 单条 RNA 序列 + 单条 ligand `SMILES` 的打分服务
+- 单条 RNA 序列的 binding-site 预测服务入口
+
+这意味着：
+
+- 作为 Agent 底层打分工具已经可用
+- 但当前并没有把上游 `train_model.py` / `test_model.py` 的训练与评估脚本纳入主项目标准部署流程
+- 上游仓库中硬编码的 `/data/...` 路径仍然不适合直接在本项目中复用
+
+### 14.14 `GerNA-Bind` 对本地 RNA-FM 权重和 PyG 环境较敏感
+
+当前 `GerNA-Bind` 最容易踩坑的地方之一是：
+
+- RNA-FM 首次在线下载的缓存文件可能损坏
+- `torch-geometric` 及其 CUDA wheel 需要与 `torch 2.1.x + cu118` 匹配
+
+当前更稳妥的部署原则是：
+
+- 优先使用本地 `RNA-FM_pretrained.pth`
+- 启动前显式设置 `GERNABIND_DEVICE`
+- 新 GPU 环境下先执行 `install_pyg_gpu.sh`
+
 ---
 
 ## 15. 后续最推荐的发展路线
@@ -1996,7 +2329,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
@@ -2008,7 +2341,8 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
    - 为 `RhoFold` 增加可选的 MSA 模式
   - 优化 `RhoDesign` 的输入文件校验与错误提示
   - 优化 `RNAsmol` 的输入解析与批量评分模式
-   - 优化前端结果展示与文件下载体验
+  - 为 `GerNA-Bind` 增加更细粒度的前端参数透传与批量推理模式
+  - 优化前端结果展示与文件下载体验
 
 ---
 
