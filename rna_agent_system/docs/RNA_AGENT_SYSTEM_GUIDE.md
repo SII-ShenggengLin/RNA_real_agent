@@ -522,6 +522,197 @@ external_repos/GEMORNA/checkpoints/
 
 ---
 
+## 9A. RNARL 的接入方式
+
+### 9A.1 上游源码层
+
+目录：
+
+```text
+external_repos/RNARL
+```
+
+来源：
+
+- 上游仓库：[SII-ShenggengLin/RNARL](https://github.com/SII-ShenggengLin/RNARL.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库直接 vendoring 进主仓库历史
+
+### 9A.2 为什么当前采用“项目内推理封装”
+
+当前接入的 RNARL 不是直接调用上游训练脚本，而是采用：
+
+- 保留上游源码与 `utils.py` / `transformer_encoder_MoE.py`
+- 在 `microservices/rnarl_service/` 中按作者 `RNARL.ipynb` 重建推理流程
+
+这样做的原因是：
+
+- 上游仓库主体更偏训练代码
+- `actor_train.py` / `grpo_train.py` 并不适合作为稳定在线推理入口
+- 作者公开 notebook 已给出实际可运行的推理路径与 checkpoint 命名方式
+
+### 9A.3 当前微服务能力
+
+目录：
+
+```text
+microservices/rnarl_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `GET /models`
+- `POST /generate/cds`
+
+输入：
+
+- `protein_sequence`
+- `model_type`
+- `checkpoint_path`（可选）
+- `esm2_model_path`（可选）
+- `device`（可选）
+
+输出：
+
+- `generated_sequence`
+- `model_type`
+- `checkpoint_path`
+- `esm2_model_path`
+- `device`
+
+### 9A.4 当前 Agent 工具能力
+
+工具函数：
+
+- `design_mrna_cds_with_rnarl(filepath, service_url="http://127.0.0.1:8008/generate/cds", model_type="Homo sapiens mRNA")`
+
+输入：
+
+- `filepath`，其中保存的是蛋白序列
+- `model_type`，当前支持 7 种作者 notebook 中给出的模型类型
+
+输出：
+
+- `generated_sequence`
+- `output_filepath`
+- `model_type`
+- `checkpoint_path`
+- `esm2_model_path`
+
+### 9A.5 当前支持的 RNARL 模型类型
+
+当前已按作者 notebook 对齐以下 7 个 checkpoint：
+
+- `Homo sapiens mRNA` -> `homo_mrna.pt`
+- `Homo sapiens circular RNA` -> `homo_circ.pt`
+- `Arabidopsis thaliana mRNA` -> `Arabidopsis.pt`
+- `Escherichia coli mRNA` -> `EscherichiaColi.pt`
+- `Penicillium chrysogenum mRNA` -> `PC.pt`
+- `Chlamydomonas reinhardtii mRNA` -> `CR.pt`
+- `Thermococcus kodakarensis KOD1 mRNA` -> `TK.pt`
+
+### 9A.6 RNARL 的实际运行注意事项
+
+#### 权重与模型目录放置位置
+
+当前默认目录为：
+
+```text
+external_repos/RNARL/checkpoints/
+external_repos/RNARL/esm2_model_t33_650M_UR50D/
+```
+
+也就是在当前项目里对应：
+
+```text
+rna_agent_system/external_repos/RNARL/checkpoints/
+rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D/
+```
+
+说明：
+
+- `checkpoints/` 放 RNARL 的 `.pt` 权重
+- `esm2_model_t33_650M_UR50D/` 放本地 ESM-2 模型目录
+- 这两个目录属于**运行时资源目录**
+- 默认不会跟随 Git 自动创建空目录
+
+#### ESM-2 必须使用本地目录
+
+当前实现采用：
+
+- `AutoTokenizer.from_pretrained(local_path, local_files_only=True)`
+- `EsmModel.from_pretrained(local_path, local_files_only=True)`
+
+也就是说：
+
+- 传入的是**目录路径**
+- 不是单个 `model.safetensors` 文件路径
+
+#### checkpoint 文件必须是真实权重
+
+当前已验证过一个非常常见的问题：
+
+- 如果 `*.pt` 实际上是 Git LFS pointer 或错误下载得到的文本文件
+- 推理时会出现：
+  - `invalid load key, 'v'`
+
+因此部署时必须确认：
+
+- `.pt` 文件是真实二进制权重
+- 文件大小为几百 MB 量级
+- 不是只包含 `version https://git-lfs.github.com/spec/v1` 的 pointer 文件
+
+#### checkpoint 加载兼容性
+
+当前 `rnarl_service/main.py` 已兼容两类加载方式：
+
+- 先尝试 `torch.load(..., weights_only=True)`
+- 如果作者 checkpoint 不兼容，再回退到 `weights_only=False`
+
+同时支持以下 checkpoint 结构：
+
+- 原始 `state_dict`
+- `state_dict`
+- `model_state_dict`
+- `model`
+
+#### 推荐运行环境
+
+当前实际验证通过的运行方式是：
+
+- Linux
+- Conda
+- Python 3.10
+- GPU 环境下运行 `EsmModel + RNARL actor`
+
+### 9A.7 当前验证状态
+
+RNARL 目前已经在 Linux 服务器上完成最小闭环验证：
+
+- `rnarl_service` 成功启动
+- `GET /health` 成功
+- `GET /models` 可返回 7 个模型类型
+- `POST /generate/cds` 成功
+- 已成功返回 `generated_sequence`
+- 已确认默认读取：
+  - `rna_agent_system/external_repos/RNARL/checkpoints/homo_mrna.pt`
+  - `rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D/`
+
+这意味着：
+
+- RNARL 已经通过“作者 notebook 推理逻辑 -> 项目微服务封装 -> Linux 实际推理”这一层验证
+- 后续如果再次报错，优先检查的应该是：
+  - checkpoint 是否为真实权重
+  - ESM2 本地目录是否完整
+  - `model_type` 是否与 checkpoint 对应
+  - GPU / 环境是否正常
+
+---
+
 ## 10. RhoFold 的接入方式
 
 ### 10.1 上游源码层
