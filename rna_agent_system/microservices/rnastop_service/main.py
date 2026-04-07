@@ -17,7 +17,7 @@ import torch.nn as nn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from safetensors.torch import load_file as load_safetensors_file
-from transformers import AutoConfig, AutoModel, AutoTokenizer
+from transformers import AutoConfig, AutoModel, AutoModelForMaskedLM, AutoTokenizer
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RNASTOP_ROOT = PROJECT_ROOT / "external_repos" / "RNASTOP"
@@ -468,7 +468,7 @@ def _load_trusted_local_state_dict(weights_path: Path) -> Dict[str, torch.Tensor
     )
 
 
-def _load_dnabert_runtime(dnabert_model_path: Path, device: torch.device) -> Tuple[Any, Any]:
+def _load_dnabert_runtime(dnabert_model_path: Path, device: torch.device) -> Tuple[Any, Any, bool]:
     tokenizer = AutoTokenizer.from_pretrained(
         str(dnabert_model_path),
         local_files_only=True,
@@ -478,15 +478,13 @@ def _load_dnabert_runtime(dnabert_model_path: Path, device: torch.device) -> Tup
             str(dnabert_model_path),
             local_files_only=True,
         ).to(device)
-        return tokenizer, model
+        return tokenizer, model, False
     except Exception as exc:
         error_text = str(exc)
         if "upgrade torch to at least v2.6" not in error_text:
             raise
 
     config = AutoConfig.from_pretrained(str(dnabert_model_path), local_files_only=True)
-    model = AutoModel.from_config(config).to(device)
-
     safetensors_path = dnabert_model_path / "model.safetensors"
     bin_path = dnabert_model_path / "pytorch_model.bin"
     if safetensors_path.exists():
@@ -502,18 +500,27 @@ def _load_dnabert_runtime(dnabert_model_path: Path, device: torch.device) -> Tup
             ),
         )
 
+    uses_mlm_wrapper = any(key.startswith("bert.") or key.startswith("cls.") for key in state_dict.keys())
+    if uses_mlm_wrapper:
+        model = AutoModelForMaskedLM.from_config(config).to(device)
+    else:
+        model = AutoModel.from_config(config).to(device)
+
     missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
-    if unexpected_keys:
+    significant_unexpected = [
+        key for key in unexpected_keys if not key.startswith(("cls.",))
+    ]
+    if significant_unexpected:
         raise HTTPException(
             status_code=500,
             detail=(
                 "DNABERT weights loaded from local files but contained unexpected keys. "
-                f"unexpected_keys={unexpected_keys}"
+                f"unexpected_keys={significant_unexpected}"
             ),
         )
-    # Missing pooler keys are common and harmless for base encoder use.
+    # Missing pooler / MLM head keys are common and harmless for encoder-only use.
     significant_missing = [
-        key for key in missing_keys if not key.startswith("pooler.")
+        key for key in missing_keys if not key.startswith(("pooler.", "cls."))
     ]
     if significant_missing:
         raise HTTPException(
@@ -524,7 +531,7 @@ def _load_dnabert_runtime(dnabert_model_path: Path, device: torch.device) -> Tup
             ),
         )
 
-    return tokenizer, model
+    return tokenizer, model, uses_mlm_wrapper
 
 
 def _ensure_runtime_assets(
@@ -592,9 +599,10 @@ def _load_runtime(
 
         dnabert_tokenizer = None
         dnabert_model = None
+        dnabert_uses_mlm_wrapper = False
         if use_dnabert:
             try:
-                dnabert_tokenizer, dnabert_model = _load_dnabert_runtime(
+                dnabert_tokenizer, dnabert_model, dnabert_uses_mlm_wrapper = _load_dnabert_runtime(
                     dnabert_model_path,
                     device,
                 )
@@ -617,6 +625,7 @@ def _load_runtime(
             "rnafm_model_path": str(rnafm_model_path),
             "dnabert_tokenizer": dnabert_tokenizer,
             "dnabert_model": dnabert_model,
+            "dnabert_uses_mlm_wrapper": dnabert_uses_mlm_wrapper,
             "dnabert_model_path": str(dnabert_model_path),
             "use_dnabert": use_dnabert,
             "device": device,
@@ -811,6 +820,8 @@ def _encode_with_dnabert(sequence: str, runtime: Dict[str, Any]) -> Optional[tor
         input_ids = input_ids[: len(sequence)]
     input_tensor = torch.as_tensor(np.array([input_ids]), device=device)
     with torch.no_grad():
+        if runtime.get("dnabert_uses_mlm_wrapper") and hasattr(model, "bert"):
+            return model.bert(input_tensor)[0]
         return model(input_tensor)[0]
 
 

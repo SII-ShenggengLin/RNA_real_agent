@@ -14,6 +14,8 @@ dependencies:
       - fastapi
       - uvicorn
       - pydantic
-      - transformers
+      - transformers==4.34.0
+      - tokenizers==0.14.1
+      - safetensors==0.3.3
       - ViennaRNA
       - rna-fm
