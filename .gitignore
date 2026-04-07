@@ -6,7 +6,3 @@ rna_agent_system/workspace/*
 !rna_agent_system/workspace/.gitkeep
 *.pt
 *.fasta
-model_assets/rnarl/checkpoints/*
-!model_assets/rnarl/checkpoints/.gitkeep
-model_assets/rnarl/esm2_t33_650M_UR50D/*
-!model_assets/rnarl/esm2_t33_650M_UR50D/.gitkeep

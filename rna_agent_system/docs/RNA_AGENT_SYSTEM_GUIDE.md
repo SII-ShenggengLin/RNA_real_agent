@@ -163,8 +163,8 @@ rna_agent_system/
     - `CR.pt`
     - `TK.pt`
   - 默认权重目录：
-    - `model_assets/rnarl/checkpoints/`
-    - `model_assets/rnarl/esm2_t33_650M_UR50D/`
+    - `rna_agent_system/external_repos/RNARL/checkpoints/`
+    - `rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D/`
 
 ### 4.3 `external_repos/`
 

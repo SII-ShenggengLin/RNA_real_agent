@@ -13,3 +13,4 @@
 [submodule "rna_agent_system/external_repos/RNARL"]
 	path = rna_agent_system/external_repos/RNARL
 	url = https://github.com/SII-ShenggengLin/RNARL.git
+	ignore = untracked

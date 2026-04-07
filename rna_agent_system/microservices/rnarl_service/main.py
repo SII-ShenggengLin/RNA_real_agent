@@ -14,13 +14,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from transformers import AutoTokenizer, EsmModel
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RNARL_ROOT = PROJECT_ROOT / "external_repos" / "RNARL"
 RNARL_SCRIPTS_DIR = RNARL_ROOT / "scripts"
-MODEL_ASSETS_ROOT = REPO_ROOT / "model_assets" / "rnarl"
-CHECKPOINTS_DIR = MODEL_ASSETS_ROOT / "checkpoints"
-DEFAULT_ESM2_MODEL_DIR = MODEL_ASSETS_ROOT / "esm2_t33_650M_UR50D"
+CHECKPOINTS_DIR = RNARL_ROOT / "checkpoints"
+DEFAULT_ESM2_MODEL_DIR = RNARL_ROOT / "esm2_model_t33_650M_UR50D"
 
 if str(RNARL_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(RNARL_SCRIPTS_DIR))
