@@ -33,7 +33,6 @@ if str(GERNABIND_ROOT) not in sys.path:
 import utils.features as fea  # noqa: E402
 from net.model import GerNA  # noqa: E402
 from utils.net_utils import get_mask, pack1D, pack2D  # noqa: E402
-from utils.tankbind_feature_utils import get_LAS_distance_constraint_mask  # noqa: E402
 
 app = FastAPI(
     title="GerNA-Bind Service",
@@ -294,6 +293,35 @@ def _extract_atom_coordinates(pdb_file: Path, atoms_to_extract: List[str]) -> Tu
     return np.array(atom_list), np.array(coordinates_list)
 
 
+def _binarize(x: torch.Tensor) -> torch.Tensor:
+    return torch.where(x > 0, torch.ones_like(x), torch.zeros_like(x))
+
+
+def _n_hops_adj(adj: torch.Tensor, n_hops: int) -> torch.Tensor:
+    adj_mats = [
+        torch.eye(adj.size(0), dtype=torch.long, device=adj.device),
+        _binarize(adj + torch.eye(adj.size(0), dtype=torch.long, device=adj.device)),
+    ]
+    for i in range(2, n_hops + 1):
+        adj_mats.append(_binarize(adj_mats[i - 1] @ adj_mats[1]))
+    extend_mat = torch.zeros_like(adj)
+    for i in range(1, n_hops + 1):
+        extend_mat += (adj_mats[i] - adj_mats[i - 1]) * i
+    return extend_mat
+
+
+def _get_las_distance_constraint_mask(mol: Chem.Mol) -> torch.Tensor:
+    adj = Chem.GetAdjacencyMatrix(mol)
+    adj_tensor = torch.from_numpy(adj)
+    extend_adj = _n_hops_adj(adj_tensor, 2)
+    for ring in Chem.GetSymmSSSR(mol):
+        for i in ring:
+            for j in ring:
+                if i != j:
+                    extend_adj[i][j] += 1
+    return _binarize(extend_adj)
+
+
 def _parse_rna_structure(structure: str) -> List[Tuple[int, int]]:
     edges = []
     stack = []
@@ -438,7 +466,7 @@ def _build_single_example(
             rna_3_coords[1],
             atom_ids,
             np.array(coords),
-            get_LAS_distance_constraint_mask(mol),
+            _get_las_distance_constraint_mask(mol),
         )
         return example, str(used_pdb_path), used_secondary_structure
 

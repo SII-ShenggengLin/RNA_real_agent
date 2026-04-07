@@ -25,7 +25,6 @@ dependencies:
   - pip:
       - viennarna==2.6.4
       - rna-fm==0.2.2
-      - torchdrug==0.2.1
       - torch-geometric==2.4.0
       - equiformer-pytorch
       - edl-pytorch==0.0.2
