@@ -16,7 +16,8 @@ import torch
 import torch.nn as nn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from transformers import AutoModel, AutoTokenizer
+from safetensors.torch import load_file as load_safetensors_file
+from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RNASTOP_ROOT = PROJECT_ROOT / "external_repos" / "RNASTOP"
@@ -455,6 +456,77 @@ def _load_checkpoint_state_dict(checkpoint_path: Path) -> Dict[str, torch.Tensor
     return _extract_state_dict(loaded_checkpoint)
 
 
+def _load_trusted_local_state_dict(weights_path: Path) -> Dict[str, torch.Tensor]:
+    if weights_path.suffix == ".safetensors":
+        return load_safetensors_file(str(weights_path), device="cpu")
+    loaded_weights = torch.load(str(weights_path), map_location="cpu", weights_only=False)
+    if isinstance(loaded_weights, dict):
+        return loaded_weights
+    raise HTTPException(
+        status_code=500,
+        detail=f"DNABERT weights file did not contain a state_dict: {weights_path}",
+    )
+
+
+def _load_dnabert_runtime(dnabert_model_path: Path, device: torch.device) -> Tuple[Any, Any]:
+    tokenizer = AutoTokenizer.from_pretrained(
+        str(dnabert_model_path),
+        local_files_only=True,
+    )
+    try:
+        model = AutoModel.from_pretrained(
+            str(dnabert_model_path),
+            local_files_only=True,
+        ).to(device)
+        return tokenizer, model
+    except Exception as exc:
+        error_text = str(exc)
+        if "upgrade torch to at least v2.6" not in error_text:
+            raise
+
+    config = AutoConfig.from_pretrained(str(dnabert_model_path), local_files_only=True)
+    model = AutoModel.from_config(config).to(device)
+
+    safetensors_path = dnabert_model_path / "model.safetensors"
+    bin_path = dnabert_model_path / "pytorch_model.bin"
+    if safetensors_path.exists():
+        state_dict = _load_trusted_local_state_dict(safetensors_path)
+    elif bin_path.exists():
+        state_dict = _load_trusted_local_state_dict(bin_path)
+    else:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "DNABERT local directory does not contain `model.safetensors` or `pytorch_model.bin`: "
+                f"{dnabert_model_path}"
+            ),
+        )
+
+    missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+    if unexpected_keys:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "DNABERT weights loaded from local files but contained unexpected keys. "
+                f"unexpected_keys={unexpected_keys}"
+            ),
+        )
+    # Missing pooler keys are common and harmless for base encoder use.
+    significant_missing = [
+        key for key in missing_keys if not key.startswith("pooler.")
+    ]
+    if significant_missing:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "DNABERT weights loaded from local files but some required keys were missing. "
+                f"missing_keys={significant_missing}"
+            ),
+        )
+
+    return tokenizer, model
+
+
 def _ensure_runtime_assets(
     checkpoint_path: Path,
     rnafm_model_path: Path,
@@ -522,14 +594,10 @@ def _load_runtime(
         dnabert_model = None
         if use_dnabert:
             try:
-                dnabert_tokenizer = AutoTokenizer.from_pretrained(
-                    str(dnabert_model_path),
-                    local_files_only=True,
+                dnabert_tokenizer, dnabert_model = _load_dnabert_runtime(
+                    dnabert_model_path,
+                    device,
                 )
-                dnabert_model = AutoModel.from_pretrained(
-                    str(dnabert_model_path),
-                    local_files_only=True,
-                ).to(device)
             except Exception as exc:
                 raise HTTPException(
                     status_code=503,
