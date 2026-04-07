@@ -14,17 +14,29 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from transformers import AutoTokenizer, EsmModel
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RNARL_ROOT = PROJECT_ROOT / "external_repos" / "RNARL"
 RNARL_SCRIPTS_DIR = RNARL_ROOT / "scripts"
+MODEL_ASSETS_ROOT = REPO_ROOT / "model_assets" / "rnarl"
+CHECKPOINTS_DIR = MODEL_ASSETS_ROOT / "checkpoints"
+DEFAULT_ESM2_MODEL_DIR = MODEL_ASSETS_ROOT / "esm2_t33_650M_UR50D"
 
 if str(RNARL_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(RNARL_SCRIPTS_DIR))
 
-from utils import ActorModel_encoder_esm2, BiologicalMappings, Tokenizer  # type: ignore  # noqa: E402
+from utils import ActorModel_encoder_esm2, Tokenizer  # type: ignore  # noqa: E402
 
-DEFAULT_ACTOR_CHECKPOINT = RNARL_ROOT / "actor.pt"
-DEFAULT_ESM2_MODEL_DIR = RNARL_ROOT / "esm2_model_t33_650M_UR50D"
+MODEL_TYPE_TO_CHECKPOINT = {
+    "Homo sapiens mRNA": "homo_mrna.pt",
+    "Homo sapiens circular RNA": "homo_circ.pt",
+    "Arabidopsis thaliana mRNA": "Arabidopsis.pt",
+    "Escherichia coli mRNA": "EscherichiaColi.pt",
+    "Penicillium chrysogenum mRNA": "PC.pt",
+    "Chlamydomonas reinhardtii mRNA": "CR.pt",
+    "Thermococcus kodakarensis KOD1 mRNA": "TK.pt",
+}
+DEFAULT_MODEL_TYPE = "Homo sapiens mRNA"
 MAX_PROTEIN_LENGTH = 1308
 MODEL_CONFIG: Dict[str, Any] = {
     "d_model": 768,
@@ -40,7 +52,7 @@ MODEL_CONFIG: Dict[str, Any] = {
 app = FastAPI(
     title="RNARL Service",
     description="Run RNARL actor inference through a FastAPI microservice.",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 _MODEL_CACHE: Dict[Tuple[str, str, str], Dict[str, Any]] = {}
@@ -53,13 +65,17 @@ class CdsDesignRequest(BaseModel):
         min_length=1,
         description="Protein sequence used by RNARL to generate an RNA CDS.",
     )
+    model_type: str = Field(
+        default=DEFAULT_MODEL_TYPE,
+        description="RNARL model type from the author notebook, such as `Homo sapiens mRNA`.",
+    )
     checkpoint_path: Optional[str] = Field(
         default=None,
-        description="Optional override for RNARL actor checkpoint path.",
+        description="Optional override for a specific RNARL checkpoint path.",
     )
     esm2_model_path: Optional[str] = Field(
         default=None,
-        description="Optional override for local ESM-2 model directory.",
+        description="Optional override for a local ESM-2 model directory.",
     )
     device: Optional[str] = Field(
         default=None,
@@ -70,6 +86,7 @@ class CdsDesignRequest(BaseModel):
 class CdsDesignResponse(BaseModel):
     protein_sequence: str
     generated_sequence: str
+    model_type: str
     checkpoint_path: str
     esm2_model_path: str
     device: str
@@ -80,12 +97,8 @@ def _normalize_protein_sequence(raw_text: str) -> str:
     sequence = re.sub(r"[^A-Za-z*]", "", raw_text).upper()
     if not sequence:
         raise HTTPException(status_code=400, detail="Protein sequence is empty after normalization.")
-    if "*" in sequence:
-        raise HTTPException(
-            status_code=400,
-            detail="RNARL service currently expects a protein sequence without `*` stop symbols.",
-        )
-    invalid_chars = sorted(set(ch for ch in sequence if ch not in set("ARNDCQEGHILKMFPSTWYV")))
+    valid_residues = set("ARNDCQEGHILKMFPSTWYV*")
+    invalid_chars = sorted(set(ch for ch in sequence if ch not in valid_residues))
     if invalid_chars:
         raise HTTPException(
             status_code=400,
@@ -102,6 +115,17 @@ def _normalize_protein_sequence(raw_text: str) -> str:
     return sequence
 
 
+def _normalize_model_type(model_type: str) -> str:
+    normalized = model_type.strip()
+    if normalized in MODEL_TYPE_TO_CHECKPOINT:
+        return normalized
+    supported = ", ".join(MODEL_TYPE_TO_CHECKPOINT)
+    raise HTTPException(
+        status_code=400,
+        detail=f"Unsupported RNARL model_type `{model_type}`. Supported values: {supported}",
+    )
+
+
 def _resolve_device(device_override: Optional[str]) -> str:
     if device_override:
         return device_override
@@ -111,14 +135,18 @@ def _resolve_device(device_override: Optional[str]) -> str:
     return "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
-def _resolve_checkpoint_path(path_override: Optional[str]) -> Path:
-    candidate = path_override or os.environ.get("RNARL_ACTOR_CHECKPOINT_PATH") or str(DEFAULT_ACTOR_CHECKPOINT)
-    return Path(candidate).expanduser().resolve()
+def _resolve_checkpoint_path(model_type: str, path_override: Optional[str]) -> Path:
+    candidate = path_override or os.environ.get("RNARL_ACTOR_CHECKPOINT_PATH")
+    if candidate:
+        return Path(candidate).expanduser().resolve()
+    return (CHECKPOINTS_DIR / MODEL_TYPE_TO_CHECKPOINT[model_type]).resolve()
 
 
 def _resolve_esm2_path(path_override: Optional[str]) -> Path:
-    candidate = path_override or os.environ.get("RNARL_ESM2_MODEL_PATH") or str(DEFAULT_ESM2_MODEL_DIR)
-    return Path(candidate).expanduser().resolve()
+    candidate = path_override or os.environ.get("RNARL_ESM2_MODEL_PATH")
+    if candidate:
+        return Path(candidate).expanduser().resolve()
+    return DEFAULT_ESM2_MODEL_DIR.resolve()
 
 
 def _ensure_runtime_assets(checkpoint_path: Path, esm2_model_path: Path) -> None:
@@ -135,9 +163,9 @@ def _ensure_runtime_assets(checkpoint_path: Path, esm2_model_path: Path) -> None
         raise HTTPException(
             status_code=503,
             detail=(
-                "RNARL runtime assets are missing. "
-                "Expected repository clone, actor checkpoint, and local ESM-2 model directory. "
-                f"Missing: {missing}"
+                "RNARL runtime assets are missing. Expected repository clone, a model-specific checkpoint, "
+                "and a local ESM-2 model directory. Missing: "
+                f"{missing}"
             ),
         )
 
@@ -157,11 +185,18 @@ def _load_runtime(checkpoint_path: Path, esm2_model_path: Path, device_name: str
         device = torch.device(device_name)
         tokenizer = Tokenizer()
         actor_model = ActorModel_encoder_esm2(
-            vocab_size=len(tokenizer.tokens),
-            device=device,
-            **MODEL_CONFIG,
+            len(tokenizer.tokens),
+            MODEL_CONFIG["d_model"],
+            MODEL_CONFIG["nhead"],
+            MODEL_CONFIG["num_encoder_layers"],
+            MODEL_CONFIG["dim_feedforward"],
+            MODEL_CONFIG["esm2_dim"],
+            MODEL_CONFIG["dropout"],
+            MODEL_CONFIG["num_experts"],
+            MODEL_CONFIG["top_k_experts"],
+            device,
         ).to(device)
-        state_dict = torch.load(str(checkpoint_path), map_location=device)
+        state_dict = torch.load(str(checkpoint_path), map_location="cpu", weights_only=True)
         actor_model.load_state_dict(state_dict, strict=True)
         actor_model.eval()
 
@@ -182,46 +217,48 @@ def _load_runtime(checkpoint_path: Path, esm2_model_path: Path, device_name: str
         return runtime
 
 
-def _decode_logits_to_sequence(
-    logits: torch.Tensor,
-    tokenizer: Tokenizer,
-    protein_sequence: str,
-) -> str:
-    amino_acid_to_codon = BiologicalMappings.get_amino_acid_to_codon()
-    predicted_ids = torch.argmax(logits, dim=-1).tolist()
-    codons = []
-    for position, amino_acid in enumerate(protein_sequence, start=1):
-        token_id = predicted_ids[position]
-        token = tokenizer.id_to_token.get(token_id, "")
-        if len(token) != 3:
-            token = amino_acid_to_codon[amino_acid][0]
-        codons.append(token.replace("T", "U"))
-    return "".join(codons)
+def _decode_rna_sequence(logits: torch.Tensor, tokenizer: Tokenizer, protein_length: int) -> str:
+    pred_tokens = logits.argmax(dim=-1).detach().cpu().numpy()
+    return tokenizer.decode(pred_tokens[1 : protein_length + 1]).replace("T", "U")
 
 
 @app.get("/health")
 def health() -> dict[str, Any]:
-    checkpoint_path = _resolve_checkpoint_path(None)
+    default_checkpoint = _resolve_checkpoint_path(DEFAULT_MODEL_TYPE, None)
     esm2_model_path = _resolve_esm2_path(None)
     return {
         "status": "ok",
         "repo_exists": RNARL_ROOT.exists(),
-        "checkpoint_path": str(checkpoint_path),
-        "checkpoint_exists": checkpoint_path.exists(),
+        "checkpoints_dir": str(CHECKPOINTS_DIR),
+        "default_checkpoint_path": str(default_checkpoint),
+        "default_checkpoint_exists": default_checkpoint.exists(),
         "esm2_model_path": str(esm2_model_path),
         "esm2_model_exists": esm2_model_path.exists(),
-        "ready": RNARL_ROOT.exists() and checkpoint_path.exists() and esm2_model_path.exists(),
-        "note": (
-            "RNARL upstream repo is training-oriented. "
-            "This service provides a project-local inference wrapper around the actor model."
-        ),
+        "available_model_types": list(MODEL_TYPE_TO_CHECKPOINT.keys()),
+        "ready": RNARL_ROOT.exists() and default_checkpoint.exists() and esm2_model_path.exists(),
+    }
+
+
+@app.get("/models")
+def list_models() -> dict[str, Any]:
+    return {
+        "default_model_type": DEFAULT_MODEL_TYPE,
+        "models": [
+            {
+                "model_type": model_type,
+                "checkpoint_filename": checkpoint_filename,
+                "default_checkpoint_path": str((CHECKPOINTS_DIR / checkpoint_filename).resolve()),
+            }
+            for model_type, checkpoint_filename in MODEL_TYPE_TO_CHECKPOINT.items()
+        ],
     }
 
 
 @app.post("/generate/cds", response_model=CdsDesignResponse)
 def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
     protein_sequence = _normalize_protein_sequence(payload.protein_sequence)
-    checkpoint_path = _resolve_checkpoint_path(payload.checkpoint_path)
+    model_type = _normalize_model_type(payload.model_type)
+    checkpoint_path = _resolve_checkpoint_path(model_type, payload.checkpoint_path)
     esm2_model_path = _resolve_esm2_path(payload.esm2_model_path)
     device_name = _resolve_device(payload.device)
     runtime = _load_runtime(checkpoint_path, esm2_model_path, device_name)
@@ -233,25 +270,23 @@ def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
     device = runtime["device"]
 
     with torch.no_grad():
-        encoded_protein = torch.tensor(
-            [tokenizer.encode_pro(protein_sequence, len(protein_sequence) + 2)],
-            dtype=torch.long,
-            device=device,
-        )
+        encoded_protein = [tokenizer.encode_pro(protein_sequence, 1310)]
+        src = torch.tensor(encoded_protein, dtype=torch.long, device=device)
         esm_inputs = esm2_tokenizer(
             [protein_sequence],
             return_tensors="pt",
             padding=True,
             truncation=True,
-            max_length=len(protein_sequence) + 2,
+            max_length=1310,
         ).to(device)
         esm_embeddings = esm2_model(**esm_inputs).last_hidden_state
-        logits, _, _ = actor_model(encoded_protein, esm_embeddings)
-        generated_sequence = _decode_logits_to_sequence(logits[0], tokenizer, protein_sequence)
+        outputs, _, _ = actor_model(src, esm_embeddings)
+        generated_sequence = _decode_rna_sequence(outputs[0], tokenizer, len(protein_sequence))
 
     return CdsDesignResponse(
         protein_sequence=protein_sequence,
         generated_sequence=generated_sequence,
+        model_type=model_type,
         checkpoint_path=str(checkpoint_path),
         esm2_model_path=str(esm2_model_path),
         device=str(device),

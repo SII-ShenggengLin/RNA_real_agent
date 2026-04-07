@@ -157,6 +157,13 @@ class RNARLCdsInput(BaseModel):
         default="http://127.0.0.1:8008/generate/cds",
         description="REST endpoint for the RNARL CDS generation microservice.",
     )
+    model_type: str = Field(
+        default="Homo sapiens mRNA",
+        description=(
+            "RNARL model type, for example `Homo sapiens mRNA`, "
+            "`Arabidopsis thaliana mRNA`, or `Homo sapiens circular RNA`."
+        ),
+    )
     checkpoint_path: Optional[str] = Field(
         default=None,
         description="Optional override for the RNARL actor checkpoint path.",
@@ -357,6 +364,7 @@ def design_mrna_cds_with_gemorna(
 def design_mrna_cds_with_rnarl(
     filepath: str,
     service_url: str = "http://127.0.0.1:8008/generate/cds",
+    model_type: str = "Homo sapiens mRNA",
     checkpoint_path: Optional[str] = None,
     esm2_model_path: Optional[str] = None,
     device: Optional[str] = None,
@@ -367,6 +375,7 @@ def design_mrna_cds_with_rnarl(
         filepath: Workspace file path containing the input protein sequence.
             IMPORTANT: You must pass a workspace filepath, not the sequence itself.
         service_url: REST endpoint for the RNARL microservice.
+        model_type: RNARL model type matching the author notebook checkpoints.
         checkpoint_path: Optional actor checkpoint override for the RNARL service.
         esm2_model_path: Optional local ESM-2 model directory override.
         device: Optional torch device override passed to the RNARL service.
@@ -379,7 +388,10 @@ def design_mrna_cds_with_rnarl(
     """
     protein_sequence = read_sequence(filepath).strip()
     try:
-        request_payload: dict[str, Any] = {"protein_sequence": protein_sequence}
+        request_payload: dict[str, Any] = {
+            "protein_sequence": protein_sequence,
+            "model_type": model_type,
+        }
         if checkpoint_path:
             request_payload["checkpoint_path"] = checkpoint_path
         if esm2_model_path:
@@ -401,6 +413,7 @@ def design_mrna_cds_with_rnarl(
             "input_filepath": filepath,
             "output_filepath": output_filepath,
             "generated_sequence": payload["generated_sequence"],
+            "model_type": payload.get("model_type", model_type),
             "checkpoint_path": payload.get("checkpoint_path", checkpoint_path or ""),
             "esm2_model_path": payload.get("esm2_model_path", esm2_model_path or ""),
             "device": payload.get("device", device or ""),

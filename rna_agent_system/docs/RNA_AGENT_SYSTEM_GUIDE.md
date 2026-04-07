@@ -153,8 +153,18 @@ rna_agent_system/
   - RNARL 的 protein-to-mRNA CDS 生成服务
   - `environment.yml` + `main.py` + `start.sh`
   - 默认端口 `8008`
-  - 当前采用的是**项目内自建推理封装**
-  - 原因是上游 `RNARL` 仓库更偏训练代码，且训练脚本当前不适合直接作为稳定推理入口
+  - 当前采用的是**项目内自建推理封装**，但推理逻辑已按作者 `RNARL.ipynb` 对齐
+  - 支持 7 个作者提供的 checkpoint：
+    - `homo_mrna.pt`
+    - `homo_circ.pt`
+    - `Arabidopsis.pt`
+    - `EscherichiaColi.pt`
+    - `PC.pt`
+    - `CR.pt`
+    - `TK.pt`
+  - 默认权重目录：
+    - `model_assets/rnarl/checkpoints/`
+    - `model_assets/rnarl/esm2_t33_650M_UR50D/`
 
 ### 4.3 `external_repos/`
 

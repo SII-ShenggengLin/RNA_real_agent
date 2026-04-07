@@ -139,6 +139,25 @@ def _needs_rnarl_design(text: str) -> bool:
     )
 
 
+def _extract_rnarl_model_type(text: str) -> str:
+    lowered = text.lower()
+    if "circular" in lowered or "circrna" in lowered or "circ rna" in lowered or "环状" in lowered:
+        return "Homo sapiens circular RNA"
+    if "arabidopsis" in lowered:
+        return "Arabidopsis thaliana mRNA"
+    if "escherichia" in lowered or "e. coli" in lowered or "e coli" in lowered:
+        return "Escherichia coli mRNA"
+    if "penicillium" in lowered or "chrysogenum" in lowered:
+        return "Penicillium chrysogenum mRNA"
+    if "chlamydomonas" in lowered or "reinhardtii" in lowered:
+        return "Chlamydomonas reinhardtii mRNA"
+    if "thermococcus" in lowered or "kod1" in lowered:
+        return "Thermococcus kodakarensis KOD1 mRNA"
+    if "human" in lowered or "homo sapiens" in lowered:
+        return "Homo sapiens mRNA"
+    return "Homo sapiens mRNA"
+
+
 def _extract_smiles(text: str) -> Optional[str]:
     patterns = [
         re.compile(r"""smiles?\s*[:=]\s*["']([^"']+)["']""", re.IGNORECASE),
@@ -331,10 +350,13 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         state["current_filepath"] = filepath
         state["workspace_files"] = state.get("workspace_files", []) + [filepath]
         tool_name = "design_mrna_cds_with_rnarl" if rnarl_mode else "design_mrna_cds_with_gemorna"
+        tool_args: dict[str, Any] = {"filepath": filepath}
+        if rnarl_mode:
+            tool_args["model_type"] = _extract_rnarl_model_type(raw_text)
         tool_calls = [
             {
                 "name": tool_name,
-                "args": {"filepath": filepath},
+                "args": tool_args,
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             }
@@ -434,8 +456,11 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 if _needs_rnarl_design(user_text)
                 else "design_mrna_cds_with_gemorna"
             )
+            tool_args = {"filepath": filepath}
+            if tool_name == "design_mrna_cds_with_rnarl":
+                tool_args["model_type"] = _extract_rnarl_model_type(state.get("input_sequence", ""))
             fallback_calls = [
-                {"name": tool_name, "args": {"filepath": filepath}},
+                {"name": tool_name, "args": tool_args},
             ]
         else:
             if not filepath:
@@ -528,6 +553,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
             state["candidate_sequence"] = str(tool_result.get("generated_sequence", ""))
             state["design_model"] = str(tool_result.get("model", ""))
+            state["rnarl_model_type"] = str(tool_result.get("model_type", ""))
             state["rnarl_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
             state["rnarl_esm2_model_path"] = str(tool_result.get("esm2_model_path", ""))
 
@@ -666,6 +692,7 @@ def critic_node(state: AgentState) -> AgentState:
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
             f"design_model={state.get('design_model', '')}; "
+            f"rnarl_model_type={state.get('rnarl_model_type', '')}; "
             f"rnarl_checkpoint_path={state.get('rnarl_checkpoint_path', '')}; "
             f"rnarl_esm2_model_path={state.get('rnarl_esm2_model_path', '')}; "
             f"design_input_pdb_filepath={state.get('design_input_pdb_filepath', '')}; "
