@@ -18,6 +18,7 @@ from agent_core.tools import (
     design_mrna_cds_with_gemorna,
     design_mrna_cds_with_rnarl,
     mock_codon_optimization,
+    predict_mrna_stability_with_rnastop,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
@@ -27,6 +28,7 @@ from agent_core.tools import (
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
 MRNA_TOOLS = [
     score_rna_ligand_binding_with_rnasmol,
+    predict_mrna_stability_with_rnastop,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
@@ -85,6 +87,23 @@ def _needs_rnasmol_scoring(text: str) -> bool:
             "配体",
             "结合打分",
             "结合评分",
+        ]
+    )
+
+
+def _needs_rnastop_prediction(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "rnastop",
+            "stability",
+            "stable",
+            "degradation",
+            "degrade",
+            "稳定性",
+            "稳定",
+            "降解",
+            "半衰期",
         ]
     )
 
@@ -191,6 +210,20 @@ def _resolve_rnasmol_inputs(text: str) -> Tuple[str, str, bool]:
     return save_sequence(rna_sequence, prefix="rnasmol_rna"), smiles, True
 
 
+def _resolve_rnastop_input(text: str) -> Tuple[str, bool]:
+    filepath = _extract_path_with_suffixes(text, ("fasta", "fa", "txt", "seq"))
+    if filepath:
+        return filepath, False
+
+    rna_sequence = _extract_long_rna_sequence(text)
+    if not rna_sequence:
+        raise ValueError(
+            "RNASTOP prediction requires an RNA sequence or a `.fasta/.fa/.txt/.seq` filepath."
+        )
+
+    return save_sequence(rna_sequence, prefix="rnastop_rna"), True
+
+
 def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
     pdb_path = _extract_path_with_suffixes(text, ("pdb", "cif"))
     ss_path = _extract_path_with_suffixes(text, ("npy",))
@@ -245,6 +278,11 @@ def router_node(state: AgentState) -> AgentState:
             "cds",
             "utr",
             "rnasmol",
+            "rnastop",
+            "stability",
+            "degradation",
+            "稳定性",
+            "降解",
             "smiles",
             "ligand",
             "配体",
@@ -307,6 +345,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     user_text = raw_text.lower()
     state["active_specialist"] = "mrna_specialist"
     rnasmol_mode = _needs_rnasmol_scoring(user_text)
+    rnastop_mode = _needs_rnastop_prediction(user_text)
     structure_design_mode = _needs_structure_to_sequence_design(user_text)
     rnarl_mode = _needs_rnarl_design(user_text)
     design_mode = any(
@@ -328,6 +367,20 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch RNAsmol RNA-ligand scoring."
+    elif rnastop_mode:
+        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
+            {
+                "name": "predict_mrna_stability_with_rnastop",
+                "args": {"filepath": filepath},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch RNASTOP stability prediction."
     elif structure_design_mode:
         pdb_path, ss_path = _extract_structure_design_inputs(raw_text)
         state["design_input_pdb_filepath"] = pdb_path
@@ -432,6 +485,17 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {
                     "name": "score_rna_ligand_binding_with_rnasmol",
                     "args": {"filepath": filepath, "smiles": smiles},
+                }
+            ]
+        elif _needs_rnastop_prediction(user_text):
+            filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
+            state["current_filepath"] = filepath
+            if created_workspace_file or filepath.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            fallback_calls = [
+                {
+                    "name": "predict_mrna_stability_with_rnastop",
+                    "args": {"filepath": filepath},
                 }
             ]
         elif _needs_structure_to_sequence_design(user_text):
@@ -639,6 +703,22 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["rnasmol_probability"] = float(tool_result.get("probability_positive", 0.0))
             state["rnasmol_predicted_label"] = int(tool_result.get("predicted_label", 0))
             state["rnasmol_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
+        elif tool_name == "predict_mrna_stability_with_rnastop":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            prediction_filepath = str(tool_result.get("prediction_filepath", ""))
+            if prediction_filepath:
+                state["rnastop_prediction_filepath"] = prediction_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [prediction_filepath]
+            state["candidate_sequence"] = str(tool_result.get("used_sequence", tool_result.get("sequence", "")))
+            state["rnastop_mean_reactivity"] = float(tool_result.get("mean_reactivity", 0.0))
+            state["rnastop_mean_deg_mg_ph10"] = float(tool_result.get("mean_deg_mg_ph10", 0.0))
+            state["rnastop_mean_deg_mg_50c"] = float(tool_result.get("mean_deg_mg_50c", 0.0))
+            state["rnastop_mfe"] = float(tool_result.get("mfe", 0.0))
+            state["rnastop_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
+            if not state.get("mfe"):
+                state["mfe"] = state["rnastop_mfe"]
 
     state["messages"] = messages + out_messages
     return state
@@ -662,6 +742,7 @@ def critic_node(state: AgentState) -> AgentState:
     user_text = state.get("input_sequence", "").lower()
     if (
         specialist == "mrna_specialist"
+        and not _needs_rnastop_prediction(user_text)
         and not _needs_structure_to_sequence_design(user_text)
         and any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"])
         and mfe > -20.0
@@ -704,6 +785,12 @@ def critic_node(state: AgentState) -> AgentState:
             f"rnasmol_probability={rnasmol_probability}; "
             f"rnasmol_predicted_label={rnasmol_predicted_label}; "
             f"rnasmol_checkpoint_path={state.get('rnasmol_checkpoint_path', '')}; "
+            f"rnastop_prediction_filepath={state.get('rnastop_prediction_filepath', '')}; "
+            f"rnastop_mean_reactivity={state.get('rnastop_mean_reactivity', 0.0)}; "
+            f"rnastop_mean_deg_mg_ph10={state.get('rnastop_mean_deg_mg_ph10', 0.0)}; "
+            f"rnastop_mean_deg_mg_50c={state.get('rnastop_mean_deg_mg_50c', 0.0)}; "
+            f"rnastop_mfe={state.get('rnastop_mfe', 0.0)}; "
+            f"rnastop_checkpoint_path={state.get('rnastop_checkpoint_path', '')}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

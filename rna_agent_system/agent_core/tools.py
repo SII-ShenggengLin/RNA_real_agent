@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import time
 from typing import Any, Optional
@@ -257,6 +258,30 @@ class RNAsmolScoreInput(BaseModel):
             "Optional checkpoint path passed through to RNAsmol. "
             "Use this when the service should not rely on its default checkpoint lookup."
         ),
+    )
+
+
+class RNASTOPPredictionInput(BaseModel):
+    """Input schema for RNASTOP stability prediction."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace or repo-relative file containing the RNA sequence. "
+            "Do not pass raw RNA sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8009/predict/stability",
+        description="REST endpoint for the RNASTOP stability prediction microservice.",
+    )
+    checkpoint_path: Optional[str] = Field(
+        default=None,
+        description="Optional checkpoint override for the RNASTOP service.",
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional torch device override such as `cuda:0` or `cpu`.",
     )
 
 
@@ -660,3 +685,87 @@ def score_rna_ligand_binding_with_rnasmol(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"RNAsmol service request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=RNASTOPPredictionInput)
+def predict_mrna_stability_with_rnastop(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8009/predict/stability",
+    checkpoint_path: Optional[str] = None,
+    device: Optional[str] = None,
+) -> dict[str, Any]:
+    """Predict mRNA degradation and stability summaries using the RNASTOP microservice.
+
+    Args:
+        filepath: Path to a file containing the RNA sequence.
+            IMPORTANT: pass a filepath rather than long inline sequence text.
+        service_url: REST endpoint for the RNASTOP microservice.
+        checkpoint_path: Optional checkpoint override for the RNASTOP service.
+        device: Optional torch device override such as `cuda:0` or `cpu`.
+
+    Returns:
+        Dict with per-sequence summary metrics and a workspace JSON artifact.
+
+    Raises:
+        ValueError: If the RNASTOP service is unreachable or returns an invalid payload.
+    """
+    sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    try:
+        request_payload: dict[str, Any] = {"sequence": sequence}
+        if checkpoint_path:
+            request_payload["checkpoint_path"] = checkpoint_path
+        if device:
+            request_payload["device"] = device
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=1800,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        required_fields = {
+            "mean_reactivity",
+            "mean_deg_Mg_pH10",
+            "mean_deg_Mg_50C",
+            "per_position_predictions",
+        }
+        if not required_fields.issubset(payload):
+            raise ValueError(
+                "RNASTOP response is missing one or more required fields: "
+                f"{sorted(required_fields - set(payload))}"
+            )
+
+        prediction_filepath = save_text_file(
+            json.dumps(payload, ensure_ascii=True, indent=2),
+            prefix="rnastop_prediction",
+            suffix=".json",
+        )
+        return {
+            "input_filepath": filepath,
+            "prediction_filepath": prediction_filepath,
+            "sequence": payload.get("sequence", sequence),
+            "used_sequence": payload.get("used_sequence", sequence),
+            "sequence_length": int(payload.get("sequence_length", len(sequence))),
+            "used_length": int(payload.get("used_length", len(sequence))),
+            "truncated": bool(payload.get("truncated", False)),
+            "structure": payload.get("structure", ""),
+            "loop_type": payload.get("loop_type", ""),
+            "mfe": float(payload.get("mfe", 0.0)),
+            "mean_reactivity": float(payload["mean_reactivity"]),
+            "mean_deg_mg_ph10": float(payload["mean_deg_Mg_pH10"]),
+            "mean_deg_mg_50c": float(payload["mean_deg_Mg_50C"]),
+            "checkpoint_path": str(payload.get("checkpoint_path", checkpoint_path or "")),
+            "device": str(payload.get("device", device or "")),
+            "model": payload.get("model", "RNASTOP"),
+        }
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"RNASTOP service request failed: {exc}{suffix}") from exc

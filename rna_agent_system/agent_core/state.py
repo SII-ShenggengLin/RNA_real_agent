@@ -32,6 +32,12 @@ class AgentState(TypedDict, total=False):
     rnasmol_probability: float
     rnasmol_predicted_label: int
     rnasmol_checkpoint_path: str
+    rnastop_prediction_filepath: str
+    rnastop_mean_reactivity: float
+    rnastop_mean_deg_mg_ph10: float
+    rnastop_mean_deg_mg_50c: float
+    rnastop_mfe: float
+    rnastop_checkpoint_path: str
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str
