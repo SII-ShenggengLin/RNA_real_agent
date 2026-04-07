@@ -32,6 +32,9 @@ class AgentState(TypedDict, total=False):
     rnasmol_probability: float
     rnasmol_predicted_label: int
     rnasmol_checkpoint_path: str
+    design_model: str
+    rnarl_checkpoint_path: str
+    rnarl_esm2_model_path: str
     retry_count: int
     max_retries: int
     active_specialist: Literal["sirna_specialist", "mrna_specialist", ""]

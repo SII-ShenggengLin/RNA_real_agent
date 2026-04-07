@@ -16,6 +16,7 @@ from agent_core.tools import (
     check_off_target,
     design_rna_sequence_with_rhodesign,
     design_mrna_cds_with_gemorna,
+    design_mrna_cds_with_rnarl,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
@@ -29,6 +30,7 @@ MRNA_TOOLS = [
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
+    design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
     design_rna_sequence_with_rhodesign,
 ]
@@ -125,6 +127,18 @@ def _needs_structure_to_sequence_design(text: str) -> bool:
     )
 
 
+def _needs_rnarl_design(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "rnarl",
+            "reinforcement learning",
+            "rl design",
+            "rl-based",
+        ]
+    )
+
+
 def _extract_smiles(text: str) -> Optional[str]:
     patterns = [
         re.compile(r"""smiles?\s*[:=]\s*["']([^"']+)["']""", re.IGNORECASE),
@@ -205,6 +219,7 @@ def router_node(state: AgentState) -> AgentState:
             "design",
             "设计",
             "gemorna",
+            "rnarl",
             "pdb",
             "cif",
             "protein",
@@ -274,7 +289,10 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     state["active_specialist"] = "mrna_specialist"
     rnasmol_mode = _needs_rnasmol_scoring(user_text)
     structure_design_mode = _needs_structure_to_sequence_design(user_text)
-    design_mode = any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"])
+    rnarl_mode = _needs_rnarl_design(user_text)
+    design_mode = any(
+        k in user_text for k in ["design", "设计", "gemorna", "rnarl", "protein", "cds", "utr", "生成"]
+    )
 
     if rnasmol_mode:
         filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
@@ -312,15 +330,20 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         filepath = save_sequence(_extract_protein_sequence(state.get("input_sequence", "")), prefix="protein")
         state["current_filepath"] = filepath
         state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_name = "design_mrna_cds_with_rnarl" if rnarl_mode else "design_mrna_cds_with_gemorna"
         tool_calls = [
             {
-                "name": "design_mrna_cds_with_gemorna",
+                "name": tool_name,
                 "args": {"filepath": filepath},
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             }
         ]
-        content = "mRNA specialist (rule-based): dispatch GEMORNA design."
+        content = (
+            "mRNA specialist (rule-based): dispatch RNARL design."
+            if rnarl_mode
+            else "mRNA specialist (rule-based): dispatch GEMORNA design."
+        )
     else:
         filepath = state.get("current_filepath")
         if not filepath:
@@ -398,7 +421,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if ss_path:
                 structure_call["args"]["secondary_structure_filepath"] = ss_path
             fallback_calls = [structure_call]
-        elif any(k in user_text for k in ["design", "设计", "gemorna", "protein", "cds", "utr", "生成"]):
+        elif any(k in user_text for k in ["design", "设计", "gemorna", "rnarl", "protein", "cds", "utr", "生成"]):
             if not filepath:
                 filepath = save_sequence(
                     _extract_protein_sequence(state.get("input_sequence", "")),
@@ -406,8 +429,13 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 )
                 state["current_filepath"] = filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            tool_name = (
+                "design_mrna_cds_with_rnarl"
+                if _needs_rnarl_design(user_text)
+                else "design_mrna_cds_with_gemorna"
+            )
             fallback_calls = [
-                {"name": "design_mrna_cds_with_gemorna", "args": {"filepath": filepath}},
+                {"name": tool_name, "args": {"filepath": filepath}},
             ]
         else:
             if not filepath:
@@ -493,12 +521,15 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["tertiary_log_filepath"] = log_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [log_filepath]
             state["mean_plddt"] = float(tool_result.get("mean_plddt", 0.0))
-        elif tool_name == "design_mrna_cds_with_gemorna":
+        elif tool_name in {"design_mrna_cds_with_gemorna", "design_mrna_cds_with_rnarl"}:
             output_filepath = str(tool_result.get("output_filepath", ""))
             if output_filepath:
                 state["current_filepath"] = output_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
             state["candidate_sequence"] = str(tool_result.get("generated_sequence", ""))
+            state["design_model"] = str(tool_result.get("model", ""))
+            state["rnarl_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
+            state["rnarl_esm2_model_path"] = str(tool_result.get("esm2_model_path", ""))
 
             user_text = state.get("input_sequence", "").lower()
             if _needs_secondary_structure(user_text):
@@ -634,6 +665,9 @@ def critic_node(state: AgentState) -> AgentState:
             f"off_target_genes={off_target}; "
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
+            f"design_model={state.get('design_model', '')}; "
+            f"rnarl_checkpoint_path={state.get('rnarl_checkpoint_path', '')}; "
+            f"rnarl_esm2_model_path={state.get('rnarl_esm2_model_path', '')}; "
             f"design_input_pdb_filepath={state.get('design_input_pdb_filepath', '')}; "
             f"designed_sequence_fasta_filepath={state.get('designed_sequence_fasta_filepath', '')}; "
             f"sequence_recovery_rate={state.get('sequence_recovery_rate', 0.0)}; "

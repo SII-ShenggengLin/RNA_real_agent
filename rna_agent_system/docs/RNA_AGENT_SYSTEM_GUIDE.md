@@ -93,6 +93,7 @@ rna_agent_system/
     - `check_off_target`
     - `mock_codon_optimization`
     - `predict_rna_secondary_structure`
+    - `design_mrna_cds_with_rnarl`
     - `design_mrna_cds_with_gemorna`
 
 - `nodes.py`
@@ -148,6 +149,13 @@ rna_agent_system/
   - 输入是 RNA sequence + ligand SMILES
   - 输出是正类概率、预测标签、checkpoint 路径等摘要信息
 
+- `rnarl_service/`
+  - RNARL 的 protein-to-mRNA CDS 生成服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8008`
+  - 当前采用的是**项目内自建推理封装**
+  - 原因是上游 `RNARL` 仓库更偏训练代码，且训练脚本当前不适合直接作为稳定推理入口
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -155,6 +163,7 @@ rna_agent_system/
 当前已有：
 
 - `GEMORNA/`
+- `RNARL/`
 - `RhoFold/`
 - `RhoDesign/`
 - `RNAsmol/`
@@ -311,11 +320,12 @@ User Input
 - `8005`: `rhofold_service`
 - `8006`: `rhodesign_service`
 - `8007`: `rnasmol_service`
+- `8008`: `rnarl_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8008`: 新工具 A
-- `8009`: 新工具 B
+- `8009`: 新工具 A
+- `8010`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 

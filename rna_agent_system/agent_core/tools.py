@@ -143,6 +143,34 @@ class GemornaCdsInput(BaseModel):
     )
 
 
+class RNARLCdsInput(BaseModel):
+    """Input schema for RNARL CDS design tool."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing a protein sequence for RNARL CDS design. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8008/generate/cds",
+        description="REST endpoint for the RNARL CDS generation microservice.",
+    )
+    checkpoint_path: Optional[str] = Field(
+        default=None,
+        description="Optional override for the RNARL actor checkpoint path.",
+    )
+    esm2_model_path: Optional[str] = Field(
+        default=None,
+        description="Optional override for the local ESM-2 model directory.",
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional torch device override such as `cuda:0` or `cpu`.",
+    )
+
+
 class RhoFoldInput(BaseModel):
     """Input schema for RhoFold tertiary structure prediction."""
 
@@ -323,6 +351,71 @@ def design_mrna_cds_with_gemorna(
         }
     except requests.RequestException as exc:
         raise ValueError(f"GEMORNA service request failed: {exc}") from exc
+
+
+@tool(args_schema=RNARLCdsInput)
+def design_mrna_cds_with_rnarl(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8008/generate/cds",
+    checkpoint_path: Optional[str] = None,
+    esm2_model_path: Optional[str] = None,
+    device: Optional[str] = None,
+) -> dict[str, Any]:
+    """Design an mRNA CDS sequence from a protein sequence using RNARL.
+
+    Args:
+        filepath: Workspace file path containing the input protein sequence.
+            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
+        service_url: REST endpoint for the RNARL microservice.
+        checkpoint_path: Optional actor checkpoint override for the RNARL service.
+        esm2_model_path: Optional local ESM-2 model directory override.
+        device: Optional torch device override passed to the RNARL service.
+
+    Returns:
+        Dict containing the generated CDS sequence, runtime metadata, and a new workspace filepath.
+
+    Raises:
+        ValueError: If the RNARL service is unreachable or returns an invalid payload.
+    """
+    protein_sequence = read_sequence(filepath).strip()
+    try:
+        request_payload: dict[str, Any] = {"protein_sequence": protein_sequence}
+        if checkpoint_path:
+            request_payload["checkpoint_path"] = checkpoint_path
+        if esm2_model_path:
+            request_payload["esm2_model_path"] = esm2_model_path
+        if device:
+            request_payload["device"] = device
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "generated_sequence" not in payload:
+            raise ValueError("Missing `generated_sequence` in RNARL response.")
+        output_filepath = save_sequence(payload["generated_sequence"], prefix="rnarl_cds")
+        return {
+            "input_filepath": filepath,
+            "output_filepath": output_filepath,
+            "generated_sequence": payload["generated_sequence"],
+            "checkpoint_path": payload.get("checkpoint_path", checkpoint_path or ""),
+            "esm2_model_path": payload.get("esm2_model_path", esm2_model_path or ""),
+            "device": payload.get("device", device or ""),
+            "model": payload.get("model", "RNARL-actor"),
+        }
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"RNARL service request failed: {exc}{suffix}") from exc
 
 
 @tool(args_schema=RhoFoldInput)
