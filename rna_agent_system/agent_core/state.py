@@ -29,6 +29,10 @@ class AgentState(TypedDict, total=False):
     tertiary_log_filepath: str
     mean_plddt: float
     ligand_smiles: str
+    gernabind_probability: float
+    gernabind_predicted_label: int
+    gernabind_checkpoint_path: str
+    gernabind_preprocessing_pdb_path: str
     rnasmol_probability: float
     rnasmol_predicted_label: int
     rnasmol_checkpoint_path: str

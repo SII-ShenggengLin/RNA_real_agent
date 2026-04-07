@@ -17,3 +17,6 @@
 [submodule "rna_agent_system/external_repos/RNASTOP"]
 	path = rna_agent_system/external_repos/RNASTOP
 	url = https://github.com/SII-ShenggengLin/RNASTOP.git
+[submodule "rna_agent_system/external_repos/GerNA-Bind"]
+	path = rna_agent_system/external_repos/GerNA-Bind
+	url = https://github.com/GENTEL-lab/GerNA-Bind.git

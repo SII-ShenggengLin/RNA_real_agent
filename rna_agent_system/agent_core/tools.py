@@ -261,6 +261,35 @@ class RNAsmolScoreInput(BaseModel):
     )
 
 
+class GerNABindScoreInput(BaseModel):
+    """Input schema for GerNA-Bind RNA-ligand scoring."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace or repo-relative file containing the RNA sequence. "
+            "Do not pass raw RNA sequence text directly."
+        ),
+    )
+    smiles: str = Field(
+        ...,
+        min_length=1,
+        description="Ligand SMILES string scored by GerNA-Bind.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8010/score",
+        description="REST endpoint for the GerNA-Bind microservice.",
+    )
+    checkpoint_path: Optional[str] = Field(
+        default=None,
+        description="Optional checkpoint path passed through to GerNA-Bind.",
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional torch device override such as `cuda:0` or `cpu`.",
+    )
+
+
 class RNASTOPPredictionInput(BaseModel):
     """Input schema for RNASTOP stability prediction."""
 
@@ -685,6 +714,69 @@ def score_rna_ligand_binding_with_rnasmol(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"RNAsmol service request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=GerNABindScoreInput)
+def score_rna_ligand_binding_with_gernabind(
+    filepath: str,
+    smiles: str,
+    service_url: str = "http://127.0.0.1:8010/score",
+    checkpoint_path: Optional[str] = None,
+    device: Optional[str] = None,
+) -> dict[str, Any]:
+    """Score RNA-ligand binding probability using the GerNA-Bind microservice.
+
+    Args:
+        filepath: Path to a file containing the RNA sequence.
+            IMPORTANT: pass a filepath rather than long inline sequence text.
+        smiles: Ligand SMILES string to score against the RNA sequence.
+        service_url: REST endpoint for the GerNA-Bind microservice.
+        checkpoint_path: Optional checkpoint override for the GerNA-Bind service.
+        device: Optional torch device override such as `cuda:0` or `cpu`.
+
+    Returns:
+        Dict with the positive-class probability, predicted label, checkpoint metadata,
+        and preprocessing metadata such as the PDB used for feature generation.
+
+    Raises:
+        ValueError: If the GerNA-Bind service is unreachable or returns an invalid payload.
+    """
+    sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    try:
+        request_payload: dict[str, Any] = {
+            "rna_sequence": sequence,
+            "smiles": smiles.strip(),
+        }
+        if checkpoint_path:
+            request_payload["checkpoint_path"] = checkpoint_path
+        if device:
+            request_payload["device"] = device
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=1800,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "probability_positive" not in payload or "predicted_label" not in payload:
+            raise ValueError(
+                "Missing `probability_positive` or `predicted_label` in GerNA-Bind response."
+            )
+        payload["input_filepath"] = filepath
+        payload["smiles"] = smiles.strip()
+        payload["rna_sequence"] = sequence
+        return payload
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"GerNA-Bind service request failed: {exc}{suffix}") from exc
 
 
 @tool(args_schema=RNASTOPPredictionInput)

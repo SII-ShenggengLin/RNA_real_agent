@@ -22,11 +22,13 @@ from agent_core.tools import (
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
+    score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
 )
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
 MRNA_TOOLS = [
+    score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
     predict_mrna_stability_with_rnastop,
     mock_codon_optimization,
@@ -87,6 +89,17 @@ def _needs_rnasmol_scoring(text: str) -> bool:
             "配体",
             "结合打分",
             "结合评分",
+        ]
+    )
+
+
+def _needs_gernabind_scoring(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "gernabind",
+            "gerna-bind",
+            "gerna bind",
         ]
     )
 
@@ -286,6 +299,8 @@ def router_node(state: AgentState) -> AgentState:
             "smiles",
             "ligand",
             "配体",
+            "gernabind",
+            "gerna-bind",
         ]
     ):
         route = "mrna_specialist"
@@ -344,6 +359,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     raw_text = state.get("input_sequence", "")
     user_text = raw_text.lower()
     state["active_specialist"] = "mrna_specialist"
+    gernabind_mode = _needs_gernabind_scoring(user_text)
     rnasmol_mode = _needs_rnasmol_scoring(user_text)
     rnastop_mode = _needs_rnastop_prediction(user_text)
     structure_design_mode = _needs_structure_to_sequence_design(user_text)
@@ -352,7 +368,22 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         k in user_text for k in ["design", "设计", "gemorna", "rnarl", "protein", "cds", "utr", "生成"]
     )
 
-    if rnasmol_mode:
+    if gernabind_mode:
+        filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
+        state["current_filepath"] = filepath
+        state["ligand_smiles"] = smiles
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
+            {
+                "name": "score_rna_ligand_binding_with_gernabind",
+                "args": {"filepath": filepath, "smiles": smiles},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch GerNA-Bind RNA-ligand scoring."
+    elif rnasmol_mode:
         filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
         state["current_filepath"] = filepath
         state["ligand_smiles"] = smiles
@@ -474,6 +505,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
             fallback_calls = [
                 {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
                 {"name": "check_off_target", "args": {"filepath": filepath}},
+            ]
+        elif _needs_gernabind_scoring(user_text):
+            filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
+            state["current_filepath"] = filepath
+            state["ligand_smiles"] = smiles
+            if created_workspace_file or filepath.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            fallback_calls = [
+                {
+                    "name": "score_rna_ligand_binding_with_gernabind",
+                    "args": {"filepath": filepath, "smiles": smiles},
+                }
             ]
         elif _needs_rnasmol_scoring(user_text):
             filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
@@ -694,6 +737,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["candidate_sequence"] = str(tool_result.get("predicted_sequence", ""))
             if "recovery_rate" in tool_result:
                 state["sequence_recovery_rate"] = float(tool_result.get("recovery_rate", 0.0))
+        elif tool_name == "score_rna_ligand_binding_with_gernabind":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            state["candidate_sequence"] = str(tool_result.get("rna_sequence", ""))
+            state["ligand_smiles"] = str(tool_result.get("smiles", ""))
+            state["gernabind_probability"] = float(tool_result.get("probability_positive", 0.0))
+            state["gernabind_predicted_label"] = int(tool_result.get("predicted_label", 0))
+            state["gernabind_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
+            state["gernabind_preprocessing_pdb_path"] = str(
+                tool_result.get("preprocessing_pdb_path", "")
+            )
         elif tool_name == "score_rna_ligand_binding_with_rnasmol":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -732,6 +787,8 @@ def critic_node(state: AgentState) -> AgentState:
     mean_plddt = state.get("mean_plddt", 0.0)
     rnasmol_probability = state.get("rnasmol_probability", 0.0)
     rnasmol_predicted_label = state.get("rnasmol_predicted_label", 0)
+    gernabind_probability = state.get("gernabind_probability", 0.0)
+    gernabind_predicted_label = state.get("gernabind_predicted_label", 0)
     retry_count = state.get("retry_count", 0)
     max_retries = state.get("max_retries", 3)
     specialist = state.get("active_specialist", "")
@@ -782,6 +839,10 @@ def critic_node(state: AgentState) -> AgentState:
             f"tertiary_structure_filepath={state.get('tertiary_structure_filepath', '')}; "
             f"mean_plddt={mean_plddt}; "
             f"ligand_smiles={state.get('ligand_smiles', '')}; "
+            f"gernabind_probability={gernabind_probability}; "
+            f"gernabind_predicted_label={gernabind_predicted_label}; "
+            f"gernabind_checkpoint_path={state.get('gernabind_checkpoint_path', '')}; "
+            f"gernabind_preprocessing_pdb_path={state.get('gernabind_preprocessing_pdb_path', '')}; "
             f"rnasmol_probability={rnasmol_probability}; "
             f"rnasmol_predicted_label={rnasmol_predicted_label}; "
             f"rnasmol_checkpoint_path={state.get('rnasmol_checkpoint_path', '')}; "

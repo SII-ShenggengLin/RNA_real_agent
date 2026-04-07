@@ -1,0 +1,31 @@
+name: gernabind_service_env
+channels:
+  - pytorch
+  - rdkit
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - pip
+  - fastapi=0.95.2
+  - pydantic=1.10.13
+  - uvicorn=0.22.0
+  - requests
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - networkx
+  - biopython
+  - tqdm
+  - rdkit
+  - viennarna=2.6.4
+  - pytorch=2.1
+  - torchvision=0.16
+  - torchaudio=2.1
+  - pip:
+      - rna-fm==0.2.2
+      - torchdrug==0.2.1
+      - torch-geometric==2.4.0
+      - equiformer-pytorch
+      - edl-pytorch==0.0.2
