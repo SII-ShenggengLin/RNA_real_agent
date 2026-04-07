@@ -202,6 +202,30 @@ def _extract_smiles(text: str) -> Optional[str]:
     return None
 
 
+def _extract_secondary_structure(text: str) -> Optional[str]:
+    patterns = [
+        re.compile(r"""secondary_structure\s*[:=]\s*["']?([().]+)["']?""", re.IGNORECASE),
+        re.compile(r"""dot[\s_-]*bracket\s*[:=]\s*["']?([().]+)["']?""", re.IGNORECASE),
+        re.compile(r"""二级结构\s*[:：=]\s*["']?([().]+)["']?""", re.IGNORECASE),
+    ]
+    for pattern in patterns:
+        match = pattern.search(text)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
+def _extract_gernabind_overrides(text: str) -> dict[str, str]:
+    overrides: dict[str, str] = {}
+    pdb_path = _extract_path_with_suffixes(text, ("pdb", "cif"))
+    if pdb_path:
+        overrides["pdb_path"] = pdb_path
+    secondary_structure = _extract_secondary_structure(text)
+    if secondary_structure:
+        overrides["secondary_structure"] = secondary_structure
+    return overrides
+
+
 def _resolve_rnasmol_inputs(text: str) -> Tuple[str, str, bool]:
     smiles = _extract_smiles(text)
     if not smiles:
@@ -370,14 +394,17 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
 
     if gernabind_mode:
         filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
+        gernabind_overrides = _extract_gernabind_overrides(raw_text)
         state["current_filepath"] = filepath
         state["ligand_smiles"] = smiles
         if created_workspace_file or filepath.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_args: dict[str, Any] = {"filepath": filepath, "smiles": smiles}
+        tool_args.update(gernabind_overrides)
         tool_calls = [
             {
                 "name": "score_rna_ligand_binding_with_gernabind",
-                "args": {"filepath": filepath, "smiles": smiles},
+                "args": tool_args,
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             }
@@ -508,14 +535,17 @@ def tool_execution_node(state: AgentState) -> AgentState:
             ]
         elif _needs_gernabind_scoring(user_text):
             filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
+            gernabind_overrides = _extract_gernabind_overrides(state.get("input_sequence", ""))
             state["current_filepath"] = filepath
             state["ligand_smiles"] = smiles
             if created_workspace_file or filepath.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            tool_args = {"filepath": filepath, "smiles": smiles}
+            tool_args.update(gernabind_overrides)
             fallback_calls = [
                 {
                     "name": "score_rna_ligand_binding_with_gernabind",
-                    "args": {"filepath": filepath, "smiles": smiles},
+                    "args": tool_args,
                 }
             ]
         elif _needs_rnasmol_scoring(user_text):

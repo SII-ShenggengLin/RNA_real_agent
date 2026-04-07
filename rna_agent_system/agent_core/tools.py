@@ -284,6 +284,20 @@ class GerNABindScoreInput(BaseModel):
         default=None,
         description="Optional checkpoint path passed through to GerNA-Bind.",
     )
+    pdb_path: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional absolute or repo-relative RNA structure path passed through to GerNA-Bind. "
+            "When provided, the service can skip the RhoFold preprocessing step."
+        ),
+    )
+    secondary_structure: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional dot-bracket RNA secondary structure passed through to GerNA-Bind. "
+            "When provided, the service can skip 2D structure prediction."
+        ),
+    )
     device: Optional[str] = Field(
         default=None,
         description="Optional torch device override such as `cuda:0` or `cpu`.",
@@ -722,6 +736,8 @@ def score_rna_ligand_binding_with_gernabind(
     smiles: str,
     service_url: str = "http://127.0.0.1:8010/score",
     checkpoint_path: Optional[str] = None,
+    pdb_path: Optional[str] = None,
+    secondary_structure: Optional[str] = None,
     device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the GerNA-Bind microservice.
@@ -732,6 +748,8 @@ def score_rna_ligand_binding_with_gernabind(
         smiles: Ligand SMILES string to score against the RNA sequence.
         service_url: REST endpoint for the GerNA-Bind microservice.
         checkpoint_path: Optional checkpoint override for the GerNA-Bind service.
+        pdb_path: Optional precomputed RNA structure path passed through to GerNA-Bind.
+        secondary_structure: Optional dot-bracket secondary structure passed through to GerNA-Bind.
         device: Optional torch device override such as `cuda:0` or `cpu`.
 
     Returns:
@@ -749,6 +767,10 @@ def score_rna_ligand_binding_with_gernabind(
         }
         if checkpoint_path:
             request_payload["checkpoint_path"] = checkpoint_path
+        if pdb_path:
+            request_payload["pdb_path"] = pdb_path
+        if secondary_structure:
+            request_payload["secondary_structure"] = secondary_structure
         if device:
             request_payload["device"] = device
 
@@ -766,6 +788,10 @@ def score_rna_ligand_binding_with_gernabind(
         payload["input_filepath"] = filepath
         payload["smiles"] = smiles.strip()
         payload["rna_sequence"] = sequence
+        if pdb_path:
+            payload["requested_pdb_path"] = pdb_path
+        if secondary_structure:
+            payload["requested_secondary_structure"] = secondary_structure
         return payload
     except requests.RequestException as exc:
         detail = ""
