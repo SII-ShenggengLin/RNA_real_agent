@@ -707,13 +707,17 @@ def _fallback_loop_type(structure: str) -> str:
     return "".join("S" if symbol in "()" else "E" for symbol in structure)
 
 
+def _normalize_loop_type(loop_type: str) -> str:
+    return loop_type.strip().upper()
+
+
 def _derive_loop_type(structure: str) -> str:
     converter = getattr(RNA, "db_to_element_string", None)
     if converter is not None:
         try:
             loop_type = converter(structure)
             if isinstance(loop_type, str) and len(loop_type) == len(structure):
-                return loop_type
+                return _normalize_loop_type(loop_type)
         except Exception:
             pass
     return _fallback_loop_type(structure)
@@ -768,7 +772,7 @@ def _prepare_structure_features(
     fc.pf()
     bpp_matrix = _extract_bpp_matrix(fc, sequence, structure)
 
-    loop_type = loop_override.strip() if loop_override else _derive_loop_type(structure)
+    loop_type = _normalize_loop_type(loop_override) if loop_override else _derive_loop_type(structure)
     if len(loop_type) != len(sequence):
         raise HTTPException(
             status_code=400,
