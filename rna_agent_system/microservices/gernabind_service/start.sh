@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e
 
-# 1. 在 Linux 服务器创建环境:
+# 1. 在 Linux 服务器创建 GPU 环境:
 #    conda env create -f environment.yml
-# 2. 如果 `torch-geometric` 相关扩展缺失, 按服务器上的 torch/CUDA 版本安装匹配 wheel。
+# 2. 激活后安装 CUDA 版 PyG wheel:
+#    conda activate gernabind_service_env
+#    bash install_pyg_gpu.sh
 #    不建议让 pip 回退到源码构建。
 # 3. 准备 GerNA-Bind affinity checkpoint:
 #    bash ../../external_repos/GerNA-Bind/Model/get_weights.sh

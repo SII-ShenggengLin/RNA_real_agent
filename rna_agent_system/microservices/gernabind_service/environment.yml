@@ -1,6 +1,7 @@
 name: gernabind_service_env
 channels:
   - pytorch
+  - nvidia
   - rdkit
   - conda-forge
   - defaults
@@ -19,12 +20,12 @@ dependencies:
   - biopython
   - tqdm
   - rdkit
-  - pytorch=2.1
-  - torchvision=0.16
-  - torchaudio=2.1
+  - pytorch=2.1.*
+  - torchvision=0.16.*
+  - torchaudio=2.1.*
+  - pytorch-cuda=11.8
   - pip:
       - viennarna==2.6.4
       - rna-fm==0.2.2
-      - torch-geometric==2.4.0
       - equiformer-pytorch
       - edl-pytorch==0.0.2
