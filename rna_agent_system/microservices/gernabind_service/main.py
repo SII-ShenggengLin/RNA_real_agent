@@ -246,6 +246,23 @@ def _get_rna_embeddings(rna_sequence: str) -> torch.Tensor:
 
 
 def _run_rnafold(fasta_path: Path) -> str:
+    sequence_lines = [
+        line.strip()
+        for line in fasta_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith(">")
+    ]
+    sequence = "".join(sequence_lines).upper().replace("T", "U")
+
+    try:
+        import RNA  # type: ignore
+
+        fold_compound = RNA.fold_compound(sequence)
+        structure, _mfe = fold_compound.mfe()
+        if structure:
+            return str(structure)
+    except Exception:
+        pass
+
     try:
         result = subprocess.run(
             ["RNAfold", "-i", str(fasta_path)],
@@ -256,7 +273,10 @@ def _run_rnafold(fasta_path: Path) -> str:
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=503,
-            detail="`RNAfold` was not found. Install ViennaRNA in the GerNA-Bind service environment.",
+            detail=(
+                "Neither ViennaRNA Python bindings nor the `RNAfold` executable are available. "
+                "Install ViennaRNA in the GerNA-Bind service environment."
+            ),
         ) from exc
     except subprocess.CalledProcessError as exc:
         raise HTTPException(status_code=503, detail=f"RNAfold failed: {exc.stderr.strip()}") from exc
