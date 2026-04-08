@@ -23,6 +23,11 @@ class AgentState(TypedDict, total=False):
     crisot_output_csv_filepath: str
     crisot_genome_path: str
     crisot_off_target_count: int
+    crisot_optimization_csv_filepath: str
+    crisot_optimized_sgrna_filepath: str
+    crisot_best_mutation: str
+    crisot_best_delta_spec: float
+    crisot_optimized_available: bool
     cai_score: float
     mfe: float
     structure_filepath: str

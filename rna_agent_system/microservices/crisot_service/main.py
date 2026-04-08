@@ -1,4 +1,4 @@
-"""CRISOT microservice for CRISPR off-target scoring and specificity analysis."""
+"""CRISOT microservice for CRISPR off-target scoring, specificity, and optimization."""
 
 from __future__ import annotations
 
@@ -112,6 +112,50 @@ class CrisotOffSpecResponse(BaseModel):
     scored_csv_path: str
     cas_offinder_available: bool
     model: str = DEFAULT_MODEL_NAME
+
+
+class CrisotOptimizeRequest(BaseModel):
+    target_sequence: str = Field(
+        ...,
+        description="Target DNA sequence to optimize against, expected to be 23 nt including PAM.",
+    )
+    genome_path: str = Field(
+        ...,
+        description="Reference genome FASTA path used by Cas-OFFinder during optimization.",
+    )
+    threshold: float = Field(
+        default=0.8,
+        ge=0.0,
+        le=1.0,
+        description="Minimum CRISOT-Score retained for mutated guides.",
+    )
+    mismatches: int = Field(
+        default=DEFAULT_MISMATCHES,
+        ge=0,
+        le=10,
+        description="Mismatch tolerance passed to Cas-OFFinder.",
+    )
+    device: str = Field(
+        default=DEFAULT_DEVICE,
+        description="Cas-OFFinder device flag, for example `C` or `G0`.",
+    )
+
+
+class CrisotOptimizeResponse(BaseModel):
+    target_sequence: str
+    genome_path: str
+    threshold: float
+    mismatches: int
+    device: str
+    optimization_csv_path: str
+    optimized_available: bool
+    best_sgrna: str
+    best_mutation: str
+    best_crisot_score: float
+    best_crisot_spec: float
+    best_delta_spec: float
+    cas_offinder_available: bool
+    model: str = "CRISOT-Opti"
 
 
 def _normalize_crisot_sequence(raw_text: str, field_name: str) -> str:
@@ -234,6 +278,22 @@ def _cas_offinder_available() -> bool:
     return shutil.which("cas-offinder") is not None
 
 
+def _select_best_optimized_row(dataframe: pd.DataFrame) -> Optional[pd.Series]:
+    if dataframe.empty:
+        return None
+    if "Mutation" not in dataframe.columns:
+        return None
+    candidate_rows = dataframe.loc[
+        dataframe["Mutation"].astype(str).str.upper() != "WT"
+    ]
+    candidate_rows = candidate_rows.loc[
+        ~candidate_rows["Mutation"].astype(str).str.contains("Optimization unavailable", na=False)
+    ]
+    if candidate_rows.empty:
+        return None
+    return candidate_rows.iloc[0]
+
+
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {
@@ -245,6 +305,7 @@ def health() -> Dict[str, Any]:
         "default_ref_genome_exists": Path(_default_ref_genome()).exists(),
         "cas_offinder_available": _cas_offinder_available(),
         "service_output_dir": str(CRISOT_SERVICE_OUTPUT_DIR),
+        "supports_optimize": True,
     }
 
 
@@ -345,5 +406,61 @@ def calculate_off_spec(payload: CrisotOffSpecRequest) -> CrisotOffSpecResponse:
         off_target_count=off_target_count,
         crisot_spec=float(spec),
         scored_csv_path=scored_csv_path,
+        cas_offinder_available=True,
+    )
+
+
+@app.post("/optimize", response_model=CrisotOptimizeResponse)
+def optimize_sgrna(payload: CrisotOptimizeRequest) -> CrisotOptimizeResponse:
+    target_sequence = _normalize_crisot_sequence(payload.target_sequence, "target_sequence")
+    genome_path = _resolve_repo_relative_path(payload.genome_path)
+    if not genome_path.exists():
+        raise HTTPException(status_code=400, detail=f"Genome path does not exist: {genome_path}")
+    if not _cas_offinder_available():
+        raise HTTPException(
+            status_code=503,
+            detail="`cas-offinder` is not available in PATH. It is required for CRISOT optimization.",
+        )
+
+    model = _load_model(str(genome_path))
+    try:
+        optimization_df = model.opti(
+            target=target_sequence,
+            threshold=payload.threshold,
+            mm=payload.mismatches,
+            dev=payload.device,
+        )
+    except TypeError:
+        try:
+            model.opti_th = payload.threshold
+            optimization_df = model.opti(
+                target=target_sequence,
+                mm=payload.mismatches,
+                dev=payload.device,
+            )
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"CRISOT optimization failed: {exc}") from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"CRISOT optimization failed: {exc}") from exc
+
+    optimization_csv_path = _save_dataframe_artifact(
+        optimization_df,
+        prefix=f"crisot_optimize_{target_sequence}",
+    )
+    best_row = _select_best_optimized_row(optimization_df)
+    optimized_available = best_row is not None
+    return CrisotOptimizeResponse(
+        target_sequence=target_sequence,
+        genome_path=str(genome_path),
+        threshold=payload.threshold,
+        mismatches=payload.mismatches,
+        device=payload.device,
+        optimization_csv_path=optimization_csv_path,
+        optimized_available=optimized_available,
+        best_sgrna="" if best_row is None else str(best_row.get("sgRNA", "")),
+        best_mutation="" if best_row is None else str(best_row.get("Mutation", "")),
+        best_crisot_score=0.0 if best_row is None else float(best_row.get("CRISOT-Score", 0.0)),
+        best_crisot_spec=0.0 if best_row is None else float(best_row.get("CRISOT-Spec", 0.0)),
+        best_delta_spec=0.0 if best_row is None else float(best_row.get("delta_Spec", 0.0)),
         cas_offinder_available=True,
     )

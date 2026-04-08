@@ -13,6 +13,8 @@ set -e
 #      - /score
 #      - /spec
 #      - /off-spec
+#      - /optimize
+#    - `/off-spec` 和 `/optimize` 都需要 `cas-offinder` 和参考基因组 FASTA
 #    - `crisot_fp` 暂未封装, 如需启用再单独补 `xgboost` 与训练模型
 # 4. 启动服务:
 #    bash start.sh

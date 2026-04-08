@@ -19,6 +19,7 @@ from agent_core.tools import (
     design_mrna_cds_with_gemorna,
     design_mrna_cds_with_rnarl,
     mock_codon_optimization,
+    optimize_sgrna_with_crisot,
     predict_mrna_stability_with_rnastop,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
@@ -34,6 +35,7 @@ CRISPR_TOOLS = [
     score_crispr_off_target_with_crisot,
     calculate_crispr_specificity_with_crisot,
     search_crispr_off_targets_with_crisot,
+    optimize_sgrna_with_crisot,
 ]
 MRNA_TOOLS = [
     score_rna_ligand_binding_with_gernabind,
@@ -162,6 +164,24 @@ def _needs_crispr_mode(text: str) -> bool:
     )
 
 
+def _needs_crisot_optimization(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "opti",
+            "optimize",
+            "optimization",
+            "优化",
+            "优化sg",
+            "降低off-target",
+            "降低 off-target",
+            "降低脱靶",
+            "improve specificity",
+            "increase specificity",
+        ]
+    )
+
+
 def _extract_path_with_suffixes(text: str, suffixes: Tuple[str, ...]) -> Optional[str]:
     suffix_pattern = "|".join(re.escape(suffix.lstrip(".")) for suffix in suffixes)
 
@@ -256,6 +276,43 @@ def _extract_secondary_structure(text: str) -> Optional[str]:
     return None
 
 
+def _extract_float_setting(text: str, labels: Tuple[str, ...]) -> Optional[float]:
+    joined_labels = "|".join(re.escape(label) for label in labels)
+    pattern = re.compile(rf"(?:{joined_labels})\s*[:=]\s*([0-9]*\.?[0-9]+)", re.IGNORECASE)
+    match = pattern.search(text)
+    if not match:
+        return None
+    try:
+        return float(match.group(1))
+    except ValueError:
+        return None
+
+
+def _extract_int_setting(text: str, labels: Tuple[str, ...]) -> Optional[int]:
+    joined_labels = "|".join(re.escape(label) for label in labels)
+    pattern = re.compile(rf"(?:{joined_labels})\s*[:=]\s*(\d+)", re.IGNORECASE)
+    match = pattern.search(text)
+    if not match:
+        return None
+    try:
+        return int(match.group(1))
+    except ValueError:
+        return None
+
+
+def _extract_string_setting(text: str, labels: Tuple[str, ...]) -> Optional[str]:
+    joined_labels = "|".join(re.escape(label) for label in labels)
+    patterns = [
+        re.compile(rf"""(?:{joined_labels})\s*[:=]\s*["']([^"']+)["']""", re.IGNORECASE),
+        re.compile(rf"""(?:{joined_labels})\s*[:=]\s*([A-Za-z0-9:_-]+)""", re.IGNORECASE),
+    ]
+    for pattern in patterns:
+        match = pattern.search(text)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
 def _extract_gernabind_overrides(text: str) -> dict[str, str]:
     overrides: dict[str, str] = {}
     pdb_path = _extract_path_with_suffixes(text, ("pdb", "cif"))
@@ -331,6 +388,9 @@ def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, A
     lowered = text.lower()
     csv_path = _extract_path_with_suffixes(text, ("csv",))
     genome_path = _extract_path_with_suffixes(text, ("fa", "fasta", "fna", "fas"))
+    threshold = _extract_float_setting(text, ("threshold", "score_threshold", "crisot_threshold"))
+    mismatches = _extract_int_setting(text, ("mm", "mismatch", "mismatches"))
+    device = _extract_string_setting(text, ("device", "dev"))
     sgrna = _extract_crispr_named_sequence(text, ("sgrna", "sg_rna", "guide", "guide_rna"))
     target_sequence = _extract_crispr_named_sequence(text, ("target", "tar", "off_target", "offtarget"))
     discovered_sequences = _extract_crispr_sequences(text)
@@ -344,6 +404,40 @@ def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, A
                 break
     if not target_sequence and sgrna:
         target_sequence = sgrna
+
+    if _needs_crisot_optimization(lowered):
+        if not target_sequence and not sgrna:
+            raise ValueError(
+                "CRISOT optimization requires one 23-nt target sequence. "
+                "Provide it like `target=GAGT...` or include a 23-nt sequence."
+            )
+        if not genome_path:
+            raise ValueError(
+                "CRISOT optimization requires a reference genome FASTA path for Cas-OFFinder."
+            )
+        optimization_target = target_sequence or sgrna
+        target_filepath = save_sequence(optimization_target, prefix="crisot_target")
+        tool_args: dict[str, Any] = {
+            "filepath": target_filepath,
+            "genome_path": genome_path,
+        }
+        if threshold is not None:
+            tool_args["threshold"] = threshold
+        if mismatches is not None:
+            tool_args["mismatches"] = mismatches
+        if device:
+            tool_args["device"] = device
+        state_updates = {
+            "current_filepath": target_filepath,
+            "crisot_target_sequence": optimization_target,
+            "crisot_genome_path": genome_path,
+            "workspace_files": [target_filepath],
+        }
+        return (
+            "optimize_sgrna_with_crisot",
+            tool_args,
+            state_updates,
+        )
 
     if csv_path and any(k in lowered for k in ["spec", "specificity", "specific"]):
         state_updates = {
@@ -374,15 +468,16 @@ def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, A
 
     if genome_path and any(k in lowered for k in ["spec", "specificity", "specific", "genome", "cas-offinder", "casoffinder", "off-spec", "off_spec"]):
         state_updates["crisot_genome_path"] = genome_path
-        return (
-            "search_crispr_off_targets_with_crisot",
-            {
-                "filepath": sgrna_filepath,
-                "target_sequence": target_sequence,
-                "genome_path": genome_path,
-            },
-            state_updates,
-        )
+        tool_args = {
+            "filepath": sgrna_filepath,
+            "target_sequence": target_sequence,
+            "genome_path": genome_path,
+        }
+        if mismatches is not None:
+            tool_args["mismatches"] = mismatches
+        if device:
+            tool_args["device"] = device
+        return ("search_crispr_off_targets_with_crisot", tool_args, state_updates)
 
     return (
         "score_crispr_off_target_with_crisot",
@@ -831,6 +926,31 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if scored_csv_filepath:
                 state["crisot_output_csv_filepath"] = scored_csv_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [scored_csv_filepath]
+        elif tool_name == "optimize_sgrna_with_crisot":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+                if input_filepath.startswith("workspace/"):
+                    state["workspace_files"] = state.get("workspace_files", []) + [input_filepath]
+            state["crisot_target_sequence"] = str(tool_result.get("target_sequence", ""))
+            state["crisot_genome_path"] = str(tool_result.get("genome_path", ""))
+            state["crisot_optimized_available"] = bool(tool_result.get("optimized_available", False))
+            state["crisot_best_mutation"] = str(tool_result.get("best_mutation", ""))
+            state["crisot_best_delta_spec"] = float(tool_result.get("best_delta_spec", 0.0))
+            state["crisot_score"] = float(tool_result.get("best_crisot_score", 0.0))
+            state["crisot_spec"] = float(tool_result.get("best_crisot_spec", 0.0))
+            best_sgrna = str(tool_result.get("best_sgrna", ""))
+            if best_sgrna:
+                state["candidate_sequence"] = best_sgrna
+            optimization_csv_filepath = str(tool_result.get("optimization_csv_filepath", ""))
+            if optimization_csv_filepath:
+                state["crisot_optimization_csv_filepath"] = optimization_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [optimization_csv_filepath]
+            optimized_sgrna_filepath = str(tool_result.get("optimized_sgrna_filepath", ""))
+            if optimized_sgrna_filepath:
+                state["crisot_optimized_sgrna_filepath"] = optimized_sgrna_filepath
+                state["current_filepath"] = optimized_sgrna_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [optimized_sgrna_filepath]
         elif tool_name == "mock_codon_optimization":
             state["cai_score"] = float(tool_result.get("cai_score", 0.0))
             optimized_filepath = str(tool_result.get("optimized_filepath", ""))
@@ -1046,6 +1166,11 @@ def critic_node(state: AgentState) -> AgentState:
             f"crisot_output_csv_filepath={state.get('crisot_output_csv_filepath', '')}; "
             f"crisot_genome_path={state.get('crisot_genome_path', '')}; "
             f"crisot_off_target_count={state.get('crisot_off_target_count', 0)}; "
+            f"crisot_optimization_csv_filepath={state.get('crisot_optimization_csv_filepath', '')}; "
+            f"crisot_optimized_sgrna_filepath={state.get('crisot_optimized_sgrna_filepath', '')}; "
+            f"crisot_best_mutation={state.get('crisot_best_mutation', '')}; "
+            f"crisot_best_delta_spec={state.get('crisot_best_delta_spec', 0.0)}; "
+            f"crisot_optimized_available={state.get('crisot_optimized_available', False)}; "
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
             f"design_model={state.get('design_model', '')}; "

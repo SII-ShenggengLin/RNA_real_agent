@@ -14,6 +14,8 @@
   - specificity calculation from a CSV file with `On` / `Off` columns
 - `CRISOT off-spec`
   - genome-wide specificity calculation through Cas-OFFinder
+- `CRISOT optimize`
+  - single-guide optimization through CRISOT-Opti
 
 ## Important Engineering Choice
 
@@ -21,7 +23,7 @@ The upstream `CRISOT.py` imports `utils.py` at module import time, and `utils.py
 That means even the lightweight `score` command fails if `xgboost` is absent.
 
 This project's `crisot_service` avoids that problem by calling the lower-level
-`crisot_modules.py` runtime directly for `score/spec/off-spec`.
+`crisot_modules.py` runtime directly for `score/spec/off-spec/optimize`.
 
 ## Linux Deployment Checklist
 
@@ -39,9 +41,9 @@ cd rna_agent_system/microservices/crisot_service
 conda env create -f environment.yml
 ```
 
-3. Install `cas-offinder` and ensure it is available in `PATH` if you want `/off-spec`.
+3. Install `cas-offinder` and ensure it is available in `PATH` if you want `/off-spec` or `/optimize`.
 
-4. Prepare a reference genome FASTA on the Linux server for `/off-spec`.
+4. Prepare a reference genome FASTA on the Linux server for `/off-spec` or `/optimize`.
 
 5. Start the service:
 
@@ -83,6 +85,18 @@ Genome-wide off-spec:
   "sgrna": "GAGTCCGAGCAGAAGAAGAANGG",
   "target_sequence": "GAGTCCGAGCAGAAGAAGAAGGG",
   "genome_path": "/absolute/path/to/hg38.fa",
+  "mismatches": 6,
+  "device": "C"
+}
+```
+
+Optimization:
+
+```json
+{
+  "target_sequence": "GAGTCCGAGGAGAAGACGAAGGG",
+  "genome_path": "/absolute/path/to/hg38.fa",
+  "threshold": 0.8,
   "mismatches": 6,
   "device": "C"
 }

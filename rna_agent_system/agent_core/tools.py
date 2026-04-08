@@ -144,6 +144,39 @@ class CrisotOffSpecInput(BaseModel):
     )
 
 
+class CrisotOptimizeInput(BaseModel):
+    """Input schema for CRISOT sgRNA optimization."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to a workspace or repo-relative file containing the target/guide sequence.",
+    )
+    genome_path: str = Field(
+        ...,
+        description="Reference genome FASTA path passed through to CRISOT optimization.",
+    )
+    threshold: float = Field(
+        default=0.8,
+        ge=0.0,
+        le=1.0,
+        description="Minimum retained CRISOT-Score threshold for optimized guides.",
+    )
+    mismatches: int = Field(
+        default=6,
+        ge=0,
+        le=10,
+        description="Mismatch tolerance passed through to Cas-OFFinder.",
+    )
+    device: str = Field(
+        default="C",
+        description="Cas-OFFinder device flag such as `C` or `G0`.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/optimize",
+        description="REST endpoint for the CRISOT optimization microservice.",
+    )
+
+
 @tool(args_schema=SirnaEfficiencyInput)
 def predict_sirna_efficiency(filepath: str, service_url: str = "http://127.0.0.1:8001/predict") -> dict[str, Any]:
     """Predict mock siRNA efficiency using microservice API.
@@ -392,6 +425,88 @@ def search_crispr_off_targets_with_crisot(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"CRISOT off-spec request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=CrisotOptimizeInput)
+def optimize_sgrna_with_crisot(
+    filepath: str,
+    genome_path: str,
+    threshold: float = 0.8,
+    mismatches: int = 6,
+    device: str = "C",
+    service_url: str = "http://127.0.0.1:8011/optimize",
+) -> dict[str, Any]:
+    """Optimize one sgRNA with CRISOT-Opti.
+
+    Args:
+        filepath: Path to a file containing the target/guide sequence.
+            IMPORTANT: pass a filepath rather than inline guide sequence text.
+        genome_path: Reference genome FASTA path used by Cas-OFFinder.
+        threshold: Minimum retained CRISOT-Score for optimized guides.
+        mismatches: Cas-OFFinder mismatch tolerance.
+        device: Cas-OFFinder device selector such as `C` or `G0`.
+        service_url: REST endpoint for the CRISOT optimization microservice.
+
+    Returns:
+        Dict with the best optimized sgRNA, summary metrics, and CSV artifacts.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    target_sequence = _normalize_crisot_sequence(read_sequence(filepath))
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "target_sequence": target_sequence,
+                "genome_path": genome_path,
+                "threshold": threshold,
+                "mismatches": mismatches,
+                "device": device,
+            },
+            timeout=3600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "optimization_csv_path" not in payload:
+            raise ValueError("Missing `optimization_csv_path` in CRISOT optimization response.")
+
+        result: dict[str, Any] = {
+            "input_filepath": filepath,
+            "target_sequence": target_sequence,
+            "genome_path": genome_path,
+            "threshold": float(payload.get("threshold", threshold)),
+            "mismatches": int(payload.get("mismatches", mismatches)),
+            "device": str(payload.get("device", device)),
+            "optimized_available": bool(payload.get("optimized_available", False)),
+            "best_sgrna": str(payload.get("best_sgrna", "")),
+            "best_mutation": str(payload.get("best_mutation", "")),
+            "best_crisot_score": float(payload.get("best_crisot_score", 0.0)),
+            "best_crisot_spec": float(payload.get("best_crisot_spec", 0.0)),
+            "best_delta_spec": float(payload.get("best_delta_spec", 0.0)),
+            "model": payload.get("model", "CRISOT-Opti"),
+        }
+        optimization_csv_path = payload.get("optimization_csv_path")
+        if optimization_csv_path:
+            result["optimization_csv_filepath"] = copy_file_to_workspace(
+                str(optimization_csv_path),
+                prefix="crisot_optimize",
+                suffix=".csv",
+            )
+        best_sgrna = result["best_sgrna"]
+        if best_sgrna:
+            result["optimized_sgrna_filepath"] = save_sequence(best_sgrna, prefix="crisot_optimized_sgrna")
+        return result
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"CRISOT optimize request failed: {exc}{suffix}") from exc
 
 
 class MrnaToolInput(BaseModel):
