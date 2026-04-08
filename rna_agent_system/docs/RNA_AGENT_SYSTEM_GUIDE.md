@@ -212,6 +212,19 @@ rna_agent_system/
   - 当前实现直接调用上游 `crisot_modules.py`
   - 会绕开上游 `CRISOT.py` 对 `xgboost` 的顶层硬依赖
 
+- `odesign_service/`
+  - ODesign 的 biomolecular design 推理服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8012`
+  - 当前主项目里优先接入的是 RNA 相关能力
+  - 当前已封装：
+    - `GET /health`
+    - `POST /design/from-json`
+  - 当前服务定位是：
+    - Linux + CUDA 服务器侧运行
+    - 通过输入 JSON 文件驱动上游推理
+    - 把预测结果 `*.cif` / `run.log` 等摘要回传给 Agent
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -226,6 +239,7 @@ rna_agent_system/
 - `RhoDesign/`
 - `RNAsmol/`
 - `CRISOT/`
+- `ODesign/`
 
 **重要：**
 
@@ -235,6 +249,7 @@ rna_agent_system/
 - `external_repos/RhoFold` 也应作为 **git submodule** 管理
 - `external_repos/RhoDesign` 也建议作为 **git submodule** 管理
 - `external_repos/CRISOT` 也应作为 **git submodule** 管理
+- `external_repos/ODesign` 也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -248,6 +263,7 @@ rna_agent_system/
 - `RhoFold` 生成的 `pdb` / `ct` / `npz` / `log`
 - `RhoDesign` 生成的 `fasta` / `stdout log` / `stderr log`
 - `CRISOT` 生成的 specificity / optimization CSV
+- `ODesign` 生成的 `cif` / `run.log` / error logs
 - 其他中间输出
 
 所有长序列原则上都应先保存到 `workspace/`，然后在 Agent 内只传 `filepath`。
@@ -342,6 +358,20 @@ User Input
   - 如果用户文本里给了 `.npy` 路径，则自动走带 2D 约束的模式
   - 如果没有提供结构文件，当前会回退到 `external_repos/RhoDesign/example/2zh6_B.pdb` 作为默认调试输入
 
+- 如果用户文本显式提到 `ODesign` / `odesign`
+  - 触发 `run_odesign_inference(input_json_filepath, infer_model_name="odesign_base_na_rigid", design_modality="rna", ...)`
+  - 当前支持三种入口：
+    - 显式给 `ODesign` 输入 JSON 路径
+    - 直接请求 `RNA backbone` / `length=...`
+    - 直接请求 `protein-binding RNA`，并提供：
+      - `ref_file=/path/to/*.cif|*.pdb`
+      - `hotspot=C/18,C/90,...`
+      - `length=61`
+  - 对于 `protein-binding RNA` 模式：
+    - 如果给了 `protein_segment=C/1-96`，则直接透传
+    - 如果没给 `protein_segment`，但给了 `protein_chain=C` 或 hotspot 所在链，当前节点会尝试从参考结构自动推断蛋白链范围
+  - 当前仍建议复杂任务优先显式准备 JSON，而不是让规则解析自由生成所有字段
+
 - 如果用户文本偏“设计型”
   - 触发 `design_mrna_cds_with_gemorna(filepath)`
   - 输入文件保存的是蛋白序列
@@ -429,6 +459,12 @@ User Input
 - `rnastop_mean_deg_mg_50c`
 - `rnastop_mfe`
 - `rnastop_checkpoint_path`
+- `odesign_input_json_filepath`
+- `odesign_output_dir`
+- `odesign_prediction_filepaths`
+- `odesign_run_log_filepath`
+- `odesign_model_name`
+- `odesign_design_modality`
 
 ### 5.5 Critic
 
@@ -466,11 +502,12 @@ User Input
 - `8009`: `rnastop_service`
 - `8010`: `gernabind_service`
 - `8011`: `crisot_service`
+- `8012`: `odesign_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8012`: 新工具 A
-- `8013`: 新工具 B
+- `8013`: 新工具 A
+- `8014`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -1998,6 +2035,204 @@ external_repos/CRISOT/data/hs1.fa
 
 ---
 
+## 10F. ODesign 的接入方式
+
+### 10F.1 上游源码层
+
+目录：
+
+```text
+external_repos/ODesign
+```
+
+来源：
+
+- 上游仓库：[OTeam-AI4S/ODesign](https://github.com/OTeam-AI4S/ODesign.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 vendoring 进主仓库历史
+
+### 10F.2 为什么当前采用“项目内微服务封装”
+
+当前接入的 `ODesign` 不是直接让 Agent 去调用上游内部 Python 模块，而是采用：
+
+- 保留上游源码仓库
+- 在 `microservices/odesign_service/` 中封装稳定 REST 入口
+
+这样做的原因是：
+
+- 上游推理入口是 JSON 驱动的命令行脚本
+- 运行环境依赖 Linux + CUDA 12.1，更适合作为服务器侧工具
+- 输出目录中会产生多份 `*.cif` / `run.log` / traceback 文件，更适合通过文件路径管理
+- 本项目仍然希望保持“Agent 不直接耦合第三方仓库内部实现”的架构原则
+
+### 10F.3 当前微服务能力
+
+目录：
+
+```text
+microservices/odesign_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /design/from-json`
+
+输入：
+
+- `input_json_path`
+- `infer_model_name`
+- `design_modality`
+- `exp_name`
+- `seeds_json`
+- `n_sample`
+- `use_msa`
+- `num_workers`
+- `cuda_visible_devices`
+
+输出：
+
+- `output_dir`
+- `prediction_filepaths`
+- `sample_names`
+- `run_log_path`
+- `error_filepaths`
+- `stdout`
+- `stderr`
+
+### 10F.4 当前 Agent 工具能力
+
+工具函数：
+
+- `run_odesign_inference(input_json_filepath, service_url="http://127.0.0.1:8012/design/from-json", infer_model_name="odesign_base_na_rigid", design_modality="rna", ...)`
+
+当前实现会把：
+
+- ODesign 生成的 `*.cif`
+- `run.log`
+- 服务 stdout / stderr
+- error logs
+
+复制回 `workspace/`，这样上层 Agent 仍然以文件路径和摘要信息为主。
+
+### 10F.5 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已经接入 `ODesign`：
+
+- `router_node` 会识别 `odesign`
+- `mrna_specialist_node` 当前支持三种规则入口：
+  - 显式传入 `.json` 路径
+  - `RNA backbone` / `length=...`
+  - `protein-binding RNA` 自然语言请求
+
+当前 `protein-binding RNA` 规则解析支持：
+
+- `ref_file=/path/to/file.cif`
+- `hotspot=C/18,C/90,C/79,C/49`
+- `length=61`
+- `protein_chain=C`
+- `protein_segment=C/1-96`
+- `sample_name=my_case`
+
+其中：
+
+- 如果用户没有显式给 `protein_segment`
+- 但给了 `protein_chain`，或 hotspot 链本身足够明确
+- 当前节点会尝试从参考结构文件自动推断蛋白链残基范围
+
+### 10F.6 ODesign 的实际运行注意事项
+
+#### 推荐运行环境
+
+当前更合理的实际运行方式是：
+
+- Linux
+- Conda
+- Python 3.10
+- CUDA 12.1
+- NVIDIA GPU
+
+macOS 不作为 ODesign 的最终运行环境，只适合开发与推送代码。
+
+#### 推理所需 checkpoint
+
+当前 RNA 相关最小推理闭环至少需要：
+
+```text
+external_repos/ODesign/ckpt/odesign_base_na_rigid.pt
+external_repos/ODesign/ckpt/oinvfold_rna.ckpt
+```
+
+其中：
+
+- `odesign_base_na_rigid.pt` 来自 ODesign 主模型
+- `oinvfold_rna.ckpt` 来自 OInvFold
+
+可通过上游脚本下载：
+
+```bash
+cd external_repos/ODesign
+bash ckpt/get_odesign_ckpt.sh ckpt
+```
+
+#### 推理所需 data 文件
+
+当前推理还需要至少准备：
+
+```text
+external_repos/ODesign/data/components.v20240608.cif
+external_repos/ODesign/data/components.v20240608.cif.rdkit_mol.pkl
+```
+
+注意：
+
+- `odesign_full_data.tar.gz` 是训练数据，不是最小推理闭环所必需
+- 当前项目只要求部署推理所需的两个 data 文件
+
+#### 依赖版本注意事项
+
+当前实际调试中已经遇到两类常见环境坑：
+
+- `biotite` 版本过低时，可能缺少 `biotite.interface.rdkit`
+- `networkx` 版本漂移时，可能触发上游导入期异常
+
+当前更稳妥的原则是：
+
+- 保持与上游 `requirements.txt` 尽量一致
+- 如果为了 `biotite.interface.rdkit` 需要升级 `biotite`
+- 应优先以服务器上的真实最小推理闭环结果为准，而不是只看 dependency resolver 警告
+
+#### 服务器侧下载资源，开发机不跑重推理
+
+当前推荐工作方式仍然是：
+
+- macOS：改代码、提交 GitHub
+- Linux 服务器：下载 ODesign checkpoint / data、创建环境、启动服务、执行推理
+
+### 10F.7 当前验证状态
+
+`ODesign` 目前已经完成以下验证：
+
+- 上游源码已成功以 submodule 形式接入
+- `odesign_service` 已成功接入项目
+- `RNA backbone` 上游最小推理已在 Linux 服务器跑通
+- `protein-binding RNA` 上游示例已可作为微服务输入
+- Agent 自然语言已成功触发：
+  - `RNA backbone`
+  - `protein-binding RNA`
+- 已修复自然语言 `hotspot=... length=...` 解析问题
+
+这意味着：
+
+- `ODesign` 已经通过“上游源码 -> 微服务接口 -> Agent 工作流 -> 前端自然语言触发”这一层验证
+- 当前项目里已经具备真实的 ODesign RNA 设计入口
+- 但复杂 ODesign 任务仍建议优先通过显式 JSON 输入，避免规则解析覆盖不足
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -2110,6 +2345,7 @@ microservices/new_tool_service/
 - `RhoDesign`
 - `RNAsmol`
 - `RNASTOP`
+- `ODesign`
 
 新 clone：
 
@@ -2170,6 +2406,10 @@ git submodule update --init --recursive
 - `external_repos/GerNA-Bind/Model/Biosensor_random.pth`
 - `external_repos/GerNA-Bind/Model/Hariboss_Model_baseline.pth`
 - `external_repos/GerNA-Bind/Model/RNA-FM_pretrained.pth`
+- `external_repos/ODesign/ckpt/odesign_base_na_rigid.pt`
+- `external_repos/ODesign/ckpt/oinvfold_rna.ckpt`
+- `external_repos/ODesign/data/components.v20240608.cif`
+- `external_repos/ODesign/data/components.v20240608.cif.rdkit_mol.pkl`
 
 不应默认指望通过主仓库 Git 历史传到 Linux 服务器，更推荐在服务器侧单独补齐，或确认是否需要额外的大文件传输方案。
 
@@ -2408,6 +2648,8 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - CRISOT single-pair 打分请求
 - CRISOT genome-wide specificity 请求
 - CRISOT sgRNA 优化请求
+- ODesign RNA backbone 请求
+- ODesign protein-binding RNA 请求
 
 ---
 
@@ -2622,6 +2864,39 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 - 最后再验证 `optimize`
 - 优化初期先用 `mm=3`
 
+### 14.16 `ODesign` 当前更适合作为“服务器侧重工具”而不是本地开发机工具
+
+当前 `ODesign` 最容易踩坑的地方之一不是 Agent 规则，而是：
+
+- 运行环境偏重
+- 依赖 CUDA 12.1
+- 推理需要额外 checkpoint 与 data 文件
+
+因此当前更稳妥的使用原则是：
+
+- 开发机只负责改代码和推 GitHub
+- Linux 服务器负责安装环境和运行推理
+- 优先先测上游 `scripts/inference.py`
+- 再测 `odesign_service`
+- 最后再测前端自然语言入口
+
+### 14.17 `ODesign` 的自然语言入口仍是有限规则解析
+
+当前已经支持：
+
+- 显式 JSON
+- RNA backbone
+- protein-binding RNA
+
+但这并不意味着：
+
+- 任意 ODesign 复杂任务都能被自由自然语言稳定还原成 JSON
+
+因此：
+
+- 复杂任务仍建议显式写 JSON
+- 当前自然语言入口更适合作为“常用模板调用”而不是完整的 ODesign 任务编排器
+
 ---
 
 ## 15. 后续最推荐的发展路线
@@ -2630,7 +2905,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
@@ -2643,6 +2918,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
   - 优化 `RhoDesign` 的输入文件校验与错误提示
   - 优化 `RNAsmol` 的输入解析与批量评分模式
   - 为 `GerNA-Bind` 增加更细粒度的前端参数透传与批量推理模式
+  - 为 `ODesign` 扩展更多自然语言模板到 JSON 的安全映射
   - 优化前端结果展示与文件下载体验
 
 ---
