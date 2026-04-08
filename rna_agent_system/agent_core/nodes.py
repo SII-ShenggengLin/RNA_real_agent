@@ -313,7 +313,7 @@ def _extract_secondary_structure(text: str) -> Optional[str]:
 def _extract_hotspot(text: str) -> Optional[str]:
     patterns = [
         re.compile(
-            r"""(?:hotspot|hotspots|binding_site|binding-site|热点)\s*[:=]\s*["']?([A-Za-z0-9_,/\s-]+)["']?""",
+            r"""(?:hotspot|hotspots|binding_site|binding-site|热点)\s*[:=]\s*["']?([A-Za-z0-9_,/-]+)["']?""",
             re.IGNORECASE,
         ),
     ]
