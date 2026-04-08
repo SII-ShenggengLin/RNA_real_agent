@@ -10,7 +10,7 @@ from typing import Any, Optional, Tuple
 
 from langchain_core.messages import AIMessage, ToolMessage
 
-from agent_core.file_manager import save_sequence
+from agent_core.file_manager import save_sequence, save_text_file
 from agent_core.state import AgentState
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
@@ -24,6 +24,7 @@ from agent_core.tools import (
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
+    run_odesign_inference,
     score_crispr_off_target_with_crisot,
     search_crispr_off_targets_with_crisot,
     score_rna_ligand_binding_with_gernabind,
@@ -47,10 +48,39 @@ MRNA_TOOLS = [
     design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
     design_rna_sequence_with_rhodesign,
+    run_odesign_inference,
 ]
 TOOLS = SIRNA_TOOLS + CRISPR_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROTEIN_RESIDUE_NAMES = {
+    "ALA",
+    "ARG",
+    "ASN",
+    "ASP",
+    "CYS",
+    "GLN",
+    "GLU",
+    "GLY",
+    "HIS",
+    "ILE",
+    "LEU",
+    "LYS",
+    "MET",
+    "PHE",
+    "PRO",
+    "SER",
+    "THR",
+    "TRP",
+    "TYR",
+    "VAL",
+    "MSE",
+    "SEC",
+    "PYL",
+    "ASX",
+    "GLX",
+    "UNK",
+}
 
 
 def _msg_text(message: Any) -> str:
@@ -145,6 +175,10 @@ def _needs_rnastop_prediction(text: str) -> bool:
             "半衰期",
         ]
     )
+
+
+def _needs_odesign_mode(text: str) -> bool:
+    return "odesign" in text
 
 
 def _needs_crispr_mode(text: str) -> bool:
@@ -276,6 +310,23 @@ def _extract_secondary_structure(text: str) -> Optional[str]:
     return None
 
 
+def _extract_hotspot(text: str) -> Optional[str]:
+    patterns = [
+        re.compile(
+            r"""(?:hotspot|hotspots|binding_site|binding-site|热点)\s*[:=]\s*["']?([A-Za-z0-9_,/\s-]+)["']?""",
+            re.IGNORECASE,
+        ),
+    ]
+    for pattern in patterns:
+        match = pattern.search(text)
+        if not match:
+            continue
+        candidate = match.group(1).strip().replace(" ", "")
+        if re.fullmatch(r"[A-Za-z0-9]+/\d+(?:,[A-Za-z0-9]+/\d+)*", candidate):
+            return candidate
+    return None
+
+
 def _extract_float_setting(text: str, labels: Tuple[str, ...]) -> Optional[float]:
     joined_labels = "|".join(re.escape(label) for label in labels)
     pattern = re.compile(rf"(?:{joined_labels})\s*[:=]\s*([0-9]*\.?[0-9]+)", re.IGNORECASE)
@@ -311,6 +362,137 @@ def _extract_string_setting(text: str, labels: Tuple[str, ...]) -> Optional[str]
         if match:
             return match.group(1).strip()
     return None
+
+
+def _extract_bool_setting(text: str, labels: Tuple[str, ...]) -> Optional[bool]:
+    joined_labels = "|".join(re.escape(label) for label in labels)
+    pattern = re.compile(
+        rf"(?:{joined_labels})\s*[:=]\s*(true|false|yes|no|on|off|1|0)",
+        re.IGNORECASE,
+    )
+    match = pattern.search(text)
+    if not match:
+        return None
+    value = match.group(1).strip().lower()
+    return value in {"true", "yes", "on", "1"}
+
+
+def _tokenize_mmcif_row(line: str) -> list[str]:
+    return re.findall(r'''(?:'[^']*'|"[^"]*"|\S+)''', line)
+
+
+def _parse_pdb_protein_chain_ranges(structure_path: Path) -> dict[str, Tuple[int, int]]:
+    ranges: dict[str, list[int]] = {}
+    for line in structure_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if not line.startswith("ATOM"):
+            continue
+        residue_name = line[17:20].strip().upper()
+        if residue_name not in PROTEIN_RESIDUE_NAMES:
+            continue
+        chain_id = line[21:22].strip()
+        residue_id_text = line[22:26].strip()
+        if not chain_id or not residue_id_text:
+            continue
+        try:
+            residue_id = int(residue_id_text)
+        except ValueError:
+            continue
+        ranges.setdefault(chain_id, []).append(residue_id)
+    return {
+        chain_id: (min(residue_ids), max(residue_ids))
+        for chain_id, residue_ids in ranges.items()
+        if residue_ids
+    }
+
+
+def _parse_cif_protein_chain_ranges(structure_path: Path) -> dict[str, Tuple[int, int]]:
+    ranges: dict[str, list[int]] = {}
+    lines = structure_path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    in_atom_loop = False
+    for line in lines:
+        if line.startswith("_atom_site.group_PDB"):
+            in_atom_loop = True
+            continue
+        if not in_atom_loop:
+            continue
+        if not line or line.startswith("#"):
+            continue
+        if not (line.startswith("ATOM") or line.startswith("HETATM")):
+            continue
+        tokens = _tokenize_mmcif_row(line)
+        if len(tokens) < 24:
+            continue
+        residue_name = tokens[22].strip("'\"").upper()
+        if residue_name not in PROTEIN_RESIDUE_NAMES:
+            continue
+        chain_id = tokens[23].strip("'\"")
+        residue_id_text = tokens[21].strip("'\"")
+        if not chain_id or residue_id_text in {"?", "."}:
+            continue
+        try:
+            residue_id = int(residue_id_text)
+        except ValueError:
+            continue
+        ranges.setdefault(chain_id, []).append(residue_id)
+    return {
+        chain_id: (min(residue_ids), max(residue_ids))
+        for chain_id, residue_ids in ranges.items()
+        if residue_ids
+    }
+
+
+def _infer_odesign_protein_segment(
+    structure_path_str: str,
+    hotspot: str,
+    explicit_protein_chain: Optional[str] = None,
+) -> str:
+    structure_path = Path(structure_path_str)
+    suffix = structure_path.suffix.lower()
+    if suffix == ".pdb":
+        ranges = _parse_pdb_protein_chain_ranges(structure_path)
+    elif suffix == ".cif":
+        ranges = _parse_cif_protein_chain_ranges(structure_path)
+    else:
+        raise ValueError(
+            "ODesign protein-binding RNA mode currently supports `.pdb` and `.cif` structure files."
+        )
+
+    if not ranges:
+        raise ValueError(
+            f"Unable to infer protein chain ranges from structure file: {structure_path_str}"
+        )
+
+    hotspot_entries = [entry for entry in hotspot.split(",") if entry.strip()]
+    hotspot_chain = hotspot_entries[0].split("/")[0].strip() if hotspot_entries else ""
+    preferred_chain = explicit_protein_chain or hotspot_chain
+
+    if preferred_chain and preferred_chain in ranges:
+        start, end = ranges[preferred_chain]
+        return f"{preferred_chain}/{start}-{end}"
+
+    if len(ranges) == 1:
+        chain_id, (start, end) = next(iter(ranges.items()))
+        return f"{chain_id}/{start}-{end}"
+
+    raise ValueError(
+        "Unable to determine the target protein chain automatically. "
+        "Please provide `protein_chain=...` or `protein_segment=CHAIN/start-end`."
+    )
+
+
+def _needs_odesign_protein_binding_rna(text: str) -> bool:
+    return any(
+        key in text
+        for key in [
+            "protein-binding rna",
+            "protein binding rna",
+            "prot_binding_rna",
+            "蛋白结合rna",
+            "蛋白结合 rna",
+            "结合蛋白的rna",
+            "结合蛋白的 rna",
+        ]
+    )
 
 
 def _extract_gernabind_overrides(text: str) -> dict[str, str]:
@@ -357,6 +539,174 @@ def _resolve_rnastop_input(text: str) -> Tuple[str, bool]:
         )
 
     return save_sequence(rna_sequence, prefix="rnastop_rna"), True
+
+
+def _extract_odesign_request(text: str) -> Tuple[dict[str, Any], dict[str, Any]]:
+    lowered = text.lower()
+    input_json_path = _extract_path_with_suffixes(text, ("json",))
+    created_workspace_file = False
+
+    if not input_json_path:
+        if _needs_odesign_protein_binding_rna(lowered):
+            ref_file = _extract_path_with_suffixes(text, ("cif", "pdb"))
+            if not ref_file:
+                raise ValueError(
+                    "ODesign protein-binding RNA mode requires a reference `.cif` or `.pdb` file."
+                )
+            hotspot = _extract_hotspot(text)
+            if not hotspot:
+                raise ValueError(
+                    "ODesign protein-binding RNA mode requires hotspot residues, for example "
+                    "`hotspot=C/18,C/90,C/79,C/49`."
+                )
+            length = _extract_int_setting(text, ("length", "len", "rna_length", "长度"))
+            if length is None:
+                nt_match = re.search(r"(\d+)\s*(?:nt|nts|nucleotide|nucleotides)", text, re.IGNORECASE)
+                if nt_match:
+                    length = int(nt_match.group(1))
+            if length is None or length <= 0:
+                raise ValueError(
+                    "ODesign protein-binding RNA mode requires the RNA length, for example "
+                    "`length=61` or `61 nt`."
+                )
+
+            protein_segment = _extract_string_setting(text, ("protein_segment", "target_segment"))
+            protein_chain = _extract_string_setting(text, ("protein_chain", "target_chain"))
+            resolved_ref_file = Path(ref_file)
+            if not resolved_ref_file.is_absolute():
+                resolved_ref_file = (PROJECT_ROOT / ref_file).resolve()
+                if not resolved_ref_file.exists():
+                    resolved_ref_file = (PROJECT_ROOT.parent / ref_file).resolve()
+            if not resolved_ref_file.exists():
+                raise ValueError(
+                    f"ODesign reference structure file does not exist: {ref_file}"
+                )
+            if protein_segment:
+                normalized_protein_segment = protein_segment.replace(" ", "")
+            else:
+                normalized_protein_segment = _infer_odesign_protein_segment(
+                    str(resolved_ref_file),
+                    hotspot,
+                    explicit_protein_chain=protein_chain,
+                )
+
+            sample_name = (
+                _extract_string_setting(text, ("sample_name", "name", "job_name"))
+                or f"odesign_prot_binding_rna_{length}"
+            )
+            input_spec = [
+                {
+                    "name": sample_name,
+                    "ref_file": ref_file,
+                    "chains": [
+                        {
+                            "chain_type": "proteinChain",
+                            "sequence": normalized_protein_segment,
+                        },
+                        {
+                            "chain_type": "rnaChain",
+                            "sequence": f"{length}-{length}",
+                        },
+                    ],
+                    "hotspot": hotspot,
+                    "center_method": "hotspot_center",
+                }
+            ]
+            input_json_path = save_text_file(
+                json.dumps(input_spec, ensure_ascii=True, indent=2),
+                prefix="odesign_input",
+                suffix=".json",
+            )
+            created_workspace_file = True
+        elif any(
+            key in lowered
+            for key in ["backbone", "骨架", "de novo", "从头", "length", "长度", "nt"]
+        ):
+            length = _extract_int_setting(text, ("length", "len", "rna_length", "长度"))
+            if length is None:
+                nt_match = re.search(r"(\d+)\s*(?:nt|nts|nucleotide|nucleotides)", text, re.IGNORECASE)
+                if nt_match:
+                    length = int(nt_match.group(1))
+            if length is None or length <= 0:
+                raise ValueError(
+                    "ODesign RNA backbone mode requires a positive length, for example "
+                    "`ODesign 设计 50 nt RNA backbone` or `length=50`."
+                )
+            input_spec = [
+                {
+                    "name": f"odesign_rna_bb_{length}",
+                    "ref_file": "",
+                    "chains": [
+                        {
+                            "chain_type": "rnaChain",
+                            "sequence": f"{length}-{length}",
+                        }
+                    ],
+                }
+            ]
+            input_json_path = save_text_file(
+                json.dumps(input_spec, ensure_ascii=True, indent=2),
+                prefix="odesign_input",
+                suffix=".json",
+            )
+            created_workspace_file = True
+        else:
+            raise ValueError(
+                "ODesign currently supports an explicit `.json` input filepath, a protein-binding RNA "
+                "request with `ref_file + hotspot + RNA length`, or a simple RNA backbone request."
+            )
+
+    model_match = re.search(r"(odesign_base_[a-z_]+)", text, re.IGNORECASE)
+    infer_model_name = (
+        model_match.group(1) if model_match else "odesign_base_na_rigid"
+    )
+    design_modality = _extract_string_setting(
+        text,
+        ("design_modality", "odesign_modality", "modality"),
+    )
+    if not design_modality:
+        design_modality = "dna" if "dna" in lowered else "rna"
+
+    tool_args: dict[str, Any] = {
+        "input_json_filepath": input_json_path,
+        "infer_model_name": infer_model_name,
+        "design_modality": design_modality,
+    }
+
+    exp_name = _extract_string_setting(text, ("exp_name", "experiment", "job_name"))
+    if exp_name:
+        tool_args["exp_name"] = exp_name
+
+    n_sample = _extract_int_setting(text, ("n_sample", "samples", "num_samples"))
+    if n_sample is not None:
+        tool_args["n_sample"] = n_sample
+
+    seed = _extract_int_setting(text, ("seed",))
+    if seed is not None:
+        tool_args["seeds_json"] = json.dumps([seed], ensure_ascii=True)
+
+    use_msa = _extract_bool_setting(text, ("use_msa", "msa"))
+    if use_msa is not None:
+        tool_args["use_msa"] = use_msa
+
+    enable_partial_diff = _extract_bool_setting(
+        text,
+        ("partial_diff", "enable_partial_diff"),
+    )
+    if enable_partial_diff is not None:
+        tool_args["enable_partial_diff"] = enable_partial_diff
+
+    snr = _extract_float_setting(text, ("snr",))
+    if snr is not None:
+        tool_args["snr"] = snr
+
+    state_updates = {
+        "odesign_input_json_filepath": input_json_path,
+        "workspace_files": [input_json_path]
+        if created_workspace_file or input_json_path.startswith("workspace/")
+        else [],
+    }
+    return tool_args, state_updates
 
 
 def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
@@ -530,6 +880,7 @@ def router_node(state: AgentState) -> AgentState:
             "配体",
             "gernabind",
             "gerna-bind",
+            "odesign",
         ]
     ):
         route = "mrna_specialist"
@@ -622,6 +973,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     raw_text = state.get("input_sequence", "")
     user_text = raw_text.lower()
     state["active_specialist"] = "mrna_specialist"
+    odesign_mode = _needs_odesign_mode(user_text)
     gernabind_mode = _needs_gernabind_scoring(user_text)
     rnasmol_mode = _needs_rnasmol_scoring(user_text)
     rnastop_mode = _needs_rnastop_prediction(user_text)
@@ -631,7 +983,22 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         k in user_text for k in ["design", "设计", "gemorna", "rnarl", "protein", "cds", "utr", "生成"]
     )
 
-    if gernabind_mode:
+    if odesign_mode:
+        tool_args, state_updates = _extract_odesign_request(raw_text)
+        extra_workspace_files = state_updates.pop("workspace_files", [])
+        state["workspace_files"] = state.get("workspace_files", []) + extra_workspace_files
+        for key, value in state_updates.items():
+            state[key] = value
+        tool_calls = [
+            {
+                "name": "run_odesign_inference",
+                "args": tool_args,
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch ODesign inference."
+    elif gernabind_mode:
         filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
         gernabind_overrides = _extract_gernabind_overrides(raw_text)
         state["current_filepath"] = filepath
@@ -779,6 +1146,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
             for key, value in state_updates.items():
                 state[key] = value
             fallback_calls = [{"name": tool_name, "args": tool_args}]
+        elif _needs_odesign_mode(user_text):
+            tool_args, state_updates = _extract_odesign_request(state.get("input_sequence", ""))
+            extra_workspace_files = state_updates.pop("workspace_files", [])
+            state["workspace_files"] = state.get("workspace_files", []) + extra_workspace_files
+            for key, value in state_updates.items():
+                state[key] = value
+            fallback_calls = [
+                {
+                    "name": "run_odesign_inference",
+                    "args": tool_args,
+                }
+            ]
         elif _needs_gernabind_scoring(user_text):
             filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
             gernabind_overrides = _extract_gernabind_overrides(state.get("input_sequence", ""))
@@ -1106,6 +1485,32 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["rnastop_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
             if not state.get("mfe"):
                 state["mfe"] = state["rnastop_mfe"]
+        elif tool_name == "run_odesign_inference":
+            state["odesign_input_json_filepath"] = str(tool_result.get("input_json_filepath", ""))
+            state["odesign_output_dir"] = str(tool_result.get("output_dir", ""))
+            state["odesign_model_name"] = str(tool_result.get("infer_model_name", ""))
+            state["odesign_design_modality"] = str(tool_result.get("design_modality", ""))
+            prediction_filepaths = [
+                str(path) for path in tool_result.get("prediction_filepaths", []) if str(path)
+            ]
+            if prediction_filepaths:
+                state["odesign_prediction_filepaths"] = prediction_filepaths
+                state["workspace_files"] = state.get("workspace_files", []) + prediction_filepaths
+            run_log_filepath = str(tool_result.get("run_log_filepath", ""))
+            if run_log_filepath:
+                state["odesign_run_log_filepath"] = run_log_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [run_log_filepath]
+            stdout_filepath = str(tool_result.get("stdout_filepath", ""))
+            if stdout_filepath:
+                state["workspace_files"] = state.get("workspace_files", []) + [stdout_filepath]
+            stderr_filepath = str(tool_result.get("stderr_filepath", ""))
+            if stderr_filepath:
+                state["workspace_files"] = state.get("workspace_files", []) + [stderr_filepath]
+            error_filepaths = [
+                str(path) for path in tool_result.get("error_filepaths", []) if str(path)
+            ]
+            if error_filepaths:
+                state["workspace_files"] = state.get("workspace_files", []) + error_filepaths
 
     state["messages"] = messages + out_messages
     return state
@@ -1196,6 +1601,12 @@ def critic_node(state: AgentState) -> AgentState:
             f"rnastop_mean_deg_mg_50c={state.get('rnastop_mean_deg_mg_50c', 0.0)}; "
             f"rnastop_mfe={state.get('rnastop_mfe', 0.0)}; "
             f"rnastop_checkpoint_path={state.get('rnastop_checkpoint_path', '')}; "
+            f"odesign_input_json_filepath={state.get('odesign_input_json_filepath', '')}; "
+            f"odesign_output_dir={state.get('odesign_output_dir', '')}; "
+            f"odesign_prediction_filepaths={state.get('odesign_prediction_filepaths', [])}; "
+            f"odesign_run_log_filepath={state.get('odesign_run_log_filepath', '')}; "
+            f"odesign_model_name={state.get('odesign_model_name', '')}; "
+            f"odesign_design_modality={state.get('odesign_design_modality', '')}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

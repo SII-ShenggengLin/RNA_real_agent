@@ -1,0 +1,10 @@
+name: odesign_service_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - fastapi==0.115.12
+      - uvicorn==0.30.6
+      - pydantic==2.10.6

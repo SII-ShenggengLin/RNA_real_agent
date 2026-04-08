@@ -718,6 +718,75 @@ class RNASTOPPredictionInput(BaseModel):
     )
 
 
+class ODesignInferenceInput(BaseModel):
+    """Input schema for ODesign inference."""
+
+    input_json_filepath: str = Field(
+        ...,
+        description=(
+            "Path to an ODesign input JSON file. Use a workspace filepath or a repo-relative path. "
+            "For complex ODesign requests, prefer preparing the JSON first and passing its filepath."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8012/design/from-json",
+        description="REST endpoint for the ODesign microservice.",
+    )
+    infer_model_name: str = Field(
+        default="odesign_base_na_rigid",
+        description="ODesign model name, for example `odesign_base_na_rigid`.",
+    )
+    design_modality: str = Field(
+        default="rna",
+        description="Design modality passed to ODesign, typically `rna` for this project.",
+    )
+    exp_name: Optional[str] = Field(
+        default=None,
+        description="Optional experiment name override for the ODesign output directory.",
+    )
+    seeds_json: str = Field(
+        default="[42]",
+        description="JSON list string of seeds such as `[42]` or `[42, 123]`.",
+    )
+    n_sample: int = Field(
+        default=1,
+        ge=1,
+        le=50,
+        description="Number of generated samples per seed.",
+    )
+    use_msa: bool = Field(
+        default=False,
+        description="Whether ODesign should expect MSA input in the JSON payload.",
+    )
+    num_workers: int = Field(
+        default=2,
+        ge=0,
+        le=32,
+        description="Dataloader worker count passed through to ODesign.",
+    )
+    cuda_visible_devices: Optional[str] = Field(
+        default=None,
+        description="Optional CUDA_VISIBLE_DEVICES override such as `0` or `0,1`.",
+    )
+    enable_partial_diff: bool = Field(
+        default=False,
+        description="Whether to enable ODesign partial diffusion mode.",
+    )
+    snr: float = Field(
+        default=0.1,
+        gt=0.0,
+        description="Partial diffusion signal-to-noise ratio passed to ODesign.",
+    )
+    ckpt_root_dir: Optional[str] = Field(
+        default=None,
+        description="Optional checkpoint root directory override for the ODesign service.",
+    )
+    data_root_dir: Optional[str] = Field(
+        default=None,
+        description="Optional data root directory override for the ODesign service.",
+    )
+
+
 @tool(args_schema=MrnaToolInput)
 def mock_codon_optimization(filepath: str) -> dict[str, Any]:
     """Mock codon optimization for mRNA sequence.
@@ -1277,3 +1346,135 @@ def predict_mrna_stability_with_rnastop(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"RNASTOP service request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=ODesignInferenceInput)
+def run_odesign_inference(
+    input_json_filepath: str,
+    service_url: str = "http://127.0.0.1:8012/design/from-json",
+    infer_model_name: str = "odesign_base_na_rigid",
+    design_modality: str = "rna",
+    exp_name: Optional[str] = None,
+    seeds_json: str = "[42]",
+    n_sample: int = 1,
+    use_msa: bool = False,
+    num_workers: int = 2,
+    cuda_visible_devices: Optional[str] = None,
+    enable_partial_diff: bool = False,
+    snr: float = 0.1,
+    ckpt_root_dir: Optional[str] = None,
+    data_root_dir: Optional[str] = None,
+) -> dict[str, Any]:
+    """Run ODesign inference from an input JSON file via the ODesign microservice.
+
+    Args:
+        input_json_filepath: Path to an ODesign input JSON file.
+            IMPORTANT: pass a filepath rather than embedding long JSON content inline.
+        service_url: REST endpoint for the ODesign microservice.
+        infer_model_name: ODesign model name such as `odesign_base_na_rigid`.
+        design_modality: ODesign modality such as `rna`, `dna`, `protein`, or `ligand`.
+        exp_name: Optional experiment name override.
+        seeds_json: JSON list string of seeds.
+        n_sample: Number of generated samples per seed.
+        use_msa: Whether to enable MSA mode.
+        num_workers: Dataloader worker count.
+        cuda_visible_devices: Optional CUDA_VISIBLE_DEVICES override.
+        enable_partial_diff: Whether to enable ODesign partial diffusion mode.
+        snr: Partial diffusion signal-to-noise ratio.
+        ckpt_root_dir: Optional checkpoint root directory override for the service.
+        data_root_dir: Optional data root directory override for the service.
+
+    Returns:
+        Dict with copied workspace artifacts, output metadata, and ODesign runtime info.
+
+    Raises:
+        ValueError: If the ODesign service is unreachable or returns an invalid payload.
+    """
+    try:
+        request_payload: dict[str, Any] = {
+            "input_json_path": input_json_filepath,
+            "infer_model_name": infer_model_name,
+            "design_modality": design_modality,
+            "seeds_json": seeds_json,
+            "n_sample": n_sample,
+            "use_msa": use_msa,
+            "num_workers": num_workers,
+            "enable_partial_diff": enable_partial_diff,
+            "snr": snr,
+        }
+        if exp_name:
+            request_payload["exp_name"] = exp_name
+        if cuda_visible_devices:
+            request_payload["cuda_visible_devices"] = cuda_visible_devices
+        if ckpt_root_dir:
+            request_payload["ckpt_root_dir"] = ckpt_root_dir
+        if data_root_dir:
+            request_payload["data_root_dir"] = data_root_dir
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=21600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "output_dir" not in payload or "prediction_filepaths" not in payload:
+            raise ValueError(
+                "Missing `output_dir` or `prediction_filepaths` in ODesign response."
+            )
+
+        copied_prediction_paths = [
+            copy_file_to_workspace(str(path), prefix="odesign_prediction")
+            for path in payload.get("prediction_filepaths", [])
+        ]
+        copied_error_paths = [
+            copy_file_to_workspace(str(path), prefix="odesign_error", suffix=".txt")
+            for path in payload.get("error_filepaths", [])
+        ]
+
+        result: dict[str, Any] = {
+            "input_json_filepath": input_json_filepath,
+            "infer_model_name": payload.get("infer_model_name", infer_model_name),
+            "design_modality": payload.get("design_modality", design_modality),
+            "exp_name": payload.get("exp_name", exp_name or ""),
+            "output_dir": payload.get("output_dir", ""),
+            "prediction_count": len(copied_prediction_paths),
+            "prediction_filepaths": copied_prediction_paths,
+            "sample_names": payload.get("sample_names", []),
+            "ckpt_root_dir": payload.get("ckpt_root_dir", ckpt_root_dir or ""),
+            "data_root_dir": payload.get("data_root_dir", data_root_dir or ""),
+            "model": payload.get("model", "ODesign"),
+        }
+
+        run_log_path = payload.get("run_log_path")
+        if run_log_path:
+            result["run_log_filepath"] = copy_file_to_workspace(
+                str(run_log_path),
+                prefix="odesign_runlog",
+                suffix=".log",
+            )
+        if copied_error_paths:
+            result["error_filepaths"] = copied_error_paths
+        if payload.get("stdout"):
+            result["stdout_filepath"] = save_text_file(
+                str(payload["stdout"]),
+                prefix="odesign_stdout",
+                suffix=".log",
+            )
+        if payload.get("stderr"):
+            result["stderr_filepath"] = save_text_file(
+                str(payload["stderr"]),
+                prefix="odesign_stderr",
+                suffix=".log",
+            )
+        return result
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"ODesign service request failed: {exc}{suffix}") from exc

@@ -54,6 +54,12 @@ class AgentState(TypedDict, total=False):
     rnastop_mean_deg_mg_50c: float
     rnastop_mfe: float
     rnastop_checkpoint_path: str
+    odesign_input_json_filepath: str
+    odesign_output_dir: str
+    odesign_prediction_filepaths: list[str]
+    odesign_run_log_filepath: str
+    odesign_model_name: str
+    odesign_design_modality: str
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str

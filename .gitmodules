@@ -23,3 +23,6 @@
 [submodule "rna_agent_system/external_repos/CRISOT"]
 	path = rna_agent_system/external_repos/CRISOT
 	url = https://github.com/bm2-lab/CRISOT.git
+[submodule "rna_agent_system/external_repos/ODesign"]
+	path = rna_agent_system/external_repos/ODesign
+	url = https://github.com/OTeam-AI4S/ODesign.git
