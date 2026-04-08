@@ -75,6 +75,13 @@ if user_input:
                         off = node_state.get("off_target_genes", "N/A")
                         detail_lines.append(f"  - tool结果: efficiency={eff}, off_target_genes={off}")
 
+                    if "crisot_score" in node_state or "crisot_spec" in node_state:
+                        crisot_score = node_state.get("crisot_score", "N/A")
+                        crisot_spec = node_state.get("crisot_spec", "N/A")
+                        detail_lines.append(
+                            f"  - CRISOT结果: score={crisot_score}, spec={crisot_spec}"
+                        )
+
                     detail_box.markdown("\n".join(detail_lines))
                     final_state = node_state
         except Exception as exc:

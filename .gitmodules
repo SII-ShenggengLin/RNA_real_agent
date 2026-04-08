@@ -20,3 +20,6 @@
 [submodule "rna_agent_system/external_repos/GerNA-Bind"]
 	path = rna_agent_system/external_repos/GerNA-Bind
 	url = https://github.com/GENTEL-lab/GerNA-Bind.git
+[submodule "rna_agent_system/external_repos/CRISOT"]
+	path = rna_agent_system/external_repos/CRISOT
+	url = https://github.com/bm2-lab/CRISOT.git

@@ -16,6 +16,13 @@ class AgentState(TypedDict, total=False):
     candidate_sequence: str
     efficiency_score: float
     off_target_genes: int
+    crisot_score: float
+    crisot_spec: float
+    crisot_target_sequence: str
+    crisot_input_csv_filepath: str
+    crisot_output_csv_filepath: str
+    crisot_genome_path: str
+    crisot_off_target_count: int
     cai_score: float
     mfe: float
     structure_filepath: str
@@ -48,8 +55,8 @@ class AgentState(TypedDict, total=False):
     rnarl_esm2_model_path: str
     retry_count: int
     max_retries: int
-    active_specialist: Literal["sirna_specialist", "mrna_specialist", ""]
-    route: Literal["sirna", "mrna", "unsupported"]
+    active_specialist: Literal["sirna_specialist", "mrna_specialist", "crispr_specialist", ""]
+    route: Literal["sirna", "mrna", "crispr", "unsupported"]
     next_action: Literal["retry", "finish"]
     critic_verdict: Literal["pass", "reject"]
     final_report: str

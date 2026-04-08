@@ -29,6 +29,26 @@ def _normalize_nucleic_sequence(raw_text: str) -> str:
     return re.sub(r"[^A-Z]", "", merged)
 
 
+def _normalize_crisot_sequence(raw_text: str) -> str:
+    """Normalize CRISOT input to uppercase DNA-like sequence with optional N bases."""
+    sequence_lines = [
+        line.strip()
+        for line in raw_text.splitlines()
+        if line.strip() and not line.lstrip().startswith(">")
+    ]
+    merged = "".join(sequence_lines).upper().replace("U", "T")
+    sequence = re.sub(r"[^A-Z]", "", merged)
+    invalid_chars = sorted(set(ch for ch in sequence if ch not in {"A", "C", "G", "T", "N"}))
+    if invalid_chars:
+        raise ValueError(
+            "CRISOT supports only A/C/G/T/U/N input. "
+            f"Unsupported characters: {''.join(invalid_chars)}"
+        )
+    if len(sequence) != 23:
+        raise ValueError(f"CRISOT expects 23-nt sgRNA/target sequences; got {len(sequence)} nt.")
+    return sequence
+
+
 class SirnaEfficiencyInput(BaseModel):
     """Input schema for siRNA efficiency prediction tool."""
 
@@ -52,6 +72,75 @@ class OffTargetCheckInput(BaseModel):
     service_url: str = Field(
         default="http://127.0.0.1:8002/check",
         description="Full URL for the mock off-target API endpoint.",
+    )
+
+
+class CrisotScoreInput(BaseModel):
+    """Input schema for CRISOT score prediction."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to a workspace or repo-relative file containing the sgRNA sequence.",
+    )
+    target_sequence: str = Field(
+        ...,
+        description="Target DNA sequence for CRISOT scoring. Expected length is 23 nt.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/score",
+        description="REST endpoint for the CRISOT score microservice.",
+    )
+
+
+class CrisotSpecInput(BaseModel):
+    """Input schema for CRISOT specificity calculation from a CSV file."""
+
+    csv_filepath: str = Field(
+        ...,
+        description="Path to a CSV file containing sgRNA and off-target sequences.",
+    )
+    on_item: str = Field(
+        default="On",
+        description="CSV column name for sgRNA/on-target sequences.",
+    )
+    off_item: str = Field(
+        default="Off",
+        description="CSV column name for off-target sequences.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/spec",
+        description="REST endpoint for the CRISOT specificity microservice.",
+    )
+
+
+class CrisotOffSpecInput(BaseModel):
+    """Input schema for CRISOT genome-wide specificity search."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to a workspace or repo-relative file containing the sgRNA sequence.",
+    )
+    target_sequence: str = Field(
+        ...,
+        description="Target DNA sequence for CRISOT off-spec analysis. Expected length is 23 nt.",
+    )
+    genome_path: str = Field(
+        ...,
+        description="Reference genome FASTA path passed through to CRISOT and Cas-OFFinder.",
+    )
+    mismatches: int = Field(
+        default=6,
+        ge=0,
+        le=10,
+        description="Mismatch tolerance passed through to Cas-OFFinder.",
+    )
+    device: str = Field(
+        default="C",
+        description="Cas-OFFinder device flag such as `C` or `G0`.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/off-spec",
+        description="REST endpoint for the CRISOT off-spec microservice.",
     )
 
 
@@ -117,6 +206,192 @@ def check_off_target(filepath: str, service_url: str = "http://127.0.0.1:8002/ch
         return payload
     except requests.RequestException as exc:
         raise ValueError(f"Off-target service request failed: {exc}") from exc
+
+
+@tool(args_schema=CrisotScoreInput)
+def score_crispr_off_target_with_crisot(
+    filepath: str,
+    target_sequence: str,
+    service_url: str = "http://127.0.0.1:8011/score",
+) -> dict[str, Any]:
+    """Score one sgRNA-target pair with CRISOT.
+
+    Args:
+        filepath: Path to a file containing the sgRNA sequence.
+            IMPORTANT: pass a filepath rather than inline guide sequence text.
+        target_sequence: Target DNA sequence paired with the sgRNA.
+        service_url: REST endpoint for the CRISOT score microservice.
+
+    Returns:
+        Dict with normalized sgRNA/target sequences and the CRISOT score.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    sgrna = _normalize_crisot_sequence(read_sequence(filepath))
+    normalized_target = _normalize_crisot_sequence(target_sequence)
+    try:
+        response = requests.post(
+            service_url,
+            json={"sgrna": sgrna, "target_sequence": normalized_target},
+            timeout=60,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "crisot_score" not in payload:
+            raise ValueError("Missing `crisot_score` in CRISOT score response.")
+        payload["input_filepath"] = filepath
+        payload["sgrna"] = sgrna
+        payload["target_sequence"] = normalized_target
+        return payload
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"CRISOT score request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=CrisotSpecInput)
+def calculate_crispr_specificity_with_crisot(
+    csv_filepath: str,
+    on_item: str = "On",
+    off_item: str = "Off",
+    service_url: str = "http://127.0.0.1:8011/spec",
+) -> dict[str, Any]:
+    """Calculate CRISOT specificity from a CSV of one sgRNA and its candidate off-targets.
+
+    Args:
+        csv_filepath: Path to the input CSV. On-target row should appear first.
+        on_item: Input column name for sgRNA/on-target sequences.
+        off_item: Input column name for off-target sequences.
+        service_url: REST endpoint for the CRISOT specificity microservice.
+
+    Returns:
+        Dict with CRISOT-Spec and an optional scored CSV copied into workspace.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "csv_path": csv_filepath,
+                "on_item": on_item,
+                "off_item": off_item,
+            },
+            timeout=120,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "crisot_spec" not in payload:
+            raise ValueError("Missing `crisot_spec` in CRISOT specificity response.")
+        result: dict[str, Any] = {
+            "input_csv_filepath": csv_filepath,
+            "on_item": on_item,
+            "off_item": off_item,
+            "crisot_spec": float(payload["crisot_spec"]),
+            "row_count": int(payload.get("row_count", 0)),
+            "model": payload.get("model", "CRISOT-Score"),
+        }
+        scored_csv_path = payload.get("scored_csv_path")
+        if scored_csv_path:
+            result["scored_csv_filepath"] = copy_file_to_workspace(
+                str(scored_csv_path),
+                prefix="crisot_spec",
+                suffix=".csv",
+            )
+        return result
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"CRISOT spec request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=CrisotOffSpecInput)
+def search_crispr_off_targets_with_crisot(
+    filepath: str,
+    target_sequence: str,
+    genome_path: str,
+    mismatches: int = 6,
+    device: str = "C",
+    service_url: str = "http://127.0.0.1:8011/off-spec",
+) -> dict[str, Any]:
+    """Run CRISOT genome-wide off-target specificity search using Cas-OFFinder.
+
+    Args:
+        filepath: Path to a file containing the sgRNA sequence.
+            IMPORTANT: pass a filepath rather than inline guide sequence text.
+        target_sequence: Target DNA sequence paired with the sgRNA.
+        genome_path: Reference genome FASTA path.
+        mismatches: Cas-OFFinder mismatch tolerance.
+        device: Cas-OFFinder device selector such as `C` or `G0`.
+        service_url: REST endpoint for the CRISOT off-spec microservice.
+
+    Returns:
+        Dict with CRISOT-Spec, off-target count, and an optional scored CSV artifact.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    sgrna = _normalize_crisot_sequence(read_sequence(filepath))
+    normalized_target = _normalize_crisot_sequence(target_sequence)
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sgrna": sgrna,
+                "target_sequence": normalized_target,
+                "genome_path": genome_path,
+                "mismatches": mismatches,
+                "device": device,
+            },
+            timeout=1800,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "crisot_spec" not in payload:
+            raise ValueError("Missing `crisot_spec` in CRISOT off-spec response.")
+        result: dict[str, Any] = {
+            "input_filepath": filepath,
+            "sgrna": sgrna,
+            "target_sequence": normalized_target,
+            "genome_path": genome_path,
+            "mismatches": int(payload.get("mismatches", mismatches)),
+            "device": str(payload.get("device", device)),
+            "off_target_count": int(payload.get("off_target_count", 0)),
+            "crisot_spec": float(payload["crisot_spec"]),
+            "model": payload.get("model", "CRISOT-Score"),
+        }
+        scored_csv_path = payload.get("scored_csv_path")
+        if scored_csv_path:
+            result["scored_csv_filepath"] = copy_file_to_workspace(
+                str(scored_csv_path),
+                prefix="crisot_offspec",
+                suffix=".csv",
+            )
+        return result
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"CRISOT off-spec request failed: {exc}{suffix}") from exc
 
 
 class MrnaToolInput(BaseModel):

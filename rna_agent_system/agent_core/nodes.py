@@ -13,6 +13,7 @@ from langchain_core.messages import AIMessage, ToolMessage
 from agent_core.file_manager import save_sequence
 from agent_core.state import AgentState
 from agent_core.tools import (
+    calculate_crispr_specificity_with_crisot,
     check_off_target,
     design_rna_sequence_with_rhodesign,
     design_mrna_cds_with_gemorna,
@@ -22,11 +23,18 @@ from agent_core.tools import (
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
+    score_crispr_off_target_with_crisot,
+    search_crispr_off_targets_with_crisot,
     score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
 )
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
+CRISPR_TOOLS = [
+    score_crispr_off_target_with_crisot,
+    calculate_crispr_specificity_with_crisot,
+    search_crispr_off_targets_with_crisot,
+]
 MRNA_TOOLS = [
     score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
@@ -38,7 +46,7 @@ MRNA_TOOLS = [
     design_mrna_cds_with_gemorna,
     design_rna_sequence_with_rhodesign,
 ]
-TOOLS = SIRNA_TOOLS + MRNA_TOOLS
+TOOLS = SIRNA_TOOLS + CRISPR_TOOLS + MRNA_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -61,6 +69,22 @@ def _extract_long_rna_sequence(text: str) -> Optional[str]:
     if not matches:
         return None
     return max(matches, key=len).upper().replace("T", "U")
+
+
+def _extract_crispr_named_sequence(text: str, labels: Tuple[str, ...]) -> Optional[str]:
+    joined_labels = "|".join(re.escape(label) for label in labels)
+    pattern = re.compile(
+        rf"(?:{joined_labels})\s*[:=]\s*[\"']?([ACGUTNacgutn]{{20,30}})[\"']?",
+        re.IGNORECASE,
+    )
+    match = pattern.search(text)
+    if not match:
+        return None
+    return match.group(1).strip().upper().replace("U", "T")
+
+
+def _extract_crispr_sequences(text: str) -> list[str]:
+    return [match.upper().replace("U", "T") for match in re.findall(r"[ACGUTNacgutn]{20,23}", text)]
 
 
 def _extract_protein_sequence(text: str) -> str:
@@ -117,6 +141,23 @@ def _needs_rnastop_prediction(text: str) -> bool:
             "稳定",
             "降解",
             "半衰期",
+        ]
+    )
+
+
+def _needs_crispr_mode(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "crisot",
+            "crispr",
+            "cas9",
+            "sgRNA".lower(),
+            "sgrna",
+            "guide rna",
+            "guide-rna",
+            "off-spec",
+            "off_spec",
         ]
     )
 
@@ -286,10 +327,79 @@ def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
     return pdb_path, ss_path
 
 
+def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, Any]]:
+    lowered = text.lower()
+    csv_path = _extract_path_with_suffixes(text, ("csv",))
+    genome_path = _extract_path_with_suffixes(text, ("fa", "fasta", "fna", "fas"))
+    sgrna = _extract_crispr_named_sequence(text, ("sgrna", "sg_rna", "guide", "guide_rna"))
+    target_sequence = _extract_crispr_named_sequence(text, ("target", "tar", "off_target", "offtarget"))
+    discovered_sequences = _extract_crispr_sequences(text)
+
+    if not sgrna and discovered_sequences:
+        sgrna = discovered_sequences[0]
+    if not target_sequence:
+        for candidate in discovered_sequences:
+            if candidate != sgrna:
+                target_sequence = candidate
+                break
+    if not target_sequence and sgrna:
+        target_sequence = sgrna
+
+    if csv_path and any(k in lowered for k in ["spec", "specificity", "specific"]):
+        state_updates = {
+            "crisot_input_csv_filepath": csv_path,
+            "workspace_files": [],
+        }
+        return (
+            "calculate_crispr_specificity_with_crisot",
+            {"csv_filepath": csv_path},
+            state_updates,
+        )
+
+    if not sgrna:
+        raise ValueError(
+            "CRISOT requires an sgRNA sequence. Provide it like `sgRNA=GAGT...` or include a 23-nt guide sequence."
+        )
+    if not target_sequence:
+        raise ValueError(
+            "CRISOT requires a target sequence. Provide it like `target=GAGT...` or include a second 23-nt sequence."
+        )
+
+    sgrna_filepath = save_sequence(sgrna, prefix="crisot_sgrna")
+    state_updates = {
+        "current_filepath": sgrna_filepath,
+        "crisot_target_sequence": target_sequence,
+        "workspace_files": [sgrna_filepath],
+    }
+
+    if genome_path and any(k in lowered for k in ["spec", "specificity", "specific", "genome", "cas-offinder", "casoffinder", "off-spec", "off_spec"]):
+        state_updates["crisot_genome_path"] = genome_path
+        return (
+            "search_crispr_off_targets_with_crisot",
+            {
+                "filepath": sgrna_filepath,
+                "target_sequence": target_sequence,
+                "genome_path": genome_path,
+            },
+            state_updates,
+        )
+
+    return (
+        "score_crispr_off_target_with_crisot",
+        {
+            "filepath": sgrna_filepath,
+            "target_sequence": target_sequence,
+        },
+        state_updates,
+    )
+
+
 def router_node(state: AgentState) -> AgentState:
     """Route by deterministic rules without LLM."""
     user_text = state.get("input_sequence", "").lower()
-    if any(
+    if _needs_crispr_mode(user_text):
+        route = "crispr_specialist"
+    elif any(
         k in user_text
         for k in [
             "mrna",
@@ -338,10 +448,20 @@ def router_node(state: AgentState) -> AgentState:
     state["current_task"] = (
         "sirna_design"
         if route == "sirna_specialist"
-        else "mrna_design" if route == "mrna_specialist" else "unsupported"
+        else "mrna_design"
+        if route == "mrna_specialist"
+        else "crispr_analysis"
+        if route == "crispr_specialist"
+        else "unsupported"
     )
     state["route"] = (
-        "sirna" if route == "sirna_specialist" else "mrna" if route == "mrna_specialist" else "unsupported"
+        "sirna"
+        if route == "sirna_specialist"
+        else "mrna"
+        if route == "mrna_specialist"
+        else "crispr"
+        if route == "crispr_specialist"
+        else "unsupported"
     )
     state["messages"] = state.get("messages", []) + [
         AIMessage(content=decision_note)
@@ -372,6 +492,30 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             },
+        ],
+    )
+    state["messages"] = state.get("messages", []) + [ai_msg]
+    return state
+
+
+def crispr_specialist_node(state: AgentState) -> AgentState:
+    """Emit deterministic CRISPR/CRISOT tool calls without LLM."""
+    state["active_specialist"] = "crispr_specialist"
+    tool_name, tool_args, state_updates = _resolve_crisot_request(state.get("input_sequence", ""))
+    workspace_files = state.get("workspace_files", [])
+    extra_workspace_files = state_updates.pop("workspace_files", [])
+    state["workspace_files"] = workspace_files + extra_workspace_files
+    for key, value in state_updates.items():
+        state[key] = value
+    ai_msg = AIMessage(
+        content="CRISPR specialist (rule-based): dispatch CRISOT tool call.",
+        tool_calls=[
+            {
+                "name": tool_name,
+                "args": tool_args,
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
         ],
     )
     state["messages"] = state.get("messages", []) + [ai_msg]
@@ -533,6 +677,13 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
                 {"name": "check_off_target", "args": {"filepath": filepath}},
             ]
+        elif state.get("active_specialist") == "crispr_specialist":
+            tool_name, tool_args, state_updates = _resolve_crisot_request(state.get("input_sequence", ""))
+            extra_workspace_files = state_updates.pop("workspace_files", [])
+            state["workspace_files"] = state.get("workspace_files", []) + extra_workspace_files
+            for key, value in state_updates.items():
+                state[key] = value
+            fallback_calls = [{"name": tool_name, "args": tool_args}]
         elif _needs_gernabind_scoring(user_text):
             filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
             gernabind_overrides = _extract_gernabind_overrides(state.get("input_sequence", ""))
@@ -649,6 +800,37 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if not state.get("candidate_sequence"):
                 state["candidate_sequence"] = str(tool_result.get("sequence", ""))
             state["current_filepath"] = str(tool_result.get("filepath", state.get("current_filepath", "")))
+        elif tool_name == "score_crispr_off_target_with_crisot":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+                if input_filepath.startswith("workspace/"):
+                    state["workspace_files"] = state.get("workspace_files", []) + [input_filepath]
+            state["candidate_sequence"] = str(tool_result.get("sgrna", ""))
+            state["crisot_target_sequence"] = str(tool_result.get("target_sequence", ""))
+            state["crisot_score"] = float(tool_result.get("crisot_score", 0.0))
+        elif tool_name == "calculate_crispr_specificity_with_crisot":
+            state["crisot_input_csv_filepath"] = str(tool_result.get("input_csv_filepath", ""))
+            state["crisot_spec"] = float(tool_result.get("crisot_spec", 0.0))
+            scored_csv_filepath = str(tool_result.get("scored_csv_filepath", ""))
+            if scored_csv_filepath:
+                state["crisot_output_csv_filepath"] = scored_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [scored_csv_filepath]
+        elif tool_name == "search_crispr_off_targets_with_crisot":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+                if input_filepath.startswith("workspace/"):
+                    state["workspace_files"] = state.get("workspace_files", []) + [input_filepath]
+            state["candidate_sequence"] = str(tool_result.get("sgrna", ""))
+            state["crisot_target_sequence"] = str(tool_result.get("target_sequence", ""))
+            state["crisot_genome_path"] = str(tool_result.get("genome_path", ""))
+            state["crisot_spec"] = float(tool_result.get("crisot_spec", 0.0))
+            state["crisot_off_target_count"] = int(tool_result.get("off_target_count", 0))
+            scored_csv_filepath = str(tool_result.get("scored_csv_filepath", ""))
+            if scored_csv_filepath:
+                state["crisot_output_csv_filepath"] = scored_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [scored_csv_filepath]
         elif tool_name == "mock_codon_optimization":
             state["cai_score"] = float(tool_result.get("cai_score", 0.0))
             optimized_filepath = str(tool_result.get("optimized_filepath", ""))
@@ -857,6 +1039,13 @@ def critic_node(state: AgentState) -> AgentState:
             f"filepath={state.get('current_filepath', '')}; "
             f"efficiency={state.get('efficiency_score', 0.0)}; "
             f"off_target_genes={off_target}; "
+            f"crisot_score={state.get('crisot_score', 0.0)}; "
+            f"crisot_spec={state.get('crisot_spec', 0.0)}; "
+            f"crisot_target_sequence={state.get('crisot_target_sequence', '')}; "
+            f"crisot_input_csv_filepath={state.get('crisot_input_csv_filepath', '')}; "
+            f"crisot_output_csv_filepath={state.get('crisot_output_csv_filepath', '')}; "
+            f"crisot_genome_path={state.get('crisot_genome_path', '')}; "
+            f"crisot_off_target_count={state.get('crisot_off_target_count', 0)}; "
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
             f"design_model={state.get('design_model', '')}; "
@@ -901,6 +1090,8 @@ def route_after_router(state: AgentState) -> str:
         return "sirna_specialist"
     if state.get("route") == "mrna":
         return "mrna_specialist"
+    if state.get("route") == "crispr":
+        return "crispr_specialist"
     return "end"
 
 
