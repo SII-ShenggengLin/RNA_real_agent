@@ -33,6 +33,37 @@ _MODEL_CACHE: Dict[str, Any] = {}
 _CACHE_LOCK = Lock()
 
 
+def _ensure_pandas_append_compatibility() -> None:
+    """Provide a pandas>=2 compatible replacement for deprecated DataFrame.append."""
+    if hasattr(pd.DataFrame, "append"):
+        return
+
+    def _append_compat(
+        self: pd.DataFrame,
+        other: Any,
+        ignore_index: bool = False,
+        verify_integrity: bool = False,
+        sort: bool = False,
+    ) -> pd.DataFrame:
+        if isinstance(other, pd.Series):
+            other_df = other.to_frame().T
+        elif isinstance(other, dict):
+            other_df = pd.DataFrame([other])
+        else:
+            other_df = other
+        return pd.concat(
+            [self, other_df],
+            ignore_index=ignore_index,
+            verify_integrity=verify_integrity,
+            sort=sort,
+        )
+
+    pd.DataFrame.append = _append_compat  # type: ignore[attr-defined]
+
+
+_ensure_pandas_append_compatibility()
+
+
 class CrisotScoreRequest(BaseModel):
     sgrna: str = Field(
         ...,
