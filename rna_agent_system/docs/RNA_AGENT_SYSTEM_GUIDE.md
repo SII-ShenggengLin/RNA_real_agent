@@ -91,6 +91,10 @@ rna_agent_system/
   - 当前主要工具：
     - `predict_sirna_efficiency`
     - `check_off_target`
+    - `score_crispr_off_target_with_crisot`
+    - `calculate_crispr_specificity_with_crisot`
+    - `search_crispr_off_targets_with_crisot`
+    - `optimize_sgrna_with_crisot`
     - `mock_codon_optimization`
     - `predict_rna_secondary_structure`
     - `design_mrna_cds_with_rnarl`
@@ -195,6 +199,19 @@ rna_agent_system/
     - `rna_agent_system/external_repos/GerNA-Bind/Model/`
     - 其中会优先读取本地 `RNA-FM_pretrained.pth`
 
+- `crisot_service/`
+  - CRISOT 的 CRISPR off-target 打分 / specificity / sgRNA 优化服务
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8011`
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /score`
+    - `POST /spec`
+    - `POST /off-spec`
+    - `POST /optimize`
+  - 当前实现直接调用上游 `crisot_modules.py`
+  - 会绕开上游 `CRISOT.py` 对 `xgboost` 的顶层硬依赖
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -208,6 +225,7 @@ rna_agent_system/
 - `RhoFold/`
 - `RhoDesign/`
 - `RNAsmol/`
+- `CRISOT/`
 
 **重要：**
 
@@ -216,6 +234,7 @@ rna_agent_system/
 - `external_repos/RNASTOP` 也应作为 **git submodule** 管理
 - `external_repos/RhoFold` 也应作为 **git submodule** 管理
 - `external_repos/RhoDesign` 也建议作为 **git submodule** 管理
+- `external_repos/CRISOT` 也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -228,6 +247,7 @@ rna_agent_system/
 - 结构字符串文件
 - `RhoFold` 生成的 `pdb` / `ct` / `npz` / `log`
 - `RhoDesign` 生成的 `fasta` / `stdout log` / `stderr log`
+- `CRISOT` 生成的 specificity / optimization CSV
 - 其他中间输出
 
 所有长序列原则上都应先保存到 `workspace/`，然后在 Agent 内只传 `filepath`。
@@ -241,7 +261,7 @@ rna_agent_system/
 ```text
 User Input
   -> Router
-  -> Specialist (siRNA or mRNA)
+  -> Specialist (siRNA or mRNA or CRISPR)
   -> Tool Execution
   -> Critic
   -> End 或回到对应 Specialist
@@ -255,6 +275,8 @@ User Input
 
 - 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
+- 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
+  - 路由到 `crispr_specialist`
 - 如果包含 `sirna`、`脱靶`、`off-target`
   - 路由到 `sirna_specialist`
 - 默认也偏向 `mrna_specialist`
@@ -336,6 +358,28 @@ User Input
 - `predict_rna_secondary_structure`
 - `predict_rna_tertiary_structure_with_rhofold`
 
+### 5.3A CRISPR Specialist
+
+当前新增 `crispr_specialist`，主要负责 `CRISOT` 相关请求。
+
+- 如果用户文本偏单对打分语义
+  - 触发 `score_crispr_off_target_with_crisot(filepath, target_sequence)`
+- 如果用户文本偏 CSV specificity 语义
+  - 触发 `calculate_crispr_specificity_with_crisot(csv_filepath)`
+- 如果用户文本里给了 `genome`，并带有 `spec` / `off-spec` / `cas-offinder` 语义
+  - 触发 `search_crispr_off_targets_with_crisot(filepath, target_sequence, genome_path, mismatches=6, device="C")`
+- 如果用户文本里带有 `optimize` / `optimization` / `优化` / `降低脱靶`
+  - 触发 `optimize_sgrna_with_crisot(filepath, genome_path, threshold=0.8, mismatches=6, device="C")`
+
+当前规则解析支持：
+
+- `sgRNA=...`
+- `target=...`
+- `genome=/path/to/genome.fa`
+- `threshold=0.8`
+- `mm=3`
+- `device=C`
+
 ### 5.4 Tool Execution
 
 负责真正执行工具调用，并把结果写回 `AgentState`。
@@ -347,6 +391,18 @@ User Input
 - `candidate_sequence`
 - `efficiency_score`
 - `off_target_genes`
+- `crisot_score`
+- `crisot_spec`
+- `crisot_target_sequence`
+- `crisot_input_csv_filepath`
+- `crisot_output_csv_filepath`
+- `crisot_genome_path`
+- `crisot_off_target_count`
+- `crisot_optimization_csv_filepath`
+- `crisot_optimized_sgrna_filepath`
+- `crisot_best_mutation`
+- `crisot_best_delta_spec`
+- `crisot_optimized_available`
 - `cai_score`
 - `mfe`
 - `structure_filepath`
@@ -409,11 +465,12 @@ User Input
 - `8008`: `rnarl_service`
 - `8009`: `rnastop_service`
 - `8010`: `gernabind_service`
+- `8011`: `crisot_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8011`: 新工具 A
-- `8012`: 新工具 B
+- `8012`: 新工具 A
+- `8013`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -1749,6 +1806,198 @@ GerNA-Bind 目前已经在 Linux + GPU 服务器上完成最小闭环验证：
 
 ---
 
+## 10E. CRISOT 的接入方式
+
+### 10E.1 上游源码层
+
+目录：
+
+```text
+external_repos/CRISOT
+```
+
+来源：
+
+- 上游仓库：[bm2-lab/CRISOT](https://github.com/bm2-lab/CRISOT.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 vendoring 进主仓库历史
+
+### 10E.2 为什么当前采用“项目内微服务封装”
+
+当前接入的 `CRISOT` 不是直接调用上游 `CRISOT.py` CLI，而是采用：
+
+- 保留上游源码仓库
+- 在 `microservices/crisot_service/` 中直接调用上游 `crisot_modules.py`
+
+这样做的原因是：
+
+- 上游 `CRISOT.py` 在模块导入时就会 import `utils.py`
+- `utils.py` 顶层 hard-import `xgboost`
+- 即便只跑最基础的 `score`，如果环境里没有 `xgboost` 也会直接报错
+- 当前项目只需要稳定的 `score/spec/off-spec/opti` 推理入口
+
+### 10E.3 当前微服务能力
+
+目录：
+
+```text
+microservices/crisot_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /score`
+- `POST /spec`
+- `POST /off-spec`
+- `POST /optimize`
+
+当前支持能力：
+
+- 单个 sgRNA-target 对的 `CRISOT-Score`
+- 基于 CSV 的 `CRISOT-Spec`
+- 通过 `Cas-OFFinder + reference genome` 的 genome-wide specificity
+- 通过 `CRISOT-Opti` 的单碱基突变优化
+
+### 10E.4 当前 Agent 工具能力
+
+工具函数：
+
+- `score_crispr_off_target_with_crisot(filepath, target_sequence, service_url="http://127.0.0.1:8011/score")`
+- `calculate_crispr_specificity_with_crisot(csv_filepath, on_item="On", off_item="Off", service_url="http://127.0.0.1:8011/spec")`
+- `search_crispr_off_targets_with_crisot(filepath, target_sequence, genome_path, mismatches=6, device="C", service_url="http://127.0.0.1:8011/off-spec")`
+- `optimize_sgrna_with_crisot(filepath, genome_path, threshold=0.8, mismatches=6, device="C", service_url="http://127.0.0.1:8011/optimize")`
+
+当前实现会把：
+
+- specificity 结果 CSV
+- optimization 结果 CSV
+- 最优优化后 sgRNA
+
+复制或保存回 `workspace/`，这样上层 Agent 仍然主要通过文件路径工作。
+
+### 10E.5 当前工作流集成方式
+
+当前 `Router / crispr_specialist / tool_execution` 已经接入 `CRISOT`：
+
+- `router_node` 会识别：
+  - `crisot`
+  - `crispr`
+  - `cas9`
+  - `sgrna`
+  - `guide rna`
+  - `off-spec`
+- `crispr_specialist_node` 会根据请求语义在 `score/spec/off-spec/optimize` 之间做规则分发
+- 当前支持透传：
+  - `sgRNA=...`
+  - `target=...`
+  - `genome=/path/to/genome.fa`
+  - `threshold=...`
+  - `mm=...`
+  - `device=...`
+
+### 10E.6 CRISOT 的实际运行注意事项
+
+#### `score/spec` 不需要额外权重
+
+当前已接入的：
+
+- `score`
+- `spec`
+- `off-spec`
+- `optimize`
+
+只依赖上游仓库里已有的：
+
+- `models/crisot_score_param.pkl`
+- `models/crisot_fingerprint_encoding.pkl`
+
+当前**不需要**额外下载：
+
+- `trained_models.zip`
+- `xgboost` 模型权重
+
+除非后续要接 `crisot_fp`。
+
+#### `off-spec` 与 `optimize` 依赖 `cas-offinder`
+
+当前服务默认要求：
+
+- `cas-offinder` 已安装
+- 并且可从 `PATH` 调用
+
+当前已验证可通过 Conda 安装到：
+
+- `crisot_service_env`
+
+#### reference genome FASTA 需要服务器本地准备
+
+`off-spec` 和 `optimize` 还依赖：
+
+- reference genome FASTA
+
+例如：
+
+```text
+external_repos/CRISOT/data/hs1.fa
+```
+
+或任何你在请求里显式传入的绝对路径。
+
+#### `CRISOT-Opti` 在大基因组 + CPU 模式下会很慢
+
+原因：
+
+- 优化流程会先算 WT
+- 再枚举多个单碱基突变候选
+- 每个候选都可能再次触发一次 genome-wide `Cas-OFFinder` 搜索
+
+因此如果使用：
+
+- 大参考基因组（例如 `hs1`）
+- `mismatches=6`
+- `device=C`
+
+优化过程可能持续数十分钟甚至更久。
+
+调试阶段更建议：
+
+- 先单独验证 `/score`
+- 优化时先把 `mismatches` 降低，例如 `mm=3`
+- 或优先用更小的测试基因组做流程验证
+
+#### pandas 2 兼容性
+
+上游 `CRISOT` 仍使用了：
+
+- `DataFrame.append()`
+
+该 API 在 `pandas>=2` 中已移除。
+
+当前 `crisot_service/main.py` 已在服务层加入兼容补丁，因此不需要直接修改上游仓库。
+
+### 10E.7 当前验证状态
+
+`CRISOT` 目前已经完成以下验证：
+
+- 上游源码已成功以 submodule 形式接入
+- `crisot_service` 可成功启动
+- `GET /health` 成功
+- `/score` 已验证可返回正确分数
+- `/optimize` 已在 Linux 服务器上成功触发真实 `Cas-OFFinder` 链路
+- 已修复 `pandas>=2` 下的 `DataFrame.append()` 兼容性问题
+- 前端自然语言测试已通过
+
+这意味着：
+
+- `CRISOT` 已经通过“上游源码 -> 微服务接口 -> Agent 工作流 -> 前端自然语言触发”这一层验证
+- 当前项目里已经具备真实的 CRISPR off-target 打分与优化能力
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -2098,6 +2347,34 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 CRISOT：
+
+1. 启动 `crisot_service`
+2. `curl /health`
+3. `curl /score`
+4. `curl /optimize`
+
+推荐优先测试 payload：
+
+```json
+{
+  "sgrna": "GAGTCCGAGCAGAAGAAGAANGG",
+  "target_sequence": "GAGTCCGAGGAGAAGACGAAGGG"
+}
+```
+
+优化调试阶段推荐优先测试：
+
+```json
+{
+  "target_sequence": "GAGTCCGAGGAGAAGACGAAGGG",
+  "genome_path": "/absolute/path/to/hs1.fa",
+  "threshold": 0.8,
+  "mismatches": 3,
+  "device": "C"
+}
+```
+
 ### 13.2 智能体集成测试
 
 在微服务都启动后，再启动：
@@ -2128,6 +2405,9 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - RNAsmol RNA-ligand 打分请求
 - RNASTOP mRNA 稳定性预测请求
 - GerNA-Bind RNA-ligand 打分请求
+- CRISOT single-pair 打分请求
+- CRISOT genome-wide specificity 请求
+- CRISOT sgRNA 优化请求
 
 ---
 
@@ -2321,6 +2601,27 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 - 启动前显式设置 `GERNABIND_DEVICE`
 - 新 GPU 环境下先执行 `install_pyg_gpu.sh`
 
+### 14.15 `CRISOT-Opti` 当前耗时较长
+
+当前 `CRISOT` 最容易遇到的问题之一不是接口报错，而是：
+
+- genome-wide 优化非常耗时
+
+特别是在：
+
+- 大参考基因组
+- 较高 `mismatch tolerance`
+- `device=C`
+
+这种组合下，优化阶段会反复触发多个 `Cas-OFFinder` 搜索。
+
+因此当前更稳妥的调试原则是：
+
+- 先单独验证 `score`
+- 再验证 `off-spec`
+- 最后再验证 `optimize`
+- 优化初期先用 `mm=3`
+
 ---
 
 ## 15. 后续最推荐的发展路线
@@ -2329,7 +2630,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
