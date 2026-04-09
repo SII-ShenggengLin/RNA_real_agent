@@ -26,3 +26,9 @@
 [submodule "rna_agent_system/external_repos/ODesign"]
 	path = rna_agent_system/external_repos/ODesign
 	url = https://github.com/OTeam-AI4S/ODesign.git
+[submodule "rna_agent_system/external_repos/InstructNA"]
+	path = rna_agent_system/external_repos/InstructNA
+	url = https://github.com/zhimingzhang275/InstructNA.git
+[submodule "rna_agent_system/external_repos/IRESfinder"]
+	path = rna_agent_system/external_repos/IRESfinder
+	url = https://github.com/xiaofengsong/IRESfinder.git
