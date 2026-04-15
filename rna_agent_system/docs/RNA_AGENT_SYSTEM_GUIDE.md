@@ -259,6 +259,29 @@ rna_agent_system/
   - 可选环境变量：
     - `LINEARDESIGN_ROOT`：覆盖 LinearDesign 检出根目录（需已 `make` 且存在 `bin/LinearDesign_2D`）
 
+- `linearfold_service/`
+  - [LinearFold](https://github.com/LinearFold/LinearFold.git) 的 RNA 二级结构预测服务（调用上游 `linearfold` 脚本与 `bin/linearfold_c|v`）
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8015`
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /fold`
+  - 输入是 `sequence`
+  - 支持参数：
+    - `beam_size`
+    - `use_vienna`
+    - `dangles`
+  - 输出包括：
+    - `sequence`
+    - `structure`
+    - `mfe`
+    - `backend`（`LinearFold-C` 或 `LinearFold-V`）
+  - 上游源码与编译产物默认目录：
+    - `rna_agent_system/external_repos/LinearFold/`
+    - 部署后需在上述目录执行 `make`，生成 `bin/linearfold_c` 与 `bin/linearfold_v`
+  - 可选环境变量：
+    - `LINEARFOLD_ROOT`：覆盖 LinearFold 检出根目录（需已 `make` 且存在 `bin/linearfold_c|v`）
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -276,6 +299,7 @@ rna_agent_system/
 - `ODesign/`
 - `IRESfinder/`
 - `LinearDesign/`
+- `LinearFold/`
 - `ViennaRNA/`
 
 **重要：**
@@ -289,6 +313,7 @@ rna_agent_system/
 - `external_repos/ODesign` 也应作为 **git submodule** 管理
 - `external_repos/IRESfinder` 也应作为 **git submodule** 管理
 - `external_repos/LinearDesign` 也应作为 **git submodule** 管理
+- `external_repos/LinearFold` 也应作为 **git submodule** 管理
 - `external_repos/ViennaRNA`（官方 ViennaRNA Package 源码）也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
@@ -329,7 +354,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 路由到 `crispr_specialist`
@@ -443,11 +468,12 @@ User Input
 - 如果用户文本偏“结构预测型”
   - 触发：
     - `mock_codon_optimization(filepath)`
-    - `predict_rna_secondary_structure(filepath)`
+    - `predict_rna_secondary_structure(filepath)`（默认 ViennaRNA）
+    - 当文本显式包含 `linearfold`（或不与 `lineardesign` 冲突的 `linear fold`）时，改为触发 `predict_rna_secondary_structure_with_linearfold(filepath, beam_size=..., use_vienna=..., dangles=...)`
   - 如果用户文本里还包含 `rhofold`、`3d`、`tertiary`、`三级结构`、`三维结构`、`pdb`
     - 还会额外触发 `predict_rna_tertiary_structure_with_rhofold(filepath)`
 
-另外，如果先做了 **`GEMORNA` / `RNARL` / `LinearDesign`** 任一 CDS 设计，而用户请求中又包含结构预测语义，当前 `tool_execution_node` 会在拿到生成 CDS 输出后，继续自动调用：
+另外，如果先做了 **`GEMORNA` / `RNARL` / `LinearDesign`** 任一 CDS 设计，而用户请求中又包含结构预测语义，当前 `tool_execution_node` 会在拿到生成 CDS 输出后继续自动调用折叠工具（默认 ViennaRNA；显式 `linearfold` 时切到 LinearFold）：
 
 - `predict_rna_secondary_structure`
 - `predict_rna_tertiary_structure_with_rhofold`
@@ -577,11 +603,12 @@ User Input
 - `8012`: `odesign_service`
 - `8013`: `iresfinder_service`
 - `8014`: `lineardesign_service`
+- `8015`: `linearfold_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8015`: 新工具 A
-- `8016`: 新工具 B
+- `8016`: 新工具 A
+- `8017`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -2616,6 +2643,138 @@ LinearDesign 目前已经完成以下最小闭环验证：
 
 ---
 
+## 10I. LinearFold 的接入方式
+
+### 10I.1 上游源码层
+
+目录：
+
+```text
+external_repos/LinearFold
+```
+
+（完整路径为 `rna_agent_system/external_repos/LinearFold`。）
+
+来源：
+
+- 上游仓库：[LinearFold/LinearFold](https://github.com/LinearFold/LinearFold.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 `git add .`
+- 建议在 `.gitmodules` 中为该子模块设置 `ignore = untracked`，避免 `make` 生成 `bin/` 后主仓库长期显示子模块脏状态
+
+### 10I.2 为什么当前采用“微服务 + 调用上游脚本”
+
+当前接入的 LinearFold 采用：
+
+- 保留上游源码与 `Makefile`
+- 在 `microservices/linearfold_service/` 中通过子进程调用上游 `linearfold` 脚本
+
+这样做的原因是：
+
+- 与现有工具链一致，保持 Python 3 的 REST 微服务入口
+- 上游 `linearfold` 脚本本身会调度 `bin/linearfold_c` / `bin/linearfold_v`，便于统一参数透传
+
+### 10I.3 当前微服务能力
+
+目录：
+
+```text
+microservices/linearfold_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /fold`
+
+输入：
+
+- `sequence`
+- `beam_size`（默认 `100`）
+- `use_vienna`（默认 `false`，为 `true` 时走 `LinearFold-V`）
+- `dangles`（仅支持 `0` 或 `2`）
+
+输出：
+
+- `sequence`
+- `structure`
+- `mfe`
+- `backend`（`LinearFold-C` / `LinearFold-V`）
+- `model`
+
+### 10I.4 当前 Agent 工具能力
+
+工具函数：
+
+- `predict_rna_secondary_structure_with_linearfold(filepath, service_url="http://127.0.0.1:8015/fold", beam_size=100, use_vienna=False, dangles=2)`
+
+当前行为：
+
+- 结构预测分支默认仍使用 ViennaRNA
+- 当用户请求中显式包含 `linearfold`（或不与 `lineardesign` 冲突的 `linear fold`）时，工作流切到 LinearFold 工具
+- 已支持从自然语言解析：
+  - `beam_size` / `beamsize` / `beam`
+  - `dangles=0|2`
+  - `linearfold-v` / `linearfold_v` / 与 `linearfold` 同句 `vienna`（自动置 `use_vienna=true`）
+
+### 10I.5 LinearFold 的实际运行注意事项
+
+#### 编译与二进制路径
+
+部署后必须在 submodule 目录执行编译：
+
+```bash
+cd rna_agent_system/external_repos/LinearFold
+make
+```
+
+成功后应存在：
+
+```text
+rna_agent_system/external_repos/LinearFold/bin/linearfold_c
+rna_agent_system/external_repos/LinearFold/bin/linearfold_v
+```
+
+微服务默认按 `rna_agent_system/external_repos/LinearFold` 解析上游目录；若需覆盖，可在启动服务前设置：
+
+```bash
+export LINEARFOLD_ROOT=/absolute/path/to/LinearFold
+```
+
+#### Conda 环境
+
+```bash
+cd rna_agent_system/microservices/linearfold_service
+conda env create -f environment.yml
+conda activate linearfold_service_env
+bash start.sh
+```
+
+若环境已存在，可使用：
+
+```bash
+conda env update -f environment.yml --prune
+```
+
+### 10I.6 当前验证状态
+
+LinearFold 目前已经完成以下最小闭环验证：
+
+- 上游源码以 submodule 形式置于 `rna_agent_system/external_repos/LinearFold`
+- 本地 `make` 成功生成 `bin/linearfold_c` 与 `bin/linearfold_v`
+- `linearfold_service` 的 `GET /health` 与 `POST /fold` 成功
+- Agent 规则分支已可通过 `linearfold` 关键词触发 LinearFold 二级结构预测
+
+这意味着：
+
+- LinearFold 已具备“上游编译产物 -> 微服务接口 -> Agent 工具”的标准接入形态
+- 当前项目在 RNA 二级结构上已同时具备 ViennaRNA（默认）和 LinearFold（显式触发）两条可用路径
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -2731,6 +2890,7 @@ microservices/new_tool_service/
 - `ODesign`
 - `IRESfinder`
 - `LinearDesign`
+- `LinearFold`
 - `ViennaRNA`
 
 新 clone：
@@ -2968,6 +3128,24 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 LinearFold：
+
+1. 在 `rna_agent_system/external_repos/LinearFold` 执行 `make`，确认存在 `bin/linearfold_c` 与 `bin/linearfold_v`
+2. 启动 `linearfold_service`
+3. `curl /health`
+4. `curl /fold`
+
+推荐优先测试 payload：
+
+```json
+{
+  "sequence": "GGGCUCGUAGAUCAGCGGUAGAUCGCUUCCUUCGCAAGGAAGCCCUGGGUUCAAAUCCCAGCGAGUCCACCA",
+  "beam_size": 20,
+  "use_vienna": false,
+  "dangles": 2
+}
+```
+
 例如测试 GerNA-Bind：
 
 1. 启动 `gernabind_service`
@@ -3056,12 +3234,15 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 
 - siRNA 请求
 - mRNA 结构预测请求
+- mRNA 结构预测请求（默认 ViennaRNA）
+- mRNA 结构预测请求（显式 `linearfold`，并可附 `beam_size=...` / `dangles=...`）
 - GEMORNA 设计请求
 - GEMORNA 设计 + RNAfold 联合请求
 - LinearDesign 设计请求（自然语言中显式包含 `lineardesign` / `linear design` 等关键词，例如「请用 lineardesign 设计 mRNA CDS，蛋白序列 MNDTEAI」）
 - RNA 三级结构预测请求
 - GEMORNA 设计 + RhoFold 联合请求
 - LinearDesign 设计 + 结构预测联合请求（在同一句用户输入中同时包含设计语义与 `fold` / `rhofold` 等结构关键词时，由 `tool_execution_node` 串联）
+- LinearDesign 设计 + Linearfold 联合请求（在同一句用户输入中同时包含设计语义与 `linearfold` 关键词时，后续折叠改走 `linearfold_service`）
 - RhoDesign 结构到序列设计请求
 - RNAsmol RNA-ligand 打分请求
 - RNASTOP mRNA 稳定性预测请求
@@ -3323,7 +3504,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 当前 `critic_node` 在用户请求含结构相关关键词时，若 **`mfe > -20.0`** 则 **hard reject** 并重试，直到 **`retry_count < max_retries`** 不再成立才 **pass**。
 
-这在热力学上容易与**短 RNA** 的典型 MFE 尺度冲突：很多合法、已用 ViennaRNA 正确折叠的序列，其 MFE 在 **-1 ~ -15 kcal/mol** 仍**大于** `-20`，因此会连续触发 reject，**重试并不会改变物理预测**，只是在耗尽重试次数后放行。
+这在热力学上容易与**短 RNA** 的典型 MFE 尺度冲突：很多合法、已用 ViennaRNA 或 LinearFold 正确折叠的序列，其 MFE 在 **-1 ~ -15 kcal/mol** 仍**大于** `-20`，因此会连续触发 reject，**重试并不会改变物理预测**，只是在耗尽重试次数后放行。
 
 更稳妥的后续方向包括：
 
@@ -3339,7 +3520,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` / `LinearFold` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
