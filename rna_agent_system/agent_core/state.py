@@ -67,6 +67,11 @@ class AgentState(TypedDict, total=False):
     odesign_run_log_filepath: str
     odesign_model_name: str
     odesign_design_modality: str
+    evitar_mode: str
+    evitar_predict: str
+    evitar_output_filepath: str
+    evitar_result_count: int
+    evitar_command: str
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str

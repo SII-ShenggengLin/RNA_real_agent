@@ -75,6 +75,40 @@ class OffTargetCheckInput(BaseModel):
     )
 
 
+class EvitarDesignInput(BaseModel):
+    """Input schema for Evitar siRNA/Cas13 design tool."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to input FASTA file in workspace or repo-relative path.",
+    )
+    mode: str = Field(
+        default="existing",
+        description="Evitar mode: `existing` or `predesign`.",
+    )
+    predict: str = Field(
+        default="predsi",
+        description="Evitar predict option: `predsi`, `rnaxs`, or `CRISPR`.",
+    )
+    strains_path: Optional[str] = Field(
+        default=None,
+        description="Required for existing-virus mode. FASTA path with multiple strains.",
+    )
+    off_target: bool = Field(
+        default=False,
+        description="Enable Evitar off-target pipeline.",
+    )
+    ncores: int = Field(
+        default=1,
+        ge=1,
+        description="Number of threads for Evitar.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8016/design",
+        description="REST endpoint for the Evitar microservice.",
+    )
+
+
 class CrisotScoreInput(BaseModel):
     """Input schema for CRISOT score prediction."""
 
@@ -239,6 +273,89 @@ def check_off_target(filepath: str, service_url: str = "http://127.0.0.1:8002/ch
         return payload
     except requests.RequestException as exc:
         raise ValueError(f"Off-target service request failed: {exc}") from exc
+
+
+@tool(args_schema=EvitarDesignInput)
+def design_sirna_with_evitar(
+    filepath: str,
+    mode: str = "existing",
+    predict: str = "predsi",
+    strains_path: Optional[str] = None,
+    off_target: bool = False,
+    ncores: int = 1,
+    service_url: str = "http://127.0.0.1:8016/design",
+) -> dict[str, Any]:
+    """Design siRNAs/Cas13 guides via the Evitar microservice.
+
+    Args:
+        filepath: Path to an input FASTA file.
+            IMPORTANT: pass a filepath rather than embedding long sequence text.
+        mode: `existing` or `predesign`.
+        predict: Evitar predictor `predsi`, `rnaxs`, or `CRISPR`.
+        strains_path: FASTA path required for `existing` mode.
+        off_target: Enable Evitar off-target analysis.
+        ncores: Number of threads passed through to Evitar.
+        service_url: REST endpoint for the Evitar microservice.
+
+    Returns:
+        Dict containing output filepath, candidate count, and top rows.
+
+    Raises:
+        ValueError: If Evitar service request fails or returns invalid fields.
+    """
+    request_payload: dict[str, Any] = {
+        "input_path": filepath,
+        "mode": mode,
+        "predict": predict,
+        "off_target": bool(off_target),
+        "ncores": int(ncores),
+    }
+    if strains_path:
+        request_payload["strains_path"] = strains_path
+
+    try:
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=3600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        required = {"output_path", "result_count", "top_results", "mode", "predict"}
+        if not required.issubset(payload):
+            raise ValueError(
+                "Evitar response is missing required fields: "
+                f"{sorted(required - set(payload))}"
+            )
+
+        output_path = str(payload["output_path"])
+        workspace_output_path = output_path
+        try:
+            workspace_output_path = copy_file_to_workspace(output_path, prefix="evitar_result", suffix=".txt")
+        except OSError:
+            workspace_output_path = output_path
+
+        return {
+            "input_filepath": filepath,
+            "output_filepath": workspace_output_path,
+            "raw_output_path": output_path,
+            "mode": str(payload["mode"]),
+            "predict": str(payload["predict"]),
+            "result_count": int(payload.get("result_count", 0)),
+            "top_results": payload.get("top_results", []),
+            "model": str(payload.get("model", "Evitar")),
+            "command": str(payload.get("command", "")),
+        }
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"Evitar service request failed: {exc}{suffix}") from exc
 
 
 @tool(args_schema=CrisotScoreInput)
