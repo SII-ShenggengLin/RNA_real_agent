@@ -1,0 +1,11 @@
+name: evitar_service_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - perl
+  - pip
+  - pip:
+      - fastapi==0.115.0
+      - uvicorn[standard]==0.30.6
+      - pydantic==2.9.2
