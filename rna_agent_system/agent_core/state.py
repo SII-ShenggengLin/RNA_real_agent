@@ -28,6 +28,12 @@ class AgentState(TypedDict, total=False):
     crisot_best_mutation: str
     crisot_best_delta_spec: float
     crisot_optimized_available: bool
+    sgrna_design_generated_count: int
+    sgrna_design_best_nn_score: float
+    sgrna_design_best_mutation_count: int
+    sgrna_design_output_filepath: str
+    sgrna_design_summary_filepath: str
+    sgrna_design_model_path: str
     cai_score: float
     mfe: float
     structure_filepath: str

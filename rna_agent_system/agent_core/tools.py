@@ -49,6 +49,29 @@ def _normalize_crisot_sequence(raw_text: str) -> str:
     return sequence
 
 
+def _normalize_sgrna_design_sequence(raw_text: str) -> str:
+    """Normalize sgRNA-handle DNA sequence input for sgrna_design service."""
+    sequence_lines = [
+        line.strip()
+        for line in raw_text.splitlines()
+        if line.strip() and not line.lstrip().startswith(">")
+    ]
+    merged = "".join(sequence_lines).upper().replace("U", "T")
+    sequence = re.sub(r"[^A-Z]", "", merged)
+    invalid_chars = sorted(set(ch for ch in sequence if ch not in {"A", "C", "G", "T"}))
+    if invalid_chars:
+        raise ValueError(
+            "sgRNA design supports only A/C/G/T/U input. "
+            f"Unsupported characters: {''.join(invalid_chars)}"
+        )
+    if len(sequence) < 40 or len(sequence) > 120:
+        raise ValueError(
+            "sgRNA design expects a handle/template sequence length between 40 and 120 nt; "
+            f"got {len(sequence)} nt."
+        )
+    return sequence
+
+
 class SirnaEfficiencyInput(BaseModel):
     """Input schema for siRNA efficiency prediction tool."""
 
@@ -208,6 +231,47 @@ class CrisotOptimizeInput(BaseModel):
     service_url: str = Field(
         default="http://127.0.0.1:8011/optimize",
         description="REST endpoint for the CRISOT optimization microservice.",
+    )
+
+
+class SgRNADesignInput(BaseModel):
+    """Input schema for sgRNA handle design via sgrna_design_service."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to a workspace or repo-relative file containing sgRNA handle seed sequence.",
+    )
+    n_samples: int = Field(
+        default=10,
+        ge=1,
+        le=200,
+        description="Number of designed candidates to request from service.",
+    )
+    mutation_number: int = Field(
+        default=22,
+        ge=1,
+        le=40,
+        description="Maximum mutation count relative to the seed sequence.",
+    )
+    temperature: float = Field(
+        default=1.0,
+        gt=0.0,
+        le=5.0,
+        description="Sampling temperature passed through to service generation.",
+    )
+    max_overlap: int = Field(
+        default=21,
+        ge=1,
+        le=60,
+        description="Maximum longest-common-substring overlap among accepted candidates.",
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional torch device override such as `cuda:0` or `cpu`.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8017/design",
+        description="REST endpoint for sgRNA design microservice.",
     )
 
 
@@ -624,6 +688,134 @@ def optimize_sgrna_with_crisot(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"CRISOT optimize request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=SgRNADesignInput)
+def design_sgrna_handle_with_crgpt(
+    filepath: str,
+    n_samples: int = 10,
+    mutation_number: int = 22,
+    temperature: float = 1.0,
+    max_overlap: int = 21,
+    device: Optional[str] = None,
+    service_url: str = "http://127.0.0.1:8017/design",
+) -> dict[str, Any]:
+    """Design sgRNA handle candidates through sgrna_design microservice.
+
+    Args:
+        filepath: Path to a file containing the seed sgRNA handle sequence.
+            IMPORTANT: pass a filepath rather than inline long sequence text.
+        n_samples: Number of designed candidates to request.
+        mutation_number: Maximum mutation count relative to seed sequence.
+        temperature: Sampling temperature for model generation.
+        max_overlap: Maximum overlap constraint among candidates.
+        device: Optional torch device override such as `cuda:0` or `cpu`.
+        service_url: REST endpoint for the sgrna_design microservice.
+
+    Returns:
+        Dict containing best candidate summary and artifact filepaths copied into workspace.
+
+    Raises:
+        ValueError: If service request fails or response payload is invalid.
+    """
+    seed_sequence = _normalize_sgrna_design_sequence(read_sequence(filepath))
+    request_payload: dict[str, Any] = {
+        "seed_sequence": seed_sequence,
+        "n_samples": int(n_samples),
+        "mutation_number": int(mutation_number),
+        "temperature": float(temperature),
+        "max_overlap": int(max_overlap),
+    }
+    if device:
+        request_payload["device"] = device
+
+    try:
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=3600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        required = {
+            "generated_count",
+            "output_fasta_path",
+            "summary_json_path",
+            "normalized_seed",
+            "candidates",
+        }
+        if not required.issubset(payload):
+            raise ValueError(
+                "sgRNA design response is missing required fields: "
+                f"{sorted(required - set(payload))}"
+            )
+
+        output_fasta_path = str(payload["output_fasta_path"])
+        summary_json_path = str(payload["summary_json_path"])
+        workspace_fasta_path = output_fasta_path
+        workspace_summary_path = summary_json_path
+        try:
+            workspace_fasta_path = copy_file_to_workspace(
+                output_fasta_path,
+                prefix="sgrna_design_result",
+                suffix=".fasta",
+            )
+        except OSError:
+            workspace_fasta_path = output_fasta_path
+        try:
+            workspace_summary_path = copy_file_to_workspace(
+                summary_json_path,
+                prefix="sgrna_design_summary",
+                suffix=".json",
+            )
+        except OSError:
+            workspace_summary_path = summary_json_path
+
+        candidates = payload.get("candidates", [])
+        best_candidate = {}
+        if isinstance(candidates, list):
+            for candidate in candidates:
+                if isinstance(candidate, dict) and str(candidate.get("name", "")).startswith("gen_"):
+                    best_candidate = candidate
+                    break
+            if not best_candidate and candidates and isinstance(candidates[0], dict):
+                best_candidate = candidates[0]
+
+        best_sequence = str(best_candidate.get("sequence", ""))
+        best_nn_score = float(best_candidate.get("nn_score", 0.0)) if best_candidate else 0.0
+        best_mutation_count = int(best_candidate.get("mutation_count", 0)) if best_candidate else 0
+
+        result = {
+            "input_filepath": filepath,
+            "seed_sequence": seed_sequence,
+            "normalized_seed": str(payload.get("normalized_seed", seed_sequence)),
+            "generated_count": int(payload.get("generated_count", 0)),
+            "best_sequence": best_sequence,
+            "best_nn_score": best_nn_score,
+            "best_mutation_count": best_mutation_count,
+            "output_fasta_filepath": workspace_fasta_path,
+            "summary_json_filepath": workspace_summary_path,
+            "raw_output_fasta_path": output_fasta_path,
+            "raw_summary_json_path": summary_json_path,
+            "device": str(payload.get("device", device or "")),
+            "model_path": str(payload.get("model_path", "")),
+            "has_vienna_rna": bool(payload.get("has_vienna_rna", False)),
+            "notes": payload.get("notes", []),
+            "model": str(payload.get("model", "sgrna_design_crgpt")),
+        }
+        if best_sequence:
+            result["best_sequence_filepath"] = save_sequence(best_sequence, prefix="sgrna_design_best")
+        return result
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"sgRNA design request failed: {exc}{suffix}") from exc
 
 
 class MrnaToolInput(BaseModel):

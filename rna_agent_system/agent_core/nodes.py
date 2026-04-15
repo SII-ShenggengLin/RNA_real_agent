@@ -15,6 +15,7 @@ from agent_core.state import AgentState
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
     check_off_target,
+    design_sgrna_handle_with_crgpt,
     design_sirna_with_evitar,
     design_mrna_cds_with_lineardesign,
     design_rna_sequence_with_rhodesign,
@@ -37,6 +38,7 @@ from agent_core.tools import (
 
 SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target, design_sirna_with_evitar]
 CRISPR_TOOLS = [
+    design_sgrna_handle_with_crgpt,
     score_crispr_off_target_with_crisot,
     calculate_crispr_specificity_with_crisot,
     search_crispr_off_targets_with_crisot,
@@ -239,10 +241,28 @@ def _needs_crispr_mode(text: str) -> bool:
             "cas9",
             "sgRNA".lower(),
             "sgrna",
+            "sgrna handle",
+            "sgrna design",
+            "crgpt",
+            "sgrna_design",
             "guide rna",
             "guide-rna",
             "off-spec",
             "off_spec",
+        ]
+    )
+
+
+def _needs_sgrna_handle_design(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "sgrna handle",
+            "handle design",
+            "sgrna design",
+            "crgpt",
+            "sgrna_design",
+            "design sgrna",
         ]
     )
 
@@ -857,6 +877,55 @@ def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
     return pdb_path, ss_path
 
 
+def _resolve_sgrna_design_request(text: str) -> Tuple[dict[str, Any], dict[str, Any]]:
+    raw_sequence = _extract_crispr_named_sequence(
+        text,
+        ("seed", "template", "handle", "wildtype", "sgrna", "sg_rna"),
+    )
+    if not raw_sequence:
+        filepath_candidate = _extract_path_with_suffixes(text, ("fasta", "fa", "txt", "seq"))
+    else:
+        filepath_candidate = None
+
+    workspace_files: list[str] = []
+    if filepath_candidate:
+        seed_filepath = filepath_candidate
+    else:
+        if not raw_sequence:
+            discovered = _extract_crispr_sequences(text)
+            raw_sequence = discovered[0] if discovered else (
+                "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG"
+            )
+        seed_filepath = save_sequence(raw_sequence, prefix="sgrna_seed")
+        workspace_files.append(seed_filepath)
+
+    tool_args: dict[str, Any] = {"filepath": seed_filepath}
+    n_samples = _extract_int_setting(text, ("n_samples", "samples", "num_samples"))
+    if n_samples is not None and n_samples > 0:
+        tool_args["n_samples"] = n_samples
+    mutation_number = _extract_int_setting(
+        text,
+        ("mutation_number", "mutation", "mutations", "mut_num"),
+    )
+    if mutation_number is not None and mutation_number > 0:
+        tool_args["mutation_number"] = mutation_number
+    max_overlap = _extract_int_setting(text, ("max_overlap", "overlap"))
+    if max_overlap is not None and max_overlap > 0:
+        tool_args["max_overlap"] = max_overlap
+    temperature = _extract_float_setting(text, ("temperature", "temp"))
+    if temperature is not None and temperature > 0:
+        tool_args["temperature"] = temperature
+    device = _extract_string_setting(text, ("device", "torch_device", "dev"))
+    if device:
+        tool_args["device"] = device
+
+    state_updates = {
+        "current_filepath": seed_filepath,
+        "workspace_files": workspace_files,
+    }
+    return tool_args, state_updates
+
+
 def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, Any]]:
     lowered = text.lower()
     csv_path = _extract_path_with_suffixes(text, ("csv",))
@@ -1102,7 +1171,13 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
 def crispr_specialist_node(state: AgentState) -> AgentState:
     """Emit deterministic CRISPR/CRISOT tool calls without LLM."""
     state["active_specialist"] = "crispr_specialist"
-    tool_name, tool_args, state_updates = _resolve_crisot_request(state.get("input_sequence", ""))
+    user_text = state.get("input_sequence", "")
+    lowered = user_text.lower()
+    if _needs_sgrna_handle_design(lowered):
+        tool_args, state_updates = _resolve_sgrna_design_request(user_text)
+        tool_name = "design_sgrna_handle_with_crgpt"
+    else:
+        tool_name, tool_args, state_updates = _resolve_crisot_request(user_text)
     workspace_files = state.get("workspace_files", [])
     extra_workspace_files = state_updates.pop("workspace_files", [])
     state["workspace_files"] = workspace_files + extra_workspace_files
@@ -1382,7 +1457,12 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     {"name": "check_off_target", "args": {"filepath": filepath}},
                 ]
         elif state.get("active_specialist") == "crispr_specialist":
-            tool_name, tool_args, state_updates = _resolve_crisot_request(state.get("input_sequence", ""))
+            raw_crispr_text = state.get("input_sequence", "")
+            if _needs_sgrna_handle_design(raw_crispr_text.lower()):
+                tool_args, state_updates = _resolve_sgrna_design_request(raw_crispr_text)
+                tool_name = "design_sgrna_handle_with_crgpt"
+            else:
+                tool_name, tool_args, state_updates = _resolve_crisot_request(raw_crispr_text)
             extra_workspace_files = state_updates.pop("workspace_files", [])
             state["workspace_files"] = state.get("workspace_files", []) + extra_workspace_files
             for key, value in state_updates.items():
@@ -1612,6 +1692,31 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["crisot_optimized_sgrna_filepath"] = optimized_sgrna_filepath
                 state["current_filepath"] = optimized_sgrna_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [optimized_sgrna_filepath]
+        elif tool_name == "design_sgrna_handle_with_crgpt":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+                if input_filepath.startswith("workspace/"):
+                    state["workspace_files"] = state.get("workspace_files", []) + [input_filepath]
+            best_sequence = str(tool_result.get("best_sequence", ""))
+            if best_sequence:
+                state["candidate_sequence"] = best_sequence
+            state["sgrna_design_generated_count"] = int(tool_result.get("generated_count", 0))
+            state["sgrna_design_best_nn_score"] = float(tool_result.get("best_nn_score", 0.0))
+            state["sgrna_design_best_mutation_count"] = int(tool_result.get("best_mutation_count", 0))
+            state["sgrna_design_model_path"] = str(tool_result.get("model_path", ""))
+            output_fasta_filepath = str(tool_result.get("output_fasta_filepath", ""))
+            if output_fasta_filepath:
+                state["sgrna_design_output_filepath"] = output_fasta_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_fasta_filepath]
+            summary_json_filepath = str(tool_result.get("summary_json_filepath", ""))
+            if summary_json_filepath:
+                state["sgrna_design_summary_filepath"] = summary_json_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [summary_json_filepath]
+            best_sequence_filepath = str(tool_result.get("best_sequence_filepath", ""))
+            if best_sequence_filepath:
+                state["current_filepath"] = best_sequence_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [best_sequence_filepath]
         elif tool_name == "mock_codon_optimization":
             state["cai_score"] = float(tool_result.get("cai_score", 0.0))
             optimized_filepath = str(tool_result.get("optimized_filepath", ""))
@@ -1912,6 +2017,12 @@ def critic_node(state: AgentState) -> AgentState:
             f"crisot_best_mutation={state.get('crisot_best_mutation', '')}; "
             f"crisot_best_delta_spec={state.get('crisot_best_delta_spec', 0.0)}; "
             f"crisot_optimized_available={state.get('crisot_optimized_available', False)}; "
+            f"sgrna_design_generated_count={state.get('sgrna_design_generated_count', 0)}; "
+            f"sgrna_design_best_nn_score={state.get('sgrna_design_best_nn_score', 0.0)}; "
+            f"sgrna_design_best_mutation_count={state.get('sgrna_design_best_mutation_count', 0)}; "
+            f"sgrna_design_output_filepath={state.get('sgrna_design_output_filepath', '')}; "
+            f"sgrna_design_summary_filepath={state.get('sgrna_design_summary_filepath', '')}; "
+            f"sgrna_design_model_path={state.get('sgrna_design_model_path', '')}; "
             f"cai_score={cai_score}; "
             f"mfe={mfe}; "
             f"design_model={state.get('design_model', '')}; "
