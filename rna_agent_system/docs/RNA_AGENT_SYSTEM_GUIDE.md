@@ -99,6 +99,7 @@ rna_agent_system/
     - `predict_rna_secondary_structure`
     - `design_mrna_cds_with_rnarl`
     - `design_mrna_cds_with_gemorna`
+    - `predict_putative_ires_with_iresfinder`
 
 - `nodes.py`
   - Router / Specialist / Tool Execution / Critic 的核心逻辑
@@ -225,6 +226,25 @@ rna_agent_system/
     - 通过输入 JSON 文件驱动上游推理
     - 把预测结果 `*.cif` / `run.log` 等摘要回传给 Agent
 
+- `iresfinder_service/`
+  - IRESfinder 的 putative IRES 预测服务（Python 3 重实现）
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8013`
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /predict`
+  - 输入是 `fasta_content`（支持 FASTA 或纯序列文本）
+  - 支持参数：
+    - `mode`（0/1/2）
+    - `window_size`
+    - `step_size`
+    - `decision_threshold`
+  - 输出包括：
+    - `has_putative_ires`
+    - `best_fragment_id`
+    - `max_score`
+    - `result_tsv_path`
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -240,6 +260,7 @@ rna_agent_system/
 - `RNAsmol/`
 - `CRISOT/`
 - `ODesign/`
+- `IRESfinder/`
 
 **重要：**
 
@@ -250,6 +271,7 @@ rna_agent_system/
 - `external_repos/RhoDesign` 也建议作为 **git submodule** 管理
 - `external_repos/CRISOT` 也应作为 **git submodule** 管理
 - `external_repos/ODesign` 也应作为 **git submodule** 管理
+- `external_repos/IRESfinder` 也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -289,7 +311,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 路由到 `crispr_specialist`
@@ -306,7 +328,7 @@ User Input
 
 ### 5.3 mRNA Specialist
 
-分六种模式：
+分七种模式：
 
 - 如果用户文本显式提到 `GerNA-Bind` / `gernabind`
   - 触发 `score_rna_ligand_binding_with_gernabind(filepath, smiles, checkpoint_path=None, pdb_path=None, secondary_structure=None, device=None)`
@@ -351,6 +373,22 @@ User Input
     - `mean_deg_Mg_pH10`
     - `mean_deg_Mg_50C`
   - 当前不会触发 RNASTOP 上游仓库里的 beam / MCTS 优化逻辑
+
+- 如果用户文本偏“IRES 识别型”
+  - 触发 `predict_putative_ires_with_iresfinder(filepath, mode=0, window_size=174, step_size=50, decision_threshold=0.5)`
+  - 输入是 RNA 序列文件路径（或 FASTA 文件路径）
+  - 支持从自然语言中解析可选参数：
+    - `ires_mode` / `iresfinder_mode`
+    - `window_size`
+    - `step_size`
+    - `decision_threshold` / `ires_threshold`
+  - 当前返回核心摘要包括：
+    - `has_putative_ires`
+    - `best_fragment_id`
+    - `max_score`
+    - `positive_count`
+    - `fragment_count`
+    - `result_tsv_filepath`
 
 - 如果用户文本偏“结构到序列设计型”
   - 触发 `design_rna_sequence_with_rhodesign(pdb_filepath, secondary_structure_filepath=None)`
@@ -459,6 +497,13 @@ User Input
 - `rnastop_mean_deg_mg_50c`
 - `rnastop_mfe`
 - `rnastop_checkpoint_path`
+- `iresfinder_result_tsv_filepath`
+- `iresfinder_has_putative_ires`
+- `iresfinder_max_score`
+- `iresfinder_best_fragment_id`
+- `iresfinder_positive_count`
+- `iresfinder_fragment_count`
+- `iresfinder_model`
 - `odesign_input_json_filepath`
 - `odesign_output_dir`
 - `odesign_prediction_filepaths`
@@ -503,11 +548,12 @@ User Input
 - `8010`: `gernabind_service`
 - `8011`: `crisot_service`
 - `8012`: `odesign_service`
+- `8013`: `iresfinder_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8013`: 新工具 A
-- `8014`: 新工具 B
+- `8014`: 新工具 A
+- `8015`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -2233,6 +2279,143 @@ external_repos/ODesign/data/components.v20240608.cif.rdkit_mol.pkl
 
 ---
 
+## 10G. IRESfinder 的接入方式
+
+### 10G.1 上游源码层
+
+目录：
+
+```text
+external_repos/IRESfinder
+```
+
+来源：
+
+- 上游仓库：[xiaofengsong/IRESfinder](https://github.com/xiaofengsong/IRESfinder.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 vendoring 进主仓库历史
+
+### 10G.2 为什么当前采用“项目内 Python 3 微服务封装”
+
+当前接入的 `IRESfinder` 不是直接依赖上游 Python 2 入口脚本，而是采用：
+
+- 保留上游源码仓库及其训练数据
+- 在 `microservices/iresfinder_service/` 中重建 Python 3 可部署推理入口
+
+这样做的原因是：
+
+- 主项目微服务栈统一为 Python 3
+- 上游流程可复用的核心资源是 `module/train.data`
+- 需要标准 REST API 供 Agent 稳定调用
+
+### 10G.3 当前微服务能力
+
+目录：
+
+```text
+microservices/iresfinder_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /predict`
+
+输入：
+
+- `fasta_content`
+- `mode`（默认 0）
+- `window_size`（默认 174）
+- `step_size`（默认 50）
+- `decision_threshold`（默认 0.5）
+
+输出：
+
+- `has_putative_ires`
+- `best_fragment_id`
+- `max_score`
+- `positive_count`
+- `fragment_count`
+- `result_tsv_path`
+- `predictions`
+
+### 10G.4 当前 Agent 工具能力
+
+工具函数：
+
+- `predict_putative_ires_with_iresfinder(filepath, service_url="http://127.0.0.1:8013/predict", mode=0, window_size=174, step_size=50, decision_threshold=0.5)`
+
+输入：
+
+- `filepath`，其中保存的是 RNA 序列或 FASTA 内容
+
+输出：
+
+- `has_putative_ires`
+- `best_fragment_id`
+- `max_score`
+- `positive_count`
+- `fragment_count`
+- `result_tsv_filepath`
+
+### 10G.5 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已接入 `IRESfinder`：
+
+- `router_node` 会识别 `iresfinder` / `ires` / `internal ribosome` 等语义
+- `mrna_specialist_node` 会在 RNA-ligand / RNASTOP 分支之外优先匹配 IRES 语义并触发 IRESfinder
+- `tool_execution_node` 会更新以下额外状态：
+  - `iresfinder_result_tsv_filepath`
+  - `iresfinder_has_putative_ires`
+  - `iresfinder_max_score`
+  - `iresfinder_best_fragment_id`
+  - `iresfinder_positive_count`
+  - `iresfinder_fragment_count`
+  - `iresfinder_model`
+
+### 10G.6 IRESfinder 的实际运行注意事项
+
+当前服务默认要求以下目录存在：
+
+```text
+external_repos/IRESfinder/module/train.data
+```
+
+推荐运行环境：
+
+- Linux
+- Conda
+- Python 3.10
+
+服务启动方式：
+
+```bash
+cd rna_agent_system/microservices/iresfinder_service
+conda env create -f environment.yml
+conda activate iresfinder_service_env
+bash start.sh
+```
+
+### 10G.7 当前验证状态
+
+IRESfinder 目前已经完成最小闭环验证：
+
+- 上游仓库已以 submodule 形式接入
+- `iresfinder_service` 可启动
+- `GET /health` 成功
+- `POST /predict` 成功返回 IRES 评分摘要
+- Agent 工作流已可触发 IRESfinder 并回填 `final_report` 字段
+
+这意味着：
+
+- IRESfinder 已完成“上游源码 -> 微服务接口 -> Agent 工作流”的接入链路
+- 当前项目已具备 IRES 相关快速筛查能力
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -2346,6 +2529,7 @@ microservices/new_tool_service/
 - `RNAsmol`
 - `RNASTOP`
 - `ODesign`
+- `IRESfinder`
 
 新 clone：
 
@@ -2546,6 +2730,22 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 ```json
 {
   "sequence": "AUGGCUACGUAGCUAGCUAGCUAGCUGA"
+}
+```
+
+例如测试 IRESfinder：
+
+1. 启动 `iresfinder_service`
+2. `curl /health`
+3. `curl /predict`
+
+推荐优先测试 payload：
+
+```json
+{
+  "fasta_content": ">query\nAUGGCUACGUAGCUAGCUAGCUAGCUGA",
+  "mode": 0,
+  "decision_threshold": 0.5
 }
 ```
 
