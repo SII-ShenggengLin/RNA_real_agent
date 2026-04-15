@@ -95,6 +95,7 @@ rna_agent_system/
     - `calculate_crispr_specificity_with_crisot`
     - `search_crispr_off_targets_with_crisot`
     - `optimize_sgrna_with_crisot`
+    - `design_sgrna_handle_with_crgpt`
     - `mock_codon_optimization`
     - `predict_rna_secondary_structure`
     - `design_mrna_cds_with_rnarl`
@@ -300,6 +301,29 @@ rna_agent_system/
     - 上游 `bin/` 含 Linux 可执行文件
     - macOS 上常见 `cannot execute binary file`，最终验证应在 Linux 服务器完成
 
+- `sgrna_design_service/`
+  - [sgrna_design](https://github.com/bitguolab/sgrna_design.git) 的 sgRNA handle 设计服务（CRGPT 推理封装）
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8017`
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /design`
+  - 输入是 `seed_sequence`（DNA/RNA，服务端会统一归一化为 DNA）
+  - 支持参数：
+    - `n_samples`
+    - `mutation_number`
+    - `temperature`
+    - `max_overlap`
+    - `device`
+  - 输出包括：
+    - `generated_count`
+    - `output_fasta_path`
+    - `summary_json_path`
+    - `candidates`
+  - 运行时说明：
+    - 上游模型文件为 `pytorch_model.bin`，需使用 `torch>=2.6`
+    - GPU 环境需保证 torch CUDA 构建与服务器驱动代际匹配（见 §10K）
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -320,6 +344,7 @@ rna_agent_system/
 - `LinearFold/`
 - `Evitar/`
 - `ViennaRNA/`
+- `sgrna_design/`
 
 **重要：**
 
@@ -335,6 +360,7 @@ rna_agent_system/
 - `external_repos/LinearFold` 也应作为 **git submodule** 管理
 - `external_repos/Evitar` 也建议作为 **git submodule** 管理
 - `external_repos/ViennaRNA`（官方 ViennaRNA Package 源码）也应作为 **git submodule** 管理
+- `external_repos/sgrna_design` 也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -377,6 +403,7 @@ User Input
 - 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
+  - 以及 `sgrna handle`、`sgrna design`、`crgpt`、`sgrna_design`
   - 路由到 `crispr_specialist`
 - 如果包含 `evitar`、`predesign`、`future virus`、`rnaxs`、`predsi`、`cas13`
   - 路由到 `sirna_specialist`
@@ -509,6 +536,9 @@ User Input
 
 当前新增 `crispr_specialist`，主要负责 `CRISOT` 相关请求。
 
+- 如果用户文本偏 sgRNA handle 设计语义（如 `sgrna handle` / `sgrna design` / `crgpt`）
+  - 触发 `design_sgrna_handle_with_crgpt(filepath, n_samples, mutation_number, temperature, max_overlap, device)`
+- `seed/template/handle/wildtype` 等参数支持 40-140nt 提取；若未显式给 seed，则回退到默认 wildtype 61nt
 - 如果用户文本偏单对打分语义
   - 触发 `score_crispr_off_target_with_crisot(filepath, target_sequence)`
 - 如果用户文本偏 CSV specificity 语义
@@ -550,6 +580,12 @@ User Input
 - `crisot_best_mutation`
 - `crisot_best_delta_spec`
 - `crisot_optimized_available`
+- `sgrna_design_generated_count`
+- `sgrna_design_best_nn_score`
+- `sgrna_design_best_mutation_count`
+- `sgrna_design_output_filepath`
+- `sgrna_design_summary_filepath`
+- `sgrna_design_model_path`
 - `cai_score`
 - `mfe`
 - `structure_filepath`
@@ -632,11 +668,12 @@ User Input
 - `8014`: `lineardesign_service`
 - `8015`: `linearfold_service`
 - `8016`: `evitar_service`
+- `8017`: `sgrna_design_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8017`: 新工具 A
-- `8018`: 新工具 B
+- `8018`: 新工具 A
+- `8019`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -2973,6 +3010,143 @@ Evitar 已完成以下接入验证：
 
 ---
 
+## 10K. sgrna_design 的接入方式
+
+### 10K.1 上游源码层
+
+目录：
+
+```text
+external_repos/sgrna_design
+```
+
+来源：
+
+- 上游仓库：[bitguolab/sgrna_design](https://github.com/bitguolab/sgrna_design.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 vendoring 进主仓库历史
+
+### 10K.2 为什么当前采用“项目内微服务封装”
+
+当前接入的 `sgrna_design` 不是直接让 Agent 运行上游 `sample.py`，而是采用：
+
+- 保留上游源码仓库
+- 在 `microservices/sgrna_design_service/` 中封装稳定 REST 入口
+
+这样做的原因是：
+
+- 上游 `environment.yml` 信息不完整
+- 上游脚本默认强依赖 `cuda:0`
+- 需要把参数解析、输出落盘、CPU/GPU 选择统一到当前项目规范
+
+### 10K.3 当前微服务能力
+
+目录：
+
+```text
+microservices/sgrna_design_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /design`
+
+`/design` 输入：
+
+- `seed_sequence`
+- `n_samples`
+- `mutation_number`
+- `temperature`
+- `max_overlap`
+- `device`
+
+`/design` 输出：
+
+- `generated_count`
+- `model_path`
+- `device`
+- `output_fasta_path`
+- `summary_json_path`
+- `candidates`
+
+### 10K.4 当前 Agent 工具能力
+
+工具函数：
+
+- `design_sgrna_handle_with_crgpt(filepath, n_samples=10, mutation_number=22, temperature=1.0, max_overlap=21, device=None, service_url="http://127.0.0.1:8017/design")`
+
+输入：
+
+- `filepath`（种子序列文件路径）
+
+输出：
+
+- `best_sequence`
+- `best_nn_score`
+- `best_mutation_count`
+- `output_fasta_filepath`
+- `summary_json_filepath`
+- `best_sequence_filepath`
+
+### 10K.5 当前工作流集成方式
+
+当前 `Router / crispr_specialist / tool_execution` 已接入 `sgrna_design`：
+
+- `router_node` 会识别 `sgrna handle` / `sgrna design` / `crgpt` / `sgrna_design`
+- `crispr_specialist_node` 命中后会优先分发 `design_sgrna_handle_with_crgpt`
+- `tool_execution_node` 会回填：
+  - `sgrna_design_generated_count`
+  - `sgrna_design_best_nn_score`
+  - `sgrna_design_best_mutation_count`
+  - `sgrna_design_output_filepath`
+  - `sgrna_design_summary_filepath`
+  - `sgrna_design_model_path`
+
+### 10K.6 实际运行注意事项
+
+#### torch 安全版本要求
+
+上游模型文件为 `pytorch_model.bin`（非 safetensors），因此服务环境需满足：
+
+- `torch>=2.6`
+
+否则可能触发 `torch.load` 的安全限制报错（与 `CVE-2025-32434` 相关）。
+
+#### GPU 版本匹配
+
+当前已验证过一个常见环境坑：
+
+- 如果错误安装了 `torch + cu130`，而服务器驱动只支持到 CUDA 12.x（例如 12.8）
+- 会导致 `torch.cuda.is_available() == False`
+
+更稳妥的原则是：
+
+- 让 torch CUDA 构建版本与服务器驱动代际匹配（例如 `cu128`）
+- 如需抢占空闲卡，可通过 `CUDA_VISIBLE_DEVICES` 限制设备
+
+### 10K.7 当前验证状态
+
+`sgrna_design` 已完成以下接入验证：
+
+- 上游仓库已以 submodule 形式接入
+- `sgrna_design_service` 已完成 API 封装（`/health` + `/design`）
+- Agent 已支持自然语言触发 sgRNA handle 设计分支
+- 已修复：
+  - 长度溢出导致的 `index out of range` 问题
+  - 推理打分阶段 tensor 维度问题
+  - 前端 `seed=...` 被误截断为短序列的问题
+
+当前结论：
+
+- `sgrna_design` 已通过“上游源码 -> 微服务接口 -> Agent 工作流”接入链路
+- 最终可用性验证应以 Linux 服务器实际运行结果为准
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -3091,6 +3265,7 @@ microservices/new_tool_service/
 - `LinearFold`
 - `Evitar`
 - `ViennaRNA`
+- `sgrna_design`
 
 新 clone：
 
@@ -3411,6 +3586,25 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 sgrna_design：
+
+1. 启动 `sgrna_design_service`
+2. `curl /health`
+3. `curl /design`
+
+推荐优先测试 payload：
+
+```json
+{
+  "seed_sequence": "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG",
+  "n_samples": 4,
+  "mutation_number": 20,
+  "temperature": 1.0,
+  "max_overlap": 21,
+  "device": "cpu"
+}
+```
+
 ### 13.2 智能体集成测试
 
 在微服务都启动后，再启动：
@@ -3451,6 +3645,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - CRISOT single-pair 打分请求
 - CRISOT genome-wide specificity 请求
 - CRISOT sgRNA 优化请求
+- sgRNA handle 设计请求（`sgrna design` / `crgpt`）
 - ODesign RNA backbone 请求
 - ODesign protein-binding RNA 请求
 
