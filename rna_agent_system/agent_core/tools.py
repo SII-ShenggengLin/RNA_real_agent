@@ -534,6 +534,35 @@ class GemornaCdsInput(BaseModel):
     )
 
 
+class LinearDesignCdsInput(BaseModel):
+    """Input schema for LinearDesign CDS design tool."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing a protein sequence for LinearDesign CDS design. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8014/generate/cds",
+        description="REST endpoint for the LinearDesign CDS generation microservice.",
+    )
+    lambda_value: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="LinearDesign lambda balancing MFE and CAI.",
+    )
+    codon_usage_path: Optional[str] = Field(
+        default=None,
+        description="Optional codon usage CSV path passed through to LinearDesign service.",
+    )
+    verbose: bool = Field(
+        default=False,
+        description="Whether to enable verbose output in LinearDesign.",
+    )
+
+
 class RNARLCdsInput(BaseModel):
     """Input schema for RNARL CDS design tool."""
 
@@ -925,6 +954,74 @@ def design_mrna_cds_with_gemorna(
         }
     except requests.RequestException as exc:
         raise ValueError(f"GEMORNA service request failed: {exc}") from exc
+
+
+@tool(args_schema=LinearDesignCdsInput)
+def design_mrna_cds_with_lineardesign(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8014/generate/cds",
+    lambda_value: float = 0.0,
+    codon_usage_path: Optional[str] = None,
+    verbose: bool = False,
+) -> dict[str, Any]:
+    """Design an mRNA CDS sequence from a protein sequence using LinearDesign.
+
+    Args:
+        filepath: Workspace file path containing the input protein sequence.
+            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
+        service_url: REST endpoint for the LinearDesign microservice.
+        lambda_value: LinearDesign lambda hyperparameter balancing MFE and CAI.
+        codon_usage_path: Optional codon usage table path.
+        verbose: Whether to enable verbose output in the LinearDesign backend.
+
+    Returns:
+        Dict containing the generated CDS sequence, structure/MFE/CAI summaries, and workspace filepath.
+
+    Raises:
+        ValueError: If the LinearDesign service is unreachable or returns an invalid payload.
+    """
+    protein_sequence = read_sequence(filepath).strip()
+    try:
+        request_payload: dict[str, Any] = {
+            "protein_sequence": protein_sequence,
+            "lambda_value": lambda_value,
+            "verbose": verbose,
+        }
+        if codon_usage_path:
+            request_payload["codon_usage_path"] = codon_usage_path
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "generated_sequence" not in payload:
+            raise ValueError("Missing `generated_sequence` in LinearDesign response.")
+        output_filepath = save_sequence(payload["generated_sequence"], prefix="lineardesign_cds")
+        return {
+            "input_filepath": filepath,
+            "output_filepath": output_filepath,
+            "generated_sequence": payload["generated_sequence"],
+            "structure": payload.get("structure", ""),
+            "mfe": float(payload.get("mfe", 0.0)),
+            "cai_score": float(payload.get("cai_score", 0.0)),
+            "lambda_value": float(payload.get("lambda_value", lambda_value)),
+            "codon_usage_path": payload.get("codon_usage_path", codon_usage_path or ""),
+            "raw_output": payload.get("raw_output", ""),
+            "model": payload.get("model", "LinearDesign"),
+        }
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"LinearDesign service request failed: {exc}{suffix}") from exc
 
 
 @tool(args_schema=RNARLCdsInput)

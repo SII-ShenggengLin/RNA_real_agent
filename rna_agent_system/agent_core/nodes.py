@@ -15,6 +15,7 @@ from agent_core.state import AgentState
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
     check_off_target,
+    design_mrna_cds_with_lineardesign,
     design_rna_sequence_with_rhodesign,
     design_mrna_cds_with_gemorna,
     design_mrna_cds_with_rnarl,
@@ -47,6 +48,7 @@ MRNA_TOOLS = [
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
+    design_mrna_cds_with_lineardesign,
     design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
     design_rna_sequence_with_rhodesign,
@@ -291,6 +293,16 @@ def _needs_rnarl_design(text: str) -> bool:
             "reinforcement learning",
             "rl design",
             "rl-based",
+        ]
+    )
+
+
+def _needs_lineardesign(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "lineardesign",
+            "linear design",
         ]
     )
 
@@ -893,6 +905,8 @@ def router_node(state: AgentState) -> AgentState:
             "设计",
             "gemorna",
             "rnarl",
+            "lineardesign",
+            "linear design",
             "pdb",
             "cif",
             "protein",
@@ -1010,8 +1024,21 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     rnastop_mode = _needs_rnastop_prediction(user_text)
     structure_design_mode = _needs_structure_to_sequence_design(user_text)
     rnarl_mode = _needs_rnarl_design(user_text)
+    lineardesign_mode = _needs_lineardesign(user_text)
     design_mode = any(
-        k in user_text for k in ["design", "设计", "gemorna", "rnarl", "protein", "cds", "utr", "生成"]
+        k in user_text
+        for k in [
+            "design",
+            "设计",
+            "gemorna",
+            "rnarl",
+            "lineardesign",
+            "linear design",
+            "protein",
+            "cds",
+            "utr",
+            "生成",
+        ]
     )
 
     if odesign_mode:
@@ -1111,7 +1138,12 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         filepath = save_sequence(_extract_protein_sequence(state.get("input_sequence", "")), prefix="protein")
         state["current_filepath"] = filepath
         state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-        tool_name = "design_mrna_cds_with_rnarl" if rnarl_mode else "design_mrna_cds_with_gemorna"
+        if lineardesign_mode:
+            tool_name = "design_mrna_cds_with_lineardesign"
+        elif rnarl_mode:
+            tool_name = "design_mrna_cds_with_rnarl"
+        else:
+            tool_name = "design_mrna_cds_with_gemorna"
         tool_args: dict[str, Any] = {"filepath": filepath}
         if rnarl_mode:
             tool_args["model_type"] = _extract_rnarl_model_type(raw_text)
@@ -1124,6 +1156,9 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = (
+            "mRNA specialist (rule-based): dispatch LinearDesign design."
+            if lineardesign_mode
+            else
             "mRNA specialist (rule-based): dispatch RNARL design."
             if rnarl_mode
             else "mRNA specialist (rule-based): dispatch GEMORNA design."
@@ -1261,7 +1296,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if ss_path:
                 structure_call["args"]["secondary_structure_filepath"] = ss_path
             fallback_calls = [structure_call]
-        elif any(k in user_text for k in ["design", "设计", "gemorna", "rnarl", "protein", "cds", "utr", "生成"]):
+        elif any(k in user_text for k in ["design", "设计", "gemorna", "rnarl", "lineardesign", "linear design", "protein", "cds", "utr", "生成"]):
             if not filepath:
                 filepath = save_sequence(
                     _extract_protein_sequence(state.get("input_sequence", "")),
@@ -1269,11 +1304,12 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 )
                 state["current_filepath"] = filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-            tool_name = (
-                "design_mrna_cds_with_rnarl"
-                if _needs_rnarl_design(user_text)
-                else "design_mrna_cds_with_gemorna"
-            )
+            if _needs_lineardesign(user_text):
+                tool_name = "design_mrna_cds_with_lineardesign"
+            elif _needs_rnarl_design(user_text):
+                tool_name = "design_mrna_cds_with_rnarl"
+            else:
+                tool_name = "design_mrna_cds_with_gemorna"
             tool_args = {"filepath": filepath}
             if tool_name == "design_mrna_cds_with_rnarl":
                 tool_args["model_type"] = _extract_rnarl_model_type(state.get("input_sequence", ""))
@@ -1420,7 +1456,11 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["tertiary_log_filepath"] = log_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [log_filepath]
             state["mean_plddt"] = float(tool_result.get("mean_plddt", 0.0))
-        elif tool_name in {"design_mrna_cds_with_gemorna", "design_mrna_cds_with_rnarl"}:
+        elif tool_name in {
+            "design_mrna_cds_with_gemorna",
+            "design_mrna_cds_with_rnarl",
+            "design_mrna_cds_with_lineardesign",
+        }:
             output_filepath = str(tool_result.get("output_filepath", ""))
             if output_filepath:
                 state["current_filepath"] = output_filepath
@@ -1430,6 +1470,15 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["rnarl_model_type"] = str(tool_result.get("model_type", ""))
             state["rnarl_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
             state["rnarl_esm2_model_path"] = str(tool_result.get("esm2_model_path", ""))
+            if "cai_score" in tool_result:
+                state["cai_score"] = float(tool_result.get("cai_score", 0.0))
+            if "mfe" in tool_result:
+                state["mfe"] = float(tool_result.get("mfe", 0.0))
+            structure = str(tool_result.get("structure", ""))
+            if structure:
+                structure_filepath = save_sequence(structure, prefix="structure")
+                state["structure_filepath"] = structure_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
 
             user_text = state.get("input_sequence", "").lower()
             if _needs_secondary_structure(user_text):
