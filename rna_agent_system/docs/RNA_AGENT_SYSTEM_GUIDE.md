@@ -282,6 +282,24 @@ rna_agent_system/
   - 可选环境变量：
     - `LINEARFOLD_ROOT`：覆盖 LinearFold 检出根目录（需已 `make` 且存在 `bin/linearfold_c|v`）
 
+- `evitar_service/`
+  - [Evitar](https://github.com/dingyaozhang/Evitar.git) 的 siRNA/Cas13 设计服务（调用上游 `Evitar.pl`）
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8016`
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /design`
+  - 支持模式：
+    - `existing`（已有病毒，需 `input + strains`）
+    - `predesign`（future-virus 预设计，需 `input`）
+  - 支持参数：
+    - `predict=predsi|rnaxs|CRISPR`
+    - `off_target`
+    - `ncores`
+  - 运行时说明：
+    - 上游 `bin/` 含 Linux 可执行文件
+    - macOS 上常见 `cannot execute binary file`，最终验证应在 Linux 服务器完成
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -300,6 +318,7 @@ rna_agent_system/
 - `IRESfinder/`
 - `LinearDesign/`
 - `LinearFold/`
+- `Evitar/`
 - `ViennaRNA/`
 
 **重要：**
@@ -314,6 +333,7 @@ rna_agent_system/
 - `external_repos/IRESfinder` 也应作为 **git submodule** 管理
 - `external_repos/LinearDesign` 也应作为 **git submodule** 管理
 - `external_repos/LinearFold` 也应作为 **git submodule** 管理
+- `external_repos/Evitar` 也建议作为 **git submodule** 管理
 - `external_repos/ViennaRNA`（官方 ViennaRNA Package 源码）也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
@@ -358,6 +378,8 @@ User Input
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 路由到 `crispr_specialist`
+- 如果包含 `evitar`、`predesign`、`future virus`、`rnaxs`、`predsi`、`cas13`
+  - 路由到 `sirna_specialist`
 - 如果包含 `sirna`、`脱靶`、`off-target`
   - 路由到 `sirna_specialist`
 - 默认也偏向 `mrna_specialist`
@@ -368,6 +390,11 @@ User Input
 
 - `predict_sirna_efficiency(filepath)`
 - `check_off_target(filepath)`
+
+当请求命中 Evitar 关键词时，切换到 Evitar 分支：
+
+- `design_sirna_with_evitar(filepath, mode, predict, strains_path, off_target, ncores)`
+- 默认服务地址：`http://127.0.0.1:8016/design`
 
 ### 5.3 mRNA Specialist
 
@@ -604,11 +631,12 @@ User Input
 - `8013`: `iresfinder_service`
 - `8014`: `lineardesign_service`
 - `8015`: `linearfold_service`
+- `8016`: `evitar_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8016`: 新工具 A
-- `8017`: 新工具 B
+- `8017`: 新工具 A
+- `8018`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -2775,6 +2803,176 @@ LinearFold 目前已经完成以下最小闭环验证：
 
 ---
 
+## 10J. Evitar 的接入方式
+
+### 10J.1 上游源码层
+
+目录：
+
+```text
+external_repos/Evitar
+```
+
+（完整路径为 `rna_agent_system/external_repos/Evitar`。）
+
+来源：
+
+- 上游仓库：[dingyaozhang/Evitar](https://github.com/dingyaozhang/Evitar.git)
+
+当前建议：
+
+- 优先通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 vendoring 进主仓库历史
+
+### 10J.2 为什么当前采用“微服务 + 调用 Perl CLI”
+
+当前接入的 Evitar 采用：
+
+- 保留上游源码与 `bin/`
+- 在 `microservices/evitar_service/` 中通过子进程调用 `perl Evitar.pl`
+
+这样做的原因是：
+
+- 与现有工具链一致，统一走 Python 3 的 REST 接口
+- Evitar 本体是 Perl CLI，直接作为底层执行入口更稳
+- 输出文件可落到 `workspace/`，便于 Agent 只传路径
+
+### 10J.3 当前微服务能力
+
+目录：
+
+```text
+microservices/evitar_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /design`
+
+`/design` 输入：
+
+- `input_path`
+- `mode`（`existing` / `predesign`）
+- `predict`（`predsi` / `rnaxs` / `CRISPR`）
+- `strains_path`（`existing` 模式必需）
+- `off_target`
+- `ncores`
+- 可选高级参数：
+  - `p3utr_path`
+  - `transcriptome_path`
+  - `weight_path`
+  - `limitnum`
+  - `repeatnum`
+  - `sumtype`
+  - `pmcuff`
+  - `umcuff`
+  - `mircuff`
+  - `maxgc`
+  - `mingc`
+  - `middlegc`
+
+`/design` 输出：
+
+- `mode`
+- `predict`
+- `input_path`
+- `output_path`
+- `result_count`
+- `top_results`
+- `command`
+- `stdout`
+- `stderr`
+
+### 10J.4 当前 Agent 工具能力
+
+工具函数：
+
+- `design_sirna_with_evitar(filepath, mode="existing", predict="predsi", strains_path=None, off_target=False, ncores=1, service_url="http://127.0.0.1:8016/design")`
+
+输入：
+
+- `filepath`（输入 FASTA）
+- `mode` / `predict` / `strains_path` 等可选透传参数
+
+输出：
+
+- `output_filepath`
+- `mode`
+- `predict`
+- `result_count`
+- `top_results`
+- `command`
+
+### 10J.5 当前工作流集成方式
+
+当前 `Router / siRNA specialist / tool_execution` 已接入 Evitar：
+
+- `router_node` 会识别 `evitar`、`predesign`、`future virus`、`rnaxs`、`predsi`、`cas13`
+- `sirna_specialist_node` 在命中 Evitar 请求时，优先分发 `design_sirna_with_evitar`
+- `tool_execution_node` 会回填：
+  - `evitar_mode`
+  - `evitar_predict`
+  - `evitar_output_filepath`
+  - `evitar_result_count`
+  - `evitar_command`
+
+当前规则还加入了防误路由兜底：
+
+- 若 Evitar 请求误入 `mrna_specialist`，会在节点内部回退到 Evitar 工具调用
+
+### 10J.6 Evitar 的实际运行注意事项
+
+#### 运行环境
+
+Evitar 上游 README 明确要求：
+
+- Linux
+- Perl5
+
+当前更稳妥的部署方式：
+
+- macOS 仅用于改代码与推仓库
+- Linux 服务器用于启动服务与实际验证
+
+#### 上游 `bin/` 可执行文件
+
+Evitar 仓库自带 `bin/` 中的可执行文件（如 `RNAplfold`、`muscle3.8.31_i86linux64`）是 Linux 构建产物。
+
+因此在 macOS 上直接运行时常见：
+
+- `cannot execute binary file`
+
+这不代表接入失败，而是运行平台不匹配。
+
+#### `/health` 诊断字段
+
+当前 `evitar_service` 的 `/health` 会额外给出：
+
+- `linux_runtime`
+- `perl_path`
+- `evitar_script_exists`
+- `binaries.<name>.exists`
+- `binaries.<name>.executable`
+
+建议把它作为服务器侧第一检查点。
+
+### 10J.7 当前验证状态
+
+Evitar 已完成以下接入验证：
+
+- 上游仓库已接入 `external_repos/Evitar`
+- `evitar_service` 已完成 API 封装（`/health` + `/design`）
+- Agent 工具层已封装 `design_sirna_with_evitar`
+- 规则工作流已支持 Evitar 关键词触发并回填状态
+
+当前结论：
+
+- Evitar 属于 Linux 优先工具
+- 最终可用性验证应以 Linux 服务器结果为准
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -2891,6 +3089,7 @@ microservices/new_tool_service/
 - `IRESfinder`
 - `LinearDesign`
 - `LinearFold`
+- `Evitar`
 - `ViennaRNA`
 
 新 clone：
@@ -3240,6 +3439,8 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - GEMORNA 设计 + RNAfold 联合请求
 - LinearDesign 设计请求（自然语言中显式包含 `lineardesign` / `linear design` 等关键词，例如「请用 lineardesign 设计 mRNA CDS，蛋白序列 MNDTEAI」）
 - RNA 三级结构预测请求
+- Evitar existing-virus 设计请求（`input + strains`）
+- Evitar future-virus predesign 请求（`mode=predesign`）
 - GEMORNA 设计 + RhoFold 联合请求
 - LinearDesign 设计 + 结构预测联合请求（在同一句用户输入中同时包含设计语义与 `fold` / `rhofold` 等结构关键词时，由 `tool_execution_node` 串联）
 - LinearDesign 设计 + Linearfold 联合请求（在同一句用户输入中同时包含设计语义与 `linearfold` 关键词时，后续折叠改走 `linearfold_service`）
@@ -3520,7 +3721,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` / `LinearFold` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` / `LinearFold` / `Evitar` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
