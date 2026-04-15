@@ -13,10 +13,28 @@ from pydantic import BaseModel, Field
 
 
 APP_DIR = Path(__file__).resolve().parent
-REPO_ROOT = APP_DIR.parents[2]
-LINEARDESIGN_ROOT = REPO_ROOT / "external_repos" / "LinearDesign"
-LINEARDESIGN_BIN = LINEARDESIGN_ROOT / "bin" / "LinearDesign_2D"
-DEFAULT_CODON_USAGE = LINEARDESIGN_ROOT / "codon_usage_freq_table_human.csv"
+
+
+def _canonical_lineardesign_root() -> Path:
+    """Project-standard path: ``rna_agent_system/external_repos/LinearDesign``."""
+    return (APP_DIR.parents[2] / "external_repos" / "LinearDesign").resolve()
+
+
+def _resolve_lineardesign_root() -> Path:
+    """Resolve LinearDesign checkout: canonical path under ``rna_agent_system/external_repos/``,
+    or ``LINEARDESIGN_ROOT`` when set (must contain ``bin/LinearDesign_2D`` after ``make``).
+    """
+    override = os.environ.get("LINEARDESIGN_ROOT", "").strip()
+    if override:
+        root = Path(override).expanduser().resolve()
+        if (root / "bin" / "LinearDesign_2D").exists():
+            return root
+
+    canonical = _canonical_lineardesign_root()
+    if (canonical / "bin" / "LinearDesign_2D").exists():
+        return canonical
+
+    return canonical
 
 
 app = FastAPI(
@@ -52,20 +70,25 @@ class LinearDesignResponse(BaseModel):
     stderr: str
 
 
-def _resolve_codon_usage_path(path_value: Optional[str]) -> Path:
+def _resolve_codon_usage_path(lineardesign_root: Path, path_value: Optional[str]) -> Path:
+    default_path = lineardesign_root / "codon_usage_freq_table_human.csv"
     if not path_value:
-        return DEFAULT_CODON_USAGE
+        return default_path
 
     candidate = Path(path_value)
     if candidate.is_absolute():
         return candidate
 
-    repo_relative = (REPO_ROOT / candidate).resolve()
+    under_ld = (lineardesign_root / candidate).resolve()
+    if under_ld.exists():
+        return under_ld
+
+    rna_agent_root = APP_DIR.parents[2]
+    repo_relative = (rna_agent_root / candidate).resolve()
     if repo_relative.exists():
         return repo_relative
 
-    lineardesign_relative = (LINEARDESIGN_ROOT / candidate).resolve()
-    return lineardesign_relative
+    return under_ld
 
 
 def _extract_output_fields(raw_output: str) -> tuple[str, str, float, float]:
@@ -95,16 +118,20 @@ def health() -> dict[str, str]:
 
 @app.post("/generate/cds", response_model=LinearDesignResponse)
 def generate_cds(payload: LinearDesignRequest) -> LinearDesignResponse:
-    if not LINEARDESIGN_BIN.exists():
+    lineardesign_root = _resolve_lineardesign_root()
+    lineardesign_bin = lineardesign_root / "bin" / "LinearDesign_2D"
+    if not lineardesign_bin.exists():
+        canonical = _canonical_lineardesign_root()
         raise HTTPException(
             status_code=500,
             detail=(
-                f"LinearDesign binary not found: {LINEARDESIGN_BIN}. "
-                "Please run `make` under `external_repos/LinearDesign` first."
+                f"LinearDesign binary not found: {lineardesign_bin}. "
+                f"Expected checkout at {canonical} (run `make` there), "
+                "or set LINEARDESIGN_ROOT to a directory that contains bin/LinearDesign_2D."
             ),
         )
 
-    codon_usage_path = _resolve_codon_usage_path(payload.codon_usage_path)
+    codon_usage_path = _resolve_codon_usage_path(lineardesign_root, payload.codon_usage_path)
     if not codon_usage_path.exists():
         raise HTTPException(
             status_code=400,
@@ -116,7 +143,7 @@ def generate_cds(payload: LinearDesignRequest) -> LinearDesignResponse:
         raise HTTPException(status_code=400, detail="Protein sequence is empty.")
 
     cmd = [
-        str(LINEARDESIGN_BIN),
+        str(lineardesign_bin),
         f"{payload.lambda_value}",
         "1" if payload.verbose else "0",
         str(codon_usage_path),
@@ -127,7 +154,7 @@ def generate_cds(payload: LinearDesignRequest) -> LinearDesignResponse:
         input=protein_sequence + "\n",
         text=True,
         capture_output=True,
-        cwd=str(LINEARDESIGN_ROOT),
+        cwd=str(lineardesign_root),
         env=env,
         check=False,
     )
