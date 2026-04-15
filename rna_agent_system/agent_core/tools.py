@@ -907,10 +907,12 @@ def predict_rna_secondary_structure(
         payload = response.json()
         if "structure" not in payload or "mfe" not in payload:
             raise ValueError("Missing `structure` or `mfe` in ViennaRNA response.")
+        backend = payload.get("backend")
+        suffix = f"; backend={backend}" if backend else ""
         return (
             f"filepath={filepath}; "
             f"structure={payload['structure']}; "
-            f"mfe={payload['mfe']}"
+            f"mfe={payload['mfe']}{suffix}"
         )
     except requests.RequestException as exc:
         raise ValueError(f"ViennaRNA service request failed: {exc}") from exc

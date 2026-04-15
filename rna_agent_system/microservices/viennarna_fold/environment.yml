@@ -1,3 +1,5 @@
+# Installs RNAlib for ``import RNA`` used by ``main.py`` (primary path).
+# Upstream source for optional local builds: rna_agent_system/external_repos/ViennaRNA (git submodule).
 name: viennarna_fold_env
 channels:
   - bioconda

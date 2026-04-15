@@ -35,3 +35,6 @@
 [submodule "rna_agent_system/external_repos/LinearDesign"]
 	path = rna_agent_system/external_repos/LinearDesign
 	url = https://github.com/LinearDesignSoftware/LinearDesign.git
+[submodule "rna_agent_system/external_repos/ViennaRNA"]
+	path = rna_agent_system/external_repos/ViennaRNA
+	url = https://github.com/ViennaRNA/ViennaRNA.git
