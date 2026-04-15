@@ -13,11 +13,14 @@ from pydantic import BaseModel, Field
 
 
 APP_DIR = Path(__file__).resolve().parent
+# ``main.py`` lives at ``rna_agent_system/microservices/lineardesign_service/main.py``:
+# parents[0] = microservices/, parents[1] = rna_agent_system/ (do NOT use parents[2] = repo root).
+_RNA_AGENT_SYSTEM_ROOT = APP_DIR.parents[1]
 
 
 def _canonical_lineardesign_root() -> Path:
     """Project-standard path: ``rna_agent_system/external_repos/LinearDesign``."""
-    return (APP_DIR.parents[2] / "external_repos" / "LinearDesign").resolve()
+    return (_RNA_AGENT_SYSTEM_ROOT / "external_repos" / "LinearDesign").resolve()
 
 
 def _resolve_lineardesign_root() -> Path:
@@ -83,8 +86,7 @@ def _resolve_codon_usage_path(lineardesign_root: Path, path_value: Optional[str]
     if under_ld.exists():
         return under_ld
 
-    rna_agent_root = APP_DIR.parents[2]
-    repo_relative = (rna_agent_root / candidate).resolve()
+    repo_relative = (_RNA_AGENT_SYSTEM_ROOT / candidate).resolve()
     if repo_relative.exists():
         return repo_relative
 
