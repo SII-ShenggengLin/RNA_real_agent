@@ -33,6 +33,7 @@ _FIXED_BASES = {
 }
 _CANONICAL_DNA = {"A", "C", "G", "T"}
 _ACTUAL_STRUCTURE = "((((((..((((....))))....))))))..(((..).)).......((((....))))."
+_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 try:
     import RNA as _RNA_LIB  # type: ignore
@@ -147,19 +148,26 @@ class _ModelRuntime:
             raise RuntimeError("Model runtime has not been initialized.")
         encoded = self.tokenizer(prompt_seed, return_tensors="pt")
         input_ids = encoded["input_ids"].to(self.device)
+        prompt_len = int(input_ids.shape[-1])
         attention_mask = encoded.get("attention_mask")
         if attention_mask is not None:
             attention_mask = attention_mask.to(self.device)
         eos_token_id = self.tokenizer.eos_token_id
         if eos_token_id is None:
             eos_token_id = 0
+        max_positions = int(
+            getattr(self.model.config, "n_positions", 0)
+            or getattr(self.model.config, "max_position_embeddings", 0)
+            or 64
+        )
+        safe_max_new_tokens = min(int(max_new_tokens), max(1, max_positions - prompt_len))
         with torch.no_grad():
             outputs = self.model.generate(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 do_sample=True,
                 num_return_sequences=batch_size,
-                max_new_tokens=max_new_tokens,
+                max_new_tokens=safe_max_new_tokens,
                 temperature=temperature,
                 eos_token_id=eos_token_id,
                 pad_token_id=eos_token_id,
@@ -293,8 +301,8 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
     notes: List[str] = []
     attempts = 0
     max_attempts = max(60, payload.n_samples * 40)
-    prompt_seed = f"e{normalized_seed[: max(30, min(45, seed_length - 5))]}"
-    max_new_tokens = max(20, seed_length - len(prompt_seed) + 2)
+    prompt_seed = f"e{normalized_seed[: max(24, min(40, seed_length - 8))]}"
+    max_new_tokens = max(10, seed_length - len(prompt_seed) + 1)
 
     while len(accepted_sequences) < payload.n_samples + 1 and attempts < max_attempts:
         remaining = payload.n_samples + 1 - len(accepted_sequences)
@@ -398,6 +406,7 @@ app = FastAPI(
 
 @app.get("/health")
 def health() -> Dict[str, Any]:
+    _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     upstream_root = _resolve_upstream_root()
     model_path = _resolve_model_path(upstream_root, None)
     dna_json = (upstream_root / "crgen" / "dna.json").resolve()
