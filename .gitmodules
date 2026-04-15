@@ -32,3 +32,6 @@
 [submodule "rna_agent_system/external_repos/IRESfinder"]
 	path = rna_agent_system/external_repos/IRESfinder
 	url = https://github.com/xiaofengsong/IRESfinder.git
+[submodule "rna_agent_system/external_repos/LinearDesign"]
+	path = rna_agent_system/external_repos/LinearDesign
+	url = https://github.com/LinearDesignSoftware/LinearDesign.git
