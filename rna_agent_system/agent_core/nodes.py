@@ -21,6 +21,7 @@ from agent_core.tools import (
     mock_codon_optimization,
     optimize_sgrna_with_crisot,
     predict_mrna_stability_with_rnastop,
+    predict_putative_ires_with_iresfinder,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
@@ -42,6 +43,7 @@ MRNA_TOOLS = [
     score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
     predict_mrna_stability_with_rnastop,
+    predict_putative_ires_with_iresfinder,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_tertiary_structure_with_rhofold,
@@ -175,6 +177,33 @@ def _needs_rnastop_prediction(text: str) -> bool:
             "半衰期",
         ]
     )
+
+
+def _needs_iresfinder_prediction(text: str) -> bool:
+    lowered = text.lower()
+    if "iresfinder" in lowered or "internal ribosome" in lowered:
+        return True
+    return re.search(r"\bires\b", lowered) is not None
+
+
+def _build_iresfinder_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    args: dict[str, Any] = {"filepath": filepath}
+    mode = _extract_int_setting(raw_text, ("ires_mode", "iresfinder_mode"))
+    if mode is not None and 0 <= mode <= 2:
+        args["mode"] = mode
+    window_size = _extract_int_setting(raw_text, ("window_size", "ires_window", "ires_window_size"))
+    if window_size is not None:
+        args["window_size"] = window_size
+    step_size = _extract_int_setting(raw_text, ("step_size", "ires_step", "ires_step_size"))
+    if step_size is not None:
+        args["step_size"] = step_size
+    decision_threshold = _extract_float_setting(
+        raw_text,
+        ("decision_threshold", "ires_threshold", "iresfinder_threshold"),
+    )
+    if decision_threshold is not None:
+        args["decision_threshold"] = decision_threshold
+    return args
 
 
 def _needs_odesign_mode(text: str) -> bool:
@@ -844,7 +873,7 @@ def router_node(state: AgentState) -> AgentState:
     user_text = state.get("input_sequence", "").lower()
     if _needs_crispr_mode(user_text):
         route = "crispr_specialist"
-    elif any(
+    elif _needs_iresfinder_prediction(user_text) or any(
         k in user_text
         for k in [
             "mrna",
@@ -881,6 +910,8 @@ def router_node(state: AgentState) -> AgentState:
             "gernabind",
             "gerna-bind",
             "odesign",
+            "iresfinder",
+            "internal ribosome",
         ]
     ):
         route = "mrna_specialist"
@@ -1031,6 +1062,20 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch RNAsmol RNA-ligand scoring."
+    elif _needs_iresfinder_prediction(user_text):
+        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
+            {
+                "name": "predict_putative_ires_with_iresfinder",
+                "args": _build_iresfinder_tool_args(filepath, raw_text),
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch IRESfinder putative IRES scoring."
     elif rnastop_mode:
         filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
         state["current_filepath"] = filepath
@@ -1183,6 +1228,17 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {
                     "name": "score_rna_ligand_binding_with_rnasmol",
                     "args": {"filepath": filepath, "smiles": smiles},
+                }
+            ]
+        elif _needs_iresfinder_prediction(user_text):
+            filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
+            state["current_filepath"] = filepath
+            if created_workspace_file or filepath.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            fallback_calls = [
+                {
+                    "name": "predict_putative_ires_with_iresfinder",
+                    "args": _build_iresfinder_tool_args(filepath, state.get("input_sequence", "")),
                 }
             ]
         elif _needs_rnastop_prediction(user_text):
@@ -1485,6 +1541,20 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["rnastop_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
             if not state.get("mfe"):
                 state["mfe"] = state["rnastop_mfe"]
+        elif tool_name == "predict_putative_ires_with_iresfinder":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            result_tsv = str(tool_result.get("result_tsv_filepath", ""))
+            if result_tsv:
+                state["iresfinder_result_tsv_filepath"] = result_tsv
+                state["workspace_files"] = state.get("workspace_files", []) + [result_tsv]
+            state["iresfinder_has_putative_ires"] = bool(tool_result.get("has_putative_ires", False))
+            state["iresfinder_max_score"] = float(tool_result.get("max_score", 0.0))
+            state["iresfinder_best_fragment_id"] = str(tool_result.get("best_fragment_id", ""))
+            state["iresfinder_positive_count"] = int(tool_result.get("positive_count", 0))
+            state["iresfinder_fragment_count"] = int(tool_result.get("fragment_count", 0))
+            state["iresfinder_model"] = str(tool_result.get("model", ""))
         elif tool_name == "run_odesign_inference":
             state["odesign_input_json_filepath"] = str(tool_result.get("input_json_filepath", ""))
             state["odesign_output_dir"] = str(tool_result.get("output_dir", ""))
@@ -1537,6 +1607,7 @@ def critic_node(state: AgentState) -> AgentState:
     if (
         specialist == "mrna_specialist"
         and not _needs_rnastop_prediction(user_text)
+        and not _needs_iresfinder_prediction(user_text)
         and not _needs_structure_to_sequence_design(user_text)
         and any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"])
         and mfe > -20.0
@@ -1601,6 +1672,13 @@ def critic_node(state: AgentState) -> AgentState:
             f"rnastop_mean_deg_mg_50c={state.get('rnastop_mean_deg_mg_50c', 0.0)}; "
             f"rnastop_mfe={state.get('rnastop_mfe', 0.0)}; "
             f"rnastop_checkpoint_path={state.get('rnastop_checkpoint_path', '')}; "
+            f"iresfinder_result_tsv_filepath={state.get('iresfinder_result_tsv_filepath', '')}; "
+            f"iresfinder_has_putative_ires={state.get('iresfinder_has_putative_ires', False)}; "
+            f"iresfinder_max_score={state.get('iresfinder_max_score', 0.0)}; "
+            f"iresfinder_best_fragment_id={state.get('iresfinder_best_fragment_id', '')}; "
+            f"iresfinder_positive_count={state.get('iresfinder_positive_count', 0)}; "
+            f"iresfinder_fragment_count={state.get('iresfinder_fragment_count', 0)}; "
+            f"iresfinder_model={state.get('iresfinder_model', '')}; "
             f"odesign_input_json_filepath={state.get('odesign_input_json_filepath', '')}; "
             f"odesign_output_dir={state.get('odesign_output_dir', '')}; "
             f"odesign_prediction_filepaths={state.get('odesign_prediction_filepaths', [])}; "

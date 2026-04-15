@@ -54,6 +54,13 @@ class AgentState(TypedDict, total=False):
     rnastop_mean_deg_mg_50c: float
     rnastop_mfe: float
     rnastop_checkpoint_path: str
+    iresfinder_result_tsv_filepath: str
+    iresfinder_has_putative_ires: bool
+    iresfinder_max_score: float
+    iresfinder_best_fragment_id: str
+    iresfinder_positive_count: int
+    iresfinder_fragment_count: int
+    iresfinder_model: str
     odesign_input_json_filepath: str
     odesign_output_dir: str
     odesign_prediction_filepaths: list[str]

@@ -718,6 +718,46 @@ class RNASTOPPredictionInput(BaseModel):
     )
 
 
+class IRESfinderPredictionInput(BaseModel):
+    """Input schema for IRESfinder putative IRES scoring."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace or repo-relative file containing RNA/DNA sequence or FASTA. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8013/predict",
+        description="REST endpoint for the IRESfinder microservice.",
+    )
+    mode: int = Field(
+        default=0,
+        ge=0,
+        le=2,
+        description="0=full sequence, 1=header coordinates, 2=sliding window (see upstream IRESfinder).",
+    )
+    window_size: int = Field(
+        default=174,
+        ge=20,
+        le=5000,
+        description="Sliding-window length for mode 2.",
+    )
+    step_size: int = Field(
+        default=50,
+        ge=1,
+        le=5000,
+        description="Sliding-window step for mode 2.",
+    )
+    decision_threshold: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Probability threshold for labeling a fragment as IRES.",
+    )
+
+
 class ODesignInferenceInput(BaseModel):
     """Input schema for ODesign inference."""
 
@@ -1346,6 +1386,108 @@ def predict_mrna_stability_with_rnastop(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"RNASTOP service request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=IRESfinderPredictionInput)
+def predict_putative_ires_with_iresfinder(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8013/predict",
+    mode: int = 0,
+    window_size: int = 174,
+    step_size: int = 50,
+    decision_threshold: float = 0.5,
+) -> dict[str, Any]:
+    """Score RNA sequence fragments for putative internal ribosome entry sites (IRES) via IRESfinder.
+
+    Args:
+        filepath: Path to a file containing plain sequence or FASTA records.
+        service_url: REST endpoint for the IRESfinder microservice.
+        mode: IRESfinder mode (0=full sequence, 1=coordinate header, 2=sliding window).
+        window_size: Window length when ``mode`` is 2.
+        step_size: Step size when ``mode`` is 2.
+        decision_threshold: Probability cutoff for IRES vs non-IRES labels.
+
+    Returns:
+        Summary metrics, a bounded list of per-fragment scores, and a workspace copy of the TSV.
+
+    Raises:
+        ValueError: If the service is unreachable or returns an invalid payload.
+    """
+    fasta_content = read_sequence(filepath).strip()
+    if not fasta_content:
+        raise ValueError("IRESfinder input file is empty.")
+
+    try:
+        request_payload: dict[str, Any] = {
+            "fasta_content": fasta_content,
+            "mode": int(mode),
+            "window_size": int(window_size),
+            "step_size": int(step_size),
+            "decision_threshold": float(decision_threshold),
+        }
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=1800,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        required = {
+            "fragment_count",
+            "positive_count",
+            "has_putative_ires",
+            "best_fragment_id",
+            "max_score",
+            "predictions",
+        }
+        if not required.issubset(payload):
+            raise ValueError(
+                "IRESfinder response is missing required fields: "
+                f"{sorted(required - set(payload))}"
+            )
+
+        raw_tsv = str(payload.get("result_tsv_path", "")).strip()
+        workspace_tsv = ""
+        if raw_tsv:
+            try:
+                workspace_tsv = copy_file_to_workspace(raw_tsv, prefix="iresfinder_result", suffix=".tsv")
+            except OSError:
+                workspace_tsv = raw_tsv
+
+        predictions = payload.get("predictions", [])
+        if isinstance(predictions, list) and len(predictions) > 80:
+            predictions_trimmed = predictions[:80]
+            predictions_note = f"trimmed_to_first_80_of_{len(predictions)}"
+        else:
+            predictions_trimmed = predictions
+            predictions_note = ""
+
+        return {
+            "input_filepath": filepath,
+            "result_tsv_filepath": workspace_tsv or raw_tsv,
+            "mode": int(payload.get("mode", mode)),
+            "window_size": int(payload.get("window_size", window_size)),
+            "step_size": int(payload.get("step_size", step_size)),
+            "decision_threshold": float(payload.get("decision_threshold", decision_threshold)),
+            "fragment_count": int(payload["fragment_count"]),
+            "positive_count": int(payload["positive_count"]),
+            "has_putative_ires": bool(payload["has_putative_ires"]),
+            "best_fragment_id": str(payload["best_fragment_id"]),
+            "max_score": float(payload["max_score"]),
+            "model": str(payload.get("model", "IRESfinder-logreg-py3")),
+            "predictions": predictions_trimmed,
+            "predictions_note": predictions_note,
+        }
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"IRESfinder service request failed: {exc}{suffix}") from exc
 
 
 @tool(args_schema=ODesignInferenceInput)
