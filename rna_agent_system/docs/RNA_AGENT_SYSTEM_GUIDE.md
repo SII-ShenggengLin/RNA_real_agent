@@ -276,6 +276,7 @@ rna_agent_system/
 - `ODesign/`
 - `IRESfinder/`
 - `LinearDesign/`
+- `ViennaRNA/`
 
 **重要：**
 
@@ -288,6 +289,7 @@ rna_agent_system/
 - `external_repos/ODesign` 也应作为 **git submodule** 管理
 - `external_repos/IRESfinder` 也应作为 **git submodule** 管理
 - `external_repos/LinearDesign` 也应作为 **git submodule** 管理
+- `external_repos/ViennaRNA`（官方 ViennaRNA Package 源码）也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -545,6 +547,7 @@ User Input
   - 如果 `off_target_genes > 0`，则 reject 并重试
 - mRNA 结构预测：
   - 如果用户请求里有结构相关语义，并且 `mfe > -20.0`，则 reject 并重试
+  - **注意**：判断条件是严格的数值比较。短序列经 ViennaRNA 得到的 MFE 常在 **-2 ~ -10 kcal/mol** 量级，同样满足 `mfe > -20.0`，因此会反复 reject，直到 **`retry_count` 达到 `max_retries` 后强制 pass**；这**不会**使 MFE 自动变得更负，仅体现当前规则与短链热力学尺度不匹配。若产品上要接受此类真实预测，应调整阈值或规则（见 §14.18）。
 - `RhoDesign` 结构到序列设计：
   - 当前不走基于 `mfe` 的 reject 规则
   - 只要微服务成功返回即可 pass
@@ -613,7 +616,25 @@ User Input
 
 ## 8. ViennaRNA 的接入方式
 
-ViennaRNA 已经成功接入，作为“真实工具接入模板”。
+ViennaRNA 已经成功接入，作为“真实工具接入模板”。微服务在具备 **RNAlib**（`import RNA`）时优先用库内折叠；否则自动回退到 **`RNAfold` 命令行**，便于部分仅安装了可执行文件的环境。
+
+### 8.0 上游源码层（git submodule）
+
+目录：
+
+```text
+external_repos/ViennaRNA
+```
+
+来源：
+
+- 上游仓库：[ViennaRNA/ViennaRNA](https://github.com/ViennaRNA/ViennaRNA.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理；克隆或拉取主仓库后执行 `git submodule update --init --recursive`
+- **默认部署**仍推荐在 `viennarna_fold` 的 Conda 环境中安装 **bioconda `viennarna`**（与 `environment.yml` 一致），即可使用 RNAlib
+- 子模块源码用于版本对照、阅读官方安装说明；**可选**在 Linux 上按上游流程自编译（见 `microservices/viennarna_fold/build_from_submodule_linux.sh`），不作为大多数部署的必做步骤
 
 ### 8.1 微服务层
 
@@ -625,23 +646,27 @@ microservices/viennarna_fold/
 
 文件：
 
-- `environment.yml`
-- `main.py`
+- `environment.yml`（`python=3.10` + bioconda `viennarna` + FastAPI 栈；文件头注释说明了 conda 为主、子模块为可选上游）
+- `main.py`（RNAlib 优先；若无则调用 `RNAfold --noPS` 并解析标准输出）
 - `start.sh`
+- `build_from_submodule_linux.sh`（可选；在 Linux 上将子模块 `configure --prefix="${CONDA_PREFIX}" --with-python` 后安装到当前激活的 Conda 环境；依赖 autotools、swig 及上游 README 中的 `src` 下归档解压步骤）
 
 接口：
 
-- `GET /health`
+- `GET /health`：返回 `status`（`rnalib` 与 `rnafold_cli` 至少其一可用时为 `ok`，否则为 `degraded`）、`rnalib`、`rnafold_cli`
 - `POST /fold`
 
 输入：
 
 - `sequence`
 
-输出：
+输出（JSON）：
 
-- `structure`
+- `sequence`（大写、`T`→`U` 规范化后）
+- `structure`（点括号；长度应与序列一致）
 - `mfe`
+- `backend`：`RNAlib` 或 `RNAfold-cli`
+- `model`（固定描述字段）
 
 ### 8.2 Agent 工具层
 
@@ -649,13 +674,18 @@ microservices/viennarna_fold/
 
 - `predict_rna_secondary_structure(filepath, service_url="http://localhost:8003/fold")`
 
-当前返回格式是字符串：
+当前返回格式为单行字符串，例如：
 
 ```text
-filepath=...; structure=...; mfe=...
+filepath=...; structure=...; mfe=...; backend=RNAlib
 ```
 
-之后如果需要更稳健，建议改成 JSON 风格的结构化返回。
+当服务端未返回 `backend` 字段时，工具字符串中可能省略 `; backend=...` 段。之后如果需要更稳健，建议改成 JSON 风格的结构化返回。
+
+### 8.3 验证状态（补充）
+
+- 已在 Linux 上完成 `GET /health` 与 `POST /fold` 的最小闭环验证（RNAlib 路径）
+- 自然语言前端在触发二级结构预测时，可与上述微服务联调；注意 §5.5 / §14.18 中 **Critic 与 MFE 阈值** 对短序列行为的影响
 
 ---
 
@@ -2701,6 +2731,7 @@ microservices/new_tool_service/
 - `ODesign`
 - `IRESfinder`
 - `LinearDesign`
+- `ViennaRNA`
 
 新 clone：
 
@@ -3287,6 +3318,18 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 - 复杂任务仍建议显式写 JSON
 - 当前自然语言入口更适合作为“常用模板调用”而不是完整的 ODesign 任务编排器
+
+### 14.18 mRNA 规则 Critic 的 `mfe > -20.0` 与短序列折叠
+
+当前 `critic_node` 在用户请求含结构相关关键词时，若 **`mfe > -20.0`** 则 **hard reject** 并重试，直到 **`retry_count < max_retries`** 不再成立才 **pass**。
+
+这在热力学上容易与**短 RNA** 的典型 MFE 尺度冲突：很多合法、已用 ViennaRNA 正确折叠的序列，其 MFE 在 **-1 ~ -15 kcal/mol** 仍**大于** `-20`，因此会连续触发 reject，**重试并不会改变物理预测**，只是在耗尽重试次数后放行。
+
+更稳妥的后续方向包括：
+
+- 按序列长度或任务类型调整阈值（例如仅对 `len(seq) > N` 启用 `-20` 规则）
+- 将“稳定性”判据改为与长度归一化的指标或独立业务阈值
+- 对纯“二级结构查询”类请求跳过该条 mRNA 规则
 
 ---
 
