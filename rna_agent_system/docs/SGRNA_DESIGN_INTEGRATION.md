@@ -45,6 +45,12 @@ conda activate sgrna_design_service_env
 bash start.sh
 ```
 
+Important:
+
+- This tool currently loads Hugging Face weights from `pytorch_model.bin`.
+- Due to recent PyTorch security restrictions, use `torch>=2.6` in `sgrna_design_service_env`.
+- If you see an error mentioning CVE-2025-32434 / `torch.load`, upgrade torch in this env before retrying.
+
 Health check:
 
 ```bash
