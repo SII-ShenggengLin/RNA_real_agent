@@ -15,6 +15,7 @@ from agent_core.state import AgentState
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
     check_off_target,
+    design_sirna_with_evitar,
     design_mrna_cds_with_lineardesign,
     design_rna_sequence_with_rhodesign,
     design_mrna_cds_with_gemorna,
@@ -34,7 +35,7 @@ from agent_core.tools import (
     score_rna_ligand_binding_with_rnasmol,
 )
 
-SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target]
+SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target, design_sirna_with_evitar]
 CRISPR_TOOLS = [
     score_crispr_off_target_with_crisot,
     calculate_crispr_specificity_with_crisot,
@@ -188,6 +189,21 @@ def _needs_iresfinder_prediction(text: str) -> bool:
     if "iresfinder" in lowered or "internal ribosome" in lowered:
         return True
     return re.search(r"\bires\b", lowered) is not None
+
+
+def _needs_evitar_mode(text: str) -> bool:
+    return any(
+        k in text
+        for k in [
+            "evitar",
+            "cas13",
+            "future virus",
+            "future viruses",
+            "predesign",
+            "rnaxs",
+            "predsi",
+        ]
+    )
 
 
 def _build_iresfinder_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
@@ -611,6 +627,43 @@ def _resolve_rnastop_input(text: str) -> Tuple[str, bool]:
     return save_sequence(rna_sequence, prefix="rnastop_rna"), True
 
 
+def _extract_named_filepath(text: str, labels: Tuple[str, ...], suffixes: Tuple[str, ...]) -> Optional[str]:
+    labels_pattern = "|".join(re.escape(label) for label in labels)
+    suffix_pattern = "|".join(re.escape(suffix.lstrip(".")) for suffix in suffixes)
+    pattern = re.compile(
+        rf"(?:{labels_pattern})\s*[:=]\s*[\"']?([^\"'\s]+\.({suffix_pattern}))[\"']?",
+        re.IGNORECASE,
+    )
+    match = pattern.search(text)
+    if not match:
+        return None
+    return match.group(1).strip()
+
+
+def _build_evitar_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    lowered = raw_text.lower()
+    args: dict[str, Any] = {
+        "filepath": filepath,
+        "mode": "predesign"
+        if any(key in lowered for key in ["predesign", "future virus", "future viruses", "未来"])
+        else "existing",
+        "predict": "CRISPR"
+        if any(key in lowered for key in ["cas13", "gRNA".lower(), "crispr"])
+        else "rnaxs"
+        if "rnaxs" in lowered
+        else "predsi",
+        "off_target": any(key in lowered for key in ["offtarget", "off-target", "脱靶"]),
+    }
+    ncores = _extract_int_setting(raw_text, ("ncores", "threads", "cores"))
+    if ncores is not None and ncores > 0:
+        args["ncores"] = ncores
+
+    strains_path = _extract_named_filepath(raw_text, ("strains", "strain", "variants"), ("fa", "fasta", "fna"))
+    if strains_path:
+        args["strains_path"] = strains_path
+    return args
+
+
 def _extract_odesign_request(text: str) -> Tuple[dict[str, Any], dict[str, Any]]:
     lowered = text.lower()
     input_json_path = _extract_path_with_suffixes(text, ("json",))
@@ -914,6 +967,8 @@ def router_node(state: AgentState) -> AgentState:
     user_text = state.get("input_sequence", "").lower()
     if _needs_crispr_mode(user_text):
         route = "crispr_specialist"
+    elif _needs_evitar_mode(user_text):
+        route = "sirna_specialist"
     elif _needs_iresfinder_prediction(user_text) or any(
         k in user_text
         for k in [
@@ -992,15 +1047,36 @@ def router_node(state: AgentState) -> AgentState:
 
 def sirna_specialist_node(state: AgentState) -> AgentState:
     """Emit deterministic siRNA tool calls without LLM."""
+    raw_text = state.get("input_sequence", "")
+    user_text = raw_text.lower()
     filepath = state.get("current_filepath")
+    evitar_mode = _needs_evitar_mode(user_text)
     if not filepath:
-        filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="sirna")
+        if evitar_mode:
+            filepath = _extract_named_filepath(raw_text, ("input", "genome", "virus", "fasta"), ("fa", "fasta", "fna"))
+            if not filepath:
+                filepath = _extract_path_with_suffixes(raw_text, ("fasta", "fa", "fna", "txt", "seq"))
+            if not filepath:
+                filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="evitar_input")
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        else:
+            filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="sirna")
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
         state["current_filepath"] = filepath
-        state["workspace_files"] = state.get("workspace_files", []) + [filepath]
     state["active_specialist"] = "sirna_specialist"
-    ai_msg = AIMessage(
-        content="siRNA specialist (rule-based): dispatch tool calls.",
-        tool_calls=[
+    if evitar_mode:
+        evitar_args = _build_evitar_tool_args(filepath, raw_text)
+        tool_calls = [
+            {
+                "name": "design_sirna_with_evitar",
+                "args": evitar_args,
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "siRNA specialist (rule-based): dispatch Evitar design."
+    else:
+        tool_calls = [
             {
                 "name": "predict_sirna_efficiency",
                 "args": {"filepath": filepath},
@@ -1013,7 +1089,11 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             },
-        ],
+        ]
+        content = "siRNA specialist (rule-based): dispatch tool calls."
+    ai_msg = AIMessage(
+        content=content,
+        tool_calls=tool_calls,
     )
     state["messages"] = state.get("messages", []) + [ai_msg]
     return state
@@ -1047,6 +1127,39 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     """Emit deterministic mRNA tool calls without LLM."""
     raw_text = state.get("input_sequence", "")
     user_text = raw_text.lower()
+
+    # Defensive fallback: if router misroutes an Evitar request to mRNA,
+    # force it back onto the Evitar siRNA tool path.
+    if _needs_evitar_mode(user_text):
+        filepath = state.get("current_filepath")
+        if not filepath:
+            filepath = _extract_named_filepath(
+                raw_text,
+                ("input", "genome", "virus", "fasta"),
+                ("fa", "fasta", "fna"),
+            )
+            if not filepath:
+                filepath = _extract_path_with_suffixes(raw_text, ("fasta", "fa", "fna", "txt", "seq"))
+            if not filepath:
+                filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="evitar_input")
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            state["current_filepath"] = filepath
+        evitar_args = _build_evitar_tool_args(filepath, raw_text)
+        state["active_specialist"] = "sirna_specialist"
+        ai_msg = AIMessage(
+            content="mRNA specialist fallback (rule-based): reroute Evitar request to siRNA tool.",
+            tool_calls=[
+                {
+                    "name": "design_sirna_with_evitar",
+                    "args": evitar_args,
+                    "id": f"call_{uuid.uuid4().hex[:8]}",
+                    "type": "tool_call",
+                }
+            ],
+        )
+        state["messages"] = state.get("messages", []) + [ai_msg]
+        return state
+
     state["active_specialist"] = "mrna_specialist"
     odesign_mode = _needs_odesign_mode(user_text)
     gernabind_mode = _needs_gernabind_scoring(user_text)
@@ -1256,10 +1369,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="sirna")
                 state["current_filepath"] = filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-            fallback_calls = [
-                {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
-                {"name": "check_off_target", "args": {"filepath": filepath}},
-            ]
+            if _needs_evitar_mode(user_text):
+                fallback_calls = [
+                    {
+                        "name": "design_sirna_with_evitar",
+                        "args": _build_evitar_tool_args(filepath, state.get("input_sequence", "")),
+                    }
+                ]
+            else:
+                fallback_calls = [
+                    {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
+                    {"name": "check_off_target", "args": {"filepath": filepath}},
+                ]
         elif state.get("active_specialist") == "crispr_specialist":
             tool_name, tool_args, state_updates = _resolve_crisot_request(state.get("input_sequence", ""))
             extra_workspace_files = state_updates.pop("workspace_files", [])
@@ -1416,6 +1537,25 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if not state.get("candidate_sequence"):
                 state["candidate_sequence"] = str(tool_result.get("sequence", ""))
             state["current_filepath"] = str(tool_result.get("filepath", state.get("current_filepath", "")))
+        elif tool_name == "design_sirna_with_evitar":
+            output_filepath = str(tool_result.get("output_filepath", ""))
+            if output_filepath:
+                state["current_filepath"] = output_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
+            top_results = tool_result.get("top_results", [])
+            if isinstance(top_results, list) and top_results:
+                first_row = top_results[0]
+                if isinstance(first_row, dict):
+                    for key in ("siRNA", "siRNA_sequence", "guide", "guide_sequence", "sequence"):
+                        value = first_row.get(key)
+                        if isinstance(value, str) and value.strip():
+                            state["candidate_sequence"] = value.strip().upper().replace("T", "U")
+                            break
+            state["evitar_mode"] = str(tool_result.get("mode", ""))
+            state["evitar_predict"] = str(tool_result.get("predict", ""))
+            state["evitar_output_filepath"] = output_filepath
+            state["evitar_result_count"] = int(tool_result.get("result_count", 0))
+            state["evitar_command"] = str(tool_result.get("command", ""))
         elif tool_name == "score_crispr_off_target_with_crisot":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -1810,6 +1950,11 @@ def critic_node(state: AgentState) -> AgentState:
             f"odesign_run_log_filepath={state.get('odesign_run_log_filepath', '')}; "
             f"odesign_model_name={state.get('odesign_model_name', '')}; "
             f"odesign_design_modality={state.get('odesign_design_modality', '')}; "
+            f"evitar_mode={state.get('evitar_mode', '')}; "
+            f"evitar_predict={state.get('evitar_predict', '')}; "
+            f"evitar_output_filepath={state.get('evitar_output_filepath', '')}; "
+            f"evitar_result_count={state.get('evitar_result_count', 0)}; "
+            f"evitar_command={state.get('evitar_command', '')}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [
