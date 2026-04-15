@@ -128,6 +128,22 @@ def _extract_crispr_sequences(text: str) -> list[str]:
     return [match.upper().replace("U", "T") for match in re.findall(r"[ACGUTNacgutn]{20,23}", text)]
 
 
+def _extract_sgrna_seed_sequence(text: str) -> Optional[str]:
+    """Extract sgRNA-handle seed/template sequence (typically 40-120 nt)."""
+    pattern = re.compile(
+        r"""(?:seed|template|handle|wildtype|wild_type)\s*[:=]\s*["']?([ACGUTacgut]{40,140})["']?""",
+        re.IGNORECASE,
+    )
+    match = pattern.search(text)
+    if match:
+        return match.group(1).strip().upper().replace("U", "T")
+
+    candidates = re.findall(r"[ACGUTacgut]{40,140}", text)
+    if not candidates:
+        return None
+    return max(candidates, key=len).upper().replace("U", "T")
+
+
 def _extract_protein_sequence(text: str) -> str:
     candidates = re.findall(r"[A-Za-z\*]{8,}", text)
     if not candidates:
@@ -878,10 +894,7 @@ def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
 
 
 def _resolve_sgrna_design_request(text: str) -> Tuple[dict[str, Any], dict[str, Any]]:
-    raw_sequence = _extract_crispr_named_sequence(
-        text,
-        ("seed", "template", "handle", "wildtype", "sgrna", "sg_rna"),
-    )
+    raw_sequence = _extract_sgrna_seed_sequence(text)
     if not raw_sequence:
         filepath_candidate = _extract_path_with_suffixes(text, ("fasta", "fa", "txt", "seq"))
     else:
