@@ -99,6 +99,7 @@ rna_agent_system/
     - `predict_rna_secondary_structure`
     - `design_mrna_cds_with_rnarl`
     - `design_mrna_cds_with_gemorna`
+    - `design_mrna_cds_with_lineardesign`
     - `predict_putative_ires_with_iresfinder`
 
 - `nodes.py`
@@ -245,6 +246,19 @@ rna_agent_system/
     - `max_score`
     - `result_tsv_path`
 
+- `lineardesign_service/`
+  - [LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign) 的 protein-to-mRNA CDS 设计服务（调用上游 `bin/LinearDesign_2D`）
+  - `environment.yml` + `main.py` + `start.sh`
+  - 默认端口 `8014`
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /generate/cds`
+  - 上游源码与编译产物默认目录：
+    - `rna_agent_system/external_repos/LinearDesign/`
+    - 部署后需在上述目录执行 `make`，生成 `bin/LinearDesign_2D`
+  - 可选环境变量：
+    - `LINEARDESIGN_ROOT`：覆盖 LinearDesign 检出根目录（需已 `make` 且存在 `bin/LinearDesign_2D`）
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -261,6 +275,7 @@ rna_agent_system/
 - `CRISOT/`
 - `ODesign/`
 - `IRESfinder/`
+- `LinearDesign/`
 
 **重要：**
 
@@ -272,6 +287,7 @@ rna_agent_system/
 - `external_repos/CRISOT` 也应作为 **git submodule** 管理
 - `external_repos/ODesign` 也应作为 **git submodule** 管理
 - `external_repos/IRESfinder` 也应作为 **git submodule** 管理
+- `external_repos/LinearDesign` 也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -311,7 +327,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 路由到 `crispr_specialist`
@@ -328,7 +344,7 @@ User Input
 
 ### 5.3 mRNA Specialist
 
-分七种模式：
+分多种模式（按规则优先级依次匹配）：
 
 - 如果用户文本显式提到 `GerNA-Bind` / `gernabind`
   - 触发 `score_rna_ligand_binding_with_gernabind(filepath, smiles, checkpoint_path=None, pdb_path=None, secondary_structure=None, device=None)`
@@ -410,10 +426,18 @@ User Input
     - 如果没给 `protein_segment`，但给了 `protein_chain=C` 或 hotspot 所在链，当前节点会尝试从参考结构自动推断蛋白链范围
   - 当前仍建议复杂任务优先显式准备 JSON，而不是让规则解析自由生成所有字段
 
-- 如果用户文本偏“设计型”
-  - 触发 `design_mrna_cds_with_gemorna(filepath)`
+- 如果用户文本显式提到 `LinearDesign` / `lineardesign` / `linear design`，且整体仍偏“设计型”
+  - 触发 `design_mrna_cds_with_lineardesign(filepath, service_url="http://127.0.0.1:8014/generate/cds", lambda_value=0.0, codon_usage_path=None, verbose=False)`
+  - 输入文件保存的是蛋白序列（与 GEMORNA / RNARL 相同，由规则从自然语言抽取并写入 `workspace/`）
+  - 若未显式写 RNARL 关键词且未写 GEMORNA，则 **LinearDesign 优先于 GEMORNA**
+  - 如果用户请求里还包含结构预测语义，当前会在 LinearDesign 设计完成后继续自动调用：
+    - `predict_rna_secondary_structure`
+    - `predict_rna_tertiary_structure_with_rhofold`（当文本含 `rhofold`、`3d`、`tertiary` 等关键词时）
+
+- 如果用户文本偏“设计型”（且未命中上述 LinearDesign 显式分支时，仍走原默认）
+  - 触发 `design_mrna_cds_with_gemorna(filepath)` 或 `design_mrna_cds_with_rnarl(...)`（由是否含 `rnarl` 等关键词决定）
   - 输入文件保存的是蛋白序列
-  - 如果用户请求里还包含结构语义，当前会在 GEMORNA 设计完成后继续自动调用结构预测工具
+  - 如果用户请求里还包含结构语义，当前会在 **CDS 设计工具**（GEMORNA / RNARL）完成后继续自动调用结构预测工具
 - 如果用户文本偏“结构预测型”
   - 触发：
     - `mock_codon_optimization(filepath)`
@@ -421,7 +445,7 @@ User Input
   - 如果用户文本里还包含 `rhofold`、`3d`、`tertiary`、`三级结构`、`三维结构`、`pdb`
     - 还会额外触发 `predict_rna_tertiary_structure_with_rhofold(filepath)`
 
-另外，如果先做了 `GEMORNA` 设计，而用户请求中又包含结构预测语义，当前 `tool_execution_node` 会在拿到 GEMORNA 输出后，继续自动调用：
+另外，如果先做了 **`GEMORNA` / `RNARL` / `LinearDesign`** 任一 CDS 设计，而用户请求中又包含结构预测语义，当前 `tool_execution_node` 会在拿到生成 CDS 输出后，继续自动调用：
 
 - `predict_rna_secondary_structure`
 - `predict_rna_tertiary_structure_with_rhofold`
@@ -549,11 +573,12 @@ User Input
 - `8011`: `crisot_service`
 - `8012`: `odesign_service`
 - `8013`: `iresfinder_service`
+- `8014`: `lineardesign_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8014`: 新工具 A
-- `8015`: 新工具 B
+- `8015`: 新工具 A
+- `8016`: 新工具 B
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -2416,6 +2441,151 @@ IRESfinder 目前已经完成最小闭环验证：
 
 ---
 
+## 10H. LinearDesign 的接入方式
+
+### 10H.1 上游源码层
+
+目录：
+
+```text
+external_repos/LinearDesign
+```
+
+（完整路径为 `rna_agent_system/external_repos/LinearDesign`。）
+
+来源：
+
+- 上游仓库：[LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 `git add .`
+
+### 10H.2 为什么当前采用“微服务 + 直接调用二进制”
+
+当前接入的 LinearDesign 不是依赖上游仓库里的 `lineardesign` Python 2 包装脚本（`#!/usr/bin/env python2`），而是采用：
+
+- 保留上游源码与 `Makefile`
+- 在 `microservices/lineardesign_service/` 中通过子进程调用 `bin/LinearDesign_2D`
+
+这样做的原因是：
+
+- 主项目微服务栈统一为 Python 3
+- 服务器侧以 `make` 编译出的 `LinearDesign_2D` 为稳定入口，避免 Python 2 运行时依赖
+
+### 10H.3 当前微服务能力
+
+目录：
+
+```text
+microservices/lineardesign_service/
+```
+
+当前已封装接口：
+
+- `GET /health`
+- `POST /generate/cds`
+
+输入：
+
+- `protein_sequence`
+- `lambda_value`（默认 `0.0`）
+- `codon_usage_path`（可选；默认使用上游自带 `codon_usage_freq_table_human.csv`）
+- `verbose`（可选）
+
+输出：
+
+- `generated_sequence`
+- `structure`
+- `mfe`
+- `cai_score`
+- `codon_usage_path`
+- `raw_output` / `stderr`
+
+### 10H.4 当前 Agent 工具能力
+
+工具函数：
+
+- `design_mrna_cds_with_lineardesign(filepath, service_url="http://127.0.0.1:8014/generate/cds", lambda_value=0.0, codon_usage_path=None, verbose=False)`
+
+输入：
+
+- `filepath`，其中保存的是蛋白序列
+
+输出：
+
+- `generated_sequence`
+- `output_filepath`
+- `structure` / `mfe` / `cai_score` 等摘要字段
+
+### 10H.5 当前工作流集成方式
+
+当前 `Router / mRNA specialist / tool_execution` 已接入 LinearDesign：
+
+- `router_node` 会识别 `lineardesign` / `linear design` 等语义（与既有 mRNA 关键词一起路由到 `mrna_specialist`）
+- `mrna_specialist_node` 在用户显式提到 LinearDesign 且请求仍偏“设计型”时，优先触发 `design_mrna_cds_with_lineardesign`
+- 若用户请求中还包含结构预测语义，`tool_execution_node` 在拿到 CDS 输出后可继续自动调用 ViennaRNA / RhoFold（与 GEMORNA / RNARL 分支一致）
+
+### 10H.6 LinearDesign 的实际运行注意事项
+
+#### 编译与二进制路径
+
+部署后必须在 submodule 目录执行编译：
+
+```bash
+cd rna_agent_system/external_repos/LinearDesign
+make
+```
+
+成功后应存在：
+
+```text
+rna_agent_system/external_repos/LinearDesign/bin/LinearDesign_2D
+```
+
+微服务默认按 **`rna_agent_system/external_repos/LinearDesign`** 解析上游目录（与 `microservices/lineardesign_service/main.py` 相对路径一致）；若需覆盖，可在启动服务前设置：
+
+```bash
+export LINEARDESIGN_ROOT=/absolute/path/to/LinearDesign
+```
+
+#### 推荐运行环境
+
+- Linux
+- `g++` 可成功链接上游提供的 `LinearDesign_linux64.so`（或 Makefile 回退的 `LinearDesign_linux64_old.so`）
+
+#### Conda 环境
+
+```bash
+cd rna_agent_system/microservices/lineardesign_service
+conda env create -f environment.yml
+conda activate lineardesign_service_env
+bash start.sh
+```
+
+若环境已存在，可使用：
+
+```bash
+conda env update -f environment.yml --prune
+```
+
+### 10H.7 当前验证状态
+
+LinearDesign 目前已经完成以下最小闭环验证：
+
+- 上游源码以 submodule 形式置于 `rna_agent_system/external_repos/LinearDesign`
+- Linux 上 `make` 成功生成 `bin/LinearDesign_2D`
+- `lineardesign_service` 可启动，`GET /health` 与 `POST /generate/cds` 成功
+- Agent 工具层已封装 HTTP 调用，规则工作流可显式关键词触发
+
+这意味着：
+
+- LinearDesign 已具备“上游编译产物 -> 微服务接口 -> Agent 工具”的标准接入形态
+- 与 `mock_codon_optimization` 不同，这是**真实的蛋白到 mRNA CDS 设计**能力之一（与 GEMORNA / RNARL 并列可选）
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -2530,6 +2700,7 @@ microservices/new_tool_service/
 - `RNASTOP`
 - `ODesign`
 - `IRESfinder`
+- `LinearDesign`
 
 新 clone：
 
@@ -2749,6 +2920,23 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 }
 ```
 
+例如测试 LinearDesign：
+
+1. 在 `rna_agent_system/external_repos/LinearDesign` 执行 `make`，确认存在 `bin/LinearDesign_2D`
+2. 启动 `lineardesign_service`
+3. `curl /health`
+4. `curl /generate/cds`
+
+推荐优先测试 payload：
+
+```json
+{
+  "protein_sequence": "MNDTEAI",
+  "lambda_value": 0.0,
+  "verbose": false
+}
+```
+
 例如测试 GerNA-Bind：
 
 1. 启动 `gernabind_service`
@@ -2839,8 +3027,10 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 - mRNA 结构预测请求
 - GEMORNA 设计请求
 - GEMORNA 设计 + RNAfold 联合请求
+- LinearDesign 设计请求（自然语言中显式包含 `lineardesign` / `linear design` 等关键词，例如「请用 lineardesign 设计 mRNA CDS，蛋白序列 MNDTEAI」）
 - RNA 三级结构预测请求
 - GEMORNA 设计 + RhoFold 联合请求
+- LinearDesign 设计 + 结构预测联合请求（在同一句用户输入中同时包含设计语义与 `fold` / `rhofold` 等结构关键词时，由 `tool_execution_node` 串联）
 - RhoDesign 结构到序列设计请求
 - RNAsmol RNA-ligand 打分请求
 - RNASTOP mRNA 稳定性预测请求
@@ -2874,9 +3064,10 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 
 - `predict_rna_secondary_structure` 已是真实 ViennaRNA
 - `design_mrna_cds_with_gemorna` 已是真实 GEMORNA 接入
+- `design_mrna_cds_with_lineardesign` 已是真实 LinearDesign 接入（显式关键词触发）
 - 但 `mock_codon_optimization` 仍是模拟工具
 
-后续可以替换成真实密码子优化工具。
+后续可以替换成真实密码子优化工具，或在“非设计型”结构预测分支中用更合适的真实前置步骤替代 mock。
 
 ### 14.3 GEMORNA 输出解析仍可继续增强
 
@@ -3105,7 +3296,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 1. 先把工具链接全，优先真实工具替换 mock 工具
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
@@ -3113,7 +3304,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
    - 结果排序 / 候选集筛选
    - 多工具串联规划
 6. 后续再考虑：
-   - 用真实密码子优化工具替换 `mock_codon_optimization`
+   - 用真实密码子优化工具替换 `mock_codon_optimization`（LinearDesign 已可作为显式设计路径之一；是否合并进默认“结构预测型”分支需产品化决策）
    - 为 `RhoFold` 增加可选的 MSA 模式
   - 优化 `RhoDesign` 的输入文件校验与错误提示
   - 优化 `RNAsmol` 的输入解析与批量评分模式
