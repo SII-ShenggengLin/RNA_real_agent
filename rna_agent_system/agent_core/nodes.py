@@ -24,6 +24,7 @@ from agent_core.tools import (
     predict_mrna_stability_with_rnastop,
     predict_putative_ires_with_iresfinder,
     predict_rna_secondary_structure,
+    predict_rna_secondary_structure_with_linearfold,
     predict_rna_tertiary_structure_with_rhofold,
     predict_sirna_efficiency,
     run_odesign_inference,
@@ -47,6 +48,7 @@ MRNA_TOOLS = [
     predict_putative_ires_with_iresfinder,
     mock_codon_optimization,
     predict_rna_secondary_structure,
+    predict_rna_secondary_structure_with_linearfold,
     predict_rna_tertiary_structure_with_rhofold,
     design_mrna_cds_with_lineardesign,
     design_mrna_cds_with_rnarl,
@@ -305,6 +307,33 @@ def _needs_lineardesign(text: str) -> bool:
             "linear design",
         ]
     )
+
+
+def _needs_linearfold(text: str) -> bool:
+    lowered = text.lower()
+    if "linearfold" in lowered:
+        return True
+    if "linear fold" in lowered:
+        if "lineardesign" in lowered or "linear design" in lowered:
+            return False
+        return True
+    return False
+
+
+def _build_linearfold_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    args: dict[str, Any] = {"filepath": filepath}
+    lowered = raw_text.lower()
+    if "linearfold-v" in lowered or "linearfold_v" in lowered:
+        args["use_vienna"] = True
+    elif "linearfold" in lowered and "vienna" in lowered:
+        args["use_vienna"] = True
+    beam = _extract_int_setting(raw_text, ("beam_size", "beamsize", "beam"))
+    if beam is not None and beam >= 0:
+        args["beam_size"] = beam
+    dangles = _extract_int_setting(raw_text, ("dangles", "dangle"))
+    if dangles in (0, 2):
+        args["dangles"] = dangles
+    return args
 
 
 def _extract_rnarl_model_type(text: str) -> str:
@@ -907,6 +936,7 @@ def router_node(state: AgentState) -> AgentState:
             "rnarl",
             "lineardesign",
             "linear design",
+            "linearfold",
             "pdb",
             "cif",
             "protein",
@@ -1169,6 +1199,22 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="mrna")
             state["current_filepath"] = filepath
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        linearfold_mode = _needs_linearfold(user_text)
+        fold_tool: dict[str, Any] = (
+            {
+                "name": "predict_rna_secondary_structure_with_linearfold",
+                "args": _build_linearfold_tool_args(filepath, raw_text),
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+            if linearfold_mode
+            else {
+                "name": "predict_rna_secondary_structure",
+                "args": {"filepath": filepath},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        )
         tool_calls = [
             {
                 "name": "mock_codon_optimization",
@@ -1176,12 +1222,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             },
-            {
-                "name": "predict_rna_secondary_structure",
-                "args": {"filepath": filepath},
-                "id": f"call_{uuid.uuid4().hex[:8]}",
-                "type": "tool_call",
-            },
+            fold_tool,
         ]
         if _needs_tertiary_structure(user_text):
             tool_calls.append(
@@ -1321,9 +1362,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="seq")
                 state["current_filepath"] = filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            linearfold_fb = _needs_linearfold(user_text)
+            fold_call: dict[str, Any] = (
+                {
+                    "name": "predict_rna_secondary_structure_with_linearfold",
+                    "args": _build_linearfold_tool_args(filepath, state.get("input_sequence", "")),
+                }
+                if linearfold_fb
+                else {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}}
+            )
             fallback_calls = [
                 {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
-                {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}},
+                fold_call,
             ]
             if _needs_tertiary_structure(user_text):
                 fallback_calls.append(
@@ -1438,6 +1488,14 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 structure_filepath = save_sequence(structure, prefix="structure")
                 state["structure_filepath"] = structure_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+        elif tool_name == "predict_rna_secondary_structure_with_linearfold":
+            if isinstance(tool_result, dict):
+                state["mfe"] = float(tool_result.get("mfe", 0.0))
+                structure = str(tool_result.get("structure", ""))
+                if structure:
+                    structure_filepath = save_sequence(structure, prefix="structure")
+                    state["structure_filepath"] = structure_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
         elif tool_name == "predict_rna_tertiary_structure_with_rhofold":
             output_pdb_filepath = str(tool_result.get("output_pdb_filepath", ""))
             if output_pdb_filepath:
@@ -1481,24 +1539,39 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
 
             user_text = state.get("input_sequence", "").lower()
+            raw_user = state.get("input_sequence", "")
             if _needs_secondary_structure(user_text):
-                fold_result = predict_rna_secondary_structure.invoke({"filepath": state["current_filepath"]})
+                if _needs_linearfold(user_text):
+                    lf_args = _build_linearfold_tool_args(state["current_filepath"], raw_user)
+                    fold_result = predict_rna_secondary_structure_with_linearfold.invoke(lf_args)
+                    fold_msg_name = "predict_rna_secondary_structure_with_linearfold"
+                else:
+                    fold_result = predict_rna_secondary_structure.invoke({"filepath": state["current_filepath"]})
+                    fold_msg_name = "predict_rna_secondary_structure"
                 out_messages.append(
                     ToolMessage(
                         content=json.dumps(fold_result, ensure_ascii=True),
                         tool_call_id=f"call_{uuid.uuid4().hex[:8]}",
-                        name="predict_rna_secondary_structure",
+                        name=fold_msg_name,
                     )
                 )
-                mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(fold_result))
-                structure_match = re.search(r"structure=([^;]+)", str(fold_result))
-                if mfe_match:
-                    state["mfe"] = float(mfe_match.group(1))
-                if structure_match:
-                    structure = structure_match.group(1).strip()
-                    structure_filepath = save_sequence(structure, prefix="structure")
-                    state["structure_filepath"] = structure_filepath
-                    state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+                if isinstance(fold_result, dict):
+                    state["mfe"] = float(fold_result.get("mfe", 0.0))
+                    structure = str(fold_result.get("structure", ""))
+                    if structure:
+                        structure_filepath = save_sequence(structure, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+                else:
+                    mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(fold_result))
+                    structure_match = re.search(r"structure=([^;]+)", str(fold_result))
+                    if mfe_match:
+                        state["mfe"] = float(mfe_match.group(1))
+                    if structure_match:
+                        structure = structure_match.group(1).strip()
+                        structure_filepath = save_sequence(structure, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
             if _needs_tertiary_structure(user_text):
                 tertiary_result = predict_rna_tertiary_structure_with_rhofold.invoke(
                     {"filepath": state["current_filepath"]}
@@ -1658,7 +1731,10 @@ def critic_node(state: AgentState) -> AgentState:
         and not _needs_rnastop_prediction(user_text)
         and not _needs_iresfinder_prediction(user_text)
         and not _needs_structure_to_sequence_design(user_text)
-        and any(k in user_text for k in ["structure", "fold", "rnafold", "二级结构"])
+        and any(
+            k in user_text
+            for k in ["structure", "fold", "rnafold", "二级结构", "linearfold"]
+        )
         and mfe > -20.0
     ):
         hard_reject = True

@@ -38,3 +38,7 @@
 [submodule "rna_agent_system/external_repos/ViennaRNA"]
 	path = rna_agent_system/external_repos/ViennaRNA
 	url = https://github.com/ViennaRNA/ViennaRNA.git
+[submodule "rna_agent_system/external_repos/LinearFold"]
+	path = rna_agent_system/external_repos/LinearFold
+	url = https://github.com/LinearFold/LinearFold.git
+	ignore = untracked

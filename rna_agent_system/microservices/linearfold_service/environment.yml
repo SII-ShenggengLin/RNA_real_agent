@@ -1,0 +1,12 @@
+# LinearFold 微服务：通过子进程调用 upstream ``linearfold`` Python 入口（依赖仓库内 ``bin/linearfold_c`` / ``bin/linearfold_v``）。
+# 部署后在 ``rna_agent_system/external_repos/LinearFold`` 执行 ``make``。
+name: linearfold_service_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - fastapi==0.109.2
+      - uvicorn[standard]==0.27.1
+      - pydantic==2.6.1

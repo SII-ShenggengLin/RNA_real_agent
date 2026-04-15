@@ -518,6 +518,33 @@ class MrnaToolInput(BaseModel):
     )
 
 
+class LinearFoldSecondaryInput(BaseModel):
+    """Input schema for LinearFold secondary-structure prediction."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to a workspace file containing RNA sequence (plain or FASTA).",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8015/fold",
+        description="REST endpoint for the LinearFold microservice.",
+    )
+    beam_size: int = Field(
+        default=100,
+        ge=0,
+        le=10000,
+        description="Beam size for LinearFold (0 = infinite beam).",
+    )
+    use_vienna: bool = Field(
+        default=False,
+        description="If true, request LinearFold-V (Vienna energy parameters).",
+    )
+    dangles: int = Field(
+        default=2,
+        description="Dangling-end model: 0 or 2 (LinearFold --dangles).",
+    )
+
+
 class GemornaCdsInput(BaseModel):
     """Input schema for GEMORNA CDS design tool."""
 
@@ -916,6 +943,59 @@ def predict_rna_secondary_structure(
         )
     except requests.RequestException as exc:
         raise ValueError(f"ViennaRNA service request failed: {exc}") from exc
+
+
+@tool(args_schema=LinearFoldSecondaryInput)
+def predict_rna_secondary_structure_with_linearfold(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8015/fold",
+    beam_size: int = 100,
+    use_vienna: bool = False,
+    dangles: int = 2,
+) -> dict[str, Any]:
+    """Predict RNA secondary structure and MFE using the LinearFold service.
+
+    Args:
+        filepath: Workspace file path containing RNA sequence content.
+        service_url: REST endpoint for the LinearFold fold microservice.
+        beam_size: LinearFold beam size (default 100).
+        use_vienna: Use LinearFold-V (Vienna parameters) when True.
+        dangles: 0 or 2 for dangling-end treatment.
+
+    Returns:
+        Dict with sequence, structure, mfe, backend, model, and input filepath.
+
+    Raises:
+        ValueError: If the LinearFold request fails or the response is invalid.
+    """
+    sequence = read_sequence(filepath).strip()
+    if dangles not in (0, 2):
+        raise ValueError("LinearFold dangles must be 0 or 2.")
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sequence": sequence,
+                "beam_size": beam_size,
+                "use_vienna": use_vienna,
+                "dangles": dangles,
+            },
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "structure" not in payload or "mfe" not in payload:
+            raise ValueError("Missing `structure` or `mfe` in LinearFold response.")
+        return {
+            "filepath": filepath,
+            "sequence": str(payload.get("sequence", "")),
+            "structure": str(payload["structure"]),
+            "mfe": float(payload["mfe"]),
+            "backend": str(payload.get("backend", "")),
+            "model": str(payload.get("model", "LinearFold")),
+        }
+    except requests.RequestException as exc:
+        raise ValueError(f"LinearFold service request failed: {exc}") from exc
 
 
 @tool(args_schema=GemornaCdsInput)
