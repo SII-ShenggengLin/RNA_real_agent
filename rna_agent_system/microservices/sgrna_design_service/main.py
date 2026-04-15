@@ -131,9 +131,17 @@ class _ModelRuntime:
         if self.model is None or self.tokenizer is None or self.device is None:
             raise RuntimeError("Model runtime has not been initialized.")
         wrapped = f"e{sequence}e"
+        encoded = self.tokenizer(wrapped, return_tensors="pt")
+        input_ids = encoded["input_ids"].to(self.device)
+        attention_mask = encoded.get("attention_mask")
+        if attention_mask is not None:
+            attention_mask = attention_mask.to(self.device)
         with torch.no_grad():
-            input_ids = torch.tensor(self.tokenizer(wrapped)["input_ids"], device=self.device)
-            output = self.model(input_ids=input_ids, labels=input_ids)
+            output = self.model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                labels=input_ids,
+            )
             loss = float(output["loss"].item())
         return float(math.exp(loss))
 
