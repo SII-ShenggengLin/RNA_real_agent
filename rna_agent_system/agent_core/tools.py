@@ -827,6 +827,52 @@ class MrnaToolInput(BaseModel):
     )
 
 
+class CodonwSlimAnalyzeInput(BaseModel):
+    """Input schema for codonw-slim CDS codon-usage metrics."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing a coding sequence (DNA ATGC or RNA AUGC; "
+            "FASTA allowed). Length should be a multiple of three; trailing bases may be trimmed server-side."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8018/analyze/cds",
+        description="REST endpoint for the codonw-slim microservice.",
+    )
+    genetic_code: int = Field(
+        default=0,
+        ge=0,
+        le=7,
+        description="Genetic code index passed to CodonSeq (0 = universal nuclear).",
+    )
+    cai_ref: int = Field(
+        default=0,
+        ge=0,
+        le=2,
+        description="Reference index for CAI / CBI (and shared Fop reference family where applicable).",
+    )
+    fop_ref: int = Field(
+        default=0,
+        ge=0,
+        le=7,
+        description="Fop reference species index.",
+    )
+    factor_in_rare: bool = Field(
+        default=False,
+        description="If true, pass factor_in_rare=True into CodonSeq.fop().",
+    )
+    include_codon_tables: bool = Field(
+        default=False,
+        description="If true, request full codon_usage and rscu tables (larger JSON).",
+    )
+    include_dinucleotide: bool = Field(
+        default=False,
+        description="If true, request dinucleotide composition tables.",
+    )
+
+
 class LinearFoldSecondaryInput(BaseModel):
     """Input schema for LinearFold secondary-structure prediction."""
 
@@ -1190,6 +1236,89 @@ class ODesignInferenceInput(BaseModel):
         default=None,
         description="Optional data root directory override for the ODesign service.",
     )
+
+
+@tool(args_schema=CodonwSlimAnalyzeInput)
+def analyze_cds_codon_metrics_with_codonw_slim(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8018/analyze/cds",
+    genetic_code: int = 0,
+    cai_ref: int = 0,
+    fop_ref: int = 0,
+    factor_in_rare: bool = False,
+    include_codon_tables: bool = False,
+    include_dinucleotide: bool = False,
+) -> dict[str, Any]:
+    """Compute codon usage / CAI / Nc (ENC) and related metrics via codonw-slim service.
+
+    Wraps the `codonw-slim` library (CodonW) over HTTP. Input should be a **CDS**
+    (in-frame coding sequence); RNA ``U`` is converted to ``T`` server-side.
+
+    Args:
+        filepath: Workspace path to CDS sequence (plain or FASTA).
+        service_url: codonw_slim_service ``POST /analyze/cds`` URL.
+        genetic_code: CodonSeq genetic code index (0--7).
+        cai_ref: CAI/CBI reference set index (0--2).
+        fop_ref: Fop reference index (0--7).
+        factor_in_rare: Rare-codon adjustment flag for Fop.
+        include_codon_tables: Request codon counts and RSCU tables.
+        include_dinucleotide: Request dinucleotide tables.
+
+    Returns:
+        Summary dict including ``cai_score``, ``enc``, ``fop``, ``cbi``, and
+        ``metrics_json_filepath`` pointing to a saved JSON artifact in ``workspace/``.
+    """
+    sequence = read_sequence(filepath)
+    payload: dict[str, Any] = {
+        "sequence": sequence,
+        "genetic_code": genetic_code,
+        "cai_ref": cai_ref,
+        "fop_ref": fop_ref,
+        "factor_in_rare": factor_in_rare,
+        "include_codon_tables": include_codon_tables,
+        "include_dinucleotide": include_dinucleotide,
+    }
+    try:
+        response = requests.post(service_url, json=payload, timeout=120)
+        response.raise_for_status()
+        data = response.json()
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"codonw-slim service request failed: {exc}{suffix}") from exc
+
+    metrics_json_filepath = save_text_file(
+        json.dumps(data, indent=2, ensure_ascii=True),
+        prefix="codonw_metrics",
+        suffix=".json",
+    )
+    cai = data.get("cai")
+    return {
+        "input_filepath": filepath,
+        "metrics_json_filepath": metrics_json_filepath,
+        "cai_score": float(cai) if cai is not None else 0.0,
+        "enc": float(data["enc"]) if data.get("enc") is not None else 0.0,
+        "fop": float(data["fop"]) if data.get("fop") is not None else 0.0,
+        "cbi": float(data["cbi"]) if data.get("cbi") is not None else 0.0,
+        "hydropathy": float(data["hydropathy"]) if data.get("hydropathy") is not None else 0.0,
+        "aromaticity": float(data["aromaticity"]) if data.get("aromaticity") is not None else 0.0,
+        "genetic_code": int(data.get("genetic_code", genetic_code)),
+        "cds_length_nt": int(data.get("cds_length_nt", 0)),
+        "cds_length_codons": int(data.get("cds_length_codons", 0)),
+        "normalization_note": str(data.get("normalization_note", "")),
+        "silent_base_usage": data.get("silent_base_usage", {}),
+        "bases2": data.get("bases2", {}),
+        "codon_usage": data.get("codon_usage"),
+        "rscu": data.get("rscu"),
+        "dinuc": data.get("dinuc"),
+        "model": str(data.get("model", "codonw-slim")),
+    }
 
 
 @tool(args_schema=MrnaToolInput)

@@ -48,3 +48,6 @@
 [submodule "rna_agent_system/external_repos/sgrna_design"]
 	path = rna_agent_system/external_repos/sgrna_design
 	url = https://github.com/bitguolab/sgrna_design.git
+[submodule "rna_agent_system/external_repos/codonw-slim"]
+	path = rna_agent_system/external_repos/codonw-slim
+	url = https://github.com/smsaladi/codonw-slim.git

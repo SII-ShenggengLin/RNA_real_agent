@@ -1,0 +1,24 @@
+# CodonW-slim: codon usage / CAI / Nc metrics (C extension via Cython).
+# Install editable package from project submodule:
+#   rna_agent_system/external_repos/codonw-slim
+#
+# Create:
+#   cd rna_agent_system/microservices/codonw_slim_service
+#   conda env create -f environment.yml
+#   conda activate codonw_slim_service_env
+#   bash start.sh
+
+name: codonw_slim_service_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy>=1.23,<2.3
+  - pandas>=1.5
+  - cython>=0.29.36
+  - pip:
+    - fastapi==0.104.1
+    - uvicorn[standard]==0.24.0
+    - pydantic==2.5.0
+    - -e ../../external_repos/codonw-slim

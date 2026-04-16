@@ -35,6 +35,10 @@ class AgentState(TypedDict, total=False):
     sgrna_design_summary_filepath: str
     sgrna_design_model_path: str
     cai_score: float
+    codonw_metrics_filepath: str
+    codonw_enc: float
+    codonw_fop: float
+    codonw_cbi: float
     mfe: float
     structure_filepath: str
     design_input_pdb_filepath: str

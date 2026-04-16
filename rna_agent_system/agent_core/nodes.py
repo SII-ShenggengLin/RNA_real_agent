@@ -24,6 +24,7 @@ from agent_core.tools import (
     design_mrna_cds_with_gemorna,
     design_mrna_cds_with_rnarl,
     inverse_fold_rna_secondary_structure_vienna,
+    analyze_cds_codon_metrics_with_codonw_slim,
     mock_codon_optimization,
     optimize_sgrna_with_crisot,
     predict_mrna_stability_with_rnastop,
@@ -59,6 +60,7 @@ MRNA_TOOLS = [
     predict_putative_ires_with_iresfinder,
     compute_aso_target_accessibility_vienna,
     inverse_fold_rna_secondary_structure_vienna,
+    analyze_cds_codon_metrics_with_codonw_slim,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
@@ -138,6 +140,46 @@ def _needs_sirna_duplex_vienna(user_text: str) -> bool:
         "结合能",
     )
     return any(k in user_text for k in keys)
+
+
+def _needs_codonw_standalone(user_text: str) -> bool:
+    """Explicit codonw-slim / codon-usage analysis without default fold+mock path."""
+    lowered = user_text.lower()
+    if "codonw-slim" in lowered or "codonw slim" in lowered:
+        return True
+    if re.search(r"\bcodonw\b", lowered):
+        return True
+    if "codon usage" in lowered or "codon metrics" in lowered:
+        return True
+    if ("密码子" in user_text) and any(
+        x in user_text for x in ("分析", "指标", "偏好", "cai", "CAI", "Nc", "ENC", "enc", "fop", "Fop", "cbi")
+    ):
+        return True
+    return False
+
+
+def _build_codonw_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    args: dict[str, Any] = {"filepath": filepath}
+    gc_m = re.search(r"genetic_code\s*[:=]\s*(\d+)", raw_text, flags=re.IGNORECASE)
+    if gc_m:
+        args["genetic_code"] = max(0, min(7, int(gc_m.group(1))))
+    cai_m = re.search(r"cai_ref\s*[:=]\s*(\d+)", raw_text, flags=re.IGNORECASE)
+    if cai_m:
+        args["cai_ref"] = max(0, min(2, int(cai_m.group(1))))
+    fop_m = re.search(r"fop_ref\s*[:=]\s*(\d+)", raw_text, flags=re.IGNORECASE)
+    if fop_m:
+        args["fop_ref"] = max(0, min(7, int(fop_m.group(1))))
+    if re.search(r"factor_in_rare\s*[:=]\s*(1|true|yes)\b", raw_text, flags=re.IGNORECASE):
+        args["factor_in_rare"] = True
+    if re.search(
+        r"include_codon_tables|codon\s*table|full\s*rscu|rscu\s*table",
+        raw_text,
+        flags=re.IGNORECASE,
+    ):
+        args["include_codon_tables"] = True
+    if re.search(r"dinuc|dinucleotide", raw_text, flags=re.IGNORECASE):
+        args["include_dinucleotide"] = True
+    return args
 
 
 def _needs_aso_accessibility_vienna(user_text: str) -> bool:
@@ -1235,6 +1277,9 @@ def router_node(state: AgentState) -> AgentState:
             "二级结构",
             "密码子",
             "codon",
+            "codonw",
+            "codonw-slim",
+            "codon bias",
             "design",
             "设计",
             "gemorna",
@@ -1590,6 +1635,20 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch RNASTOP stability prediction."
+    elif _needs_codonw_standalone(raw_text):
+        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
+            {
+                "name": "analyze_cds_codon_metrics_with_codonw_slim",
+                "args": _build_codonw_tool_args(filepath, raw_text),
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch codonw-slim CDS codon metrics."
     elif structure_design_mode:
         pdb_path, ss_path = _extract_structure_design_inputs(raw_text)
         state["design_input_pdb_filepath"] = pdb_path
@@ -1660,8 +1719,8 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         )
         tool_calls = [
             {
-                "name": "mock_codon_optimization",
-                "args": {"filepath": filepath},
+                "name": "analyze_cds_codon_metrics_with_codonw_slim",
+                "args": _build_codonw_tool_args(filepath, raw_text),
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             },
@@ -1880,7 +1939,10 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 else {"name": "predict_rna_secondary_structure", "args": {"filepath": filepath}}
             )
             fallback_calls = [
-                {"name": "mock_codon_optimization", "args": {"filepath": filepath}},
+                {
+                    "name": "analyze_cds_codon_metrics_with_codonw_slim",
+                    "args": _build_codonw_tool_args(filepath, state.get("input_sequence", "")),
+                },
                 fold_call,
             ]
             if _needs_tertiary_structure(user_text):
@@ -2030,6 +2092,16 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if optimized_filepath:
                 state["current_filepath"] = optimized_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [optimized_filepath]
+        elif tool_name == "analyze_cds_codon_metrics_with_codonw_slim":
+            state["cai_score"] = float(tool_result.get("cai_score", 0.0))
+            state["codonw_enc"] = float(tool_result.get("enc", 0.0))
+            state["codonw_fop"] = float(tool_result.get("fop", 0.0))
+            state["codonw_cbi"] = float(tool_result.get("cbi", 0.0))
+            metrics_json_filepath = str(tool_result.get("metrics_json_filepath", ""))
+            if metrics_json_filepath:
+                state["codonw_metrics_filepath"] = metrics_json_filepath
+                if metrics_json_filepath.startswith("workspace/"):
+                    state["workspace_files"] = state.get("workspace_files", []) + [metrics_json_filepath]
         elif tool_name == "predict_rna_secondary_structure":
             mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(tool_result))
             structure_match = re.search(r"structure=([^;]+)", str(tool_result))
@@ -2362,6 +2434,10 @@ def critic_node(state: AgentState) -> AgentState:
             f"sgrna_design_summary_filepath={state.get('sgrna_design_summary_filepath', '')}; "
             f"sgrna_design_model_path={state.get('sgrna_design_model_path', '')}; "
             f"cai_score={cai_score}; "
+            f"codonw_metrics_filepath={state.get('codonw_metrics_filepath', '')}; "
+            f"codonw_enc={state.get('codonw_enc', 0.0)}; "
+            f"codonw_fop={state.get('codonw_fop', 0.0)}; "
+            f"codonw_cbi={state.get('codonw_cbi', 0.0)}; "
             f"mfe={mfe}; "
             f"design_model={state.get('design_model', '')}; "
             f"rnarl_model_type={state.get('rnarl_model_type', '')}; "
