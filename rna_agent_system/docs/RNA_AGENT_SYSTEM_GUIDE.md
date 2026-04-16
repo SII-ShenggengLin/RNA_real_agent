@@ -109,6 +109,7 @@ rna_agent_system/
     - `compute_sirna_duplex_binding_vienna`（siRNA 正反义链共折叠 / 结合能）
     - `compute_aso_target_accessibility_vienna`（ASO 靶区 RNAplfold 可及性）
     - `inverse_fold_rna_secondary_structure_vienna`（RNAinverse 二级结构逆折叠）
+    - `run_blastn_similarity_search`（NCBI **BLAST+** `blastn`；微服务 **§10M**，默认 **8019**）
 
 - `nodes.py`
   - Router / Specialist / Tool Execution / Critic 的核心逻辑
@@ -345,6 +346,18 @@ rna_agent_system/
     - 需要可用的 **C 编译器**（Linux 上通常为 `gcc`）以编译 Cython/C 扩展
     - 详细说明见 **§10L**
 
+- `blast_service/`
+  - NCBI **BLAST+**（`blastn` / `makeblastdb`）的核酸相似性搜索服务
+  - `environment.yml`（`python=3.10` + bioconda **`blast`**）+ `main.py` + `start.sh`
+  - 默认端口 **`8019`**
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /blastn`
+  - 输入支持：`query_filepath`（服务器可读路径，相对路径按 `rna_agent_system/` 解析）；**二选一** `subject_fasta_path`（服务内现场 `makeblastdb`）或 `subject_db`（已有核苷酸 BLAST 库前缀）；可选 `task`、`evalue`、`word_size`、`max_target_seqs`、`perc_identity`、`strand`、`outfmt`、`blastn_timeout_sec`
+  - 输出包括：`hit_count`、制表符结果预览、完整 `tabular_output`（响应体过大时会截断并标记 `tabular_output_truncated`）
+  - Agent 工具层会把完整制表结果写入 `workspace/blastn_out_*.tsv`（见 **§10M**）
+  - **与 `off_target_blast`（8002）区分**：后者仍为 **mock** 脱靶计数；真实 BLAST 比对请使用本服务
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -399,6 +412,7 @@ rna_agent_system/
 - `CRISOT` 生成的 specificity / optimization CSV
 - `ODesign` 生成的 `cif` / `run.log` / error logs
 - `codonw_slim_service` 经 Agent 工具落盘的 `codonw_metrics_*.json`
+- `blast_service` 经 Agent 工具落盘的 `blastn_out_*.tsv`（`blastn` 制表符输出）
 - 其他中间输出
 
 所有长序列原则上都应先保存到 `workspace/`，然后在 Agent 内只传 `filepath`。
@@ -424,7 +438,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构`、`aso`、`gapmer`、`morpholino`、`accessibility`、`可及性`、`plfold`、`inverse fold`、`逆折叠`、`rnainverse`、`codonw`、`codonw-slim`、`codon bias` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构`、`aso`、`gapmer`、`morpholino`、`accessibility`、`可及性`、`plfold`、`inverse fold`、`逆折叠`、`rnainverse`、`codonw`、`codonw-slim`、`codon bias`、`blast`、`blastn`、`megablast`、`dc-megablast`、`相似性搜索` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 以及 `sgrna handle`、`sgrna design`、`crgpt`、`sgrna_design`
@@ -506,6 +520,17 @@ User Input
   - 输入解析与 RNASTOP 类似：正文长 RNA 或 `.fasta/.fa/.txt/.seq` 路径；内容应为 **in-frame CDS**（非 3 倍数时由服务端截去末尾 1--2 nt）
   - 可选从自然语言解析：`genetic_code=`、`cai_ref=`、`fop_ref=`、`factor_in_rare`、`include_codon_tables` / `rscu` / `dinuc` 等（见 `_build_codonw_tool_args`）
   - 该分支排在 **RNASTOP 之后、RhoDesign 结构到序列之前**，且排在 **`design_mode`（含 `cds` 关键词的设计型）之前**，避免纯密码子统计被误判为蛋白 CDS 设计
+
+- 如果用户文本偏 **NCBI BLAST+ / blastn 核酸相似性搜索**
+  - 命中条件包括：`blast`、`blastn`、`megablast`、`dc-megablast`、`相似性搜索` 等（实现见 `nodes.py` 中 `_needs_blast_search`）
+  - 触发 `run_blastn_similarity_search(filepath, subject_fasta_path=None, subject_db=None, service_url="http://127.0.0.1:8019/blastn", ...)`（`subject_fasta_path` 与 `subject_db` **二选一**，由规则解析填入）
+  - **query** 输入解析与 RNASTOP / IRESfinder 类似：正文长 RNA / DNA 或 `.fasta/.fa/.txt/.seq` 路径，会先落入 `workspace/` 再传 `filepath`
+  - 必须在自然语言中显式提供 subject **之一**：
+    - **FASTA 库**：`subject_fasta=`、`subject=`、`target_fasta=`，或带扩展名的命名路径（`.fa/.fasta/.fna/.fas`）
+    - **已有 BLAST 核苷酸库前缀**：`subject_db=`、`blast_db=`、`blastdb=`、`database=`
+  - 可选从自然语言解析：`evalue=`、`word_size=`、`max_target_seqs=`、`perc_identity=`、`strand=plus|minus`；若出现 `megablast` / `dc-megablast` 等关键词会映射到 `blastn` 的 `-task`
+  - 该分支在 `mrna_specialist_node` 中排在 **独立 codonw-slim 分支之后、RhoDesign「结构到序列」之前**；若缺少 subject，节点只返回说明性 `AIMessage`，**不**发起工具调用
+  - **与 `check_off_target` / `off_target_blast`（8002）区分**：siRNA 默认链路里的 `check_off_target` 仍为 **mock**；真实 BLAST 比对由本工具 + **`blast_service`（8019）** 完成（详见 **§10M**）
 
 - 如果用户文本偏“IRES 识别型”
   - 触发 `predict_putative_ires_with_iresfinder(filepath, mode=0, window_size=174, step_size=50, decision_threshold=0.5)`
@@ -681,6 +706,9 @@ User Input
 - `vienna_aso_mean_unpaired`
 - `vienna_aso_joint_unpaired`
 - `vienna_inverse_best_sequence`
+- `blast_hit_count`
+- `blast_tabular_tsv_filepath`
+- `blast_subject_mode`
 
 ### 5.5 Critic
 
@@ -726,11 +754,12 @@ User Input
 - `8016`: `evitar_service`
 - `8017`: `sgrna_design_service`
 - `8018`: `codonw_slim_service`
+- `8019`: `blast_service`（NCBI BLAST+ `blastn`）
 
 后续新增工具也建议继续顺延，例如：
 
-- `8019`: 新工具 B
 - `8020`: 新工具 C
+- `8021`: 新工具 D
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -3387,6 +3416,88 @@ bash start.sh
 
 ---
 
+## 10M. BLAST+（blastn）的接入方式
+
+### 10M.1 定位
+
+当前接入的是 **NCBI BLAST+** 中的 **`blastn`**（核酸对核酸），用于：
+
+- 在用户自备的 **subject 多序列 FASTA** 上快速建库并比对，或
+- 在服务器上已用 `makeblastdb` 建好的 **核苷酸 BLAST 数据库前缀**上比对。
+
+**不**替代 `off_target_blast`（**8002**）mock 服务；真实比对走 **`blast_service`（8019）** 与 Agent 工具 `run_blastn_similarity_search`。
+
+### 10M.2 微服务目录
+
+```text
+microservices/blast_service/
+```
+
+文件：
+
+- `environment.yml`（`python=3.10` + bioconda **`blast`** + FastAPI 栈）
+- `main.py`（`GET /health`、`POST /blastn`）
+- `start.sh`（默认端口 **8019**）
+
+### 10M.3 当前微服务能力
+
+接口（**默认端口 `8019`**）：
+
+- `GET /health`  
+  - 返回 `blastn` / `makeblastdb` 是否在 `PATH` 中、`rna_agent_system` 根路径解析提示等。
+
+- `POST /blastn`
+
+输入（JSON）：
+
+- `query_filepath`（必填）：查询序列文件路径；可为 **绝对路径**，或与仓库一致的 **`rna_agent_system/` 相对路径**（服务内按 `rna_agent_system` 根目录解析）。
+- **二选一**：
+  - `subject_fasta_path`：subject 多序列 FASTA；服务在临时目录中执行 `makeblastdb` 后调用 `blastn`。
+  - `subject_db`：已有核苷酸 BLAST 数据库的**前缀路径**（与 `blastn -db` 一致，不含扩展名）。
+- 常用可选字段：`task`（默认 `blastn-short`）、`evalue`、`word_size`、`max_target_seqs`、`perc_identity`、`strand`（`both` / `plus` / `minus`）、`outfmt`、`blastn_timeout_sec`。
+
+输出（摘要）：
+
+- `hit_count`、`hits_preview`、`tabular_output`（过长时截断并 `tabular_output_truncated=true`）、`blastn_command`、`makeblastdb_command`（仅 FASTA subject 时有值）、`subject_mode`、`resolved_query_path`、`resolved_subject` 等。
+
+服务会将查询文件内容规范为 **DNA（U→T）** 后再写入临时 query FASTA，避免混用 RNA 字母导致 `blastn` 报错。
+
+### 10M.4 当前 Agent 工具能力
+
+工具函数：
+
+- `run_blastn_similarity_search(filepath, subject_fasta_path=None, subject_db=None, service_url="http://127.0.0.1:8019/blastn", task="blastn-short", evalue=10.0, word_size=None, max_target_seqs=50, perc_identity=None, strand="both")`
+
+输入：
+
+- `filepath`：query 序列文件（通常由规则节点先写入 `workspace/`）。
+- `subject_fasta_path` **或** `subject_db`：**必须**提供其一；路径可为绝对路径或相对 `rna_agent_system/` 的相对路径（工具层会解析为服务器绝对路径再 POST）。
+
+输出（字典，节选）：
+
+- `hit_count`、`hits_preview`、`tabular_tsv_filepath`（完整制表符结果写入 `workspace/blastn_out_*.tsv`）、`blastn_command`、`subject_mode` 等。
+
+### 10M.5 当前工作流集成方式
+
+- `router_node`：在既有 mRNA 关键词之外，增加对 **`blast` / `blastn` / `megablast` / `dc-megablast` / `相似性搜索`** 的识别，与其它 mRNA 关键词一致路由到 `mrna_specialist`。
+- `mrna_specialist_node`：命中 BLAST 语义时单独分支调用 `run_blastn_similarity_search`；参数由 `_build_blast_tool_args` 从自然语言解析（见 **§5.3**）。
+- `tool_execution_node`：回填 `blast_hit_count`、`blast_tabular_tsv_filepath`、`blast_subject_mode`；`final_report` 中追加对应字段。
+- `critic_node`：对纯 BLAST 请求无单独 reject 规则（不因 MFE 等结构规则误伤）。
+
+### 10M.6 实际运行注意事项
+
+- **Linux 服务器**侧安装与验证；macOS 可用于改代码与推仓库。
+- 依赖 Conda 环境中可执行的 **`blastn`** 与 **`makeblastdb`**（`environment.yml` 已包含 bioconda `blast`）。
+- **大库 / 高 `max_target_seqs`** 时单次请求可能较慢，可调大 `blastn_timeout_sec` 或缩小库与参数。
+- Subject FASTA 的序列 ID 若含特殊字符，`makeblastdb` 可能失败；优先使用规范 FASTA header。
+
+### 10M.7 当前验证状态
+
+- 推荐在 **Linux** 上完成：`conda env create` → `conda activate blast_service_env` → `bash start.sh`，再对 `GET /health` 与 `POST /blastn` 做最小 `curl` 闭环（见 **§13.1** 示例）。
+- Agent 规则层已具备自然语言触发 BLAST 分支的能力；**前提是 `8019` 微服务已启动**。
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -3912,6 +4023,28 @@ curl -sS -X POST http://127.0.0.1:8018/analyze/cds \
   -d '{"sequence":"ATGAATATGCTCATTGTCGGTAGAGTTGTTGCTAGTGTTGGGGGAAGCGGACTTCAAACG"}' | python3 -m json.tool
 ```
 
+例如测试 **BLAST+（`blast_service`，8019）**：
+
+1. 启动 `blast_service`（见 **§10M.6**）
+2. `curl /health`
+3. `POST /blastn`（见下方 `curl`）
+
+推荐最小 payload（subject 为 FASTA；路径请改为服务器上真实存在的文件）：
+
+```bash
+curl -sS -X POST http://127.0.0.1:8019/blastn \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query_filepath": "rna_agent_system/workspace/blast_test_query.fa",
+    "subject_fasta_path": "rna_agent_system/workspace/blast_test_subject.fa",
+    "task": "blastn-short",
+    "evalue": 10,
+    "max_target_seqs": 10
+  }' | python3 -m json.tool
+```
+
+若使用已有 BLAST 库，将 `subject_fasta_path` 换为 `subject_db`（**库前缀绝对路径或相对 `rna_agent_system/` 的路径**），并视情况调整 `task`（例如 `megablast`）。
+
 ### 13.2 智能体集成测试
 
 在**相关微服务已启动**（至少对应当次请求的工具，例如 ViennaRNA 需 `8003`）后，再启动：
@@ -3941,7 +4074,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --s
 
 #### 13.2A Streamlit 自然语言案例（可复制到聊天框）
 
-以下案例假设 **`viennarna_fold` 已在 `127.0.0.1:8003` 运行**；duplex / ASO / inverse 亦依赖该服务。涉及 **codonw 指标 + fold** 的句子需同时启动 **`codonw_slim_service`（8018）** 与 **8003**。
+以下案例假设 **`viennarna_fold` 已在 `127.0.0.1:8003` 运行**；duplex / ASO / inverse 亦依赖该服务。涉及 **codonw 指标 + fold** 的句子需同时启动 **`codonw_slim_service`（8018）** 与 **8003**。涉及 **BLAST** 时需启动 **`blast_service`（8019）**，并在句中给出 **`subject_fasta=`** 或 **`subject_db=`**。
 
 | 目的 | 建议输入示例（整句粘贴） |
 |------|---------------------------|
@@ -3952,6 +4085,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --s
 | 二级结构逆折叠（RNAinverse） | `inverse fold 逆折叠 rnainverse，structure=((((....))))，repeats=5` |
 | siRNA 效率 + 脱靶（原默认分支） | `sirna AUGCUAACGUAGCUAUGCUA`（需 `8001`/`8002` 等 mock 服务若仍接入） |
 | mRNA 结构 + LinearFold | `fold linearfold 二级结构 AUGGCUACGUAGCUAGCUAGCUAGCUGA beam_size=20` |
+| BLAST blastn（subject FASTA） | `blastn 比对 subject_fasta=rna_agent_system/workspace/blast_test_subject.fa 序列 ATGCATGCATGCATGC`（路径与序列按服务器实际情况修改） |
 
 然后测试（回归清单，含上文未列能力）：
 
@@ -3960,6 +4094,7 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --s
 - mRNA 结构预测请求（默认 ViennaRNA）
 - mRNA 结构预测请求（显式 `linearfold`，并可附 `beam_size=...` / `dangles=...`）
 - codonw-slim 独立 CDS 指标请求（**8018**）
+- BLAST blastn 相似性搜索（**8019**，且句中含 `subject_fasta=` 或 `subject_db=`）
 - mRNA 结构预测 + codonw 前置指标（**8018** + **8003**）
 - GEMORNA 设计请求
 - GEMORNA 设计 + RNAfold 联合请求
@@ -4271,7 +4406,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 当前这个项目的核心设计可以概括为：
 
-**上层 Agent 只负责规则路由与工作流编排，下层所有复杂生信能力都通过 `Conda + FastAPI` 微服务隔离运行，长序列统一走 `workspace filepath` 传递，第三方源码通过 `external_repos/` 的 submodule 方式独立管理。**
+**上层 Agent 只负责规则路由与工作流编排，下层所有复杂生信能力都通过 `Conda + FastAPI` 微服务隔离运行，长序列统一走 `workspace filepath` 传递，第三方源码通过 `external_repos/` 的 submodule 方式独立管理；其中 NCBI BLAST+（`blastn`）由 `blast_service`（8019）提供，与 8002 的 mock 脱靶服务并存。**
 
 以后新增工具时，统一按下面的固定动作做：
 
