@@ -27,6 +27,7 @@ from agent_core.tools import (
     analyze_cds_codon_metrics_with_codonw_slim,
     mock_codon_optimization,
     optimize_sgrna_with_crisot,
+    run_blastn_similarity_search,
     predict_mrna_stability_with_rnastop,
     predict_putative_ires_with_iresfinder,
     predict_rna_secondary_structure,
@@ -62,6 +63,7 @@ MRNA_TOOLS = [
     inverse_fold_rna_secondary_structure_vienna,
     analyze_cds_codon_metrics_with_codonw_slim,
     mock_codon_optimization,
+    run_blastn_similarity_search,
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
     predict_rna_tertiary_structure_with_rhofold,
@@ -873,6 +875,89 @@ def _resolve_rnastop_input(text: str) -> Tuple[str, bool]:
     return save_sequence(rna_sequence, prefix="rnastop_rna"), True
 
 
+def _needs_blast_search(user_text: str) -> bool:
+    lowered = user_text.lower()
+    return any(
+        k in lowered
+        for k in (
+            "blast",
+            "blastn",
+            "megablast",
+            "dc-megablast",
+            "相似性搜索",
+        )
+    )
+
+
+def _extract_blast_path_token(text: str, labels: Tuple[str, ...]) -> Optional[str]:
+    joined = "|".join(re.escape(lbl) for lbl in labels)
+    pattern = re.compile(rf"(?:{joined})\s*[:=]\s*[\"']([^\"']+)[\"']", re.IGNORECASE)
+    m = pattern.search(text)
+    if m:
+        return m.group(1).strip()
+    pattern2 = re.compile(rf"(?:{joined})\s*[:=]\s*(\S+)", re.IGNORECASE)
+    m2 = pattern2.search(text)
+    if m2:
+        return m2.group(1).strip().strip(",").strip(";")
+    return None
+
+
+def _build_blast_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    """Resolve blastn tool kwargs from natural language (subject FASTA or BLAST DB prefix)."""
+    lowered = raw_text.lower()
+    args: dict[str, Any] = {"filepath": filepath}
+
+    subject_db = _extract_blast_path_token(
+        raw_text,
+        ("subject_db", "blast_db", "blastdb", "database"),
+    )
+    subject_fasta = _extract_blast_path_token(
+        raw_text,
+        ("subject_fasta", "subject", "target_fasta"),
+    )
+    if not subject_fasta:
+        subject_fasta = _extract_named_filepath(
+            raw_text,
+            ("subject", "subject_fasta", "target"),
+            ("fa", "fasta", "fna", "fas"),
+        )
+
+    if subject_db:
+        args["subject_db"] = subject_db
+    elif subject_fasta:
+        args["subject_fasta_path"] = subject_fasta
+    else:
+        raise ValueError(
+            "BLAST search needs a subject. Provide `subject_fasta=/path/to.fa` or `subject_db=/path/to/db_prefix` "
+            "(existing nucleotide BLAST database)."
+        )
+
+    if "megablast" in lowered or "dc-megablast" in lowered or "dc_megablast" in lowered:
+        args["task"] = "dc-megablast" if "dc" in lowered else "megablast"
+    elif "blastn-short" in lowered or "short" in lowered and "blast" in lowered:
+        args["task"] = "blastn-short"
+    elif "blastn" in lowered:
+        args["task"] = "blastn"
+
+    ev = _extract_float_setting(raw_text, ("evalue", "e-value", "e_value"))
+    if ev is not None and ev > 0:
+        args["evalue"] = ev
+    ws = _extract_int_setting(raw_text, ("word_size", "wordsize"))
+    if ws is not None and ws > 0:
+        args["word_size"] = ws
+    mts = _extract_int_setting(raw_text, ("max_target_seqs", "maxtargetseqs", "max_hits"))
+    if mts is not None and mts > 0:
+        args["max_target_seqs"] = mts
+    pid = _extract_float_setting(raw_text, ("perc_identity", "pident", "identity"))
+    if pid is not None and pid > 0:
+        args["perc_identity"] = pid
+    if "strand=plus" in lowered or "strand plus" in lowered:
+        args["strand"] = "plus"
+    elif "strand=minus" in lowered or "strand minus" in lowered:
+        args["strand"] = "minus"
+    return args
+
+
 def _extract_named_filepath(text: str, labels: Tuple[str, ...], suffixes: Tuple[str, ...]) -> Optional[str]:
     labels_pattern = "|".join(re.escape(label) for label in labels)
     suffix_pattern = "|".join(re.escape(suffix.lstrip(".")) for suffix in suffixes)
@@ -1261,7 +1346,7 @@ def router_node(state: AgentState) -> AgentState:
         route = "crispr_specialist"
     elif _needs_evitar_mode(user_text):
         route = "sirna_specialist"
-    elif _needs_iresfinder_prediction(user_text) or any(
+    elif _needs_iresfinder_prediction(user_text) or _needs_blast_search(user_text) or any(
         k in user_text
         for k in [
             "mrna",
@@ -1649,6 +1734,29 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch codonw-slim CDS codon metrics."
+    elif _needs_blast_search(user_text):
+        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        try:
+            blast_args = _build_blast_tool_args(filepath, raw_text)
+        except ValueError as exc:
+            ai_msg = AIMessage(
+                content=f"mRNA specialist (BLAST): {exc}",
+                tool_calls=[],
+            )
+            state["messages"] = state.get("messages", []) + [ai_msg]
+            return state
+        tool_calls = [
+            {
+                "name": "run_blastn_similarity_search",
+                "args": blast_args,
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch NCBI blastn via blast_service."
     elif structure_design_mode:
         pdb_path, ss_path = _extract_structure_design_inputs(raw_text)
         state["design_input_pdb_filepath"] = pdb_path
@@ -2092,6 +2200,14 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if optimized_filepath:
                 state["current_filepath"] = optimized_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [optimized_filepath]
+        elif tool_name == "run_blastn_similarity_search":
+            state["blast_hit_count"] = int(tool_result.get("hit_count", 0))
+            state["blast_subject_mode"] = str(tool_result.get("subject_mode", ""))
+            tab_fp = str(tool_result.get("tabular_tsv_filepath", ""))
+            if tab_fp:
+                state["blast_tabular_tsv_filepath"] = tab_fp
+                if tab_fp.startswith("workspace/"):
+                    state["workspace_files"] = state.get("workspace_files", []) + [tab_fp]
         elif tool_name == "analyze_cds_codon_metrics_with_codonw_slim":
             state["cai_score"] = float(tool_result.get("cai_score", 0.0))
             state["codonw_enc"] = float(tool_result.get("enc", 0.0))
@@ -2484,6 +2600,9 @@ def critic_node(state: AgentState) -> AgentState:
             f"vienna_aso_mean_unpaired={state.get('vienna_aso_mean_unpaired', 0.0)}; "
             f"vienna_aso_joint_unpaired={state.get('vienna_aso_joint_unpaired', 0.0)}; "
             f"vienna_inverse_best_sequence={state.get('vienna_inverse_best_sequence', '')}; "
+            f"blast_hit_count={state.get('blast_hit_count', 0)}; "
+            f"blast_tabular_tsv_filepath={state.get('blast_tabular_tsv_filepath', '')}; "
+            f"blast_subject_mode={state.get('blast_subject_mode', '')}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

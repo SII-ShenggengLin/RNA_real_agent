@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from pathlib import Path
 from typing import Any, Optional
 
 import requests
@@ -95,6 +96,42 @@ class OffTargetCheckInput(BaseModel):
     service_url: str = Field(
         default="http://127.0.0.1:8002/check",
         description="Full URL for the mock off-target API endpoint.",
+    )
+
+
+class BlastnSearchInput(BaseModel):
+    """Input schema for NCBI BLAST+ blastn (microservice on port 8019)."""
+
+    filepath: str = Field(
+        ...,
+        description="Query nucleotide sequence file (workspace path or absolute on the server).",
+    )
+    subject_fasta_path: Optional[str] = Field(
+        default=None,
+        description="Subject multi-FASTA path (server-side). Indexed with makeblastdb at runtime.",
+    )
+    subject_db: Optional[str] = Field(
+        default=None,
+        description="Existing nucleotide BLAST database prefix path (server-side), e.g. /data/nt/ref.",
+    )
+    task: str = Field(
+        default="blastn-short",
+        description="blastn -task: blastn-short | blastn | megablast | dc-megablast.",
+    )
+    evalue: float = Field(default=10.0, gt=0.0)
+    word_size: Optional[int] = Field(
+        default=None,
+        description="Optional blastn -word_size (recommended for manual tuning of short queries).",
+    )
+    max_target_seqs: int = Field(default=50, ge=1, le=10000)
+    perc_identity: Optional[float] = Field(
+        default=None,
+        description="Optional minimum percent identity filter passed to blastn.",
+    )
+    strand: str = Field(default="both", description="blastn -strand: both | plus | minus.")
+    service_url: str = Field(
+        default="http://127.0.0.1:8019/blastn",
+        description="URL for the blast_service POST /blastn endpoint.",
     )
 
 
@@ -337,6 +374,110 @@ def check_off_target(filepath: str, service_url: str = "http://127.0.0.1:8002/ch
         return payload
     except requests.RequestException as exc:
         raise ValueError(f"Off-target service request failed: {exc}") from exc
+
+
+def _absolute_path_under_project(filepath: str) -> str:
+    """Resolve workspace-relative paths to absolute paths on the server (blast microservice reads these)."""
+    path_obj = Path(filepath.strip())
+    if path_obj.is_absolute():
+        return str(path_obj.resolve())
+    project_root = Path(__file__).resolve().parents[1]
+    return str((project_root / filepath).resolve())
+
+
+@tool(args_schema=BlastnSearchInput)
+def run_blastn_similarity_search(
+    filepath: str,
+    subject_fasta_path: Optional[str] = None,
+    subject_db: Optional[str] = None,
+    task: str = "blastn-short",
+    evalue: float = 10.0,
+    word_size: Optional[int] = None,
+    max_target_seqs: int = 50,
+    perc_identity: Optional[float] = None,
+    strand: str = "both",
+    service_url: str = "http://127.0.0.1:8019/blastn",
+) -> dict[str, Any]:
+    """Run NCBI blastn against a subject FASTA or an existing nucleotide BLAST database.
+
+    Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
+    Provide exactly one of ``subject_fasta_path`` or ``subject_db``. The query is read from
+    ``filepath`` (plain sequence or FASTA); nucleotides are normalized to DNA for blastn.
+
+    Args:
+        filepath: Query sequence file (typically under ``workspace/``).
+        subject_fasta_path: Path to subject FASTA on the server (makeblastdb run in the service).
+        subject_db: Prefix path of an existing BLAST nucleotide database.
+        task: blastn task name (short oligos default ``blastn-short``).
+        evalue: Expect value threshold.
+        word_size: Optional word size.
+        max_target_seqs: Maximum aligned subject sequences to report.
+        perc_identity: Optional percent identity cutoff.
+        strand: Query/subject strand option.
+        service_url: POST endpoint for the blast microservice.
+
+    Returns:
+        Dict with hit counts, preview, paths to saved tabular output under ``workspace/``, and commands.
+
+    Raises:
+        ValueError: If arguments are inconsistent or the HTTP call fails.
+    """
+    if bool(subject_fasta_path) == bool(subject_db):
+        raise ValueError("Provide exactly one of subject_fasta_path or subject_db.")
+    read_sequence(filepath)  # validate readable before calling remote service
+    query_abs = _absolute_path_under_project(filepath)
+    payload: dict[str, Any] = {
+        "query_filepath": query_abs,
+        "task": task,
+        "evalue": float(evalue),
+        "max_target_seqs": int(max_target_seqs),
+        "strand": strand,
+    }
+    if subject_fasta_path:
+        payload["subject_fasta_path"] = (
+            subject_fasta_path
+            if Path(subject_fasta_path).is_absolute()
+            else str((Path(__file__).resolve().parents[1] / subject_fasta_path).resolve())
+        )
+    else:
+        assert subject_db is not None
+        payload["subject_db"] = (
+            subject_db
+            if Path(subject_db).is_absolute()
+            else str((Path(__file__).resolve().parents[1] / subject_db).resolve())
+        )
+    if word_size is not None:
+        payload["word_size"] = int(word_size)
+    if perc_identity is not None:
+        payload["perc_identity"] = float(perc_identity)
+    try:
+        response = requests.post(service_url, json=payload, timeout=660)
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"BLAST service request failed: {exc}") from exc
+
+    tabular = str(body.get("tabular_output", "") or "")
+    summary_path = ""
+    if tabular.strip():
+        summary_path = save_text_file(tabular, prefix="blastn_out", suffix=".tsv")
+
+    meta = {
+        "hit_count": int(body.get("hit_count", 0)),
+        "hits_preview": str(body.get("hits_preview", "")),
+        "preview_truncated": bool(body.get("preview_truncated", False)),
+        "tabular_output_truncated": bool(body.get("tabular_output_truncated", False)),
+        "blastn_command": str(body.get("blastn_command", "")),
+        "makeblastdb_command": body.get("makeblastdb_command"),
+        "stderr": str(body.get("stderr", ""))[:4000],
+        "subject_mode": str(body.get("subject_mode", "")),
+        "resolved_query_path": str(body.get("resolved_query_path", query_abs)),
+        "resolved_subject": str(body.get("resolved_subject", "")),
+        "model": str(body.get("model", "ncbi-blastn")),
+        "query_filepath": filepath,
+        "tabular_tsv_filepath": summary_path,
+    }
+    return meta
 
 
 @tool(args_schema=EvitarDesignInput)

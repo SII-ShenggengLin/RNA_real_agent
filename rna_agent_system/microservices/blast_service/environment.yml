@@ -1,0 +1,13 @@
+# NCBI BLAST+ (blastn / makeblastdb) via bioconda; FastAPI REST wrapper on port 8019.
+name: blast_service_env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - blast
+  - pip
+  - pip:
+      - fastapi==0.109.2
+      - uvicorn[standard]==0.27.1
+      - pydantic==2.6.1

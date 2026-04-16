@@ -86,6 +86,9 @@ class AgentState(TypedDict, total=False):
     vienna_aso_mean_unpaired: float
     vienna_aso_joint_unpaired: float
     vienna_inverse_best_sequence: str
+    blast_hit_count: int
+    blast_tabular_tsv_filepath: str
+    blast_subject_mode: str
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str
