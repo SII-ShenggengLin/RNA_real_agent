@@ -12,9 +12,9 @@ from langchain_core.messages import AIMessage, ToolMessage
 
 from agent_core.file_manager import read_sequence, save_sequence, save_text_file
 from agent_core.state import AgentState
+from agent_core.tool_specs import TOOL_SPECS
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
-    check_off_target,
     compute_aso_target_accessibility_vienna,
     compute_sirna_duplex_binding_vienna,
     design_sgrna_handle_with_crgpt,
@@ -33,7 +33,6 @@ from agent_core.tools import (
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
     predict_rna_tertiary_structure_with_rhofold,
-    predict_sirna_efficiency,
     run_odesign_inference,
     score_crispr_off_target_with_crisot,
     search_crispr_off_targets_with_crisot,
@@ -42,8 +41,6 @@ from agent_core.tools import (
 )
 
 SIRNA_TOOLS = [
-    predict_sirna_efficiency,
-    check_off_target,
     design_sirna_with_evitar,
     compute_sirna_duplex_binding_vienna,
 ]
@@ -1403,10 +1400,15 @@ def router_node(state: AgentState) -> AgentState:
         ]
     ):
         route = "mrna_specialist"
-    elif any(
-        k in user_text for k in ["sirna", "脱靶", "off-target"]
-    ) or _needs_sirna_duplex_vienna(user_text):
+    elif _needs_sirna_duplex_vienna(user_text):
         route = "sirna_specialist"
+    elif any(k in user_text for k in ["sirna", "脱靶", "off-target"]):
+        route = "end"
+        state["final_report"] = (
+            "Unsupported request: siRNA efficiency/off-target capability was previously provided by mock services "
+            "(ports 8001/8002) and has been removed. No production implementation is available in this repository. "
+            "Supported siRNA-related tasks: Evitar design and ViennaRNA duplex energy."
+        )
     else:
         # Default to mRNA for current integration testing focus (RNAfold).
         route = "mrna_specialist"
@@ -1494,21 +1496,12 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "siRNA specialist (rule-based): ViennaRNA sense/antisense duplex (cofold) energy."
     else:
-        tool_calls = [
-            {
-                "name": "predict_sirna_efficiency",
-                "args": {"filepath": filepath},
-                "id": f"call_{uuid.uuid4().hex[:8]}",
-                "type": "tool_call",
-            },
-            {
-                "name": "check_off_target",
-                "args": {"filepath": filepath},
-                "id": f"call_{uuid.uuid4().hex[:8]}",
-                "type": "tool_call",
-            },
-        ]
-        content = "siRNA specialist (rule-based): dispatch tool calls."
+        tool_calls = []
+        content = (
+            "siRNA specialist (rule-based): unsupported request. "
+            "siRNA efficiency/off-target mock services were removed; "
+            "no production implementation is available in this repository."
+        )
     ai_msg = AIMessage(
         content=content,
         tool_calls=tool_calls,
@@ -1873,14 +1866,16 @@ def tool_execution_node(state: AgentState) -> AgentState:
                         {"name": "compute_sirna_duplex_binding_vienna", "args": {"filepath": duplex_fp}}
                     ]
                 except ValueError:
-                    if not filepath:
-                        filepath = save_sequence(_extract_rna_sequence(raw_si), prefix="sirna")
-                        state["current_filepath"] = filepath
-                        state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-                    fallback_calls = [
-                        {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
-                        {"name": "check_off_target", "args": {"filepath": filepath}},
+                    state["messages"] = state.get("messages", []) + [
+                        AIMessage(
+                            content=(
+                                "Tool executor: ViennaRNA duplex mode requires two strands (sense/antisense). "
+                                "Mock siRNA fallback tools were removed; please provide a file with two FASTA records "
+                                "(sense then antisense) or explicit `sense=` and `antisense=` sequences."
+                            )
+                        )
                     ]
+                    return state
             else:
                 if not filepath:
                     filepath = save_sequence(_extract_rna_sequence(raw_si), prefix="sirna")
@@ -1894,10 +1889,16 @@ def tool_execution_node(state: AgentState) -> AgentState:
                         }
                     ]
                 else:
-                    fallback_calls = [
-                        {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
-                        {"name": "check_off_target", "args": {"filepath": filepath}},
+                    state["messages"] = state.get("messages", []) + [
+                        AIMessage(
+                            content=(
+                                "Tool executor: unsupported siRNA request. "
+                                "siRNA efficiency/off-target mock tools were removed; no production implementation "
+                                "is available in this repository."
+                            )
+                        )
                     ]
+                    return state
         elif state.get("active_specialist") == "crispr_specialist":
             raw_crispr_text = state.get("input_sequence", "")
             if _needs_sgrna_handle_design(raw_crispr_text.lower()):
@@ -2076,7 +2077,25 @@ def tool_execution_node(state: AgentState) -> AgentState:
         tool_obj = TOOLS_BY_NAME.get(tool_name)
         if not tool_obj:
             continue
-        tool_result = tool_obj.invoke(tool_args)
+        try:
+            tool_result = tool_obj.invoke(tool_args)
+        except ValueError as exc:
+            # Deterministic fallback for fold: if ViennaRNA is unavailable, try LinearFold.
+            if tool_name == "predict_rna_secondary_structure":
+                fallback_tool = TOOLS_BY_NAME.get("predict_rna_secondary_structure_with_linearfold")
+                fp = str(tool_args.get("filepath") or state.get("current_filepath") or "")
+                if fallback_tool and fp:
+                    tool_result = fallback_tool.invoke({"filepath": fp})
+                    tool_name = "predict_rna_secondary_structure_with_linearfold"
+                else:
+                    raise
+            else:
+                raise
+
+        spec = TOOL_SPECS.get(tool_name)
+        if spec and spec.output_model:
+            # Validate minimal contract for auditability; allow extra fields.
+            spec.output_model.model_validate(tool_result)
         out_messages.append(
             ToolMessage(
                 content=json.dumps(tool_result, ensure_ascii=True),
@@ -2085,16 +2104,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             )
         )
 
-        if tool_name == "predict_sirna_efficiency":
-            state["efficiency_score"] = float(tool_result.get("efficiency_score", 0.0))
-            state["candidate_sequence"] = str(tool_result.get("sequence", ""))
-            state["current_filepath"] = str(tool_result.get("filepath", state.get("current_filepath", "")))
-        elif tool_name == "check_off_target":
-            state["off_target_genes"] = int(tool_result.get("off_target_genes", 0))
-            if not state.get("candidate_sequence"):
-                state["candidate_sequence"] = str(tool_result.get("sequence", ""))
-            state["current_filepath"] = str(tool_result.get("filepath", state.get("current_filepath", "")))
-        elif tool_name == "design_sirna_with_evitar":
+        if tool_name == "design_sirna_with_evitar":
             output_filepath = str(tool_result.get("output_filepath", ""))
             if output_filepath:
                 state["current_filepath"] = output_filepath
@@ -2219,12 +2229,12 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 if metrics_json_filepath.startswith("workspace/"):
                     state["workspace_files"] = state.get("workspace_files", []) + [metrics_json_filepath]
         elif tool_name == "predict_rna_secondary_structure":
-            mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(tool_result))
-            structure_match = re.search(r"structure=([^;]+)", str(tool_result))
-            if mfe_match:
-                state["mfe"] = float(mfe_match.group(1))
-            if structure_match:
-                structure = structure_match.group(1).strip()
+            if isinstance(tool_result, dict):
+                state["mfe"] = float(tool_result.get("mfe_kcal_per_mol", 0.0))
+                structure = str(tool_result.get("structure", ""))
+            else:
+                structure = ""
+            if structure:
                 structure_filepath = save_sequence(structure, prefix="structure")
                 state["structure_filepath"] = structure_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
@@ -2481,7 +2491,6 @@ def tool_execution_node(state: AgentState) -> AgentState:
 
 def critic_node(state: AgentState) -> AgentState:
     """Use hard rules only (no LLM) to decide pass/reject."""
-    off_target = state.get("off_target_genes", 0)
     mfe = state.get("mfe", 0.0)
     cai_score = state.get("cai_score", 0.0)
     mean_plddt = state.get("mean_plddt", 0.0)
@@ -2494,8 +2503,6 @@ def critic_node(state: AgentState) -> AgentState:
     specialist = state.get("active_specialist", "")
 
     hard_reject = False
-    if specialist == "sirna_specialist" and off_target > 0:
-        hard_reject = True
     user_text = state.get("input_sequence", "").lower()
     if (
         specialist == "mrna_specialist"
@@ -2519,7 +2526,7 @@ def critic_node(state: AgentState) -> AgentState:
             AIMessage(
                 content=(
                     f"Critic (rule-based): reject and retry. "
-                    f"specialist={specialist}, off_target={off_target}, mfe={mfe}, retry={retry_count + 1}"
+                    f"specialist={specialist}, mfe={mfe}, retry={retry_count + 1}"
                 )
             )
         ]
@@ -2529,8 +2536,6 @@ def critic_node(state: AgentState) -> AgentState:
         state["final_report"] = (
             f"specialist={specialist}; "
             f"filepath={state.get('current_filepath', '')}; "
-            f"efficiency={state.get('efficiency_score', 0.0)}; "
-            f"off_target_genes={off_target}; "
             f"crisot_score={state.get('crisot_score', 0.0)}; "
             f"crisot_spec={state.get('crisot_spec', 0.0)}; "
             f"crisot_target_sequence={state.get('crisot_target_sequence', '')}; "
@@ -2609,7 +2614,7 @@ def critic_node(state: AgentState) -> AgentState:
             AIMessage(
                 content=(
                     f"Critic (rule-based): pass. "
-                    f"specialist={specialist}, off_target={off_target}, mfe={mfe}"
+                    f"specialist={specialist}, mfe={mfe}"
                 )
             )
         ]

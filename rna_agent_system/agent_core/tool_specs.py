@@ -1,0 +1,624 @@
+"""Repository-grounded ToolSpec registry.
+
+This file is the single source of truth for:
+- tool identity / upstream sources
+- capability boundaries
+- strict IO schemas (via Pydantic models)
+- runtime constraints (OS/GPU/weights)
+
+Docs under ``docs/tools/`` should match these specs.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from agent_core.tool_interface import ToolDependency, ToolExample, ToolSpec, ToolStatus, ToolTransport
+from agent_core import tools as tool_wrappers
+
+
+class _OutBase(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
+class BlastnSearchOutput(_OutBase):
+    hit_count: int
+    subject_mode: str
+    query_filepath: str
+    tabular_tsv_filepath: str
+    model: str
+
+
+class EvitarDesignOutput(_OutBase):
+    input_filepath: str
+    output_filepath: str
+    raw_output_path: str
+    mode: str
+    predict: str
+    result_count: int
+    top_results: List[Dict[str, Any]]
+    model: str
+    command: str
+
+
+class ViennaFoldOutput(_OutBase):
+    input_filepath: str
+    structure: str
+    mfe_kcal_per_mol: float
+    backend: str = ""
+    model: str = "ViennaRNA-RNAfold"
+
+
+class ViennaDuplexOutput(_OutBase):
+    input_filepath: str
+    sense: str
+    antisense: str
+    structure: str
+    mfe_kcal_per_mol: float
+    backend: str = ""
+    model: str
+
+
+class ViennaAsoAccessibilityOutput(_OutBase):
+    input_filepath: str
+    sequence_length: int
+    region_start: int
+    region_end: int
+    mean_unpaired_prob_single_nt: Optional[float] = None
+    joint_unpaired_prob_stretch_ending_at_region_end: Optional[float] = None
+    aso_oligo_length_used: int
+    plfold_winsize: int
+    plfold_span: int
+    plfold_unpaired_ulength: int
+    backend: str = ""
+    model: str
+
+
+class ViennaInverseFoldOutput(_OutBase):
+    input_filepath: str
+    target_structure: str
+    best_sequence: str
+    best_sequence_filepath: str
+    hamming_distance: Optional[int] = None
+    backend: str = ""
+    model: str
+
+
+class LinearFoldOutput(_OutBase):
+    filepath: str
+    sequence: str
+    structure: str
+    mfe: float
+    backend: str = ""
+    model: str
+
+
+class CodonwSlimOutput(_OutBase):
+    input_filepath: str
+    metrics_json_filepath: str
+    cai_score: float
+    enc: float
+    fop: float
+    cbi: float
+    model: str
+
+
+class CrisotScoreOutput(_OutBase):
+    input_filepath: str
+    sgrna: str
+    target_sequence: str
+    crisot_score: float
+    model: str
+
+
+class CrisotSpecOutput(_OutBase):
+    input_csv_filepath: str
+    scored_csv_filepath: str
+    crisot_spec: float
+    model: str
+
+
+class CrisotOffSpecOutput(_OutBase):
+    input_filepath: str
+    sgrna: str
+    target_sequence: str
+    genome_path: str
+    crisot_spec: float
+    off_target_count: int
+    scored_csv_filepath: str
+    model: str
+
+
+class CrisotOptimizeOutput(_OutBase):
+    input_filepath: str
+    target_sequence: str
+    genome_path: str
+    optimized_available: bool
+    best_sgrna: str = ""
+    best_mutation: str = ""
+    best_delta_spec: float = 0.0
+    best_crisot_score: float = 0.0
+    best_crisot_spec: float = 0.0
+    optimization_csv_filepath: str = ""
+    optimized_sgrna_filepath: str = ""
+    model: str
+
+
+class SgRNADesignOutput(_OutBase):
+    input_filepath: str
+    best_sequence: str = ""
+    best_sequence_filepath: str = ""
+    generated_count: int = 0
+    best_nn_score: float = 0.0
+    best_mutation_count: int = 0
+    model_path: str = ""
+    output_fasta_filepath: str = ""
+    summary_json_filepath: str = ""
+    model: str
+
+
+class ProteinToCdsOutput(_OutBase):
+    input_filepath: str
+    output_filepath: str
+    generated_sequence: str
+    model: str
+
+
+class RhoFoldOutput(_OutBase):
+    input_filepath: str
+    pdb_filepath: str
+    ct_filepath: str = ""
+    results_filepath: str = ""
+    log_filepath: str = ""
+    mean_plddt: float = 0.0
+    model: str
+
+
+class RhoDesignOutput(_OutBase):
+    input_pdb_filepath: str
+    output_fasta_filepath: str
+    designed_sequence: str
+    sequence_recovery_rate: float = 0.0
+    model: str
+
+
+class RNAsmolScoreOutput(_OutBase):
+    input_filepath: str
+    smiles: str
+    probability: float
+    predicted_label: int
+    checkpoint_path: str = ""
+    model: str
+
+
+class GerNABindScoreOutput(_OutBase):
+    input_filepath: str
+    smiles: str
+    probability: float
+    predicted_label: int
+    checkpoint_path: str = ""
+    preprocessing_pdb_path: str = ""
+    model: str
+
+
+class RNASTOPPredictionOutput(_OutBase):
+    input_filepath: str
+    prediction_filepath: str
+    mean_reactivity: float = 0.0
+    mean_deg_mg_ph10: float = 0.0
+    mean_deg_mg_50c: float = 0.0
+    mfe: float = 0.0
+    checkpoint_path: str = ""
+    model: str
+
+
+class IRESfinderPredictionOutput(_OutBase):
+    input_filepath: str
+    result_tsv_filepath: str
+    has_putative_ires: bool
+    max_score: float
+    best_fragment_id: str
+    positive_count: int
+    fragment_count: int
+    model: str
+
+
+class ODesignInferenceOutput(_OutBase):
+    input_json_filepath: str
+    output_dir: str
+    prediction_filepaths: List[str] = Field(default_factory=list)
+    run_log_filepath: str = ""
+    stdout_filepath: str = ""
+    stderr_filepath: str = ""
+    error_filepaths: List[str] = Field(default_factory=list)
+    model: str
+
+
+TOOL_SPECS: Dict[str, ToolSpec] = {
+    "compute_sirna_duplex_binding_vienna": ToolSpec(
+        identity="compute_sirna_duplex_binding_vienna",
+        display_name="ViennaRNA duplex cofold (siRNA sense/antisense)",
+        version="0.2.0-port8003",
+        source="https://github.com/ViennaRNA/ViennaRNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8003/sirna-duplex",
+        capabilities=[
+            "Compute sense/antisense cofold secondary structure and duplex MFE (kcal/mol).",
+        ],
+        limitations=[
+            "Does not predict siRNA efficacy or genome-wide off-targets.",
+            "Requires two strands (sense + antisense) as input.",
+        ],
+        task_tags=["sirna_duplex_energy", "rna_secondary_structure"],
+        requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
+        produces=["structure", "mfe_kcal_per_mol"],
+        input_model=tool_wrappers.SirnaDuplexViennaInput,
+        output_model=ViennaDuplexOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Cofold duplex energy from two-record FASTA",
+                input={"filepath": "workspace/sirna_duplex_*.fasta"},
+                output_excerpt={"mfe_kcal_per_mol": -12.3},
+            )
+        ],
+    ),
+    "design_sirna_with_evitar": ToolSpec(
+        identity="design_sirna_with_evitar",
+        display_name="Evitar siRNA/Cas13 design",
+        version="0.1.0",
+        source="https://github.com/dingyaozhang/Evitar",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8016/design",
+        capabilities=["Design siRNA/Cas13 guides via Evitar CLI wrapper."],
+        limitations=["Upstream binaries are Linux-only (as documented in repo guide)."],
+        task_tags=["sirna_design", "cas13_guide_design"],
+        requires=[
+            ToolDependency(name="Linux", detail="Evitar upstream binaries are Linux executables"),
+            ToolDependency(name="Evitar microservice", detail="microservices/evitar_service (port 8016)"),
+        ],
+        produces=["output_filepath", "top_results"],
+        input_model=tool_wrappers.EvitarDesignInput,
+        output_model=EvitarDesignOutput,
+        status=ToolStatus.partial,
+    ),
+    "run_blastn_similarity_search": ToolSpec(
+        identity="run_blastn_similarity_search",
+        display_name="BLAST+ blastn similarity search",
+        version="0.1.0",
+        source="https://blast.ncbi.nlm.nih.gov/Blast.cgi",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8019/blastn",
+        capabilities=["Run blastn search against a subject FASTA or existing BLAST DB."],
+        limitations=["Not a siRNA off-target production pipeline by itself; returns alignments/hits only."],
+        task_tags=["blastn_similarity_search", "off_target_screening_support"],
+        requires=[ToolDependency(name="BLAST+ microservice", detail="microservices/blast_service (port 8019)")],
+        produces=["hit_count", "tabular_tsv_filepath"],
+        input_model=tool_wrappers.BlastnSearchInput,
+        output_model=BlastnSearchOutput,
+        status=ToolStatus.partial,
+    ),
+    "predict_rna_secondary_structure": ToolSpec(
+        identity="predict_rna_secondary_structure",
+        display_name="ViennaRNA RNAfold (secondary structure)",
+        version="0.2.0-port8003",
+        source="https://github.com/ViennaRNA/ViennaRNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8003/fold",
+        capabilities=["Predict secondary structure and MFE for a single RNA sequence."],
+        limitations=["Returns thermodynamic MFE only; no experimental constraints unless implemented server-side."],
+        task_tags=["rna_secondary_structure_prediction"],
+        requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
+        produces=["structure", "mfe_kcal_per_mol"],
+        input_model=tool_wrappers.MrnaToolInput,
+        output_model=ViennaFoldOutput,
+        status=ToolStatus.available,
+    ),
+    "compute_aso_target_accessibility_vienna": ToolSpec(
+        identity="compute_aso_target_accessibility_vienna",
+        display_name="ViennaRNA RNAplfold accessibility (ASO)",
+        version="0.2.0-port8003",
+        source="https://github.com/ViennaRNA/ViennaRNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8003/aso-accessibility",
+        capabilities=["Estimate local target accessibility for an ASO binding region via RNAplfold."],
+        limitations=["Accessibility is model-based; requires full-length target context for meaningful results."],
+        task_tags=["aso_accessibility"],
+        requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
+        produces=["mean_unpaired_prob_single_nt", "joint_unpaired_prob_stretch_ending_at_region_end"],
+        input_model=tool_wrappers.AsoAccessibilityViennaInput,
+        output_model=ViennaAsoAccessibilityOutput,
+        status=ToolStatus.available,
+    ),
+    "inverse_fold_rna_secondary_structure_vienna": ToolSpec(
+        identity="inverse_fold_rna_secondary_structure_vienna",
+        display_name="ViennaRNA RNAinverse (inverse folding)",
+        version="0.2.0-port8003",
+        source="https://github.com/ViennaRNA/ViennaRNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8003/inverse-fold",
+        capabilities=["Generate a sequence that folds into a target dot-bracket structure (heuristic search)."],
+        limitations=["Inverse folding is heuristic; returned sequence may not be unique or globally optimal."],
+        task_tags=["inverse_folding"],
+        requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
+        produces=["best_sequence", "best_sequence_filepath"],
+        input_model=tool_wrappers.InverseFoldViennaInput,
+        output_model=ViennaInverseFoldOutput,
+        status=ToolStatus.available,
+    ),
+    "predict_rna_secondary_structure_with_linearfold": ToolSpec(
+        identity="predict_rna_secondary_structure_with_linearfold",
+        display_name="LinearFold secondary structure",
+        version="0.1.0-port8015",
+        source="https://github.com/LinearFold/LinearFold",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8015/fold",
+        capabilities=["Predict RNA secondary structure with linear-time algorithm (beam search)."],
+        limitations=["Approximates search with beam; results depend on beam size and parameterization."],
+        task_tags=["rna_secondary_structure_prediction"],
+        requires=[ToolDependency(name="LinearFold microservice", detail="microservices/linearfold_service (port 8015)")],
+        produces=["structure", "mfe"],
+        input_model=tool_wrappers.LinearFoldSecondaryInput,
+        output_model=LinearFoldOutput,
+        status=ToolStatus.available,
+    ),
+    "design_mrna_cds_with_lineardesign": ToolSpec(
+        identity="design_mrna_cds_with_lineardesign",
+        display_name="LinearDesign protein→CDS design",
+        version="0.1.0-port8014",
+        source="https://github.com/LinearDesignSoftware/LinearDesign",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8014/generate/cds",
+        capabilities=["Generate CDS sequence from protein sequence via LinearDesign binary wrapper."],
+        limitations=["Requires server-side compiled binaries and compatible runtime environment."],
+        task_tags=["protein_to_cds_design"],
+        requires=[ToolDependency(name="Linux", detail="Documented deployment target"), ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service")],
+        produces=["output_filepath", "generated_sequence"],
+        input_model=tool_wrappers.LinearDesignCdsInput,
+        output_model=ProteinToCdsOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_mrna_cds_with_rnarl": ToolSpec(
+        identity="design_mrna_cds_with_rnarl",
+        display_name="RNARL protein→CDS design",
+        version="0.2.0",
+        source="https://github.com/SII-ShenggengLin/RNARL",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8008/generate/cds",
+        capabilities=["Generate CDS from protein sequence via RNARL actor inference."],
+        limitations=["Requires GPU + checkpoints + local ESM2 model as documented."],
+        task_tags=["protein_to_cds_design"],
+        requires=[ToolDependency(name="GPU", detail="RNARL inference"), ToolDependency(name="RNARL microservice", detail="microservices/rnarl_service (port 8008)")],
+        produces=["output_filepath", "generated_sequence"],
+        input_model=tool_wrappers.RNARLCdsInput,
+        output_model=ProteinToCdsOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_mrna_cds_with_gemorna": ToolSpec(
+        identity="design_mrna_cds_with_gemorna",
+        display_name="GEMORNA protein→CDS design",
+        version="0.1.0",
+        source="https://github.com/RainaBio/GEMORNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8004/generate/cds",
+        capabilities=["Generate CDS from protein sequence via GEMORNA."],
+        limitations=["Requires Linux GPU and checkpoints; Python ABI constraints (3.10) as documented."],
+        task_tags=["protein_to_cds_design"],
+        requires=[ToolDependency(name="GPU", detail="GEMORNA inference"), ToolDependency(name="GEMORNA microservice", detail="microservices/gemorna_service (port 8004)")],
+        produces=["output_filepath", "generated_sequence"],
+        input_model=tool_wrappers.GemornaCdsInput,
+        output_model=ProteinToCdsOutput,
+        status=ToolStatus.partial,
+    ),
+    "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
+        identity="predict_rna_tertiary_structure_with_rhofold",
+        display_name="RhoFold tertiary structure prediction",
+        version="0.1.0",
+        source="https://github.com/ml4bio/RhoFold",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8005/predict",
+        capabilities=["Predict RNA tertiary structure (single-sequence mode in this repo)."],
+        limitations=["Depends on GPU/weights; results depend on model assets and runtime config."],
+        task_tags=["rna_tertiary_structure_prediction"],
+        requires=[ToolDependency(name="GPU", detail="RhoFold inference"), ToolDependency(name="RhoFold microservice", detail="microservices/rhofold_service (port 8005)")],
+        produces=["pdb_filepath", "mean_plddt"],
+        input_model=tool_wrappers.RhoFoldInput,
+        output_model=RhoFoldOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_rna_sequence_with_rhodesign": ToolSpec(
+        identity="design_rna_sequence_with_rhodesign",
+        display_name="RhoDesign structure→sequence design",
+        version="0.1.0",
+        source="https://github.com/ml4bio/RhoDesign",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8006/design/from-structure",
+        capabilities=["Design RNA sequence conditioned on input 3D structure (PDB)."],
+        limitations=["Depends on GPU/weights; requires valid PDB input."],
+        task_tags=["rna_structure_to_sequence_design"],
+        requires=[ToolDependency(name="GPU", detail="RhoDesign inference"), ToolDependency(name="RhoDesign microservice", detail="microservices/rhodesign_service (port 8006)")],
+        produces=["output_fasta_filepath", "designed_sequence"],
+        input_model=tool_wrappers.RhoDesignInput,
+        output_model=RhoDesignOutput,
+        status=ToolStatus.partial,
+    ),
+    "score_rna_ligand_binding_with_rnasmol": ToolSpec(
+        identity="score_rna_ligand_binding_with_rnasmol",
+        display_name="RNAsmol RNA-ligand scoring",
+        version="0.1.0",
+        source="https://github.com/hongli-ma/RNAsmol",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8007/score",
+        capabilities=["Score RNA-ligand interaction with RNAsmol classifier."],
+        limitations=["Classifier output is model-dependent; requires correct checkpoint and device config."],
+        task_tags=["rna_ligand_scoring"],
+        requires=[ToolDependency(name="GPU", detail="Recommended for model"), ToolDependency(name="RNAsmol microservice", detail="microservices/rnasmol_service (port 8007)")],
+        produces=["probability", "predicted_label"],
+        input_model=tool_wrappers.RNAsmolScoreInput,
+        output_model=RNAsmolScoreOutput,
+        status=ToolStatus.partial,
+    ),
+    "score_rna_ligand_binding_with_gernabind": ToolSpec(
+        identity="score_rna_ligand_binding_with_gernabind",
+        display_name="GerNA-Bind RNA-ligand scoring",
+        version="0.1.0",
+        source="https://github.com/GENTEL-lab/GerNA-Bind",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8010/score",
+        capabilities=["Score RNA-ligand affinity with GerNA-Bind; wrapper may trigger 3D preprocessing."],
+        limitations=["Depends on GPU/weights; binding-site prediction is a separate endpoint/tool path."],
+        task_tags=["rna_ligand_scoring"],
+        requires=[ToolDependency(name="GPU", detail="GerNA-Bind inference"), ToolDependency(name="GerNA-Bind microservice", detail="microservices/gernabind_service (port 8010)")],
+        produces=["probability", "predicted_label"],
+        input_model=tool_wrappers.GerNABindScoreInput,
+        output_model=GerNABindScoreOutput,
+        status=ToolStatus.partial,
+    ),
+    "predict_mrna_stability_with_rnastop": ToolSpec(
+        identity="predict_mrna_stability_with_rnastop",
+        display_name="RNASTOP stability/degradation prediction",
+        version="0.1.0",
+        source="https://github.com/SII-ShenggengLin/RNASTOP",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8009/predict/stability",
+        capabilities=["Predict stability/degradation-related summary scores with RNASTOP."],
+        limitations=["This repo wrapper exposes prediction only (not beam/MCTS optimization)."],
+        task_tags=["mrna_stability_prediction"],
+        requires=[ToolDependency(name="GPU", detail="RNASTOP inference"), ToolDependency(name="RNASTOP microservice", detail="microservices/rnastop_service (port 8009)")],
+        produces=["prediction_filepath", "mean_deg_mg_ph10", "mean_deg_mg_50c"],
+        input_model=tool_wrappers.RNASTOPPredictionInput,
+        output_model=RNASTOPPredictionOutput,
+        status=ToolStatus.partial,
+    ),
+    "predict_putative_ires_with_iresfinder": ToolSpec(
+        identity="predict_putative_ires_with_iresfinder",
+        display_name="IRESfinder prediction",
+        version="0.1.0",
+        source="https://github.com/xiaofengsong/IRESfinder",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8013/predict",
+        capabilities=["Predict putative IRES elements over sliding fragments (service-side)."],
+        limitations=["Requires model/data assets present on server."],
+        task_tags=["ires_prediction"],
+        requires=[ToolDependency(name="IRESfinder microservice", detail="microservices/iresfinder_service (port 8013)")],
+        produces=["result_tsv_filepath", "max_score", "positive_count"],
+        input_model=tool_wrappers.IRESfinderPredictionInput,
+        output_model=IRESfinderPredictionOutput,
+        status=ToolStatus.partial,
+    ),
+    "analyze_cds_codon_metrics_with_codonw_slim": ToolSpec(
+        identity="analyze_cds_codon_metrics_with_codonw_slim",
+        display_name="codonw-slim CDS metrics",
+        version="0.1.0",
+        source="https://github.com/smsaladi/codonw-slim",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8018/analyze/cds",
+        capabilities=["Compute codon usage metrics (CAI/Fop/CBI/ENC) and optional tables."],
+        limitations=["Requires in-frame CDS input; metrics depend on reference tables/options."],
+        task_tags=["cds_codon_metrics"],
+        requires=[ToolDependency(name="codonw-slim microservice", detail="microservices/codonw_slim_service (port 8018)")],
+        produces=["cai_score", "metrics_json_filepath"],
+        input_model=tool_wrappers.CodonwSlimAnalyzeInput,
+        output_model=CodonwSlimOutput,
+        status=ToolStatus.partial,
+    ),
+    "score_crispr_off_target_with_crisot": ToolSpec(
+        identity="score_crispr_off_target_with_crisot",
+        display_name="CRISOT score (single pair)",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/score",
+        capabilities=["Score a single sgRNA-target pair with CRISOT."],
+        limitations=["Input normalization enforces 23-nt sequences; does not search genome-wide off-targets."],
+        task_tags=["crispr_offtarget_scoring"],
+        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["crisot_score"],
+        input_model=tool_wrappers.CrisotScoreInput,
+        output_model=CrisotScoreOutput,
+        status=ToolStatus.partial,
+    ),
+    "calculate_crispr_specificity_with_crisot": ToolSpec(
+        identity="calculate_crispr_specificity_with_crisot",
+        display_name="CRISOT specificity (CSV)",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/spec",
+        capabilities=["Compute CRISOT specificity score over pairs in a CSV."],
+        limitations=["Requires CSV with expected column names; does not discover off-targets itself."],
+        task_tags=["crispr_specificity_csv"],
+        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["crisot_spec", "scored_csv_filepath"],
+        input_model=tool_wrappers.CrisotSpecInput,
+        output_model=CrisotSpecOutput,
+        status=ToolStatus.partial,
+    ),
+    "search_crispr_off_targets_with_crisot": ToolSpec(
+        identity="search_crispr_off_targets_with_crisot",
+        display_name="CRISOT genome-wide off-spec search",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/off-spec",
+        capabilities=["Search genome-wide off-targets and compute specificity with Cas-OFFinder + CRISOT."],
+        limitations=["Requires reference genome FASTA and Cas-OFFinder installed in service env."],
+        task_tags=["crispr_offtarget_search"],
+        requires=[ToolDependency(name="Reference genome", detail="FASTA path"), ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["off_target_count", "scored_csv_filepath"],
+        input_model=tool_wrappers.CrisotOffSpecInput,
+        output_model=CrisotOffSpecOutput,
+        status=ToolStatus.partial,
+    ),
+    "optimize_sgrna_with_crisot": ToolSpec(
+        identity="optimize_sgrna_with_crisot",
+        display_name="CRISOT sgRNA optimization",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/optimize",
+        capabilities=["Optimize sgRNA mutations to improve specificity under mismatch constraints."],
+        limitations=["Can be slow on large genomes; requires genome FASTA and Cas-OFFinder."],
+        task_tags=["crispr_sgrna_optimization"],
+        requires=[ToolDependency(name="Reference genome", detail="FASTA path"), ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["best_sgrna", "best_delta_spec"],
+        input_model=tool_wrappers.CrisotOptimizeInput,
+        output_model=CrisotOptimizeOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_sgrna_handle_with_crgpt": ToolSpec(
+        identity="design_sgrna_handle_with_crgpt",
+        display_name="CRGPT sgRNA handle design",
+        version="0.1.0-port8017",
+        source="https://github.com/bitguolab/sgrna_design",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8017/design",
+        capabilities=["Generate sgRNA handle candidates from a seed sequence."],
+        limitations=["Depends on model assets and torch/runtime constraints."],
+        task_tags=["sgrna_handle_design"],
+        requires=[ToolDependency(name="sgrna_design microservice", detail="microservices/sgrna_design_service (port 8017)")],
+        produces=["best_sequence", "output_fasta_filepath"],
+        input_model=tool_wrappers.SgRNADesignInput,
+        output_model=SgRNADesignOutput,
+        status=ToolStatus.partial,
+    ),
+    "run_odesign_inference": ToolSpec(
+        identity="run_odesign_inference",
+        display_name="ODesign inference (from JSON)",
+        version="0.1.0",
+        source="https://github.com/OTeam-AI4S/ODesign",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8012/design/from-json",
+        capabilities=["Run ODesign inference for explicit JSON-defined design tasks."],
+        limitations=["Natural-language coverage is limited; complex tasks should prepare JSON explicitly."],
+        task_tags=["odesign_inference"],
+        requires=[ToolDependency(name="GPU", detail="ODesign inference"), ToolDependency(name="ODesign microservice", detail="microservices/odesign_service (port 8012)")],
+        produces=["output_dir", "prediction_filepaths"],
+        input_model=tool_wrappers.ODesignInferenceInput,
+        output_model=ODesignInferenceOutput,
+        status=ToolStatus.partial,
+    ),
+}
+

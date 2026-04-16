@@ -14,8 +14,6 @@ class AgentState(TypedDict, total=False):
     input_sequence: str
     current_filepath: str
     candidate_sequence: str
-    efficiency_score: float
-    off_target_genes: int
     crisot_score: float
     crisot_spec: float
     crisot_target_sequence: str
@@ -106,7 +104,7 @@ def default_state(user_text: str) -> AgentState:
     """Create a default state object for one user request."""
     return AgentState(
         messages=[HumanMessage(content=user_text)],
-        current_task="sirna_design",
+        current_task="mrna_design",
         workspace_files=[],
         input_sequence=user_text.strip(),
         active_specialist="",

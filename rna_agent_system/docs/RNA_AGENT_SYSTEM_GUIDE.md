@@ -116,8 +116,6 @@ rna_agent_system/
 
 | 端口 | 服务目录 | 工具名称 | 能力说明 | 验证状态 |
 |------|----------|----------|----------|----------|
-| 8001 | `sirna_attsioff` | siRNA 效率预测 | Mock 服务 | ✅ |
-| 8002 | `off_target_blast` | siRNA 脱靶检查 | Mock 服务 | ✅ |
 | 8003 | `viennarna_fold` | ViennaRNA | 二级结构 / cofold / RNAplfold / RNAinverse | ✅ Linux |
 | 8004 | `gemorna_service` | GEMORNA | 蛋白→mRNA CDS 设计 | ✅ Linux GPU |
 | 8005 | `rhofold_service` | RhoFold | RNA 三级结构预测（单序列模式） | ✅ Linux GPU |
@@ -488,15 +486,14 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 
 **关键注意事项**：
 - `subject_fasta_path`（现场 `makeblastdb`）或 `subject_db`（已有库前缀）**二选一**
-- 与 `off_target_blast`（8002）是不同服务：后者是 mock 脱靶计数，本服务是真实 BLAST 比对
+- 与历史 mock `off_target_blast` 不同：本服务是真实 BLAST 比对
 - Agent 工具层会把完整结果写入 `workspace/blastn_out_*.tsv`
 
-### 6.18 Mock 服务 (端口 8001 / 8002)
+### 6.18 Mock 服务（已移除）
 
-- `sirna_attsioff`（8001）：Mock siRNA 效率预测
-- `off_target_blast`（8002）：Mock 脱靶检查
+历史上曾存在两个用于开发调试的 siRNA mock 微服务（端口 8001/8002），用于返回随机的“效率分数/脱靶计数”以跑通早期工作流。
 
-这两个服务用于开发调试，后续可替换为真实实现。
+当前仓库已**移除**这两个入口；如需 siRNA 效率/脱靶的生产级实现，需要接入真实算法与数据库/基因组依赖。
 
 ---
 
@@ -695,7 +692,7 @@ git push origin main
 |------|------|------|
 | L1 | Router/Specialist/Critic 为规则模式 | 复杂自然语言理解有限 |
 | L2 | Critic MFE 阈值 `-20.0` 对短序列不合理 | 短序列反复 reject 直到耗尽重试 |
-| L3 | Mock 服务（8001/8002）尚未替换 | siRNA 分支非真实预测 |
+| L3 | siRNA 效率/脱靶能力未提供生产实现 | 历史 mock（8001/8002）已移除，当前仅保留 Evitar/Vienna duplex 等非 mock 子能力 |
 | L4 | RhoFold 仅单序列模式 | 未接 MSA 数据库 |
 | L5 | RNASTOP 仅稳定性预测 | 未接 beam/MCTS 优化 |
 | L6 | ODesign 自然语言覆盖有限 | 复杂任务仍需显式 JSON |

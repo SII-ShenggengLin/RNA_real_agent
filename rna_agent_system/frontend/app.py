@@ -70,11 +70,6 @@ if user_input:
                         latest = _message_text(node_state["messages"][-1])
                         detail_lines.append(f"  - {_truncate(latest)}")
 
-                    if "efficiency_score" in node_state or "off_target_genes" in node_state:
-                        eff = node_state.get("efficiency_score", "N/A")
-                        off = node_state.get("off_target_genes", "N/A")
-                        detail_lines.append(f"  - tool结果: efficiency={eff}, off_target_genes={off}")
-
                     if "crisot_score" in node_state or "crisot_spec" in node_state:
                         crisot_score = node_state.get("crisot_score", "N/A")
                         crisot_spec = node_state.get("crisot_spec", "N/A")
