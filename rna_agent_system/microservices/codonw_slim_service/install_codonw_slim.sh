@@ -20,6 +20,25 @@ if [[ -z "${CONDA_DEFAULT_ENV:-}" ]] || [[ "${CONDA_DEFAULT_ENV}" != "codonw_sli
   conda activate codonw_slim_service_env
 fi
 
+# Upstream codonw.pyx uses ``astype(long)``; Python 3 / current Cython reject ``long`` in that
+# expression ("undeclared name not builtin: long"). Use numpy dtype instead.
+PYX="${CODONW_ROOT}/codonw/codonwlib/codonw.pyx"
+if [[ -f "${PYX}" ]]; then
+  echo "Ensuring Python3-compatible dinuc() dtype in codonw.pyx ..."
+  CODONW_PYX="${PYX}" python <<'PY'
+import os
+from pathlib import Path
+
+path = Path(os.environ["CODONW_PYX"])
+text = path.read_text(encoding="utf-8")
+if "astype(long)" in text:
+    path.write_text(text.replace("astype(long)", "astype(np.int64)"), encoding="utf-8")
+    print("Patched:", path)
+elif "astype(np.int64)" in text:
+    print("Already patched:", path)
+PY
+fi
+
 echo "Installing codonw-slim editable from: ${CODONW_ROOT}"
 pip install --no-build-isolation -e "${CODONW_ROOT}"
 
