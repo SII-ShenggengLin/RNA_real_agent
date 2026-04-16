@@ -97,7 +97,8 @@ rna_agent_system/
     - `search_crispr_off_targets_with_crisot`
     - `optimize_sgrna_with_crisot`
     - `design_sgrna_handle_with_crgpt`
-    - `mock_codon_optimization`
+    - `analyze_cds_codon_metrics_with_codonw_slim`（真实 [codonw-slim](https://github.com/smsaladi/codonw-slim)；默认「结构预测型」链路中替代原 mock 前置步骤）
+    - `mock_codon_optimization`（仍保留在代码库中，规则工作流**当前不再默认调用**）
     - `predict_rna_secondary_structure`
     - `design_mrna_cds_with_rnarl`
     - `design_mrna_cds_with_gemorna`
@@ -330,6 +331,20 @@ rna_agent_system/
     - 上游模型文件为 `pytorch_model.bin`，需使用 `torch>=2.6`
     - GPU 环境需保证 torch CUDA 构建与服务器驱动代际匹配（见 §10K）
 
+- `codonw_slim_service/`
+  - [codonw-slim](https://github.com/smsaladi/codonw-slim.git) 的 CDS 密码子使用指标服务（CAI、Fop、CBI、Nc/ENC、疏水性、芳香性、碱基组成等）
+  - `environment.yml` + `main.py` + `start.sh` + **`install_codonw_slim.sh`**
+  - 默认端口 **`8018`**
+  - 当前已封装接口：
+    - `GET /health`
+    - `POST /analyze/cds`
+  - 输入为 JSON 字段 `sequence`（DNA `ATGC` 或 RNA `AUGC`，支持 FASTA）；可选 `genetic_code`（0--7）、`cai_ref`、`fop_ref`、`factor_in_rare`、`include_codon_tables`、`include_dinucleotide`
+  - 输出包括：`cai`、`fop`、`cbi`、`enc`、`hydropathy`、`aromaticity`、`silent_base_usage`、`bases2` 等；完整 JSON 由 Agent 工具层写入 `workspace/codonw_metrics_*.json`
+  - 运行时说明（**必读**）：
+    - **`conda env create` 成功后必须执行 `bash install_codonw_slim.sh`**：用 `pip install --no-build-isolation -e` 编译子模块，避免 pip 隔离构建环境缺少 `Cython`；脚本还会在每次安装前将上游 `codonw.pyx` 中 **`astype(long)`** 替换为 **`astype(np.int64)`**（Python 3 / 新版 Cython 兼容）
+    - 需要可用的 **C 编译器**（Linux 上通常为 `gcc`）以编译 Cython/C 扩展
+    - 详细说明见 **§10L**
+
 ### 4.3 `external_repos/`
 
 这里放第三方原始仓库。
@@ -351,6 +366,7 @@ rna_agent_system/
 - `Evitar/`
 - `ViennaRNA/`
 - `sgrna_design/`
+- `codonw-slim/`
 
 **重要：**
 
@@ -367,6 +383,7 @@ rna_agent_system/
 - `external_repos/Evitar` 也建议作为 **git submodule** 管理
 - `external_repos/ViennaRNA`（官方 ViennaRNA Package 源码）也应作为 **git submodule** 管理
 - `external_repos/sgrna_design` 也应作为 **git submodule** 管理
+- `external_repos/codonw-slim` 也应作为 **git submodule** 管理
 - 不要把外部仓库当普通目录直接 `git add .`
 - `NuFold` 曾被评估过，但当前不纳入正式接入路线，原因见后文
 
@@ -381,6 +398,7 @@ rna_agent_system/
 - `RhoDesign` 生成的 `fasta` / `stdout log` / `stderr log`
 - `CRISOT` 生成的 specificity / optimization CSV
 - `ODesign` 生成的 `cif` / `run.log` / error logs
+- `codonw_slim_service` 经 Agent 工具落盘的 `codonw_metrics_*.json`
 - 其他中间输出
 
 所有长序列原则上都应先保存到 `workspace/`，然后在 Agent 内只传 `filepath`。
@@ -406,7 +424,7 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构`、`aso`、`gapmer`、`morpholino`、`accessibility`、`可及性`、`plfold`、`inverse fold`、`逆折叠`、`rnainverse` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构`、`aso`、`gapmer`、`morpholino`、`accessibility`、`可及性`、`plfold`、`inverse fold`、`逆折叠`、`rnainverse`、`codonw`、`codonw-slim`、`codon bias` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 以及 `sgrna handle`、`sgrna design`、`crgpt`、`sgrna_design`
@@ -482,6 +500,13 @@ User Input
     - `mean_deg_Mg_50C`
   - 当前不会触发 RNASTOP 上游仓库里的 beam / MCTS 优化逻辑
 
+- 如果用户文本偏 **codonw-slim / 密码子指标**（独立分析，不混在设计型分支里）
+  - 命中条件包括：`codonw`、`codonw-slim`、`codon usage`、`codon metrics`，或中文 **「密码子」** 与 **分析 / 指标 / 偏好 / CAI / ENC / Fop / CBI** 等组合（实现见 `nodes.py` 中 `_needs_codonw_standalone`）
+  - 触发 `analyze_cds_codon_metrics_with_codonw_slim(filepath, service_url="http://127.0.0.1:8018/analyze/cds", ...)`
+  - 输入解析与 RNASTOP 类似：正文长 RNA 或 `.fasta/.fa/.txt/.seq` 路径；内容应为 **in-frame CDS**（非 3 倍数时由服务端截去末尾 1--2 nt）
+  - 可选从自然语言解析：`genetic_code=`、`cai_ref=`、`fop_ref=`、`factor_in_rare`、`include_codon_tables` / `rscu` / `dinuc` 等（见 `_build_codonw_tool_args`）
+  - 该分支排在 **RNASTOP 之后、RhoDesign 结构到序列之前**，且排在 **`design_mode`（含 `cds` 关键词的设计型）之前**，避免纯密码子统计被误判为蛋白 CDS 设计
+
 - 如果用户文本偏“IRES 识别型”
   - 触发 `predict_putative_ires_with_iresfinder(filepath, mode=0, window_size=174, step_size=50, decision_threshold=0.5)`
   - 输入是 RNA 序列文件路径（或 FASTA 文件路径）
@@ -544,7 +569,7 @@ User Input
   - 如果用户请求里还包含结构语义，当前会在 **CDS 设计工具**（GEMORNA / RNARL）完成后继续自动调用结构预测工具
 - 如果用户文本偏“结构预测型”
   - 触发：
-    - `mock_codon_optimization(filepath)`
+    - `analyze_cds_codon_metrics_with_codonw_slim(filepath, ...)`（**真实 codonw-slim**；在 fold 之前给出 CAI / Nc 等摘要，完整指标写入 `workspace/` JSON）
     - `predict_rna_secondary_structure(filepath)`（默认 ViennaRNA）
     - 当文本显式包含 `linearfold`（或不与 `lineardesign` 冲突的 `linear fold`）时，改为触发 `predict_rna_secondary_structure_with_linearfold(filepath, beam_size=..., use_vienna=..., dangles=...)`
   - 如果用户文本里还包含 `rhofold`、`3d`、`tertiary`、`三级结构`、`三维结构`、`pdb`
@@ -610,6 +635,10 @@ User Input
 - `sgrna_design_summary_filepath`
 - `sgrna_design_model_path`
 - `cai_score`
+- `codonw_metrics_filepath`
+- `codonw_enc`
+- `codonw_fop`
+- `codonw_cbi`
 - `mfe`
 - `structure_filepath`
 - `design_input_pdb_filepath`
@@ -696,11 +725,12 @@ User Input
 - `8015`: `linearfold_service`
 - `8016`: `evitar_service`
 - `8017`: `sgrna_design_service`
+- `8018`: `codonw_slim_service`
 
 后续新增工具也建议继续顺延，例如：
 
-- `8018`: 新工具 A
 - `8019`: 新工具 B
+- `8020`: 新工具 C
 
 这样主 Agent 层的工具地址稳定，不会频繁冲突。
 
@@ -3235,6 +3265,128 @@ microservices/sgrna_design_service/
 
 ---
 
+## 10L. codonw-slim 的接入方式
+
+### 10L.1 上游源码层
+
+目录：
+
+```text
+external_repos/codonw-slim
+```
+
+来源：
+
+- 上游仓库：[smsaladi/codonw-slim](https://github.com/smsaladi/codonw-slim.git)
+
+当前建议：
+
+- 通过 **git submodule** 管理
+- 不要把整个上游仓库当普通目录直接 `git add .`
+
+### 10L.2 为什么采用「微服务 + HTTP」而不是 Agent 直接 import
+
+- `codonw-slim` 为 **Cython + C** 扩展，编译与 ABI 与 Python/编译器版本强相关
+- 与主 Agent 环境隔离，部署失败面更小
+- 保持与其它工具一致：**Agent 只通过 HTTP 调用**，不直接耦合上游 Python/C 实现
+
+### 10L.3 当前微服务能力
+
+目录：
+
+```text
+microservices/codonw_slim_service/
+```
+
+文件：
+
+- `environment.yml`（`python=3.10` + conda-forge 的 `numpy` / `pandas` / `cython` / `setuptools` / `wheel`；`pip` 安装 FastAPI 栈）
+- `main.py`（`GET /health`、`POST /analyze/cds`）
+- `start.sh`（默认端口 **8018**；启动前检测 `codonw` 是否已安装）
+- **`install_codonw_slim.sh`**（**必须**：`pip install --no-build-isolation -e` 子模块，并在每次安装前对上游 `codonw.pyx` 做 **Python 3 兼容补丁**）
+
+接口（**默认端口 `8018`**）：
+
+- `GET /health`  
+  - `status`：`codonw_import_ok` 为真时为 `ok`，否则为 `degraded`
+
+- `POST /analyze/cds` — CDS 密码子使用及相关指标
+
+输入（JSON）：
+
+- `sequence`（必填）：编码序列，DNA 或 RNA（`U`→`T`），可为 FASTA
+- `genetic_code`（默认 `0`，范围 `0--7`，与上游 `CodonSeq` 一致）
+- `cai_ref`（默认 `0`，范围 `0--2`）
+- `fop_ref`（默认 `0`，范围 `0--7`）
+- `factor_in_rare`（布尔，传入 `CodonSeq.fop`）
+- `include_codon_tables`（布尔，是否返回 `codon_usage` / `rscu`）
+- `include_dinucleotide`（布尔，是否返回 `dinuc` 表）
+
+输出（摘要字段，完整结构见接口 JSON）：
+
+- `cai`、`fop`、`cbi`、`enc`、`hydropathy`、`aromaticity`
+- `silent_base_usage`、`bases2`
+- 可选：`codon_usage`、`rscu`、`dinuc`
+
+说明：
+
+- 上游 **不对** CDS 做起始密码子 / 终止密码子 / 内含子等校验；输入应为 **可读框内的 CDS**。长度非 3 倍数时，服务会截去末尾 1--2 个碱基并在 `normalization_note` 中说明。
+
+### 10L.4 当前 Agent 工具能力
+
+工具函数：
+
+- `analyze_cds_codon_metrics_with_codonw_slim(filepath, service_url="http://127.0.0.1:8018/analyze/cds", genetic_code=0, cai_ref=0, fop_ref=0, factor_in_rare=False, include_codon_tables=False, include_dinucleotide=False)`
+
+输入：
+
+- `filepath`：`workspace/` 或项目内路径，内容为 CDS（与 RNASTOP 输入解析同源时可从自然语言写入）
+
+输出（字典，节选）：
+
+- `metrics_json_filepath`：完整服务响应写入 `workspace/codonw_metrics_*.json`
+- `cai_score`、`enc`、`fop`、`cbi`、`hydropathy`、`aromaticity` 等标量摘要
+
+### 10L.5 当前工作流集成方式
+
+- `router_node` 已增加 `codonw` / `codonw-slim` / `codon bias` 等关键词，与其它 mRNA 关键词一起路由到 `mrna_specialist`
+- `mrna_specialist_node`：
+  - **独立分支**：命中 §5.3 所述 codonw 专用语义时，仅调用 `analyze_cds_codon_metrics_with_codonw_slim`
+  - **默认「结构预测型」分支**：在 `predict_rna_secondary_structure`（或 LinearFold）**之前**调用 `analyze_cds_codon_metrics_with_codonw_slim`，替代历史上的 `mock_codon_optimization` 占位
+- `tool_execution_node` 会回填：`cai_score`、`codonw_metrics_filepath`、`codonw_enc`、`codonw_fop`、`codonw_cbi` 等
+- `critic_node` 对 codonw **本身**无单独 reject；若同一句请求仍含 **fold / 二级结构** 等语义，则仍可能触发 §14.18 的 MFE 规则
+
+### 10L.6 实际运行注意事项（部署 checklist）
+
+推荐运行环境：
+
+- **Linux** + **Conda** + **Python 3.10**（与 `environment.yml` 一致）
+- 系统已安装 **gcc** 等 C 编译工具链
+
+推荐安装顺序：
+
+```bash
+cd rna_agent_system/microservices/codonw_slim_service
+conda env create -f environment.yml
+conda activate codonw_slim_service_env
+bash install_codonw_slim.sh
+bash start.sh
+```
+
+`install_codonw_slim.sh` 解决两类常见问题：
+
+1. **`pip` 隔离构建环境缺少 `Cython`**：使用 `pip install --no-build-isolation -e ...`，复用当前 Conda 环境内的 `cython` / `numpy`
+2. **上游 `codonw.pyx` 使用 `astype(long)`**：在 Python 3 / 新版 Cython 下编译失败；脚本在每次安装前替换为 `astype(np.int64)`
+
+若 **`conda env create` 曾失败**且环境处于半安装状态，可先 `conda env remove -n codonw_slim_service_env` 再按上表重建。
+
+### 10L.7 当前验证状态
+
+- 已在 **Linux 服务器** 上完成：`install_codonw_slim.sh` 成功、`start.sh` 常驻、`GET /health` 与 `POST /analyze/cds` 闭环可用
+- Agent 规则层已接入独立 codonw 分支与默认结构预测链路的前置指标
+
+---
+
 ## 11. 新增生信工具时的标准流程
 
 以后如果要新增新的第三方工具或仓库，统一按下面流程走。
@@ -3278,7 +3430,8 @@ external_repos/new_tool_repo/
 microservices/new_tool_service/
 ├── environment.yml
 ├── main.py
-└── start.sh
+├── start.sh
+└── （按需）install_*.sh 或其它本地编译/补丁脚本 — 例如 `codonw_slim_service/install_codonw_slim.sh`
 ```
 
 ### 11.5 工具层统一只传 filepath
@@ -3354,6 +3507,7 @@ microservices/new_tool_service/
 - `Evitar`
 - `ViennaRNA`
 - `sgrna_design`
+- `codonw-slim`
 
 新 clone：
 
@@ -3739,6 +3893,25 @@ curl -sS -X POST http://127.0.0.1:8003/inverse-fold \
 }
 ```
 
+例如测试 codonw-slim：
+
+1. 确保子模块已检出：`git submodule update --init --recursive`（`external_repos/codonw-slim`）
+2. `cd rna_agent_system/microservices/codonw_slim_service`
+3. `conda env create -f environment.yml`（若已存在则 `conda env update -f environment.yml --prune`）
+4. `conda activate codonw_slim_service_env`
+5. **`bash install_codonw_slim.sh`**
+6. `bash start.sh`（或 `python -m uvicorn main:app --host 0.0.0.0 --port 8018`）
+7. `curl /health`
+8. `curl /analyze/cds`
+
+推荐优先测试 payload（与上游 README 示例一致）：
+
+```bash
+curl -sS -X POST http://127.0.0.1:8018/analyze/cds \
+  -H 'Content-Type: application/json' \
+  -d '{"sequence":"ATGAATATGCTCATTGTCGGTAGAGTTGTTGCTAGTGTTGGGGGAAGCGGACTTCAAACG"}' | python3 -m json.tool
+```
+
 ### 13.2 智能体集成测试
 
 在**相关微服务已启动**（至少对应当次请求的工具，例如 ViennaRNA 需 `8003`）后，再启动：
@@ -3768,10 +3941,11 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --s
 
 #### 13.2A Streamlit 自然语言案例（可复制到聊天框）
 
-以下案例假设 **`viennarna_fold` 已在 `127.0.0.1:8003` 运行**；duplex / ASO / inverse 亦依赖该服务。
+以下案例假设 **`viennarna_fold` 已在 `127.0.0.1:8003` 运行**；duplex / ASO / inverse 亦依赖该服务。涉及 **codonw 指标 + fold** 的句子需同时启动 **`codonw_slim_service`（8018）** 与 **8003**。
 
 | 目的 | 建议输入示例（整句粘贴） |
 |------|---------------------------|
+| 仅 codonw-slim（CDS 密码子指标） | `codonw-slim 分析 CDS 密码子 CAI，序列：` 后接 in-frame CDS 或 `.fa` 路径；可加 `genetic_code=0` |
 | 默认 mRNA 二级结构（ViennaRNA fold） | `请预测这条 RNA 的二级结构 fold：AUGCUAACGUAGCUAUGCUAUGCUAACGUAGCUAUGCUA` |
 | siRNA 双链结合能（cofold） | `请用 ViennaRNA 计算 siRNA duplex 结合能 rnacofold，sense=GGCAUGCAUGCAUGCAUGC antisense=GCAUGCAUGCAUGCAUGCC` |
 | ASO 靶区可及性（RNAplfold） | `ASO accessibility plfold 可及性，region=10-50，靶标 mRNA：` 后接一段 **至少约 50 nt** 的 `AUGC...` 重复序列（或与 RNASTOP 相同规则的长 RNA 文本 / `workspace/*.fa` 路径） |
@@ -3785,6 +3959,8 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --s
 - mRNA 结构预测请求
 - mRNA 结构预测请求（默认 ViennaRNA）
 - mRNA 结构预测请求（显式 `linearfold`，并可附 `beam_size=...` / `dangles=...`）
+- codonw-slim 独立 CDS 指标请求（**8018**）
+- mRNA 结构预测 + codonw 前置指标（**8018** + **8003**）
 - GEMORNA 设计请求
 - GEMORNA 设计 + RNAfold 联合请求
 - LinearDesign 设计请求（自然语言中显式包含 `lineardesign` / `linear design` 等关键词，例如「请用 lineardesign 设计 mRNA CDS，蛋白序列 MNDTEAI」）
@@ -3822,16 +3998,17 @@ streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --s
 - 灵活性不如 LLM
 - 复杂自然语言理解能力有限
 
-### 14.2 `mock_codon_optimization` 仍然是假的
+### 14.2 密码子指标：`codonw-slim` 与 `mock_codon_optimization`
 
 当前 mRNA 分支里：
 
 - `predict_rna_secondary_structure` 已是真实 ViennaRNA
 - `design_mrna_cds_with_gemorna` 已是真实 GEMORNA 接入
 - `design_mrna_cds_with_lineardesign` 已是真实 LinearDesign 接入（显式关键词触发）
-- 但 `mock_codon_optimization` 仍是模拟工具
+- **默认「结构预测型」链路**中，原 **`mock_codon_optimization` 占位已由 `analyze_cds_codon_metrics_with_codonw_slim`（真实 codonw-slim）替代**；详见 **§10L**
+- `mock_codon_optimization` **仍保留在代码库**中供调试或未来编排复用，但**规则工作流当前不再默认调用**
 
-后续可以替换成真实密码子优化工具，或在“非设计型”结构预测分支中用更合适的真实前置步骤替代 mock。
+后续仍可考虑：引入「真实密码子**优化**」（序列改写）类工具，与当前「密码子**统计/偏好**」能力区分产品边界。
 
 ### 14.3 GEMORNA 输出解析仍可继续增强
 
@@ -4070,9 +4247,9 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 
 建议按下面顺序继续推进：
 
-1. 先把工具链接全，优先真实工具替换 mock 工具
+1. 先把工具链接全；默认 mRNA 结构预测链路中的 **mock 密码子占位** 已由 **`codonw-slim`** 替换，其余 mock 工具按优先级逐步替换
 2. 保持规则模式，先把每个工具独立跑通
-3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` / `LinearFold` / `Evitar` 的一句话调用链路稳定下来
+3. 先在 Agent 层把 `RhoFold` / `RhoDesign` / `RNAsmol` / `GerNA-Bind` / `CRISOT` / `ODesign` / `LinearDesign` / `LinearFold` / `Evitar` / **`codonw-slim`** 的一句话调用链路稳定下来
 4. 等工具生态稳定后，再恢复可配置的 LLM 模式
 5. 再逐步引入：
    - 更细的 specialist
@@ -4080,7 +4257,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
    - 结果排序 / 候选集筛选
    - 多工具串联规划
 6. 后续再考虑：
-   - 用真实密码子优化工具替换 `mock_codon_optimization`（LinearDesign 已可作为显式设计路径之一；是否合并进默认“结构预测型”分支需产品化决策）
+   - 用真实密码子**优化**（改写 CDS）工具补充或替换仍保留的 `mock_codon_optimization` 代码路径（与当前 **codonw-slim 统计指标**区分；LinearDesign 已可作为显式设计路径之一）
    - 为 `RhoFold` 增加可选的 MSA 模式
   - 优化 `RhoDesign` 的输入文件校验与错误提示
   - 优化 `RNAsmol` 的输入解析与批量评分模式
@@ -4099,7 +4276,7 @@ rna_agent_system/external_repos/RhoDesign/example/2zh6_B.pdb
 以后新增工具时，统一按下面的固定动作做：
 
 1. 放到 `external_repos/`
-2. 建 `microservices/<tool>_service/`
+2. 建 `microservices/<tool>_service/`（若需本地编译/补丁，可像 `codonw_slim_service` 一样增加 `install_*.sh`）
 3. 在 `agent_core/tools.py` 封装 HTTP 工具
 4. 在 `nodes.py` 接 specialist
 5. 先测原始命令，再测微服务，再测 Agent
