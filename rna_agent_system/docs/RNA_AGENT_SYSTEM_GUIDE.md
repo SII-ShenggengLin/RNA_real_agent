@@ -2177,6 +2177,44 @@ external_repos/CRISOT/data/hs1.fa
 
 或任何你在请求里显式传入的绝对路径。
 
+#### 默认参考基因组可通过环境变量覆盖
+
+当前 `crisot_service` 支持可选环境变量：
+
+- `CRISOT_DEFAULT_REF_GENOME`
+
+用于覆盖默认参考基因组路径（默认是上游仓库中的 `script/hg38.fa`）。
+
+适用场景：
+
+- 服务器上希望统一把默认参考基因组指到本地绝对路径
+- `score` 请求不显式传 `genome_path` 时，希望仍能稳定使用服务器上的指定参考基因组
+
+建议在 Linux 服务器启动服务前设置，例如：
+
+```bash
+export CRISOT_DEFAULT_REF_GENOME=/absolute/path/to/genome.fa
+```
+
+#### `/health` 诊断字段与状态语义
+
+当前 `GET /health` 会额外返回：
+
+- `default_ref_genome_env_var`
+- `default_ref_genome_env_value`
+- `missing_requirements`
+- `warnings`
+
+状态语义：
+
+- `status=ok`：服务必需条件满足（上游仓库与核心参数文件可用）
+- `status=degraded`：存在必需依赖缺失（如上游仓库或 `crisot_score_param.pkl` 缺失）
+
+说明：
+
+- 若仅默认参考基因组文件不存在，当前会进入 `warnings`，不直接降级为 `degraded`
+- 这样可以避免在“仅跑 `/score` 且显式传参”的场景下误报不可用
+
 #### `CRISOT-Opti` 在大基因组 + CPU 模式下会很慢
 
 原因：
@@ -2217,6 +2255,7 @@ external_repos/CRISOT/data/hs1.fa
 - `crisot_service` 可成功启动
 - `GET /health` 成功
 - `/score` 已验证可返回正确分数
+- 已在本地完成最小 smoke test：`GAGTCCGAGCAGAAGAAGAANGG` vs `GAGTCCGAGGAGAAGACGAAGGG`，得分 `0.6892195294509914`（与上游 README 示例一致）
 - `/optimize` 已在 Linux 服务器上成功触发真实 `Cas-OFFinder` 链路
 - 已修复 `pandas>=2` 下的 `DataFrame.append()` 兼容性问题
 - 前端自然语言测试已通过
@@ -3561,7 +3600,9 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 例如测试 CRISOT：
 
 1. 启动 `crisot_service`
+   - 可选先设置：`export CRISOT_DEFAULT_REF_GENOME=/absolute/path/to/genome.fa`
 2. `curl /health`
+   - 关注返回中的：`status`、`missing_requirements`、`warnings`
 3. `curl /score`
 4. `curl /optimize`
 
