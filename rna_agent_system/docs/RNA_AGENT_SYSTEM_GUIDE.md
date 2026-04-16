@@ -80,6 +80,7 @@ rna_agent_system/
 - `state.py`
   - 定义 `AgentState`
   - 记录 `messages`、`current_filepath`、`workspace_files`、`retry_count`、`active_specialist`、`mfe`、`cai_score` 等状态
+  - 另含 ViennaRNA 扩展摘要：`vienna_sirna_duplex_mfe`、`vienna_aso_mean_unpaired`、`vienna_aso_joint_unpaired`、`vienna_inverse_best_sequence`（由对应工具回填，可选）
 
 - `file_manager.py`
   - `save_sequence(content, prefix)`
@@ -102,6 +103,11 @@ rna_agent_system/
     - `design_mrna_cds_with_gemorna`
     - `design_mrna_cds_with_lineardesign`
     - `predict_putative_ires_with_iresfinder`
+    - `predict_rna_secondary_structure_with_linearfold`
+    - `predict_rna_tertiary_structure_with_rhofold`
+    - `compute_sirna_duplex_binding_vienna`（siRNA 正反义链共折叠 / 结合能）
+    - `compute_aso_target_accessibility_vienna`（ASO 靶区 RNAplfold 可及性）
+    - `inverse_fold_rna_secondary_structure_vienna`（RNAinverse 二级结构逆折叠）
 
 - `nodes.py`
   - Router / Specialist / Tool Execution / Critic 的核心逻辑
@@ -127,7 +133,7 @@ rna_agent_system/
   - 默认端口 `8002`
 
 - `viennarna_fold/`
-  - ViennaRNA 的二级结构 / MFE 预测服务
+  - ViennaRNA：**二级结构 / MFE**、**siRNA 正反义链 cofold**、**RNAplfold 靶区可及性**、**RNAinverse 逆折叠**
   - `environment.yml` + `main.py` + `start.sh`
   - 默认端口 `8003`
 
@@ -400,14 +406,14 @@ User Input
 
 基本逻辑：
 
-- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构` 等关键词
+- 如果文本中包含 `mrna`、`design`、`protein`、`cds`、`utr`、`structure`、`fold`、`gemorna`、`lineardesign`、`linear design`、`linearfold`、`linear fold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`gerna-bind`、`iresfinder`、`ires`、`internal ribosome`、`stability`、`degradation`、`稳定性`、`降解`、`smiles`、`ligand`、`配体`、`pdb`、`cif`、`3d`、`tertiary`、`三级结构`、`三维结构`、`aso`、`gapmer`、`morpholino`、`accessibility`、`可及性`、`plfold`、`inverse fold`、`逆折叠`、`rnainverse` 等关键词
   - 路由到 `mrna_specialist`
 - 如果包含 `crisot`、`crispr`、`cas9`、`sgrna`、`guide rna`、`off-spec`
   - 以及 `sgrna handle`、`sgrna design`、`crgpt`、`sgrna_design`
   - 路由到 `crispr_specialist`
 - 如果包含 `evitar`、`predesign`、`future virus`、`rnaxs`、`predsi`、`cas13`
   - 路由到 `sirna_specialist`
-- 如果包含 `sirna`、`脱靶`、`off-target`
+- 如果包含 `sirna`、`脱靶`、`off-target`，或命中 **siRNA 双链 / cofold** 语义（如 `duplex`、`rnacofold`、`正反义`、`双链`、`sirna duplex`、`结合能` 等与双链热力学相关的组合语境）
   - 路由到 `sirna_specialist`
 - 默认也偏向 `mrna_specialist`
 
@@ -422,6 +428,11 @@ User Input
 
 - `design_sirna_with_evitar(filepath, mode, predict, strains_path, off_target, ncores)`
 - 默认服务地址：`http://127.0.0.1:8016/design`
+
+当请求命中 **siRNA 正反义链共折叠 / duplex 结合能**（且非 Evitar）时，切换到 ViennaRNA 分支：
+
+- `compute_sirna_duplex_binding_vienna(filepath, service_url="http://127.0.0.1:8003/sirna-duplex")`
+- 输入文件：两条 FASTA（先 sense 后 antisense），或两行无 `>` 的 RNA；亦可在自然语言中写 `sense=...` / `antisense=...`（或 `guide` / `passenger`），由节点写入 `workspace/` 后再调工具
 
 ### 5.3 mRNA Specialist
 
@@ -486,6 +497,18 @@ User Input
     - `positive_count`
     - `fragment_count`
     - `result_tsv_filepath`
+
+- 如果用户文本偏 **ViennaRNA 二级结构逆折叠**（`inverse fold`、`逆折叠`、`rnainverse` 等）
+  - 触发 `inverse_fold_rna_secondary_structure_vienna(filepath, service_url="http://127.0.0.1:8003/inverse-fold", repeats=1, ...)`
+  - 输入文件：**第一行**为点括号二级结构；**第二行**可选为 RNAinverse 起始串（`N` 表示可随机化位点）
+  - 或在自然语言中写 `structure=(((...)))`；`repeats=5` 可映射到工具参数
+  - 当前实现中，该分支在 `nodes.py` 里排在 **IRESfinder 之后、RNASTOP 之前**
+
+- 如果用户文本偏 **ASO 与靶 mRNA 结合区域可及性**（`aso`、`accessibility`、`可及性`、`plfold`、`rnaplfold` 等）
+  - 触发 `compute_aso_target_accessibility_vienna(filepath, region_start, region_end, service_url="http://127.0.0.1:8003/aso-accessibility", ...)`
+  - 靶序列：正文内 **≥12 nt** 的 RNA 片段（取最长）或 `.fasta/.fa/.txt/.seq` 路径（与 RNASTOP 输入解析同源）
+  - 区间：`region=10-50`、`start=... end=...` 或形如 `10-50` 的坐标；若未解析到，则回退为 `1..min(20, L)`（`L` 为序列长度）
+  - 当前实现中，该分支在 **IRESfinder 之后、RNASTOP 之前**
 
 - 如果用户文本偏“结构到序列设计型”
   - 触发 `design_rna_sequence_with_rhodesign(pdb_filepath, secondary_structure_filepath=None)`
@@ -625,6 +648,10 @@ User Input
 - `odesign_run_log_filepath`
 - `odesign_model_name`
 - `odesign_design_modality`
+- `vienna_sirna_duplex_mfe`
+- `vienna_aso_mean_unpaired`
+- `vienna_aso_joint_unpaired`
+- `vienna_inverse_best_sequence`
 
 ### 5.5 Critic
 
@@ -739,45 +766,67 @@ microservices/viennarna_fold/
 文件：
 
 - `environment.yml`（`python=3.10` + bioconda `viennarna` + FastAPI 栈；文件头注释说明了 conda 为主、子模块为可选上游）
-- `main.py`（RNAlib 优先；若无则调用 `RNAfold --noPS` 并解析标准输出）
+- `main.py`（二级结构：`RNAlib` 或 `RNAfold --noPS`；siRNA 双链：`RNAlib` 或 `RNAcofold`；ASO 可及性：`RNAplfold` 解析 `*_lunp`；逆折叠：`RNAinverse`）
 - `start.sh`
 - `build_from_submodule_linux.sh`（可选；在 Linux 上将子模块 `configure --prefix="${CONDA_PREFIX}" --with-python` 后安装到当前激活的 Conda 环境；依赖 autotools、swig 及上游 README 中的 `src` 下归档解压步骤）
 
-接口：
+接口（**默认端口 `8003`**）：
 
-- `GET /health`：返回 `status`（`rnalib` 与 `rnafold_cli` 至少其一可用时为 `ok`，否则为 `degraded`）、`rnalib`、`rnafold_cli`
-- `POST /fold`
+- `GET /health`
+  - `status`：`rnalib` 与 `rnafold_cli` 至少其一可用时为 `ok`，否则为 `degraded`
+  - `rnalib`、`rnafold_cli`、`rnacofold_cli`、`rnaplfold_cli`、`rnainverse_cli`
+  - `extensions_ready`：`RNAcofold` / `RNAplfold` / `RNAinverse` 与 duplex+plfold+inverse 扩展链路是否齐备（布尔）
 
-输入：
+- `POST /fold` — 单序列 MFE 二级结构（与历史行为一致）
 
-- `sequence`
+输入：`sequence`（RNA）
 
-输出（JSON）：
+输出：`sequence`、`structure`、`mfe`、`backend`（`RNAlib` 或 `RNAfold-cli`）、`model`
 
-- `sequence`（大写、`T`→`U` 规范化后）
-- `structure`（点括号；长度应与序列一致）
-- `mfe`
-- `backend`：`RNAlib` 或 `RNAfold-cli`
-- `model`（固定描述字段）
+- `POST /sirna-duplex` — siRNA **正反义链共折叠**（`sense&antisense` 热力学）
+
+输入（二选一）：
+
+- `sense` + `antisense`（各为 5'→3' RNA 文本），或
+- `fasta_content`（两段 FASTA：先 sense 后 antisense）
+
+输出：`sense`、`antisense`、`cofold_sequence`（含 `&`）、`structure`、`mfe`、`backend`、`model`
+
+- `POST /aso-accessibility` — **RNAplfold** 局部未配对概率，用于 ASO / 反义寡核苷酸靶区可及性
+
+输入：`sequence`（全长靶 RNA，可为 FASTA）、`region_start` / `region_end`（**1-based 闭区间**）、`aso_oligo_length`（默认 18）、`winsize` / `span` / `unpaired_ulength` / `temp_c`
+
+输出：`sequence_length`、`mean_unpaired_prob_single_nt`、`joint_unpaired_prob_stretch_ending_at_region_end`（可能为 `null`，取决于 `-u` 与区间长度）、`backend` 等
+
+**部署注意**：部分发行版自带的 `RNAplfold` **不支持** `--noPS`；当前实现**不会**对该子进程传入 `--noPS`，以避免 `unrecognized option '--noPS'`。临时工作目录中可能产生 `*_dp.ps` 等文件，随临时目录删除。
+
+- `POST /inverse-fold` — **RNAinverse** 二级结构逆折叠
+
+输入：`structure`（点括号）、可选 `start_sequence`、可选 `repeats`、`temp_c`、`function_mode`（`m` / `p` / `mp`）
+
+输出：`best_sequence`、`hamming_distance`、`backend`、`model` 等
 
 ### 8.2 Agent 工具层
 
 工具函数：
 
-- `predict_rna_secondary_structure(filepath, service_url="http://localhost:8003/fold")`
+- `predict_rna_secondary_structure(filepath, service_url="http://localhost:8003/fold")`  
+  - 当前返回格式为单行字符串，例如：`filepath=...; structure=...; mfe=...; backend=RNAlib`  
+  - 当服务端未返回 `backend` 字段时，工具字符串中可能省略 `; backend=...` 段。
 
-当前返回格式为单行字符串，例如：
+- `compute_sirna_duplex_binding_vienna(filepath, service_url="http://127.0.0.1:8003/sirna-duplex")`  
+  - 返回结构化 `dict`（`mfe_kcal_per_mol`、`structure`、`sense`、`antisense` 等）。
 
-```text
-filepath=...; structure=...; mfe=...; backend=RNAlib
-```
+- `compute_aso_target_accessibility_vienna(filepath, region_start, region_end, service_url="http://127.0.0.1:8003/aso-accessibility", ...)`  
+  - 返回 `mean_unpaired_prob_single_nt`、`joint_unpaired_prob_stretch_ending_at_region_end` 等。
 
-当服务端未返回 `backend` 字段时，工具字符串中可能省略 `; backend=...` 段。之后如果需要更稳健，建议改成 JSON 风格的结构化返回。
+- `inverse_fold_rna_secondary_structure_vienna(filepath, service_url="http://127.0.0.1:8003/inverse-fold", ...)`  
+  - 返回 `best_sequence`、`best_sequence_filepath`（写入 `workspace/`）等。
 
 ### 8.3 验证状态（补充）
 
-- 已在 Linux 上完成 `GET /health` 与 `POST /fold` 的最小闭环验证（RNAlib 路径）
-- 自然语言前端在触发二级结构预测时，可与上述微服务联调；注意 §5.5 / §14.18 中 **Critic 与 MFE 阈值** 对短序列行为的影响
+- 已在 Linux 上完成 `GET /health`、`POST /fold`、`POST /sirna-duplex`、`POST /aso-accessibility`、`POST /inverse-fold` 的闭环验证（Conda `viennarna` + 对应 CLI）
+- 自然语言前端在触发二级结构预测、duplex、ASO 可及性或逆折叠时，需保证 **`viennarna_fold` 在 `8003` 已启动**；注意 §5.5 / §14.18 中 **Critic 与 MFE 阈值** 对默认「结构预测型」分支里短序列行为的影响（duplex / ASO / inverse 分支通常不触发该条 mRNA MFE 规则，但以实际路由为准）
 
 ---
 
@@ -3434,11 +3483,55 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 
 ### 13.1 单工具测试
 
-例如测试 ViennaRNA：
+例如测试 ViennaRNA（`microservices/viennarna_fold`，端口 **8003**）：
 
-1. 启动 `viennarna_fold`
+1. 启动服务（示例）：
+
+```bash
+cd rna_agent_system/microservices/viennarna_fold
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate viennarna_fold_env
+python -m uvicorn main:app --host 0.0.0.0 --port 8003
+```
+
 2. `curl /health`
-3. `curl /fold`
+
+```bash
+curl -sS http://127.0.0.1:8003/health | python3 -m json.tool
+```
+
+3. `POST /fold`
+
+```bash
+curl -sS -X POST http://127.0.0.1:8003/fold \
+  -H 'Content-Type: application/json' \
+  -d '{"sequence":"GGGGAAAACCCC"}' | python3 -m json.tool
+```
+
+4. `POST /sirna-duplex`
+
+```bash
+curl -sS -X POST http://127.0.0.1:8003/sirna-duplex \
+  -H 'Content-Type: application/json' \
+  -d '{"sense":"GGCAUGCAUGC","antisense":"GCAUGCAUGCC"}' | python3 -m json.tool
+```
+
+5. `POST /aso-accessibility`（序列需足够长，例如 `AUGC` 重复 50 次）
+
+```bash
+SEQ="$(python3 -c "print('AUGC'*50)")"
+curl -sS -X POST http://127.0.0.1:8003/aso-accessibility \
+  -H 'Content-Type: application/json' \
+  -d "{\"sequence\":\">target\\n${SEQ}\",\"region_start\":10,\"region_end\":35,\"aso_oligo_length\":18,\"winsize\":70,\"span\":70,\"unpaired_ulength\":25,\"temp_c\":37.0}" | python3 -m json.tool
+```
+
+6. `POST /inverse-fold`
+
+```bash
+curl -sS -X POST http://127.0.0.1:8003/inverse-fold \
+  -H 'Content-Type: application/json' \
+  -d '{"structure":"((((....))))","repeats":3,"temp_c":37.0,"function_mode":"m"}' | python3 -m json.tool
+```
 
 例如测试 GEMORNA：
 
@@ -3648,23 +3741,45 @@ git -C rna_agent_system/external_repos/GEMORNA update-index --assume-unchanged \
 
 ### 13.2 智能体集成测试
 
-在微服务都启动后，再启动：
+在**相关微服务已启动**（至少对应当次请求的工具，例如 ViennaRNA 需 `8003`）后，再启动：
 
 - `frontend/app.py`
 
-推荐从仓库根目录启动：
+推荐从**仓库根目录**（含 `rna_agent_system/` 的那一层）启动：
 
 ```bash
 streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none
 ```
+
+远程 SSH 访问时如需绑定到所有网卡并指定端口（示例 **8501**）：
+
+```bash
+streamlit run rna_agent_system/frontend/app.py --server.fileWatcherType none --server.address 0.0.0.0 --server.port 8501
+```
+
+浏览器打开：`http://<主机>:8501`（本机则为 `http://127.0.0.1:8501`）。
 
 说明：
 
 - 当前 `frontend/app.py` 已在代码中自动补了父目录到 `sys.path`
 - 因此正常情况下不再需要手动设置 `PYTHONPATH`
 - 某些 Linux 服务器上 `inotify watch limit` 偏小，因此建议保留 `--server.fileWatcherType none`
+- Agent 工具默认请求 `http://127.0.0.1:<端口>`；若 Streamlit 与微服务不在同一台机器，需自行做端口转发或改工具 `service_url` / 环境，此处不展开
 
-然后测试：
+#### 13.2A Streamlit 自然语言案例（可复制到聊天框）
+
+以下案例假设 **`viennarna_fold` 已在 `127.0.0.1:8003` 运行**；duplex / ASO / inverse 亦依赖该服务。
+
+| 目的 | 建议输入示例（整句粘贴） |
+|------|---------------------------|
+| 默认 mRNA 二级结构（ViennaRNA fold） | `请预测这条 RNA 的二级结构 fold：AUGCUAACGUAGCUAUGCUAUGCUAACGUAGCUAUGCUA` |
+| siRNA 双链结合能（cofold） | `请用 ViennaRNA 计算 siRNA duplex 结合能 rnacofold，sense=GGCAUGCAUGCAUGCAUGC antisense=GCAUGCAUGCAUGCAUGCC` |
+| ASO 靶区可及性（RNAplfold） | `ASO accessibility plfold 可及性，region=10-50，靶标 mRNA：` 后接一段 **至少约 50 nt** 的 `AUGC...` 重复序列（或与 RNASTOP 相同规则的长 RNA 文本 / `workspace/*.fa` 路径） |
+| 二级结构逆折叠（RNAinverse） | `inverse fold 逆折叠 rnainverse，structure=((((....))))，repeats=5` |
+| siRNA 效率 + 脱靶（原默认分支） | `sirna AUGCUAACGUAGCUAUGCUA`（需 `8001`/`8002` 等 mock 服务若仍接入） |
+| mRNA 结构 + LinearFold | `fold linearfold 二级结构 AUGGCUACGUAGCUAGCUAGCUAGCUGA beam_size=20` |
+
+然后测试（回归清单，含上文未列能力）：
 
 - siRNA 请求
 - mRNA 结构预测请求
