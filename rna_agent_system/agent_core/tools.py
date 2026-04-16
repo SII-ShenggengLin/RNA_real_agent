@@ -1254,6 +1254,269 @@ def predict_rna_secondary_structure(
         raise ValueError(f"ViennaRNA service request failed: {exc}") from exc
 
 
+def _parse_two_rna_strands_from_file(content: str) -> tuple[str, str]:
+    """Parse sense/antisense from a workspace file.
+
+    Supported layouts:
+    - Two FASTA records (first record = sense, second = antisense).
+    - Two plain lines of RNA (no ``>`` headers): line1 = sense, line2 = antisense.
+    """
+    text = content.strip()
+    if not text:
+        raise ValueError("Duplex input file is empty.")
+    if ">" in text:
+        records: list[tuple[str, str]] = []
+        header: Optional[str] = None
+        chunks: list[str] = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                if header is not None and chunks:
+                    seq = _normalize_nucleic_sequence("".join(chunks))
+                    records.append((header, seq))
+                header = line[1:].strip().split()[0] if len(line) > 1 else "seq"
+                chunks = []
+            else:
+                chunks.append(line)
+        if header is not None and chunks:
+            seq = _normalize_nucleic_sequence("".join(chunks))
+            records.append((header, seq))
+        if len(records) < 2:
+            raise ValueError("Duplex FASTA must contain at least two records (sense then antisense).")
+        return records[0][1], records[1][1]
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) < 2:
+        raise ValueError(
+            "Duplex input must be either two FASTA records or two non-empty RNA lines (sense, antisense)."
+        )
+    s1 = _normalize_nucleic_sequence(lines[0])
+    s2 = _normalize_nucleic_sequence(lines[1])
+    if len(s1) < 2 or len(s2) < 2:
+        raise ValueError("Sense and antisense sequences look too short after normalization.")
+    return s1, s2
+
+
+class SirnaDuplexViennaInput(BaseModel):
+    """Input for ViennaRNA siRNA sense/antisense cofold (duplex MFE)."""
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Workspace file with two FASTA records (sense then antisense) "
+            "or two plain RNA lines without headers."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8003/sirna-duplex",
+        description="REST endpoint for ViennaRNA duplex cofold.",
+    )
+
+
+class AsoAccessibilityViennaInput(BaseModel):
+    """Input for RNAplfold-based accessibility on a target region."""
+
+    filepath: str = Field(..., description="Workspace file with full target RNA sequence (plain or FASTA).")
+    region_start: int = Field(..., ge=1, description="1-based inclusive ASO / binding region start on target RNA.")
+    region_end: int = Field(..., ge=1, description="1-based inclusive region end.")
+    service_url: str = Field(
+        default="http://127.0.0.1:8003/aso-accessibility",
+        description="REST endpoint for RNAplfold accessibility.",
+    )
+    aso_oligo_length: int = Field(
+        default=18,
+        ge=1,
+        le=500,
+        description="ASO length (nt) used for joint unpaired stretch probability.",
+    )
+    winsize: int = Field(default=70, ge=3, le=800, description="RNAplfold window size -W.")
+    span: int = Field(default=70, ge=2, le=800, description="RNAplfold max pair span -L.")
+    unpaired_ulength: int = Field(default=25, ge=1, le=500, description="RNAplfold -u upper bound (auto-expanded server-side).")
+    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+
+
+class InverseFoldViennaInput(BaseModel):
+    """Input for RNAinverse secondary-structure inverse folding."""
+
+    filepath: str = Field(
+        ...,
+        description="Workspace file: first non-empty line = dot-bracket structure; optional second line = IUPAC start hint.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8003/inverse-fold",
+        description="REST endpoint for ViennaRNA inverse fold.",
+    )
+    repeats: int = Field(default=1, ge=1, le=500, description="RNAinverse repeat searches (-R).")
+    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+    function_mode: str = Field(
+        default="m",
+        description="RNAinverse -F: m (MFE target), p (partition), or mp.",
+    )
+
+
+@tool(args_schema=SirnaDuplexViennaInput)
+def compute_sirna_duplex_binding_vienna(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8003/sirna-duplex",
+) -> dict[str, Any]:
+    """Compute siRNA sense/antisense duplex MFE via ViennaRNA (RNAcofold / RNAlib).
+
+    Args:
+        filepath: File with two FASTA records (sense then antisense) or two RNA lines.
+        service_url: ViennaRNA fold microservice duplex endpoint.
+
+    Returns:
+        Dict with sense/antisense, cofold structure, mfe (kcal/mol), backend, and input path.
+    """
+    raw = read_sequence(filepath)
+    sense, antisense = _parse_two_rna_strands_from_file(raw)
+    try:
+        response = requests.post(
+            service_url,
+            json={"sense": sense, "antisense": antisense},
+            timeout=120,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"ViennaRNA duplex service request failed: {exc}") from exc
+    if "mfe" not in payload or "structure" not in payload:
+        raise ValueError("Invalid duplex response: expected `mfe` and `structure`.")
+    return {
+        "input_filepath": filepath,
+        "sense": str(payload.get("sense", sense)),
+        "antisense": str(payload.get("antisense", antisense)),
+        "cofold_sequence": str(payload.get("cofold_sequence", "")),
+        "structure": str(payload["structure"]),
+        "mfe_kcal_per_mol": float(payload["mfe"]),
+        "backend": str(payload.get("backend", "")),
+        "model": str(payload.get("model", "ViennaRNA-RNAcofold")),
+    }
+
+
+@tool(args_schema=AsoAccessibilityViennaInput)
+def compute_aso_target_accessibility_vienna(
+    filepath: str,
+    region_start: int,
+    region_end: int,
+    service_url: str = "http://127.0.0.1:8003/aso-accessibility",
+    aso_oligo_length: int = 18,
+    winsize: int = 70,
+    span: int = 70,
+    unpaired_ulength: int = 25,
+    temp_c: float = 37.0,
+) -> dict[str, Any]:
+    """Estimate target mRNA local accessibility (RNAplfold) for an ASO binding region.
+
+    Args:
+        filepath: Full-length target RNA sequence file (plain or FASTA).
+        region_start: 1-based inclusive start of the binding site on the target.
+        region_end: 1-based inclusive end.
+        service_url: ViennaRNA microservice accessibility endpoint.
+        aso_oligo_length: ASO length used for joint unpaired probability at region end.
+        winsize, span, unpaired_ulength: RNAplfold parameters (-W, -L, -u).
+        temp_c: Folding temperature (Celsius).
+
+    Returns:
+        Summary dict including mean single-nucleotide unpaired probabilities in the region
+        and joint unpaired probability for a contiguous stretch (when computable).
+    """
+    sequence_text = read_sequence(filepath)
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sequence": sequence_text,
+                "region_start": region_start,
+                "region_end": region_end,
+                "aso_oligo_length": aso_oligo_length,
+                "winsize": winsize,
+                "span": span,
+                "unpaired_ulength": unpaired_ulength,
+                "temp_c": temp_c,
+            },
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"ViennaRNA accessibility service request failed: {exc}") from exc
+    return {
+        "input_filepath": filepath,
+        "sequence_length": int(payload.get("sequence_length", 0)),
+        "region_start": int(payload.get("region_start", region_start)),
+        "region_end": int(payload.get("region_end", region_end)),
+        "mean_unpaired_prob_single_nt": payload.get("mean_unpaired_prob_single_nt"),
+        "joint_unpaired_prob_stretch_ending_at_region_end": payload.get(
+            "joint_unpaired_prob_stretch_ending_at_region_end"
+        ),
+        "aso_oligo_length_used": int(payload.get("aso_oligo_length_used", aso_oligo_length)),
+        "plfold_winsize": int(payload.get("winsize", winsize)),
+        "plfold_span": int(payload.get("span", span)),
+        "plfold_unpaired_ulength": int(payload.get("unpaired_ulength", unpaired_ulength)),
+        "backend": str(payload.get("backend", "")),
+        "model": str(payload.get("model", "ViennaRNA-RNAplfold")),
+    }
+
+
+@tool(args_schema=InverseFoldViennaInput)
+def inverse_fold_rna_secondary_structure_vienna(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8003/inverse-fold",
+    repeats: int = 1,
+    temp_c: float = 37.0,
+    function_mode: str = "m",
+) -> dict[str, Any]:
+    """Inverse-fold an RNA secondary structure to a sequence (ViennaRNA RNAinverse).
+
+    Args:
+        filepath: First non-empty line: target dot-bracket; optional second line: IUPAC start (N = random).
+        service_url: ViennaRNA inverse-fold endpoint.
+        repeats: Number of RNAinverse search repeats.
+        temp_c: Temperature in Celsius.
+        function_mode: RNAinverse objective: m, p, or mp.
+
+    Returns:
+        Dict with best_sequence, optional hamming_distance, structure, backend.
+    """
+    raw = read_sequence(filepath)
+    lines = [ln.strip() for ln in raw.splitlines() if ln.strip()]
+    if not lines:
+        raise ValueError("Inverse-fold input file is empty.")
+    structure = lines[0]
+    start_sequence = lines[1] if len(lines) > 1 else ""
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "structure": structure,
+                "start_sequence": start_sequence,
+                "repeats": repeats,
+                "temp_c": temp_c,
+                "function_mode": function_mode,
+            },
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"ViennaRNA inverse-fold request failed: {exc}") from exc
+    if "best_sequence" not in payload:
+        raise ValueError("Invalid inverse-fold response: missing `best_sequence`.")
+    out = {
+        "input_filepath": filepath,
+        "target_structure": str(payload.get("structure", structure)),
+        "best_sequence": str(payload["best_sequence"]),
+        "hamming_distance": payload.get("hamming_distance"),
+        "backend": str(payload.get("backend", "")),
+        "model": str(payload.get("model", "ViennaRNA-RNAinverse")),
+    }
+    best_fp = save_sequence(str(payload["best_sequence"]), prefix="vienna_inverse")
+    out["best_sequence_filepath"] = best_fp
+    return out
+
+
 @tool(args_schema=LinearFoldSecondaryInput)
 def predict_rna_secondary_structure_with_linearfold(
     filepath: str,

@@ -10,17 +10,20 @@ from typing import Any, Optional, Tuple
 
 from langchain_core.messages import AIMessage, ToolMessage
 
-from agent_core.file_manager import save_sequence, save_text_file
+from agent_core.file_manager import read_sequence, save_sequence, save_text_file
 from agent_core.state import AgentState
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
     check_off_target,
+    compute_aso_target_accessibility_vienna,
+    compute_sirna_duplex_binding_vienna,
     design_sgrna_handle_with_crgpt,
     design_sirna_with_evitar,
     design_mrna_cds_with_lineardesign,
     design_rna_sequence_with_rhodesign,
     design_mrna_cds_with_gemorna,
     design_mrna_cds_with_rnarl,
+    inverse_fold_rna_secondary_structure_vienna,
     mock_codon_optimization,
     optimize_sgrna_with_crisot,
     predict_mrna_stability_with_rnastop,
@@ -36,7 +39,12 @@ from agent_core.tools import (
     score_rna_ligand_binding_with_rnasmol,
 )
 
-SIRNA_TOOLS = [predict_sirna_efficiency, check_off_target, design_sirna_with_evitar]
+SIRNA_TOOLS = [
+    predict_sirna_efficiency,
+    check_off_target,
+    design_sirna_with_evitar,
+    compute_sirna_duplex_binding_vienna,
+]
 CRISPR_TOOLS = [
     design_sgrna_handle_with_crgpt,
     score_crispr_off_target_with_crisot,
@@ -49,6 +57,8 @@ MRNA_TOOLS = [
     score_rna_ligand_binding_with_rnasmol,
     predict_mrna_stability_with_rnastop,
     predict_putative_ires_with_iresfinder,
+    compute_aso_target_accessibility_vienna,
+    inverse_fold_rna_secondary_structure_vienna,
     mock_codon_optimization,
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
@@ -110,6 +120,164 @@ def _extract_long_rna_sequence(text: str) -> Optional[str]:
     if not matches:
         return None
     return max(matches, key=len).upper().replace("T", "U")
+
+
+def _needs_sirna_duplex_vienna(user_text: str) -> bool:
+    keys = (
+        "duplex",
+        "rnacofold",
+        "rna cofold",
+        "双链",
+        "正反义",
+        "sense/antisense",
+        "sense and antisense",
+        "guide strand",
+        "passenger strand",
+        "sirna binding energy",
+        "sirna duplex",
+        "结合能",
+    )
+    return any(k in user_text for k in keys)
+
+
+def _needs_aso_accessibility_vienna(user_text: str) -> bool:
+    keys = (
+        "aso",
+        "antisense oligo",
+        "gapmer",
+        "morpholino",
+        "accessibility",
+        "可及性",
+        "rnaplfold",
+        "rna plfold",
+        "plfold",
+        "unpaired probability",
+        "结合区域",
+        "binding site accessibility",
+    )
+    return any(k in user_text for k in keys)
+
+
+def _needs_inverse_fold_vienna(user_text: str) -> bool:
+    keys = (
+        "inverse fold",
+        "inverse-fold",
+        "inverse_folding",
+        "逆折叠",
+        "rnainverse",
+        "rna inverse",
+        "序列逆推",
+    )
+    return any(k in user_text for k in keys)
+
+
+def _extract_aso_region_bounds(text: str) -> Tuple[Optional[int], Optional[int]]:
+    patterns = (
+        r"(?:region|aso|target)[_-]?(?:region|site)?\s*[:=]\s*(\d+)\s*[-～~,]\s*(\d+)",
+        r"(?:start|begin)\s*[:=]\s*(\d+).*?(?:end|stop)\s*[:=]\s*(\d+)",
+    )
+    for pat in patterns:
+        m = re.search(pat, text, flags=re.IGNORECASE | re.DOTALL)
+        if m:
+            return int(m.group(1)), int(m.group(2))
+    m2 = re.search(r"\b(\d{1,7})\s*[-～~]\s*(\d{1,7})\b", text)
+    if m2:
+        return int(m2.group(1)), int(m2.group(2))
+    return None, None
+
+
+def _normalize_plain_rna_from_text(text: str) -> str:
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip() and not ln.lstrip().startswith(">")]
+    merged = "".join(lines).upper().replace("T", "U")
+    return "".join(ch for ch in merged if ch in "AUGC")
+
+
+def _parse_two_lines_for_duplex_check(body: str) -> bool:
+    if body.count(">") >= 2:
+        return True
+    lines = [ln.strip() for ln in body.splitlines() if ln.strip() and not ln.lstrip().startswith(">")]
+    if len(lines) < 2:
+        return False
+    return all(
+        len("".join(c for c in ln.upper().replace("T", "U") if c in "AUGC")) >= 8 for ln in lines[:2]
+    )
+
+
+def _ensure_duplex_fasta_workspace_path(raw_text: str, filepath: Optional[str]) -> str:
+    """Return workspace path with two FASTA records (sense then antisense)."""
+    sense_m = re.search(
+        r"(?:sense|guide|链1|正链)\s*[:=]\s*[\"']?([ACGUTacgut]{8,})[\"']?",
+        raw_text,
+        flags=re.IGNORECASE,
+    )
+    anti_m = re.search(
+        r"(?:antisense|antis|passenger|反义|链2)\s*[:=]\s*[\"']?([ACGUTacgut]{8,})[\"']?",
+        raw_text,
+        flags=re.IGNORECASE,
+    )
+    if sense_m and anti_m:
+        sense = sense_m.group(1).upper().replace("T", "U")
+        anti = anti_m.group(1).upper().replace("T", "U")
+        content = f">sense\n{sense}\n>antisense\n{anti}\n"
+        return save_sequence(content, prefix="sirna_duplex")
+
+    if filepath:
+        try:
+            body = read_sequence(filepath)
+            if body.count(">") >= 2 or _parse_two_lines_for_duplex_check(body):
+                return filepath
+        except OSError:
+            pass
+
+    long_seq = _extract_long_rna_sequence(raw_text)
+    if long_seq and len(long_seq) >= 16:
+        half = len(long_seq) // 2
+        sense = long_seq[:half]
+        anti = long_seq[half:]
+        content = f">sense\n{sense}\n>antisense\n{anti}\n"
+        return save_sequence(content, prefix="sirna_duplex_split")
+
+    raise ValueError(
+        "Duplex mode needs two strands: use FASTA (two records) in a file, or "
+        "`sense=...` / `antisense=...` in the request, or one long RNA split heuristically."
+    )
+
+
+def _ensure_inverse_fold_structure_file(raw_text: str, filepath: Optional[str]) -> str:
+    struct_m = re.search(
+        r"(?:structure|dot[- ]?bracket|dbn)\s*[:=]\s*[\"']?([.()[\]{}<>]+)[\"']?",
+        raw_text,
+        flags=re.IGNORECASE,
+    )
+    hint_m = re.search(
+        r"(?:start|hint|constraint)\s*[:=]\s*[\"']?([ACGUTNacgutn]+)[\"']?",
+        raw_text,
+        flags=re.IGNORECASE,
+    )
+    if struct_m:
+        lines = [struct_m.group(1).strip()]
+        if hint_m:
+            lines.append(hint_m.group(1).strip())
+        content = "\n".join(lines) + "\n"
+        return save_text_file(content, prefix="inverse_fold_in", suffix=".txt")
+
+    if filepath:
+        try:
+            body = read_sequence(filepath).strip()
+            if body:
+                return filepath
+        except OSError:
+            pass
+
+    raise ValueError(
+        "Inverse fold needs a dot-bracket structure: put it in a .txt file (first line), "
+        "or write `structure=(((...)))` in the request."
+    )
+
+
+def _rna_sequence_length_from_workspace(filepath: str) -> int:
+    raw = read_sequence(filepath)
+    return len(_normalize_plain_rna_from_text(raw))
 
 
 def _extract_crispr_named_sequence(text: str, labels: Tuple[str, ...]) -> Optional[str]:
@@ -1093,10 +1261,21 @@ def router_node(state: AgentState) -> AgentState:
             "odesign",
             "iresfinder",
             "internal ribosome",
+            "aso",
+            "gapmer",
+            "morpholino",
+            "accessibility",
+            "可及性",
+            "plfold",
+            "inverse fold",
+            "逆折叠",
+            "rnainverse",
         ]
     ):
         route = "mrna_specialist"
-    elif any(k in user_text for k in ["sirna", "脱靶", "off-target"]):
+    elif any(
+        k in user_text for k in ["sirna", "脱靶", "off-target"]
+    ) or _needs_sirna_duplex_vienna(user_text):
         route = "sirna_specialist"
     else:
         # Default to mRNA for current integration testing focus (RNAfold).
@@ -1133,6 +1312,7 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
     user_text = raw_text.lower()
     filepath = state.get("current_filepath")
     evitar_mode = _needs_evitar_mode(user_text)
+    duplex_mode = _needs_sirna_duplex_vienna(user_text) and not evitar_mode
     if not filepath:
         if evitar_mode:
             filepath = _extract_named_filepath(raw_text, ("input", "genome", "virus", "fasta"), ("fa", "fasta", "fna"))
@@ -1141,10 +1321,11 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
             if not filepath:
                 filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="evitar_input")
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-        else:
+        elif not duplex_mode:
             filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="sirna")
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-        state["current_filepath"] = filepath
+        if filepath:
+            state["current_filepath"] = filepath
     state["active_specialist"] = "sirna_specialist"
     if evitar_mode:
         evitar_args = _build_evitar_tool_args(filepath, raw_text)
@@ -1157,6 +1338,31 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "siRNA specialist (rule-based): dispatch Evitar design."
+    elif duplex_mode:
+        try:
+            duplex_fp = _ensure_duplex_fasta_workspace_path(raw_text, filepath)
+        except ValueError as exc:
+            ai_msg = AIMessage(
+                content=(
+                    "siRNA duplex specialist: could not build sense/antisense input for ViennaRNA cofold. "
+                    f"Detail: {exc}"
+                ),
+                tool_calls=[],
+            )
+            state["messages"] = state.get("messages", []) + [ai_msg]
+            return state
+        state["current_filepath"] = duplex_fp
+        if duplex_fp.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [duplex_fp]
+        tool_calls = [
+            {
+                "name": "compute_sirna_duplex_binding_vienna",
+                "args": {"filepath": duplex_fp},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "siRNA specialist (rule-based): ViennaRNA sense/antisense duplex (cofold) energy."
     else:
         tool_calls = [
             {
@@ -1334,6 +1540,42 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch IRESfinder putative IRES scoring."
+    elif _needs_inverse_fold_vienna(user_text):
+        inv_fp = _ensure_inverse_fold_structure_file(raw_text, state.get("current_filepath"))
+        state["current_filepath"] = inv_fp
+        if inv_fp.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [inv_fp]
+        rep_m = re.search(r"repeats?\s*[:=]\s*(\d+)", raw_text, flags=re.IGNORECASE)
+        repeats = int(rep_m.group(1)) if rep_m else 1
+        tool_calls = [
+            {
+                "name": "inverse_fold_rna_secondary_structure_vienna",
+                "args": {"filepath": inv_fp, "repeats": repeats},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): ViennaRNA RNAinverse secondary-structure inverse fold."
+    elif _needs_aso_accessibility_vienna(user_text):
+        filepath_aso, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath_aso
+        if created_workspace_file or filepath_aso.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath_aso]
+        nlen = _rna_sequence_length_from_workspace(filepath_aso)
+        rs, re_aso = _extract_aso_region_bounds(raw_text)
+        if rs is None or re_aso is None:
+            rs, re_aso = 1, min(20, nlen)
+        rs = max(1, min(rs, nlen))
+        re_aso = max(rs, min(re_aso, nlen))
+        tool_calls = [
+            {
+                "name": "compute_aso_target_accessibility_vienna",
+                "args": {"filepath": filepath_aso, "region_start": rs, "region_end": re_aso},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): ViennaRNA RNAplfold ASO / binding-site accessibility."
     elif rnastop_mode:
         filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
         state["current_filepath"] = filepath
@@ -1453,22 +1695,42 @@ def tool_execution_node(state: AgentState) -> AgentState:
         filepath = state.get("current_filepath")
         user_text = state.get("input_sequence", "").lower()
         if state.get("active_specialist") == "sirna_specialist":
-            if not filepath:
-                filepath = save_sequence(_extract_rna_sequence(state.get("input_sequence", "")), prefix="sirna")
-                state["current_filepath"] = filepath
-                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-            if _needs_evitar_mode(user_text):
-                fallback_calls = [
-                    {
-                        "name": "design_sirna_with_evitar",
-                        "args": _build_evitar_tool_args(filepath, state.get("input_sequence", "")),
-                    }
-                ]
+            raw_si = state.get("input_sequence", "")
+            if _needs_sirna_duplex_vienna(user_text) and not _needs_evitar_mode(user_text):
+                try:
+                    duplex_fp = _ensure_duplex_fasta_workspace_path(raw_si, filepath)
+                    state["current_filepath"] = duplex_fp
+                    if duplex_fp.startswith("workspace/"):
+                        state["workspace_files"] = state.get("workspace_files", []) + [duplex_fp]
+                    fallback_calls = [
+                        {"name": "compute_sirna_duplex_binding_vienna", "args": {"filepath": duplex_fp}}
+                    ]
+                except ValueError:
+                    if not filepath:
+                        filepath = save_sequence(_extract_rna_sequence(raw_si), prefix="sirna")
+                        state["current_filepath"] = filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+                    fallback_calls = [
+                        {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
+                        {"name": "check_off_target", "args": {"filepath": filepath}},
+                    ]
             else:
-                fallback_calls = [
-                    {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
-                    {"name": "check_off_target", "args": {"filepath": filepath}},
-                ]
+                if not filepath:
+                    filepath = save_sequence(_extract_rna_sequence(raw_si), prefix="sirna")
+                    state["current_filepath"] = filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+                if _needs_evitar_mode(user_text):
+                    fallback_calls = [
+                        {
+                            "name": "design_sirna_with_evitar",
+                            "args": _build_evitar_tool_args(filepath, raw_si),
+                        }
+                    ]
+                else:
+                    fallback_calls = [
+                        {"name": "predict_sirna_efficiency", "args": {"filepath": filepath}},
+                        {"name": "check_off_target", "args": {"filepath": filepath}},
+                    ]
         elif state.get("active_specialist") == "crispr_specialist":
             raw_crispr_text = state.get("input_sequence", "")
             if _needs_sgrna_handle_design(raw_crispr_text.lower()):
@@ -1529,6 +1791,38 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {
                     "name": "predict_putative_ires_with_iresfinder",
                     "args": _build_iresfinder_tool_args(filepath, state.get("input_sequence", "")),
+                }
+            ]
+        elif _needs_inverse_fold_vienna(user_text):
+            raw_inv = state.get("input_sequence", "")
+            inv_fp = _ensure_inverse_fold_structure_file(raw_inv, filepath)
+            state["current_filepath"] = inv_fp
+            if inv_fp.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [inv_fp]
+            rep_m = re.search(r"repeats?\s*[:=]\s*(\d+)", raw_inv, flags=re.IGNORECASE)
+            repeats = int(rep_m.group(1)) if rep_m else 1
+            fallback_calls = [
+                {
+                    "name": "inverse_fold_rna_secondary_structure_vienna",
+                    "args": {"filepath": inv_fp, "repeats": repeats},
+                }
+            ]
+        elif _needs_aso_accessibility_vienna(user_text):
+            raw_aso = state.get("input_sequence", "")
+            fp_aso, created_workspace_file = _resolve_rnastop_input(raw_aso)
+            state["current_filepath"] = fp_aso
+            if created_workspace_file or fp_aso.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [fp_aso]
+            nlen = _rna_sequence_length_from_workspace(fp_aso)
+            rs, re_fb = _extract_aso_region_bounds(raw_aso)
+            if rs is None or re_fb is None:
+                rs, re_fb = 1, min(20, nlen)
+            rs = max(1, min(rs, nlen))
+            re_fb = max(rs, min(re_fb, nlen))
+            fallback_calls = [
+                {
+                    "name": "compute_aso_target_accessibility_vienna",
+                    "args": {"filepath": fp_aso, "region_start": rs, "region_end": re_fb},
                 }
             ]
         elif _needs_rnastop_prediction(user_text):
@@ -1935,6 +2229,37 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["iresfinder_positive_count"] = int(tool_result.get("positive_count", 0))
             state["iresfinder_fragment_count"] = int(tool_result.get("fragment_count", 0))
             state["iresfinder_model"] = str(tool_result.get("model", ""))
+        elif tool_name == "compute_sirna_duplex_binding_vienna":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            state["vienna_sirna_duplex_mfe"] = float(tool_result.get("mfe_kcal_per_mol", 0.0))
+            sense = str(tool_result.get("sense", ""))
+            anti = str(tool_result.get("antisense", ""))
+            if sense and anti:
+                state["candidate_sequence"] = f"{sense}&{anti}"
+        elif tool_name == "compute_aso_target_accessibility_vienna":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            mu = tool_result.get("mean_unpaired_prob_single_nt")
+            if mu is not None:
+                state["vienna_aso_mean_unpaired"] = float(mu)
+            ju = tool_result.get("joint_unpaired_prob_stretch_ending_at_region_end")
+            if ju is not None:
+                state["vienna_aso_joint_unpaired"] = float(ju)
+        elif tool_name == "inverse_fold_rna_secondary_structure_vienna":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            best = str(tool_result.get("best_sequence", ""))
+            state["vienna_inverse_best_sequence"] = best
+            if best:
+                state["candidate_sequence"] = best
+            best_fp = str(tool_result.get("best_sequence_filepath", ""))
+            if best_fp.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [best_fp]
+                state["current_filepath"] = best_fp
         elif tool_name == "run_odesign_inference":
             state["odesign_input_json_filepath"] = str(tool_result.get("input_json_filepath", ""))
             state["odesign_output_dir"] = str(tool_result.get("output_dir", ""))
@@ -2079,6 +2404,10 @@ def critic_node(state: AgentState) -> AgentState:
             f"evitar_output_filepath={state.get('evitar_output_filepath', '')}; "
             f"evitar_result_count={state.get('evitar_result_count', 0)}; "
             f"evitar_command={state.get('evitar_command', '')}; "
+            f"vienna_sirna_duplex_mfe={state.get('vienna_sirna_duplex_mfe', 0.0)}; "
+            f"vienna_aso_mean_unpaired={state.get('vienna_aso_mean_unpaired', 0.0)}; "
+            f"vienna_aso_joint_unpaired={state.get('vienna_aso_joint_unpaired', 0.0)}; "
+            f"vienna_inverse_best_sequence={state.get('vienna_inverse_best_sequence', '')}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

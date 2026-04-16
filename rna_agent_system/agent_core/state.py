@@ -78,6 +78,10 @@ class AgentState(TypedDict, total=False):
     evitar_output_filepath: str
     evitar_result_count: int
     evitar_command: str
+    vienna_sirna_duplex_mfe: float
+    vienna_aso_mean_unpaired: float
+    vienna_aso_joint_unpaired: float
+    vienna_inverse_best_sequence: str
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str
