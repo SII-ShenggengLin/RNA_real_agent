@@ -9,6 +9,9 @@ set -e
 #    - 参考基因组 FASTA 文件已下载到服务器本地 (off-spec 模式需要)
 # 3. 说明:
 #    - 本服务直接调用 CRISOT 底层 `crisot_modules.py`, 绕开上游 CLI 对 `xgboost` 的顶层硬依赖
+#    - 可选环境变量:
+#      - CRISOT_DEFAULT_REF_GENOME=/absolute/or/repo-relative/path/to/genome.fa
+#        用于覆盖默认 hg38.fa（影响 /score 默认参考基因组）
 #    - 当前已封装:
 #      - /score
 #      - /spec

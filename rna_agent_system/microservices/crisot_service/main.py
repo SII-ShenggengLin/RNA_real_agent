@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ CRISOT_SERVICE_OUTPUT_DIR = PROJECT_ROOT / "workspace" / "crisot_service"
 DEFAULT_DEVICE = "C"
 DEFAULT_MISMATCHES = 6
 DEFAULT_MODEL_NAME = "CRISOT-Score"
+DEFAULT_REF_GENOME_ENV_VAR = "CRISOT_DEFAULT_REF_GENOME"
 
 app = FastAPI(
     title="CRISOT Service",
@@ -290,6 +292,9 @@ def _load_model(ref_genome: str) -> Any:
 
 
 def _default_ref_genome() -> str:
+    override_path = os.getenv(DEFAULT_REF_GENOME_ENV_VAR, "").strip()
+    if override_path:
+        return str(_resolve_repo_relative_path(override_path))
     return str((CRISOT_SCRIPT_DIR / "hg38.fa").resolve())
 
 
@@ -327,14 +332,32 @@ def _select_best_optimized_row(dataframe: pd.DataFrame) -> Optional[pd.Series]:
 
 @app.get("/health")
 def health() -> Dict[str, Any]:
+    score_param_exists = CRISOT_SCORE_PARAM_PATH.exists()
+    default_ref_genome = Path(_default_ref_genome())
+    default_ref_genome_exists = default_ref_genome.exists()
+    repo_exists = CRISOT_ROOT.exists()
+    missing_requirements = []
+    warnings = []
+    if not repo_exists:
+        missing_requirements.append(f"missing_repo:{CRISOT_ROOT}")
+    if not score_param_exists:
+        missing_requirements.append(f"missing_score_param:{CRISOT_SCORE_PARAM_PATH}")
+    if not default_ref_genome_exists:
+        warnings.append(f"missing_default_ref_genome:{default_ref_genome}")
+    status = "ok" if not missing_requirements else "degraded"
+
     return {
-        "status": "ok",
-        "repo_exists": CRISOT_ROOT.exists(),
+        "status": status,
+        "repo_exists": repo_exists,
         "score_param_path": str(CRISOT_SCORE_PARAM_PATH),
-        "score_param_exists": CRISOT_SCORE_PARAM_PATH.exists(),
-        "default_ref_genome": _default_ref_genome(),
-        "default_ref_genome_exists": Path(_default_ref_genome()).exists(),
+        "score_param_exists": score_param_exists,
+        "default_ref_genome_env_var": DEFAULT_REF_GENOME_ENV_VAR,
+        "default_ref_genome_env_value": os.getenv(DEFAULT_REF_GENOME_ENV_VAR, ""),
+        "default_ref_genome": str(default_ref_genome),
+        "default_ref_genome_exists": default_ref_genome_exists,
         "cas_offinder_available": _cas_offinder_available(),
+        "missing_requirements": missing_requirements,
+        "warnings": warnings,
         "service_output_dir": str(CRISOT_SERVICE_OUTPUT_DIR),
         "supports_optimize": True,
     }
