@@ -1,8 +1,43 @@
+# macOS
 .DS_Store
 **/.DS_Store
+
+# Python bytecode
 **/__pycache__/
 **/*.pyc
+**/*.pyo
+*.egg-info/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Workspace runtime outputs
 rna_agent_system/workspace/*
 !rna_agent_system/workspace/.gitkeep
+
+# Model weights (managed outside git — download or copy to server directly)
 *.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Sequence files (runtime generated)
 *.fasta
+
+# Environment / secrets
+.env
+
+# Conda / virtualenv
+.conda/
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Stray vendor scripts
+rna_agent_system/get-docker.sh

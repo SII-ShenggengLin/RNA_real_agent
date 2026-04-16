@@ -1,11 +1,19 @@
-fastapi
-uvicorn
-langchain
-langgraph
-langchain-openai
-streamlit
-pydantic
-openai
-python-dotenv
-requests
-httpx
+# Agent core dependencies
+langchain>=0.2.0,<0.4
+langgraph>=0.2.0,<0.4
+langchain-openai>=0.1.0,<0.3
+langchain-core>=0.2.0,<0.4
+pydantic>=2.0,<3.0
+
+# LLM client
+openai>=1.0,<2.0
+httpx>=0.24,<1.0
+
+# HTTP requests (tool layer → microservices)
+requests>=2.28,<3.0
+
+# Frontend
+streamlit>=1.30,<2.0
+
+# Config
+python-dotenv>=1.0,<2.0

@@ -1,4 +1,4 @@
-"""Streamlit chat UI for the MVP siRNA LangGraph workflow."""
+"""Streamlit chat UI for the RNA Design multi-agent workflow."""
 
 from __future__ import annotations
 
@@ -16,9 +16,9 @@ from agent_core.graph import compiled_graph
 from agent_core.state import default_state
 
 
-st.set_page_config(page_title="RNA Design Agent (MVP)", page_icon="🧬", layout="wide")
-st.title("🧬 RNA Design Multi-Agent System (MVP)")
-st.caption("Phase 1: siRNA single-path workflow (Router -> Specialist -> Tools -> Critic)")
+st.set_page_config(page_title="RNA Design Agent", page_icon="🧬", layout="wide")
+st.title("🧬 RNA Design Multi-Agent System")
+st.caption("Rule-based workflow: Router → Specialist → Tool Execution → Critic")
 
 
 if "chat_history" not in st.session_state:

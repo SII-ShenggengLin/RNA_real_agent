@@ -1,4 +1,4 @@
-"""State definitions for the MVP LangGraph workflow."""
+"""AgentState definition for the RNA Design multi-agent workflow."""
 
 from typing import Any, Literal, TypedDict
 

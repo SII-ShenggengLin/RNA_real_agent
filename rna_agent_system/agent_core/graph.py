@@ -1,4 +1,4 @@
-"""Build and compile the MVP siRNA LangGraph workflow."""
+"""Build and compile the RNA Design LangGraph workflow."""
 
 from langgraph.graph import END, START, StateGraph
 
@@ -16,7 +16,7 @@ from agent_core.state import AgentState
 
 
 def build_graph():
-    """Create and compile the MVP StateGraph."""
+    """Create and compile the RNA Design StateGraph."""
     workflow = StateGraph(AgentState)
 
     workflow.add_node("router", router_node)

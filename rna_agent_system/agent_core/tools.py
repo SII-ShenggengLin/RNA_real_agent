@@ -1,4 +1,4 @@
-"""LangChain tools wrapping mock RNA microservices."""
+"""LangChain @tool wrappers for RNA design microservices."""
 
 from __future__ import annotations
 
@@ -74,7 +74,7 @@ def _normalize_sgrna_design_sequence(raw_text: str) -> str:
 
 
 class SirnaEfficiencyInput(BaseModel):
-    """Input schema for siRNA efficiency prediction tool."""
+    """Input schema for the siRNA efficiency prediction tool."""
 
     filepath: str = Field(
         ...,
@@ -82,7 +82,7 @@ class SirnaEfficiencyInput(BaseModel):
     )
     service_url: str = Field(
         default="http://127.0.0.1:8001/predict",
-        description="Full URL for the mock AttSiOff prediction API endpoint.",
+        description="Full URL for the AttSiOff prediction API endpoint.",
     )
 
 
@@ -95,7 +95,7 @@ class OffTargetCheckInput(BaseModel):
     )
     service_url: str = Field(
         default="http://127.0.0.1:8002/check",
-        description="Full URL for the mock off-target API endpoint.",
+        description="Full URL for the off-target checking API endpoint.",
     )
 
 

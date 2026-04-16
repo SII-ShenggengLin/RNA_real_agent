@@ -1,1 +1,1 @@
-"""Core package for LangGraph agent orchestration."""
+"""RNA Design Multi-Agent System — LangGraph agent orchestration core."""

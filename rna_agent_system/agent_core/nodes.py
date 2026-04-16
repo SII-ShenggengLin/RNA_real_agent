@@ -1,4 +1,4 @@
-"""Node implementations for the MVP siRNA workflow graph."""
+"""Node implementations for the RNA Design multi-agent workflow graph."""
 
 from __future__ import annotations
 
