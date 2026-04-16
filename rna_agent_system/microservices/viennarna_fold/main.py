@@ -154,6 +154,8 @@ def _run_plfold_accessibility(
         tdir = Path(tmp)
         fasta_path = tdir / "query.fa"
         fasta_path.write_text(f">query\n{seq}\n", encoding="utf-8")
+        # Note: do not pass ``--noPS`` here; some ViennaRNA builds ship RNAplfold
+        # without that flag (it would exit 1 with "unrecognized option --noPS").
         cmd = [
             _RNAPLFOLD_EXE,
             "-W",
@@ -164,7 +166,6 @@ def _run_plfold_accessibility(
             str(ulength),
             "-T",
             str(temp_c),
-            "--noPS",
         ]
         proc = subprocess.run(
             cmd,
