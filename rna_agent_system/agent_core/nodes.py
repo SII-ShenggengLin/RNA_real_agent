@@ -16,6 +16,7 @@ from agent_core.tool_specs import TOOL_SPECS
 from agent_core.tools import (
     calculate_crispr_specificity_with_crisot,
     compute_aso_target_accessibility_vienna,
+    predict_rna_local_accessibility_profile_vienna,
     compute_sirna_duplex_binding_vienna,
     design_sgrna_handle_with_crgpt,
     design_sirna_with_evitar,
@@ -59,6 +60,7 @@ MRNA_TOOLS = [
     predict_mrna_stability_with_rnastop,
     predict_putative_ires_with_iresfinder,
     compute_aso_target_accessibility_vienna,
+    predict_rna_local_accessibility_profile_vienna,
     inverse_fold_rna_secondary_structure_vienna,
     analyze_cds_codon_metrics_with_codonw_slim,
     compute_rna_sequence_gc_content,
@@ -245,22 +247,62 @@ def _build_codonw_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
     return args
 
 
-def _needs_aso_accessibility_vienna(user_text: str) -> bool:
-    keys = (
-        "aso",
-        "antisense oligo",
-        "gapmer",
-        "morpholino",
-        "accessibility",
-        "可及性",
-        "rnaplfold",
-        "rna plfold",
-        "plfold",
-        "unpaired probability",
-        "结合区域",
-        "binding site accessibility",
+def _needs_aso_region_plfold_accessibility(raw_text: str) -> bool:
+    """ASO / explicit binding region + RNAplfold-style accessibility (region summary tool)."""
+    u = raw_text.lower()
+    if any(k in u for k in ("aso", "gapmer", "morpholino", "antisense oligo")):
+        return True
+    if "binding site accessibility" in u:
+        return True
+    rs, _re = _extract_aso_region_bounds(raw_text)
+    if rs is not None and any(
+        k in u for k in ("accessibility", "可及性", "plfold", "rnaplfold", "rna plfold", "lunp")
+    ):
+        return True
+    if any(k in raw_text for k in ("结合区域", "靶区")) and any(
+        k in u for k in ("accessibility", "可及性", "plfold", "rnaplfold", "lunp")
+    ):
+        return True
+    return False
+
+
+def _needs_rna_plfold_local_profile(raw_text: str) -> bool:
+    """Whole-sequence RNAplfold (``RNAplfold``) local unpaired probability profile (not ASO-only summary)."""
+    if _needs_aso_region_plfold_accessibility(raw_text):
+        return False
+    u = raw_text.lower()
+    cn_markers = (
+        "局部结构",
+        "局部折叠",
+        "可及性曲线",
+        "位点可及性",
+        "滑动窗口",
+        "每个碱基",
+        "逐位点",
     )
-    return any(k in user_text for k in keys)
+    if any(k in raw_text for k in cn_markers):
+        return True
+    en_markers = (
+        "local structure",
+        "local folding",
+        "lunp",
+        "accessibility profile",
+        "unpaired profile",
+        "sliding window",
+        "per-nucleotide",
+        "per nucleotide",
+    )
+    if any(k in u for k in en_markers):
+        return True
+    if any(k in u for k in ("rnaplfold", "rna plfold")):
+        return True
+    if "plfold" in u:
+        return True
+    if "accessibility" in u or "可及性" in raw_text:
+        return True
+    if "unpaired probability" in u:
+        return True
+    return False
 
 
 def _needs_inverse_fold_vienna(user_text: str) -> bool:
@@ -1458,6 +1500,13 @@ def router_node(state: AgentState) -> AgentState:
             "accessibility",
             "可及性",
             "plfold",
+            "rnaplfold",
+            "lunp",
+            "局部结构",
+            "local structure",
+            "local folding",
+            "sliding window",
+            "滑动窗口",
             "inverse fold",
             "逆折叠",
             "rnainverse",
@@ -1749,7 +1798,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): ViennaRNA RNAinverse secondary-structure inverse fold."
-    elif _needs_aso_accessibility_vienna(user_text):
+    elif _needs_aso_region_plfold_accessibility(raw_text):
         filepath_aso, created_workspace_file = _resolve_rnastop_input(raw_text)
         state["current_filepath"] = filepath_aso
         if created_workspace_file or filepath_aso.startswith("workspace/"):
@@ -1769,6 +1818,20 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): ViennaRNA RNAplfold ASO / binding-site accessibility."
+    elif _needs_rna_plfold_local_profile(raw_text):
+        filepath_pf, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath_pf
+        if created_workspace_file or filepath_pf.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath_pf]
+        tool_calls = [
+            {
+                "name": "predict_rna_local_accessibility_profile_vienna",
+                "args": {"filepath": filepath_pf},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): ViennaRNA RNAplfold full-sequence local accessibility profile."
     elif rnastop_mode:
         filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
         state["current_filepath"] = filepath
@@ -2081,7 +2144,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     "args": {"filepath": inv_fp, "repeats": repeats},
                 }
             ]
-        elif _needs_aso_accessibility_vienna(user_text):
+        elif _needs_aso_region_plfold_accessibility(state.get("input_sequence", "")):
             raw_aso = state.get("input_sequence", "")
             fp_aso, created_workspace_file = _resolve_rnastop_input(raw_aso)
             state["current_filepath"] = fp_aso
@@ -2098,6 +2161,15 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     "name": "compute_aso_target_accessibility_vienna",
                     "args": {"filepath": fp_aso, "region_start": rs, "region_end": re_fb},
                 }
+            ]
+        elif _needs_rna_plfold_local_profile(state.get("input_sequence", "")):
+            raw_pf = state.get("input_sequence", "")
+            fp_pf, created_workspace_file = _resolve_rnastop_input(raw_pf)
+            state["current_filepath"] = fp_pf
+            if created_workspace_file or fp_pf.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [fp_pf]
+            fallback_calls = [
+                {"name": "predict_rna_local_accessibility_profile_vienna", "args": {"filepath": fp_pf}}
             ]
         elif _needs_rnastop_prediction(user_text):
             filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
@@ -2575,6 +2647,13 @@ def tool_execution_node(state: AgentState) -> AgentState:
             ju = tool_result.get("joint_unpaired_prob_stretch_ending_at_region_end")
             if ju is not None:
                 state["vienna_aso_joint_unpaired"] = float(ju)
+        elif tool_name == "predict_rna_local_accessibility_profile_vienna":
+            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            if input_filepath:
+                state["current_filepath"] = input_filepath
+            lunp_fp = str(tool_result.get("lunp_profile_tsv_filepath", ""))
+            if lunp_fp.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [lunp_fp]
         elif tool_name == "inverse_fold_rna_secondary_structure_vienna":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -2633,6 +2712,7 @@ def critic_node(state: AgentState) -> AgentState:
 
     hard_reject = False
     user_text = state.get("input_sequence", "").lower()
+    raw_user = state.get("input_sequence", "")
     if (
         specialist == "mrna_specialist"
         and not _needs_rnastop_prediction(user_text)
@@ -2640,6 +2720,7 @@ def critic_node(state: AgentState) -> AgentState:
         and not _needs_structure_to_sequence_design(user_text)
         and not _needs_rna_gc_content_metric(user_text)
         and not _needs_dot_bracket_unpaired_fraction_metric(user_text)
+        and not _needs_rna_plfold_local_profile(raw_user)
         and any(
             k in user_text
             for k in ["structure", "fold", "rnafold", "二级结构", "linearfold"]

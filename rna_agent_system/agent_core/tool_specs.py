@@ -76,6 +76,21 @@ class ViennaAsoAccessibilityOutput(_OutBase):
     model: str
 
 
+class ViennaPlfoldLocalProfileOutput(_OutBase):
+    input_filepath: str
+    sequence_length: int
+    profile_positions_count: int
+    mean_unpaired_prob_1nt: float
+    min_unpaired_prob_1nt: float
+    max_unpaired_prob_1nt: float
+    plfold_winsize: int
+    plfold_span: int
+    plfold_unpaired_ulength_effective: int
+    lunp_profile_tsv_filepath: str
+    backend: str = ""
+    model: str
+
+
 class ViennaInverseFoldOutput(_OutBase):
     input_filepath: str
     target_structure: str
@@ -350,6 +365,26 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         produces=["mean_unpaired_prob_single_nt", "joint_unpaired_prob_stretch_ending_at_region_end"],
         input_model=tool_wrappers.AsoAccessibilityViennaInput,
         output_model=ViennaAsoAccessibilityOutput,
+        status=ToolStatus.available,
+    ),
+    "predict_rna_local_accessibility_profile_vienna": ToolSpec(
+        identity="predict_rna_local_accessibility_profile_vienna",
+        display_name="ViennaRNA RNAplfold local accessibility profile",
+        version="0.3.0-port8003",
+        source="https://github.com/ViennaRNA/ViennaRNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8003/plfold-profiles",
+        capabilities=[
+            "Compute whole-sequence local unpaired probabilities (RNAplfold lunp, single-nt column) for accessibility curves.",
+        ],
+        limitations=[
+            "Server caps sequence length (default 8000 nt); returns first lunp column only in the API (stretch columns not exported).",
+        ],
+        task_tags=["rna_local_accessibility", "rna_plfold_profile"],
+        requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
+        produces=["lunp_profile_tsv_filepath", "mean_unpaired_prob_1nt"],
+        input_model=tool_wrappers.PlfoldLocalProfileViennaInput,
+        output_model=ViennaPlfoldLocalProfileOutput,
         status=ToolStatus.available,
     ),
     "inverse_fold_rna_secondary_structure_vienna": ToolSpec(

@@ -1628,6 +1628,25 @@ class AsoAccessibilityViennaInput(BaseModel):
     temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
 
 
+class PlfoldLocalProfileViennaInput(BaseModel):
+    """Input for whole-sequence RNAplfold local (single-nt) unpaired probability profile."""
+
+    filepath: str = Field(..., description="Workspace file with RNA sequence (plain or FASTA).")
+    service_url: str = Field(
+        default="http://127.0.0.1:8003/plfold-profiles",
+        description="REST endpoint for ViennaRNA RNAplfold profile (lunp column 1).",
+    )
+    winsize: int = Field(default=70, ge=3, le=800, description="RNAplfold -W window size.")
+    span: int = Field(default=70, ge=2, le=800, description="RNAplfold -L max pair span.")
+    unpaired_ulength: int = Field(
+        default=25,
+        ge=1,
+        le=500,
+        description="RNAplfold -u upper bound for stretch probabilities in lunp output.",
+    )
+    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+
+
 class InverseFoldViennaInput(BaseModel):
     """Input for RNAinverse secondary-structure inverse folding."""
 
@@ -1747,6 +1766,80 @@ def compute_aso_target_accessibility_vienna(
         "plfold_winsize": int(payload.get("winsize", winsize)),
         "plfold_span": int(payload.get("span", span)),
         "plfold_unpaired_ulength": int(payload.get("unpaired_ulength", unpaired_ulength)),
+        "backend": str(payload.get("backend", "")),
+        "model": str(payload.get("model", "ViennaRNA-RNAplfold")),
+    }
+
+
+@tool(args_schema=PlfoldLocalProfileViennaInput)
+def predict_rna_local_accessibility_profile_vienna(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8003/plfold-profiles",
+    winsize: int = 70,
+    span: int = 70,
+    unpaired_ulength: int = 25,
+    temp_c: float = 37.0,
+) -> dict[str, Any]:
+    """Run ViennaRNA ``RNAplfold`` for local single-nucleotide unpaired probabilities (accessibility curve).
+
+    Uses the same sliding-window local folding model as ASO accessibility, but returns a **full-sequence**
+    profile (lunp first column: probability each base is unpaired in the local context). Writes a TSV
+    under ``workspace/`` with columns ``position`` and ``unpaired_prob_1nt`` for downstream plotting.
+
+    Args:
+        filepath: RNA sequence file (workspace path or absolute on the server).
+        service_url: ViennaRNA microservice ``POST /plfold-profiles`` URL.
+        winsize, span, unpaired_ulength: RNAplfold parameters (-W, -L, -u).
+        temp_c: Folding temperature (Celsius).
+
+    Returns:
+        Summary statistics, array lengths, and ``lunp_profile_tsv_filepath`` for the saved curve.
+
+    Raises:
+        ValueError: If the service request fails or the response is invalid.
+    """
+    sequence_text = read_sequence(filepath)
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sequence": sequence_text,
+                "winsize": winsize,
+                "span": span,
+                "unpaired_ulength": unpaired_ulength,
+                "temp_c": temp_c,
+            },
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"ViennaRNA RNAplfold profile request failed: {exc}") from exc
+    required = ("positions", "unpaired_prob_1nt", "sequence_length")
+    if any(k not in payload for k in required):
+        raise ValueError(f"Invalid plfold-profiles response; expected keys {required}.")
+    positions = payload["positions"]
+    probs = payload["unpaired_prob_1nt"]
+    if not isinstance(positions, list) or not isinstance(probs, list):
+        raise ValueError("`positions` and `unpaired_prob_1nt` must be JSON arrays.")
+    if len(positions) != len(probs):
+        raise ValueError("`positions` and `unpaired_prob_1nt` length mismatch.")
+    lines = ["position\tunpaired_prob_1nt"]
+    for pos, p in zip(positions, probs):
+        lines.append(f"{int(pos)}\t{float(p):.8g}")
+    tsv_body = "\n".join(lines) + "\n"
+    out_fp = save_text_file(tsv_body, prefix="vienna_rnaplfold_profile", suffix=".tsv")
+    return {
+        "input_filepath": filepath,
+        "sequence_length": int(payload.get("sequence_length", 0)),
+        "profile_positions_count": len(positions),
+        "mean_unpaired_prob_1nt": float(payload.get("mean_unpaired_prob_1nt", 0.0)),
+        "min_unpaired_prob_1nt": float(payload.get("min_unpaired_prob_1nt", 0.0)),
+        "max_unpaired_prob_1nt": float(payload.get("max_unpaired_prob_1nt", 0.0)),
+        "plfold_winsize": int(payload.get("winsize", winsize)),
+        "plfold_span": int(payload.get("span", span)),
+        "plfold_unpaired_ulength_effective": int(payload.get("unpaired_ulength_effective", unpaired_ulength)),
+        "lunp_profile_tsv_filepath": out_fp,
         "backend": str(payload.get("backend", "")),
         "model": str(payload.get("model", "ViennaRNA-RNAplfold")),
     }

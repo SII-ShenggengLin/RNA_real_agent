@@ -1,4 +1,4 @@
-"""ViennaRNA microservice: folding, siRNA duplex (cofold), ASO accessibility (RNAplfold), inverse fold."""
+"""ViennaRNA microservice: folding, siRNA duplex (cofold), RNAplfold local accessibility, inverse fold."""
 
 from __future__ import annotations
 
@@ -279,11 +279,14 @@ app = FastAPI(
     title="ViennaRNA Fold Service (Port 8003 Deployment)",
     description=(
         "Predict RNA secondary structure (RNAfold), siRNA duplex thermodynamics (RNAcofold), "
-        "local accessibility for ASO binding sites (RNAplfold), and inverse folding (RNAinverse). "
+        "local accessibility via RNAplfold (whole-sequence profiles and ASO regions), and inverse folding (RNAinverse). "
         "Uses Python RNAlib when available, otherwise ViennaRNA CLI tools."
     ),
-    version="0.2.0-port8003",
+    version="0.3.0-port8003",
 )
+
+# Upper bound on sequence length for whole-sequence RNAplfold profiles (memory / JSON payload).
+_MAX_PLFOLD_PROFILE_SEQ_LEN = 8000
 
 
 class FoldRequest(BaseModel):
@@ -382,6 +385,39 @@ class InverseFoldResponse(BaseModel):
     partition_probability_note: Optional[float] = None
     backend: str
     model: str = "ViennaRNA-RNAinverse"
+
+
+class PlfoldProfilesRequest(BaseModel):
+    sequence: str = Field(..., min_length=1, description="RNA sequence (plain or FASTA body).")
+    winsize: int = Field(default=70, ge=3, le=800, description="RNAplfold -W window size.")
+    span: int = Field(default=70, ge=2, le=800, description="RNAplfold -L max pair span.")
+    unpaired_ulength: int = Field(
+        default=25,
+        ge=1,
+        le=500,
+        description="RNAplfold -u: max stretch length for unpaired probabilities in lunp output.",
+    )
+    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+
+
+class PlfoldProfilesResponse(BaseModel):
+    sequence_length: int
+    positions: List[int] = Field(
+        ...,
+        description="1-based sequence positions with RNAplfold lunp rows (same order as query_lunp).",
+    )
+    unpaired_prob_1nt: List[float] = Field(
+        ...,
+        description="Local probability that the base at each position is unpaired (first lunp column).",
+    )
+    winsize: int
+    span: int
+    unpaired_ulength_effective: int
+    mean_unpaired_prob_1nt: float
+    min_unpaired_prob_1nt: float
+    max_unpaired_prob_1nt: float
+    backend: str
+    model: str = "ViennaRNA-RNAplfold"
 
 
 @app.get("/health")
@@ -532,6 +568,64 @@ def aso_accessibility(payload: AsoAccessibilityRequest) -> AsoAccessibilityRespo
         winsize=min(payload.winsize, len(seq)),
         span=min(payload.span, min(payload.winsize, len(seq))),
         unpaired_ulength=ulen,
+        backend=backend,
+    )
+
+
+@app.post("/plfold-profiles", response_model=PlfoldProfilesResponse)
+def plfold_profiles(payload: PlfoldProfilesRequest) -> PlfoldProfilesResponse:
+    """Whole-sequence local unpaired accessibility via ViennaRNA ``RNAplfold`` (lunp, single-nt column)."""
+    seq = _normalize_rna(
+        "".join(
+            ln
+            for ln in payload.sequence.splitlines()
+            if ln.strip() and not ln.lstrip().startswith(">")
+        )
+    )
+    if not seq:
+        raise HTTPException(status_code=400, detail="No RNA sequence after normalization.")
+    if len(seq) > _MAX_PLFOLD_PROFILE_SEQ_LEN:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"sequence length {len(seq)} exceeds server limit {_MAX_PLFOLD_PROFILE_SEQ_LEN} "
+                "for /plfold-profiles; shorten the input or increase the limit in the service code."
+            ),
+        )
+    ulen = max(1, min(payload.unpaired_ulength, len(seq), 500))
+    try:
+        rows, backend = _run_plfold_accessibility(
+            seq,
+            payload.winsize,
+            payload.span,
+            ulen,
+            payload.temp_c,
+        )
+    except (RuntimeError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=503, detail=f"RNAplfold profile failed: {exc}") from exc
+
+    positions: List[int] = []
+    col0: List[float] = []
+    for pos, probs in rows:
+        if not probs:
+            continue
+        positions.append(pos)
+        col0.append(float(probs[0]))
+    if not col0:
+        raise HTTPException(status_code=503, detail="RNAplfold produced no lunp data rows.")
+    mean_u = sum(col0) / len(col0)
+    return PlfoldProfilesResponse(
+        sequence_length=len(seq),
+        positions=positions,
+        unpaired_prob_1nt=col0,
+        winsize=min(payload.winsize, len(seq)),
+        span=min(payload.span, min(payload.winsize, len(seq))),
+        unpaired_ulength_effective=ulen,
+        mean_unpaired_prob_1nt=float(mean_u),
+        min_unpaired_prob_1nt=float(min(col0)),
+        max_unpaired_prob_1nt=float(max(col0)),
         backend=backend,
     )
 
