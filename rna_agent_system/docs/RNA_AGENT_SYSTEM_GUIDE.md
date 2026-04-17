@@ -133,8 +133,9 @@ rna_agent_system/
 | 8017 | `sgrna_design_service` | CRGPT | sgRNA handle 设计 | ✅ Linux GPU |
 | 8018 | `codonw_slim_service` | codonw-slim | CDS 密码子指标（CAI/Fop/CBI/Nc 等） | ✅ Linux |
 | 8019 | `blast_service` | BLAST+ | blastn 核酸相似性搜索 | ✅ Linux |
+| 8020 | `rna_sequence_metrics_service` | RNA metrics | 序列 GC 含量；点括号结构未配对（`.`）比例 | ✅ Linux |
 
-> 后续新增工具从 **8020** 起顺延。
+> 后续新增工具从 **8021** 起顺延。
 
 ---
 
@@ -190,6 +191,8 @@ User Input → Router → Specialist → Tool Execution → Critic → End / 回
 | 5 | ASO 可及性（`aso` / `plfold` / `accessibility`） | `compute_aso_target_accessibility_vienna` |
 | 6 | mRNA 稳定性（`stability` / `degradation` / `rnastop`） | `predict_mrna_stability_with_rnastop` |
 | 7 | 独立密码子指标（`codonw` / `codon usage`） | `analyze_cds_codon_metrics_with_codonw_slim` |
+| 7b | 序列 GC 含量（`gc content` / `gc含量` 等） | `compute_rna_sequence_gc_content` |
+| 7c | 二级结构点括号未配对比例（`unpaired fraction` / `未配对比例` 等） | `compute_dot_bracket_unpaired_fraction` |
 | 8 | BLAST 搜索（`blast` / `blastn`） | `run_blastn_similarity_search` |
 | 9 | 结构→序列（`rhodesign` + `.pdb`） | `design_rna_sequence_with_rhodesign` |
 | 10 | ODesign 设计 | `run_odesign_inference` |
@@ -475,7 +478,22 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 - 脚本解决两个问题：`pip` 隔离构建缺 Cython；上游 `astype(long)` → `astype(np.int64)` 兼容性
 - 输入应为 in-frame CDS
 
-### 6.17 BLAST+ (端口 8019)
+### 6.17 RNA sequence metrics (端口 8020)
+
+| 项目 | 说明 |
+|------|------|
+| 微服务目录 | `microservices/rna_sequence_metrics_service/` |
+| 环境 | `python=3.10` + FastAPI（无第三方算法依赖） |
+| 接口 | `GET /health`、`POST /gc-content`、`POST /unpaired-fraction` |
+| Agent 工具 | `compute_rna_sequence_gc_content(filepath)`、`compute_dot_bracket_unpaired_fraction(filepath)` |
+
+**关键注意事项**：
+
+- GC：从文件中读取序列，规范化后统计 A/U/G/C，`gc_content = (G+C)/N`。
+- 未配对比例：从文件中读取点括号串（仅允许 `. ( ) [ ] { } < >`），`unpaired_fraction = count('.')/length`。
+- 自然语言可写 `structure=(((...)))` 写入 workspace 再调用；或提供 `workspace/*.ss` 等路径。
+
+### 6.18 BLAST+ (端口 8019)
 
 | 项目 | 说明 |
 |------|------|
@@ -489,7 +507,7 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 - 与历史 mock `off_target_blast` 不同：本服务是真实 BLAST 比对
 - Agent 工具层会把完整结果写入 `workspace/blastn_out_*.tsv`
 
-### 6.18 Mock 服务（已移除）
+### 6.19 Mock 服务（已移除）
 
 历史上曾存在两个用于开发调试的 siRNA mock 微服务（端口 8001/8002），用于返回随机的“效率分数/脱靶计数”以跑通早期工作流。
 
@@ -608,6 +626,15 @@ curl -sS -X POST http://127.0.0.1:8018/analyze/cds \
   -H 'Content-Type: application/json' \
   -d '{"sequence":"ATGAATATGCTCATTGTCGGTAGAGTTGTTGCTAGTGTTGGGGGAAGCGGACTTCAAACG"}' | python3 -m json.tool
 
+# RNA sequence metrics（GC；未配对比例需服务器可读的结构文件路径）
+curl -sS -X POST http://127.0.0.1:8020/gc-content \
+  -H 'Content-Type: application/json' \
+  -d '{"sequence_filepath":"rna_agent_system/workspace/blast_test_query.fa"}' | python3 -m json.tool
+printf '%s\n' '(((....)))' > /tmp/rna_ss_example.txt
+curl -sS -X POST http://127.0.0.1:8020/unpaired-fraction \
+  -H 'Content-Type: application/json' \
+  -d '{"structure_filepath":"/tmp/rna_ss_example.txt"}' | python3 -m json.tool
+
 # BLAST
 curl -sS -X POST http://127.0.0.1:8019/blastn \
   -H 'Content-Type: application/json' \
@@ -624,6 +651,8 @@ curl -sS -X POST http://127.0.0.1:8019/blastn \
 | 逆折叠 | `inverse fold 逆折叠 rnainverse，structure=((((....))))，repeats=5` |
 | LinearFold | `fold linearfold 二级结构 AUGGCUACGUAGCUAGCUAGCUAGCUGA beam_size=20` |
 | 密码子指标 | `codonw-slim 分析 CDS 密码子 CAI` + CDS 序列 |
+| GC 含量 | `gc content 计算 GC 含量` + RNA 序列或 `workspace/*.fa` 路径 |
+| 未配对比例 | `unpaired fraction 未配对比例 structure=(((....))))` 或 `workspace/*.ss` 点括号文件 |
 | BLAST 搜索 | `blastn 比对 subject_fasta=workspace/test.fa 序列 ATGCATGCATGC` |
 
 ---

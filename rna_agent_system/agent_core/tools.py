@@ -390,6 +390,118 @@ def run_blastn_similarity_search(
     return meta
 
 
+class RnaGcContentInput(BaseModel):
+    """Input schema for RNA/DNA GC fraction (microservice on port 8020)."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8020/gc-content",
+        description="POST endpoint for GC content microservice.",
+    )
+
+
+class DotBracketUnpairedFractionInput(BaseModel):
+    """Input schema for dot-bracket unpaired '.' fraction (microservice on port 8020)."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to dot-bracket secondary structure (first structural line used; FASTA header skipped).",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8020/unpaired-fraction",
+        description="POST endpoint for unpaired-fraction microservice.",
+    )
+
+
+@tool(args_schema=RnaGcContentInput)
+def compute_rna_sequence_gc_content(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8020/gc-content",
+) -> dict[str, Any]:
+    """Compute (G+C)/N for an RNA or DNA sequence file (N = count of A/U/G/C after normalization).
+
+    Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
+    absolute server path; long sequences should not be pasted into the chat.
+
+    Args:
+        filepath: Sequence file (plain or FASTA); T is treated as U, non-letters removed.
+        service_url: POST ``/gc-content`` endpoint.
+
+    Returns:
+        Dict with ``gc_content``, counts, and resolved paths.
+
+    Raises:
+        ValueError: If the HTTP call fails or the service reports an error.
+    """
+    read_sequence(filepath)
+    seq_abs = _absolute_path_under_project(filepath)
+    try:
+        response = requests.post(
+            service_url,
+            json={"sequence_filepath": seq_abs},
+            timeout=120,
+        )
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"RNA sequence metrics (GC) request failed: {exc}") from exc
+    return {
+        "input_filepath": filepath,
+        "resolved_filepath": str(body.get("resolved_filepath", "")),
+        "sequence_length": int(body.get("sequence_length", 0)),
+        "g_count": int(body.get("g_count", 0)),
+        "c_count": int(body.get("c_count", 0)),
+        "gc_count": int(body.get("gc_count", 0)),
+        "gc_content": float(body.get("gc_content", 0.0)),
+        "model": str(body.get("model", "rna-sequence-metrics-gc")),
+    }
+
+
+@tool(args_schema=DotBracketUnpairedFractionInput)
+def compute_dot_bracket_unpaired_fraction(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8020/unpaired-fraction",
+) -> dict[str, Any]:
+    """Fraction of unpaired bases in a dot-bracket RNA secondary structure: count('.')/length.
+
+    The structure string must use only ``. ( ) [ ] { } < >`` as in ViennaRNA / LinearFold dot-bracket
+    notation. Requires ``rna_sequence_metrics_service`` on port 8020.
+
+    Args:
+        filepath: Text file containing the structure (FASTA with structure on sequence line is ok).
+        service_url: POST ``/unpaired-fraction`` endpoint.
+
+    Returns:
+        Dict with ``unpaired_fraction``, ``dot_count``, ``structure_length``, and paths.
+
+    Raises:
+        ValueError: If the HTTP call fails or the structure contains invalid characters.
+    """
+    read_sequence(filepath)
+    struct_abs = _absolute_path_under_project(filepath)
+    try:
+        response = requests.post(
+            service_url,
+            json={"structure_filepath": struct_abs},
+            timeout=120,
+        )
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        raise ValueError(f"RNA sequence metrics (unpaired fraction) request failed: {exc}") from exc
+    return {
+        "input_filepath": filepath,
+        "resolved_filepath": str(body.get("resolved_filepath", "")),
+        "structure_length": int(body.get("structure_length", 0)),
+        "dot_count": int(body.get("dot_count", 0)),
+        "unpaired_fraction": float(body.get("unpaired_fraction", 0.0)),
+        "model": str(body.get("model", "rna-sequence-metrics-unpaired")),
+    }
+
+
 @tool(args_schema=EvitarDesignInput)
 def design_sirna_with_evitar(
     filepath: str,

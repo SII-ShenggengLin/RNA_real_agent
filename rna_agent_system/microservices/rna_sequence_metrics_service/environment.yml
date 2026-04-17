@@ -1,0 +1,11 @@
+# Lightweight RNA sequence / dot-bracket statistics; FastAPI on port 8020.
+name: rna_sequence_metrics_service_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - fastapi==0.109.2
+      - uvicorn[standard]==0.27.1
+      - pydantic==2.6.1

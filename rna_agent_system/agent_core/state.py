@@ -87,6 +87,8 @@ class AgentState(TypedDict, total=False):
     blast_hit_count: int
     blast_tabular_tsv_filepath: str
     blast_subject_mode: str
+    sequence_gc_content: float
+    dot_bracket_unpaired_fraction: float
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str

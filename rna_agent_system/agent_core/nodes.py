@@ -25,6 +25,8 @@ from agent_core.tools import (
     design_mrna_cds_with_rnarl,
     inverse_fold_rna_secondary_structure_vienna,
     analyze_cds_codon_metrics_with_codonw_slim,
+    compute_rna_sequence_gc_content,
+    compute_dot_bracket_unpaired_fraction,
     mock_codon_optimization,
     optimize_sgrna_with_crisot,
     run_blastn_similarity_search,
@@ -59,6 +61,8 @@ MRNA_TOOLS = [
     compute_aso_target_accessibility_vienna,
     inverse_fold_rna_secondary_structure_vienna,
     analyze_cds_codon_metrics_with_codonw_slim,
+    compute_rna_sequence_gc_content,
+    compute_dot_bracket_unpaired_fraction,
     mock_codon_optimization,
     run_blastn_similarity_search,
     predict_rna_secondary_structure,
@@ -155,6 +159,66 @@ def _needs_codonw_standalone(user_text: str) -> bool:
     ):
         return True
     return False
+
+
+def _needs_rna_gc_content_metric(user_text: str) -> bool:
+    """Explicit GC-content / (G+C) fraction request (not generic sequence design)."""
+    lowered = user_text.lower()
+    if "gc含量" in user_text or "gc 含量" in user_text:
+        return True
+    if "gc content" in lowered or "gc-content" in lowered:
+        return True
+    if re.search(r"\bgc\s*%\b", lowered):
+        return True
+    if ("g+c" in lowered or "g + c" in lowered) and any(
+        x in lowered for x in ("fraction", "content", "ratio", "percent", "proportion")
+    ):
+        return True
+    if ("g+c" in lowered or "g + c" in lowered) and ("比例" in user_text or "含量" in user_text):
+        return True
+    if "碱基gc" in user_text or "gc比例" in user_text:
+        return True
+    return False
+
+
+def _needs_dot_bracket_unpaired_fraction_metric(user_text: str) -> bool:
+    """Dot-bracket '.' / length (unpaired fraction) from a secondary structure string or file."""
+    lowered = user_text.lower()
+    if "未配对" in user_text and any(x in user_text for x in ("比例", "分数", "占比", "率")):
+        return True
+    if "未配对" in user_text and any(
+        k in lowered for k in ("fraction", "ratio", "proportion", "dot-bracket", "dot bracket")
+    ):
+        return True
+    if "unpaired fraction" in lowered or "unpaired ratio" in lowered or "unpaired proportion" in lowered:
+        return True
+    if "dot fraction" in lowered or "dot-bracket" in lowered or "dot bracket" in lowered:
+        return True
+    if "点的比例" in user_text or "点括号" in user_text:
+        return True
+    return False
+
+
+def _resolve_dot_bracket_structure_filepath(raw_text: str) -> Tuple[str, bool]:
+    """Return (filepath, created_workspace_file) for a dot-bracket structure."""
+    fp = _extract_path_with_suffixes(raw_text, ("ss", "struct", "dbn", "txt"))
+    if fp:
+        read_sequence(fp)
+        return fp, False
+
+    struct_m = re.search(
+        r"(?:structure|dot[- ]?bracket|dbn|ss)\s*[:=]\s*[\"']?([.()[\]{}<>]+)[\"']?",
+        raw_text,
+        flags=re.IGNORECASE,
+    )
+    if struct_m:
+        content = struct_m.group(1).strip() + "\n"
+        return save_text_file(content, prefix="dotbracket_in", suffix=".txt"), True
+
+    raise ValueError(
+        "Unpaired fraction needs a dot-bracket structure file (.ss/.struct/.dbn/.txt) under workspace/, "
+        "or inline `structure=(((...)))` / `dot-bracket=...` in the request."
+    )
 
 
 def _build_codonw_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
@@ -1397,6 +1461,12 @@ def router_node(state: AgentState) -> AgentState:
             "inverse fold",
             "逆折叠",
             "rnainverse",
+            "gc content",
+            "gc含量",
+            "unpaired fraction",
+            "未配对比例",
+            "dot-bracket",
+            "dot bracket",
         ]
     ):
         route = "mrna_specialist"
@@ -1727,6 +1797,42 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch codonw-slim CDS codon metrics."
+    elif _needs_rna_gc_content_metric(user_text):
+        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        state["current_filepath"] = filepath
+        if created_workspace_file or filepath.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        tool_calls = [
+            {
+                "name": "compute_rna_sequence_gc_content",
+                "args": {"filepath": filepath},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): RNA sequence GC content (G+C)/N."
+    elif _needs_dot_bracket_unpaired_fraction_metric(user_text):
+        try:
+            ss_fp, created_ss = _resolve_dot_bracket_structure_filepath(raw_text)
+        except ValueError as exc:
+            ai_msg = AIMessage(
+                content=f"mRNA specialist (unpaired fraction): {exc}",
+                tool_calls=[],
+            )
+            state["messages"] = state.get("messages", []) + [ai_msg]
+            return state
+        state["current_filepath"] = ss_fp
+        if created_ss or ss_fp.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [ss_fp]
+        tool_calls = [
+            {
+                "name": "compute_dot_bracket_unpaired_fraction",
+                "args": {"filepath": ss_fp},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dot-bracket unpaired fraction (dot count / length)."
     elif _needs_blast_search(user_text):
         filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
         state["current_filepath"] = filepath
@@ -2004,6 +2110,25 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     "args": {"filepath": filepath},
                 }
             ]
+        elif _needs_rna_gc_content_metric(user_text):
+            filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
+            state["current_filepath"] = filepath
+            if created_workspace_file or filepath.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            fallback_calls = [{"name": "compute_rna_sequence_gc_content", "args": {"filepath": filepath}}]
+        elif _needs_dot_bracket_unpaired_fraction_metric(user_text):
+            raw_u = state.get("input_sequence", "")
+            try:
+                ss_fp, created_ss = _resolve_dot_bracket_structure_filepath(raw_u)
+            except ValueError as exc:
+                state["messages"] = state.get("messages", []) + [
+                    AIMessage(content=f"mRNA tool executor (unpaired fraction): {exc}")
+                ]
+                return state
+            state["current_filepath"] = ss_fp
+            if created_ss or ss_fp.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [ss_fp]
+            fallback_calls = [{"name": "compute_dot_bracket_unpaired_fraction", "args": {"filepath": ss_fp}}]
         elif _needs_structure_to_sequence_design(user_text):
             pdb_path, ss_path = _extract_structure_design_inputs(state.get("input_sequence", ""))
             structure_call: dict[str, Any] = {
@@ -2218,6 +2343,10 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["blast_tabular_tsv_filepath"] = tab_fp
                 if tab_fp.startswith("workspace/"):
                     state["workspace_files"] = state.get("workspace_files", []) + [tab_fp]
+        elif tool_name == "compute_rna_sequence_gc_content":
+            state["sequence_gc_content"] = float(tool_result.get("gc_content", 0.0))
+        elif tool_name == "compute_dot_bracket_unpaired_fraction":
+            state["dot_bracket_unpaired_fraction"] = float(tool_result.get("unpaired_fraction", 0.0))
         elif tool_name == "analyze_cds_codon_metrics_with_codonw_slim":
             state["cai_score"] = float(tool_result.get("cai_score", 0.0))
             state["codonw_enc"] = float(tool_result.get("enc", 0.0))
@@ -2509,6 +2638,8 @@ def critic_node(state: AgentState) -> AgentState:
         and not _needs_rnastop_prediction(user_text)
         and not _needs_iresfinder_prediction(user_text)
         and not _needs_structure_to_sequence_design(user_text)
+        and not _needs_rna_gc_content_metric(user_text)
+        and not _needs_dot_bracket_unpaired_fraction_metric(user_text)
         and any(
             k in user_text
             for k in ["structure", "fold", "rnafold", "二级结构", "linearfold"]
@@ -2608,6 +2739,8 @@ def critic_node(state: AgentState) -> AgentState:
             f"blast_hit_count={state.get('blast_hit_count', 0)}; "
             f"blast_tabular_tsv_filepath={state.get('blast_tabular_tsv_filepath', '')}; "
             f"blast_subject_mode={state.get('blast_subject_mode', '')}; "
+            f"sequence_gc_content={state.get('sequence_gc_content', 0.0)}; "
+            f"dot_bracket_unpaired_fraction={state.get('dot_bracket_unpaired_fraction', 0.0)}; "
             f"retries={retry_count}"
         )
         state["messages"] = state.get("messages", []) + [

@@ -236,6 +236,26 @@ class ODesignInferenceOutput(_OutBase):
     model: str
 
 
+class RnaGcContentOutput(_OutBase):
+    input_filepath: str
+    resolved_filepath: str
+    sequence_length: int
+    g_count: int
+    c_count: int
+    gc_count: int
+    gc_content: float
+    model: str
+
+
+class DotBracketUnpairedFractionOutput(_OutBase):
+    input_filepath: str
+    resolved_filepath: str
+    structure_length: int
+    dot_count: int
+    unpaired_fraction: float
+    model: str
+
+
 TOOL_SPECS: Dict[str, ToolSpec] = {
     "compute_sirna_duplex_binding_vienna": ToolSpec(
         identity="compute_sirna_duplex_binding_vienna",
@@ -619,6 +639,38 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         input_model=tool_wrappers.ODesignInferenceInput,
         output_model=ODesignInferenceOutput,
         status=ToolStatus.partial,
+    ),
+    "compute_rna_sequence_gc_content": ToolSpec(
+        identity="compute_rna_sequence_gc_content",
+        display_name="RNA sequence GC content",
+        version="0.1.0-port8020",
+        source="in-repo microservice (no external algorithm)",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8020/gc-content",
+        capabilities=["Compute (G+C)/N from a sequence file (A/U/G/C only after normalization)."],
+        limitations=["Ignores non-AUGC characters; does not check biological correctness beyond parsing."],
+        task_tags=["sequence_composition", "gc_content"],
+        requires=[ToolDependency(name="rna_sequence_metrics microservice", detail="microservices/rna_sequence_metrics_service (port 8020)")],
+        produces=["gc_content", "sequence_length", "gc_count"],
+        input_model=tool_wrappers.RnaGcContentInput,
+        output_model=RnaGcContentOutput,
+        status=ToolStatus.available,
+    ),
+    "compute_dot_bracket_unpaired_fraction": ToolSpec(
+        identity="compute_dot_bracket_unpaired_fraction",
+        display_name="Dot-bracket unpaired fraction",
+        version="0.1.0-port8020",
+        source="in-repo microservice (Vienna/LinearFold-style dot-bracket notation)",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8020/unpaired-fraction",
+        capabilities=["Compute count('.')/length for a dot-bracket secondary structure string in a file."],
+        limitations=["Structure must use only . ( ) [ ] { } < >; does not validate balanced brackets."],
+        task_tags=["rna_secondary_structure", "unpaired_fraction"],
+        requires=[ToolDependency(name="rna_sequence_metrics microservice", detail="microservices/rna_sequence_metrics_service (port 8020)")],
+        produces=["unpaired_fraction", "structure_length", "dot_count"],
+        input_model=tool_wrappers.DotBracketUnpairedFractionInput,
+        output_model=DotBracketUnpairedFractionOutput,
+        status=ToolStatus.available,
     ),
 }
 
