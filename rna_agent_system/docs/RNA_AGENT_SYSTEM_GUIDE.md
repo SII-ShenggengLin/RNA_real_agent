@@ -598,6 +598,12 @@ streamlit run rna_agent_system/frontend/app.py \
 2. **Agent 工具层**：`tools.py` 中的函数
 3. **前端集成**：Streamlit 自然语言输入
 
+### 9.1.1 本次新增工具验收结果（2026-04）
+
+- `compute_rna_sequence_gc_content`：微服务、Agent 路由、前端自然语言调用均已通过。
+- `compute_dot_bracket_unpaired_fraction`：微服务、Agent 路由、前端自然语言调用均已通过。
+- 验收环境：Linux 服务器部署路径 `/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent`。
+
 ### 9.2 微服务 curl 示例
 
 ```bash
