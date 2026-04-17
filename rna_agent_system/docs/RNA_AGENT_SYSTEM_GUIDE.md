@@ -116,7 +116,7 @@ rna_agent_system/
 
 | 端口 | 服务目录 | 工具名称 | 能力说明 | 验证状态 |
 |------|----------|----------|----------|----------|
-| 8003 | `viennarna_fold` | ViennaRNA | 二级结构 / cofold / RNAplfold / RNAinverse | ✅ Linux |
+| 8003 | `viennarna_fold` | ViennaRNA | 二级结构 / cofold / RNAplfold（ASO 区间 + 全序列 profile）/ RNAinverse | ✅ Linux |
 | 8004 | `gemorna_service` | GEMORNA | 蛋白→mRNA CDS 设计 | ✅ Linux GPU |
 | 8005 | `rhofold_service` | RhoFold | RNA 三级结构预测（单序列模式） | ✅ Linux GPU |
 | 8006 | `rhodesign_service` | RhoDesign | RNA 结构→序列设计 | ✅ Linux GPU |
@@ -155,7 +155,7 @@ User Input → Router → Specialist → Tool Execution → Critic → End / 回
 |----------|-------------------|
 | `sirna_specialist` | `sirna`、`脱靶`、`off-target`、`duplex`、`cofold`、`结合能`、`evitar`、`predesign`、`cas13`、`rnaxs`、`predsi` |
 | `crispr_specialist` | `crispr`、`cas9`、`sgrna`、`crisot`、`guide rna`、`crgpt`、`sgrna handle` |
-| `mrna_specialist` | `mrna`、`design`、`protein`、`cds`、`fold`、`structure`、`gemorna`、`lineardesign`、`linearfold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`ires`、`stability`、`aso`、`inverse fold`、`codonw`、`blast`、`blastn` 等 |
+| `mrna_specialist` | `mrna`、`design`、`protein`、`cds`、`fold`、`structure`、`gemorna`、`lineardesign`、`linearfold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`ires`、`stability`、`aso`、`plfold`、`rnaplfold`、`lunp`、`局部结构`、`local structure`、`inverse fold`、`codonw`、`blast`、`blastn` 等 |
 | 默认 | `mrna_specialist` |
 
 ### 5.3 Specialist 分发
@@ -188,7 +188,8 @@ User Input → Router → Specialist → Tool Execution → Critic → End / 回
 | 2 | RNA-ligand 打分（`rnasmol` / `smiles` / `ligand`） | `score_rna_ligand_binding_with_rnasmol` |
 | 3 | IRES 识别 | `predict_putative_ires_with_iresfinder` |
 | 4 | ViennaRNA 逆折叠（`inverse fold` / `rnainverse`） | `inverse_fold_rna_secondary_structure_vienna` |
-| 5 | ASO 可及性（`aso` / `plfold` / `accessibility`） | `compute_aso_target_accessibility_vienna` |
+| 5 | ASO / gapmer / morpholino 等 + 可及性语义，或带数字区间的靶区可及性（`nodes._needs_aso_region_plfold_accessibility`） | `compute_aso_target_accessibility_vienna` |
+| 5b | RNAplfold 全序列局部可及性曲线（`局部结构`、`lunp`、`rnaplfold` / 单独 `plfold`、`local structure` 等；非 ASO 区域优先；`nodes._needs_rna_plfold_local_profile`） | `predict_rna_local_accessibility_profile_vienna` |
 | 6 | mRNA 稳定性（`stability` / `degradation` / `rnastop`） | `predict_mrna_stability_with_rnastop` |
 | 7 | 独立密码子指标（`codonw` / `codon usage`） | `analyze_cds_codon_metrics_with_codonw_slim` |
 | 7b | 序列 GC 含量（`gc content` / `gc含量` 等） | `compute_rna_sequence_gc_content` |
@@ -210,6 +211,7 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 |------|------|------|
 | siRNA | `off_target_genes > 0` | reject → 重试 |
 | mRNA 结构预测 | `mfe > -20.0` | reject → 重试 |
+| RNAplfold 全序列 profile | — | pass（不套用 MFE critic；避免「local structure」命中 `structure` 关键词误伤） |
 | RhoDesign | 微服务成功返回 | pass |
 | 其他 | — | pass |
 | 重试上限 | `max_retries = 3` | 强制 pass |
@@ -227,18 +229,20 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 上游仓库 | [ViennaRNA/ViennaRNA](https://github.com/ViennaRNA/ViennaRNA.git) |
 | 微服务目录 | `microservices/viennarna_fold/` |
 | 环境 | `python=3.10` + bioconda `viennarna` |
-| 接口 | `GET /health`、`POST /fold`、`POST /sirna-duplex`、`POST /aso-accessibility`、`POST /inverse-fold` |
-| 后端策略 | 优先 RNAlib（`import RNA`），回退到 CLI（`RNAfold --noPS`） |
+| 接口 | `GET /health`、`POST /fold`、`POST /sirna-duplex`、`POST /aso-accessibility`、`POST /plfold-profiles`、`POST /inverse-fold` |
+| 后端策略 | 优先 RNAlib（`import RNA`），回退到 CLI（`RNAfold --noPS`）；RNAplfold 相关走 **`RNAplfold`** 可执行文件（包内常用名；口语中的 rnaplfold 即此程序） |
 
 **Agent 工具函数**：
 - `predict_rna_secondary_structure(filepath)` — 单序列 MFE 二级结构
 - `compute_sirna_duplex_binding_vienna(filepath)` — siRNA 正反义链共折叠
-- `compute_aso_target_accessibility_vienna(filepath, region_start, region_end)` — RNAplfold 可及性
+- `compute_aso_target_accessibility_vienna(filepath, region_start, region_end)` — RNAplfold 靶区 / ASO 可及性（区间汇总）
+- `predict_rna_local_accessibility_profile_vienna(filepath, ...)` — RNAplfold 全序列局部可及性曲线（lunp 第一列）；结果写入 `workspace/vienna_rnaplfold_profile_*.tsv`
 - `inverse_fold_rna_secondary_structure_vienna(filepath)` — RNAinverse 逆折叠
 
 **部署注意**：
 - 默认通过 Conda bioconda `viennarna` 安装，无需从源码编译
 - 可选 `build_from_submodule_linux.sh` 从 submodule 源码编译
+- **`POST /plfold-profiles`**：全序列 profile 默认 **≤8000 nt**（服务端常量 `_MAX_PLFOLD_PROFILE_SEQ_LEN`）；超长请截断或改微服务源码中的上限
 
 ### 6.2 GEMORNA (端口 8004)
 
@@ -602,6 +606,7 @@ streamlit run rna_agent_system/frontend/app.py \
 
 - `compute_rna_sequence_gc_content`：微服务、Agent 路由、前端自然语言调用均已通过。
 - `compute_dot_bracket_unpaired_fraction`：微服务、Agent 路由、前端自然语言调用均已通过。
+- `predict_rna_local_accessibility_profile_vienna`（`POST /plfold-profiles`，ViennaRNA **RNAplfold**）：微服务、Agent 路由、前端自然语言调用均已通过（2026-04）。
 - 验收环境：Linux 服务器部署路径 `/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent`。
 
 ### 9.2 微服务 curl 示例
@@ -611,6 +616,12 @@ streamlit run rna_agent_system/frontend/app.py \
 curl -sS -X POST http://127.0.0.1:8003/fold \
   -H 'Content-Type: application/json' \
   -d '{"sequence":"GGGGAAAACCCC"}' | python3 -m json.tool
+
+# ViennaRNA RNAplfold 全序列局部可及性（lunp 第一列）
+curl -sS -X POST http://127.0.0.1:8003/plfold-profiles \
+  -H 'Content-Type: application/json' \
+  -d '{"sequence":"GGGGAAAACCCCUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGC","winsize":40,"span":30,"unpaired_ulength":15,"temp_c":37}' \
+  | python3 -m json.tool
 
 # GEMORNA CDS 设计
 curl -sS -X POST http://127.0.0.1:8004/generate/cds \
@@ -654,6 +665,7 @@ curl -sS -X POST http://127.0.0.1:8019/blastn \
 | 二级结构（ViennaRNA） | `请预测这条 RNA 的二级结构 fold：AUGCUAACGUAGCUAUGCUAUGCUAACGUAGCUAUGCUA` |
 | siRNA duplex 结合能 | `ViennaRNA duplex rnacofold，sense=GGCAUGCAUGC antisense=GCAUGCAUGCC` |
 | ASO 可及性 | `ASO accessibility plfold 可及性，region=10-50，靶标 mRNA：AUGCAUGCAUGC...`（≥50 nt） |
+| RNAplfold 全序列可及性曲线 | `RNAplfold 局部可及性曲线 lunp，序列 AUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGCAUGC` 或 `local structure RNAplfold profile` + 长序列 |
 | 逆折叠 | `inverse fold 逆折叠 rnainverse，structure=((((....))))，repeats=5` |
 | LinearFold | `fold linearfold 二级结构 AUGGCUACGUAGCUAGCUAGCUAGCUGA beam_size=20` |
 | 密码子指标 | `codonw-slim 分析 CDS 密码子 CAI` + CDS 序列 |
