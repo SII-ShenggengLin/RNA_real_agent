@@ -9,6 +9,8 @@ dependencies:
   - pytorch-cuda=11.7
   - pip
   - pip:
+      - setuptools>=69
+      - wheel
       - absl-py==1.4.0
       - biopython==1.80
       - dm-tree==0.1.8

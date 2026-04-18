@@ -22,8 +22,12 @@ CUDA_TAG="${TORCH_V##*;}"
 
 echo "Detected torch ${PYTORCH_VERSION}, cuda ${CUDA_TAG}"
 
-# pip must see `torch` during any fallback sdist build
-PIP_PYG=(pip install --no-cache-dir --no-build-isolation)
+# Minimal conda envs may omit setuptools; torch cpp_extension imports pkg_resources from it.
+echo "Ensuring setuptools + wheel (required for PyG / torch extension builds)..."
+pip install -q -U "setuptools>=69" wheel
+
+# pip must see `torch` during any fallback sdist build; prefer wheels when PyG publishes them.
+PIP_PYG=(pip install --no-cache-dir --no-build-isolation --prefer-binary)
 
 _try_cpu_install() {
   local ver="$1"
