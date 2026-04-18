@@ -199,6 +199,14 @@ class RhoDesignOutput(_OutBase):
     model: str
 
 
+class RiboDiffusionOutput(_OutBase):
+    input_pdb_filepath: str
+    output_filepath: str
+    predicted_sequence: str
+    sequence_recovery_rate: float = 0.0
+    model: str
+
+
 class RNAsmolScoreOutput(_OutBase):
     input_filepath: str
     smiles: str
@@ -497,6 +505,30 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         produces=["output_fasta_filepath", "designed_sequence"],
         input_model=tool_wrappers.RhoDesignInput,
         output_model=RhoDesignOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_rna_inverse_fold_with_ribodiffusion": ToolSpec(
+        identity="design_rna_inverse_fold_with_ribodiffusion",
+        display_name="RiboDiffusion tertiary inverse folding",
+        version="0.1.0",
+        source="https://github.com/ml4bio/RiboDiffusion",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8021/design/from-pdb",
+        capabilities=[
+            "Sample RNA sequences conditioned on PDB tertiary structure via diffusion (inverse folding).",
+        ],
+        limitations=[
+            "Requires GPU + upstream checkpoint under external_repos/RiboDiffusion/ckpts/; "
+            "PyTorch Geometric CUDA wheels must match the installed torch build.",
+        ],
+        task_tags=["rna_structure_to_sequence_design", "rna_inverse_folding_diffusion"],
+        requires=[
+            ToolDependency(name="GPU", detail="RiboDiffusion inference"),
+            ToolDependency(name="RiboDiffusion microservice", detail="microservices/ribodiffusion_service (port 8021)"),
+        ],
+        produces=["output_filepath", "predicted_sequence", "recovery_rate"],
+        input_model=tool_wrappers.RiboDiffusionInput,
+        output_model=RiboDiffusionOutput,
         status=ToolStatus.partial,
     ),
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(

@@ -22,6 +22,7 @@ from agent_core.tools import (
     design_sirna_with_evitar,
     design_mrna_cds_with_lineardesign,
     design_rna_sequence_with_rhodesign,
+    design_rna_inverse_fold_with_ribodiffusion,
     design_mrna_cds_with_gemorna,
     design_mrna_cds_with_rnarl,
     inverse_fold_rna_secondary_structure_vienna,
@@ -74,6 +75,7 @@ MRNA_TOOLS = [
     design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
     design_rna_sequence_with_rhodesign,
+    design_rna_inverse_fold_with_ribodiffusion,
     run_odesign_inference,
 ]
 TOOLS = SIRNA_TOOLS + CRISPR_TOOLS + MRNA_TOOLS
@@ -652,6 +654,48 @@ def _needs_structure_to_sequence_design(text: str) -> bool:
             ".cif",
         ]
     )
+
+
+def _needs_ribodiffusion_design(text: str) -> bool:
+    lowered = text.lower()
+    return any(
+        k in lowered
+        for k in [
+            "ribodiffusion",
+            "ribo diffusion",
+            "ribo-diffusion",
+            "inverse folding diffusion",
+            "diffusion inverse fold",
+            "扩散逆折叠",
+            "结构扩散逆折叠",
+        ]
+    )
+
+
+def _build_ribodiffusion_tool_args(raw_text: str) -> dict[str, Any]:
+    pdb_path = _extract_path_with_suffixes(raw_text, ("pdb", "cif"))
+    if not pdb_path:
+        pdb_path = "rna_agent_system/external_repos/RiboDiffusion/example/R1107.pdb"
+    args: dict[str, Any] = {"pdb_filepath": pdb_path}
+    ns = _extract_int_setting(raw_text, ("n_samples", "samples", "num_samples"))
+    if ns is not None and ns > 0:
+        args["n_samples"] = ns
+    steps = _extract_int_setting(raw_text, ("sampling_steps", "diffusion_steps"))
+    if steps is not None and steps > 0:
+        args["sampling_steps"] = steps
+    cs = _extract_float_setting(raw_text, ("cond_scale", "guidance_scale"))
+    if cs is not None:
+        args["cond_scale"] = cs
+    dt = _extract_bool_setting(raw_text, ("dynamic_threshold",))
+    if dt is not None:
+        args["dynamic_threshold"] = dt
+    det = _extract_bool_setting(raw_text, ("deterministic",))
+    if det is not None:
+        args["deterministic"] = det
+    dev = _extract_int_setting(raw_text, ("cuda_device", "gpu_id"))
+    if dev is not None and dev >= 0:
+        args["device"] = dev
+    return args
 
 
 def _needs_rnarl_design(text: str) -> bool:
@@ -1462,6 +1506,8 @@ def router_node(state: AgentState) -> AgentState:
             "三维结构",
             "rhofold",
             "rhodesign",
+            "ribodiffusion",
+            "ribo diffusion",
             "二级结构",
             "密码子",
             "codon",
@@ -1701,6 +1747,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     gernabind_mode = _needs_gernabind_scoring(user_text)
     rnasmol_mode = _needs_rnasmol_scoring(user_text)
     rnastop_mode = _needs_rnastop_prediction(user_text)
+    ribodiffusion_mode = _needs_ribodiffusion_design(user_text)
     structure_design_mode = _needs_structure_to_sequence_design(user_text)
     rnarl_mode = _needs_rnarl_design(user_text)
     lineardesign_mode = _needs_lineardesign(user_text)
@@ -1919,6 +1966,18 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): dispatch NCBI blastn via blast_service."
+    elif ribodiffusion_mode:
+        rb_args = _build_ribodiffusion_tool_args(raw_text)
+        state["design_input_pdb_filepath"] = rb_args["pdb_filepath"]
+        tool_calls = [
+            {
+                "name": "design_rna_inverse_fold_with_ribodiffusion",
+                "args": rb_args,
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): dispatch RiboDiffusion diffusion inverse folding."
     elif structure_design_mode:
         pdb_path, ss_path = _extract_structure_design_inputs(raw_text)
         state["design_input_pdb_filepath"] = pdb_path
@@ -2201,6 +2260,12 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if created_ss or ss_fp.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [ss_fp]
             fallback_calls = [{"name": "compute_dot_bracket_unpaired_fraction", "args": {"filepath": ss_fp}}]
+        elif _needs_ribodiffusion_design(user_text):
+            rb_args = _build_ribodiffusion_tool_args(state.get("input_sequence", ""))
+            state["design_input_pdb_filepath"] = rb_args["pdb_filepath"]
+            fallback_calls = [
+                {"name": "design_rna_inverse_fold_with_ribodiffusion", "args": rb_args},
+            ]
         elif _needs_structure_to_sequence_design(user_text):
             pdb_path, ss_path = _extract_structure_design_inputs(state.get("input_sequence", ""))
             structure_call: dict[str, Any] = {
@@ -2577,6 +2642,31 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["candidate_sequence"] = str(tool_result.get("predicted_sequence", ""))
             if "recovery_rate" in tool_result:
                 state["sequence_recovery_rate"] = float(tool_result.get("recovery_rate", 0.0))
+        elif tool_name == "design_rna_inverse_fold_with_ribodiffusion":
+            state["design_input_pdb_filepath"] = str(tool_result.get("input_pdb_filepath", ""))
+
+            output_filepath = str(tool_result.get("output_filepath", ""))
+            if output_filepath:
+                state["current_filepath"] = output_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
+
+            outs = tool_result.get("output_fasta_filepaths")
+            if isinstance(outs, list) and outs:
+                joined = [str(x) for x in outs if str(x)]
+                if joined:
+                    state["designed_sequence_fasta_filepath"] = joined[0]
+                    state["workspace_files"] = state.get("workspace_files", []) + joined
+
+            stdout_filepath = str(tool_result.get("stdout_filepath", ""))
+            if stdout_filepath:
+                state["workspace_files"] = state.get("workspace_files", []) + [stdout_filepath]
+            stderr_filepath = str(tool_result.get("stderr_filepath", ""))
+            if stderr_filepath:
+                state["workspace_files"] = state.get("workspace_files", []) + [stderr_filepath]
+
+            state["candidate_sequence"] = str(tool_result.get("predicted_sequence", ""))
+            if "recovery_rate" in tool_result:
+                state["sequence_recovery_rate"] = float(tool_result.get("recovery_rate", 0.0))
         elif tool_name == "score_rna_ligand_binding_with_gernabind":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -2718,6 +2808,7 @@ def critic_node(state: AgentState) -> AgentState:
         and not _needs_rnastop_prediction(user_text)
         and not _needs_iresfinder_prediction(user_text)
         and not _needs_structure_to_sequence_design(user_text)
+        and not _needs_ribodiffusion_design(user_text)
         and not _needs_rna_gc_content_metric(user_text)
         and not _needs_dot_bracket_unpaired_fraction_metric(user_text)
         and not _needs_rna_plfold_local_profile(raw_user)

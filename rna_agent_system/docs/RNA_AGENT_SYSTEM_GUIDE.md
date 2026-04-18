@@ -134,8 +134,9 @@ rna_agent_system/
 | 8018 | `codonw_slim_service` | codonw-slim | CDS 密码子指标（CAI/Fop/CBI/Nc 等） | ✅ Linux |
 | 8019 | `blast_service` | BLAST+ | blastn 核酸相似性搜索 | ✅ Linux |
 | 8020 | `rna_sequence_metrics_service` | RNA metrics | 序列 GC 含量；点括号结构未配对（`.`）比例 | ✅ Linux |
+| 8021 | `ribodiffusion_service` | RiboDiffusion | PDB 三级结构→RNA 序列（扩散逆折叠） | 待 Linux GPU 验收 |
 
-> 后续新增工具从 **8021** 起顺延。
+> 后续新增工具从 **8022** 起顺延。
 
 ---
 
@@ -155,7 +156,7 @@ User Input → Router → Specialist → Tool Execution → Critic → End / 回
 |----------|-------------------|
 | `sirna_specialist` | `sirna`、`脱靶`、`off-target`、`duplex`、`cofold`、`结合能`、`evitar`、`predesign`、`cas13`、`rnaxs`、`predsi` |
 | `crispr_specialist` | `crispr`、`cas9`、`sgrna`、`crisot`、`guide rna`、`crgpt`、`sgrna handle` |
-| `mrna_specialist` | `mrna`、`design`、`protein`、`cds`、`fold`、`structure`、`gemorna`、`lineardesign`、`linearfold`、`rhofold`、`rhodesign`、`rnasmol`、`rnastop`、`gernabind`、`ires`、`stability`、`aso`、`plfold`、`rnaplfold`、`lunp`、`局部结构`、`local structure`、`inverse fold`、`codonw`、`blast`、`blastn` 等 |
+| `mrna_specialist` | `mrna`、`design`、`protein`、`cds`、`fold`、`structure`、`gemorna`、`lineardesign`、`linearfold`、`rhofold`、`rhodesign`、`ribodiffusion`、`rnasmol`、`rnastop`、`gernabind`、`ires`、`stability`、`aso`、`plfold`、`rnaplfold`、`lunp`、`局部结构`、`local structure`、`inverse fold`、`codonw`、`blast`、`blastn` 等 |
 | 默认 | `mrna_specialist` |
 
 ### 5.3 Specialist 分发
@@ -195,12 +196,13 @@ User Input → Router → Specialist → Tool Execution → Critic → End / 回
 | 7b | 序列 GC 含量（`gc content` / `gc含量` 等） | `compute_rna_sequence_gc_content` |
 | 7c | 二级结构点括号未配对比例（`unpaired fraction` / `未配对比例` 等） | `compute_dot_bracket_unpaired_fraction` |
 | 8 | BLAST 搜索（`blast` / `blastn`） | `run_blastn_similarity_search` |
-| 9 | 结构→序列（`rhodesign` + `.pdb`） | `design_rna_sequence_with_rhodesign` |
-| 10 | ODesign 设计 | `run_odesign_inference` |
-| 11 | LinearDesign CDS 设计 | `design_mrna_cds_with_lineardesign` |
-| 12 | RNARL CDS 设计（含 `rnarl` 关键词） | `design_mrna_cds_with_rnarl` |
-| 13 | GEMORNA CDS 设计 | `design_mrna_cds_with_gemorna` |
-| 14 | 结构预测（默认） | `analyze_cds_codon_metrics_with_codonw_slim` → `predict_rna_secondary_structure` (ViennaRNA) / `predict_rna_secondary_structure_with_linearfold` |
+| 9 | RiboDiffusion 三级扩散逆折叠（`ribodiffusion` / `ribo diffusion` / `nodes._needs_ribodiffusion_design`） | `design_rna_inverse_fold_with_ribodiffusion` |
+| 10 | 结构→序列（`rhodesign` + `.pdb`） | `design_rna_sequence_with_rhodesign` |
+| 11 | ODesign 设计 | `run_odesign_inference` |
+| 12 | LinearDesign CDS 设计 | `design_mrna_cds_with_lineardesign` |
+| 13 | RNARL CDS 设计（含 `rnarl` 关键词） | `design_mrna_cds_with_rnarl` |
+| 14 | GEMORNA CDS 设计 | `design_mrna_cds_with_gemorna` |
+| 15 | 结构预测（默认） | `analyze_cds_codon_metrics_with_codonw_slim` → `predict_rna_secondary_structure` (ViennaRNA) / `predict_rna_secondary_structure_with_linearfold` |
 | — | 文本含 `rhofold`/`3d`/`tertiary` | 额外调用 `predict_rna_tertiary_structure_with_rhofold` |
 
 CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结构预测语义，`tool_execution_node` 会自动串联折叠工具。
@@ -511,7 +513,22 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 - 与历史 mock `off_target_blast` 不同：本服务是真实 BLAST 比对
 - Agent 工具层会把完整结果写入 `workspace/blastn_out_*.tsv`
 
-### 6.19 Mock 服务（已移除）
+### 6.19 RiboDiffusion (端口 8021)
+
+| 项目 | 说明 |
+|------|------|
+| 上游仓库 | [ml4bio/RiboDiffusion](https://github.com/ml4bio/RiboDiffusion.git) |
+| 微服务目录 | `microservices/ribodiffusion_service/` |
+| 环境 | `python=3.10` + `pytorch 1.13.x` + CUDA；**首次需** `bash install_pyg_torch_extensions.sh` 安装与 torch/cuda 匹配的 PyG scatter/sparse/cluster |
+| 接口 | `GET /health`、`POST /design/from-pdb` |
+| Agent 工具 | `design_rna_inverse_fold_with_ribodiffusion(pdb_filepath, ...)` |
+
+**关键注意事项**：
+- checkpoint：`external_repos/RiboDiffusion/ckpts/exp_inf.pth`（官方 README 提供下载链接；可选 `exp_inf_large.pth` 自行替换同名或改上游代码）
+- 上游通过子进程在项目根目录运行 `python main.py --PDB_file ...`；权重路径在 `run_lib.py` 中写死为 `./ckpts/exp_inf.pth`
+- 未提供 PDB 路径时，规则路由默认示例：`external_repos/RiboDiffusion/example/R1107.pdb`
+
+### 6.20 Mock 服务（已移除）
 
 历史上曾存在两个用于开发调试的 siRNA mock 微服务（端口 8001/8002），用于返回随机的“效率分数/脱靶计数”以跑通早期工作流。
 
@@ -589,6 +606,7 @@ streamlit run rna_agent_system/frontend/app.py \
 | RNASTOP | `external_repos/RNASTOP/models/*` + `RNA-FM_pretrained.pth` + `DNABERT6/` |
 | GerNA-Bind | `external_repos/GerNA-Bind/Model/*.pth` |
 | ODesign | `external_repos/ODesign/ckpt/*.pt` + `ckpt/*.ckpt` + `data/components.*` |
+| RiboDiffusion | `external_repos/RiboDiffusion/ckpts/exp_inf.pth`（或 README 中的 large 版本） |
 
 ---
 
@@ -656,6 +674,12 @@ curl -sS -X POST http://127.0.0.1:8020/unpaired-fraction \
 curl -sS -X POST http://127.0.0.1:8019/blastn \
   -H 'Content-Type: application/json' \
   -d '{"query_filepath":"rna_agent_system/workspace/blast_test_query.fa","subject_fasta_path":"rna_agent_system/workspace/blast_test_subject.fa","task":"blastn-short","evalue":10}' | python3 -m json.tool
+
+# RiboDiffusion（需 GPU + ckpts/exp_inf.pth；路径相对仓库根或填绝对路径）
+curl -sS http://127.0.0.1:8021/health | python3 -m json.tool
+curl -sS -X POST http://127.0.0.1:8021/design/from-pdb \
+  -H 'Content-Type: application/json' \
+  -d '{"pdb_path":"rna_agent_system/external_repos/RiboDiffusion/example/R1107.pdb","n_samples":1,"sampling_steps":50}' | python3 -m json.tool
 ```
 
 ### 9.3 Streamlit 自然语言测试用例
@@ -672,6 +696,7 @@ curl -sS -X POST http://127.0.0.1:8019/blastn \
 | GC 含量 | `gc content 计算 GC 含量` + RNA 序列或 `workspace/*.fa` 路径 |
 | 未配对比例 | `unpaired fraction 未配对比例 structure=(((....))))` 或 `workspace/*.ss` 点括号文件 |
 | BLAST 搜索 | `blastn 比对 subject_fasta=workspace/test.fa 序列 ATGCATGCATGC` |
+| RiboDiffusion 逆折叠 | `ribodiffusion 扩散逆折叠 PDB=workspace/my.pdb n_samples=3` |
 
 ---
 
@@ -689,7 +714,7 @@ git clone --recurse-submodules <repo-url>
 git pull && git submodule update --init --recursive
 ```
 
-当前 submodule 列表：GEMORNA、GerNA-Bind、RNARL、RhoFold、RhoDesign、RNAsmol、RNASTOP、CRISOT、ODesign、IRESfinder、LinearDesign、LinearFold、Evitar、ViennaRNA、sgrna_design、codonw-slim
+当前 submodule 列表：GEMORNA、GerNA-Bind、RNARL、RhoFold、RhoDesign、RiboDiffusion、RNAsmol、RNASTOP、CRISOT、ODesign、IRESfinder、LinearDesign、LinearFold、Evitar、ViennaRNA、sgrna_design、codonw-slim
 
 ### 10.2 提交规范
 

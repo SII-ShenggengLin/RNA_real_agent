@@ -1197,6 +1197,32 @@ class RhoDesignInput(BaseModel):
     )
 
 
+class RiboDiffusionInput(BaseModel):
+    """Input schema for RiboDiffusion tertiary inverse folding."""
+
+    pdb_filepath: str = Field(
+        ...,
+        description="Path to an RNA structure PDB file for RiboDiffusion inverse folding.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8021/design/from-pdb",
+        description="REST endpoint for the RiboDiffusion microservice.",
+    )
+    n_samples: int = Field(default=1, ge=1, le=64, description="Number of sequences to sample.")
+    sampling_steps: int = Field(default=50, ge=1, le=500, description="Diffusion sampling steps.")
+    cond_scale: float = Field(
+        default=-1.0,
+        ge=-1.0,
+        description="Conditional scale; -1 matches upstream default (disabled).",
+    )
+    dynamic_threshold: bool = Field(
+        default=False,
+        description="Enable dynamic thresholding (upstream eval flag).",
+    )
+    deterministic: bool = Field(default=True, description="Fixed random seed when True.")
+    device: int = Field(default=0, ge=0, description="CUDA device index for the subprocess.")
+
+
 class RNAsmolScoreInput(BaseModel):
     """Input schema for RNAsmol RNA-ligand scoring."""
 
@@ -2305,6 +2331,111 @@ def design_rna_sequence_with_rhodesign(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"RhoDesign service request failed: {exc}{suffix}") from exc
+
+
+@tool(args_schema=RiboDiffusionInput)
+def design_rna_inverse_fold_with_ribodiffusion(
+    pdb_filepath: str,
+    service_url: str = "http://127.0.0.1:8021/design/from-pdb",
+    n_samples: int = 1,
+    sampling_steps: int = 50,
+    cond_scale: float = -1.0,
+    dynamic_threshold: bool = False,
+    deterministic: bool = True,
+    device: int = 0,
+) -> dict[str, Any]:
+    """Generate RNA sequence(s) from a PDB structure using the RiboDiffusion microservice.
+
+    Args:
+        pdb_filepath: Path to the input PDB file (workspace or repo-relative path).
+        service_url: REST endpoint for RiboDiffusion.
+        n_samples: Count of independent samples (upstream `config.eval.n_samples`).
+        sampling_steps: Number of diffusion sampling steps.
+        cond_scale: Optional classifier-free guidance scale; -1 keeps upstream default.
+        dynamic_threshold: Whether to enable dynamic thresholding during sampling.
+        deterministic: Whether upstream fixes the RNG seed.
+        device: CUDA device index passed via CUDA_VISIBLE_DEVICES.
+
+    Returns:
+        Dict with primary `predicted_sequence`, optional multi-sample lists, paths copied into workspace.
+    """
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "pdb_path": pdb_filepath,
+                "n_samples": n_samples,
+                "sampling_steps": sampling_steps,
+                "cond_scale": cond_scale,
+                "dynamic_threshold": dynamic_threshold,
+                "deterministic": deterministic,
+                "device": device,
+            },
+            timeout=7200,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "predicted_sequence" not in payload:
+            raise ValueError("Missing `predicted_sequence` in RiboDiffusion response.")
+
+        output_filepath = save_sequence(payload["predicted_sequence"], prefix="ribodiffusion_seq")
+        result: dict[str, Any] = {
+            "input_pdb_filepath": pdb_filepath,
+            "output_filepath": output_filepath,
+            "predicted_sequence": payload["predicted_sequence"],
+            "model": payload.get("model", "RiboDiffusion"),
+            "pdb_id": payload.get("pdb_id", ""),
+            "service_output_dir": payload.get("service_output_dir", ""),
+            "checkpoint_path": payload.get("checkpoint_path", ""),
+            "fasta_dir": payload.get("fasta_dir", ""),
+        }
+
+        generated = payload.get("generated_sequences")
+        if isinstance(generated, list) and generated:
+            result["generated_sequences"] = generated
+
+        recovery = payload.get("recovery_rate")
+        if recovery is not None:
+            result["recovery_rate"] = float(recovery)
+
+        out_paths = payload.get("output_fasta_paths")
+        if isinstance(out_paths, list) and out_paths:
+            copied: list[str] = []
+            for idx, fp in enumerate(out_paths):
+                if fp:
+                    copied.append(
+                        copy_file_to_workspace(
+                            str(fp),
+                            prefix=f"ribodiffusion_fasta_{idx}",
+                            suffix=".fasta",
+                        )
+                    )
+            if copied:
+                result["output_fasta_filepaths"] = copied
+
+        if payload.get("stdout"):
+            result["stdout_filepath"] = save_text_file(
+                str(payload["stdout"]),
+                prefix="ribodiffusion_stdout",
+                suffix=".log",
+            )
+        if payload.get("stderr"):
+            result["stderr_filepath"] = save_text_file(
+                str(payload["stderr"]),
+                prefix="ribodiffusion_stderr",
+                suffix=".log",
+            )
+        return result
+    except requests.RequestException as exc:
+        detail = ""
+        response_obj = getattr(exc, "response", None)
+        if response_obj is not None:
+            try:
+                detail = str(response_obj.json())
+            except ValueError:
+                detail = response_obj.text
+        suffix = f"; detail={detail}" if detail else ""
+        raise ValueError(f"RiboDiffusion service request failed: {exc}{suffix}") from exc
 
 
 @tool(args_schema=RNAsmolScoreInput)
