@@ -134,7 +134,7 @@ rna_agent_system/
 | 8018 | `codonw_slim_service` | codonw-slim | CDS 密码子指标（CAI/Fop/CBI/Nc 等） | ✅ Linux |
 | 8019 | `blast_service` | BLAST+ | blastn 核酸相似性搜索 | ✅ Linux |
 | 8020 | `rna_sequence_metrics_service` | RNA metrics | 序列 GC 含量；点括号结构未配对（`.`）比例 | ✅ Linux |
-| 8021 | `ribodiffusion_service` | RiboDiffusion | PDB 三级结构→RNA 序列（扩散逆折叠） | 待 Linux GPU 验收 |
+| 8021 | `ribodiffusion_service` | RiboDiffusion | PDB 三级结构→RNA 序列（扩散逆折叠） | ✅ Linux GPU |
 
 > 后续新增工具从 **8022** 起顺延。
 
@@ -527,6 +527,8 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 - checkpoint：`external_repos/RiboDiffusion/ckpts/exp_inf.pth`（官方 README 提供下载链接；可选 `exp_inf_large.pth` 自行替换同名或改上游代码）
 - 上游通过子进程在项目根目录运行 `python main.py --PDB_file ...`；权重路径在 `run_lib.py` 中写死为 `./ckpts/exp_inf.pth`
 - 未提供 PDB 路径时，规则路由默认示例：`external_repos/RiboDiffusion/example/R1107.pdb`
+- **PyG 扩展**：若 `pip` 拉取源码包构建失败，先确保 `pip install -U setuptools wheel`，再运行 `install_pyg_torch_extensions.sh`（脚本含 `--no-build-isolation`、`--prefer-binary`，并在 `cu117` 无合适 wheel 时回试 `cu116` 索引，与上游 `pt113cu116` 常见组合一致）。
+- **验收**：已在部署服务器上对 `GET /health`、`POST /design/from-pdb`（示例 `R1107.pdb`）及 Streamlit 自然语言触发完成验证（2026-04，路径见 §8.1）。
 
 ### 6.20 Mock 服务（已移除）
 
@@ -571,13 +573,14 @@ conda activate <tool>_service_env
 bash start.sh
 ```
 
-### 8.3 需编译的服务
+### 8.3 需编译或额外安装脚本的服务
 
-| 服务 | 编译步骤 |
-|------|----------|
+| 服务 | 步骤 |
+|------|------|
 | LinearDesign | `cd external_repos/LinearDesign && make` |
 | LinearFold | `cd external_repos/LinearFold && make` |
 | codonw-slim | `bash microservices/codonw_slim_service/install_codonw_slim.sh` |
+| RiboDiffusion | `conda activate ribodiffusion_service_env` 后执行 `bash install_pyg_torch_extensions.sh`（安装 `torch-scatter` / `torch-sparse` / `torch-cluster`；`environment.yml` 已含 `setuptools`/`wheel`；`start.sh` 会在缺少 `torch_scatter` 时尝试自动执行该脚本） |
 
 ### 8.4 启动 Agent 前端
 
@@ -625,6 +628,7 @@ streamlit run rna_agent_system/frontend/app.py \
 - `compute_rna_sequence_gc_content`：微服务、Agent 路由、前端自然语言调用均已通过。
 - `compute_dot_bracket_unpaired_fraction`：微服务、Agent 路由、前端自然语言调用均已通过。
 - `predict_rna_local_accessibility_profile_vienna`（`POST /plfold-profiles`，ViennaRNA **RNAplfold**）：微服务、Agent 路由、前端自然语言调用均已通过（2026-04）。
+- `design_rna_inverse_fold_with_ribodiffusion` / `ribodiffusion_service`（端口 **8021**）：微服务 `curl`、示例 PDB 推理（如 `R1107.pdb`，返回 `predicted_sequence` / `recovery_rate`）、Streamlit 自然语言（含 `ribodiffusion` 关键词）均已通过（2026-04）。
 - 验收环境：Linux 服务器部署路径 `/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent`。
 
 ### 9.2 微服务 curl 示例
@@ -675,11 +679,11 @@ curl -sS -X POST http://127.0.0.1:8019/blastn \
   -H 'Content-Type: application/json' \
   -d '{"query_filepath":"rna_agent_system/workspace/blast_test_query.fa","subject_fasta_path":"rna_agent_system/workspace/blast_test_subject.fa","task":"blastn-short","evalue":10}' | python3 -m json.tool
 
-# RiboDiffusion（需 GPU + ckpts/exp_inf.pth；路径相对仓库根或填绝对路径）
+# RiboDiffusion（需 GPU + ckpts/exp_inf.pth；建议在仓库根目录下执行，pdb_path 用绝对路径最稳妥）
 curl -sS http://127.0.0.1:8021/health | python3 -m json.tool
 curl -sS -X POST http://127.0.0.1:8021/design/from-pdb \
   -H 'Content-Type: application/json' \
-  -d '{"pdb_path":"rna_agent_system/external_repos/RiboDiffusion/example/R1107.pdb","n_samples":1,"sampling_steps":50}' | python3 -m json.tool
+  -d '{"pdb_path":"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RiboDiffusion/example/R1107.pdb","n_samples":1,"sampling_steps":50}' | python3 -m json.tool
 ```
 
 ### 9.3 Streamlit 自然语言测试用例
@@ -696,7 +700,7 @@ curl -sS -X POST http://127.0.0.1:8021/design/from-pdb \
 | GC 含量 | `gc content 计算 GC 含量` + RNA 序列或 `workspace/*.fa` 路径 |
 | 未配对比例 | `unpaired fraction 未配对比例 structure=(((....))))` 或 `workspace/*.ss` 点括号文件 |
 | BLAST 搜索 | `blastn 比对 subject_fasta=workspace/test.fa 序列 ATGCATGCATGC` |
-| RiboDiffusion 逆折叠 | `ribodiffusion 扩散逆折叠 PDB=workspace/my.pdb n_samples=3` |
+| RiboDiffusion 逆折叠 | `ribodiffusion 扩散逆折叠 PDB=workspace/my.pdb n_samples=3`（需 **8021** 已启动；可选默认示例关键词 `ribodiffusion 三级结构逆折叠`） |
 
 ---
 
