@@ -19,4 +19,9 @@ if [ -f "$(conda info --base)/etc/profile.d/conda.sh" ]; then
 fi
 conda activate ribodiffusion_service_env
 
+if ! python -c "import torch_scatter" 2>/dev/null; then
+  echo "torch_scatter not found; installing PyG CUDA extensions (torch-scatter/sparse/cluster)..."
+  bash "${SCRIPT_DIR}/install_pyg_torch_extensions.sh"
+fi
+
 python -m uvicorn main:app --host 0.0.0.0 --port 8021
