@@ -1,0 +1,21 @@
+{
+  "description": "Minimal RNA sequences for regression-style workflow smoke tests (stub GC + fold tools).",
+  "schema_version": "mrna_baseline_samples_v1",
+  "samples": [
+    {
+      "id": "short_gc_rich",
+      "sequence": "GCCGCCGCCGCC",
+      "notes": "high GC fraction vs length target"
+    },
+    {
+      "id": "medium_balanced",
+      "sequence": "AUGGCCGAAUGGCCGAAUGGCC",
+      "notes": "moderate length and GC mix"
+    },
+    {
+      "id": "long_au",
+      "sequence": "AAAAAAAAUGCCCCCCCCCCUUUUUUUUUUUUUUAAAAAAAAAA",
+      "notes": "longer transcript; ranking spread under stub MFE rule"
+    }
+  ]
+}

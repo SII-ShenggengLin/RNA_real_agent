@@ -982,7 +982,7 @@ def design_sgrna_handle_with_crgpt(
 
 
 class MrnaToolInput(BaseModel):
-    """Input schema for mock mRNA tools."""
+    """Input schema for workspace-backed mRNA/RNA sequence tools (filepath only)."""
 
     filepath: str = Field(
         ...,
@@ -1507,29 +1507,6 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         "rscu": data.get("rscu"),
         "dinuc": data.get("dinuc"),
         "model": str(data.get("model", "codonw-slim")),
-    }
-
-
-@tool(args_schema=MrnaToolInput)
-def mock_codon_optimization(filepath: str) -> dict[str, Any]:
-    """Mock codon optimization for mRNA sequence.
-
-    Args:
-        filepath: Workspace file path holding mRNA sequence.
-            IMPORTANT: pass workspace filepath only, never inline long sequence in tool args.
-
-    Returns:
-        Dict with cai_score and optimized sequence filepath in workspace.
-    """
-    sequence = read_sequence(filepath).strip().upper().replace("T", "U")
-    time.sleep(0.3)
-    optimized = sequence.replace("UUU", "UUC").replace("UUA", "CUG")
-    optimized_filepath = save_sequence(optimized, prefix="mrna_opt")
-    return {
-        "input_filepath": filepath,
-        "optimized_filepath": optimized_filepath,
-        "cai_score": 0.88,
-        "model": "mock_codon_optimizer_v1",
     }
 
 
@@ -2887,3 +2864,62 @@ def run_odesign_inference(
                 detail = response_obj.text
         suffix = f"; detail={detail}" if detail else ""
         raise ValueError(f"ODesign service request failed: {exc}{suffix}") from exc
+
+
+# ---------------------------------------------------------------------------
+# LangChain tool sets (single source of truth for graph + tool registry)
+# ---------------------------------------------------------------------------
+
+
+class WorkflowDemoEchoInput(BaseModel):
+    """Input for the optional registry/executor smoke-test tool."""
+
+    text: str = Field(..., min_length=1, description="Short text for workflow demo invocations.")
+
+
+@tool(args_schema=WorkflowDemoEchoInput)
+def workflow_demo_echo(text: str) -> dict[str, Any]:
+    """Minimal demo tool: echo string and length. Not used by production routing by default."""
+
+    return {"echo": text, "length": len(text), "model": "workflow_demo_echo"}
+
+
+SIRNA_LANGCHAIN_TOOLS: list[Any] = [
+    design_sirna_with_evitar,
+    compute_sirna_duplex_binding_vienna,
+]
+CRISPR_LANGCHAIN_TOOLS: list[Any] = [
+    design_sgrna_handle_with_crgpt,
+    score_crispr_off_target_with_crisot,
+    calculate_crispr_specificity_with_crisot,
+    search_crispr_off_targets_with_crisot,
+    optimize_sgrna_with_crisot,
+]
+MRNA_LANGCHAIN_TOOLS: list[Any] = [
+    score_rna_ligand_binding_with_gernabind,
+    score_rna_ligand_binding_with_rnasmol,
+    predict_mrna_stability_with_rnastop,
+    predict_putative_ires_with_iresfinder,
+    compute_aso_target_accessibility_vienna,
+    predict_rna_local_accessibility_profile_vienna,
+    inverse_fold_rna_secondary_structure_vienna,
+    analyze_cds_codon_metrics_with_codonw_slim,
+    compute_rna_sequence_gc_content,
+    compute_dot_bracket_unpaired_fraction,
+    run_blastn_similarity_search,
+    predict_rna_secondary_structure,
+    predict_rna_secondary_structure_with_linearfold,
+    predict_rna_tertiary_structure_with_rhofold,
+    design_mrna_cds_with_lineardesign,
+    design_mrna_cds_with_rnarl,
+    design_mrna_cds_with_gemorna,
+    design_rna_sequence_with_rhodesign,
+    design_rna_inverse_fold_with_ribodiffusion,
+    run_odesign_inference,
+]
+
+ALL_LANGCHAIN_AGENT_TOOLS: list[Any] = (
+    SIRNA_LANGCHAIN_TOOLS + CRISPR_LANGCHAIN_TOOLS + MRNA_LANGCHAIN_TOOLS
+)
+
+WORKFLOW_DEMO_LANGCHAIN_TOOLS: list[Any] = [workflow_demo_echo]

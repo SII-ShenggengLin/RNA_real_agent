@@ -14,6 +14,7 @@ from agent_core.file_manager import read_sequence, save_sequence, save_text_file
 from agent_core.state import AgentState
 from agent_core.tool_specs import TOOL_SPECS
 from agent_core.tools import (
+    ALL_LANGCHAIN_AGENT_TOOLS,
     calculate_crispr_specificity_with_crisot,
     compute_aso_target_accessibility_vienna,
     predict_rna_local_accessibility_profile_vienna,
@@ -29,7 +30,6 @@ from agent_core.tools import (
     analyze_cds_codon_metrics_with_codonw_slim,
     compute_rna_sequence_gc_content,
     compute_dot_bracket_unpaired_fraction,
-    mock_codon_optimization,
     optimize_sgrna_with_crisot,
     run_blastn_similarity_search,
     predict_mrna_stability_with_rnastop,
@@ -44,41 +44,7 @@ from agent_core.tools import (
     score_rna_ligand_binding_with_rnasmol,
 )
 
-SIRNA_TOOLS = [
-    design_sirna_with_evitar,
-    compute_sirna_duplex_binding_vienna,
-]
-CRISPR_TOOLS = [
-    design_sgrna_handle_with_crgpt,
-    score_crispr_off_target_with_crisot,
-    calculate_crispr_specificity_with_crisot,
-    search_crispr_off_targets_with_crisot,
-    optimize_sgrna_with_crisot,
-]
-MRNA_TOOLS = [
-    score_rna_ligand_binding_with_gernabind,
-    score_rna_ligand_binding_with_rnasmol,
-    predict_mrna_stability_with_rnastop,
-    predict_putative_ires_with_iresfinder,
-    compute_aso_target_accessibility_vienna,
-    predict_rna_local_accessibility_profile_vienna,
-    inverse_fold_rna_secondary_structure_vienna,
-    analyze_cds_codon_metrics_with_codonw_slim,
-    compute_rna_sequence_gc_content,
-    compute_dot_bracket_unpaired_fraction,
-    mock_codon_optimization,
-    run_blastn_similarity_search,
-    predict_rna_secondary_structure,
-    predict_rna_secondary_structure_with_linearfold,
-    predict_rna_tertiary_structure_with_rhofold,
-    design_mrna_cds_with_lineardesign,
-    design_mrna_cds_with_rnarl,
-    design_mrna_cds_with_gemorna,
-    design_rna_sequence_with_rhodesign,
-    design_rna_inverse_fold_with_ribodiffusion,
-    run_odesign_inference,
-]
-TOOLS = SIRNA_TOOLS + CRISPR_TOOLS + MRNA_TOOLS
+TOOLS = ALL_LANGCHAIN_AGENT_TOOLS
 TOOLS_BY_NAME = {tool.name: tool for tool in TOOLS}
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PROTEIN_RESIDUE_NAMES = {
@@ -150,7 +116,7 @@ def _needs_sirna_duplex_vienna(user_text: str) -> bool:
 
 
 def _needs_codonw_standalone(user_text: str) -> bool:
-    """Explicit codonw-slim / codon-usage analysis without default fold+mock path."""
+    """Explicit codonw-slim / codon-usage analysis without default fold-first path."""
     lowered = user_text.lower()
     if "codonw-slim" in lowered or "codonw slim" in lowered:
         return True
@@ -2466,12 +2432,6 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if best_sequence_filepath:
                 state["current_filepath"] = best_sequence_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [best_sequence_filepath]
-        elif tool_name == "mock_codon_optimization":
-            state["cai_score"] = float(tool_result.get("cai_score", 0.0))
-            optimized_filepath = str(tool_result.get("optimized_filepath", ""))
-            if optimized_filepath:
-                state["current_filepath"] = optimized_filepath
-                state["workspace_files"] = state.get("workspace_files", []) + [optimized_filepath]
         elif tool_name == "run_blastn_similarity_search":
             state["blast_hit_count"] = int(tool_result.get("hit_count", 0))
             state["blast_subject_mode"] = str(tool_result.get("subject_mode", ""))
