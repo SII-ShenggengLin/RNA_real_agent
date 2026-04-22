@@ -1,4 +1,4 @@
-"""GEMORNA microservice for mRNA CDS design."""
+"""GEMORNA microservice for mRNA CDS / 5'UTR / 3'UTR design."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GEMORNA_ROOT = PROJECT_ROOT / "external_repos" / "GEMORNA"
@@ -16,10 +16,14 @@ CHECKPOINT_DIR = GEMORNA_ROOT / "checkpoints"
 
 app = FastAPI(
     title="GEMORNA Service",
-    description="Run GEMORNA generation scripts through a FastAPI microservice.",
-    version="0.1.0",
+    description="Run GEMORNA generation scripts (CDS / 5UTR / 3UTR) through a FastAPI microservice.",
+    version="0.2.0",
 )
 
+
+# ---------------------------------------------------------------------------
+# Request / Response schemas
+# ---------------------------------------------------------------------------
 
 class CdsDesignRequest(BaseModel):
     protein_sequence: str = Field(
@@ -27,6 +31,19 @@ class CdsDesignRequest(BaseModel):
         min_length=1,
         description="Protein sequence used by GEMORNA to generate CDS candidates.",
     )
+
+    @field_validator("protein_sequence")
+    @classmethod
+    def _min_aa_length(cls, v: str) -> str:
+        stripped = v.strip()
+        canonical_aa = set("ACDEFGHIKLMNPQRSTVWY*")
+        aa_only = "".join(ch for ch in stripped.upper() if ch in canonical_aa)
+        if len(aa_only) < 10:
+            raise ValueError(
+                f"Protein sequence must contain at least 10 canonical amino acids "
+                f"(ensuring CDS ≥ 30 nt for reliable extraction). Got {len(aa_only)}."
+            )
+        return stripped
 
 
 class CdsDesignResponse(BaseModel):
@@ -36,6 +53,34 @@ class CdsDesignResponse(BaseModel):
     model: str = "GEMORNA-cds"
 
 
+class UtrDesignRequest(BaseModel):
+    utr_length: str = Field(
+        ...,
+        description="UTR length category: short | medium | long.",
+    )
+
+    @field_validator("utr_length")
+    @classmethod
+    def _validate_utr_length(cls, v: str) -> str:
+        allowed = {"short", "medium", "long"}
+        lowered = v.strip().lower()
+        if lowered not in allowed:
+            raise ValueError(f"utr_length must be one of {allowed}, got '{v}'.")
+        return lowered
+
+
+class UtrDesignResponse(BaseModel):
+    mode: str
+    utr_length: str
+    generated_sequence: str
+    raw_output: str
+    model: str
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 def _is_lfs_pointer(path: Path) -> bool:
     if not path.exists():
         return True
@@ -43,36 +88,112 @@ def _is_lfs_pointer(path: Path) -> bool:
     return prefix.startswith(b"version https://git-lfs.github.com/spec/v1")
 
 
-def _require_runtime_assets() -> None:
-    required_paths = [
+def _require_runtime_assets(mode: str) -> None:
+    """Verify that required assets exist for the requested generation mode."""
+    required_paths: list[Path] = [
         GEMORNA_ROOT / "src" / "generate.py",
-        GEMORNA_ROOT / "vocab" / "prot_vocab.pkl",
-        GEMORNA_ROOT / "vocab" / "cds_vocab.pkl",
-        CHECKPOINT_DIR / "gemorna_cds.pt",
     ]
+
+    if mode == "cds":
+        required_paths += [
+            GEMORNA_ROOT / "vocab" / "prot_vocab.pkl",
+            GEMORNA_ROOT / "vocab" / "cds_vocab.pkl",
+            CHECKPOINT_DIR / "gemorna_cds.pt",
+        ]
+    elif mode == "5utr":
+        required_paths += [
+            CHECKPOINT_DIR / "gemorna_5utr.pt",
+        ]
+    elif mode == "3utr":
+        required_paths += [
+            CHECKPOINT_DIR / "gemorna_3utr.pt",
+        ]
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported GEMORNA mode: {mode}")
+
     missing = [str(path) for path in required_paths if not path.exists()]
     if missing:
         raise HTTPException(status_code=500, detail=f"Missing GEMORNA assets: {missing}")
-    if _is_lfs_pointer(CHECKPOINT_DIR / "gemorna_cds.pt"):
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "GEMORNA checkpoint is still a Git LFS pointer. "
-                "Run `git lfs pull` or manually copy real `.pt` files into "
-                "`external_repos/GEMORNA/checkpoints/`."
-            ),
-        )
+
+    for pt in required_paths:
+        if pt.suffix == ".pt" and _is_lfs_pointer(pt):
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    f"GEMORNA checkpoint {pt.name} is still a Git LFS pointer. "
+                    "Run `git lfs pull` or manually copy real `.pt` files into "
+                    "`external_repos/GEMORNA/checkpoints/`."
+                ),
+            )
 
 
-def _extract_generated_sequence(stdout: str) -> str:
-    matches = re.findall(r"[ACGTUNacgtun]{30,}", stdout)
-    if not matches:
+def _extract_generated_sequence(stdout: str, min_length: int = 30) -> str:
+    """Extract the longest contiguous nucleotide stretch from stdout.
+
+    Args:
+        stdout: Raw stdout from GEMORNA generate.py.
+        min_length: Minimum number of contiguous nucleotide characters required.
+                    Defaults to 30 (safe for CDS). UTR calls may pass 10.
+    """
+    pattern = rf"[ACGTUNacgtun]{{{min_length},}}"
+    matches = re.findall(pattern, stdout)
+    if matches:
+        return max(matches, key=len).upper().replace("T", "U")
+
+    # Fallback: try a shorter stretch before giving up
+    fallback = re.findall(r"[ACGTUNacgtun]{10,}", stdout)
+    if fallback:
+        return max(fallback, key=len).upper().replace("T", "U")
+
+    raise HTTPException(
+        status_code=500,
+        detail=f"Unable to parse GEMORNA output sequence from stdout: {stdout}",
+    )
+
+
+def _run_gemorna_utr(mode: str, utr_length: str) -> UtrDesignResponse:
+    """Run GEMORNA UTR generation for 5utr or 3utr and return a response."""
+    _require_runtime_assets(mode)
+    ckpt = f"checkpoints/gemorna_{mode}.pt"
+    command = [
+        sys.executable,
+        "src/generate.py",
+        "--mode",
+        mode,
+        "--ckpt_path",
+        ckpt,
+        "--utr_length",
+        utr_length,
+    ]
+    result = subprocess.run(
+        command,
+        cwd=GEMORNA_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    if result.returncode != 0:
         raise HTTPException(
             status_code=500,
-            detail=f"Unable to parse GEMORNA output sequence from stdout: {stdout}",
+            detail={
+                "message": f"GEMORNA {mode.upper()} generation failed.",
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+            },
         )
-    return max(matches, key=len).upper().replace("T", "U")
+    generated_sequence = _extract_generated_sequence(result.stdout, min_length=10)
+    return UtrDesignResponse(
+        mode=mode,
+        utr_length=utr_length,
+        generated_sequence=generated_sequence,
+        raw_output=result.stdout.strip(),
+        model=f"GEMORNA-{mode}",
+    )
 
+
+# ---------------------------------------------------------------------------
+# Endpoints
+# ---------------------------------------------------------------------------
 
 @app.get("/health")
 def health() -> dict[str, str]:
@@ -81,7 +202,7 @@ def health() -> dict[str, str]:
 
 @app.post("/generate/cds", response_model=CdsDesignResponse)
 def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
-    _require_runtime_assets()
+    _require_runtime_assets("cds")
     command = [
         sys.executable,
         "src/generate.py",
@@ -90,7 +211,7 @@ def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
         "--ckpt_path",
         "checkpoints/gemorna_cds.pt",
         "--protein_seq",
-        payload.protein_sequence.strip(),
+        payload.protein_sequence,
     ]
     result = subprocess.run(
         command,
@@ -108,9 +229,19 @@ def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
                 "stderr": result.stderr,
             },
         )
-    generated_sequence = _extract_generated_sequence(result.stdout)
+    generated_sequence = _extract_generated_sequence(result.stdout, min_length=30)
     return CdsDesignResponse(
         protein_sequence=payload.protein_sequence,
         generated_sequence=generated_sequence,
         raw_output=result.stdout.strip(),
     )
+
+
+@app.post("/generate/5utr", response_model=UtrDesignResponse)
+def generate_5utr(payload: UtrDesignRequest) -> UtrDesignResponse:
+    return _run_gemorna_utr("5utr", payload.utr_length)
+
+
+@app.post("/generate/3utr", response_model=UtrDesignResponse)
+def generate_3utr(payload: UtrDesignRequest) -> UtrDesignResponse:
+    return _run_gemorna_utr("3utr", payload.utr_length)

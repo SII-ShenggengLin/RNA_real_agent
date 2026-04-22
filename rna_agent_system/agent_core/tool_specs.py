@@ -181,6 +181,62 @@ class ProteinToCdsOutput(_OutBase):
     model: str
 
 
+class GemornaCdsOutput(_OutBase):
+    input_filepath: str
+    output_filepath: str
+    generated_sequence: str
+    raw_output: str
+    model: str
+
+
+class Gemorna5UtrOutput(_OutBase):
+    output_filepath: str
+    generated_sequence: str
+    utr_length: str
+    raw_output: str
+    model: str
+
+
+class Gemorna3UtrOutput(_OutBase):
+    output_filepath: str
+    generated_sequence: str
+    utr_length: str
+    raw_output: str
+    model: str
+
+
+class LinearDesignCdsOutput(_OutBase):
+    input_filepath: str
+    output_filepath: str
+    generated_sequence: str
+    structure: str
+    mfe: float
+    cai_score: float
+    lambda_value: float
+    codon_usage_path: str
+    raw_output: str
+    model: str
+
+
+class RNARLCdsOutput(_OutBase):
+    """RNARL CDS design output schema.
+
+    WARNING: Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_mrna_cds_with_rnarl (wrapper return dict)
+    - microservices/rnarl_service/main.py :: CdsDesignResponse
+    - docs/tools/design_mrna_cds_with_rnarl.md
+    """
+
+    input_filepath: str
+    output_filepath: str
+    generated_sequence: str
+    model_type: str
+    checkpoint_path: str
+    esm2_model_path: str
+    device: str
+    model: str
+
+
 class RhoFoldOutput(_OutBase):
     input_filepath: str
     pdb_filepath: str
@@ -440,9 +496,11 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         requires=[ToolDependency(name="Linux", detail="Documented deployment target"), ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service")],
         produces=["output_filepath", "generated_sequence"],
         input_model=tool_wrappers.LinearDesignCdsInput,
-        output_model=ProteinToCdsOutput,
+        output_model=LinearDesignCdsOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): RNARL tool spec. See docs/tools/design_mrna_cds_with_rnarl.md
+    # for the canonical contract. Modify only in sync with wrapper + microservice.
     "design_mrna_cds_with_rnarl": ToolSpec(
         identity="design_mrna_cds_with_rnarl",
         display_name="RNARL protein→CDS design",
@@ -456,7 +514,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         requires=[ToolDependency(name="GPU", detail="RNARL inference"), ToolDependency(name="RNARL microservice", detail="microservices/rnarl_service (port 8008)")],
         produces=["output_filepath", "generated_sequence"],
         input_model=tool_wrappers.RNARLCdsInput,
-        output_model=ProteinToCdsOutput,
+        output_model=RNARLCdsOutput,
         status=ToolStatus.partial,
     ),
     "design_mrna_cds_with_gemorna": ToolSpec(
@@ -472,7 +530,39 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         requires=[ToolDependency(name="GPU", detail="GEMORNA inference"), ToolDependency(name="GEMORNA microservice", detail="microservices/gemorna_service (port 8004)")],
         produces=["output_filepath", "generated_sequence"],
         input_model=tool_wrappers.GemornaCdsInput,
-        output_model=ProteinToCdsOutput,
+        output_model=GemornaCdsOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_5utr_with_gemorna": ToolSpec(
+        identity="design_5utr_with_gemorna",
+        display_name="GEMORNA 5'UTR design",
+        version="0.1.0",
+        source="https://github.com/RainaBio/GEMORNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8004/generate/5utr",
+        capabilities=["Generate 5'UTR sequence via GEMORNA."],
+        limitations=["Requires Linux GPU and checkpoints; Python ABI constraints (3.10) as documented."],
+        task_tags=["utr_design", "5utr_design"],
+        requires=[ToolDependency(name="GPU", detail="GEMORNA inference"), ToolDependency(name="GEMORNA microservice", detail="microservices/gemorna_service (port 8004)")],
+        produces=["output_filepath", "generated_sequence"],
+        input_model=tool_wrappers.Gemorna5UtrInput,
+        output_model=Gemorna5UtrOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_3utr_with_gemorna": ToolSpec(
+        identity="design_3utr_with_gemorna",
+        display_name="GEMORNA 3'UTR design",
+        version="0.1.0",
+        source="https://github.com/RainaBio/GEMORNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8004/generate/3utr",
+        capabilities=["Generate 3'UTR sequence via GEMORNA."],
+        limitations=["Requires Linux GPU and checkpoints; Python ABI constraints (3.10) as documented."],
+        task_tags=["utr_design", "3utr_design"],
+        requires=[ToolDependency(name="GPU", detail="GEMORNA inference"), ToolDependency(name="GEMORNA microservice", detail="microservices/gemorna_service (port 8004)")],
+        produces=["output_filepath", "generated_sequence"],
+        input_model=tool_wrappers.Gemorna3UtrInput,
+        output_model=Gemorna3UtrOutput,
         status=ToolStatus.partial,
     ),
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(

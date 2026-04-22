@@ -59,6 +59,13 @@ _CACHE_LOCK = Lock()
 
 
 class CdsDesignRequest(BaseModel):
+    """RNARL CDS generation request.
+
+    WARNING: Locked interface. Field changes must be synchronized with:
+    - agent_core/tools.py :: RNARLCdsInput + design_mrna_cds_with_rnarl wrapper
+    - docs/tools/design_mrna_cds_with_rnarl.md
+    """
+
     protein_sequence: str = Field(
         ...,
         min_length=1,
@@ -83,6 +90,14 @@ class CdsDesignRequest(BaseModel):
 
 
 class CdsDesignResponse(BaseModel):
+    """RNARL CDS generation response.
+
+    WARNING: Locked interface. Field changes must be synchronized with:
+    - agent_core/tool_specs.py :: RNARLCdsOutput
+    - agent_core/tools.py :: design_mrna_cds_with_rnarl wrapper return dict
+    - docs/tools/design_mrna_cds_with_rnarl.md
+    """
+
     protein_sequence: str
     generated_sequence: str
     model_type: str
@@ -282,6 +297,11 @@ def list_models() -> dict[str, Any]:
 
 @app.post("/generate/cds", response_model=CdsDesignResponse)
 def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
+    """RNARL actor inference endpoint.
+
+    INTERFACE LOCK (v0.2.0): The request/response schema is canonical.
+    Do not change keys without updating the wrapper and documentation.
+    """
     protein_sequence = _normalize_protein_sequence(payload.protein_sequence)
     model_type = _normalize_model_type(payload.model_type)
     checkpoint_path = _resolve_checkpoint_path(model_type, payload.checkpoint_path)
@@ -296,14 +316,15 @@ def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
     device = runtime["device"]
 
     with torch.no_grad():
-        encoded_protein = [tokenizer.encode_pro(protein_sequence, 1310)]
+        encode_max_len = MAX_PROTEIN_LENGTH + 2  # +2 for START and END tokens
+        encoded_protein = [tokenizer.encode_pro(protein_sequence, encode_max_len)]
         src = torch.tensor(encoded_protein, dtype=torch.long, device=device)
         esm_inputs = esm2_tokenizer(
             [protein_sequence],
             return_tensors="pt",
             padding=True,
             truncation=True,
-            max_length=1310,
+            max_length=encode_max_len,
         ).to(device)
         esm_embeddings = esm2_model(**esm_inputs).last_hidden_state
         outputs, _, _ = actor_model(src, esm_embeddings)

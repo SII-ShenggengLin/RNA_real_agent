@@ -73,6 +73,20 @@ def _normalize_sgrna_design_sequence(raw_text: str) -> str:
     return sequence
 
 
+
+def _raise_service_error(exc: requests.RequestException, service_name: str) -> None:
+    """Extract response detail from a requests exception and raise ValueError."""
+    detail = ""
+    response_obj = getattr(exc, "response", None)
+    if response_obj is not None:
+        try:
+            detail = str(response_obj.json())
+        except ValueError:
+            detail = response_obj.text
+    suffix = f"; detail={detail}" if detail else ""
+    raise ValueError(f"{service_name} service request failed: {exc}{suffix}") from exc
+
+
 class BlastnSearchInput(BaseModel):
     """Input schema for NCBI BLAST+ blastn (microservice on port 8019)."""
 
@@ -365,7 +379,7 @@ def run_blastn_similarity_search(
         response.raise_for_status()
         body = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"BLAST service request failed: {exc}") from exc
+        _raise_service_error(exc, "BLAST")
 
     tabular = str(body.get("tabular_output", "") or "")
     summary_path = ""
@@ -447,7 +461,7 @@ def compute_rna_sequence_gc_content(
         response.raise_for_status()
         body = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"RNA sequence metrics (GC) request failed: {exc}") from exc
+        _raise_service_error(exc, "RNA sequence metrics (GC)")
     return {
         "input_filepath": filepath,
         "resolved_filepath": str(body.get("resolved_filepath", "")),
@@ -491,7 +505,7 @@ def compute_dot_bracket_unpaired_fraction(
         response.raise_for_status()
         body = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"RNA sequence metrics (unpaired fraction) request failed: {exc}") from exc
+        _raise_service_error(exc, "RNA sequence metrics (unpaired fraction)")
     return {
         "input_filepath": filepath,
         "resolved_filepath": str(body.get("resolved_filepath", "")),
@@ -574,15 +588,7 @@ def design_sirna_with_evitar(
             "command": str(payload.get("command", "")),
         }
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"Evitar service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "Evitar")
 
 
 @tool(args_schema=CrisotScoreInput)
@@ -622,15 +628,7 @@ def score_crispr_off_target_with_crisot(
         payload["target_sequence"] = normalized_target
         return payload
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"CRISOT score request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "CRISOT score")
 
 
 @tool(args_schema=CrisotSpecInput)
@@ -685,15 +683,7 @@ def calculate_crispr_specificity_with_crisot(
             )
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"CRISOT spec request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "CRISOT spec")
 
 
 @tool(args_schema=CrisotOffSpecInput)
@@ -760,15 +750,7 @@ def search_crispr_off_targets_with_crisot(
             )
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"CRISOT off-spec request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "CRISOT off-spec")
 
 
 @tool(args_schema=CrisotOptimizeInput)
@@ -842,15 +824,7 @@ def optimize_sgrna_with_crisot(
             result["optimized_sgrna_filepath"] = save_sequence(best_sgrna, prefix="crisot_optimized_sgrna")
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"CRISOT optimize request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "CRISOT optimize")
 
 
 @tool(args_schema=SgRNADesignInput)
@@ -970,15 +944,7 @@ def design_sgrna_handle_with_crgpt(
             result["best_sequence_filepath"] = save_sequence(best_sequence, prefix="sgrna_design_best")
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"sgRNA design request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "sgRNA design")
 
 
 class MrnaToolInput(BaseModel):
@@ -1079,6 +1045,32 @@ class GemornaCdsInput(BaseModel):
     )
 
 
+class Gemorna5UtrInput(BaseModel):
+    """Input schema for GEMORNA 5'UTR design tool."""
+
+    utr_length: str = Field(
+        default="medium",
+        description="UTR length category: short | medium | long.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8004/generate/5utr",
+        description="REST endpoint for the GEMORNA 5'UTR generation microservice.",
+    )
+
+
+class Gemorna3UtrInput(BaseModel):
+    """Input schema for GEMORNA 3'UTR design tool."""
+
+    utr_length: str = Field(
+        default="medium",
+        description="UTR length category: short | medium | long.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8004/generate/3utr",
+        description="REST endpoint for the GEMORNA 3'UTR generation microservice.",
+    )
+
+
 class LinearDesignCdsInput(BaseModel):
     """Input schema for LinearDesign CDS design tool."""
 
@@ -1109,7 +1101,14 @@ class LinearDesignCdsInput(BaseModel):
 
 
 class RNARLCdsInput(BaseModel):
-    """Input schema for RNARL CDS design tool."""
+    """Input schema for RNARL CDS design tool.
+
+    WARNING: This schema is locked. Any field change must be synchronized with:
+    - microservices/rnarl_service/main.py :: CdsDesignRequest
+    - agent_core/tool_specs.py :: RNARLCdsOutput + ToolSpec registration
+    - docs/tools/design_mrna_cds_with_rnarl.md
+    See the tool documentation for the canonical interface contract.
+    """
 
     filepath: str = Field(
         ...,
@@ -1125,8 +1124,15 @@ class RNARLCdsInput(BaseModel):
     model_type: str = Field(
         default="Homo sapiens mRNA",
         description=(
-            "RNARL model type, for example `Homo sapiens mRNA`, "
-            "`Arabidopsis thaliana mRNA`, or `Homo sapiens circular RNA`."
+            "RNARL trained model variant (species / RNA type). "
+            "Must be one of the following 6 supported values: "
+            "`Homo sapiens mRNA` (default), "
+            "`Homo sapiens circular RNA`, "
+            "`Arabidopsis thaliana mRNA`, "
+            "`Escherichia coli mRNA`, "
+            "`Penicillium chrysogenum mRNA`, "
+            "`Chlamydomonas reinhardtii mRNA`, "
+            "`Thermococcus kodakarensis KOD1 mRNA`."
         ),
     )
     checkpoint_path: Optional[str] = Field(
@@ -1472,15 +1478,7 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         response.raise_for_status()
         data = response.json()
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"codonw-slim service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "codonw-slim")
 
     metrics_json_filepath = save_text_file(
         json.dumps(data, indent=2, ensure_ascii=True),
@@ -1546,7 +1544,7 @@ def predict_rna_secondary_structure(
             "model": str(payload.get("model", "ViennaRNA-RNAfold")),
         }
     except requests.RequestException as exc:
-        raise ValueError(f"ViennaRNA service request failed: {exc}") from exc
+        _raise_service_error(exc, "ViennaRNA")
 
 
 def _parse_two_rna_strands_from_file(content: str) -> tuple[str, str]:
@@ -1694,7 +1692,7 @@ def compute_sirna_duplex_binding_vienna(
         response.raise_for_status()
         payload = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"ViennaRNA duplex service request failed: {exc}") from exc
+        _raise_service_error(exc, "ViennaRNA duplex")
     if "mfe" not in payload or "structure" not in payload:
         raise ValueError("Invalid duplex response: expected `mfe` and `structure`.")
     return {
@@ -1755,7 +1753,7 @@ def compute_aso_target_accessibility_vienna(
         response.raise_for_status()
         payload = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"ViennaRNA accessibility service request failed: {exc}") from exc
+        _raise_service_error(exc, "ViennaRNA accessibility")
     return {
         "input_filepath": filepath,
         "sequence_length": int(payload.get("sequence_length", 0)),
@@ -1817,7 +1815,7 @@ def predict_rna_local_accessibility_profile_vienna(
         response.raise_for_status()
         payload = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"ViennaRNA RNAplfold profile request failed: {exc}") from exc
+        _raise_service_error(exc, "ViennaRNA RNAplfold profile")
     required = ("positions", "unpaired_prob_1nt", "sequence_length")
     if any(k not in payload for k in required):
         raise ValueError(f"Invalid plfold-profiles response; expected keys {required}.")
@@ -1889,7 +1887,7 @@ def inverse_fold_rna_secondary_structure_vienna(
         response.raise_for_status()
         payload = response.json()
     except requests.RequestException as exc:
-        raise ValueError(f"ViennaRNA inverse-fold request failed: {exc}") from exc
+        _raise_service_error(exc, "ViennaRNA inverse-fold")
     if "best_sequence" not in payload:
         raise ValueError("Invalid inverse-fold response: missing `best_sequence`.")
     out = {
@@ -1955,7 +1953,7 @@ def predict_rna_secondary_structure_with_linearfold(
             "model": str(payload.get("model", "LinearFold")),
         }
     except requests.RequestException as exc:
-        raise ValueError(f"LinearFold service request failed: {exc}") from exc
+        _raise_service_error(exc, "LinearFold")
 
 
 @tool(args_schema=GemornaCdsInput)
@@ -1995,7 +1993,76 @@ def design_mrna_cds_with_gemorna(
             "model": payload.get("model", "GEMORNA-cds"),
         }
     except requests.RequestException as exc:
-        raise ValueError(f"GEMORNA service request failed: {exc}") from exc
+        _raise_service_error(exc, "GEMORNA")
+
+
+def _call_gemorna_utr(
+    service_url: str,
+    utr_length: str,
+    prefix: str,
+    default_model: str,
+) -> dict[str, Any]:
+    """Shared HTTP helper for GEMORNA 5'UTR / 3'UTR wrappers."""
+    try:
+        response = requests.post(
+            service_url,
+            json={"utr_length": utr_length},
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "generated_sequence" not in payload:
+            raise ValueError(f"Missing `generated_sequence` in {default_model} response.")
+        output_filepath = save_sequence(payload["generated_sequence"], prefix=prefix)
+        return {
+            "output_filepath": output_filepath,
+            "generated_sequence": payload["generated_sequence"],
+            "utr_length": payload.get("utr_length", utr_length),
+            "raw_output": payload.get("raw_output", ""),
+            "model": payload.get("model", default_model),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, default_model)
+
+
+@tool(args_schema=Gemorna5UtrInput)
+def design_5utr_with_gemorna(
+    utr_length: str = "medium",
+    service_url: str = "http://127.0.0.1:8004/generate/5utr",
+) -> dict[str, Any]:
+    """Design a 5'UTR sequence using GEMORNA.
+
+    Args:
+        utr_length: UTR length category — `short`, `medium`, or `long`.
+        service_url: REST endpoint for the GEMORNA 5'UTR microservice.
+
+    Returns:
+        Dict containing the generated 5'UTR sequence and a new workspace filepath.
+
+    Raises:
+        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
+    """
+    return _call_gemorna_utr(service_url, utr_length, "gemorna_5utr", "GEMORNA-5utr")
+
+
+@tool(args_schema=Gemorna3UtrInput)
+def design_3utr_with_gemorna(
+    utr_length: str = "medium",
+    service_url: str = "http://127.0.0.1:8004/generate/3utr",
+) -> dict[str, Any]:
+    """Design a 3'UTR sequence using GEMORNA.
+
+    Args:
+        utr_length: UTR length category — `short`, `medium`, or `long`.
+        service_url: REST endpoint for the GEMORNA 3'UTR microservice.
+
+    Returns:
+        Dict containing the generated 3'UTR sequence and a new workspace filepath.
+
+    Raises:
+        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
+    """
+    return _call_gemorna_utr(service_url, utr_length, "gemorna_3utr", "GEMORNA-3utr")
 
 
 @tool(args_schema=LinearDesignCdsInput)
@@ -2055,15 +2122,7 @@ def design_mrna_cds_with_lineardesign(
             "model": payload.get("model", "LinearDesign"),
         }
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"LinearDesign service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "LinearDesign")
 
 
 @tool(args_schema=RNARLCdsInput)
@@ -2077,11 +2136,20 @@ def design_mrna_cds_with_rnarl(
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using RNARL.
 
+    INTERFACE LOCK (v0.2.0): This wrapper's IO contract is synchronized with
+    microservices/rnarl_service/main.py :: generate_cds().
+    Any payload key change must be mirrored there and documented in
+    docs/tools/design_mrna_cds_with_rnarl.md.
+
     Args:
         filepath: Workspace file path containing the input protein sequence.
             IMPORTANT: You must pass a workspace filepath, not the sequence itself.
         service_url: REST endpoint for the RNARL microservice.
-        model_type: RNARL model type matching the author notebook checkpoints.
+        model_type: RNARL trained model variant (species / RNA type).
+            Supported: `Homo sapiens mRNA` (default), `Homo sapiens circular RNA`,
+            `Arabidopsis thaliana mRNA`, `Escherichia coli mRNA`,
+            `Penicillium chrysogenum mRNA`, `Chlamydomonas reinhardtii mRNA`,
+            `Thermococcus kodakarensis KOD1 mRNA`.
         checkpoint_path: Optional actor checkpoint override for the RNARL service.
         esm2_model_path: Optional local ESM-2 model directory override.
         device: Optional torch device override passed to the RNARL service.
@@ -2090,9 +2158,16 @@ def design_mrna_cds_with_rnarl(
         Dict containing the generated CDS sequence, runtime metadata, and a new workspace filepath.
 
     Raises:
-        ValueError: If the RNARL service is unreachable or returns an invalid payload.
+        ValueError: If the input protein sequence contains invalid characters or the RNARL service is unreachable.
     """
     protein_sequence = read_sequence(filepath).strip()
+    valid_residues = set("ARNDCQEGHILKMFPSTWYV*")
+    invalid_chars = sorted(set(ch for ch in protein_sequence.upper() if ch not in valid_residues and ch.isalpha()))
+    if invalid_chars:
+        raise ValueError(
+            f"RNARL input protein sequence contains unsupported residue(s): {''.join(invalid_chars)}. "
+            f"Only standard amino-acid letters and '*' are allowed."
+        )
     try:
         request_payload: dict[str, Any] = {
             "protein_sequence": protein_sequence,
@@ -2126,15 +2201,7 @@ def design_mrna_cds_with_rnarl(
             "model": payload.get("model", "RNARL-actor"),
         }
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"RNARL service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "RNARL")
 
 
 @tool(args_schema=RhoFoldInput)
@@ -2215,7 +2282,7 @@ def predict_rna_tertiary_structure_with_rhofold(
             )
         return result
     except requests.RequestException as exc:
-        raise ValueError(f"RhoFold service request failed: {exc}") from exc
+        _raise_service_error(exc, "RhoFold")
 
 
 @tool(args_schema=RhoDesignInput)
@@ -2299,15 +2366,7 @@ def design_rna_sequence_with_rhodesign(
             )
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"RhoDesign service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "RhoDesign")
 
 
 @tool(args_schema=RiboDiffusionInput)
@@ -2404,15 +2463,7 @@ def design_rna_inverse_fold_with_ribodiffusion(
             )
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"RiboDiffusion service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "RiboDiffusion")
 
 
 @tool(args_schema=RNAsmolScoreInput)
@@ -2462,15 +2513,7 @@ def score_rna_ligand_binding_with_rnasmol(
         payload["rna_sequence"] = sequence
         return payload
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"RNAsmol service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "RNAsmol")
 
 
 @tool(args_schema=GerNABindScoreInput)
@@ -2537,15 +2580,7 @@ def score_rna_ligand_binding_with_gernabind(
             payload["requested_secondary_structure"] = secondary_structure
         return payload
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"GerNA-Bind service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "GerNA-Bind")
 
 
 @tool(args_schema=RNASTOPPredictionInput)
@@ -2621,15 +2656,7 @@ def predict_mrna_stability_with_rnastop(
             "model": payload.get("model", "RNASTOP"),
         }
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"RNASTOP service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "RNASTOP")
 
 
 @tool(args_schema=IRESfinderPredictionInput)
@@ -2723,15 +2750,7 @@ def predict_putative_ires_with_iresfinder(
             "predictions_note": predictions_note,
         }
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"IRESfinder service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "IRESfinder")
 
 
 @tool(args_schema=ODesignInferenceInput)
@@ -2855,15 +2874,7 @@ def run_odesign_inference(
             )
         return result
     except requests.RequestException as exc:
-        detail = ""
-        response_obj = getattr(exc, "response", None)
-        if response_obj is not None:
-            try:
-                detail = str(response_obj.json())
-            except ValueError:
-                detail = response_obj.text
-        suffix = f"; detail={detail}" if detail else ""
-        raise ValueError(f"ODesign service request failed: {exc}{suffix}") from exc
+        _raise_service_error(exc, "ODesign")
 
 
 # ---------------------------------------------------------------------------
@@ -2913,6 +2924,8 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     design_mrna_cds_with_lineardesign,
     design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
+    design_5utr_with_gemorna,
+    design_3utr_with_gemorna,
     design_rna_sequence_with_rhodesign,
     design_rna_inverse_fold_with_ribodiffusion,
     run_odesign_inference,

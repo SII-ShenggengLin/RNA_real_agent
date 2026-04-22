@@ -686,6 +686,32 @@ def _needs_lineardesign(text: str) -> bool:
     )
 
 
+def _needs_5utr_design(text: str) -> bool:
+    lowered = text.lower()
+    return "5utr" in lowered or "5'utr" in lowered or "5 utr" in lowered
+
+
+def _needs_3utr_design(text: str) -> bool:
+    lowered = text.lower()
+    return "3utr" in lowered or "3'utr" in lowered or "3 utr" in lowered
+
+
+def _extract_utr_length(text: str) -> str:
+    lowered = text.lower()
+    if "short" in lowered:
+        return "short"
+    if "long" in lowered:
+        return "long"
+    return "medium"
+
+
+def _resolve_utr_tool(user_text: str) -> tuple[str, dict[str, Any]]:
+    """Resolve UTR design tool name and args (GEMORNA 5'UTR / 3'UTR)."""
+    if _needs_5utr_design(user_text):
+        return "design_5utr_with_gemorna", {}
+    return "design_3utr_with_gemorna", {}
+
+
 def _needs_linearfold(text: str) -> bool:
     lowered = text.lower()
     if "linearfold" in lowered:
@@ -714,6 +740,12 @@ def _build_linearfold_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
 
 
 def _extract_rnarl_model_type(text: str) -> str:
+    """Resolve protein-to-CDS design model type from natural language.
+
+    INTERFACE LOCK (v0.2.0): The 7 returned strings are the canonical
+    model_type values accepted by RNARL. They must match
+    microservices/rnarl_service/main.py :: MODEL_TYPE_TO_CHECKPOINT exactly.
+    """
     lowered = text.lower()
     if "circular" in lowered or "circrna" in lowered or "circ rna" in lowered or "环状" in lowered:
         return "Homo sapiens circular RNA"
@@ -730,6 +762,24 @@ def _extract_rnarl_model_type(text: str) -> str:
     if "human" in lowered or "homo sapiens" in lowered:
         return "Homo sapiens mRNA"
     return "Homo sapiens mRNA"
+
+
+def _resolve_protein_to_cds_tool(user_text: str, raw_text: str) -> tuple[str, dict[str, Any]]:
+    """Resolve protein-to-CDS design tool name and args (LinearDesign / RNARL / GEMORNA).
+
+    INTERFACE LOCK (v0.2.0): The dispatch logic and RNARL model_type extraction
+    must stay in sync with docs/tools/design_mrna_cds_with_rnarl.md.
+    """
+    if _needs_lineardesign(user_text):
+        tool_name = "design_mrna_cds_with_lineardesign"
+    elif _needs_rnarl_design(user_text):
+        tool_name = "design_mrna_cds_with_rnarl"
+    else:
+        tool_name = "design_mrna_cds_with_gemorna"
+    tool_args: dict[str, Any] = {}
+    if tool_name == "design_mrna_cds_with_rnarl":
+        tool_args["model_type"] = _extract_rnarl_model_type(raw_text)
+    return tool_name, tool_args
 
 
 def _extract_smiles(text: str) -> Optional[str]:
@@ -1965,15 +2015,8 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         filepath = save_sequence(_extract_protein_sequence(state.get("input_sequence", "")), prefix="protein")
         state["current_filepath"] = filepath
         state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-        if lineardesign_mode:
-            tool_name = "design_mrna_cds_with_lineardesign"
-        elif rnarl_mode:
-            tool_name = "design_mrna_cds_with_rnarl"
-        else:
-            tool_name = "design_mrna_cds_with_gemorna"
-        tool_args: dict[str, Any] = {"filepath": filepath}
-        if rnarl_mode:
-            tool_args["model_type"] = _extract_rnarl_model_type(raw_text)
+        tool_name, tool_args = _resolve_protein_to_cds_tool(user_text, raw_text)
+        tool_args["filepath"] = filepath
         tool_calls = [
             {
                 "name": tool_name,
@@ -2241,6 +2284,10 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if ss_path:
                 structure_call["args"]["secondary_structure_filepath"] = ss_path
             fallback_calls = [structure_call]
+        elif _needs_5utr_design(user_text) or _needs_3utr_design(user_text):
+            tool_name, tool_args = _resolve_utr_tool(user_text)
+            tool_args["utr_length"] = _extract_utr_length(user_text)
+            fallback_calls = [{"name": tool_name, "args": tool_args}]
         elif any(k in user_text for k in ["design", "设计", "gemorna", "rnarl", "lineardesign", "linear design", "protein", "cds", "utr", "生成"]):
             if not filepath:
                 filepath = save_sequence(
@@ -2249,15 +2296,8 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 )
                 state["current_filepath"] = filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
-            if _needs_lineardesign(user_text):
-                tool_name = "design_mrna_cds_with_lineardesign"
-            elif _needs_rnarl_design(user_text):
-                tool_name = "design_mrna_cds_with_rnarl"
-            else:
-                tool_name = "design_mrna_cds_with_gemorna"
-            tool_args = {"filepath": filepath}
-            if tool_name == "design_mrna_cds_with_rnarl":
-                tool_args["model_type"] = _extract_rnarl_model_type(state.get("input_sequence", ""))
+            tool_name, tool_args = _resolve_protein_to_cds_tool(user_text, state.get("input_sequence", ""))
+            tool_args["filepath"] = filepath
             fallback_calls = [
                 {"name": tool_name, "args": tool_args},
             ]
@@ -2494,6 +2534,8 @@ def tool_execution_node(state: AgentState) -> AgentState:
             "design_mrna_cds_with_gemorna",
             "design_mrna_cds_with_rnarl",
             "design_mrna_cds_with_lineardesign",
+            "design_5utr_with_gemorna",
+            "design_3utr_with_gemorna",
         }:
             output_filepath = str(tool_result.get("output_filepath", ""))
             if output_filepath:
