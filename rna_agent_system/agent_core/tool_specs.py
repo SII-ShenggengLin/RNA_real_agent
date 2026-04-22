@@ -182,6 +182,13 @@ class ProteinToCdsOutput(_OutBase):
 
 
 class GemornaCdsOutput(_OutBase):
+    """GEMORNA CDS design output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_mrna_cds_with_gemorna (wrapper return dict)
+    - microservices/gemorna_service/main.py :: CdsDesignResponse
+    """
+
     input_filepath: str
     output_filepath: str
     generated_sequence: str
@@ -190,6 +197,13 @@ class GemornaCdsOutput(_OutBase):
 
 
 class Gemorna5UtrOutput(_OutBase):
+    """GEMORNA 5'UTR design output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_5utr_with_gemorna (wrapper return dict)
+    - microservices/gemorna_service/main.py :: UtrDesignResponse
+    """
+
     output_filepath: str
     generated_sequence: str
     utr_length: str
@@ -198,6 +212,13 @@ class Gemorna5UtrOutput(_OutBase):
 
 
 class Gemorna3UtrOutput(_OutBase):
+    """GEMORNA 3'UTR design output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_3utr_with_gemorna (wrapper return dict)
+    - microservices/gemorna_service/main.py :: UtrDesignResponse
+    """
+
     output_filepath: str
     generated_sequence: str
     utr_length: str
@@ -517,6 +538,9 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RNARLCdsOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): GEMORNA CDS tool spec. Modify only in sync with:
+    # - agent_core/tools.py :: design_mrna_cds_with_gemorna
+    # - microservices/gemorna_service/main.py :: CdsDesignRequest / CdsDesignResponse
     "design_mrna_cds_with_gemorna": ToolSpec(
         identity="design_mrna_cds_with_gemorna",
         display_name="GEMORNA protein→CDS design",
@@ -533,6 +557,9 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=GemornaCdsOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): GEMORNA 5'UTR tool spec. Modify only in sync with:
+    # - agent_core/tools.py :: design_5utr_with_gemorna
+    # - microservices/gemorna_service/main.py :: UtrDesignRequest / UtrDesignResponse
     "design_5utr_with_gemorna": ToolSpec(
         identity="design_5utr_with_gemorna",
         display_name="GEMORNA 5'UTR design",
@@ -549,6 +576,9 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=Gemorna5UtrOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): GEMORNA 3'UTR tool spec. Modify only in sync with:
+    # - agent_core/tools.py :: design_3utr_with_gemorna
+    # - microservices/gemorna_service/main.py :: UtrDesignRequest / UtrDesignResponse
     "design_3utr_with_gemorna": ToolSpec(
         identity="design_3utr_with_gemorna",
         display_name="GEMORNA 3'UTR design",

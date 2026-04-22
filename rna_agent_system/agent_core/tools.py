@@ -1030,7 +1030,12 @@ class LinearFoldSecondaryInput(BaseModel):
 
 
 class GemornaCdsInput(BaseModel):
-    """Input schema for GEMORNA CDS design tool."""
+    """Input schema for GEMORNA CDS design tool.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - microservices/gemorna_service/main.py :: CdsDesignRequest
+    - agent_core/tool_specs.py :: design_mrna_cds_with_gemorna ToolSpec
+    """
 
     filepath: str = Field(
         ...,
@@ -1046,7 +1051,12 @@ class GemornaCdsInput(BaseModel):
 
 
 class Gemorna5UtrInput(BaseModel):
-    """Input schema for GEMORNA 5'UTR design tool."""
+    """Input schema for GEMORNA 5'UTR design tool.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - microservices/gemorna_service/main.py :: UtrDesignRequest
+    - agent_core/tool_specs.py :: design_5utr_with_gemorna ToolSpec
+    """
 
     utr_length: str = Field(
         default="medium",
@@ -1059,7 +1069,12 @@ class Gemorna5UtrInput(BaseModel):
 
 
 class Gemorna3UtrInput(BaseModel):
-    """Input schema for GEMORNA 3'UTR design tool."""
+    """Input schema for GEMORNA 3'UTR design tool.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - microservices/gemorna_service/main.py :: UtrDesignRequest
+    - agent_core/tool_specs.py :: design_3utr_with_gemorna ToolSpec
+    """
 
     utr_length: str = Field(
         default="medium",
@@ -1962,6 +1977,10 @@ def design_mrna_cds_with_gemorna(
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using GEMORNA.
 
+    INTERFACE LOCK (v0.2.0): The return dict keys must stay synchronized with:
+    - agent_core/tool_specs.py :: GemornaCdsOutput
+    - microservices/gemorna_service/main.py :: CdsDesignResponse
+
     Args:
         filepath: Workspace file path containing the input protein sequence.
             IMPORTANT: You must pass a workspace filepath, not the sequence itself.
@@ -2032,6 +2051,10 @@ def design_5utr_with_gemorna(
 ) -> dict[str, Any]:
     """Design a 5'UTR sequence using GEMORNA.
 
+    INTERFACE LOCK (v0.2.0): The return dict keys must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna5UtrOutput
+    - microservices/gemorna_service/main.py :: UtrDesignResponse
+
     Args:
         utr_length: UTR length category — `short`, `medium`, or `long`.
         service_url: REST endpoint for the GEMORNA 5'UTR microservice.
@@ -2051,6 +2074,10 @@ def design_3utr_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/generate/3utr",
 ) -> dict[str, Any]:
     """Design a 3'UTR sequence using GEMORNA.
+
+    INTERFACE LOCK (v0.2.0): The return dict keys must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna3UtrOutput
+    - microservices/gemorna_service/main.py :: UtrDesignResponse
 
     Args:
         utr_length: UTR length category — `short`, `medium`, or `long`.

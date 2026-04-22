@@ -26,6 +26,13 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 
 class CdsDesignRequest(BaseModel):
+    """GEMORNA CDS generation request.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
+    - agent_core/tools.py :: GemornaCdsInput + design_mrna_cds_with_gemorna wrapper
+    - agent_core/tool_specs.py :: GemornaCdsOutput
+    """
+
     protein_sequence: str = Field(
         ...,
         min_length=1,
@@ -47,6 +54,13 @@ class CdsDesignRequest(BaseModel):
 
 
 class CdsDesignResponse(BaseModel):
+    """GEMORNA CDS generation response.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
+    - agent_core/tool_specs.py :: GemornaCdsOutput
+    - agent_core/tools.py :: design_mrna_cds_with_gemorna wrapper return dict
+    """
+
     protein_sequence: str
     generated_sequence: str
     raw_output: str
@@ -54,6 +68,13 @@ class CdsDesignResponse(BaseModel):
 
 
 class UtrDesignRequest(BaseModel):
+    """GEMORNA UTR generation request (5'UTR / 3'UTR).
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
+    - agent_core/tools.py :: Gemorna5UtrInput / Gemorna3UtrInput + design_5utr_with_gemorna / design_3utr_with_gemorna wrappers
+    - agent_core/tool_specs.py :: Gemorna5UtrOutput / Gemorna3UtrOutput
+    """
+
     utr_length: str = Field(
         ...,
         description="UTR length category: short | medium | long.",
@@ -70,6 +91,13 @@ class UtrDesignRequest(BaseModel):
 
 
 class UtrDesignResponse(BaseModel):
+    """GEMORNA UTR generation response (5'UTR / 3'UTR).
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna5UtrOutput / Gemorna3UtrOutput
+    - agent_core/tools.py :: design_5utr_with_gemorna / design_3utr_with_gemorna wrapper return dicts
+    """
+
     mode: str
     utr_length: str
     generated_sequence: str
@@ -202,6 +230,11 @@ def health() -> dict[str, str]:
 
 @app.post("/generate/cds", response_model=CdsDesignResponse)
 def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
+    """GEMORNA CDS generation endpoint.
+
+    INTERFACE LOCK (v0.2.0): The CLI invocation (--mode cds --protein_seq ...) and
+    response schema are canonical. Do not change without updating wrapper + tool spec.
+    """
     _require_runtime_assets("cds")
     command = [
         sys.executable,
@@ -239,9 +272,19 @@ def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
 
 @app.post("/generate/5utr", response_model=UtrDesignResponse)
 def generate_5utr(payload: UtrDesignRequest) -> UtrDesignResponse:
+    """GEMORNA 5'UTR generation endpoint.
+
+    INTERFACE LOCK (v0.2.0): The CLI invocation (--mode 5utr --utr_length ...) and
+    response schema are canonical. Do not change without updating wrapper + tool spec.
+    """
     return _run_gemorna_utr("5utr", payload.utr_length)
 
 
 @app.post("/generate/3utr", response_model=UtrDesignResponse)
 def generate_3utr(payload: UtrDesignRequest) -> UtrDesignResponse:
+    """GEMORNA 3'UTR generation endpoint.
+
+    INTERFACE LOCK (v0.2.0): The CLI invocation (--mode 3utr --utr_length ...) and
+    response schema are canonical. Do not change without updating wrapper + tool spec.
+    """
     return _run_gemorna_utr("3utr", payload.utr_length)
