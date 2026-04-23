@@ -5,8 +5,10 @@ set -e
 #    conda env create -f environment.yml
 # 2. 激活环境后，确保 RhoFold 包已安装:
 #    cd ../../external_repos/RhoFold && python setup.py install
-# 3. 如果自动下载 checkpoint 失败，请手动下载到:
+# 3. 确保以下任一 checkpoint 路径存在（微服务会按优先级自动查找，不会自动下载）:
 #    ../../external_repos/RhoFold/pretrained/RhoFold_pretrained.pt
+#    ../../external_repos/RhoFold/pretrained/rhofold_pretrained_params.pt
+#    ../../external_repos/RhoFold/pretrained/model_20221010_params.pt
 # 4. 启动服务:
 #    bash start.sh
 

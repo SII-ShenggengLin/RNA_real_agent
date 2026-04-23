@@ -30,6 +30,14 @@ app = FastAPI(
 
 
 class RhoFoldPredictRequest(BaseModel):
+    """RhoFold prediction request schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: RhoFoldInput / predict_rna_tertiary_structure_with_rhofold
+    - agent_core/tool_specs.py :: RhoFoldOutput / predict_rna_tertiary_structure_with_rhofold ToolSpec
+    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
+    """
+
     sequence: str = Field(..., min_length=1, description="RNA sequence (A/U/G/C).")
     single_seq_pred: bool = Field(
         default=True,
@@ -61,6 +69,14 @@ class RhoFoldPredictRequest(BaseModel):
 
 
 class RhoFoldPredictResponse(BaseModel):
+    """RhoFold prediction response schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (reads these keys)
+    - agent_core/tool_specs.py :: RhoFoldOutput
+    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
+    """
+
     sequence: str
     output_pdb_path: str
     secondary_structure_ct_path: Optional[str] = None
@@ -94,6 +110,11 @@ def _normalize_sequence(sequence: str) -> str:
 
 
 def _resolve_checkpoint_path(checkpoint_path: Optional[str]) -> Path:
+    """Resolve checkpoint path with strict local-first policy.
+
+    Never return a non-existent path to the downstream inference.py,
+    because inference.py would trigger a HuggingFace download.
+    """
     if checkpoint_path:
         resolved = _resolve_repo_path(checkpoint_path)
         if not resolved.exists():
@@ -110,7 +131,15 @@ def _resolve_checkpoint_path(checkpoint_path: Optional[str]) -> Path:
         if candidate.exists():
             return candidate
 
-    return DEFAULT_CHECKPOINT_CANDIDATES[0]
+    candidates_str = ", ".join(str(c) for c in DEFAULT_CHECKPOINT_CANDIDATES)
+    raise HTTPException(
+        status_code=500,
+        detail=(
+            "No local RhoFold checkpoint found. "
+            f"Searched: {candidates_str}. "
+            "Please download the pretrained weights to one of the above paths."
+        ),
+    )
 
 
 def _mean_plddt_from_pdb(pdb_path: Path) -> Optional[float]:

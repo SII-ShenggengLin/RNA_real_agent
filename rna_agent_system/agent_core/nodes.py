@@ -2563,19 +2563,24 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     structure_filepath = save_sequence(structure, prefix="structure")
                     state["structure_filepath"] = structure_filepath
                     state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+        # INTERFACE LOCK (v0.2.0) — RhoFold result ingestion
+        # The keys read from tool_result must stay in sync with:
+        # - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold return dict
+        # - agent_core/tool_specs.py :: RhoFoldOutput
+        # - microservices/rhofold_service/main.py :: RhoFoldPredictResponse
         elif tool_name == "predict_rna_tertiary_structure_with_rhofold":
-            output_pdb_filepath = str(tool_result.get("output_pdb_filepath", ""))
-            if output_pdb_filepath:
-                state["tertiary_structure_filepath"] = output_pdb_filepath
-                state["workspace_files"] = state.get("workspace_files", []) + [output_pdb_filepath]
-            secondary_ct_filepath = str(tool_result.get("secondary_structure_ct_filepath", ""))
-            if secondary_ct_filepath:
-                state["tertiary_structure_ct_filepath"] = secondary_ct_filepath
-                state["workspace_files"] = state.get("workspace_files", []) + [secondary_ct_filepath]
-            results_npz_filepath = str(tool_result.get("results_npz_filepath", ""))
-            if results_npz_filepath:
-                state["tertiary_results_filepath"] = results_npz_filepath
-                state["workspace_files"] = state.get("workspace_files", []) + [results_npz_filepath]
+            pdb_filepath = str(tool_result.get("pdb_filepath", ""))
+            if pdb_filepath:
+                state["tertiary_structure_filepath"] = pdb_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [pdb_filepath]
+            ct_filepath = str(tool_result.get("ct_filepath", ""))
+            if ct_filepath:
+                state["tertiary_structure_ct_filepath"] = ct_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [ct_filepath]
+            results_filepath = str(tool_result.get("results_filepath", ""))
+            if results_filepath:
+                state["tertiary_results_filepath"] = results_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [results_filepath]
             log_filepath = str(tool_result.get("log_filepath", ""))
             if log_filepath:
                 state["tertiary_log_filepath"] = log_filepath
@@ -2641,6 +2646,8 @@ def tool_execution_node(state: AgentState) -> AgentState:
                         structure_filepath = save_sequence(structure, prefix="structure")
                         state["structure_filepath"] = structure_filepath
                         state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+            # INTERFACE LOCK (v0.2.0) — RhoFold direct invocation in fallback repair
+            # Field names must stay in sync with predict_rna_tertiary_structure_with_rhofold return dict.
             if _needs_tertiary_structure(user_text):
                 tertiary_result = predict_rna_tertiary_structure_with_rhofold.invoke(
                     {"filepath": state["current_filepath"]}
@@ -2652,18 +2659,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
                         name="predict_rna_tertiary_structure_with_rhofold",
                     )
                 )
-                output_pdb_filepath = str(tertiary_result.get("output_pdb_filepath", ""))
-                if output_pdb_filepath:
-                    state["tertiary_structure_filepath"] = output_pdb_filepath
-                    state["workspace_files"] = state.get("workspace_files", []) + [output_pdb_filepath]
-                secondary_ct_filepath = str(tertiary_result.get("secondary_structure_ct_filepath", ""))
-                if secondary_ct_filepath:
-                    state["tertiary_structure_ct_filepath"] = secondary_ct_filepath
-                    state["workspace_files"] = state.get("workspace_files", []) + [secondary_ct_filepath]
-                results_npz_filepath = str(tertiary_result.get("results_npz_filepath", ""))
-                if results_npz_filepath:
-                    state["tertiary_results_filepath"] = results_npz_filepath
-                    state["workspace_files"] = state.get("workspace_files", []) + [results_npz_filepath]
+                pdb_filepath = str(tertiary_result.get("pdb_filepath", ""))
+                if pdb_filepath:
+                    state["tertiary_structure_filepath"] = pdb_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [pdb_filepath]
+                ct_filepath = str(tertiary_result.get("ct_filepath", ""))
+                if ct_filepath:
+                    state["tertiary_structure_ct_filepath"] = ct_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [ct_filepath]
+                results_filepath = str(tertiary_result.get("results_filepath", ""))
+                if results_filepath:
+                    state["tertiary_results_filepath"] = results_filepath
+                    state["workspace_files"] = state.get("workspace_files", []) + [results_filepath]
                 log_filepath = str(tertiary_result.get("log_filepath", ""))
                 if log_filepath:
                     state["tertiary_log_filepath"] = log_filepath

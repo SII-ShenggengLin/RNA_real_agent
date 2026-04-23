@@ -259,11 +259,21 @@ class RNARLCdsOutput(_OutBase):
 
 
 class RhoFoldOutput(_OutBase):
+    """RhoFold tertiary structure prediction output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (wrapper return dict)
+    - agent_core/nodes.py :: rhofold result ingestion
+    - microservices/rhofold_service/main.py :: RhoFoldPredictResponse
+    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
+    """
+
     input_filepath: str
     pdb_filepath: str
     ct_filepath: str = ""
     results_filepath: str = ""
     log_filepath: str = ""
+    service_output_dir: str = ""
     mean_plddt: float = 0.0
     model: str
 
@@ -673,10 +683,16 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=Gemorna3UtrOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): RhoFold tool spec. Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: RhoFoldInput / predict_rna_tertiary_structure_with_rhofold
+    # - agent_core/tool_specs.py :: RhoFoldOutput
+    # - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
+    # - agent_core/nodes.py :: rhofold result ingestion
+    # - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
         identity="predict_rna_tertiary_structure_with_rhofold",
         display_name="RhoFold tertiary structure prediction",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/ml4bio/RhoFold",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8005/predict",
@@ -684,7 +700,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Depends on GPU/weights; results depend on model assets and runtime config."],
         task_tags=["rna_tertiary_structure_prediction"],
         requires=[ToolDependency(name="GPU", detail="RhoFold inference"), ToolDependency(name="RhoFold microservice", detail="microservices/rhofold_service (port 8005)")],
-        produces=["pdb_filepath", "mean_plddt"],
+        produces=["pdb_filepath", "ct_filepath", "results_filepath", "log_filepath", "mean_plddt"],
         input_model=tool_wrappers.RhoFoldInput,
         output_model=RhoFoldOutput,
         status=ToolStatus.partial,

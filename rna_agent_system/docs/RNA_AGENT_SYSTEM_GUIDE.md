@@ -296,12 +296,13 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 微服务目录 | `microservices/rhofold_service/` |
 | 环境 | `python=3.7.12` + `pytorch=1.10.2` + `cudatoolkit=11.3.1` |
 | 接口 | `GET /health`、`POST /predict` |
-| Agent 工具 | `predict_rna_tertiary_structure_with_rhofold(filepath)` |
+| Agent 工具 | `predict_rna_tertiary_structure_with_rhofold(filepath, relax_steps=0, checkpoint_path=None, device=None)` |
 
 **关键注意事项**：
 - 当前默认 `single_seq_pred=true`，不依赖本地 MSA 数据库
-- checkpoint：`external_repos/RhoFold/pretrained/RhoFold_pretrained.pt`
-- 首次运行可能需网络访问 Hugging Face
+- checkpoint：微服务会按优先级搜索 `external_repos/RhoFold/pretrained/` 下的 `RhoFold_pretrained.pt`、`rhofold_pretrained_params.pt`、`model_20221010_params.pt`
+- **本地优先策略**：若本地无权重，微服务会直接报错，不会自动从 Hugging Face 下载，避免网络依赖
+- 可通过 `checkpoint_path` 传入自定义权重路径；可通过 `device` 指定 `cpu`/`cuda:0` 等
 - 微服务代码专门使用 Python 3.7 兼容写法
 
 ### 6.5 RhoDesign (端口 8006)

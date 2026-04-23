@@ -1189,7 +1189,18 @@ class RNARLCdsInput(BaseModel):
 
 
 class RhoFoldInput(BaseModel):
-    """Input schema for RhoFold tertiary structure prediction."""
+    """Input schema for RhoFold tertiary structure prediction.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: RhoFoldOutput / predict_rna_tertiary_structure_with_rhofold ToolSpec
+    - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
+    - agent_core/nodes.py :: rhofold result ingestion (tool_result field names)
+    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
+
+    This wrapper exposes the single-sequence prediction mode only.
+    MSA-based prediction is not exposed because local MSA databases
+    (~900 GB) are not deployed in this environment.
+    """
 
     filepath: str = Field(
         ...,
@@ -1206,6 +1217,17 @@ class RhoFoldInput(BaseModel):
         default=0,
         ge=0,
         description="Amber relaxation steps. Use 0 to skip relaxation and reduce runtime.",
+    )
+    checkpoint_path: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional path to a custom RhoFold checkpoint. "
+            "If omitted, the microservice will search standard pretrained paths."
+        ),
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional compute device: cpu, cuda, cuda:0, etc.",
     )
 
 
@@ -1692,7 +1714,7 @@ def predict_rna_secondary_structure(
     Raises:
         ValueError: If ViennaRNA API request fails or response payload is invalid.
     """
-    sequence = read_sequence(filepath).strip()
+    sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     try:
         response = requests.post(
             service_url,
@@ -2388,14 +2410,24 @@ def predict_rna_tertiary_structure_with_rhofold(
     filepath: str,
     service_url: str = "http://127.0.0.1:8005/predict",
     relax_steps: int = 0,
+    checkpoint_path: Optional[str] = None,
+    device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Predict RNA tertiary structure using the RhoFold microservice.
+
+    INTERFACE LOCK (v0.2.0): Locked return dict keys. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: RhoFoldOutput
+    - agent_core/nodes.py :: rhofold result ingestion (pdb_filepath, ct_filepath, etc.)
+    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
 
     Args:
         filepath: Workspace file path containing the input RNA sequence.
             IMPORTANT: You must pass a workspace filepath, not the sequence itself.
         service_url: REST endpoint for the RhoFold microservice.
         relax_steps: Amber relaxation iterations. Default 0 keeps inference lighter.
+        checkpoint_path: Optional path to a custom RhoFold checkpoint.
+            If omitted, the microservice searches standard pretrained paths.
+        device: Optional compute device such as ``cpu``, ``cuda``, or ``cuda:0``.
 
     Returns:
         Dict containing workspace paths for generated artifacts and a mean pLDDT summary.
@@ -2403,15 +2435,21 @@ def predict_rna_tertiary_structure_with_rhofold(
     Raises:
         ValueError: If the RhoFold service is unreachable or returns an invalid payload.
     """
-    sequence = read_sequence(filepath).strip()
+    sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    request_body: dict[str, Any] = {
+        "sequence": sequence,
+        "single_seq_pred": True,
+        "relax_steps": relax_steps,
+    }
+    if checkpoint_path is not None:
+        request_body["checkpoint_path"] = checkpoint_path
+    if device is not None:
+        request_body["device"] = device
+
     try:
         response = requests.post(
             service_url,
-            json={
-                "sequence": sequence,
-                "single_seq_pred": True,
-                "relax_steps": relax_steps,
-            },
+            json=request_body,
             timeout=1800,
         )
         response.raise_for_status()
@@ -2420,10 +2458,10 @@ def predict_rna_tertiary_structure_with_rhofold(
             raise ValueError("Missing `output_pdb_path` in RhoFold response.")
 
         mean_plddt = payload.get("mean_plddt")
-        output_pdb_filepath = copy_file_to_workspace(payload["output_pdb_path"], prefix="rhofold_model")
+        pdb_filepath = copy_file_to_workspace(payload["output_pdb_path"], prefix="rhofold_model")
         result: dict[str, Any] = {
             "input_filepath": filepath,
-            "output_pdb_filepath": output_pdb_filepath,
+            "pdb_filepath": pdb_filepath,
             "mean_plddt": float(mean_plddt) if mean_plddt is not None else 0.0,
             "model": payload.get("model", "RhoFold+"),
             "service_output_dir": payload.get("service_output_dir", ""),
@@ -2431,14 +2469,14 @@ def predict_rna_tertiary_structure_with_rhofold(
 
         secondary_ct_path = payload.get("secondary_structure_ct_path")
         if secondary_ct_path:
-            result["secondary_structure_ct_filepath"] = copy_file_to_workspace(
+            result["ct_filepath"] = copy_file_to_workspace(
                 secondary_ct_path,
                 prefix="rhofold_ss",
             )
 
         results_npz_path = payload.get("results_npz_path")
         if results_npz_path:
-            result["results_npz_filepath"] = copy_file_to_workspace(
+            result["results_filepath"] = copy_file_to_workspace(
                 results_npz_path,
                 prefix="rhofold_results",
             )
