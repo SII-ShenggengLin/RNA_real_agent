@@ -387,15 +387,48 @@ class RNASTOPPredictionOutput(_OutBase):
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# IRESfinder 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/iresfinder_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/predict_putative_ires_with_iresfinder.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# 本次修改的基准日期：2026-04-23。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class IRESfinderPredictionOutput(_OutBase):
+    """IRESfinder prediction output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema — the canonical contract is the
+    state after the 2026-04-23 refactor. Any field addition/removal must be
+    synchronized with:
+    - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
+    - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
+    - agent_core/state.py :: iresfinder_* fields
+    - agent_core/nodes.py :: tool_execution_node IRESfinder branch
+    - docs/tools/predict_putative_ires_with_iresfinder.md
+    """
+
     input_filepath: str
     result_tsv_filepath: str
+    mode: int
+    window_size: int
+    step_size: int
+    decision_threshold: float
     has_putative_ires: bool
     max_score: float
     best_fragment_id: str
     positive_count: int
     fragment_count: int
     model: str
+    predictions: list[dict[str, Any]] = []
+    predictions_note: str = ""
 
 
 class ODesignInferenceOutput(_OutBase):
@@ -830,21 +863,45 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RNASTOPPredictionOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): IRESfinder tool spec. Locked contract.
+    # Modify only in sync with:
+    # - agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
+    # - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest / IRESfinderPredictResponse
+    # - agent_core/state.py :: iresfinder_* fields
+    # - agent_core/nodes.py :: tool_execution_node IRESfinder branch
     "predict_putative_ires_with_iresfinder": ToolSpec(
         identity="predict_putative_ires_with_iresfinder",
         display_name="IRESfinder prediction",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/xiaofengsong/IRESfinder",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8013/predict",
-        capabilities=["Predict putative IRES elements over sliding fragments (service-side)."],
-        limitations=["Requires model/data assets present on server."],
+        capabilities=[
+            "Predict putative IRES elements using the published IRESfinder logistic-regression model.",
+            "Supports mode 0 (full sequence), mode 1 (header-specified subsequence), and mode 2 (sliding window).",
+        ],
+        limitations=[
+            "Requires model/data assets (external_repos/IRESfinder/module/train.data) present on server.",
+            "Sequence is normalized to DNA (U->T); only A/C/G/T are accepted after normalization.",
+        ],
         task_tags=["ires_prediction"],
         requires=[ToolDependency(name="IRESfinder microservice", detail="microservices/iresfinder_service (port 8013)")],
-        produces=["result_tsv_filepath", "max_score", "positive_count"],
+        produces=[
+            "result_tsv_filepath",
+            "has_putative_ires",
+            "max_score",
+            "best_fragment_id",
+            "positive_count",
+            "fragment_count",
+            "mode",
+            "window_size",
+            "step_size",
+            "decision_threshold",
+            "predictions",
+        ],
         input_model=tool_wrappers.IRESfinderPredictionInput,
         output_model=IRESfinderPredictionOutput,
-        status=ToolStatus.partial,
+        status=ToolStatus.available,
     ),
     "analyze_cds_codon_metrics_with_codonw_slim": ToolSpec(
         identity="analyze_cds_codon_metrics_with_codonw_slim",

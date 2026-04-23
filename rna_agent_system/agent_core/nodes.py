@@ -2781,6 +2781,14 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["rnastop_device"] = str(tool_result.get("device", ""))
             if not state.get("mfe"):
                 state["mfe"] = state["rnastop_mfe"]
+        # INTERFACE LOCK (v0.2.0) — IRESfinder result ingestion.
+        # The canonical contract is the state after the 2026-04-23 refactor.
+        # Any field addition/removal must be synchronized with:
+        # - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
+        # - agent_core/tool_specs.py :: IRESfinderPredictionOutput
+        # - agent_core/state.py :: iresfinder_* fields
+        # - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
+        # - docs/tools/predict_putative_ires_with_iresfinder.md
         elif tool_name == "predict_putative_ires_with_iresfinder":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -2795,6 +2803,11 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["iresfinder_positive_count"] = int(tool_result.get("positive_count", 0))
             state["iresfinder_fragment_count"] = int(tool_result.get("fragment_count", 0))
             state["iresfinder_model"] = str(tool_result.get("model", ""))
+            state["iresfinder_mode"] = int(tool_result.get("mode", 0))
+            state["iresfinder_window_size"] = int(tool_result.get("window_size", 174))
+            state["iresfinder_step_size"] = int(tool_result.get("step_size", 50))
+            state["iresfinder_decision_threshold"] = float(tool_result.get("decision_threshold", 0.5))
+            state["iresfinder_predictions"] = tool_result.get("predictions", [])
         elif tool_name == "compute_sirna_duplex_binding_vienna":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -2973,6 +2986,10 @@ def critic_node(state: AgentState) -> AgentState:
             f"iresfinder_positive_count={state.get('iresfinder_positive_count', 0)}; "
             f"iresfinder_fragment_count={state.get('iresfinder_fragment_count', 0)}; "
             f"iresfinder_model={state.get('iresfinder_model', '')}; "
+            f"iresfinder_mode={state.get('iresfinder_mode', 0)}; "
+            f"iresfinder_window_size={state.get('iresfinder_window_size', 174)}; "
+            f"iresfinder_step_size={state.get('iresfinder_step_size', 50)}; "
+            f"iresfinder_decision_threshold={state.get('iresfinder_decision_threshold', 0.5)}; "
             f"odesign_input_json_filepath={state.get('odesign_input_json_filepath', '')}; "
             f"odesign_output_dir={state.get('odesign_output_dir', '')}; "
             f"odesign_prediction_filepaths={state.get('odesign_prediction_filepaths', [])}; "

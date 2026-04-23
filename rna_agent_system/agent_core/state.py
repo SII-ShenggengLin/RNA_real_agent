@@ -104,6 +104,14 @@ class AgentState(TypedDict, total=False):
     rnastop_mfe: float
     rnastop_checkpoint_path: str
     rnastop_device: str
+    # INTERFACE LOCK (v0.2.0) — IRESfinder state fields
+    # The canonical contract is the state after the 2026-04-23 refactor.
+    # Any field addition/removal must be synchronized with:
+    # - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
+    # - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
+    # - agent_core/tool_specs.py :: IRESfinderPredictionOutput
+    # - agent_core/nodes.py :: tool_execution_node IRESfinder branch
+    # - docs/tools/predict_putative_ires_with_iresfinder.md
     iresfinder_result_tsv_filepath: str
     iresfinder_has_putative_ires: bool
     iresfinder_max_score: float
@@ -111,6 +119,11 @@ class AgentState(TypedDict, total=False):
     iresfinder_positive_count: int
     iresfinder_fragment_count: int
     iresfinder_model: str
+    iresfinder_mode: int
+    iresfinder_window_size: int
+    iresfinder_step_size: int
+    iresfinder_decision_threshold: float
+    iresfinder_predictions: list[dict[str, Any]]
     odesign_input_json_filepath: str
     odesign_output_dir: str
     odesign_prediction_filepaths: list[str]

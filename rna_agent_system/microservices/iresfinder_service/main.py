@@ -1,4 +1,14 @@
-"""IRESfinder microservice rebuilt for Python 3 deployment."""
+"""IRESfinder microservice rebuilt for Python 3 deployment.
+
+INTERFACE LOCK (v0.2.0): Locked implementation. The canonical reference for this
+service's behaviour is the state after the 2026-04-23 refactor. Any change to
+feature engineering, preprocessing, or IO schemas must be synchronized with:
+- agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
+- agent_core/tool_specs.py :: IRESfinderPredictionOutput / TOOL_SPECS
+- agent_core/state.py :: iresfinder_* fields
+- agent_core/nodes.py :: tool_execution_node / critic_node IRESfinder branches
+- docs/tools/predict_putative_ires_with_iresfinder.md
+"""
 
 from __future__ import annotations
 
@@ -297,15 +307,25 @@ def _infer_pattern_length(pattern_index: int) -> int:
     return 5
 
 
-def _count_overlapping_kmer(sequence: str, pattern: str) -> int:
+def _count_non_overlapping_kmer(sequence: str, pattern: str) -> int:
+    """Count non-overlapping occurrences of *pattern* in *sequence*.
+
+    This matches the original Perl ``calculate_features.pl`` behaviour:
+    ``$num = ($str =~ s/$_/$_/g);`` performs a non-overlapping global
+    substitution/count.
+    """
     kmer_length = len(pattern)
     if len(sequence) < kmer_length:
         return 0
-    return sum(
-        1
-        for start in range(0, len(sequence) - kmer_length + 1)
-        if sequence[start : start + kmer_length] == pattern
-    )
+    count = 0
+    i = 0
+    while i <= len(sequence) - kmer_length:
+        if sequence[i : i + kmer_length] == pattern:
+            count += 1
+            i += kmer_length
+        else:
+            i += 1
+    return count
 
 
 def _count_wildcard_kmer(sequence: str, regex_pattern: re.Pattern[str], kmer_length: int) -> int:
@@ -326,7 +346,7 @@ def _calculate_feature_vector(sequence: str) -> List[float]:
     for pattern_index, pattern in enumerate(patterns, start=1):
         if WILDCARD_TOKEN not in pattern:
             kmer_length = len(pattern)
-            count = _count_overlapping_kmer(sequence, pattern)
+            count = _count_non_overlapping_kmer(sequence, pattern)
         else:
             kmer_length = _infer_pattern_length(pattern_index)
             regex_pattern = compiled_patterns.get(pattern)

@@ -1486,7 +1486,17 @@ class RNASTOPPredictionInput(BaseModel):
 
 
 class IRESfinderPredictionInput(BaseModel):
-    """Input schema for IRESfinder putative IRES scoring."""
+    """Input schema for IRESfinder putative IRES scoring.
+
+    INTERFACE LOCK (v0.2.0): Locked schema — the canonical contract is the
+    state after the 2026-04-23 refactor. Any field addition/removal must be
+    synchronized with:
+    - agent_core/tool_specs.py :: predict_putative_ires_with_iresfinder ToolSpec
+    - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest
+    - agent_core/state.py :: iresfinder_* fields
+    - agent_core/nodes.py :: tool_execution_node IRESfinder branch
+    - docs/tools/predict_putative_ires_with_iresfinder.md
+    """
 
     filepath: str = Field(
         ...,
@@ -1503,25 +1513,30 @@ class IRESfinderPredictionInput(BaseModel):
         default=0,
         ge=0,
         le=2,
-        description="0=full sequence, 1=header coordinates, 2=sliding window (see upstream IRESfinder).",
+        description=(
+            "IRESfinder processing mode aligned with the upstream repository:\n"
+            "- 0 (default): score each complete sequence as one fragment.\n"
+            "- 1: extract a subsequence from each FASTA header that ends with ``start_pos end_pos``.\n"
+            "- 2: split each sequence into sliding windows (requires ``window_size`` and ``step_size``)."
+        ),
     )
     window_size: int = Field(
         default=174,
         ge=20,
         le=5000,
-        description="Sliding-window length for mode 2.",
+        description="Sliding-window length used only in mode 2 (upstream default: 174).",
     )
     step_size: int = Field(
         default=50,
         ge=1,
         le=5000,
-        description="Sliding-window step for mode 2.",
+        description="Sliding-window step size used only in mode 2 (upstream default: 50).",
     )
     decision_threshold: float = Field(
         default=0.5,
         ge=0.0,
         le=1.0,
-        description="Probability threshold for labeling a fragment as IRES.",
+        description="Probability threshold for labeling a fragment as IRES (upstream default: 0.5).",
     )
 
 
