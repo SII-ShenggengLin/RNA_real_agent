@@ -269,10 +269,18 @@ class RhoFoldOutput(_OutBase):
 
 
 class RhoDesignOutput(_OutBase):
+    """RhoDesign structure→sequence design output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_rna_sequence_with_rhodesign (wrapper return dict)
+    - microservices/rhodesign_service/main.py :: RhoDesignResponse
+    - docs/tools/design_rna_sequence_with_rhodesign.md
+    """
+
     input_pdb_filepath: str
     output_fasta_filepath: str
-    designed_sequence: str
-    sequence_recovery_rate: float = 0.0
+    predicted_sequence: str
+    recovery_rate: float = 0.0
     model: str
 
 
@@ -280,23 +288,58 @@ class RiboDiffusionOutput(_OutBase):
     input_pdb_filepath: str
     output_filepath: str
     predicted_sequence: str
-    sequence_recovery_rate: float = 0.0
+    recovery_rate: float = 0.0
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rnasmol_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class RNAsmolScoreOutput(_OutBase):
+    """RNAsmol scoring output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
+    - microservices/rnasmol_service/main.py :: ScoreResponse
+    - agent_core/state.py :: rnasmol_* fields
+    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+    """
     input_filepath: str
     smiles: str
-    probability: float
+    rna_sequence: str = ""
+    probability_positive: float
     predicted_label: int
+    raw_logits: list[float] = []
     checkpoint_path: str = ""
+    device: str = ""
+    dataset: str = ""
+    perturbation_type: str = ""
     model: str
 
 
 class GerNABindScoreOutput(_OutBase):
+    """GerNA-Bind scoring output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind (wrapper return dict)
+    - microservices/gernabind_service/main.py :: ScoreResponse
+    - agent_core/state.py :: gernabind_* fields
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
+    """
     input_filepath: str
     smiles: str
-    probability: float
+    probability_positive: float
     predicted_label: int
     checkpoint_path: str = ""
     preprocessing_pdb_path: str = ""
@@ -304,13 +347,33 @@ class GerNABindScoreOutput(_OutBase):
 
 
 class RNASTOPPredictionOutput(_OutBase):
+    """RNASTOP prediction output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
+    synchronized with:
+    - microservices/rnastop_service/main.py :: StabilityPredictionResponse
+    - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
+    - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    - agent_core/state.py :: rnastop_* fields
+    - docs/tools/predict_mrna_stability_with_rnastop.md
+    """
+
     input_filepath: str
     prediction_filepath: str
+    sequence: str = ""
+    used_sequence: str = ""
+    sequence_length: int = 0
+    used_length: int = 0
+    truncated: bool = False
+    structure: str = ""
+    loop_type: str = ""
+    mfe: float = 0.0
     mean_reactivity: float = 0.0
     mean_deg_mg_ph10: float = 0.0
     mean_deg_mg_50c: float = 0.0
-    mfe: float = 0.0
+    overall_stability: float = 0.0
     checkpoint_path: str = ""
+    device: str = ""
     model: str
 
 
@@ -326,13 +389,28 @@ class IRESfinderPredictionOutput(_OutBase):
 
 
 class ODesignInferenceOutput(_OutBase):
+    """ODesign inference output schema.
+
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: run_odesign_inference (wrapper return dict)
+    - microservices/odesign_service/main.py :: ODesignInferenceResponse
+    - docs/tools/run_odesign_inference.md
+    """
     input_json_filepath: str
+    infer_model_name: str
+    design_modality: str
+    exp_name: str
     output_dir: str
+    prediction_count: int = 0
     prediction_filepaths: List[str] = Field(default_factory=list)
+    sample_names: List[str] = Field(default_factory=list)
     run_log_filepath: str = ""
     stdout_filepath: str = ""
     stderr_filepath: str = ""
     error_filepaths: List[str] = Field(default_factory=list)
+    ckpt_root_dir: str = ""
+    data_root_dir: str = ""
+    timeout_seconds: int = 14400
     model: str
 
 
@@ -611,6 +689,10 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RhoFoldOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): RhoDesign tool spec. Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: RhoDesignInput / design_rna_sequence_with_rhodesign
+    # - microservices/rhodesign_service/main.py :: RhoDesignRequest / RhoDesignResponse
+    # - docs/tools/design_rna_sequence_with_rhodesign.md
     "design_rna_sequence_with_rhodesign": ToolSpec(
         identity="design_rna_sequence_with_rhodesign",
         display_name="RhoDesign structure→sequence design",
@@ -622,7 +704,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Depends on GPU/weights; requires valid PDB input."],
         task_tags=["rna_structure_to_sequence_design"],
         requires=[ToolDependency(name="GPU", detail="RhoDesign inference"), ToolDependency(name="RhoDesign microservice", detail="microservices/rhodesign_service (port 8006)")],
-        produces=["output_fasta_filepath", "designed_sequence"],
+        produces=["output_fasta_filepath", "predicted_sequence"],
         input_model=tool_wrappers.RhoDesignInput,
         output_model=RhoDesignOutput,
         status=ToolStatus.partial,
@@ -651,10 +733,17 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RiboDiffusionOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0) — RNAsmol scoring tool spec
+    # Any field addition/removal must be synchronized with:
+    # - microservices/rnasmol_service/main.py :: ScoreRequest / ScoreResponse
+    # - agent_core/tools.py :: RNAsmolScoreInput / score_rna_ligand_binding_with_rnasmol
+    # - agent_core/tool_specs.py :: RNAsmolScoreOutput
+    # - agent_core/state.py :: rnasmol_* fields
+    # - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(
         identity="score_rna_ligand_binding_with_rnasmol",
         display_name="RNAsmol RNA-ligand scoring",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/hongli-ma/RNAsmol",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8007/score",
@@ -662,11 +751,18 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Classifier output is model-dependent; requires correct checkpoint and device config."],
         task_tags=["rna_ligand_scoring"],
         requires=[ToolDependency(name="GPU", detail="Recommended for model"), ToolDependency(name="RNAsmol microservice", detail="microservices/rnasmol_service (port 8007)")],
-        produces=["probability", "predicted_label"],
+        produces=["probability_positive", "predicted_label", "raw_logits", "checkpoint_path", "device", "dataset", "perturbation_type"],
         input_model=tool_wrappers.RNAsmolScoreInput,
         output_model=RNAsmolScoreOutput,
-        status=ToolStatus.partial,
+        status=ToolStatus.available,
     ),
+    # INTERFACE LOCK (v0.1.0) — GerNA-Bind scoring tool spec
+    # Any field addition/removal must be synchronized with:
+    # - microservices/gernabind_service/main.py :: ScoreRequest / ScoreResponse
+    # - agent_core/tools.py :: GerNABindScoreInput / score_rna_ligand_binding_with_gernabind
+    # - agent_core/tool_specs.py :: GerNABindScoreOutput
+    # - agent_core/state.py :: gernabind_* fields
+    # - docs/tools/score_rna_ligand_binding_with_gernabind.md
     "score_rna_ligand_binding_with_gernabind": ToolSpec(
         identity="score_rna_ligand_binding_with_gernabind",
         display_name="GerNA-Bind RNA-ligand scoring",
@@ -674,15 +770,23 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         source="https://github.com/GENTEL-lab/GerNA-Bind",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8010/score",
-        capabilities=["Score RNA-ligand affinity with GerNA-Bind; wrapper may trigger 3D preprocessing."],
-        limitations=["Depends on GPU/weights; binding-site prediction is a separate endpoint/tool path."],
+        capabilities=["Score RNA-ligand affinity with GerNA-Bind; wrapper may trigger 3D preprocessing. Supports dataset/split_method hints for automatic checkpoint selection."],
+        limitations=["Depends on GPU/weights; binding-site prediction is a separate endpoint/tool path. Default affinity checkpoint is Robin_random.pth when no hint is given."],
         task_tags=["rna_ligand_scoring"],
         requires=[ToolDependency(name="GPU", detail="GerNA-Bind inference"), ToolDependency(name="GerNA-Bind microservice", detail="microservices/gernabind_service (port 8010)")],
-        produces=["probability", "predicted_label"],
+        produces=["probability_positive", "predicted_label"],
         input_model=tool_wrappers.GerNABindScoreInput,
         output_model=GerNABindScoreOutput,
-        status=ToolStatus.partial,
+        status=ToolStatus.available,
     ),
+    # INTERFACE LOCK (v0.1.0) — predict_mrna_stability_with_rnastop
+    # Any field addition/removal in produces[] or capability strings must be
+    # synchronized with:
+    # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
+    # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
+    # - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    # - agent_core/state.py :: rnastop_* fields
+    # - docs/tools/predict_mrna_stability_with_rnastop.md
     "predict_mrna_stability_with_rnastop": ToolSpec(
         identity="predict_mrna_stability_with_rnastop",
         display_name="RNASTOP stability/degradation prediction",
@@ -690,11 +794,22 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         source="https://github.com/SII-ShenggengLin/RNASTOP",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8009/predict/stability",
-        capabilities=["Predict stability/degradation-related summary scores with RNASTOP."],
+        capabilities=[
+            "Predict stability/degradation-related summary scores with RNASTOP.",
+            "Accepts optional pre-computed secondary structure and loop-type annotation.",
+        ],
         limitations=["This repo wrapper exposes prediction only (not beam/MCTS optimization)."],
         task_tags=["mrna_stability_prediction"],
         requires=[ToolDependency(name="GPU", detail="RNASTOP inference"), ToolDependency(name="RNASTOP microservice", detail="microservices/rnastop_service (port 8009)")],
-        produces=["prediction_filepath", "mean_deg_mg_ph10", "mean_deg_mg_50c"],
+        produces=[
+            "prediction_filepath",
+            "structure",
+            "loop_type",
+            "mean_reactivity",
+            "mean_deg_mg_ph10",
+            "mean_deg_mg_50c",
+            "overall_stability",
+        ],
         input_model=tool_wrappers.RNASTOPPredictionInput,
         output_model=RNASTOPPredictionOutput,
         status=ToolStatus.partial,
@@ -811,10 +926,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=SgRNADesignOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.3.0): ODesign tool spec. Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: ODesignInferenceInput / run_odesign_inference
+    # - microservices/odesign_service/main.py :: ODesignInferenceRequest / ODesignInferenceResponse
+    # - docs/tools/run_odesign_inference.md
     "run_odesign_inference": ToolSpec(
         identity="run_odesign_inference",
         display_name="ODesign inference (from JSON)",
-        version="0.1.0",
+        version="0.3.0",
         source="https://github.com/OTeam-AI4S/ODesign",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8012/design/from-json",
@@ -822,7 +941,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Natural-language coverage is limited; complex tasks should prepare JSON explicitly."],
         task_tags=["odesign_inference"],
         requires=[ToolDependency(name="GPU", detail="ODesign inference"), ToolDependency(name="ODesign microservice", detail="microservices/odesign_service (port 8012)")],
-        produces=["output_dir", "prediction_filepaths"],
+        produces=["output_dir", "prediction_filepaths", "sample_names", "run_log_filepath", "error_filepaths"],
         input_model=tool_wrappers.ODesignInferenceInput,
         output_model=ODesignInferenceOutput,
         status=ToolStatus.partial,

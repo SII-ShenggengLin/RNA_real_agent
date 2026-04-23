@@ -26,14 +26,14 @@
 | `predict_mrna_stability_with_rnastop` | RNASTOP | HTTP | `mrna_stability_prediction` | `filepath` | `prediction_filepath`, 降解指标 | 是（input+output） | partial（GPU/权重） |
 | `predict_rna_tertiary_structure_with_rhofold` | RhoFold | HTTP | `rna_tertiary_structure_prediction` | `filepath` | `pdb_filepath`, `mean_plddt` | 是（input+output） | partial（GPU/权重） |
 | `design_rna_sequence_with_rhodesign` | RhoDesign | HTTP | `rna_structure_to_sequence_design` | `pdb_filepath` | `output_fasta_filepath`, `designed_sequence` | 是（input+output） | partial（GPU/权重） |
-| `score_rna_ligand_binding_with_rnasmol` | RNAsmol | HTTP | `rna_ligand_scoring` | `filepath`, `smiles` | `probability`, `predicted_label` | 是（input+output） | partial（GPU/权重） |
+| `score_rna_ligand_binding_with_rnasmol` | RNAsmol | HTTP | `rna_ligand_scoring` | `filepath`, `smiles`, `dataset`, `perturbation_type`, `device`, `checkpoint_path` | `probability_positive`, `predicted_label`, `raw_logits`, `checkpoint_path`, `device`, `dataset`, `perturbation_type` | 是（input+output） | partial（GPU/权重） |
 | `score_rna_ligand_binding_with_gernabind` | GerNA-Bind | HTTP | `rna_ligand_scoring` | `filepath`, `smiles` | `probability`, `predicted_label` | 是（input+output） | partial（GPU/权重） |
 | `score_crispr_off_target_with_crisot` | CRISOT | HTTP | `crispr_offtarget_scoring` | `filepath`, `target_sequence` | `crisot_score` | 是（input+output） | partial |
 | `calculate_crispr_specificity_with_crisot` | CRISOT | HTTP | `crispr_specificity_csv` | `csv_filepath` | `crisot_spec`, `scored_csv_filepath` | 是（input+output） | partial |
 | `search_crispr_off_targets_with_crisot` | CRISOT | HTTP | `crispr_offtarget_search` | `filepath`, `target_sequence`, `genome_path` | `off_target_count`, `scored_csv_filepath` | 是（input+output） | partial |
 | `optimize_sgrna_with_crisot` | CRISOT | HTTP | `crispr_sgrna_optimization` | `filepath`, `genome_path` | `best_sgrna`, `best_delta_spec` | 是（input+output） | partial |
 | `design_sgrna_handle_with_crgpt` | sgrna_design | HTTP | `sgrna_handle_design` | `filepath`, `n_samples` | `best_sequence`, `output_fasta_filepath` | 是（input+output） | partial |
-| `run_odesign_inference` | ODesign | HTTP | `odesign_inference` | `input_json_filepath` | `prediction_filepaths`, `run_log_filepath` | 是（input+output） | partial（GPU/权重） |
+| `run_odesign_inference` | ODesign | HTTP | `odesign_inference` | `input_json_filepath` | `output_dir`, `prediction_filepaths`, `sample_names`, `run_log_filepath`, `error_filepaths` | 是（input+output） | partial（GPU/权重） |
 | `mock_codon_optimization` | 本仓库占位实现 | Python（本地） | （不计入真实任务） | `filepath` | `cai_score`（固定） | 否（mock） | mock |
 
 ---

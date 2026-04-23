@@ -87,6 +87,30 @@ def _raise_service_error(exc: requests.RequestException, service_name: str) -> N
     raise ValueError(f"{service_name} service request failed: {exc}{suffix}") from exc
 
 
+def _attach_service_logs(
+    result: dict[str, Any],
+    payload: dict[str, Any],
+    prefix: str,
+) -> None:
+    """Copy stdout/stderr from a service response into workspace log files.
+
+    Adds ``{prefix}_stdout_filepath`` and ``{prefix}_stderr_filepath`` keys to
+    *result* when the corresponding fields are present in *payload*.
+    """
+    if payload.get("stdout"):
+        result[f"{prefix}_stdout_filepath"] = save_text_file(
+            str(payload["stdout"]),
+            prefix=f"{prefix}_stdout",
+            suffix=".log",
+        )
+    if payload.get("stderr"):
+        result[f"{prefix}_stderr_filepath"] = save_text_file(
+            str(payload["stderr"]),
+            prefix=f"{prefix}_stderr",
+            suffix=".log",
+        )
+
+
 class BlastnSearchInput(BaseModel):
     """Input schema for NCBI BLAST+ blastn (microservice on port 8019)."""
 
@@ -1186,7 +1210,13 @@ class RhoFoldInput(BaseModel):
 
 
 class RhoDesignInput(BaseModel):
-    """Input schema for RhoDesign structure-to-sequence design."""
+    """Input schema for RhoDesign structure-to-sequence design.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: RhoDesignOutput
+    - microservices/rhodesign_service/main.py :: RhoDesignRequest / RhoDesignResponse
+    - docs/tools/design_rna_sequence_with_rhodesign.md
+    """
 
     pdb_filepath: str = Field(
         ...,
@@ -1216,6 +1246,12 @@ class RhoDesignInput(BaseModel):
         ge=0,
         description="CUDA device index for the upstream RhoDesign script.",
     )
+    timeout_seconds: int = Field(
+        default=3600,
+        ge=60,
+        le=21600,
+        description="Subprocess timeout for the RhoDesign generation run.",
+    )
 
 
 class RiboDiffusionInput(BaseModel):
@@ -1244,8 +1280,28 @@ class RiboDiffusionInput(BaseModel):
     device: int = Field(default=0, ge=0, description="CUDA device index for the subprocess.")
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rnasmol_service/main.py
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class RNAsmolScoreInput(BaseModel):
-    """Input schema for RNAsmol RNA-ligand scoring."""
+    """Input schema for RNAsmol RNA-ligand scoring.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - microservices/rnasmol_service/main.py :: ScoreRequest
+    - agent_core/tool_specs.py :: score_rna_ligand_binding_with_rnasmol ToolSpec
+    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+    """
 
     filepath: str = Field(
         ...,
@@ -1270,10 +1326,36 @@ class RNAsmolScoreInput(BaseModel):
             "Use this when the service should not rely on its default checkpoint lookup."
         ),
     )
+    dataset: Optional[str] = Field(
+        default=None,
+        description=(
+            "Training dataset source hint for checkpoint auto-selection. "
+            "Examples: `pdb` (RCSB PDB), `robin` (ROBIN dataset). "
+            "When omitted the service uses its default checkpoint."
+        ),
+    )
+    perturbation_type: Optional[str] = Field(
+        default=None,
+        description=(
+            "Data-perturbation strategy hint for checkpoint auto-selection. "
+            "Examples: `molperturbation`, `netperturbation`, `rnaperturbation`. "
+            "When omitted the service uses its default checkpoint."
+        ),
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional PyTorch device string such as `cuda:0` or `cpu`.",
+    )
 
 
 class GerNABindScoreInput(BaseModel):
-    """Input schema for GerNA-Bind RNA-ligand scoring."""
+    """Input schema for GerNA-Bind RNA-ligand scoring.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - microservices/gernabind_service/main.py :: ScoreRequest
+    - agent_core/tool_specs.py :: score_rna_ligand_binding_with_gernabind ToolSpec
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
+    """
 
     filepath: str = Field(
         ...,
@@ -1313,10 +1395,36 @@ class GerNABindScoreInput(BaseModel):
         default=None,
         description="Optional torch device override such as `cuda:0` or `cpu`.",
     )
+    dataset: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional dataset hint for selecting the default affinity checkpoint. "
+            "Supported values: Robin, Biosensor. When omitted, the service tries Robin first."
+        ),
+    )
+    split_method: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional split-method hint for selecting the default affinity checkpoint. "
+            "Supported values: random, RNA, mol, both. Defaults to 'random' when dataset is provided."
+        ),
+    )
 
 
 class RNASTOPPredictionInput(BaseModel):
-    """Input schema for RNASTOP stability prediction."""
+    """Input schema for RNASTOP stability prediction.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
+    synchronized with:
+    - microservices/rnastop_service/main.py :: StabilityPredictionRequest
+    - agent_core/tool_specs.py :: predict_mrna_stability_with_rnastop ToolSpec
+    - docs/tools/predict_mrna_stability_with_rnastop.md
+
+    RNASTOP predicts per-nucleotide degradation profiles (reactivity, deg_Mg_pH10,
+    deg_Mg_50C).  The caller may supply a pre-computed secondary structure and/or
+    loop annotation; when omitted the service computes them internally with
+    ViennaRNA.
+    """
 
     filepath: str = Field(
         ...,
@@ -1328,6 +1436,22 @@ class RNASTOPPredictionInput(BaseModel):
     service_url: str = Field(
         default="http://127.0.0.1:8009/predict/stability",
         description="REST endpoint for the RNASTOP stability prediction microservice.",
+    )
+    structure: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional dot-bracket secondary structure. "
+            "If provided it must have the same length as the RNA sequence. "
+            "When omitted the service folds the sequence with ViennaRNA."
+        ),
+    )
+    loop_type: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional loop-type annotation string (same alphabet as the OpenVaccine "
+            "dataset: S/M/I/H/B/E).  When omitted the service derives it from the "
+            "structure automatically."
+        ),
     )
     checkpoint_path: Optional[str] = Field(
         default=None,
@@ -1380,7 +1504,14 @@ class IRESfinderPredictionInput(BaseModel):
 
 
 class ODesignInferenceInput(BaseModel):
-    """Input schema for ODesign inference."""
+    """Input schema for ODesign inference.
+
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: run_odesign_inference ToolSpec
+    - microservices/odesign_service/main.py :: ODesignInferenceRequest
+    - docs/tools/run_odesign_inference.md
+    """
+    
 
     input_json_filepath: str = Field(
         ...,
@@ -1445,6 +1576,27 @@ class ODesignInferenceInput(BaseModel):
     data_root_dir: Optional[str] = Field(
         default=None,
         description="Optional data root directory override for the ODesign service.",
+    )
+    timeout_seconds: int = Field(
+        default=14400,
+        ge=300,
+        le=86400,
+        description="Subprocess timeout for one ODesign inference request.",
+    )
+    invfold_topk: int = Field(
+        default=1,
+        ge=1,
+        le=20,
+        description="Number of designed sequences per backbone structure (inverse folding top-k).",
+    )
+    invfold_temp: float = Field(
+        default=1.0,
+        gt=0.0,
+        description="Inverse folding sampling temperature.",
+    )
+    invfold_use_beam: bool = Field(
+        default=True,
+        description="Whether to use beam search in inverse folding.",
     )
 
 
@@ -2319,8 +2471,14 @@ def design_rna_sequence_with_rhodesign(
     service_url: str = "http://127.0.0.1:8006/design/from-structure",
     temperature: float = 1e-5,
     device: int = 0,
+    timeout_seconds: int = 3600,
 ) -> dict[str, Any]:
     """Design an RNA sequence from a structure file using the RhoDesign microservice.
+
+    INTERFACE LOCK (v0.2.0): Locked return dict keys. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: RhoDesignOutput
+    - microservices/rhodesign_service/main.py :: RhoDesignResponse
+    - docs/tools/design_rna_sequence_with_rhodesign.md
 
     Args:
         pdb_filepath: Path to the input PDB/CIF structure file.
@@ -2344,8 +2502,9 @@ def design_rna_sequence_with_rhodesign(
                 "secondary_structure_path": secondary_structure_filepath,
                 "temperature": temperature,
                 "device": device,
+                "timeout_seconds": timeout_seconds,
             },
-            timeout=3600,
+            timeout=timeout_seconds + 30,
         )
         response.raise_for_status()
         payload = response.json()
@@ -2379,18 +2538,7 @@ def design_rna_sequence_with_rhodesign(
                 prefix="rhodesign_fasta",
             )
 
-        if payload.get("stdout"):
-            result["stdout_filepath"] = save_text_file(
-                str(payload["stdout"]),
-                prefix="rhodesign_stdout",
-                suffix=".log",
-            )
-        if payload.get("stderr"):
-            result["stderr_filepath"] = save_text_file(
-                str(payload["stderr"]),
-                prefix="rhodesign_stderr",
-                suffix=".log",
-            )
+        _attach_service_logs(result, payload, "rhodesign")
         return result
     except requests.RequestException as exc:
         _raise_service_error(exc, "RhoDesign")
@@ -2476,18 +2624,7 @@ def design_rna_inverse_fold_with_ribodiffusion(
             if copied:
                 result["output_fasta_filepaths"] = copied
 
-        if payload.get("stdout"):
-            result["stdout_filepath"] = save_text_file(
-                str(payload["stdout"]),
-                prefix="ribodiffusion_stdout",
-                suffix=".log",
-            )
-        if payload.get("stderr"):
-            result["stderr_filepath"] = save_text_file(
-                str(payload["stderr"]),
-                prefix="ribodiffusion_stderr",
-                suffix=".log",
-            )
+        _attach_service_logs(result, payload, "ribodiffusion")
         return result
     except requests.RequestException as exc:
         _raise_service_error(exc, "RiboDiffusion")
@@ -2499,8 +2636,18 @@ def score_rna_ligand_binding_with_rnasmol(
     smiles: str,
     service_url: str = "http://127.0.0.1:8007/score",
     checkpoint_path: Optional[str] = None,
+    dataset: Optional[str] = None,
+    perturbation_type: Optional[str] = None,
+    device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the RNAsmol microservice.
+
+    INTERFACE LOCK (v0.2.0): The return dict keys below are the canonical interface.
+    Any addition/removal must be synchronized with:
+    - microservices/rnasmol_service/main.py :: ScoreResponse
+    - agent_core/tool_specs.py :: RNAsmolScoreOutput
+    - agent_core/state.py :: rnasmol_* fields
+    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
 
     Args:
         filepath: Path to a file containing the RNA sequence.
@@ -2508,9 +2655,20 @@ def score_rna_ligand_binding_with_rnasmol(
         smiles: Ligand SMILES string to score against the RNA sequence.
         service_url: REST endpoint for the RNAsmol microservice.
         checkpoint_path: Optional checkpoint override for the RNAsmol service.
+        dataset: Training dataset source hint (e.g. `pdb`, `robin`) for checkpoint selection.
+        perturbation_type: Data-perturbation strategy hint (e.g. `rnaperturbation`) for checkpoint selection.
+        device: Optional PyTorch device string such as `cuda:0` or `cpu`.
 
     Returns:
-        Dict with the positive-class probability, predicted label, and checkpoint metadata.
+        Dict with the following canonical keys (INTERFACE LOCK):
+            probability_positive (float): Positive-class binding probability.
+            predicted_label (int): Predicted binary label (0 or 1).
+            raw_logits (List[float]): Raw model logits [logit_0, logit_1].
+            checkpoint_path (str): Path to the loaded model checkpoint.
+            device (str): Device used for inference.
+            dataset (Optional[str]): Dataset hint reflected back from the service.
+            perturbation_type (Optional[str]): Perturbation hint reflected back from the service.
+            model (str): Model identifier.
 
     Raises:
         ValueError: If the RNAsmol service is unreachable or returns an invalid payload.
@@ -2521,8 +2679,14 @@ def score_rna_ligand_binding_with_rnasmol(
             "rna_sequence": sequence,
             "smiles": smiles.strip(),
         }
-        if checkpoint_path:
+        if checkpoint_path is not None:
             request_payload["checkpoint_path"] = checkpoint_path
+        if dataset is not None:
+            request_payload["dataset"] = dataset
+        if perturbation_type is not None:
+            request_payload["perturbation_type"] = perturbation_type
+        if device is not None:
+            request_payload["device"] = device
 
         response = requests.post(
             service_url,
@@ -2552,8 +2716,17 @@ def score_rna_ligand_binding_with_gernabind(
     pdb_path: Optional[str] = None,
     secondary_structure: Optional[str] = None,
     device: Optional[str] = None,
+    dataset: Optional[str] = None,
+    split_method: Optional[str] = None,
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the GerNA-Bind microservice.
+
+    INTERFACE LOCK (v0.1.0): The return dict keys below are the canonical interface.
+    Any addition/removal must be synchronized with:
+    - microservices/gernabind_service/main.py :: ScoreResponse
+    - agent_core/tool_specs.py :: GerNABindScoreOutput
+    - agent_core/state.py :: gernabind_* fields
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
 
     Args:
         filepath: Path to a file containing the RNA sequence.
@@ -2564,10 +2737,19 @@ def score_rna_ligand_binding_with_gernabind(
         pdb_path: Optional precomputed RNA structure path passed through to GerNA-Bind.
         secondary_structure: Optional dot-bracket secondary structure passed through to GerNA-Bind.
         device: Optional torch device override such as `cuda:0` or `cpu`.
+        dataset: Optional dataset hint (Robin or Biosensor) for selecting the default checkpoint.
+        split_method: Optional split-method hint (random, RNA, mol, both) for checkpoint selection.
 
     Returns:
-        Dict with the positive-class probability, predicted label, checkpoint metadata,
-        and preprocessing metadata such as the PDB used for feature generation.
+        Dict with the following canonical keys (INTERFACE LOCK):
+            probability_positive (float): Positive-class binding probability.
+            predicted_label (int): Predicted binary label (0 or 1).
+            raw_alpha (List[float]): Evidential alpha parameters [alpha_0, alpha_1].
+            checkpoint_path (str): Path to the loaded model checkpoint.
+            preprocessing_pdb_path (str): PDB file used for feature generation.
+            secondary_structure (str): Dot-bracket structure used for the run.
+            device (str): Device used for inference.
+            model (str): Model identifier.
 
     Raises:
         ValueError: If the GerNA-Bind service is unreachable or returns an invalid payload.
@@ -2586,6 +2768,10 @@ def score_rna_ligand_binding_with_gernabind(
             request_payload["secondary_structure"] = secondary_structure
         if device:
             request_payload["device"] = device
+        if dataset:
+            request_payload["dataset"] = dataset
+        if split_method:
+            request_payload["split_method"] = split_method
 
         response = requests.post(
             service_url,
@@ -2614,20 +2800,50 @@ def score_rna_ligand_binding_with_gernabind(
 def predict_mrna_stability_with_rnastop(
     filepath: str,
     service_url: str = "http://127.0.0.1:8009/predict/stability",
+    structure: Optional[str] = None,
+    loop_type: Optional[str] = None,
     checkpoint_path: Optional[str] = None,
     device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Predict mRNA degradation and stability summaries using the RNASTOP microservice.
 
+    INTERFACE LOCK (v0.1.0): The return dict keys below are the canonical interface.
+    Any addition/removal must be synchronized with:
+    - microservices/rnastop_service/main.py :: StabilityPredictionResponse
+    - agent_core/tool_specs.py :: RNASTOPPredictionOutput
+    - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    - agent_core/state.py :: rnastop_* fields
+    - docs/tools/predict_mrna_stability_with_rnastop.md
+
     Args:
         filepath: Path to a file containing the RNA sequence.
             IMPORTANT: pass a filepath rather than long inline sequence text.
         service_url: REST endpoint for the RNASTOP microservice.
+        structure: Optional dot-bracket secondary structure (must match sequence length).
+        loop_type: Optional loop-type annotation string.
         checkpoint_path: Optional checkpoint override for the RNASTOP service.
         device: Optional torch device override such as `cuda:0` or `cpu`.
 
     Returns:
-        Dict with per-sequence summary metrics and a workspace JSON artifact.
+        Dict with the following canonical keys (INTERFACE LOCK):
+            input_filepath (str): Original filepath passed in.
+            prediction_filepath (str): Workspace path to the saved per-position JSON.
+            sequence (str): Original sequence from service (or local fallback).
+            used_sequence (str): Sequence actually evaluated (may be truncated).
+            sequence_length (int): len(sequence).
+            used_length (int): len(used_sequence).
+            truncated (bool): Whether truncation occurred.
+            structure (str): Dot-bracket structure.
+            loop_type (str): Loop-type annotation.
+            mfe (float): Minimum free energy.
+            mean_reactivity (float): Mean reactivity score.
+            mean_deg_mg_ph10 (float): Mean deg_Mg_pH10 score.
+            mean_deg_mg_50c (float): Mean deg_Mg_50C score.
+            overall_stability (float): Global mean of the three metrics above.
+                Backwards-compatible: computed locally if service omits it.
+            checkpoint_path (str): Checkpoint path used.
+            device (str): Device used for inference.
+            model (str): Fixed to "RNASTOP".
 
     Raises:
         ValueError: If the RNASTOP service is unreachable or returns an invalid payload.
@@ -2635,6 +2851,10 @@ def predict_mrna_stability_with_rnastop(
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     try:
         request_payload: dict[str, Any] = {"sequence": sequence}
+        if structure is not None:
+            request_payload["structure"] = structure
+        if loop_type is not None:
+            request_payload["loop_type"] = loop_type
         if checkpoint_path:
             request_payload["checkpoint_path"] = checkpoint_path
         if device:
@@ -2659,6 +2879,18 @@ def predict_mrna_stability_with_rnastop(
                 f"{sorted(required_fields - set(payload))}"
             )
 
+        # Backwards-compatible: compute overall_stability locally if the
+        # microservice is an older version that does not return it yet.
+        mean_reactivity = float(payload["mean_reactivity"])
+        mean_deg_mg_ph10 = float(payload["mean_deg_Mg_pH10"])
+        mean_deg_mg_50c = float(payload["mean_deg_Mg_50C"])
+        overall_stability = float(
+            payload.get(
+                "overall_stability",
+                (mean_reactivity + mean_deg_mg_ph10 + mean_deg_mg_50c) / 3.0,
+            )
+        )
+
         prediction_filepath = save_text_file(
             json.dumps(payload, ensure_ascii=True, indent=2),
             prefix="rnastop_prediction",
@@ -2675,9 +2907,10 @@ def predict_mrna_stability_with_rnastop(
             "structure": payload.get("structure", ""),
             "loop_type": payload.get("loop_type", ""),
             "mfe": float(payload.get("mfe", 0.0)),
-            "mean_reactivity": float(payload["mean_reactivity"]),
-            "mean_deg_mg_ph10": float(payload["mean_deg_Mg_pH10"]),
-            "mean_deg_mg_50c": float(payload["mean_deg_Mg_50C"]),
+            "mean_reactivity": mean_reactivity,
+            "mean_deg_mg_ph10": mean_deg_mg_ph10,
+            "mean_deg_mg_50c": mean_deg_mg_50c,
+            "overall_stability": overall_stability,
             "checkpoint_path": str(payload.get("checkpoint_path", checkpoint_path or "")),
             "device": str(payload.get("device", device or "")),
             "model": payload.get("model", "RNASTOP"),
@@ -2796,8 +3029,17 @@ def run_odesign_inference(
     snr: float = 0.1,
     ckpt_root_dir: Optional[str] = None,
     data_root_dir: Optional[str] = None,
+    timeout_seconds: int = 14400,
+    invfold_topk: int = 1,
+    invfold_temp: float = 1.0,
+    invfold_use_beam: bool = True,
 ) -> dict[str, Any]:
     """Run ODesign inference from an input JSON file via the ODesign microservice.
+
+    INTERFACE LOCK (v0.3.0): Locked return dict keys. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: ODesignInferenceOutput
+    - microservices/odesign_service/main.py :: ODesignInferenceResponse
+    - docs/tools/run_odesign_inference.md
 
     Args:
         input_json_filepath: Path to an ODesign input JSON file.
@@ -2815,13 +3057,25 @@ def run_odesign_inference(
         snr: Partial diffusion signal-to-noise ratio.
         ckpt_root_dir: Optional checkpoint root directory override for the service.
         data_root_dir: Optional data root directory override for the service.
+        timeout_seconds: Subprocess timeout for one ODesign inference request.
+        invfold_topk: Number of designed sequences per backbone structure.
+        invfold_temp: Inverse folding sampling temperature.
+        invfold_use_beam: Whether to use beam search in inverse folding.
 
     Returns:
         Dict with copied workspace artifacts, output metadata, and ODesign runtime info.
 
     Raises:
-        ValueError: If the ODesign service is unreachable or returns an invalid payload.
+        ValueError: If arguments are invalid or the ODesign service is unreachable.
     """
+    if design_modality not in {"protein", "ligand", "dna", "rna"}:
+        raise ValueError("design_modality must be one of: protein, ligand, dna, rna.")
+    try:
+        parsed_seeds = json.loads(seeds_json)
+        if not isinstance(parsed_seeds, list) or not parsed_seeds or not all(isinstance(s, int) for s in parsed_seeds):
+            raise ValueError
+    except Exception:
+        raise ValueError("seeds_json must be a non-empty JSON list of integers.")
     try:
         request_payload: dict[str, Any] = {
             "input_json_path": input_json_filepath,
@@ -2833,6 +3087,10 @@ def run_odesign_inference(
             "num_workers": num_workers,
             "enable_partial_diff": enable_partial_diff,
             "snr": snr,
+            "timeout_seconds": timeout_seconds,
+            "invfold_topk": invfold_topk,
+            "invfold_temp": invfold_temp,
+            "invfold_use_beam": invfold_use_beam,
         }
         if exp_name:
             request_payload["exp_name"] = exp_name
@@ -2846,7 +3104,7 @@ def run_odesign_inference(
         response = requests.post(
             service_url,
             json=request_payload,
-            timeout=21600,
+            timeout=max(21600, timeout_seconds + 600),
         )
         response.raise_for_status()
         payload = response.json()
@@ -2875,6 +3133,7 @@ def run_odesign_inference(
             "sample_names": payload.get("sample_names", []),
             "ckpt_root_dir": payload.get("ckpt_root_dir", ckpt_root_dir or ""),
             "data_root_dir": payload.get("data_root_dir", data_root_dir or ""),
+            "timeout_seconds": payload.get("timeout_seconds", timeout_seconds),
             "model": payload.get("model", "ODesign"),
         }
 

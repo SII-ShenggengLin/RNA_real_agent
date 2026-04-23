@@ -7,7 +7,7 @@
 ## 输入 / 输出
 
 - **输入**：RNA 序列文件路径 + `smiles`
-- **输出**：`probability`、`predicted_label`、checkpoint/模型信息（依工具而定）
+- **输出**：`probability_positive`、`predicted_label`、`raw_logits`、checkpoint/设备/模型信息（依工具而定）；RNAsmol 额外支持 `dataset`、`perturbation_type` 权重选择
 
 ## 前置条件
 

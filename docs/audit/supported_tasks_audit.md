@@ -229,7 +229,7 @@
   - 工具：`agent_core/tools.py` 对应工具函数
   - 微服务：`microservices/rnasmol_service` / `gernabind_service`
 - **依赖工具**：上述两者之一
-- **输入**：`filepath`（RNA）+ `smiles`
+- **输入**：`filepath`（RNA）+ `smiles`；RNAsmol 额外支持 `dataset`、`perturbation_type`、`device`、`checkpoint_path`
 - **输出**：dict（概率/标签/模型信息等）
 - **当前状态**：**部分可用（依赖 Linux/GPU/权重）**
 

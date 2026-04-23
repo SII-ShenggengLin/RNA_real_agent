@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -13,8 +12,16 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+# Ensure microservices/ is on sys.path for shared common_utils
+_MICROSERVICES_DIR = Path(__file__).resolve().parents[1]
+if str(_MICROSERVICES_DIR) not in sys.path:
+    sys.path.insert(0, str(_MICROSERVICES_DIR))
+
+from common_utils import PathResolver, parse_recovery_rate
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 REPO_ROOT = PROJECT_ROOT.parent
+_resolver = PathResolver(PROJECT_ROOT, REPO_ROOT)
 RIBODIFFUSION_ROOT = PROJECT_ROOT / "external_repos" / "RiboDiffusion"
 DEFAULT_CHECKPOINT = RIBODIFFUSION_ROOT / "ckpts" / "exp_inf.pth"
 SERVICE_WORKDIR = PROJECT_ROOT / "workspace" / "ribodiffusion_service_runs"
@@ -71,36 +78,6 @@ class RiboDiffusionResponse(BaseModel):
     stderr: str = ""
 
 
-def _resolve_repo_path(path_str: str) -> Path:
-    path = Path(path_str)
-    if path.is_absolute():
-        return path
-
-    candidate_paths = [
-        PROJECT_ROOT / path,
-        REPO_ROOT / path,
-    ]
-
-    path_text = str(path)
-    if path_text.startswith("rna_agent_system/"):
-        candidate_paths.insert(0, REPO_ROOT / path)
-    elif path_text.startswith(("workspace/", "external_repos/", "microservices/", "agent_core/", "docs/")):
-        candidate_paths.insert(0, PROJECT_ROOT / path)
-
-    for candidate in candidate_paths:
-        if candidate.exists():
-            return candidate
-
-    return candidate_paths[0]
-
-
-def _require_existing_path(path_str: str, label: str) -> Path:
-    path = _resolve_repo_path(path_str)
-    if not path.exists():
-        raise HTTPException(status_code=400, detail=f"{label} does not exist: {path}")
-    return path
-
-
 def _require_checkpoint() -> Path:
     if not DEFAULT_CHECKPOINT.exists():
         raise HTTPException(
@@ -111,18 +88,6 @@ def _require_checkpoint() -> Path:
             ),
         )
     return DEFAULT_CHECKPOINT
-
-
-def _parse_recovery_rate(stdout: str) -> Optional[float]:
-    match = re.search(r"recovery_rate\s+([0-9]*\.?[0-9]+)", stdout)
-    if not match:
-        match = re.search(r"recovery rate:\s*([0-9]*\.?[0-9]+)", stdout, re.IGNORECASE)
-    if not match:
-        return None
-    try:
-        return float(match.group(1))
-    except ValueError:
-        return None
 
 
 def _read_fasta_sequence(fasta_path: Path) -> str:
@@ -157,7 +122,7 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
     if not (RIBODIFFUSION_ROOT / "main.py").exists():
         raise HTTPException(status_code=500, detail=f"RiboDiffusion repo missing at {RIBODIFFUSION_ROOT}")
 
-    pdb_path = _require_existing_path(payload.pdb_path, "PDB input")
+    pdb_path = _resolver.require_existing(payload.pdb_path, "PDB input")
     pdb_stem = pdb_path.name.replace(".pdb", "").replace(".PDB", "")
     if "/" in pdb_stem:
         pdb_stem = pdb_stem.split("/")[-1]
@@ -233,7 +198,7 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
         predicted_sequence=sequences[0],
         generated_sequences=sequences,
         output_fasta_paths=paths_str,
-        recovery_rate=_parse_recovery_rate(result.stdout),
+        recovery_rate=parse_recovery_rate(result.stdout),
         checkpoint_path=str(DEFAULT_CHECKPOINT),
         service_output_dir=str(run_root),
         fasta_dir=str(fasta_dir),

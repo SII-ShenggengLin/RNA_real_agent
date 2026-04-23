@@ -28,6 +28,11 @@ try:
 except Exception:  # pragma: no cover - best effort health reporting only
     torch = None
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common_utils import PathResolver, _is_lfs_pointer  # noqa: E402
+
+path_resolver = PathResolver(PROJECT_ROOT, REPO_ROOT)
+
 
 app = FastAPI(
     title="ODesign Service",
@@ -40,6 +45,13 @@ app = FastAPI(
 
 
 class ODesignInferenceRequest(BaseModel):
+    """ODesign inference request schema.
+
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: ODesignInferenceInput
+    - agent_core/tool_specs.py :: run_odesign_inference ToolSpec
+    - docs/tools/run_odesign_inference.md
+    """
     input_json_path: str = Field(
         ...,
         description=(
@@ -103,6 +115,21 @@ class ODesignInferenceRequest(BaseModel):
         gt=0.0,
         description="Partial diffusion signal-to-noise ratio.",
     )
+    invfold_topk: int = Field(
+        default=1,
+        ge=1,
+        le=20,
+        description="Number of designed sequences per backbone structure (inverse folding top-k).",
+    )
+    invfold_temp: float = Field(
+        default=1.0,
+        gt=0.0,
+        description="Inverse folding sampling temperature.",
+    )
+    invfold_use_beam: bool = Field(
+        default=True,
+        description="Whether to use beam search in inverse folding.",
+    )
     timeout_seconds: int = Field(
         default=14400,
         ge=300,
@@ -112,6 +139,13 @@ class ODesignInferenceRequest(BaseModel):
 
 
 class ODesignInferenceResponse(BaseModel):
+    """ODesign inference response schema.
+
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: run_odesign_inference (wrapper return dict)
+    - agent_core/tool_specs.py :: ODesignInferenceOutput
+    - docs/tools/run_odesign_inference.md
+    """
     input_json_path: str
     infer_model_name: str
     design_modality: str
@@ -125,45 +159,8 @@ class ODesignInferenceResponse(BaseModel):
     error_filepaths: list[str]
     stdout: str = ""
     stderr: str = ""
+    timeout_seconds: int = 14400
     model: str = "ODesign"
-
-
-def _resolve_repo_path(path_str: str) -> Path:
-    path = Path(path_str)
-    if path.is_absolute():
-        return path
-
-    candidate_paths = [
-        PROJECT_ROOT / path,
-        REPO_ROOT / path,
-    ]
-    path_text = str(path)
-    if path_text.startswith("rna_agent_system/"):
-        candidate_paths.insert(0, REPO_ROOT / path)
-    elif path_text.startswith(("workspace/", "external_repos/", "microservices/", "docs/")):
-        candidate_paths.insert(0, PROJECT_ROOT / path)
-
-    for candidate in candidate_paths:
-        if candidate.exists():
-            return candidate
-    return candidate_paths[0]
-
-
-def _require_existing_path(path_str: str, label: str) -> Path:
-    path = _resolve_repo_path(path_str)
-    if not path.exists():
-        raise HTTPException(status_code=400, detail=f"{label} does not exist: {path}")
-    return path
-
-
-def _is_lfs_pointer(path: Path) -> bool:
-    if not path.exists():
-        return False
-    try:
-        prefix = path.read_bytes()[:64]
-    except OSError:
-        return False
-    return prefix.startswith(b"version https://git-lfs.github.com/spec/v1")
 
 
 def _normalize_exp_name(exp_name: Optional[str], infer_model_name: str) -> str:
@@ -176,7 +173,7 @@ def _normalize_exp_name(exp_name: Optional[str], infer_model_name: str) -> str:
 
 def _resolve_runtime_dir(path_str: Optional[str], default_path: Path) -> Path:
     if path_str:
-        return _resolve_repo_path(path_str)
+        return path_resolver.resolve(path_str)
     return default_path
 
 
@@ -308,7 +305,7 @@ def design_from_json(payload: ODesignInferenceRequest) -> ODesignInferenceRespon
             ),
         )
 
-    input_json_path = _require_existing_path(payload.input_json_path, "Input JSON")
+    input_json_path = path_resolver.require_existing(payload.input_json_path, "Input JSON")
     ckpt_root_dir = _resolve_runtime_dir(
         payload.ckpt_root_dir or os.getenv("ODESIGN_CKPT_ROOT"),
         DEFAULT_CKPT_ROOT,
@@ -356,6 +353,9 @@ def design_from_json(payload: ODesignInferenceRequest) -> ODesignInferenceRespon
         + str(payload.enable_partial_diff).lower(),
         "exp.model.inference_noise_schedulers.coordinate.partial_diffusion.snr="
         + str(payload.snr),
+        f"exp.invfold_topk={payload.invfold_topk}",
+        f"exp.invfold_temp={payload.invfold_temp}",
+        f"exp.invfold_use_beam={str(payload.invfold_use_beam).lower()}",
     ]
 
     result = subprocess.run(
@@ -393,7 +393,8 @@ def design_from_json(payload: ODesignInferenceRequest) -> ODesignInferenceRespon
     prediction_files = _collect_prediction_files(output_dir)
     error_files = _collect_error_files(output_dir)
     run_log_path = output_dir / "run.log"
-    sample_names = sorted({path.parent.parent.name for path in prediction_files})
+    # ODesign output structure: <exp_name>/<timestamp>/<sample_name>/<seed>/predictions/*.cif
+    sample_names = sorted({path.parent.parent.parent.name for path in prediction_files})
 
     return ODesignInferenceResponse(
         input_json_path=str(input_json_path),
@@ -409,4 +410,5 @@ def design_from_json(payload: ODesignInferenceRequest) -> ODesignInferenceRespon
         error_filepaths=[str(path) for path in error_files],
         stdout=result.stdout.strip(),
         stderr=result.stderr.strip(),
+        timeout_seconds=payload.timeout_seconds,
     )

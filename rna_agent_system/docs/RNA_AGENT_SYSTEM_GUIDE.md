@@ -327,7 +327,7 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 微服务目录 | `microservices/rnasmol_service/` |
 | 环境 | `environment.yml`（旧卡/CPU）或 `environment.gpu.yml`（RTX 4090 等新卡） |
 | 接口 | `GET /health`、`POST /score` |
-| Agent 工具 | `score_rna_ligand_binding_with_rnasmol(filepath, smiles)` |
+| Agent 工具 | `score_rna_ligand_binding_with_rnasmol(filepath, smiles, dataset=None, perturbation_type=None, device=None, checkpoint_path=None)` |
 
 **关键注意事项**：
 - 新 GPU（RTX 4090）必须使用 `environment.gpu.yml`
@@ -342,7 +342,7 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 微服务目录 | `microservices/rnastop_service/` |
 | 环境 | `python=3.10` + GPU + `transformers==4.34.0` |
 | 接口 | `GET /health`、`POST /predict/stability` |
-| Agent 工具 | `predict_mrna_stability_with_rnastop(filepath)` |
+| Agent 工具 | `predict_mrna_stability_with_rnastop(filepath, structure=None, loop_type=None)` |
 
 **关键注意事项**：
 - 资源目录：`external_repos/RNASTOP/models/` + `DNABERT6/` + `RNA-FM_pretrained.pth`

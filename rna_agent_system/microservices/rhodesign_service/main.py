@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 import subprocess
 import sys
 import tempfile
@@ -12,8 +11,16 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+# Ensure microservices/ is on sys.path for shared common_utils
+_MICROSERVICES_DIR = Path(__file__).resolve().parents[1]
+if str(_MICROSERVICES_DIR) not in sys.path:
+    sys.path.insert(0, str(_MICROSERVICES_DIR))
+
+from common_utils import PathResolver, parse_recovery_rate
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 REPO_ROOT = PROJECT_ROOT.parent
+_resolver = PathResolver(PROJECT_ROOT, REPO_ROOT)
 RHODESIGN_ROOT = PROJECT_ROOT / "external_repos" / "RhoDesign"
 RHODESIGN_SRC = RHODESIGN_ROOT / "src"
 CHECKPOINT_DIR = RHODESIGN_ROOT / "checkpoint"
@@ -33,6 +40,14 @@ app = FastAPI(
 
 
 class RhoDesignRequest(BaseModel):
+    """RhoDesign microservice request schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: RhoDesignInput / design_rna_sequence_with_rhodesign
+    - agent_core/tool_specs.py :: design_rna_sequence_with_rhodesign ToolSpec
+    - docs/tools/design_rna_sequence_with_rhodesign.md
+    """
+
     pdb_path: str = Field(
         ...,
         description=(
@@ -47,12 +62,13 @@ class RhoDesignRequest(BaseModel):
             "contact map in .npy format. If omitted, the service uses PDB-only mode."
         ),
     )
-    temperature: float = Field(
-        default=1e-5,
+    temperature: Optional[float] = Field(
+        default=None,
         gt=0.0,
         description=(
             "Sampling temperature. Lower values favor higher recovery; higher values "
-            "increase sequence diversity."
+            "increase sequence diversity. Defaults to 1e-5 for with-2D mode and 1.0 for "
+            "PDB-only mode."
         ),
     )
     device: int = Field(
@@ -69,6 +85,14 @@ class RhoDesignRequest(BaseModel):
 
 
 class RhoDesignResponse(BaseModel):
+    """RhoDesign microservice response schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_rna_sequence_with_rhodesign (wrapper return dict)
+    - agent_core/tool_specs.py :: RhoDesignOutput
+    - docs/tools/design_rna_sequence_with_rhodesign.md
+    """
+
     input_pdb_path: str
     secondary_structure_path: Optional[str] = None
     output_fasta_path: str
@@ -77,39 +101,10 @@ class RhoDesignResponse(BaseModel):
     used_secondary_structure: bool
     checkpoint_path: str
     service_output_dir: str
+    temperature_used: float
     model: str = "RhoDesign"
     stdout: str = ""
     stderr: str = ""
-
-
-def _resolve_repo_path(path_str: str) -> Path:
-    path = Path(path_str)
-    if path.is_absolute():
-        return path
-
-    candidate_paths = [
-        PROJECT_ROOT / path,
-        REPO_ROOT / path,
-    ]
-
-    path_text = str(path)
-    if path_text.startswith("rna_agent_system/"):
-        candidate_paths.insert(0, REPO_ROOT / path)
-    elif path_text.startswith(("workspace/", "external_repos/", "microservices/", "agent_core/", "docs/")):
-        candidate_paths.insert(0, PROJECT_ROOT / path)
-
-    for candidate in candidate_paths:
-        if candidate.exists():
-            return candidate
-
-    return candidate_paths[0]
-
-
-def _require_existing_path(path_str: str, label: str) -> Path:
-    path = _resolve_repo_path(path_str)
-    if not path.exists():
-        raise HTTPException(status_code=400, detail=f"{label} does not exist: {path}")
-    return path
 
 
 def _require_runtime_assets() -> None:
@@ -135,16 +130,6 @@ def _select_checkpoint(use_secondary_structure: bool) -> Path:
             ),
         )
     return checkpoint_path
-
-
-def _parse_recovery_rate(stdout: str) -> Optional[float]:
-    match = re.search(r"recovery rate:\s*([0-9]*\.?[0-9]+)", stdout)
-    if not match:
-        return None
-    try:
-        return float(match.group(1))
-    except ValueError:
-        return None
 
 
 def _read_predicted_sequence(fasta_path: Path) -> str:
@@ -189,11 +174,11 @@ def health() -> dict[str, object]:
 def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
     _require_runtime_assets()
 
-    pdb_path = _require_existing_path(payload.pdb_path, "PDB input")
+    pdb_path = _resolver.require_existing(payload.pdb_path, "PDB input")
     use_secondary_structure = payload.secondary_structure_path is not None
     secondary_structure_path: Optional[Path] = None
     if payload.secondary_structure_path:
-        secondary_structure_path = _require_existing_path(
+        secondary_structure_path = _resolver.require_existing(
             payload.secondary_structure_path,
             "Secondary-structure input",
         )
@@ -204,6 +189,11 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
     run_dir = Path(tempfile.mkdtemp(prefix="rhodesign_", dir=SERVICE_WORKDIR))
     output_dir = run_dir / "output"
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    if payload.temperature is not None:
+        temperature = payload.temperature
+    else:
+        temperature = 1e-5 if use_secondary_structure else 1.0
 
     script_name = "inference.py" if use_secondary_structure else "inference_without2d.py"
     command = [
@@ -216,7 +206,9 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
         "-device",
         str(payload.device),
         "-temp",
-        str(payload.temperature),
+        str(temperature),
+        "-ckpt",
+        str(checkpoint_path),
     ]
     if secondary_structure_path is not None:
         command.extend(["-ss", str(secondary_structure_path)])
@@ -250,10 +242,11 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
         secondary_structure_path=str(secondary_structure_path) if secondary_structure_path else None,
         output_fasta_path=str(output_fasta_path),
         predicted_sequence=predicted_sequence,
-        recovery_rate=_parse_recovery_rate(result.stdout),
+        recovery_rate=parse_recovery_rate(result.stdout),
         used_secondary_structure=use_secondary_structure,
         checkpoint_path=str(checkpoint_path),
         service_output_dir=str(output_dir),
+        temperature_used=temperature,
         stdout=result.stdout.strip(),
         stderr=result.stderr.strip(),
     )

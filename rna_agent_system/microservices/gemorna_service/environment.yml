@@ -16,6 +16,7 @@ dependencies:
       - torchaudio==2.2.0
       - torchtext==0.6.0
       - biopython==1.72
+      - scikit-learn
       - fastapi
       - uvicorn
       - pydantic

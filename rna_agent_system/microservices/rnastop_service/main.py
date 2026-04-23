@@ -55,6 +55,15 @@ _CACHE_LOCK = Lock()
 
 
 class StabilityPredictionRequest(BaseModel):
+    """RNASTOP prediction request schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
+    synchronized with:
+    - agent_core/tools.py :: RNASTOPPredictionInput
+    - agent_core/tool_specs.py :: predict_mrna_stability_with_rnastop ToolSpec
+    - docs/tools/predict_mrna_stability_with_rnastop.md
+    """
+
     sequence: str = Field(
         ...,
         min_length=1,
@@ -87,6 +96,38 @@ class StabilityPredictionRequest(BaseModel):
 
 
 class StabilityPredictionResponse(BaseModel):
+    """RNASTOP prediction response schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
+    synchronized with:
+    - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
+    - agent_core/tool_specs.py :: RNASTOPPredictionOutput
+    - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    - agent_core/state.py :: rnastop_* fields
+    - docs/tools/predict_mrna_stability_with_rnastop.md
+
+    Fields:
+        sequence: Original (possibly truncated) input sequence.
+        used_sequence: Actual sequence passed to the model (MAX_SEQUENCE_LENGTH).
+        sequence_length: len(sequence).
+        used_length: len(used_sequence).
+        truncated: Whether sequence exceeded MAX_SEQUENCE_LENGTH.
+        structure: Dot-bracket secondary structure (ViennaRNA MFE or user-supplied).
+        loop_type: Loop-type annotation string derived from structure.
+        mfe: Minimum free energy (kcal/mol).
+        mean_reactivity: Mean per-position reactivity.
+        mean_deg_Mg_pH10: Mean per-position deg_Mg_pH10.
+        mean_deg_Mg_50C: Mean per-position deg_Mg_50C.
+        overall_stability: Global mean of the three per-position metrics above.
+        per_position_predictions: Dict of three float lists (reactivity, deg_Mg_pH10, deg_Mg_50C).
+        checkpoint_path: Absolute path to the checkpoint used.
+        rnafm_model_path: Absolute path to the RNA-FM weights used.
+        dnabert_model_path: Absolute path to the DNABERT directory used.
+        use_dnabert: Whether the checkpoint includes DNABERT.
+        device: Torch device string used for inference.
+        model: Fixed to "RNASTOP".
+    """
+
     sequence: str
     used_sequence: str
     sequence_length: int
@@ -98,6 +139,7 @@ class StabilityPredictionResponse(BaseModel):
     mean_reactivity: float
     mean_deg_Mg_pH10: float
     mean_deg_Mg_50C: float
+    overall_stability: float
     per_position_predictions: Dict[str, List[float]]
     checkpoint_path: str
     rnafm_model_path: str
@@ -345,77 +387,61 @@ def _resolve_device(device_override: Optional[str]) -> str:
     return DEFAULT_DEVICE
 
 
-def _checkpoint_candidates() -> List[Path]:
+def _resolve_asset_path(
+    path_override: Optional[str],
+    env_var_name: str,
+    fallback_candidates: List[Path],
+) -> Path:
+    """Resolve a runtime asset path from override, env var, or fallback candidates."""
+    if path_override:
+        return Path(path_override).expanduser().resolve()
+    env_override = os.environ.get(env_var_name)
     candidates: List[Path] = []
-    env_override = os.environ.get("RNASTOP_CHECKPOINT_PATH")
     if env_override:
         candidates.append(Path(env_override).expanduser().resolve())
-    candidates.extend(
+    candidates.extend(fallback_candidates)
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
+
+def _resolve_checkpoint_path(path_override: Optional[str]) -> Path:
+    return _resolve_asset_path(
+        path_override,
+        "RNASTOP_CHECKPOINT_PATH",
         [
             (RNASTOP_MODELS_DIR / DEFAULT_CHECKPOINT_NAME).resolve(),
             (RNASTOP_MODELS_DIR / "best_model_weights_withoutDNABERT").resolve(),
             (RNASTOP_ROOT / "scripts" / DEFAULT_CHECKPOINT_NAME).resolve(),
             (RNASTOP_ROOT / "scripts" / "best_model_weights_withoutDNABERT").resolve(),
-        ]
+        ],
     )
-    return candidates
-
-
-def _resolve_checkpoint_path(path_override: Optional[str]) -> Path:
-    if path_override:
-        return Path(path_override).expanduser().resolve()
-    for candidate in _checkpoint_candidates():
-        if candidate.exists():
-            return candidate
-    return _checkpoint_candidates()[0]
-
-
-def _rnafm_candidates() -> List[Path]:
-    candidates: List[Path] = []
-    env_override = os.environ.get("RNASTOP_RNAFM_PATH")
-    if env_override:
-        candidates.append(Path(env_override).expanduser().resolve())
-    candidates.extend(
-        [
-            (RNASTOP_RNAFM_PRETRAINED_DIR / RNASTOP_RNAFM_FILENAME).resolve(),
-            (RNASTOP_SCRIPTS_RNAFM_PRETRAINED_DIR / RNASTOP_RNAFM_FILENAME).resolve(),
-            (RNASTOP_ROOT / "pretrained" / RNASTOP_RNAFM_FILENAME).resolve(),
-            (RNASTOP_ROOT / RNASTOP_RNAFM_FILENAME).resolve(),
-        ]
-    )
-    return candidates
 
 
 def _resolve_rnafm_path(path_override: Optional[str]) -> Path:
-    if path_override:
-        return Path(path_override).expanduser().resolve()
-    for candidate in _rnafm_candidates():
-        if candidate.exists():
-            return candidate
-    return _rnafm_candidates()[0]
-
-
-def _dnabert_candidates() -> List[Path]:
-    candidates: List[Path] = []
-    env_override = os.environ.get("RNASTOP_DNABERT_PATH")
-    if env_override:
-        candidates.append(Path(env_override).expanduser().resolve())
-    candidates.extend(
+    return _resolve_asset_path(
+        path_override,
+        "RNASTOP_RNAFM_PATH",
         [
-            RNASTOP_DNABERT_DIR.resolve(),
-            RNASTOP_SCRIPTS_DNABERT_DIR.resolve(),
-        ]
+            (RNASTOP_RNAFM_PRETRAINED_DIR / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_SCRIPTS_RNAFM_PRETRAINED_DIR / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_ROOT / "scripts" / "RNA-FM-main" / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_ROOT / "pretrained" / RNASTOP_RNAFM_FILENAME).resolve(),
+            (RNASTOP_ROOT / RNASTOP_RNAFM_FILENAME).resolve(),
+        ],
     )
-    return candidates
 
 
 def _resolve_dnabert_path(path_override: Optional[str]) -> Path:
-    if path_override:
-        return Path(path_override).expanduser().resolve()
-    for candidate in _dnabert_candidates():
-        if candidate.exists():
-            return candidate
-    return _dnabert_candidates()[0]
+    return _resolve_asset_path(
+        path_override,
+        "RNASTOP_DNABERT_PATH",
+        [
+            RNASTOP_DNABERT_DIR.resolve(),
+            RNASTOP_SCRIPTS_DNABERT_DIR.resolve(),
+        ],
+    )
 
 
 def _checkpoint_uses_dnabert(checkpoint_path: Path) -> bool:
@@ -896,6 +922,7 @@ def predict_stability(payload: StabilityPredictionRequest) -> StabilityPredictio
     mean_reactivity = float(np.mean(predictions[:, 0]))
     mean_deg_mg_ph10 = float(np.mean(predictions[:, 1]))
     mean_deg_mg_50c = float(np.mean(predictions[:, 2]))
+    overall_stability = float(np.mean(predictions[:, :3]))
 
     return StabilityPredictionResponse(
         sequence=sequence,
@@ -909,6 +936,7 @@ def predict_stability(payload: StabilityPredictionRequest) -> StabilityPredictio
         mean_reactivity=mean_reactivity,
         mean_deg_Mg_pH10=mean_deg_mg_ph10,
         mean_deg_Mg_50C=mean_deg_mg_50c,
+        overall_stability=overall_stability,
         per_position_predictions={
             "reactivity": predictions[:, 0].astype(float).tolist(),
             "deg_Mg_pH10": predictions[:, 1].astype(float).tolist(),

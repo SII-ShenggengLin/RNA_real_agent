@@ -70,6 +70,12 @@ ATOM_ID = {
 
 
 class ScoreRequest(BaseModel):
+    """GerNA-Bind affinity scoring request schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: GerNABindScoreInput
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
+    """
     rna_sequence: str = Field(..., min_length=1, description="RNA sequence or FASTA-like text.")
     smiles: str = Field(..., min_length=1, description="Ligand SMILES string.")
     checkpoint_path: Optional[str] = Field(
@@ -88,6 +94,20 @@ class ScoreRequest(BaseModel):
         default=None,
         description="Optional torch device such as `cuda:0` or `cpu`.",
     )
+    dataset: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional dataset hint for selecting the default affinity checkpoint. "
+            "Supported values: Robin, Biosensor. When omitted, Robin_random.pth is tried first."
+        ),
+    )
+    split_method: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional split-method hint for selecting the default affinity checkpoint. "
+            "Supported values: random, RNA, mol, both. Defaults to 'random' when dataset is provided."
+        ),
+    )
     rhofold_service_url: Optional[str] = Field(
         default=None,
         description="Optional RhoFold service endpoint override.",
@@ -95,6 +115,13 @@ class ScoreRequest(BaseModel):
 
 
 class ScoreResponse(BaseModel):
+    """GerNA-Bind affinity scoring response schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind (wrapper return dict)
+    - agent_core/tool_specs.py :: GerNABindScoreOutput
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
+    """
     rna_sequence: str
     smiles: str
     probability_positive: float
@@ -108,6 +135,12 @@ class ScoreResponse(BaseModel):
 
 
 class BindingSiteRequest(BaseModel):
+    """GerNA-Bind binding-site prediction request schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py (if a wrapper is added later)
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
+    """
     rna_sequence: str = Field(..., min_length=1, description="RNA sequence or FASTA-like text.")
     smiles: str = Field(..., min_length=1, description="Ligand SMILES string.")
     checkpoint_path: Optional[str] = Field(
@@ -133,6 +166,12 @@ class BindingSiteRequest(BaseModel):
 
 
 class BindingSiteResponse(BaseModel):
+    """GerNA-Bind binding-site prediction response schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tool_specs.py (if an output model is added later)
+    - docs/tools/score_rna_ligand_binding_with_gernabind.md
+    """
     rna_sequence: str
     smiles: str
     per_residue_scores: List[float]
@@ -175,7 +214,11 @@ def _resolve_path(path_str: str) -> Path:
     return PROJECT_ROOT / path_str
 
 
-def _resolve_affinity_checkpoint(checkpoint_path: Optional[str] = None) -> Path:
+def _resolve_affinity_checkpoint(
+    checkpoint_path: Optional[str] = None,
+    dataset: Optional[str] = None,
+    split_method: Optional[str] = None,
+) -> Path:
     candidates: List[Path] = []
     if checkpoint_path:
         candidates.append(_resolve_path(checkpoint_path))
@@ -184,11 +227,24 @@ def _resolve_affinity_checkpoint(checkpoint_path: Optional[str] = None) -> Path:
     if env_path:
         candidates.append(_resolve_path(env_path))
 
+    # If dataset is provided, construct the exact checkpoint name and try it first.
+    # Note: upstream weights use "RNA" (uppercase) and "random"/"mol"/"both" (lowercase).
+    if dataset:
+        ds = dataset.strip().capitalize()
+        sm = (split_method or "random").strip().lower()
+        if sm == "rna":
+            sm = "RNA"
+        elif sm in ("random", "mol", "both"):
+            pass
+        else:
+            sm = "random"
+        candidates.append(GERNABIND_MODEL_DIR / f"{ds}_{sm}.pth")
+
+    # Fallback defaults (Robin first, then Biosensor).
     candidates.extend(
         [
             GERNABIND_MODEL_DIR / "Robin_random.pth",
             GERNABIND_MODEL_DIR / "Biosensor_random.pth",
-            GERNABIND_MODEL_DIR / "Robin_Model_baseline.pth",
         ]
     )
 
@@ -239,6 +295,7 @@ def _rnafm_candidates() -> List[Path]:
     candidates.extend(
         [
             GERNABIND_MODEL_DIR / GERNABIND_RNAFM_FILENAME,
+            GERNABIND_MODEL_DIR / "RNA-FM-main" / GERNABIND_RNAFM_FILENAME,
             RNASTOP_ROOT / GERNABIND_RNAFM_FILENAME,
             RNASTOP_ROOT / "RNA-FM-main" / "pretrained" / GERNABIND_RNAFM_FILENAME,
             RNASTOP_ROOT / "pretrained" / GERNABIND_RNAFM_FILENAME,
@@ -700,8 +757,18 @@ def health() -> Dict[str, object]:
 
 @app.post("/score", response_model=ScoreResponse)
 def score(payload: ScoreRequest) -> ScoreResponse:
+    """GerNA-Bind affinity scoring endpoint.
+
+    INTERFACE LOCK (v0.1.0): The request/response schema and inference pipeline
+    (RNA-FM + RNAfold + RhoFold + GerNA model) are canonical.
+    Do not change without updating the wrapper, tool spec, and documentation.
+    """
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
-    checkpoint = _resolve_affinity_checkpoint(payload.checkpoint_path)
+    checkpoint = _resolve_affinity_checkpoint(
+        payload.checkpoint_path,
+        dataset=payload.dataset,
+        split_method=payload.split_method,
+    )
     rnafm_model_path = _resolve_rnafm_path()
     device = _resolve_device(payload.device)
 
@@ -739,6 +806,12 @@ def score(payload: ScoreRequest) -> ScoreResponse:
 
 @app.post("/predict-binding-site", response_model=BindingSiteResponse)
 def predict_binding_site(payload: BindingSiteRequest) -> BindingSiteResponse:
+    """GerNA-Bind binding-site prediction endpoint.
+
+    INTERFACE LOCK (v0.1.0): The request/response schema and inference pipeline
+    (RNA-FM + RNAfold + RhoFold + GerNA binding-site model) are canonical.
+    Do not change without updating the wrapper, tool spec, and documentation.
+    """
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
     checkpoint = _resolve_binding_checkpoint(payload.checkpoint_path)
     rnafm_model_path = _resolve_rnafm_path()

@@ -49,19 +49,61 @@ class AgentState(TypedDict, total=False):
     tertiary_log_filepath: str
     mean_plddt: float
     ligand_smiles: str
+    # INTERFACE LOCK (v0.1.0) — GerNA-Bind state fields
+    # Any field addition/removal must be synchronized with:
+    # - microservices/gernabind_service/main.py :: ScoreResponse / BindingSiteResponse
+    # - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind return dict
+    # - agent_core/tool_specs.py :: GerNABindScoreOutput
+    # - docs/tools/score_rna_ligand_binding_with_gernabind.md
     gernabind_probability: float
     gernabind_predicted_label: int
     gernabind_checkpoint_path: str
     gernabind_preprocessing_pdb_path: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+    # ═══════════════════════════════════════════════════════════════════════════
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/rnasmol_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py
+    #   - agent_core/state.py  ← 本文件
+    #   - agent_core/nodes.py
+    #   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # ═══════════════════════════════════════════════════════════════════════════
+    # INTERFACE LOCK (v0.2.0) — RNAsmol state fields
+    # Any field addition/removal must be synchronized with:
+    # - microservices/rnasmol_service/main.py :: ScoreResponse
+    # - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol return dict
+    # - agent_core/tool_specs.py :: RNAsmolScoreOutput
+    # - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     rnasmol_probability: float
     rnasmol_predicted_label: int
+    rnasmol_raw_logits: list[float]
     rnasmol_checkpoint_path: str
+    rnasmol_device: str
+    rnasmol_dataset: str
+    rnasmol_perturbation_type: str
+    # INTERFACE LOCK (v0.1.0) — RNASTOP state fields
+    # Any field addition/removal must be synchronized with:
+    # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
+    # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
+    # - agent_core/tool_specs.py :: RNASTOPPredictionOutput
+    # - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    # - docs/tools/predict_mrna_stability_with_rnastop.md
     rnastop_prediction_filepath: str
+    rnastop_sequence: str
+    rnastop_used_sequence: str
+    rnastop_structure: str
+    rnastop_loop_type: str
     rnastop_mean_reactivity: float
     rnastop_mean_deg_mg_ph10: float
     rnastop_mean_deg_mg_50c: float
+    rnastop_overall_stability: float
     rnastop_mfe: float
     rnastop_checkpoint_path: str
+    rnastop_device: str
     iresfinder_result_tsv_filepath: str
     iresfinder_has_putative_ires: bool
     iresfinder_max_score: float

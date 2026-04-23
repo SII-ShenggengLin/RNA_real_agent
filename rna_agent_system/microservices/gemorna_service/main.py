@@ -14,6 +14,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GEMORNA_ROOT = PROJECT_ROOT / "external_repos" / "GEMORNA"
 CHECKPOINT_DIR = GEMORNA_ROOT / "checkpoints"
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common_utils import _is_lfs_pointer  # noqa: E402
+
 app = FastAPI(
     title="GEMORNA Service",
     description="Run GEMORNA generation scripts (CDS / 5UTR / 3UTR) through a FastAPI microservice.",
@@ -108,13 +111,6 @@ class UtrDesignResponse(BaseModel):
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def _is_lfs_pointer(path: Path) -> bool:
-    if not path.exists():
-        return True
-    prefix = path.read_bytes()[:64]
-    return prefix.startswith(b"version https://git-lfs.github.com/spec/v1")
-
 
 def _require_runtime_assets(mode: str) -> None:
     """Verify that required assets exist for the requested generation mode."""

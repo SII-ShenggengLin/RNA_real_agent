@@ -1003,11 +1003,52 @@ def _extract_gernabind_overrides(text: str) -> dict[str, str]:
     return overrides
 
 
-def _resolve_rnasmol_inputs(text: str) -> Tuple[str, str, bool]:
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rnasmol_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py  ← 本文件
+#   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _extract_rnasmol_overrides(text: str) -> dict[str, str]:
+    """Extract RNAsmol-specific overrides (dataset, perturbation_type, device) from user text."""
+    overrides: dict[str, str] = {}
+    dataset_match = re.search(
+        r"(?:dataset|data[_\s]?source|source)\s*[:=]\s*[\"']?(pdb|robin)[\"']?",
+        text,
+        re.IGNORECASE,
+    )
+    if dataset_match:
+        overrides["dataset"] = dataset_match.group(1).lower()
+    pert_match = re.search(
+        r"(?:perturbation|perturbation[_\s]?type|augmentation)\s*[:=]\s*[\"']?(molperturbation|netperturbation|rnaperturbation)[\"']?",
+        text,
+        re.IGNORECASE,
+    )
+    if pert_match:
+        overrides["perturbation_type"] = pert_match.group(1).lower()
+    device_match = re.search(
+        r"(?:rnasmol[_\s]?device|device)\s*[:=]\s*[\"']?(cuda:\d+|cpu)[\"']?",
+        text,
+        re.IGNORECASE,
+    )
+    if device_match:
+        overrides["device"] = device_match.group(1).lower()
+    return overrides
+
+
+def _resolve_rna_ligand_inputs(text: str) -> Tuple[str, str, bool]:
     smiles = _extract_smiles(text)
     if not smiles:
         raise ValueError(
-            "RNAsmol scoring requires a ligand SMILES string. "
+            "RNA-ligand scoring requires a ligand SMILES string. "
             "Please provide it like `SMILES=CCO` or `SMILES: C1=CC=CC=C1`."
         )
 
@@ -1018,13 +1059,29 @@ def _resolve_rnasmol_inputs(text: str) -> Tuple[str, str, bool]:
     rna_sequence = _extract_long_rna_sequence(text)
     if not rna_sequence:
         raise ValueError(
-            "RNAsmol scoring requires an RNA sequence or a `.fasta/.fa/.txt/.seq` filepath."
+            "RNA-ligand scoring requires an RNA sequence or a `.fasta/.fa/.txt/.seq` filepath."
         )
 
-    return save_sequence(rna_sequence, prefix="rnasmol_rna"), smiles, True
+    return save_sequence(rna_sequence, prefix="rna_ligand"), smiles, True
 
 
-def _resolve_rnastop_input(text: str) -> Tuple[str, bool]:
+def _update_state_with_ligand_inputs(
+    state: AgentState, filepath: str, smiles: str, created_workspace_file: bool
+) -> None:
+    """Attach RNA-ligand inputs to shared state and track workspace files."""
+    state["current_filepath"] = filepath
+    state["ligand_smiles"] = smiles
+    if created_workspace_file or filepath.startswith("workspace/"):
+        state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+
+
+def _resolve_sequence_input(text: str) -> Tuple[str, bool]:
+    """Resolve a nucleic-acid sequence input into a filepath.
+
+    If *text* is already a filepath with a recognised suffix, return it as-is.
+    Otherwise extract the longest RNA-like stretch, save it to the workspace,
+    and return the new filepath.
+    """
     filepath = _extract_path_with_suffixes(text, ("fasta", "fa", "txt", "seq"))
     if filepath:
         return filepath, False
@@ -1032,10 +1089,10 @@ def _resolve_rnastop_input(text: str) -> Tuple[str, bool]:
     rna_sequence = _extract_long_rna_sequence(text)
     if not rna_sequence:
         raise ValueError(
-            "RNASTOP prediction requires an RNA sequence or a `.fasta/.fa/.txt/.seq` filepath."
+            "Sequence input requires an RNA sequence or a `.fasta/.fa/.txt/.seq` filepath."
         )
 
-    return save_sequence(rna_sequence, prefix="rnastop_rna"), True
+    return save_sequence(rna_sequence, prefix="sequence_input"), True
 
 
 def _needs_blast_search(user_text: str) -> bool:
@@ -1799,12 +1856,9 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): dispatch ODesign inference."
     elif gernabind_mode:
-        filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
+        filepath, smiles, created_workspace_file = _resolve_rna_ligand_inputs(raw_text)
         gernabind_overrides = _extract_gernabind_overrides(raw_text)
-        state["current_filepath"] = filepath
-        state["ligand_smiles"] = smiles
-        if created_workspace_file or filepath.startswith("workspace/"):
-            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        _update_state_with_ligand_inputs(state, filepath, smiles, created_workspace_file)
         tool_args: dict[str, Any] = {"filepath": filepath, "smiles": smiles}
         tool_args.update(gernabind_overrides)
         tool_calls = [
@@ -1817,22 +1871,22 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): dispatch GerNA-Bind RNA-ligand scoring."
     elif rnasmol_mode:
-        filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(raw_text)
-        state["current_filepath"] = filepath
-        state["ligand_smiles"] = smiles
-        if created_workspace_file or filepath.startswith("workspace/"):
-            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        filepath, smiles, created_workspace_file = _resolve_rna_ligand_inputs(raw_text)
+        rnasmol_overrides = _extract_rnasmol_overrides(raw_text)
+        _update_state_with_ligand_inputs(state, filepath, smiles, created_workspace_file)
+        tool_args = {"filepath": filepath, "smiles": smiles}
+        tool_args.update(rnasmol_overrides)
         tool_calls = [
             {
                 "name": "score_rna_ligand_binding_with_rnasmol",
-                "args": {"filepath": filepath, "smiles": smiles},
+                "args": tool_args,
                 "id": f"call_{uuid.uuid4().hex[:8]}",
                 "type": "tool_call",
             }
         ]
         content = "mRNA specialist (rule-based): dispatch RNAsmol RNA-ligand scoring."
     elif _needs_iresfinder_prediction(user_text):
-        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created_workspace_file or filepath.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -1862,7 +1916,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): ViennaRNA RNAinverse secondary-structure inverse fold."
     elif _needs_aso_region_plfold_accessibility(raw_text):
-        filepath_aso, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath_aso, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath_aso
         if created_workspace_file or filepath_aso.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath_aso]
@@ -1882,7 +1936,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): ViennaRNA RNAplfold ASO / binding-site accessibility."
     elif _needs_rna_plfold_local_profile(raw_text):
-        filepath_pf, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath_pf, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath_pf
         if created_workspace_file or filepath_pf.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath_pf]
@@ -1896,7 +1950,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): ViennaRNA RNAplfold full-sequence local accessibility profile."
     elif rnastop_mode:
-        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created_workspace_file or filepath.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -1910,7 +1964,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): dispatch RNASTOP stability prediction."
     elif _needs_codonw_standalone(raw_text):
-        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created_workspace_file or filepath.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -1924,7 +1978,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): dispatch codonw-slim CDS codon metrics."
     elif _needs_rna_gc_content_metric(user_text):
-        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created_workspace_file or filepath.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -1960,7 +2014,7 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
         ]
         content = "mRNA specialist (rule-based): dot-bracket unpaired fraction (dot count / length)."
     elif _needs_blast_search(user_text):
-        filepath, created_workspace_file = _resolve_rnastop_input(raw_text)
+        filepath, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created_workspace_file or filepath.startswith("workspace/"):
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -2161,12 +2215,9 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 }
             ]
         elif _needs_gernabind_scoring(user_text):
-            filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
+            filepath, smiles, created_workspace_file = _resolve_rna_ligand_inputs(state.get("input_sequence", ""))
             gernabind_overrides = _extract_gernabind_overrides(state.get("input_sequence", ""))
-            state["current_filepath"] = filepath
-            state["ligand_smiles"] = smiles
-            if created_workspace_file or filepath.startswith("workspace/"):
-                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            _update_state_with_ligand_inputs(state, filepath, smiles, created_workspace_file)
             tool_args = {"filepath": filepath, "smiles": smiles}
             tool_args.update(gernabind_overrides)
             fallback_calls = [
@@ -2176,19 +2227,19 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 }
             ]
         elif _needs_rnasmol_scoring(user_text):
-            filepath, smiles, created_workspace_file = _resolve_rnasmol_inputs(state.get("input_sequence", ""))
-            state["current_filepath"] = filepath
-            state["ligand_smiles"] = smiles
-            if created_workspace_file or filepath.startswith("workspace/"):
-                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            filepath, smiles, created_workspace_file = _resolve_rna_ligand_inputs(state.get("input_sequence", ""))
+            rnasmol_overrides = _extract_rnasmol_overrides(state.get("input_sequence", ""))
+            _update_state_with_ligand_inputs(state, filepath, smiles, created_workspace_file)
+            tool_args = {"filepath": filepath, "smiles": smiles}
+            tool_args.update(rnasmol_overrides)
             fallback_calls = [
                 {
                     "name": "score_rna_ligand_binding_with_rnasmol",
-                    "args": {"filepath": filepath, "smiles": smiles},
+                    "args": tool_args,
                 }
             ]
         elif _needs_iresfinder_prediction(user_text):
-            filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
+            filepath, created_workspace_file = _resolve_sequence_input(state.get("input_sequence", ""))
             state["current_filepath"] = filepath
             if created_workspace_file or filepath.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -2214,7 +2265,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             ]
         elif _needs_aso_region_plfold_accessibility(state.get("input_sequence", "")):
             raw_aso = state.get("input_sequence", "")
-            fp_aso, created_workspace_file = _resolve_rnastop_input(raw_aso)
+            fp_aso, created_workspace_file = _resolve_sequence_input(raw_aso)
             state["current_filepath"] = fp_aso
             if created_workspace_file or fp_aso.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [fp_aso]
@@ -2232,7 +2283,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
             ]
         elif _needs_rna_plfold_local_profile(state.get("input_sequence", "")):
             raw_pf = state.get("input_sequence", "")
-            fp_pf, created_workspace_file = _resolve_rnastop_input(raw_pf)
+            fp_pf, created_workspace_file = _resolve_sequence_input(raw_pf)
             state["current_filepath"] = fp_pf
             if created_workspace_file or fp_pf.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [fp_pf]
@@ -2240,7 +2291,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {"name": "predict_rna_local_accessibility_profile_vienna", "args": {"filepath": fp_pf}}
             ]
         elif _needs_rnastop_prediction(user_text):
-            filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
+            filepath, created_workspace_file = _resolve_sequence_input(state.get("input_sequence", ""))
             state["current_filepath"] = filepath
             if created_workspace_file or filepath.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -2251,7 +2302,7 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 }
             ]
         elif _needs_rna_gc_content_metric(user_text):
-            filepath, created_workspace_file = _resolve_rnastop_input(state.get("input_sequence", ""))
+            filepath, created_workspace_file = _resolve_sequence_input(state.get("input_sequence", ""))
             state["current_filepath"] = filepath
             if created_workspace_file or filepath.startswith("workspace/"):
                 state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -2689,7 +2740,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["ligand_smiles"] = str(tool_result.get("smiles", ""))
             state["rnasmol_probability"] = float(tool_result.get("probability_positive", 0.0))
             state["rnasmol_predicted_label"] = int(tool_result.get("predicted_label", 0))
+            state["rnasmol_raw_logits"] = tool_result.get("raw_logits", [])
             state["rnasmol_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
+            state["rnasmol_device"] = str(tool_result.get("device", ""))
+            state["rnasmol_dataset"] = str(tool_result.get("dataset", ""))
+            state["rnasmol_perturbation_type"] = str(tool_result.get("perturbation_type", ""))
+        # INTERFACE LOCK (v0.1.0) — RNASTOP result ingestion
+        # The keys read from tool_result must stay in sync with:
+        # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
+        # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
+        # - agent_core/tool_specs.py :: RNASTOPPredictionOutput
+        # - agent_core/state.py :: rnastop_* fields
+        # - docs/tools/predict_mrna_stability_with_rnastop.md
         elif tool_name == "predict_mrna_stability_with_rnastop":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -2699,11 +2761,17 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["rnastop_prediction_filepath"] = prediction_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [prediction_filepath]
             state["candidate_sequence"] = str(tool_result.get("used_sequence", tool_result.get("sequence", "")))
+            state["rnastop_sequence"] = str(tool_result.get("sequence", ""))
+            state["rnastop_used_sequence"] = str(tool_result.get("used_sequence", ""))
+            state["rnastop_structure"] = str(tool_result.get("structure", ""))
+            state["rnastop_loop_type"] = str(tool_result.get("loop_type", ""))
             state["rnastop_mean_reactivity"] = float(tool_result.get("mean_reactivity", 0.0))
             state["rnastop_mean_deg_mg_ph10"] = float(tool_result.get("mean_deg_mg_ph10", 0.0))
             state["rnastop_mean_deg_mg_50c"] = float(tool_result.get("mean_deg_mg_50c", 0.0))
+            state["rnastop_overall_stability"] = float(tool_result.get("overall_stability", 0.0))
             state["rnastop_mfe"] = float(tool_result.get("mfe", 0.0))
             state["rnastop_checkpoint_path"] = str(tool_result.get("checkpoint_path", ""))
+            state["rnastop_device"] = str(tool_result.get("device", ""))
             if not state.get("mfe"):
                 state["mfe"] = state["rnastop_mfe"]
         elif tool_name == "predict_putative_ires_with_iresfinder":
@@ -2882,10 +2950,13 @@ def critic_node(state: AgentState) -> AgentState:
             f"rnasmol_probability={rnasmol_probability}; "
             f"rnasmol_predicted_label={rnasmol_predicted_label}; "
             f"rnasmol_checkpoint_path={state.get('rnasmol_checkpoint_path', '')}; "
+            # INTERFACE LOCK (v0.1.0) — RNASTOP fields in critic summary
+            # Keep in sync with agent_core/state.py rnastop_* fields
             f"rnastop_prediction_filepath={state.get('rnastop_prediction_filepath', '')}; "
             f"rnastop_mean_reactivity={state.get('rnastop_mean_reactivity', 0.0)}; "
             f"rnastop_mean_deg_mg_ph10={state.get('rnastop_mean_deg_mg_ph10', 0.0)}; "
             f"rnastop_mean_deg_mg_50c={state.get('rnastop_mean_deg_mg_50c', 0.0)}; "
+            f"rnastop_overall_stability={state.get('rnastop_overall_stability', 0.0)}; "
             f"rnastop_mfe={state.get('rnastop_mfe', 0.0)}; "
             f"rnastop_checkpoint_path={state.get('rnastop_checkpoint_path', '')}; "
             f"iresfinder_result_tsv_filepath={state.get('iresfinder_result_tsv_filepath', '')}; "

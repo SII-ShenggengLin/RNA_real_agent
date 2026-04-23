@@ -1,5 +1,27 @@
 """RNAsmol microservice for RNA-ligand binding scoring."""
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 以下代码已经过与原始仓库 https://github.com/hongli-ma/RNAsmol 的逐行对照
+# 验证，并通过端到端测试确认可运行。自 2026-04-23 起，此接口冻结为正式
+# 版本。任何后续修改必须同步更新全部关联文件并重新跑通测试。
+#
+# 接口变更必须遵守的三条规则：
+#   1. 同步修改以下 6 个文件中的对应定义（禁止遗漏任何一处）：
+#        - microservices/rnasmol_service/main.py  ← 本文件
+#        - agent_core/tools.py
+#        - agent_core/tool_specs.py
+#        - agent_core/state.py
+#        - agent_core/nodes.py
+#        - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+#   2. 修改后必须重新运行 RNAsmol 端到端测试（curl / invoke），
+#      覆盖：基本推理、权重智能选择、device 切换、错误边界。
+#   3. 同步提升 INTERFACE LOCK 版本号（如 v0.2.0 → v0.3.0）。
+#
+# 违反上述规则的代码提交将被视为破坏性变更并回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 from __future__ import annotations
 
 import os
@@ -24,6 +46,9 @@ DEFAULT_CHECKPOINT_DIR = RNASMOL_ROOT / "saved_model"
 
 if str(RNASMOL_CODE_DIR) not in sys.path:
     sys.path.insert(0, str(RNASMOL_CODE_DIR))
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common_utils import _is_lfs_pointer  # noqa: E402
 
 from model import MCNN_GCN  # noqa: E402
 
@@ -88,6 +113,12 @@ VOCAB_PROTEIN = {
 
 
 class ScoreRequest(BaseModel):
+    """RNAsmol scoring request schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: RNAsmolScoreInput
+    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+    """
     rna_sequence: str = Field(
         ...,
         min_length=1,
@@ -102,6 +133,22 @@ class ScoreRequest(BaseModel):
         default=None,
         description="Optional checkpoint override. Defaults to service auto-discovery.",
     )
+    dataset: Optional[str] = Field(
+        default=None,
+        description=(
+            "Training dataset source hint for checkpoint auto-selection. "
+            "Examples: `pdb` (RCSB PDB), `robin` (ROBIN dataset). "
+            "When omitted the first available checkpoint is used."
+        ),
+    )
+    perturbation_type: Optional[str] = Field(
+        default=None,
+        description=(
+            "Data-perturbation strategy hint for checkpoint auto-selection. "
+            "Examples: `molperturbation`, `netperturbation`, `rnaperturbation`. "
+            "When omitted the first matching checkpoint is used."
+        ),
+    )
     device: Optional[str] = Field(
         default=None,
         description="Optional PyTorch device string such as `cuda:0` or `cpu`.",
@@ -109,6 +156,13 @@ class ScoreRequest(BaseModel):
 
 
 class ScoreResponse(BaseModel):
+    """RNAsmol scoring response schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
+    - agent_core/tool_specs.py :: RNAsmolScoreOutput
+    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+    """
     rna_sequence: str
     smiles: str
     probability_positive: float
@@ -116,14 +170,9 @@ class ScoreResponse(BaseModel):
     raw_logits: List[float]
     checkpoint_path: str
     device: str
+    dataset: Optional[str] = None
+    perturbation_type: Optional[str] = None
     model: str = "RNAsmol"
-
-
-def _is_lfs_pointer(path: Path) -> bool:
-    if not path.exists():
-        return False
-    prefix = path.read_bytes()[:64]
-    return prefix.startswith(b"version https://git-lfs.github.com/spec/v1")
 
 
 def _normalize_rna_sequence(raw_text: str) -> str:
@@ -301,6 +350,7 @@ def _build_single_example(smiles: str, rna_sequence: str) -> Data:
         x=torch.FloatTensor(node_features),
         edge_index=torch.LongTensor([edges_i, edges_j]),
         edge_attr=torch.FloatTensor(edge_attr),
+        y=torch.FloatTensor([0.0]),
         target=torch.LongTensor([target]),
     )
     data.batch = torch.zeros(data.x.size(0), dtype=torch.long)
@@ -326,36 +376,77 @@ def _resolve_device(device_name: Optional[str]) -> torch.device:
     return torch.device("cpu")
 
 
-def _resolve_checkpoint_path(checkpoint_path: Optional[str] = None) -> Path:
-    candidates = []
+def _resolve_checkpoint_path(
+    checkpoint_path: Optional[str] = None,
+    dataset: Optional[str] = None,
+    perturbation_type: Optional[str] = None,
+) -> Path:
+    """Resolve the RNAsmol checkpoint path with optional dataset / perturbation hints.
+
+    Resolution order:
+      1. Explicit ``checkpoint_path`` (if provided and valid).
+      2. Environment variable ``RNASMOL_CHECKPOINT_PATH``.
+      3. Smart matching by ``dataset`` and/or ``perturbation_type`` against files in
+         ``saved_model/*.pt``.
+      4. Fallback to the first available ``.pt`` file (alphabetical order).
+    """
+    # 1. Explicit user-provided checkpoint
     if checkpoint_path:
         requested = Path(checkpoint_path)
-        candidates.append(requested if requested.is_absolute() else PROJECT_ROOT / checkpoint_path)
-
-    env_checkpoint = os.environ.get("RNASMOL_CHECKPOINT_PATH")
-    if env_checkpoint:
-        env_path = Path(env_checkpoint)
-        candidates.append(env_path if env_path.is_absolute() else PROJECT_ROOT / env_checkpoint)
-
-    candidates.extend(sorted(DEFAULT_CHECKPOINT_DIR.glob("*.pt")))
-
-    for candidate in candidates:
+        candidate = requested if requested.is_absolute() else PROJECT_ROOT / checkpoint_path
         if candidate.exists() and candidate.is_file():
             if _is_lfs_pointer(candidate):
                 raise HTTPException(
-                    status_code=503,
+                    status_code=400,
                     detail=(
                         f"RNAsmol checkpoint `{candidate}` is still a Git LFS pointer. "
-                        "Copy the real `.pt` file to the Linux server before starting the service."
+                        "Copy the real `.pt` file to the Linux server before using it."
                     ),
                 )
+            return candidate
+        raise HTTPException(
+            status_code=400,
+            detail=f"Provided RNAsmol checkpoint not found: {candidate}",
+        )
+
+    # 2. Environment variable override
+    env_checkpoint = os.environ.get("RNASMOL_CHECKPOINT_PATH")
+    if env_checkpoint:
+        env_path = Path(env_checkpoint)
+        candidate = env_path if env_path.is_absolute() else PROJECT_ROOT / env_checkpoint
+        if candidate.exists() and candidate.is_file() and not _is_lfs_pointer(candidate):
+            return candidate
+
+    # 3. Smart matching by dataset / perturbation_type
+    all_checkpoints = sorted(DEFAULT_CHECKPOINT_DIR.glob("*.pt"))
+
+    if dataset or perturbation_type:
+        # Build match patterns: filenames follow  {dataset}_bothaug_{perturbation_type}.pt
+        patterns: list[str] = []
+        if dataset and perturbation_type:
+            patterns.append(f"{dataset}_bothaug_{perturbation_type}.pt")
+        if dataset:
+            patterns.append(f"{dataset}_bothaug_*.pt")
+        if perturbation_type:
+            patterns.append(f"*_{perturbation_type}.pt")
+
+        for pattern in patterns:
+            matched = sorted(DEFAULT_CHECKPOINT_DIR.glob(pattern))
+            for candidate in matched:
+                if candidate.exists() and candidate.is_file() and not _is_lfs_pointer(candidate):
+                    return candidate
+
+    # 4. Fallback: first available checkpoint
+    for candidate in all_checkpoints:
+        if candidate.exists() and candidate.is_file() and not _is_lfs_pointer(candidate):
             return candidate
 
     raise HTTPException(
         status_code=503,
         detail=(
-            "No RNAsmol checkpoint was found. Set `RNASMOL_CHECKPOINT_PATH` or place a `.pt` file under "
-            "`rna_agent_system/external_repos/RNAsmol/saved_model/`."
+            "No RNAsmol checkpoint was found. Set `RNASMOL_CHECKPOINT_PATH`, place a `.pt` file under "
+            "`rna_agent_system/external_repos/RNAsmol/saved_model/`, or provide an explicit "
+            "`checkpoint_path`."
         ),
     )
 
@@ -394,7 +485,17 @@ def health() -> Dict[str, object]:
 
 @app.post("/score", response_model=ScoreResponse)
 def score(payload: ScoreRequest) -> ScoreResponse:
-    checkpoint = _resolve_checkpoint_path(payload.checkpoint_path)
+    """RNAsmol scoring endpoint.
+
+    INTERFACE LOCK (v0.2.0): The request/response schema and inference pipeline
+    (SMILES → molecular graph + PPR + RNA sequence encoding → MCNN_GCN) are canonical.
+    Do not change without updating the wrapper, tool spec, and documentation.
+    """
+    checkpoint = _resolve_checkpoint_path(
+        payload.checkpoint_path,
+        payload.dataset,
+        payload.perturbation_type,
+    )
     device = _resolve_device(payload.device)
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
     data = _build_single_example(payload.smiles.strip(), rna_sequence).to(device)
@@ -413,4 +514,6 @@ def score(payload: ScoreRequest) -> ScoreResponse:
         raw_logits=[float(value) for value in logits[0].detach().cpu().tolist()],
         checkpoint_path=str(checkpoint),
         device=str(device),
+        dataset=payload.dataset,
+        perturbation_type=payload.perturbation_type,
     )
