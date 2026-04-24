@@ -150,6 +150,22 @@ class AgentState(TypedDict, total=False):
     evitar_output_filepath: str
     evitar_result_count: int
     evitar_command: str
+    evitar_strains_path: str
+    evitar_off_target: bool
+    evitar_p3utr_path: str
+    evitar_transcriptome_path: str
+    evitar_weight_path: str
+    evitar_sumtype: str
+    evitar_limitnum: int
+    evitar_repeatnum: int
+    evitar_pmcuff: int
+    evitar_umcuff: float
+    evitar_mircuff: float
+    evitar_maxgc: float
+    evitar_mingc: float
+    evitar_middlegc: float
+    evitar_allow_path: str
+    evitar_ban_path: str
     vienna_sirna_duplex_mfe: float
     vienna_aso_mean_unpaired: float
     vienna_aso_joint_unpaired: float

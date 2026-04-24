@@ -1199,7 +1199,39 @@ def _extract_named_filepath(text: str, labels: Tuple[str, ...], suffixes: Tuple[
     return match.group(1).strip()
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Evitar INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 design_sirna_with_evitar 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _resolve_evitar_input_filepath(raw_text: str, current_filepath: Optional[str] = None) -> str:
+    """Resolve an Evitar input FASTA path from user text or fall back to current_filepath.
+
+    Search order:
+        1. current_filepath if already present.
+        2. Named file references (input=..., genome=..., virus=..., fasta=...).
+        3. Any path with FASTA-like suffix.
+        4. Generate a FASTA from an inline RNA sequence.
+    """
+    if current_filepath:
+        return current_filepath
+    filepath = _extract_named_filepath(
+        raw_text, ("input", "genome", "virus", "fasta"), ("fa", "fasta", "fna")
+    )
+    if not filepath:
+        filepath = _extract_path_with_suffixes(raw_text, ("fasta", "fa", "fna", "txt", "seq"))
+    if not filepath:
+        filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="evitar_input")
+    return filepath
+
+
 def _build_evitar_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    """Extract all Evitar-relevant arguments from natural-language user text.
+
+    Mirrors the upstream Evitar CLI options so the agent can fully exploit
+    the tool's capabilities without hand-coding every permutation.
+    """
     lowered = raw_text.lower()
     args: dict[str, Any] = {
         "filepath": filepath,
@@ -1207,9 +1239,11 @@ def _build_evitar_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
         if any(key in lowered for key in ["predesign", "future virus", "future viruses", "未来"])
         else "existing",
         "predict": "CRISPR"
-        if any(key in lowered for key in ["cas13", "gRNA".lower(), "crispr"])
+        if any(key in lowered for key in ["cas13", "grna", "crispr"])
         else "rnaxs"
         if "rnaxs" in lowered
+        else "multifapredsi"
+        if "multifapredsi" in lowered
         else "predsi",
         "off_target": any(key in lowered for key in ["offtarget", "off-target", "脱靶"]),
     }
@@ -1217,9 +1251,72 @@ def _build_evitar_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
     if ncores is not None and ncores > 0:
         args["ncores"] = ncores
 
+    # --- File paths ---
     strains_path = _extract_named_filepath(raw_text, ("strains", "strain", "variants"), ("fa", "fasta", "fna"))
     if strains_path:
         args["strains_path"] = strains_path
+
+    p3utr_path = _extract_named_filepath(raw_text, ("p3utr", "3utr", "3'utr"), ("fa", "fasta", "fna", "txt"))
+    if p3utr_path:
+        args["p3utr_path"] = p3utr_path
+
+    transcriptome_path = _extract_named_filepath(
+        raw_text, ("transcriptome", "transcriptome_path", "transcriptome_path"), ("fa", "fasta", "fna", "txt")
+    )
+    if transcriptome_path:
+        args["transcriptome_path"] = transcriptome_path
+
+    weight_path = _extract_named_filepath(raw_text, ("weight", "weight_path"), ("txt", "tsv", "csv"))
+    if weight_path:
+        args["weight_path"] = weight_path
+
+    allow_path = _extract_named_filepath(raw_text, ("allow", "allowlist", "allow_list"), ("txt", "tsv", "csv"))
+    if allow_path:
+        args["allow_path"] = allow_path
+
+    ban_path = _extract_named_filepath(raw_text, ("ban", "banlist", "ban_list"), ("txt", "tsv", "csv"))
+    if ban_path:
+        args["ban_path"] = ban_path
+
+    # --- Summary / selection (predesign mode) ---
+    sumtype = _extract_string_setting(raw_text, ("sumtype", "sum_type", "algorithm"))
+    if sumtype and sumtype.lower() in {"sgar", "greedy"}:
+        args["sumtype"] = sumtype
+
+    limitnum = _extract_int_setting(raw_text, ("limitnum", "limit_num", "limit"))
+    if limitnum is not None and limitnum > 0:
+        args["limitnum"] = limitnum
+
+    repeatnum = _extract_int_setting(raw_text, ("repeatnum", "repeat_num", "repeat"))
+    if repeatnum is not None and repeatnum > 0:
+        args["repeatnum"] = repeatnum
+
+    # --- Off-target cutoffs ---
+    pmcuff = _extract_int_setting(raw_text, ("pmcuff", "pm_cuff", "perfect_match_cutoff"))
+    if pmcuff is not None and pmcuff >= 0:
+        args["pmcuff"] = pmcuff
+
+    umcuff = _extract_float_setting(raw_text, ("umcuff", "um_cuff", "unperfect_match_cutoff"))
+    if umcuff is not None and umcuff >= 0:
+        args["umcuff"] = umcuff
+
+    mircuff = _extract_float_setting(raw_text, ("mircuff", "mir_cuff", "mirna_cutoff"))
+    if mircuff is not None and mircuff >= 0:
+        args["mircuff"] = mircuff
+
+    # --- GC-content filters ---
+    maxgc = _extract_float_setting(raw_text, ("maxgc", "max_gc", "max_gc_content"))
+    if maxgc is not None and 0.0 <= maxgc <= 1.0:
+        args["maxgc"] = maxgc
+
+    mingc = _extract_float_setting(raw_text, ("mingc", "min_gc", "min_gc_content"))
+    if mingc is not None and 0.0 <= mingc <= 1.0:
+        args["mingc"] = mingc
+
+    middlegc = _extract_float_setting(raw_text, ("middlegc", "middle_gc", "middle_gc_content"))
+    if middlegc is not None and 0.0 <= middlegc <= 1.0:
+        args["middlegc"] = middlegc
+
     return args
 
 
@@ -1729,12 +1826,8 @@ def sirna_specialist_node(state: AgentState) -> AgentState:
     duplex_mode = _needs_sirna_duplex_vienna(user_text) and not evitar_mode
     if not filepath:
         if evitar_mode:
-            filepath = _extract_named_filepath(raw_text, ("input", "genome", "virus", "fasta"), ("fa", "fasta", "fna"))
-            if not filepath:
-                filepath = _extract_path_with_suffixes(raw_text, ("fasta", "fa", "fna", "txt", "seq"))
-            if not filepath:
-                filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="evitar_input")
-                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+            filepath = _resolve_evitar_input_filepath(raw_text, current_filepath=None)
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
         elif not duplex_mode:
             filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="sirna")
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]
@@ -1845,18 +1938,9 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
     # Defensive fallback: if router misroutes an Evitar request to mRNA,
     # force it back onto the Evitar siRNA tool path.
     if _needs_evitar_mode(user_text):
-        filepath = state.get("current_filepath")
-        if not filepath:
-            filepath = _extract_named_filepath(
-                raw_text,
-                ("input", "genome", "virus", "fasta"),
-                ("fa", "fasta", "fna"),
-            )
-            if not filepath:
-                filepath = _extract_path_with_suffixes(raw_text, ("fasta", "fa", "fna", "txt", "seq"))
-            if not filepath:
-                filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="evitar_input")
-                state["workspace_files"] = state.get("workspace_files", []) + [filepath]
+        filepath = _resolve_evitar_input_filepath(raw_text, current_filepath=state.get("current_filepath"))
+        if filepath != state.get("current_filepath"):
+            state["workspace_files"] = state.get("workspace_files", []) + [filepath]
             state["current_filepath"] = filepath
         evitar_args = _build_evitar_tool_args(filepath, raw_text)
         state["active_specialist"] = "sirna_specialist"
@@ -2516,6 +2600,23 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["evitar_output_filepath"] = output_filepath
             state["evitar_result_count"] = int(tool_result.get("result_count", 0))
             state["evitar_command"] = str(tool_result.get("command", ""))
+            # Extended upstream CLI parameters (for auditability and downstream reuse)
+            state["evitar_strains_path"] = str(tool_result.get("strains_path", ""))
+            state["evitar_off_target"] = bool(tool_result.get("off_target", False))
+            state["evitar_p3utr_path"] = str(tool_result.get("p3utr_path", ""))
+            state["evitar_transcriptome_path"] = str(tool_result.get("transcriptome_path", ""))
+            state["evitar_weight_path"] = str(tool_result.get("weight_path", ""))
+            state["evitar_sumtype"] = str(tool_result.get("sumtype", ""))
+            state["evitar_limitnum"] = int(tool_result.get("limitnum", 0))
+            state["evitar_repeatnum"] = int(tool_result.get("repeatnum", 0))
+            state["evitar_pmcuff"] = int(tool_result.get("pmcuff", 0))
+            state["evitar_umcuff"] = float(tool_result.get("umcuff", 0.0))
+            state["evitar_mircuff"] = float(tool_result.get("mircuff", 0.0))
+            state["evitar_maxgc"] = float(tool_result.get("maxgc", 0.0))
+            state["evitar_mingc"] = float(tool_result.get("mingc", 0.0))
+            state["evitar_middlegc"] = float(tool_result.get("middlegc", 0.0))
+            state["evitar_allow_path"] = str(tool_result.get("allow_path", ""))
+            state["evitar_ban_path"] = str(tool_result.get("ban_path", ""))
         elif tool_name == "score_crispr_off_target_with_crisot":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -3107,6 +3208,21 @@ def critic_node(state: AgentState) -> AgentState:
             f"evitar_output_filepath={state.get('evitar_output_filepath', '')}; "
             f"evitar_result_count={state.get('evitar_result_count', 0)}; "
             f"evitar_command={state.get('evitar_command', '')}; "
+            f"evitar_off_target={state.get('evitar_off_target', False)}; "
+            f"evitar_p3utr_path={state.get('evitar_p3utr_path', '')}; "
+            f"evitar_transcriptome_path={state.get('evitar_transcriptome_path', '')}; "
+            f"evitar_weight_path={state.get('evitar_weight_path', '')}; "
+            f"evitar_sumtype={state.get('evitar_sumtype', '')}; "
+            f"evitar_limitnum={state.get('evitar_limitnum', 0)}; "
+            f"evitar_repeatnum={state.get('evitar_repeatnum', 0)}; "
+            f"evitar_pmcuff={state.get('evitar_pmcuff', 0)}; "
+            f"evitar_umcuff={state.get('evitar_umcuff', 0.0)}; "
+            f"evitar_mircuff={state.get('evitar_mircuff', 0.0)}; "
+            f"evitar_maxgc={state.get('evitar_maxgc', 0.0)}; "
+            f"evitar_mingc={state.get('evitar_mingc', 0.0)}; "
+            f"evitar_middlegc={state.get('evitar_middlegc', 0.0)}; "
+            f"evitar_allow_path={state.get('evitar_allow_path', '')}; "
+            f"evitar_ban_path={state.get('evitar_ban_path', '')}; "
             f"vienna_sirna_duplex_mfe={state.get('vienna_sirna_duplex_mfe', 0.0)}; "
             f"vienna_aso_mean_unpaired={state.get('vienna_aso_mean_unpaired', 0.0)}; "
             f"vienna_aso_joint_unpaired={state.get('vienna_aso_joint_unpaired', 0.0)}; "

@@ -1,4 +1,18 @@
-"""Evitar microservice wrapper for siRNA/Cas13 design."""
+"""Evitar microservice wrapper for siRNA/Cas13 design.
+
+INTERFACE LOCK (v0.2.0): This microservice's request/response schemas are the
+canonical contract. Any addition/removal must be synchronized with:
+- agent_core/tools.py :: EvitarDesignInput / design_sirna_with_evitar
+- agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
+- agent_core/state.py :: evitar_* fields
+- agent_core/nodes.py :: _build_evitar_tool_args / tool_execution_node Evitar branch
+- docs/tools/design_sirna_with_evitar.md
+
+Deployment notes:
+    - CRISPR mode (--predict CRISPR) requires R (>=3.4) runtime on server.
+    - Off-target analysis requires user-provided transcriptome / 3'UTR FASTA.
+    - Tissue-specific weights are available under Evitar/GenomeData/weightedgene/.
+"""
 
 from __future__ import annotations
 
@@ -149,6 +163,14 @@ class EvitarDesignRequest(BaseModel):
     maxgc: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     mingc: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     middlegc: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    allow_path: Optional[str] = Field(
+        default=None,
+        description="Text file with one allowed siRNA per line (no header).",
+    )
+    ban_path: Optional[str] = Field(
+        default=None,
+        description="Text file with one banned siRNA per line (no header).",
+    )
 
 
 class EvitarDesignResponse(BaseModel):
@@ -194,8 +216,8 @@ def design_with_evitar(payload: EvitarDesignRequest) -> EvitarDesignResponse:
         raise HTTPException(status_code=400, detail="`mode` must be `predesign` or omitted/`existing`.")
 
     predict = (payload.predict or "predsi").strip()
-    if predict not in {"predsi", "rnaxs", "CRISPR"}:
-        raise HTTPException(status_code=400, detail="`predict` must be one of: predsi, rnaxs, CRISPR.")
+    if predict not in {"predsi", "rnaxs", "CRISPR", "multifapredsi"}:
+        raise HTTPException(status_code=400, detail="`predict` must be one of: predsi, rnaxs, CRISPR, multifapredsi.")
 
     _SERVICE_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     if payload.output_filename:
@@ -208,12 +230,13 @@ def design_with_evitar(payload: EvitarDesignRequest) -> EvitarDesignResponse:
     if mode == "predesign":
         cmd.extend(["--mode", "predesign"])
     else:
-        if not payload.strains_path:
-            raise HTTPException(status_code=400, detail="`strains_path` is required for existing-virus mode.")
-        strains_path = _resolve_repo_path(payload.strains_path)
-        if not strains_path.exists():
-            raise HTTPException(status_code=400, detail=f"Strains FASTA not found: {strains_path}")
-        cmd.extend(["--strains", str(strains_path)])
+        # existing-virus mode: strains_path is optional for single-virus design,
+        # but required if user wants cross-strain coverage.
+        if payload.strains_path:
+            strains_path = _resolve_repo_path(payload.strains_path)
+            if not strains_path.exists():
+                raise HTTPException(status_code=400, detail=f"Strains FASTA not found: {strains_path}")
+            cmd.extend(["--strains", str(strains_path)])
 
     cmd.extend(["--predict", predict, "--ncores", str(payload.ncores)])
     if payload.off_target:
@@ -243,6 +266,17 @@ def design_with_evitar(payload: EvitarDesignRequest) -> EvitarDesignResponse:
     for flag, value in numeric_pairs:
         if value is not None:
             cmd.extend([flag, str(value)])
+
+    list_file_pairs = [
+        ("--allow", payload.allow_path),
+        ("--ban", payload.ban_path),
+    ]
+    for flag, value in list_file_pairs:
+        if value:
+            resolved = _resolve_repo_path(value)
+            if not resolved.exists():
+                raise HTTPException(status_code=400, detail=f"List file not found for {flag}: {resolved}")
+            cmd.extend([flag, str(resolved)])
 
     process = subprocess.run(
         cmd,

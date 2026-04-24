@@ -41,6 +41,23 @@ class EvitarDesignOutput(_OutBase):
     top_results: List[Dict[str, Any]]
     model: str
     command: str
+    # Extended fields for full upstream CLI transparency
+    strains_path: str = ""
+    off_target: bool = False
+    p3utr_path: str = ""
+    transcriptome_path: str = ""
+    weight_path: str = ""
+    sumtype: str = ""
+    limitnum: int = 0
+    repeatnum: int = 0
+    pmcuff: int = 0
+    umcuff: float = 0.0
+    mircuff: float = 0.0
+    maxgc: float = 0.0
+    mingc: float = 0.0
+    middlegc: float = 0.0
+    allow_path: str = ""
+    ban_path: str = ""
 
 
 class ViennaFoldOutput(_OutBase):
@@ -521,21 +538,49 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # Evitar 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/evitar_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/nodes.py
+    #   - docs/tools/design_sirna_with_evitar.md
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # 本次修改的基准日期：2026-04-24。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "design_sirna_with_evitar": ToolSpec(
         identity="design_sirna_with_evitar",
         display_name="Evitar siRNA/Cas13 design",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/dingyaozhang/Evitar",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8016/design",
-        capabilities=["Design siRNA/Cas13 guides via Evitar CLI wrapper."],
-        limitations=["Upstream binaries are Linux-only (as documented in repo guide)."],
-        task_tags=["sirna_design", "cas13_guide_design"],
+        capabilities=[
+            "Design siRNA/Cas13 guides via Evitar CLI wrapper.",
+            "Support existing-virus mode (with optional strains) and future-virus predesign mode.",
+            "Off-target analysis with transcriptome / 3'UTR / tissue-specific gene weights.",
+            "GC-content filtering, allow/ban lists, and SGAR/greedy selection algorithms.",
+        ],
+        limitations=[
+            "Upstream binaries are Linux-only (as documented in repo guide).",
+            "CRISPR mode (--predict CRISPR) requires R (>=3.4) runtime installed on server; will fail if Rscript is missing.",
+            "Off-target analysis requires pre-built transcriptome and 3'UTR FASTA files (not bundled). Run GenomeData.sh to generate.",
+            "Real tissue-specific off-target weights require GTEx-derived gene weight files (weightedgene/ already bundled).",
+        ],
+        task_tags=["sirna_design", "cas13_guide_design", "antiviral_rna_design"],
         requires=[
             ToolDependency(name="Linux", detail="Evitar upstream binaries are Linux executables"),
             ToolDependency(name="Evitar microservice", detail="microservices/evitar_service (port 8016)"),
+            ToolDependency(name="Perl", detail="Evitar.pl requires Perl 5 runtime"),
+            ToolDependency(name="ViennaRNA", detail="RNAfold / RNAplfold / RNAduplex bundled in Evitar/bin/"),
+            ToolDependency(name="R (optional)", detail="Required only for --predict CRISPR mode (R >= 3.4)"),
+            ToolDependency(name="MUSCLE", detail="Bundled in Evitar/bin/ for predesign mode"),
         ],
-        produces=["output_filepath", "top_results"],
+        produces=["output_filepath", "top_results", "command"],
         input_model=tool_wrappers.EvitarDesignInput,
         output_model=EvitarDesignOutput,
         status=ToolStatus.partial,

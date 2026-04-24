@@ -147,8 +147,23 @@ class BlastnSearchInput(BaseModel):
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Evitar INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 design_sirna_with_evitar 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class EvitarDesignInput(BaseModel):
-    """Input schema for Evitar siRNA/Cas13 design tool."""
+    """Input schema for Evitar siRNA/Cas13 design tool.
+
+    Maps to the upstream Evitar Perl CLI (`external_repos/Evitar/Evitar.pl`).
+    All optional fields default to None / False so the upstream defaults are used.
+
+    Deployment notes:
+        - CRISPR mode requires R (>=3.4) runtime on the server.
+        - Off-target analysis requires user-provided transcriptome / 3'UTR FASTA.
+        - Tissue-specific weights are available under Evitar/GenomeData/weightedgene/.
+    """
 
     filepath: str = Field(
         ...,
@@ -156,15 +171,15 @@ class EvitarDesignInput(BaseModel):
     )
     mode: str = Field(
         default="existing",
-        description="Evitar mode: `existing` or `predesign`.",
+        description="Evitar mode: `existing` (single/few-virus design) or `predesign` (future-virus design).",
     )
     predict: str = Field(
         default="predsi",
-        description="Evitar predict option: `predsi`, `rnaxs`, or `CRISPR`.",
+        description="Evitar predict option: `predsi`, `rnaxs`, `CRISPR`, or `multifapredsi`.",
     )
     strains_path: Optional[str] = Field(
         default=None,
-        description="Required for existing-virus mode. FASTA path with multiple strains.",
+        description="FASTA path with multiple strains. Optional for single-virus existing mode; useful for cross-strain coverage.",
     )
     off_target: bool = Field(
         default=False,
@@ -173,7 +188,80 @@ class EvitarDesignInput(BaseModel):
     ncores: int = Field(
         default=1,
         ge=1,
+        le=128,
         description="Number of threads for Evitar.",
+    )
+    # ── Off-target analysis files ──
+    p3utr_path: Optional[str] = Field(
+        default=None,
+        description="FASTA file of 3'UTR regions of the transcriptome (required when off_target=True).",
+    )
+    transcriptome_path: Optional[str] = Field(
+        default=None,
+        description="FASTA file of the transcriptome (required when off_target=True).",
+    )
+    weight_path: Optional[str] = Field(
+        default=None,
+        description="Gene-weight file for tissue-specific off-target evaluation (three columns: ENSEMBL ID, Gene Symbol, weight).",
+    )
+    # ── Summary / selection parameters (predesign mode) ──
+    sumtype: Optional[str] = Field(
+        default=None,
+        description="Selection algorithm for predesign mode: `SGAR` (default upstream) or `greedy`.",
+    )
+    limitnum: Optional[int] = Field(
+        default=None,
+        ge=1,
+        description="Maximum number of siRNAs/Cas13 gRNAs to output in predesign mode. Default upstream is 50.",
+    )
+    repeatnum: Optional[int] = Field(
+        default=None,
+        ge=1,
+        description="Multi-siRNA penalty factor for predesign mode. Default upstream is 2.",
+    )
+    # ── Off-target cutoffs ──
+    pmcuff: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Perfect-match off-target cutoff. Default upstream is 1.",
+    )
+    umcuff: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        description="Imperfect-match off-target score cutoff. Default upstream is 20.",
+    )
+    mircuff: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        description="miRNA-like off-target score cutoff. Default upstream is 20000.",
+    )
+    # ── GC-content filters ──
+    maxgc: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Maximal GC-content cutoff for siRNA prediction. Default upstream is 0.6.",
+    )
+    mingc: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Minimal GC-content cutoff for siRNA prediction. Default upstream is 0.25.",
+    )
+    middlegc: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Middle GC-content cutoff (suboptimal threshold). Default upstream is 0.55.",
+    )
+    # ── Allow / Ban lists ──
+    allow_path: Optional[str] = Field(
+        default=None,
+        description="Text file (one sequence per line, no header) of experimentally verified siRNAs to force-include.",
+    )
+    ban_path: Optional[str] = Field(
+        default=None,
+        description="Text file (one sequence per line, no header) of siRNAs to exclude.",
     )
     service_url: str = Field(
         default="http://127.0.0.1:8016/design",
@@ -584,22 +672,62 @@ def design_sirna_with_evitar(
     strains_path: Optional[str] = None,
     off_target: bool = False,
     ncores: int = 1,
+    p3utr_path: Optional[str] = None,
+    transcriptome_path: Optional[str] = None,
+    weight_path: Optional[str] = None,
+    sumtype: Optional[str] = None,
+    limitnum: Optional[int] = None,
+    repeatnum: Optional[int] = None,
+    pmcuff: Optional[int] = None,
+    umcuff: Optional[float] = None,
+    mircuff: Optional[float] = None,
+    maxgc: Optional[float] = None,
+    mingc: Optional[float] = None,
+    middlegc: Optional[float] = None,
+    allow_path: Optional[str] = None,
+    ban_path: Optional[str] = None,
     service_url: str = "http://127.0.0.1:8016/design",
 ) -> dict[str, Any]:
     """Design siRNAs/Cas13 guides via the Evitar microservice.
 
+    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
+    - agent_core/state.py :: evitar_* fields
+    - agent_core/nodes.py :: _build_evitar_tool_args / tool_execution_node Evitar branch
+    - microservices/evitar_service/main.py :: EvitarDesignRequest / EvitarDesignResponse
+    - docs/tools/design_sirna_with_evitar.md
+
     Args:
         filepath: Path to an input FASTA file.
             IMPORTANT: pass a filepath rather than embedding long sequence text.
-        mode: `existing` or `predesign`.
-        predict: Evitar predictor `predsi`, `rnaxs`, or `CRISPR`.
-        strains_path: FASTA path required for `existing` mode.
+        mode: `existing` (single/few-virus) or `predesign` (future-virus).
+        predict: Evitar predictor: `predsi`, `rnaxs`, `CRISPR`, or `multifapredsi`.
+            NOTE: `CRISPR` requires R (>=3.4) installed on the server.
+        strains_path: FASTA path with multiple strains (optional for single-virus existing mode).
         off_target: Enable Evitar off-target analysis.
+            NOTE: meaningful results require real transcriptome / 3'UTR FASTA files.
         ncores: Number of threads passed through to Evitar.
+        p3utr_path: 3'UTR FASTA for off-target evaluation.
+        transcriptome_path: Transcriptome FASTA for off-target evaluation.
+        weight_path: Gene-weight file for tissue-specific off-target scoring.
+            NOTE: run GenomeData.sh to generate transcripts.fa / utrs.fa if missing.
+        sumtype: Selection algorithm for predesign: `SGAR` or `greedy`.
+        limitnum: Max siRNAs/Cas13 gRNAs to output in predesign mode.
+        repeatnum: Multi-siRNA penalty factor for predesign mode.
+        pmcuff: Perfect-match off-target cutoff.
+        umcuff: Imperfect-match off-target score cutoff.
+        mircuff: miRNA-like off-target score cutoff.
+        maxgc: Maximal GC-content cutoff.
+        mingc: Minimal GC-content cutoff.
+        middlegc: Middle GC-content cutoff (suboptimal threshold).
+        allow_path: File of verified siRNAs to force-include.
+        ban_path: File of siRNAs to exclude.
         service_url: REST endpoint for the Evitar microservice.
 
     Returns:
-        Dict containing output filepath, candidate count, and top rows.
+        Dict containing output filepath, candidate count, top rows, and echoed
+        upstream parameters for auditability.
 
     Raises:
         ValueError: If Evitar service request fails or returns invalid fields.
@@ -613,6 +741,34 @@ def design_sirna_with_evitar(
     }
     if strains_path:
         request_payload["strains_path"] = strains_path
+    if p3utr_path:
+        request_payload["p3utr_path"] = p3utr_path
+    if transcriptome_path:
+        request_payload["transcriptome_path"] = transcriptome_path
+    if weight_path:
+        request_payload["weight_path"] = weight_path
+    if sumtype:
+        request_payload["sumtype"] = sumtype
+    if limitnum is not None:
+        request_payload["limitnum"] = limitnum
+    if repeatnum is not None:
+        request_payload["repeatnum"] = repeatnum
+    if pmcuff is not None:
+        request_payload["pmcuff"] = pmcuff
+    if umcuff is not None:
+        request_payload["umcuff"] = umcuff
+    if mircuff is not None:
+        request_payload["mircuff"] = mircuff
+    if maxgc is not None:
+        request_payload["maxgc"] = maxgc
+    if mingc is not None:
+        request_payload["mingc"] = mingc
+    if middlegc is not None:
+        request_payload["middlegc"] = middlegc
+    if allow_path:
+        request_payload["allow_path"] = allow_path
+    if ban_path:
+        request_payload["ban_path"] = ban_path
 
     try:
         response = requests.post(
@@ -646,6 +802,23 @@ def design_sirna_with_evitar(
             "top_results": payload.get("top_results", []),
             "model": str(payload.get("model", "Evitar")),
             "command": str(payload.get("command", "")),
+            # Echo upstream parameters back for auditability / state tracking
+            "strains_path": str(strains_path or ""),
+            "off_target": bool(off_target),
+            "p3utr_path": str(p3utr_path or ""),
+            "transcriptome_path": str(transcriptome_path or ""),
+            "weight_path": str(weight_path or ""),
+            "sumtype": str(sumtype or ""),
+            "limitnum": int(limitnum) if limitnum is not None else 0,
+            "repeatnum": int(repeatnum) if repeatnum is not None else 0,
+            "pmcuff": int(pmcuff) if pmcuff is not None else 0,
+            "umcuff": float(umcuff) if umcuff is not None else 0.0,
+            "mircuff": float(mircuff) if mircuff is not None else 0.0,
+            "maxgc": float(maxgc) if maxgc is not None else 0.0,
+            "mingc": float(mingc) if mingc is not None else 0.0,
+            "middlegc": float(middlegc) if middlegc is not None else 0.0,
+            "allow_path": str(allow_path or ""),
+            "ban_path": str(ban_path or ""),
         }
     except requests.RequestException as exc:
         _raise_service_error(exc, "Evitar")
