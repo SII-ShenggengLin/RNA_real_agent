@@ -91,6 +91,7 @@ class TestRiboDiffusionRequestDefaults(unittest.TestCase):
         req = RiboDiffusionRequest(pdb_path="test.pdb")
         self.assertEqual(req.n_samples, 1)
         self.assertEqual(req.device, 0)
+        self.assertEqual(req.checkpoint_name, "exp_inf")
 
         resp = RiboDiffusionResponse(
             input_pdb_path="test.pdb",

@@ -356,11 +356,35 @@ class RhoDesignOutput(_OutBase):
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/ribodiffusion_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class RiboDiffusionOutput(_OutBase):
+    """RiboDiffusion tertiary inverse folding output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: design_rna_inverse_fold_with_ribodiffusion (wrapper return dict)
+    - microservices/ribodiffusion_service/main.py :: RiboDiffusionResponse
+    - agent_core/nodes.py :: tool_execution_node RiboDiffusion branch
+    - agent_core/state.py :: ribodiffusion_* fields
+    """
+
     input_pdb_filepath: str
     output_filepath: str
     predicted_sequence: str
     recovery_rate: float = 0.0
+    checkpoint_path: str
     model: str
 
 
@@ -851,12 +875,13 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "design_rna_inverse_fold_with_ribodiffusion": ToolSpec(
         identity="design_rna_inverse_fold_with_ribodiffusion",
         display_name="RiboDiffusion tertiary inverse folding",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/ml4bio/RiboDiffusion",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8021/design/from-pdb",
         capabilities=[
             "Sample RNA sequences conditioned on PDB tertiary structure via diffusion (inverse folding).",
+            "Supports checkpoint selection (exp_inf / exp_inf_large) for diversity control.",
         ],
         limitations=[
             "Requires GPU + upstream checkpoint under external_repos/RiboDiffusion/ckpts/; "
@@ -867,7 +892,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             ToolDependency(name="GPU", detail="RiboDiffusion inference"),
             ToolDependency(name="RiboDiffusion microservice", detail="microservices/ribodiffusion_service (port 8021)"),
         ],
-        produces=["output_filepath", "predicted_sequence", "recovery_rate"],
+        produces=["output_filepath", "predicted_sequence", "recovery_rate", "checkpoint_path"],
         input_model=tool_wrappers.RiboDiffusionInput,
         output_model=RiboDiffusionOutput,
         status=ToolStatus.partial,

@@ -5,8 +5,9 @@ set -e
 # After `conda env create -f environment.yml`:
 #   conda activate ribodiffusion_service_env
 #   bash install_pyg_torch_extensions.sh
-# Place checkpoint:
+# Place checkpoints:
 #   rna_agent_system/external_repos/RiboDiffusion/ckpts/exp_inf.pth
+#   rna_agent_system/external_repos/RiboDiffusion/ckpts/exp_inf_large.pth
 # (see https://github.com/ml4bio/RiboDiffusion README for download links.)
 #
 # Start:

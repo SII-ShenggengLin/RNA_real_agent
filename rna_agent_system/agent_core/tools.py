@@ -1930,6 +1930,20 @@ class RhoDesignInput(BaseModel):
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/ribodiffusion_service/main.py
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class RiboDiffusionInput(BaseModel):
     """Input schema for RiboDiffusion tertiary inverse folding."""
 
@@ -1953,6 +1967,10 @@ class RiboDiffusionInput(BaseModel):
         description="Enable dynamic thresholding (upstream eval flag).",
     )
     deterministic: bool = Field(default=True, description="Fixed random seed when True.")
+    checkpoint_name: str = Field(
+        default="exp_inf",
+        description="Checkpoint basename without extension. Supported: 'exp_inf' (default), 'exp_inf_large'.",
+    )
     device: int = Field(default=0, ge=0, description="CUDA device index for the subprocess.")
 
 
@@ -3260,6 +3278,7 @@ def design_rna_inverse_fold_with_ribodiffusion(
     cond_scale: float = -1.0,
     dynamic_threshold: bool = False,
     deterministic: bool = True,
+    checkpoint_name: str = "exp_inf",
     device: int = 0,
 ) -> dict[str, Any]:
     """Generate RNA sequence(s) from a PDB structure using the RiboDiffusion microservice.
@@ -3272,6 +3291,7 @@ def design_rna_inverse_fold_with_ribodiffusion(
         cond_scale: Optional classifier-free guidance scale; -1 keeps upstream default.
         dynamic_threshold: Whether to enable dynamic thresholding during sampling.
         deterministic: Whether upstream fixes the RNG seed.
+        checkpoint_name: Checkpoint basename without extension (`exp_inf` or `exp_inf_large`).
         device: CUDA device index passed via CUDA_VISIBLE_DEVICES.
 
     Returns:
@@ -3287,6 +3307,7 @@ def design_rna_inverse_fold_with_ribodiffusion(
                 "cond_scale": cond_scale,
                 "dynamic_threshold": dynamic_threshold,
                 "deterministic": deterministic,
+                "checkpoint_name": checkpoint_name,
                 "device": device,
             },
             timeout=7200,

@@ -545,8 +545,8 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | Agent 工具 | `design_rna_inverse_fold_with_ribodiffusion(pdb_filepath, ...)` |
 
 **关键注意事项**：
-- checkpoint：`external_repos/RiboDiffusion/ckpts/exp_inf.pth`（官方 README 提供下载链接；可选 `exp_inf_large.pth` 自行替换同名或改上游代码）
-- 上游通过子进程在项目根目录运行 `python main.py --PDB_file ...`；权重路径在 `run_lib.py` 中写死为 `./ckpts/exp_inf.pth`
+- checkpoint：`external_repos/RiboDiffusion/ckpts/exp_inf.pth`（默认）和 `exp_inf_large.pth`（更多序列多样性）；通过 `checkpoint_name` 参数切换，无需手动替换文件
+- 上游通过子进程在项目根目录运行 `python main.py --PDB_file ...`；权重路径通过 `--config.eval.model_path` 动态注入，已补丁化 `run_lib.py` 支持覆盖
 - 未提供 PDB 路径时，规则路由默认示例：`external_repos/RiboDiffusion/example/R1107.pdb`
 - **PyG 扩展**：若 `pip` 拉取源码包构建失败，先确保 `pip install -U setuptools wheel`，再运行 `install_pyg_torch_extensions.sh`（脚本含 `--no-build-isolation`、`--prefer-binary`，并在 `cu117` 无合适 wheel 时回试 `cu116` 索引，与上游 `pt113cu116` 常见组合一致）。
 - **验收**：已在部署服务器上对 `GET /health`、`POST /design/from-pdb`（示例 `R1107.pdb`）及 Streamlit 自然语言触发完成验证（2026-04，路径见 §8.1）。
@@ -700,11 +700,15 @@ curl -sS -X POST http://127.0.0.1:8019/blastn \
   -H 'Content-Type: application/json' \
   -d '{"query_filepath":"rna_agent_system/workspace/blast_test_query.fa","subject_fasta_path":"rna_agent_system/workspace/blast_test_subject.fa","task":"blastn-short","evalue":10}' | python3 -m json.tool
 
-# RiboDiffusion（需 GPU + ckpts/exp_inf.pth；建议在仓库根目录下执行，pdb_path 用绝对路径最稳妥）
+# RiboDiffusion（需 GPU + ckpts/exp_inf.pth 或 exp_inf_large.pth；建议在仓库根目录下执行，pdb_path 用绝对路径最稳妥）
 curl -sS http://127.0.0.1:8021/health | python3 -m json.tool
 curl -sS -X POST http://127.0.0.1:8021/design/from-pdb \
   -H 'Content-Type: application/json' \
   -d '{"pdb_path":"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RiboDiffusion/example/R1107.pdb","n_samples":1,"sampling_steps":50}' | python3 -m json.tool
+# 使用 exp_inf_large 获取更高多样性
+curl -sS -X POST http://127.0.0.1:8021/design/from-pdb \
+  -H 'Content-Type: application/json' \
+  -d '{"pdb_path":"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RiboDiffusion/example/R1107.pdb","checkpoint_name":"exp_inf_large","cond_scale":0.4}' | python3 -m json.tool
 ```
 
 ### 9.3 Streamlit 自然语言测试用例
@@ -721,7 +725,7 @@ curl -sS -X POST http://127.0.0.1:8021/design/from-pdb \
 | GC 含量 | `gc content 计算 GC 含量` + RNA 序列或 `workspace/*.fa` 路径 |
 | 未配对比例 | `unpaired fraction 未配对比例 structure=(((....))))` 或 `workspace/*.ss` 点括号文件 |
 | BLAST 搜索 | `blastn 比对 subject_fasta=workspace/test.fa 序列 ATGCATGCATGC` |
-| RiboDiffusion 逆折叠 | `ribodiffusion 扩散逆折叠 PDB=workspace/my.pdb n_samples=3`（需 **8021** 已启动；可选默认示例关键词 `ribodiffusion 三级结构逆折叠`） |
+| RiboDiffusion 逆折叠 | `ribodiffusion 扩散逆折叠 PDB=workspace/my.pdb n_samples=3 checkpoint_name=exp_inf_large`（需 **8021** 已启动；可选默认示例关键词 `ribodiffusion 三级结构逆折叠`） |
 
 ---
 

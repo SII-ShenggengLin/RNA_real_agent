@@ -650,6 +650,21 @@ def _needs_ribodiffusion_design(text: str) -> bool:
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/ribodiffusion_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py  ← 本文件
+#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 def _build_ribodiffusion_tool_args(raw_text: str) -> dict[str, Any]:
     pdb_path = _extract_path_with_suffixes(raw_text, ("pdb", "cif"))
     if not pdb_path:
@@ -670,6 +685,9 @@ def _build_ribodiffusion_tool_args(raw_text: str) -> dict[str, Any]:
     det = _extract_bool_setting(raw_text, ("deterministic",))
     if det is not None:
         args["deterministic"] = det
+    ckpt = _extract_string_setting(raw_text, ("checkpoint_name", "checkpoint"))
+    if ckpt is not None:
+        args["checkpoint_name"] = ckpt
     dev = _extract_int_setting(raw_text, ("cuda_device", "gpu_id"))
     if dev is not None and dev >= 0:
         args["device"] = dev
@@ -3038,6 +3056,10 @@ def tool_execution_node(state: AgentState) -> AgentState:
             stderr_filepath = str(tool_result.get("stderr_filepath", ""))
             if stderr_filepath:
                 state["workspace_files"] = state.get("workspace_files", []) + [stderr_filepath]
+
+            ckpt_path = str(tool_result.get("checkpoint_path", ""))
+            if ckpt_path:
+                state["ribodiffusion_checkpoint_path"] = ckpt_path
 
             state["candidate_sequence"] = str(tool_result.get("predicted_sequence", ""))
             if "recovery_rate" in tool_result:

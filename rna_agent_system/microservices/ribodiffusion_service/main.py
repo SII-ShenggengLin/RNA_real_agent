@@ -23,7 +23,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 REPO_ROOT = PROJECT_ROOT.parent
 _resolver = PathResolver(PROJECT_ROOT, REPO_ROOT)
 RIBODIFFUSION_ROOT = PROJECT_ROOT / "external_repos" / "RiboDiffusion"
-DEFAULT_CHECKPOINT = RIBODIFFUSION_ROOT / "ckpts" / "exp_inf.pth"
+CKPT_DIR = RIBODIFFUSION_ROOT / "ckpts"
+DEFAULT_CHECKPOINT_NAME = "exp_inf"
 SERVICE_WORKDIR = PROJECT_ROOT / "workspace" / "ribodiffusion_service_runs"
 
 app = FastAPI(
@@ -32,7 +33,7 @@ app = FastAPI(
         "RNA inverse folding from tertiary structure using RiboDiffusion "
         "(third-party repo under external_repos/RiboDiffusion)."
     ),
-    version="0.1.0",
+    version="0.2.0",
 )
 
 
@@ -59,6 +60,13 @@ class RiboDiffusionRequest(BaseModel):
         default=True,
         description="If True, upstream sets a fixed random seed for reproducibility.",
     )
+    checkpoint_name: str = Field(
+        default=DEFAULT_CHECKPOINT_NAME,
+        description=(
+            "Checkpoint basename without extension. "
+            "Supported: 'exp_inf' (default), 'exp_inf_large'."
+        ),
+    )
     device: int = Field(default=0, ge=0, description="Logical CUDA device index (CUDA_VISIBLE_DEVICES).")
     timeout_seconds: int = Field(default=7200, ge=300, le=28800)
 
@@ -78,16 +86,20 @@ class RiboDiffusionResponse(BaseModel):
     stderr: str = ""
 
 
-def _require_checkpoint() -> Path:
-    if not DEFAULT_CHECKPOINT.exists():
+def _resolve_checkpoint(checkpoint_name: str) -> Path:
+    """Return absolute checkpoint path and verify existence."""
+    ckpt_path = CKPT_DIR / f"{checkpoint_name}.pth"
+    if not ckpt_path.exists():
+        available = sorted(CKPT_DIR.glob("*.pth"))
         raise HTTPException(
             status_code=500,
             detail=(
-                f"Missing RiboDiffusion checkpoint: {DEFAULT_CHECKPOINT}. "
-                "Download `exp_inf.pth` from the upstream README link into `ckpts/` on the server."
+                f"Missing RiboDiffusion checkpoint: {ckpt_path}. "
+                f"Available checkpoints: {[p.name for p in available]}. "
+                "Download from the upstream README link into `ckpts/` on the server."
             ),
         )
-    return DEFAULT_CHECKPOINT
+    return ckpt_path
 
 
 def _read_fasta_sequence(fasta_path: Path) -> str:
@@ -110,15 +122,16 @@ def health() -> dict[str, object]:
         "status": "ok",
         "repo_exists": RIBODIFFUSION_ROOT.exists(),
         "main_py": (RIBODIFFUSION_ROOT / "main.py").exists(),
-        "default_checkpoint_present": DEFAULT_CHECKPOINT.exists(),
-        "default_checkpoint_path": str(DEFAULT_CHECKPOINT),
+        "default_checkpoint_present": (CKPT_DIR / f"{DEFAULT_CHECKPOINT_NAME}.pth").exists(),
+        "default_checkpoint_path": str(CKPT_DIR / f"{DEFAULT_CHECKPOINT_NAME}.pth"),
+        "available_checkpoints": [p.name for p in CKPT_DIR.glob("*.pth")],
         "service_workdir": str(SERVICE_WORKDIR),
     }
 
 
 @app.post("/design/from-pdb", response_model=RiboDiffusionResponse)
 def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
-    _require_checkpoint()
+    ckpt_path = _resolve_checkpoint(payload.checkpoint_name)
     if not (RIBODIFFUSION_ROOT / "main.py").exists():
         raise HTTPException(status_code=500, detail=f"RiboDiffusion repo missing at {RIBODIFFUSION_ROOT}")
 
@@ -129,7 +142,7 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
 
     SERVICE_WORKDIR.mkdir(parents=True, exist_ok=True)
     run_root = Path(tempfile.mkdtemp(prefix="ribodiffusion_", dir=SERVICE_WORKDIR))
-    save_folder = run_root / "exp_inf"
+    save_folder = run_root / payload.checkpoint_name
 
     cmd: list[str] = [
         sys.executable,
@@ -138,14 +151,15 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
         str(pdb_path),
         "--save_folder",
         str(save_folder),
-        "--deterministic=true" if payload.deterministic else "--deterministic=false",
+        "--deterministic" if payload.deterministic else "--nodeterministic",
         f"--config.eval.n_samples={payload.n_samples}",
         f"--config.eval.sampling_steps={payload.sampling_steps}",
+        f"--config.eval.model_path={ckpt_path}",
     ]
     if payload.cond_scale >= 0.0:
         cmd.append(f"--config.eval.cond_scale={payload.cond_scale}")
     if payload.dynamic_threshold:
-        cmd.append("--config.eval.dynamic_threshold=true")
+        cmd.append("--config.eval.dynamic_threshold=True")
 
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = str(payload.device)
@@ -199,7 +213,7 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
         generated_sequences=sequences,
         output_fasta_paths=paths_str,
         recovery_rate=parse_recovery_rate(result.stdout),
-        checkpoint_path=str(DEFAULT_CHECKPOINT),
+        checkpoint_path=str(ckpt_path),
         service_output_dir=str(run_root),
         fasta_dir=str(fasta_dir),
         stdout=result.stdout.strip(),
