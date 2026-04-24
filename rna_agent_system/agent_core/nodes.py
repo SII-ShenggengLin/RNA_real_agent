@@ -32,6 +32,9 @@ from agent_core.tools import (
     compute_rna_sequence_gc_content,
     compute_dot_bracket_unpaired_fraction,
     optimize_sgrna_with_crisot,
+    predict_crispr_off_target_with_crisot_fp,
+    generate_crispr_fingerprint_with_crisot,
+    rescore_sgrnas_with_crisot,
     run_blastn_similarity_search,
     predict_mrna_stability_with_rnastop,
     predict_putative_ires_with_iresfinder,
@@ -40,6 +43,7 @@ from agent_core.tools import (
     predict_rna_tertiary_structure_with_rhofold,
     run_odesign_inference,
     score_crispr_off_target_with_crisot,
+    score_batch_crispr_off_targets_with_crisot,
     search_crispr_off_targets_with_crisot,
     score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
@@ -1595,9 +1599,16 @@ def _resolve_sgrna_design_request(text: str) -> Tuple[dict[str, Any], dict[str, 
     return tool_args, state_updates
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 CRISOT ToolSpec 注册区域的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, Any]]:
     lowered = text.lower()
     csv_path = _extract_path_with_suffixes(text, ("csv",))
+    txt_path = _extract_path_with_suffixes(text, ("txt",))
     genome_path = _extract_path_with_suffixes(text, ("fa", "fasta", "fna", "fas"))
     threshold = _extract_float_setting(text, ("threshold", "score_threshold", "crisot_threshold"))
     mismatches = _extract_int_setting(text, ("mm", "mismatch", "mismatches"))
@@ -1616,6 +1627,81 @@ def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, A
     if not target_sequence and sgrna:
         target_sequence = sgrna
 
+    # ── CRISOT-FP XGBoost prediction (csv + fp keywords) ──
+    if csv_path and any(k in lowered for k in ["crisot_fp", "crisot-fp", "fp", "fingerprint", "xgboost"]):
+        xgb_model = "Circle-seq"
+        for candidate in ["circle-seq", "circleseq", "site-seq", "siteseq", "change-seq", "changeseq"]:
+            if candidate.replace("-", "") in lowered or candidate in lowered:
+                if "site" in candidate:
+                    xgb_model = "Site-seq"
+                elif "change" in candidate:
+                    xgb_model = "Change-seq"
+                else:
+                    xgb_model = "Circle-seq"
+                break
+        state_updates = {
+            "crisot_input_csv_filepath": csv_path,
+            "crisot_fp_xgb_model": xgb_model,
+            "workspace_files": [],
+        }
+        return (
+            "predict_crispr_off_target_with_crisot_fp",
+            {
+                "csv_filepath": csv_path,
+                "xgb_model": xgb_model,
+            },
+            state_updates,
+        )
+
+    # ── Batch scoring (csv + score keywords, but not spec) ──
+    if csv_path and any(k in lowered for k in ["scores", "batch", "batch_score"]):
+        state_updates = {
+            "crisot_input_csv_filepath": csv_path,
+            "workspace_files": [],
+        }
+        return (
+            "score_batch_crispr_off_targets_with_crisot",
+            {"csv_filepath": csv_path},
+            state_updates,
+        )
+
+    # ── Specificity from CSV ──
+    if csv_path and any(k in lowered for k in ["spec", "specificity", "specific"]):
+        state_updates = {
+            "crisot_input_csv_filepath": csv_path,
+            "workspace_files": [],
+        }
+        return (
+            "calculate_crispr_specificity_with_crisot",
+            {"csv_filepath": csv_path},
+            state_updates,
+        )
+
+    # ── Rescore / rerank (txt + genome) ──
+    if txt_path and any(k in lowered for k in ["rescore", "rerank", "re-score", "re-rank"]):
+        if not genome_path:
+            raise ValueError(
+                "CRISOT rescore requires a reference genome FASTA path for Cas-OFFinder."
+            )
+        tool_args: dict[str, Any] = {
+            "txt_filepath": txt_path,
+            "genome_path": genome_path,
+        }
+        if mismatches is not None:
+            tool_args["mismatches"] = mismatches
+        if device:
+            tool_args["device"] = device
+        state_updates = {
+            "crisot_genome_path": genome_path,
+            "workspace_files": [],
+        }
+        return (
+            "rescore_sgrnas_with_crisot",
+            tool_args,
+            state_updates,
+        )
+
+    # ── Optimization ──
     if _needs_crisot_optimization(lowered):
         if not target_sequence and not sgrna:
             raise ValueError(
@@ -1628,7 +1714,7 @@ def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, A
             )
         optimization_target = target_sequence or sgrna
         target_filepath = save_sequence(optimization_target, prefix="crisot_target")
-        tool_args: dict[str, Any] = {
+        tool_args = {
             "filepath": target_filepath,
             "genome_path": genome_path,
         }
@@ -1650,14 +1736,18 @@ def _resolve_crisot_request(text: str) -> Tuple[str, dict[str, Any], dict[str, A
             state_updates,
         )
 
-    if csv_path and any(k in lowered for k in ["spec", "specificity", "specific"]):
+    # ── Gen FP (requires both sgrna and target) ──
+    if sgrna and target_sequence and any(k in lowered for k in ["gen_fp", "gen-fp", "generate fingerprint", "encode"]):
         state_updates = {
-            "crisot_input_csv_filepath": csv_path,
+            "crisot_target_sequence": target_sequence,
             "workspace_files": [],
         }
         return (
-            "calculate_crispr_specificity_with_crisot",
-            {"csv_filepath": csv_path},
+            "generate_crispr_fingerprint_with_crisot",
+            {
+                "sgrna": sgrna,
+                "target_sequence": target_sequence,
+            },
             state_updates,
         )
 
@@ -2673,6 +2763,32 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["crisot_optimized_sgrna_filepath"] = optimized_sgrna_filepath
                 state["current_filepath"] = optimized_sgrna_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [optimized_sgrna_filepath]
+        elif tool_name == "score_batch_crispr_off_targets_with_crisot":
+            state["crisot_input_csv_filepath"] = str(tool_result.get("input_csv_filepath", ""))
+            scored_csv_filepath = str(tool_result.get("scored_csv_filepath", ""))
+            if scored_csv_filepath:
+                state["crisot_scores_csv_filepath"] = scored_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [scored_csv_filepath]
+        elif tool_name == "rescore_sgrnas_with_crisot":
+            state["crisot_genome_path"] = str(tool_result.get("genome_path", ""))
+            state["crisot_rescore_sgrna_count"] = int(tool_result.get("sgrna_count", 0))
+            rescore_csv_filepath = str(tool_result.get("rescore_csv_filepath", ""))
+            if rescore_csv_filepath:
+                state["crisot_rescore_csv_filepath"] = rescore_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [rescore_csv_filepath]
+        elif tool_name == "predict_crispr_off_target_with_crisot_fp":
+            state["crisot_input_csv_filepath"] = str(tool_result.get("input_csv_filepath", ""))
+            state["crisot_fp_xgb_model"] = str(tool_result.get("xgb_model", ""))
+            fp_csv_filepath = str(tool_result.get("fp_csv_filepath", ""))
+            if fp_csv_filepath:
+                state["crisot_fp_csv_filepath"] = fp_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [fp_csv_filepath]
+        elif tool_name == "generate_crispr_fingerprint_with_crisot":
+            state["crisot_target_sequence"] = str(tool_result.get("target_sequence", ""))
+            fp_csv_filepath = str(tool_result.get("fp_csv_filepath", ""))
+            if fp_csv_filepath:
+                state["crisot_genfp_csv_filepath"] = fp_csv_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [fp_csv_filepath]
         elif tool_name == "design_sgrna_handle_with_crgpt":
             input_filepath = str(tool_result.get("input_filepath") or state.get("current_filepath", ""))
             if input_filepath:
@@ -3140,6 +3256,12 @@ def critic_node(state: AgentState) -> AgentState:
             f"crisot_best_mutation={state.get('crisot_best_mutation', '')}; "
             f"crisot_best_delta_spec={state.get('crisot_best_delta_spec', 0.0)}; "
             f"crisot_optimized_available={state.get('crisot_optimized_available', False)}; "
+            f"crisot_scores_csv_filepath={state.get('crisot_scores_csv_filepath', '')}; "
+            f"crisot_rescore_csv_filepath={state.get('crisot_rescore_csv_filepath', '')}; "
+            f"crisot_rescore_sgrna_count={state.get('crisot_rescore_sgrna_count', 0)}; "
+            f"crisot_fp_csv_filepath={state.get('crisot_fp_csv_filepath', '')}; "
+            f"crisot_fp_xgb_model={state.get('crisot_fp_xgb_model', '')}; "
+            f"crisot_genfp_csv_filepath={state.get('crisot_genfp_csv_filepath', '')}; "
             f"sgrna_design_seed_sequence={state.get('sgrna_design_seed_sequence', '')}; "
             f"sgrna_design_generated_count={state.get('sgrna_design_generated_count', 0)}; "
             f"sgrna_design_best_nn_score={state.get('sgrna_design_best_nn_score', 0.0)}; "

@@ -269,6 +269,12 @@ class EvitarDesignInput(BaseModel):
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 CRISOT ToolSpec 注册区域的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class CrisotScoreInput(BaseModel):
     """Input schema for CRISOT score prediction."""
 
@@ -329,7 +335,7 @@ class CrisotOffSpecInput(BaseModel):
         description="Mismatch tolerance passed through to Cas-OFFinder.",
     )
     device: str = Field(
-        default="C",
+        default="G0",
         description="Cas-OFFinder device flag such as `C` or `G0`.",
     )
     service_url: str = Field(
@@ -362,12 +368,102 @@ class CrisotOptimizeInput(BaseModel):
         description="Mismatch tolerance passed through to Cas-OFFinder.",
     )
     device: str = Field(
-        default="C",
+        default="G0",
         description="Cas-OFFinder device flag such as `C` or `G0`.",
     )
     service_url: str = Field(
         default="http://127.0.0.1:8011/optimize",
         description="REST endpoint for the CRISOT optimization microservice.",
+    )
+
+
+class CrisotScoresInput(BaseModel):
+    """Input schema for CRISOT batch score prediction from a CSV file."""
+
+    csv_filepath: str = Field(
+        ...,
+        description="Path to a CSV file containing sgRNA and off-target sequences.",
+    )
+    on_item: str = Field(
+        default="On",
+        description="CSV column name for sgRNA/on-target sequences.",
+    )
+    off_item: str = Field(
+        default="Off",
+        description="CSV column name for off-target sequences.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/scores",
+        description="REST endpoint for the CRISOT batch scoring microservice.",
+    )
+
+
+class CrisotRescoreInput(BaseModel):
+    """Input schema for CRISOT genome-wide rescore and reranking of sgRNAs."""
+
+    txt_filepath: str = Field(
+        ...,
+        description="Path to a TXT file containing one sgRNA sequence per line.",
+    )
+    genome_path: str = Field(
+        ...,
+        description="Reference genome FASTA path passed through to CRISOT and Cas-OFFinder.",
+    )
+    mismatches: int = Field(
+        default=6,
+        ge=0,
+        le=10,
+        description="Mismatch tolerance passed through to Cas-OFFinder.",
+    )
+    device: str = Field(
+        default="G0",
+        description="Cas-OFFinder device flag such as `C` or `G0`.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/rescore",
+        description="REST endpoint for the CRISOT rescore microservice.",
+    )
+
+
+class CrisotFpInput(BaseModel):
+    """Input schema for CRISOT-FP XGBoost off-target prediction."""
+
+    csv_filepath: str = Field(
+        ...,
+        description="Path to a CSV file containing sgRNA and off-target sequences.",
+    )
+    xgb_model: str = Field(
+        default="Circle-seq",
+        description="XGBoost model name: Circle-seq, Site-seq, or Change-seq.",
+    )
+    on_item: str = Field(
+        default="On",
+        description="CSV column name for sgRNA/on-target sequences.",
+    )
+    off_item: str = Field(
+        default="Off",
+        description="CSV column name for off-target sequences.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/crisot-fp",
+        description="REST endpoint for the CRISOT-FP microservice.",
+    )
+
+
+class CrisotGenFpInput(BaseModel):
+    """Input schema for CRISOT-FP fingerprint encoding generation."""
+
+    sgrna: str = Field(
+        ...,
+        description="sgRNA sequence for fingerprint generation. Expected length is 23 nt.",
+    )
+    target_sequence: str = Field(
+        ...,
+        description="Target DNA sequence for fingerprint generation. Expected length is 23 nt.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8011/gen-fp",
+        description="REST endpoint for the CRISOT-FP encoding microservice.",
     )
 
 
@@ -925,7 +1021,7 @@ def search_crispr_off_targets_with_crisot(
     target_sequence: str,
     genome_path: str,
     mismatches: int = 6,
-    device: str = "C",
+    device: str = "G0",
     service_url: str = "http://127.0.0.1:8011/off-spec",
 ) -> dict[str, Any]:
     """Run CRISOT genome-wide off-target specificity search using Cas-OFFinder.
@@ -992,7 +1088,7 @@ def optimize_sgrna_with_crisot(
     genome_path: str,
     threshold: float = 0.8,
     mismatches: int = 6,
-    device: str = "C",
+    device: str = "G0",
     service_url: str = "http://127.0.0.1:8011/optimize",
 ) -> dict[str, Any]:
     """Optimize one sgRNA with CRISOT-Opti.
@@ -1058,6 +1154,227 @@ def optimize_sgrna_with_crisot(
         return result
     except requests.RequestException as exc:
         _raise_service_error(exc, "CRISOT optimize")
+
+
+@tool(args_schema=CrisotScoresInput)
+def score_batch_crispr_off_targets_with_crisot(
+    csv_filepath: str,
+    on_item: str = "On",
+    off_item: str = "Off",
+    service_url: str = "http://127.0.0.1:8011/scores",
+) -> dict[str, Any]:
+    """Batch calculate CRISOT-Score for sgRNA-target pairs in a CSV file.
+
+    Args:
+        csv_filepath: Path to the input CSV containing sgRNA and target sequences.
+        on_item: CSV column name for sgRNA/on-target sequences.
+        off_item: CSV column name for off-target sequences.
+        service_url: REST endpoint for the CRISOT batch scoring microservice.
+
+    Returns:
+        Dict with row count and scored CSV artifact path.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "csv_path": csv_filepath,
+                "on_item": on_item,
+                "off_item": off_item,
+            },
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "scored_csv_path" not in payload:
+            raise ValueError("Missing `scored_csv_path` in CRISOT scores response.")
+        result: dict[str, Any] = {
+            "input_csv_filepath": csv_filepath,
+            "on_item": on_item,
+            "off_item": off_item,
+            "row_count": int(payload.get("row_count", 0)),
+            "model": payload.get("model", "CRISOT-Score"),
+        }
+        scored_csv_path = payload.get("scored_csv_path")
+        if scored_csv_path:
+            result["scored_csv_filepath"] = copy_file_to_workspace(
+                str(scored_csv_path),
+                prefix="crisot_scores",
+                suffix=".csv",
+            )
+        return result
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "CRISOT scores")
+
+
+@tool(args_schema=CrisotRescoreInput)
+def rescore_sgrnas_with_crisot(
+    txt_filepath: str,
+    genome_path: str,
+    mismatches: int = 6,
+    device: str = "G0",
+    service_url: str = "http://127.0.0.1:8011/rescore",
+) -> dict[str, Any]:
+    """Rescore and rerank a list of sgRNAs using CRISOT genome-wide search.
+
+    Args:
+        txt_filepath: Path to a TXT file with one sgRNA sequence per line.
+        genome_path: Reference genome FASTA path used by Cas-OFFinder.
+        mismatches: Cas-OFFinder mismatch tolerance.
+        device: Cas-OFFinder device selector such as `C` or `G0`.
+        service_url: REST endpoint for the CRISOT rescore microservice.
+
+    Returns:
+        Dict with sgRNA count, rescore CSV artifact path, and echoed parameters.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "txt_path": txt_filepath,
+                "genome_path": genome_path,
+                "mismatches": mismatches,
+                "device": device,
+            },
+            timeout=3600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "rescore_csv_path" not in payload:
+            raise ValueError("Missing `rescore_csv_path` in CRISOT rescore response.")
+        result: dict[str, Any] = {
+            "input_txt_filepath": txt_filepath,
+            "genome_path": genome_path,
+            "mismatches": int(payload.get("mismatches", mismatches)),
+            "device": str(payload.get("device", device)),
+            "sgrna_count": int(payload.get("sgrna_count", 0)),
+            "model": payload.get("model", "CRISOT-Rescore"),
+        }
+        rescore_csv_path = payload.get("rescore_csv_path")
+        if rescore_csv_path:
+            result["rescore_csv_filepath"] = copy_file_to_workspace(
+                str(rescore_csv_path),
+                prefix="crisot_rescore",
+                suffix=".csv",
+            )
+        return result
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "CRISOT rescore")
+
+
+@tool(args_schema=CrisotFpInput)
+def predict_crispr_off_target_with_crisot_fp(
+    csv_filepath: str,
+    xgb_model: str = "Circle-seq",
+    on_item: str = "On",
+    off_item: str = "Off",
+    service_url: str = "http://127.0.0.1:8011/crisot-fp",
+) -> dict[str, Any]:
+    """Predict CRISPR off-target effects using CRISOT-FP XGBoost models.
+
+    Args:
+        csv_filepath: Path to the input CSV containing sgRNA and off-target sequences.
+        xgb_model: XGBoost model to use: Circle-seq, Site-seq, or Change-seq.
+        on_item: CSV column name for sgRNA/on-target sequences.
+        off_item: CSV column name for off-target sequences.
+        service_url: REST endpoint for the CRISOT-FP microservice.
+
+    Returns:
+        Dict with row count, FP CSV artifact path, and model name.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "csv_path": csv_filepath,
+                "xgb_model": xgb_model,
+                "on_item": on_item,
+                "off_item": off_item,
+            },
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "fp_csv_path" not in payload:
+            raise ValueError("Missing `fp_csv_path` in CRISOT-FP response.")
+        result: dict[str, Any] = {
+            "input_csv_filepath": csv_filepath,
+            "xgb_model": str(payload.get("xgb_model", xgb_model)),
+            "on_item": on_item,
+            "off_item": off_item,
+            "row_count": int(payload.get("row_count", 0)),
+            "model": payload.get("model", "CRISOT-FP"),
+        }
+        fp_csv_path = payload.get("fp_csv_path")
+        if fp_csv_path:
+            result["fp_csv_filepath"] = copy_file_to_workspace(
+                str(fp_csv_path),
+                prefix="crisot_fp",
+                suffix=".csv",
+            )
+        return result
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "CRISOT-FP")
+
+
+@tool(args_schema=CrisotGenFpInput)
+def generate_crispr_fingerprint_with_crisot(
+    sgrna: str,
+    target_sequence: str,
+    service_url: str = "http://127.0.0.1:8011/gen-fp",
+) -> dict[str, Any]:
+    """Generate CRISOT-FP molecular interaction fingerprint for an sgRNA-target pair.
+
+    Args:
+        sgrna: sgRNA sequence (23 nt including PAM).
+        target_sequence: Target DNA sequence (23 nt including PAM).
+        service_url: REST endpoint for the CRISOT-FP encoding microservice.
+
+    Returns:
+        Dict with normalized sequences and FP encoding CSV artifact path.
+
+    Raises:
+        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
+    """
+    normalized_sgrna = _normalize_crisot_sequence(sgrna)
+    normalized_target = _normalize_crisot_sequence(target_sequence)
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sgrna": normalized_sgrna,
+                "target_sequence": normalized_target,
+            },
+            timeout=60,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "fp_csv_path" not in payload:
+            raise ValueError("Missing `fp_csv_path` in CRISOT gen-fp response.")
+        result: dict[str, Any] = {
+            "sgrna": normalized_sgrna,
+            "target_sequence": normalized_target,
+            "model": payload.get("model", "CRISOT-FP-Encoding"),
+        }
+        fp_csv_path = payload.get("fp_csv_path")
+        if fp_csv_path:
+            result["fp_csv_filepath"] = copy_file_to_workspace(
+                str(fp_csv_path),
+                prefix="crisot_genfp",
+                suffix=".csv",
+            )
+        return result
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "CRISOT gen-fp")
 
 
 @tool(args_schema=SgRNADesignInput)
@@ -3579,9 +3896,13 @@ CRISPR_LANGCHAIN_TOOLS: list[Any] = [
     design_sgrna_handle_with_crgpt,
     score_sgrna_handle_with_crgpt,
     score_crispr_off_target_with_crisot,
+    score_batch_crispr_off_targets_with_crisot,
     calculate_crispr_specificity_with_crisot,
     search_crispr_off_targets_with_crisot,
+    rescore_sgrnas_with_crisot,
     optimize_sgrna_with_crisot,
+    predict_crispr_off_target_with_crisot_fp,
+    generate_crispr_fingerprint_with_crisot,
 ]
 MRNA_LANGCHAIN_TOOLS: list[Any] = [
     score_rna_ligand_binding_with_gernabind,

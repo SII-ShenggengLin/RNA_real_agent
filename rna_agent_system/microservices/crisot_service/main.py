@@ -1,4 +1,19 @@
-"""CRISOT microservice for CRISPR off-target scoring, specificity, and optimization."""
+"""CRISOT microservice for CRISPR off-target scoring, specificity, optimization, and fingerprinting.
+
+INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+关联文件清单（修改时必须全部同步）：
+  - microservices/crisot_service/main.py  ← 本文件
+  - agent_core/tools.py
+  - agent_core/tool_specs.py
+  - agent_core/state.py
+  - agent_core/nodes.py
+  - frontend/app.py
+  - docs/RNA_AGENT_SYSTEM_GUIDE.md
+规则：任何字段增删、端点路径变更、Request/Response 模型变动、
+      返回值结构调整，必须同时更新上述全部文件并重新跑通端到端测试。
+      违反此规则的提交将被回退。
+本次修改的基准日期：2026-04-24。
+"""
 
 from __future__ import annotations
 
@@ -17,18 +32,40 @@ from pydantic import BaseModel, Field
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CRISOT_ROOT = PROJECT_ROOT / "external_repos" / "CRISOT"
 CRISOT_MODELS_DIR = CRISOT_ROOT / "models"
+CRISOT_FALLBACK_MODELS_DIR = PROJECT_ROOT / "assets" / "crisot"
 CRISOT_SCRIPT_DIR = CRISOT_ROOT / "script"
+CRISOT_DATA_DIR = CRISOT_ROOT / "data"
 CRISOT_SCORE_PARAM_PATH = CRISOT_MODELS_DIR / "crisot_score_param.pkl"
+CRISOT_FP_ENCODING_PATH = CRISOT_MODELS_DIR / "crisot_fingerprint_encoding.pkl"
 CRISOT_SERVICE_OUTPUT_DIR = PROJECT_ROOT / "workspace" / "crisot_service"
-DEFAULT_DEVICE = "C"
+
+
+def _resolve_xgb_model_path(model_name: str) -> Path:
+    """Resolve XGBoost model path, preferring CRISOT submodule dir then fallback assets dir."""
+    if model_name == "Circle-seq":
+        filename = "circleseq_xgb_models.pkl"
+    elif model_name == "Site-seq":
+        filename = "siteseq_xgb_models.pkl"
+    elif model_name == "Change-seq":
+        filename = "changeseq_xgb_models.pkl"
+    else:
+        raise ValueError(f"Unsupported xgb_model: {model_name}")
+    primary = CRISOT_MODELS_DIR / filename
+    if primary.exists():
+        return primary
+    fallback = CRISOT_FALLBACK_MODELS_DIR / filename
+    if fallback.exists():
+        return fallback
+    return primary
+DEFAULT_DEVICE = "G0"
 DEFAULT_MISMATCHES = 6
 DEFAULT_MODEL_NAME = "CRISOT-Score"
 DEFAULT_REF_GENOME_ENV_VAR = "CRISOT_DEFAULT_REF_GENOME"
 
 app = FastAPI(
     title="CRISOT Service",
-    description="CRISPR-Cas9 off-target scoring and specificity analysis powered by CRISOT.",
-    version="0.1.0",
+    description="CRISPR-Cas9 off-target scoring, specificity analysis, and sgRNA optimization powered by CRISOT.",
+    version="0.2.0",
 )
 
 _MODEL_CACHE: Dict[str, Any] = {}
@@ -66,6 +103,10 @@ def _ensure_pandas_append_compatibility() -> None:
 _ensure_pandas_append_compatibility()
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Request / Response models
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class CrisotScoreRequest(BaseModel):
     sgrna: str = Field(
         ...,
@@ -75,12 +116,40 @@ class CrisotScoreRequest(BaseModel):
         ...,
         description="Target DNA sequence, expected to be 23 nt including PAM.",
     )
+    ref_genome: Optional[str] = Field(
+        default=None,
+        description="Optional reference genome path (affects model cache key only for score).",
+    )
 
 
 class CrisotScoreResponse(BaseModel):
     sgrna: str
     target_sequence: str
     crisot_score: float
+    model: str = DEFAULT_MODEL_NAME
+
+
+class CrisotScoresRequest(BaseModel):
+    csv_path: str = Field(
+        ...,
+        description="CSV path containing sgRNA and off-target sequences.",
+    )
+    on_item: str = Field(
+        default="On",
+        description="CSV column name for sgRNA/on-target sequences.",
+    )
+    off_item: str = Field(
+        default="Off",
+        description="CSV column name for off-target sequences.",
+    )
+
+
+class CrisotScoresResponse(BaseModel):
+    csv_path: str
+    on_item: str
+    off_item: str
+    row_count: int
+    scored_csv_path: str
     model: str = DEFAULT_MODEL_NAME
 
 
@@ -147,6 +216,38 @@ class CrisotOffSpecResponse(BaseModel):
     model: str = DEFAULT_MODEL_NAME
 
 
+class CrisotRescoreRequest(BaseModel):
+    txt_path: str = Field(
+        ...,
+        description="TXT file containing one sgRNA sequence per line.",
+    )
+    genome_path: str = Field(
+        ...,
+        description="Reference genome FASTA path used by Cas-OFFinder.",
+    )
+    mismatches: int = Field(
+        default=DEFAULT_MISMATCHES,
+        ge=0,
+        le=10,
+        description="Mismatch tolerance passed to Cas-OFFinder.",
+    )
+    device: str = Field(
+        default=DEFAULT_DEVICE,
+        description="Cas-OFFinder device flag, for example `C` or `G0`.",
+    )
+
+
+class CrisotRescoreResponse(BaseModel):
+    txt_path: str
+    genome_path: str
+    mismatches: int
+    device: str
+    sgrna_count: int
+    rescore_csv_path: str
+    cas_offinder_available: bool
+    model: str = "CRISOT-Rescore"
+
+
 class CrisotOptimizeRequest(BaseModel):
     target_sequence: str = Field(
         ...,
@@ -190,6 +291,57 @@ class CrisotOptimizeResponse(BaseModel):
     cas_offinder_available: bool
     model: str = "CRISOT-Opti"
 
+
+class CrisotFpRequest(BaseModel):
+    csv_path: str = Field(
+        ...,
+        description="CSV path containing sgRNA and off-target sequences.",
+    )
+    xgb_model: str = Field(
+        default="Circle-seq",
+        description="XGBoost model name: Circle-seq, Site-seq, or Change-seq.",
+    )
+    on_item: str = Field(
+        default="On",
+        description="CSV column name for sgRNA/on-target sequences.",
+    )
+    off_item: str = Field(
+        default="Off",
+        description="CSV column name for off-target sequences.",
+    )
+
+
+class CrisotFpResponse(BaseModel):
+    csv_path: str
+    xgb_model: str
+    on_item: str
+    off_item: str
+    row_count: int
+    fp_csv_path: str
+    model: str = "CRISOT-FP"
+
+
+class CrisotGenFpRequest(BaseModel):
+    sgrna: str = Field(
+        ...,
+        description="sgRNA sequence, expected to be 23 nt including PAM.",
+    )
+    target_sequence: str = Field(
+        ...,
+        description="Target DNA sequence, expected to be 23 nt including PAM.",
+    )
+
+
+class CrisotGenFpResponse(BaseModel):
+    sgrna: str
+    target_sequence: str
+    fp_csv_path: str
+    model: str = "CRISOT-FP-Encoding"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Helpers
+# ═══════════════════════════════════════════════════════════════════════════════
 
 def _normalize_crisot_sequence(raw_text: str, field_name: str) -> str:
     sequence_lines = [
@@ -295,7 +447,13 @@ def _default_ref_genome() -> str:
     override_path = os.getenv(DEFAULT_REF_GENOME_ENV_VAR, "").strip()
     if override_path:
         return str(_resolve_repo_relative_path(override_path))
-    return str((CRISOT_SCRIPT_DIR / "hg38.fa").resolve())
+    hg38_path = CRISOT_SCRIPT_DIR / "hg38.fa"
+    if hg38_path.exists():
+        return str(hg38_path.resolve())
+    test_genome_path = CRISOT_DATA_DIR / "test_genome.fa"
+    if test_genome_path.exists():
+        return str(test_genome_path.resolve())
+    return str(hg38_path.resolve())
 
 
 def _ensure_output_dir() -> Path:
@@ -330,9 +488,14 @@ def _select_best_optimized_row(dataframe: pd.DataFrame) -> Optional[pd.Series]:
     return candidate_rows.iloc[0]
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Endpoints
+# ═══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/health")
 def health() -> Dict[str, Any]:
     score_param_exists = CRISOT_SCORE_PARAM_PATH.exists()
+    fp_encoding_exists = CRISOT_FP_ENCODING_PATH.exists()
     default_ref_genome = Path(_default_ref_genome())
     default_ref_genome_exists = default_ref_genome.exists()
     repo_exists = CRISOT_ROOT.exists()
@@ -342,6 +505,8 @@ def health() -> Dict[str, Any]:
         missing_requirements.append(f"missing_repo:{CRISOT_ROOT}")
     if not score_param_exists:
         missing_requirements.append(f"missing_score_param:{CRISOT_SCORE_PARAM_PATH}")
+    if not fp_encoding_exists:
+        warnings.append(f"missing_fp_encoding:{CRISOT_FP_ENCODING_PATH}")
     if not default_ref_genome_exists:
         warnings.append(f"missing_default_ref_genome:{default_ref_genome}")
     status = "ok" if not missing_requirements else "degraded"
@@ -351,6 +516,8 @@ def health() -> Dict[str, Any]:
         "repo_exists": repo_exists,
         "score_param_path": str(CRISOT_SCORE_PARAM_PATH),
         "score_param_exists": score_param_exists,
+        "fp_encoding_path": str(CRISOT_FP_ENCODING_PATH),
+        "fp_encoding_exists": fp_encoding_exists,
         "default_ref_genome_env_var": DEFAULT_REF_GENOME_ENV_VAR,
         "default_ref_genome_env_value": os.getenv(DEFAULT_REF_GENOME_ENV_VAR, ""),
         "default_ref_genome": str(default_ref_genome),
@@ -360,6 +527,9 @@ def health() -> Dict[str, Any]:
         "warnings": warnings,
         "service_output_dir": str(CRISOT_SERVICE_OUTPUT_DIR),
         "supports_optimize": True,
+        "supports_rescore": True,
+        "supports_crisot_fp": True,
+        "supports_gen_fp": True,
     }
 
 
@@ -367,7 +537,10 @@ def health() -> Dict[str, Any]:
 def score_crisot(payload: CrisotScoreRequest) -> CrisotScoreResponse:
     sgrna = _normalize_crisot_sequence(payload.sgrna, "sgrna")
     target_sequence = _normalize_crisot_sequence(payload.target_sequence, "target_sequence")
-    model = _load_model(_default_ref_genome())
+    ref_genome = _default_ref_genome()
+    if payload.ref_genome:
+        ref_genome = str(_resolve_repo_relative_path(payload.ref_genome))
+    model = _load_model(ref_genome)
     try:
         score = float(model.single_score_(sgrna, target_sequence))
     except Exception as exc:
@@ -376,6 +549,43 @@ def score_crisot(payload: CrisotScoreRequest) -> CrisotScoreResponse:
         sgrna=sgrna,
         target_sequence=target_sequence,
         crisot_score=score,
+    )
+
+
+@app.post("/scores", response_model=CrisotScoresResponse)
+def scores_crisot(payload: CrisotScoresRequest) -> CrisotScoresResponse:
+    csv_path = _resolve_repo_relative_path(payload.csv_path)
+    if not csv_path.exists():
+        raise HTTPException(status_code=400, detail=f"CSV path does not exist: {csv_path}")
+    try:
+        dataframe = pd.read_csv(csv_path, header=0, index_col=None)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Failed to read CSV: {exc}") from exc
+    required_columns = {payload.on_item, payload.off_item}
+    missing_columns = required_columns - set(dataframe.columns)
+    if missing_columns:
+        raise HTTPException(
+            status_code=400,
+            detail=f"CSV is missing required columns: {sorted(missing_columns)}",
+        )
+
+    model = _load_model(_default_ref_genome())
+    try:
+        scores = model.score(data_df=dataframe.copy(), On=payload.on_item, Off=payload.off_item)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"CRISOT batch scoring failed: {exc}") from exc
+
+    dataframe["CRISOT-Score"] = scores
+    scored_csv_path = _save_dataframe_artifact(
+        dataframe,
+        prefix=f"crisot_scores_{csv_path.stem}",
+    )
+    return CrisotScoresResponse(
+        csv_path=str(csv_path),
+        on_item=payload.on_item,
+        off_item=payload.off_item,
+        row_count=int(dataframe.shape[0]),
+        scored_csv_path=scored_csv_path,
     )
 
 
@@ -464,6 +674,51 @@ def calculate_off_spec(payload: CrisotOffSpecRequest) -> CrisotOffSpecResponse:
     )
 
 
+@app.post("/rescore", response_model=CrisotRescoreResponse)
+def rescore_sgrnas(payload: CrisotRescoreRequest) -> CrisotRescoreResponse:
+    txt_path = _resolve_repo_relative_path(payload.txt_path)
+    if not txt_path.exists():
+        raise HTTPException(status_code=400, detail=f"TXT path does not exist: {txt_path}")
+    genome_path = _resolve_repo_relative_path(payload.genome_path)
+    if not genome_path.exists():
+        raise HTTPException(status_code=400, detail=f"Genome path does not exist: {genome_path}")
+    if not _cas_offinder_available():
+        raise HTTPException(
+            status_code=503,
+            detail="`cas-offinder` is not available in PATH. It is required for CRISOT rescore.",
+        )
+
+    try:
+        df_txt = pd.read_csv(txt_path, header=None, index_col=None)
+        targets = df_txt.iloc[:, 0].values.tolist()
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Failed to read TXT: {exc}") from exc
+
+    model = _load_model(str(genome_path))
+    try:
+        rescore_df = model.rescore(
+            targets=targets,
+            mm=payload.mismatches,
+            dev=payload.device,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"CRISOT rescore failed: {exc}") from exc
+
+    rescore_csv_path = _save_dataframe_artifact(
+        rescore_df,
+        prefix=f"crisot_rescore_{txt_path.stem}",
+    )
+    return CrisotRescoreResponse(
+        txt_path=str(txt_path),
+        genome_path=str(genome_path),
+        mismatches=payload.mismatches,
+        device=payload.device,
+        sgrna_count=len(targets),
+        rescore_csv_path=rescore_csv_path,
+        cas_offinder_available=True,
+    )
+
+
 @app.post("/optimize", response_model=CrisotOptimizeResponse)
 def optimize_sgrna(payload: CrisotOptimizeRequest) -> CrisotOptimizeResponse:
     target_sequence = _normalize_crisot_sequence(payload.target_sequence, "target_sequence")
@@ -477,23 +732,13 @@ def optimize_sgrna(payload: CrisotOptimizeRequest) -> CrisotOptimizeResponse:
         )
 
     model = _load_model(str(genome_path))
+    model.opti_th = payload.threshold
     try:
         optimization_df = model.opti(
             target=target_sequence,
-            threshold=payload.threshold,
             mm=payload.mismatches,
             dev=payload.device,
         )
-    except TypeError:
-        try:
-            model.opti_th = payload.threshold
-            optimization_df = model.opti(
-                target=target_sequence,
-                mm=payload.mismatches,
-                dev=payload.device,
-            )
-        except Exception as exc:
-            raise HTTPException(status_code=500, detail=f"CRISOT optimization failed: {exc}") from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"CRISOT optimization failed: {exc}") from exc
 
@@ -517,4 +762,98 @@ def optimize_sgrna(payload: CrisotOptimizeRequest) -> CrisotOptimizeResponse:
         best_crisot_spec=0.0 if best_row is None else float(best_row.get("CRISOT-Spec", 0.0)),
         best_delta_spec=0.0 if best_row is None else float(best_row.get("delta_Spec", 0.0)),
         cas_offinder_available=True,
+    )
+
+
+@app.post("/crisot-fp", response_model=CrisotFpResponse)
+def crisot_fp(payload: CrisotFpRequest) -> CrisotFpResponse:
+    csv_path = _resolve_repo_relative_path(payload.csv_path)
+    if not csv_path.exists():
+        raise HTTPException(status_code=400, detail=f"CSV path does not exist: {csv_path}")
+    try:
+        dataframe = pd.read_csv(csv_path, header=0, index_col=None)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Failed to read CSV: {exc}") from exc
+    required_columns = {payload.on_item, payload.off_item}
+    missing_columns = required_columns - set(dataframe.columns)
+    if missing_columns:
+        raise HTTPException(
+            status_code=400,
+            detail=f"CSV is missing required columns: {sorted(missing_columns)}",
+        )
+
+    xgb_model = payload.xgb_model
+    try:
+        model_path = _resolve_xgb_model_path(xgb_model)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"xgb_model must be one of Circle-seq, Site-seq, Change-seq; got {xgb_model}",
+        ) from exc
+    if not model_path.exists():
+        raise HTTPException(
+            status_code=503,
+            detail=f"XGBoost model file missing: {model_path}. Please ensure trained_models.zip is unzipped or models are placed under {CRISOT_FALLBACK_MODELS_DIR}.",
+        )
+
+    _ensure_upstream_repo_available()
+    repo_path = str(CRISOT_ROOT)
+    if repo_path not in sys.path:
+        sys.path.insert(0, repo_path)
+    try:
+        from utils import CRISOT_FP
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"Failed to import CRISOT-FP utils: {exc}") from exc
+
+    try:
+        dataframe["CRISOT_FP"] = CRISOT_FP(
+            model_path=str(model_path),
+            dataread=dataframe.copy(),
+            On=payload.on_item,
+            Off=payload.off_item,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"CRISOT-FP prediction failed: {exc}") from exc
+
+    fp_csv_path = _save_dataframe_artifact(
+        dataframe,
+        prefix=f"crisot_fp_{csv_path.stem}",
+    )
+    return CrisotFpResponse(
+        csv_path=str(csv_path),
+        xgb_model=xgb_model,
+        on_item=payload.on_item,
+        off_item=payload.off_item,
+        row_count=int(dataframe.shape[0]),
+        fp_csv_path=fp_csv_path,
+    )
+
+
+@app.post("/gen-fp", response_model=CrisotGenFpResponse)
+def gen_fp(payload: CrisotGenFpRequest) -> CrisotGenFpResponse:
+    sgrna = _normalize_crisot_sequence(payload.sgrna, "sgrna")
+    target_sequence = _normalize_crisot_sequence(payload.target_sequence, "target_sequence")
+
+    _ensure_upstream_repo_available()
+    repo_path = str(CRISOT_ROOT)
+    if repo_path not in sys.path:
+        sys.path.insert(0, repo_path)
+    try:
+        from utils import FP_Encode_df
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"Failed to import CRISOT-FP utils: {exc}") from exc
+
+    try:
+        fp_df = FP_Encode_df(sgrna, target_sequence)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"CRISOT-FP encoding failed: {exc}") from exc
+
+    fp_csv_path = _save_dataframe_artifact(
+        fp_df,
+        prefix=f"crisot_genfp_{sgrna[:10]}_{target_sequence[:10]}",
+    )
+    return CrisotGenFpResponse(
+        sgrna=sgrna,
+        target_sequence=target_sequence,
+        fp_csv_path=fp_csv_path,
     )

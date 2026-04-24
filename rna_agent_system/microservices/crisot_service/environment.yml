@@ -11,3 +11,4 @@ dependencies:
       - fastapi
       - uvicorn
       - pydantic
+      - xgboost==1.7.3

@@ -14,6 +14,11 @@ class AgentState(TypedDict, total=False):
     input_sequence: str
     current_filepath: str
     candidate_sequence: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 CRISOT ToolSpec 注册区域的
+    # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+    # ═══════════════════════════════════════════════════════════════════════════
     crisot_score: float
     crisot_spec: float
     crisot_target_sequence: str
@@ -26,6 +31,12 @@ class AgentState(TypedDict, total=False):
     crisot_best_mutation: str
     crisot_best_delta_spec: float
     crisot_optimized_available: bool
+    crisot_scores_csv_filepath: str
+    crisot_rescore_csv_filepath: str
+    crisot_rescore_sgrna_count: int
+    crisot_fp_csv_filepath: str
+    crisot_fp_xgb_model: str
+    crisot_genfp_csv_filepath: str
     # ═══════════════════════════════════════════════════════════════════════════
     # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
     # 关联文件清单见 agent_core/tool_specs.py 中 design_sgrna_handle_with_crgpt

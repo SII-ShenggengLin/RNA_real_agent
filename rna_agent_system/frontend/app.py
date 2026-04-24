@@ -70,12 +70,22 @@ if user_input:
                         latest = _message_text(node_state["messages"][-1])
                         detail_lines.append(f"  - {_truncate(latest)}")
 
-                    if "crisot_score" in node_state or "crisot_spec" in node_state:
-                        crisot_score = node_state.get("crisot_score", "N/A")
-                        crisot_spec = node_state.get("crisot_spec", "N/A")
-                        detail_lines.append(
-                            f"  - CRISOT结果: score={crisot_score}, spec={crisot_spec}"
-                        )
+                    # CRISOT INTERFACE LOCK (v0.2.0): 展示字段必须与 state.py / nodes.py 同步
+                    crisot_parts: list[str] = []
+                    if "crisot_score" in node_state:
+                        crisot_parts.append(f"score={node_state.get('crisot_score', 'N/A')}")
+                    if "crisot_spec" in node_state:
+                        crisot_parts.append(f"spec={node_state.get('crisot_spec', 'N/A')}")
+                    if "crisot_off_target_count" in node_state:
+                        crisot_parts.append(f"off_targets={node_state.get('crisot_off_target_count', 'N/A')}")
+                    if "crisot_optimized_available" in node_state:
+                        crisot_parts.append(f"optimized={node_state.get('crisot_optimized_available', False)}")
+                    if "crisot_rescore_sgrna_count" in node_state:
+                        crisot_parts.append(f"rescore_count={node_state.get('crisot_rescore_sgrna_count', 0)}")
+                    if "crisot_fp_xgb_model" in node_state:
+                        crisot_parts.append(f"fp_model={node_state.get('crisot_fp_xgb_model', '')}")
+                    if crisot_parts:
+                        detail_lines.append(f"  - CRISOT结果: {', '.join(crisot_parts)}")
 
                     detail_box.markdown("\n".join(detail_lines))
                     final_state = node_state

@@ -178,6 +178,36 @@ class CrisotOptimizeOutput(_OutBase):
     model: str
 
 
+class CrisotScoresOutput(_OutBase):
+    input_csv_filepath: str
+    scored_csv_filepath: str
+    row_count: int
+    model: str
+
+
+class CrisotRescoreOutput(_OutBase):
+    input_txt_filepath: str
+    rescore_csv_filepath: str
+    genome_path: str
+    sgrna_count: int
+    model: str
+
+
+class CrisotFpOutput(_OutBase):
+    input_csv_filepath: str
+    fp_csv_filepath: str
+    xgb_model: str
+    row_count: int
+    model: str
+
+
+class CrisotGenFpOutput(_OutBase):
+    sgrna: str
+    target_sequence: str
+    fp_csv_filepath: str
+    model: str
+
+
 class SgRNADesignOutput(_OutBase):
     seed_sequence: str = ""
     input_filepath: Optional[str] = None
@@ -979,6 +1009,21 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=CodonwSlimOutput,
         status=ToolStatus.partial,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/crisot_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/nodes.py
+    #   - frontend/app.py
+    #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+    # 规则：任何字段增删、端点路径变更、输入/输出模型变动、返回值结构调整，
+    #      必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # 本次修改的基准日期：2026-04-24。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "score_crispr_off_target_with_crisot": ToolSpec(
         identity="score_crispr_off_target_with_crisot",
         display_name="CRISOT score (single pair)",
@@ -1030,7 +1075,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "optimize_sgrna_with_crisot": ToolSpec(
         identity="optimize_sgrna_with_crisot",
         display_name="CRISOT sgRNA optimization",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/bm2-lab/CRISOT",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8011/optimize",
@@ -1041,6 +1086,70 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         produces=["best_sgrna", "best_delta_spec"],
         input_model=tool_wrappers.CrisotOptimizeInput,
         output_model=CrisotOptimizeOutput,
+        status=ToolStatus.partial,
+    ),
+    "score_batch_crispr_off_targets_with_crisot": ToolSpec(
+        identity="score_batch_crispr_off_targets_with_crisot",
+        display_name="CRISOT batch scoring (CSV)",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/scores",
+        capabilities=["Batch calculate CRISOT-Score for sgRNA-target pairs in a CSV."],
+        limitations=["Requires CSV with expected column names; does not search genome-wide off-targets."],
+        task_tags=["crispr_offtarget_scoring"],
+        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["scored_csv_filepath"],
+        input_model=tool_wrappers.CrisotScoresInput,
+        output_model=CrisotScoresOutput,
+        status=ToolStatus.partial,
+    ),
+    "rescore_sgrnas_with_crisot": ToolSpec(
+        identity="rescore_sgrnas_with_crisot",
+        display_name="CRISOT genome-wide rescore and reranking",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/rescore",
+        capabilities=["Rescore and rerank sgRNAs by CRISOT-Score and CRISOT-Spec using Cas-OFFinder genome-wide search."],
+        limitations=["Requires reference genome FASTA and Cas-OFFinder installed in service env."],
+        task_tags=["crispr_sgrna_rescore"],
+        requires=[ToolDependency(name="Reference genome", detail="FASTA path"), ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["rescore_csv_filepath", "sgrna_count"],
+        input_model=tool_wrappers.CrisotRescoreInput,
+        output_model=CrisotRescoreOutput,
+        status=ToolStatus.partial,
+    ),
+    "predict_crispr_off_target_with_crisot_fp": ToolSpec(
+        identity="predict_crispr_off_target_with_crisot_fp",
+        display_name="CRISOT-FP XGBoost off-target prediction",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/crisot-fp",
+        capabilities=["Predict CRISPR off-target effects using CRISOT-FP molecular interaction fingerprints and XGBoost."],
+        limitations=["Requires trained XGBoost models (trained_models.zip unzipped). Supports Circle-seq, Site-seq, and Change-seq models."],
+        task_tags=["crispr_offtarget_scoring"],
+        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["fp_csv_filepath"],
+        input_model=tool_wrappers.CrisotFpInput,
+        output_model=CrisotFpOutput,
+        status=ToolStatus.partial,
+    ),
+    "generate_crispr_fingerprint_with_crisot": ToolSpec(
+        identity="generate_crispr_fingerprint_with_crisot",
+        display_name="CRISOT-FP fingerprint encoding",
+        version="0.1.0",
+        source="https://github.com/bm2-lab/CRISOT",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8011/gen-fp",
+        capabilities=["Generate CRISOT-FP molecular interaction fingerprint encoding for a single sgRNA-target pair."],
+        limitations=["Input normalization enforces 23-nt sequences."],
+        task_tags=["crispr_fingerprint_encoding"],
+        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
+        produces=["fp_csv_filepath"],
+        input_model=tool_wrappers.CrisotGenFpInput,
+        output_model=CrisotGenFpOutput,
         status=ToolStatus.partial,
     ),
     # ═══════════════════════════════════════════════════════════════════════════════

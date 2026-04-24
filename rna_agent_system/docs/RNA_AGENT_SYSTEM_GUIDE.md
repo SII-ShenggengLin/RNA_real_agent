@@ -369,24 +369,41 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 
 ### 6.9 CRISOT (端口 8011)
 
+> **INTERFACE LOCK (v0.2.0)** —— 禁止单方面变更  
+> 关联文件清单（修改时必须全部同步）：
+> - `microservices/crisot_service/main.py`
+> - `agent_core/tools.py`
+> - `agent_core/tool_specs.py`
+> - `agent_core/state.py`
+> - `agent_core/nodes.py`
+> - `frontend/app.py`
+> - `docs/RNA_AGENT_SYSTEM_GUIDE.md` ← 本文件
+> 
+> 规则：任何端点增删、字段变动、返回值结构调整，必须同时更新上述全部文件并重新跑通端到端测试。
+
 | 项目 | 说明 |
 |------|------|
 | 上游仓库 | [bm2-lab/CRISOT](https://github.com/bm2-lab/CRISOT.git) |
 | 微服务目录 | `microservices/crisot_service/` |
 | 环境 | 含 `cas-offinder`（Conda 安装） |
-| 接口 | `GET /health`、`POST /score`、`POST /spec`、`POST /off-spec`、`POST /optimize` |
+| 接口 | `GET /health`、`POST /score`、`POST /scores`、`POST /spec`、`POST /off-spec`、`POST /rescore`、`POST /optimize`、`POST /crisot-fp`、`POST /gen-fp` |
 
 **Agent 工具函数**：
-- `score_crispr_off_target_with_crisot(filepath, target_sequence)`
-- `calculate_crispr_specificity_with_crisot(csv_filepath)`
-- `search_crispr_off_targets_with_crisot(filepath, target_sequence, genome_path)`
-- `optimize_sgrna_with_crisot(filepath, genome_path)`
+- `score_crispr_off_target_with_crisot(filepath, target_sequence)` — 单对 CRISOT-Score
+- `score_batch_crispr_off_targets_with_crisot(csv_filepath)` — 批量 CRISOT-Score
+- `calculate_crispr_specificity_with_crisot(csv_filepath)` — CSV 特异性
+- `search_crispr_off_targets_with_crisot(filepath, target_sequence, genome_path)` — 基因组范围 off-spec
+- `rescore_sgrnas_with_crisot(txt_filepath, genome_path)` — 基因组范围重新评分排序
+- `optimize_sgrna_with_crisot(filepath, genome_path)` — sgRNA 优化
+- `predict_crispr_off_target_with_crisot_fp(csv_filepath, xgb_model)` — CRISOT-FP XGBoost 预测
+- `generate_crispr_fingerprint_with_crisot(sgrna, target_sequence)` — 生成分子指纹编码
 
 **关键注意事项**：
-- `score` / `spec` 不需要额外权重
-- `off-spec` / `optimize` 依赖 `cas-offinder` + reference genome FASTA
+- `score` / `scores` / `spec` / `crisot-fp` / `gen-fp` 不需要 `cas-offinder`
+- `off-spec` / `rescore` / `optimize` 依赖 `cas-offinder` + reference genome FASTA
 - 可通过 `CRISOT_DEFAULT_REF_GENOME` 环境变量覆盖默认基因组
-- `optimize` 在大基因组 + `mismatches=6` + CPU 下可能耗时数十分钟
+- `crisot-fp` 需要 `trained_models.zip` 已解压到 `models/`
+- `optimize` / `rescore` 在大基因组 + `mismatches=6` 下可能耗时较长
 - 已修复 `pandas>=2` 的 `DataFrame.append()` 兼容性问题
 
 ### 6.10 ODesign (端口 8012)
