@@ -196,7 +196,18 @@ def _resolve_dot_bracket_structure_filepath(raw_text: str) -> Tuple[str, bool]:
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 CodonwSlimOutput 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 def _build_codonw_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    """Extract codonw-slim tool arguments from raw user text.
+
+    Supports explicit key=value patterns (e.g. genetic_code=1, cai_ref=2)
+    as well as keyword heuristics (e.g. "dinucleotide", "codon table").
+    """
     args: dict[str, Any] = {"filepath": filepath}
     gc_m = re.search(r"genetic_code\s*[:=]\s*(\d+)", raw_text, flags=re.IGNORECASE)
     if gc_m:
@@ -217,6 +228,10 @@ def _build_codonw_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
         args["include_codon_tables"] = True
     if re.search(r"dinuc|dinucleotide", raw_text, flags=re.IGNORECASE):
         args["include_dinucleotide"] = True
+    if re.search(r"aa_usage|amino[-\s]?acid\s*usage|raau|relative\s*amino[-\s]?acid", raw_text, flags=re.IGNORECASE):
+        args["include_aa_tables"] = True
+    if re.search(r"include_bases|base\s*composition\s*(by\s*position|matrix)", raw_text, flags=re.IGNORECASE):
+        args["include_bases"] = True
     return args
 
 
@@ -2868,11 +2883,28 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["sequence_gc_content"] = float(tool_result.get("gc_content", 0.0))
         elif tool_name == "compute_dot_bracket_unpaired_fraction":
             state["dot_bracket_unpaired_fraction"] = float(tool_result.get("unpaired_fraction", 0.0))
+        # codonw-slim INTERFACE LOCK (v0.2.0): 结果回写字段必须与
+        # agent_core/state.py 中 codonw_* 字段及 agent_core/tool_specs.py
+        # 中 CodonwSlimOutput 保持一一对应。任何增删需同步。
         elif tool_name == "analyze_cds_codon_metrics_with_codonw_slim":
             state["cai_score"] = float(tool_result.get("cai_score", 0.0))
             state["codonw_enc"] = float(tool_result.get("enc", 0.0))
             state["codonw_fop"] = float(tool_result.get("fop", 0.0))
             state["codonw_cbi"] = float(tool_result.get("cbi", 0.0))
+            state["codonw_hydropathy"] = float(tool_result.get("hydropathy", 0.0))
+            state["codonw_aromaticity"] = float(tool_result.get("aromaticity", 0.0))
+            state["codonw_genetic_code"] = int(tool_result.get("genetic_code", 0))
+            state["codonw_cds_length_nt"] = int(tool_result.get("cds_length_nt", 0))
+            state["codonw_cds_length_codons"] = int(tool_result.get("cds_length_codons", 0))
+            state["codonw_normalization_note"] = str(tool_result.get("normalization_note", ""))
+            state["codonw_silent_base_usage"] = tool_result.get("silent_base_usage", {})
+            state["codonw_bases2"] = tool_result.get("bases2", {})
+            state["codonw_codon_usage"] = tool_result.get("codon_usage")
+            state["codonw_rscu"] = tool_result.get("rscu")
+            state["codonw_dinuc"] = tool_result.get("dinuc")
+            state["codonw_aa_usage"] = tool_result.get("aa_usage")
+            state["codonw_raau"] = tool_result.get("raau")
+            state["codonw_bases"] = tool_result.get("bases")
             metrics_json_filepath = str(tool_result.get("metrics_json_filepath", ""))
             if metrics_json_filepath:
                 state["codonw_metrics_filepath"] = metrics_json_filepath
@@ -3303,6 +3335,14 @@ def critic_node(state: AgentState) -> AgentState:
             f"codonw_enc={state.get('codonw_enc', 0.0)}; "
             f"codonw_fop={state.get('codonw_fop', 0.0)}; "
             f"codonw_cbi={state.get('codonw_cbi', 0.0)}; "
+            f"codonw_hydropathy={state.get('codonw_hydropathy', 0.0)}; "
+            f"codonw_aromaticity={state.get('codonw_aromaticity', 0.0)}; "
+            f"codonw_genetic_code={state.get('codonw_genetic_code', 0)}; "
+            f"codonw_cds_length_nt={state.get('codonw_cds_length_nt', 0)}; "
+            f"codonw_cds_length_codons={state.get('codonw_cds_length_codons', 0)}; "
+            f"codonw_normalization_note={state.get('codonw_normalization_note', '')}; "
+            f"codonw_silent_base_usage={state.get('codonw_silent_base_usage', {})}; "
+            f"codonw_bases2={state.get('codonw_bases2', {})}; "
             f"mfe={mfe}; "
             f"design_model={state.get('design_model', '')}; "
             f"rnarl_model_type={state.get('rnarl_model_type', '')}; "

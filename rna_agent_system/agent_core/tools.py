@@ -1634,8 +1634,24 @@ class MrnaToolInput(BaseModel):
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 analyze_cds_codon_metrics_with_codonw_slim
+# 的 INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class CodonwSlimAnalyzeInput(BaseModel):
-    """Input schema for codonw-slim CDS codon-usage metrics."""
+    """Input schema for codonw-slim CDS codon-usage metrics.
+
+    Mirrors the upstream CodonSeq API so that the agent can access every
+    metric and reference table offered by codonw-slim.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest
+    - agent_core/tool_specs.py :: analyze_cds_codon_metrics_with_codonw_slim ToolSpec
+    - agent_core/state.py :: codonw_* fields
+    - agent_core/nodes.py :: _build_codonw_tool_args / tool_execution_node codonw branch
+    """
 
     filepath: str = Field(
         ...,
@@ -1652,23 +1668,35 @@ class CodonwSlimAnalyzeInput(BaseModel):
         default=0,
         ge=0,
         le=7,
-        description="Genetic code index passed to CodonSeq (0 = universal nuclear).",
+        description=(
+            "Genetic code index passed to CodonSeq. "
+            "0=universal nuclear, 1=vertebrate mitochondrial, 2=yeast mitochondrial, "
+            "3=filamentous fungi mitochondrial, 4=insects/platyhelminthes mitochondrial, "
+            "5=nuclear ciliate, 6=nuclear euplotes, 7=echinoderm mitochondrial."
+        ),
     )
     cai_ref: int = Field(
         default=0,
         ge=0,
         le=2,
-        description="Reference index for CAI / CBI (and shared Fop reference family where applicable).",
+        description=(
+            "Reference set index for CAI and CBI. "
+            "0=Escherichia coli, 1=Bacillus subtilis, 2=Saccharomyces cerevisiae."
+        ),
     )
     fop_ref: int = Field(
         default=0,
         ge=0,
         le=7,
-        description="Fop reference species index.",
+        description=(
+            "Fop reference species index. "
+            "0=E. coli, 1=B. subtilis, 2=D. discoideum, 3=A. nidulans, "
+            "4=S. cerevisiae, 5=D. melanogaster, 6=C. elegans, 7=N. crassa."
+        ),
     )
     factor_in_rare: bool = Field(
         default=False,
-        description="If true, pass factor_in_rare=True into CodonSeq.fop().",
+        description="If true, pass factor_in_rare=True into CodonSeq.fop() (uses (opt-rare)/total formulation).",
     )
     include_codon_tables: bool = Field(
         default=False,
@@ -1676,7 +1704,15 @@ class CodonwSlimAnalyzeInput(BaseModel):
     )
     include_dinucleotide: bool = Field(
         default=False,
-        description="If true, request dinucleotide composition tables.",
+        description="If true, request dinucleotide composition tables by reading frame.",
+    )
+    include_aa_tables: bool = Field(
+        default=False,
+        description="If true, request amino-acid usage (aa_usage) and relative amino-acid usage (raau) tables.",
+    )
+    include_bases: bool = Field(
+        default=False,
+        description="If true, request base composition by codon position (bases DataFrame).",
     )
 
 
@@ -2319,8 +2355,17 @@ def analyze_cds_codon_metrics_with_codonw_slim(
     factor_in_rare: bool = False,
     include_codon_tables: bool = False,
     include_dinucleotide: bool = False,
+    include_aa_tables: bool = False,
+    include_bases: bool = False,
 ) -> dict[str, Any]:
     """Compute codon usage / CAI / Nc (ENC) and related metrics via codonw-slim service.
+
+    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: CodonwSlimOutput / analyze_cds_codon_metrics_with_codonw_slim ToolSpec
+    - agent_core/state.py :: codonw_* fields
+    - agent_core/nodes.py :: _build_codonw_tool_args / tool_execution_node codonw branch
+    - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest / CodonwAnalyzeResponse
 
     Wraps the `codonw-slim` library (CodonW) over HTTP. Input should be a **CDS**
     (in-frame coding sequence); RNA ``U`` is converted to ``T`` server-side.
@@ -2333,11 +2378,15 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         fop_ref: Fop reference index (0--7).
         factor_in_rare: Rare-codon adjustment flag for Fop.
         include_codon_tables: Request codon counts and RSCU tables.
-        include_dinucleotide: Request dinucleotide tables.
+        include_dinucleotide: Request dinucleotide tables by reading frame.
+        include_aa_tables: Request amino-acid usage and relative amino-acid usage tables.
+        include_bases: Request base composition by codon position.
 
     Returns:
-        Summary dict including ``cai_score``, ``enc``, ``fop``, ``cbi``, and
-        ``metrics_json_filepath`` pointing to a saved JSON artifact in ``workspace/``.
+        Summary dict including ``cai_score``, ``enc``, ``fop``, ``cbi``,
+        ``hydropathy``, ``aromaticity``, ``silent_base_usage``, ``bases2``,
+        optional tables, and ``metrics_json_filepath`` pointing to a saved
+        JSON artifact in ``workspace/``.
     """
     sequence = read_sequence(filepath)
     payload: dict[str, Any] = {
@@ -2348,6 +2397,8 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         "factor_in_rare": factor_in_rare,
         "include_codon_tables": include_codon_tables,
         "include_dinucleotide": include_dinucleotide,
+        "include_aa_tables": include_aa_tables,
+        "include_bases": include_bases,
     }
     try:
         response = requests.post(service_url, json=payload, timeout=120)
@@ -2361,16 +2412,20 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         prefix="codonw_metrics",
         suffix=".json",
     )
-    cai = data.get("cai")
+
+    def _f(key: str) -> float:
+        v = data.get(key)
+        return float(v) if v is not None else 0.0
+
     return {
         "input_filepath": filepath,
         "metrics_json_filepath": metrics_json_filepath,
-        "cai_score": float(cai) if cai is not None else 0.0,
-        "enc": float(data["enc"]) if data.get("enc") is not None else 0.0,
-        "fop": float(data["fop"]) if data.get("fop") is not None else 0.0,
-        "cbi": float(data["cbi"]) if data.get("cbi") is not None else 0.0,
-        "hydropathy": float(data["hydropathy"]) if data.get("hydropathy") is not None else 0.0,
-        "aromaticity": float(data["aromaticity"]) if data.get("aromaticity") is not None else 0.0,
+        "cai_score": _f("cai"),
+        "enc": _f("enc"),
+        "fop": _f("fop"),
+        "cbi": _f("cbi"),
+        "hydropathy": _f("hydropathy"),
+        "aromaticity": _f("aromaticity"),
         "genetic_code": int(data.get("genetic_code", genetic_code)),
         "cds_length_nt": int(data.get("cds_length_nt", 0)),
         "cds_length_codons": int(data.get("cds_length_codons", 0)),
@@ -2380,6 +2435,9 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         "codon_usage": data.get("codon_usage"),
         "rscu": data.get("rscu"),
         "dinuc": data.get("dinuc"),
+        "aa_usage": data.get("aa_usage"),
+        "raau": data.get("raau"),
+        "bases": data.get("bases"),
         "model": str(data.get("model", "codonw-slim")),
     }
 

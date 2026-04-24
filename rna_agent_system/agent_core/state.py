@@ -59,10 +59,31 @@ class AgentState(TypedDict, total=False):
     sgrna_design_score_mfe: Optional[float] = None
     sgrna_design_score_constraint_mutation_count: int
     cai_score: float
+    # ═══════════════════════════════════════════════════════════════════════════
+    # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 CodonwSlimOutput 的
+    # INTERFACE LOCK 注释。任何字段增删必须同步到 tool_execution_node
+    # 的 codonw 结果回写分支及 critic_node 的 summary 字符串。
+    # ═══════════════════════════════════════════════════════════════════════════
     codonw_metrics_filepath: str
     codonw_enc: float
     codonw_fop: float
     codonw_cbi: float
+    codonw_hydropathy: float = 0.0
+    codonw_aromaticity: float = 0.0
+    codonw_genetic_code: int = 0
+    codonw_cds_length_nt: int = 0
+    codonw_cds_length_codons: int = 0
+    codonw_normalization_note: str = ""
+    codonw_silent_base_usage: dict[str, Any] = {}
+    codonw_bases2: dict[str, Any] = {}
+    codonw_codon_usage: Optional[dict[str, Any]] = None
+    codonw_rscu: Optional[dict[str, Any]] = None
+    codonw_dinuc: Optional[dict[str, Any]] = None
+    codonw_aa_usage: Optional[dict[str, Any]] = None
+    codonw_raau: Optional[dict[str, Any]] = None
+    codonw_bases: Optional[dict[str, Any]] = None
+    # ═══════════════════════════════════════════════════════════════════════════
     mfe: float
     structure_filepath: str
     design_input_pdb_filepath: str

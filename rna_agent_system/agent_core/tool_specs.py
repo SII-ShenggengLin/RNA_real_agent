@@ -127,13 +127,53 @@ class LinearFoldOutput(_OutBase):
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/codonw_slim_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class CodonwSlimOutput(_OutBase):
+    """Full output schema for codonw-slim CDS metrics.
+
+    Every scalar metric and optional table exposed by the upstream CodonSeq
+    class is represented here so that the agent has a complete, typed contract.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: analyze_cds_codon_metrics_with_codonw_slim (wrapper return dict)
+    - microservices/codonw_slim_service/main.py :: CodonwAnalyzeResponse
+    - agent_core/state.py :: codonw_* fields
+    - agent_core/nodes.py :: tool_execution_node codonw branch
+    """
+
     input_filepath: str
     metrics_json_filepath: str
     cai_score: float
     enc: float
     fop: float
     cbi: float
+    hydropathy: float = 0.0
+    aromaticity: float = 0.0
+    genetic_code: int = 0
+    cds_length_nt: int = 0
+    cds_length_codons: int = 0
+    normalization_note: str = ""
+    silent_base_usage: dict[str, Any] = {}
+    bases2: dict[str, Any] = {}
+    codon_usage: Optional[dict[str, Any]] = None
+    rscu: Optional[dict[str, Any]] = None
+    dinuc: Optional[dict[str, Any]] = None
+    aa_usage: Optional[dict[str, Any]] = None
+    raau: Optional[dict[str, Any]] = None
+    bases: Optional[dict[str, Any]] = None
     model: str
 
 
@@ -1018,21 +1058,40 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=IRESfinderPredictionOutput,
         status=ToolStatus.available,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单见本文件上方 CodonwSlimOutput 的 INTERFACE LOCK 注释。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "analyze_cds_codon_metrics_with_codonw_slim": ToolSpec(
         identity="analyze_cds_codon_metrics_with_codonw_slim",
         display_name="codonw-slim CDS metrics",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/smsaladi/codonw-slim",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8018/analyze/cds",
-        capabilities=["Compute codon usage metrics (CAI/Fop/CBI/ENC) and optional tables."],
-        limitations=["Requires in-frame CDS input; metrics depend on reference tables/options."],
-        task_tags=["cds_codon_metrics"],
+        capabilities=[
+            "Compute codon usage metrics: CAI, Fop, CBI, Nc (ENC), hydropathy, aromaticity.",
+            "Compute base composition (overall, by codon position, silent sites): GC3s, GC1/2/3, A3s/T3s/C3s/G3s.",
+            "Optional tables: codon usage counts, RSCU, dinucleotide by frame, amino-acid usage, RAAU, base composition matrix.",
+            "Support multiple genetic codes (0--7) and reference species indices for CAI/CBI/Fop.",
+        ],
+        limitations=[
+            "Requires in-frame CDS input (length multiple of 3); trailing bases are trimmed server-side.",
+            "No error checking for start/stop codons, internal stops, or partial codons (upstream CodonW behaviour).",
+        ],
+        task_tags=["cds_codon_metrics", "codon_usage", "cai", "cbi", "fop", "enc", "nc"],
         requires=[ToolDependency(name="codonw-slim microservice", detail="microservices/codonw_slim_service (port 8018)")],
-        produces=["cai_score", "metrics_json_filepath"],
+        produces=[
+            "cai_score", "enc", "fop", "cbi",
+            "hydropathy", "aromaticity",
+            "silent_base_usage", "bases2",
+            "metrics_json_filepath",
+            "codon_usage", "rscu", "dinuc",
+            "aa_usage", "raau", "bases",
+        ],
         input_model=tool_wrappers.CodonwSlimAnalyzeInput,
         output_model=CodonwSlimOutput,
-        status=ToolStatus.partial,
+        status=ToolStatus.available,
     ),
     # ═══════════════════════════════════════════════════════════════════════════════
     # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更

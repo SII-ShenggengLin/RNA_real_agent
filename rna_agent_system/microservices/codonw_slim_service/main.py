@@ -1,4 +1,31 @@
-"""FastAPI wrapper for codonw-slim (CodonW metrics on coding sequences)."""
+"""FastAPI wrapper for codonw-slim (CodonW metrics on coding sequences).
+
+Upstream source: https://github.com/smsaladi/codonw-slim
+All metrics are computed by the original CodonW C library via Cython bindings.
+
+═══════════════════════════════════════════════════════════════════════════════
+codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+═══════════════════════════════════════════════════════════════════════════════
+关联文件清单（修改时必须全部同步）：
+  - microservices/codonw_slim_service/main.py  ← 本文件
+  - agent_core/tools.py
+  - agent_core/tool_specs.py
+  - agent_core/state.py
+  - agent_core/nodes.py
+  - docs/RNA_AGENT_SYSTEM_GUIDE.md
+规则：
+  1. CodonwAnalyzeRequest / CodonwAnalyzeResponse 的字段增删、类型变动、
+     默认值调整必须同步到 agent_core/tools.py 的 CodonwSlimAnalyzeInput。
+  2. 原始库调用方式（cseq.cai / cseq.fop / cseq.cbi / cseq.enc 等）必须与
+     codonw-slim 上游仓库的 CodonSeq 签名保持一一对应。
+  3. codon_usage / aa_usage 因上游 memoryview 兼容性问题已做 workaround
+     （通过 np.asarray(cseq.ncod) / np.asarray(cseq.naa) 手动构造 Series）。
+     后续升级上游版本时应验证该 workaround 是否仍需保留。
+  4. 任何修改必须重新跑通端到端测试（见 test/test_regression.py 及
+     POST /analyze/cds HTTP 测试）。
+违反此规则的提交将被回退。
+═══════════════════════════════════════════════════════════════════════════════
+"""
 
 from __future__ import annotations
 
@@ -12,12 +39,15 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 try:
-    from codonw import CodonSeq
+    from codonw import CodonSeq, ref_codons, ref_aa1
 except ImportError as exc:  # pragma: no cover - exercised when env not built
     CodonSeq = None  # type: ignore[misc, assignment]
+    ref_codons = []  # type: ignore[assignment]
+    ref_aa1 = []  # type: ignore[assignment]
     _IMPORT_ERROR = str(exc)
 else:
     _IMPORT_ERROR = ""
+
 
 def _finite_float(value: Any) -> Optional[float]:
     try:
@@ -33,9 +63,9 @@ app = FastAPI(
     title="codonw-slim service",
     description=(
         "REST bridge to smsaladi/codonw-slim: CAI, Fop, CBI, Nc (ENC), "
-        "hydropathy, aromaticity, base composition, RSCU, etc."
+        "hydropathy, aromaticity, base composition, RSCU, RAAU, AA usage, etc."
     ),
-    version="0.1.0",
+    version="0.2.0",
 )
 
 
@@ -77,6 +107,12 @@ def _normalize_cds_dna(raw: str) -> tuple[str, str]:
 
 
 class CodonwAnalyzeRequest(BaseModel):
+    """Request body for POST /analyze/cds.
+
+    Mirrors the original CodonSeq constructor and method signatures so that
+    every option exposed by codonw-slim can be controlled by the caller.
+    """
+
     sequence: str = Field(
         ...,
         min_length=3,
@@ -86,19 +122,56 @@ class CodonwAnalyzeRequest(BaseModel):
         default=0,
         ge=0,
         le=7,
-        description="CodonSeq genetic_code index (0=universal nuclear, see codonw docs).",
+        description="CodonSeq genetic_code index (0=universal nuclear, 1=vertebrate mt, ... 7=echinoderm mt).",
     )
-    cai_ref: int = Field(default=0, ge=0, le=2, description="Reference set index for CAI/CBI/Fop.")
-    fop_ref: int = Field(default=0, ge=0, le=7, description="Fop reference species index.")
-    factor_in_rare: bool = Field(default=False, description="Passed to CodonSeq.fop().")
+    cai_ref: int = Field(
+        default=0,
+        ge=0,
+        le=2,
+        description=(
+            "Reference set index for CAI and CBI. "
+            "0=E. coli, 1=B. subtilis, 2=S. cerevisiae."
+        ),
+    )
+    fop_ref: int = Field(
+        default=0,
+        ge=0,
+        le=7,
+        description=(
+            "Fop reference species index. "
+            "0=E. coli, 1=B. subtilis, 2=D. discoideum, 3=A. nidulans, "
+            "4=S. cerevisiae, 5=D. melanogaster, 6=C. elegans, 7=N. crassa."
+        ),
+    )
+    factor_in_rare: bool = Field(
+        default=False,
+        description="If true, pass factor_in_rare=True into CodonSeq.fop().",
+    )
     include_codon_tables: bool = Field(
         default=False,
         description="If true, include codon_usage and rscu dicts (can be large).",
     )
-    include_dinucleotide: bool = Field(default=False, description="If true, include dinuc frame tables.")
+    include_dinucleotide: bool = Field(
+        default=False,
+        description="If true, include dinuc frame tables.",
+    )
+    include_aa_tables: bool = Field(
+        default=False,
+        description="If true, include aa_usage and raau dicts.",
+    )
+    include_bases: bool = Field(
+        default=False,
+        description="If true, include bases DataFrame (base composition by codon position).",
+    )
 
 
 class CodonwAnalyzeResponse(BaseModel):
+    """Response body for POST /analyze/cds.
+
+    Every field that CodonSeq can compute is represented here so that callers
+    receive a complete, self-describing metrics bundle.
+    """
+
     genetic_code: int
     cds_length_nt: int
     cds_length_codons: int
@@ -114,6 +187,9 @@ class CodonwAnalyzeResponse(BaseModel):
     codon_usage: Optional[dict[str, Any]] = None
     rscu: Optional[dict[str, Any]] = None
     dinuc: Optional[dict[str, Any]] = None
+    aa_usage: Optional[dict[str, Any]] = None
+    raau: Optional[dict[str, Any]] = None
+    bases: Optional[dict[str, Any]] = None
     model: str = "codonw-slim"
 
 
@@ -152,11 +228,26 @@ def analyze_cds(body: CodonwAnalyzeRequest) -> CodonwAnalyzeResponse:
     codon_usage: Optional[dict[str, Any]] = None
     rscu: Optional[dict[str, Any]] = None
     dinuc: Optional[dict[str, Any]] = None
+    aa_usage: Optional[dict[str, Any]] = None
+    raau: Optional[dict[str, Any]] = None
+    bases: Optional[dict[str, Any]] = None
+
     if body.include_codon_tables:
-        codon_usage = _jsonable(cseq.codon_usage())
+        # Work around upstream bug: cseq.codon_usage() returns Series whose
+        # values are _memoryviewslice objects on this numpy/pandas version.
+        # We reconstruct the Series from the underlying ncod array directly.
+        _ncod = np.asarray(cseq.ncod)
+        codon_usage = _jsonable(pd.Series(_ncod[1:65], index=ref_codons[1:65]))
         rscu = _jsonable(cseq.rscu())
     if body.include_dinucleotide:
         dinuc = _jsonable(cseq.dinuc(pct=True))
+    if body.include_aa_tables:
+        # Same workaround for aa_usage()
+        _naa = np.asarray(cseq.naa)
+        aa_usage = _jsonable(pd.Series(_naa, index=ref_aa1))
+        raau = _jsonable(cseq.raau())
+    if body.include_bases:
+        bases = _jsonable(cseq.bases())
 
     return CodonwAnalyzeResponse(
         genetic_code=body.genetic_code,
@@ -174,4 +265,7 @@ def analyze_cds(body: CodonwAnalyzeRequest) -> CodonwAnalyzeResponse:
         codon_usage=codon_usage,
         rscu=rscu,
         dinuc=dinuc,
+        aa_usage=aa_usage,
+        raau=raau,
+        bases=bases,
     )

@@ -500,10 +500,17 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 接口 | `GET /health`、`POST /analyze/cds` |
 | Agent 工具 | `analyze_cds_codon_metrics_with_codonw_slim(filepath)` |
 
+**暴露的上游能力**：
+- 核心指标：CAI、Fop、CBI、Nc (ENC)、hydropathy、aromaticity
+- 碱基组成：GC、GC1/2/3、GC3s、GCn3s、silent base usage (A3s/T3s/C3s/G3s)
+- 可选表格：codon_usage、RSCU、dinucleotide（按阅读框）、aa_usage、RAAU、bases（按密码子位置）
+- 遗传代码：支持 0–7（universal nuclear 到 echinoderm mitochondrial）
+- 参考物种：CAI/CBI 0–2（E. coli / B. subtilis / S. cerevisiae）；Fop 0–7（额外含 D. discoideum / A. nidulans / D. melanogaster / C. elegans / N. crassa）
+
 **关键注意事项**：
 - **`conda env create` 后必须执行 `bash install_codonw_slim.sh`**
 - 脚本解决两个问题：`pip` 隔离构建缺 Cython；上游 `astype(long)` → `astype(np.int64)` 兼容性
-- 输入应为 in-frame CDS
+- 输入应为 in-frame CDS；尾部非 3 的倍数碱基会被自动截断
 
 ### 6.17 RNA sequence metrics (端口 8020)
 
