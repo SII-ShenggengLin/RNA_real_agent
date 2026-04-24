@@ -51,6 +51,3 @@
 [submodule "rna_agent_system/external_repos/codonw-slim"]
 	path = rna_agent_system/external_repos/codonw-slim
 	url = https://github.com/smsaladi/codonw-slim.git
-[submodule "rna_agent_system/external_repos/RiboDiffusion"]
-	path = rna_agent_system/external_repos/RiboDiffusion
-	url = https://github.com/ml4bio/RiboDiffusion.git
