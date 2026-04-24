@@ -283,12 +283,30 @@ class CrisotOptimizeInput(BaseModel):
     )
 
 
-class SgRNADesignInput(BaseModel):
-    """Input schema for sgRNA handle design via sgrna_design_service."""
+# ═══════════════════════════════════════════════════════════════════════════════
+# sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 design_sgrna_handle_with_crgpt 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
 
-    filepath: str = Field(
-        ...,
-        description="Path to a workspace or repo-relative file containing sgRNA handle seed sequence.",
+class SgRNADesignInput(BaseModel):
+    """Input schema for sgRNA handle design via sgrna_design_service.
+
+    INTERFACE LOCK (v0.3.0): Locked schema. Modify only in sync with:
+    - microservices/sgrna_design_service/main.py :: DesignRequest
+    - agent_core/tool_specs.py :: design_sgrna_handle_with_crgpt ToolSpec
+    - agent_core/state.py :: sgrna_design_* fields
+    - agent_core/nodes.py :: _resolve_sgrna_design_request
+    - docs/tools/design_sgrna_handle_with_crgpt.md
+    """
+
+    seed_sequence: Optional[str] = Field(
+        default=None,
+        description="Inline seed/wildtype sgRNA handle sequence (DNA/RNA). Either this or filepath must be provided.",
+    )
+    filepath: Optional[str] = Field(
+        default=None,
+        description="Path to a workspace or repo-relative file containing sgRNA handle seed sequence. Either this or seed_sequence must be provided.",
     )
     n_samples: int = Field(
         default=10,
@@ -302,11 +320,17 @@ class SgRNADesignInput(BaseModel):
         le=40,
         description="Maximum mutation count relative to the seed sequence.",
     )
-    temperature: float = Field(
-        default=1.0,
+    temperature: Optional[float] = Field(
+        default=None,
         gt=0.0,
-        le=5.0,
-        description="Sampling temperature passed through to service generation.",
+        le=100.0,
+        description="MCMC annealing temperature (mcmc mode, default 20.0) or transformer sampling temperature (naive mode, default 1.0).",
+    )
+    max_length: Optional[int] = Field(
+        default=None,
+        ge=1,
+        le=120,
+        description="Optional target sequence length for naive mode (overrides auto-computed max_new_tokens).",
     )
     max_overlap: int = Field(
         default=21,
@@ -314,9 +338,21 @@ class SgRNADesignInput(BaseModel):
         le=60,
         description="Maximum longest-common-substring overlap among accepted candidates.",
     )
+    sampling_mode: str = Field(
+        default="mcmc",
+        description="Sampling strategy: 'mcmc' (original MCMC/annealing) or 'naive' (direct model.generate).",
+    )
+    path_to_model: Optional[str] = Field(
+        default=None,
+        description="Optional model directory (relative to sgrna_design root or absolute path).",
+    )
     device: Optional[str] = Field(
         default=None,
         description="Optional torch device override such as `cuda:0` or `cpu`.",
+    )
+    output_dir: Optional[str] = Field(
+        default=None,
+        description="Optional output directory override for the microservice.",
     )
     service_url: str = Field(
         default="http://127.0.0.1:8017/design",
@@ -853,24 +889,40 @@ def optimize_sgrna_with_crisot(
 
 @tool(args_schema=SgRNADesignInput)
 def design_sgrna_handle_with_crgpt(
-    filepath: str,
+    seed_sequence: Optional[str] = None,
+    filepath: Optional[str] = None,
     n_samples: int = 10,
     mutation_number: int = 22,
-    temperature: float = 1.0,
+    temperature: Optional[float] = None,
+    max_length: Optional[int] = None,
     max_overlap: int = 21,
+    sampling_mode: str = "mcmc",
+    path_to_model: Optional[str] = None,
     device: Optional[str] = None,
+    output_dir: Optional[str] = None,
     service_url: str = "http://127.0.0.1:8017/design",
 ) -> dict[str, Any]:
     """Design sgRNA handle candidates through sgrna_design microservice.
 
+    INTERFACE LOCK (v0.3.0): This wrapper's return dict keys are the canonical
+    interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: SgRNADesignOutput
+    - agent_core/state.py :: sgrna_design_* fields
+    - agent_core/nodes.py :: tool_execution_node sgrna_design branch
+
     Args:
+        seed_sequence: Inline seed/wildtype sgRNA handle sequence (DNA/RNA).
+            Either this or filepath must be provided.
         filepath: Path to a file containing the seed sgRNA handle sequence.
-            IMPORTANT: pass a filepath rather than inline long sequence text.
+            Either this or seed_sequence must be provided.
         n_samples: Number of designed candidates to request.
         mutation_number: Maximum mutation count relative to seed sequence.
-        temperature: Sampling temperature for model generation.
+        temperature: MCMC annealing temperature (mcmc mode) or transformer sampling temperature (naive mode).
         max_overlap: Maximum overlap constraint among candidates.
+        sampling_mode: Sampling strategy: 'mcmc' (original MCMC/annealing) or 'naive' (direct model.generate).
+        path_to_model: Optional model directory (relative to sgrna_design root or absolute path).
         device: Optional torch device override such as `cuda:0` or `cpu`.
+        output_dir: Optional output directory override for the microservice.
         service_url: REST endpoint for the sgrna_design microservice.
 
     Returns:
@@ -879,16 +931,30 @@ def design_sgrna_handle_with_crgpt(
     Raises:
         ValueError: If service request fails or response payload is invalid.
     """
-    seed_sequence = _normalize_sgrna_design_sequence(read_sequence(filepath))
+    if seed_sequence:
+        resolved_seed = _normalize_sgrna_design_sequence(seed_sequence)
+    elif filepath:
+        resolved_seed = _normalize_sgrna_design_sequence(read_sequence(filepath))
+    else:
+        raise ValueError("Either seed_sequence or filepath must be provided for sgRNA design.")
+
     request_payload: dict[str, Any] = {
-        "seed_sequence": seed_sequence,
+        "seed_sequence": resolved_seed,
         "n_samples": int(n_samples),
         "mutation_number": int(mutation_number),
-        "temperature": float(temperature),
         "max_overlap": int(max_overlap),
+        "sampling_mode": sampling_mode,
     }
+    if temperature is not None:
+        request_payload["temperature"] = float(temperature)
+    if max_length is not None:
+        request_payload["max_length"] = int(max_length)
+    if path_to_model:
+        request_payload["path_to_model"] = path_to_model
     if device:
         request_payload["device"] = device
+    if output_dir:
+        request_payload["output_dir"] = output_dir
 
     try:
         response = requests.post(
@@ -913,8 +979,11 @@ def design_sgrna_handle_with_crgpt(
 
         output_fasta_path = str(payload["output_fasta_path"])
         summary_json_path = str(payload["summary_json_path"])
+        raw_ali = payload.get("output_ali_path")
+        output_ali_path = str(raw_ali) if raw_ali is not None else ""
         workspace_fasta_path = output_fasta_path
         workspace_summary_path = summary_json_path
+        workspace_ali_path = output_ali_path
         try:
             workspace_fasta_path = copy_file_to_workspace(
                 output_fasta_path,
@@ -931,6 +1000,15 @@ def design_sgrna_handle_with_crgpt(
             )
         except OSError:
             workspace_summary_path = summary_json_path
+        if output_ali_path:
+            try:
+                workspace_ali_path = copy_file_to_workspace(
+                    output_ali_path,
+                    prefix="sgrna_design_align",
+                    suffix=".ali",
+                )
+            except OSError:
+                workspace_ali_path = output_ali_path
 
         candidates = payload.get("candidates", [])
         best_candidate = {}
@@ -947,28 +1025,114 @@ def design_sgrna_handle_with_crgpt(
         best_mutation_count = int(best_candidate.get("mutation_count", 0)) if best_candidate else 0
 
         result = {
+            "seed_sequence": resolved_seed,
             "input_filepath": filepath,
-            "seed_sequence": seed_sequence,
-            "normalized_seed": str(payload.get("normalized_seed", seed_sequence)),
+            "normalized_seed": str(payload.get("normalized_seed", resolved_seed)),
             "generated_count": int(payload.get("generated_count", 0)),
             "best_sequence": best_sequence,
             "best_nn_score": best_nn_score,
             "best_mutation_count": best_mutation_count,
+            "sampling_mode": str(payload.get("sampling_mode", sampling_mode)),
             "output_fasta_filepath": workspace_fasta_path,
+            "output_ali_filepath": workspace_ali_path,
             "summary_json_filepath": workspace_summary_path,
             "raw_output_fasta_path": output_fasta_path,
             "raw_summary_json_path": summary_json_path,
+            "raw_output_ali_path": output_ali_path,
             "device": str(payload.get("device", device or "")),
-            "model_path": str(payload.get("model_path", "")),
+            "model_path": str(payload.get("model_path", path_to_model or "")),
             "has_vienna_rna": bool(payload.get("has_vienna_rna", False)),
             "notes": payload.get("notes", []),
             "model": str(payload.get("model", "sgrna_design_crgpt")),
         }
         if best_sequence:
             result["best_sequence_filepath"] = save_sequence(best_sequence, prefix="sgrna_design_best")
+        # Include log_likelihood from the best candidate if available
+        if best_candidate and best_candidate.get("log_likelihood") is not None:
+            result["best_log_likelihood"] = float(best_candidate["log_likelihood"])
         return result
     except requests.RequestException as exc:
         _raise_service_error(exc, "sgRNA design")
+
+
+class SgRNADesignScoreInput(BaseModel):
+    """Input schema for sgRNA handle scoring via sgrna_design_service.
+
+    INTERFACE LOCK (v0.3.0): Locked schema. Modify only in sync with:
+    - microservices/sgrna_design_service/main.py :: ScoreRequest
+    - agent_core/tool_specs.py :: score_sgrna_handle_with_crgpt ToolSpec
+    - agent_core/state.py :: sgrna_design_score_* fields
+    - agent_core/nodes.py :: tool_execution_node score_sgrna branch
+    """
+
+    sequence: str = Field(
+        ...,
+        description="Inline sgRNA handle sequence (DNA/RNA) to score.",
+    )
+    path_to_model: Optional[str] = Field(
+        default=None,
+        description="Optional model directory (relative to sgrna_design root or absolute path).",
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional torch device override such as `cuda:0` or `cpu`.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8017/score",
+        description="REST endpoint for sgRNA scoring microservice.",
+    )
+
+
+@tool(args_schema=SgRNADesignScoreInput)
+def score_sgrna_handle_with_crgpt(
+    sequence: str,
+    path_to_model: Optional[str] = None,
+    device: Optional[str] = None,
+    service_url: str = "http://127.0.0.1:8017/score",
+) -> dict[str, Any]:
+    """Score a single sgRNA handle sequence using the CRGPT model.
+
+    Computes nn_score (exp(loss)), log_likelihood (negative cross-entropy),
+    ViennaRNA structure distance / MFE, and constraint mutation count.
+
+    Args:
+        sequence: sgRNA handle sequence to score (DNA/RNA).
+        path_to_model: Optional model directory override.
+        device: Optional torch device such as `cuda:0` or `cpu`.
+        service_url: REST endpoint for the sgrna_design scoring endpoint.
+
+    Returns:
+        Dict with normalized sequence, nn_score, log_likelihood, structure_distance,
+        mfe, and constraint_mutation_count.
+    """
+    normalized = _normalize_sgrna_design_sequence(sequence)
+    payload: dict[str, Any] = {"sequence": normalized}
+    if path_to_model:
+        payload["path_to_model"] = path_to_model
+    if device:
+        payload["device"] = device
+    try:
+        response = requests.post(service_url, json=payload, timeout=300)
+        response.raise_for_status()
+        data = response.json()
+        required = {"nn_score", "log_likelihood", "normalized_sequence", "constraint_mutation_count"}
+        if not required.issubset(data):
+            raise ValueError(
+                "sgRNA score response is missing required fields: "
+                f"{sorted(required - set(data))}"
+            )
+        return {
+            "sequence": sequence,
+            "normalized_sequence": str(data["normalized_sequence"]),
+            "nn_score": float(data["nn_score"]),
+            "log_likelihood": float(data["log_likelihood"]),
+            "structure_distance": data.get("structure_distance"),
+            "mfe": data.get("mfe"),
+            "constraint_mutation_count": int(data["constraint_mutation_count"]),
+            "model": str(data.get("model", "sgrna_design_crgpt")),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "sgRNA score")
 
 
 class MrnaToolInput(BaseModel):
@@ -3240,6 +3404,7 @@ SIRNA_LANGCHAIN_TOOLS: list[Any] = [
 ]
 CRISPR_LANGCHAIN_TOOLS: list[Any] = [
     design_sgrna_handle_with_crgpt,
+    score_sgrna_handle_with_crgpt,
     score_crispr_off_target_with_crisot,
     calculate_crispr_specificity_with_crisot,
     search_crispr_off_targets_with_crisot,

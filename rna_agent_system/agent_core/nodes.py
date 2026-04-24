@@ -20,6 +20,7 @@ from agent_core.tools import (
     predict_rna_local_accessibility_profile_vienna,
     compute_sirna_duplex_binding_vienna,
     design_sgrna_handle_with_crgpt,
+    score_sgrna_handle_with_crgpt,
     design_sirna_with_evitar,
     design_mrna_cds_with_lineardesign,
     design_rna_sequence_with_rhodesign,
@@ -564,6 +565,13 @@ def _needs_sgrna_handle_design(text: str) -> bool:
             "design sgrna",
         ]
     )
+
+
+def _needs_sgrna_handle_score(text: str) -> bool:
+    lowered = text.lower()
+    has_score = any(k in lowered for k in ["score", "评分", "打分", "scoring"])
+    has_sgrna = any(k in lowered for k in ["sgrna", "handle", "crgpt"])
+    return has_score and has_sgrna
 
 
 def _needs_crisot_optimization(text: str) -> bool:
@@ -1408,26 +1416,55 @@ def _extract_structure_design_inputs(text: str) -> Tuple[str, Optional[str]]:
     return pdb_path, ss_path
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 design_sgrna_handle_with_crgpt
+# 的 INTERFACE LOCK 注释。任何修改必须全部同步。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 def _resolve_sgrna_design_request(text: str) -> Tuple[dict[str, Any], dict[str, Any]]:
-    raw_sequence = _extract_sgrna_seed_sequence(text)
+    """Resolve sgRNA design request from natural language text.
+
+    Priority:
+      1. Explicit seed_sequence=... in text
+      2. Bare DNA/RNA sequence (40-140 nt)
+      3. File path with fasta/fa/txt/seq extension
+      4. Default wildtype sequence
+    """
+    # 1. Try explicit seed_sequence= assignment
+    explicit_match = re.search(
+        r"seed_sequence\s*[:=]\s*[\"']?([ACGUTacgut\s]{40,140})[\"']?",
+        text,
+        re.IGNORECASE,
+    )
+    raw_sequence = ""
+    if explicit_match:
+        raw_sequence = explicit_match.group(1).strip().upper().replace("U", "T").replace(" ", "")
     if not raw_sequence:
+        # 2. Try bare sequence
+        raw_sequence = _extract_sgrna_seed_sequence(text)
+
+    filepath_candidate: Optional[str] = None
+    if not raw_sequence:
+        # 3. Try file path
         filepath_candidate = _extract_path_with_suffixes(text, ("fasta", "fa", "txt", "seq"))
-    else:
-        filepath_candidate = None
 
     workspace_files: list[str] = []
-    if filepath_candidate:
-        seed_filepath = filepath_candidate
-    else:
-        if not raw_sequence:
-            discovered = _extract_crispr_sequences(text)
-            raw_sequence = discovered[0] if discovered else (
-                "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG"
-            )
-        seed_filepath = save_sequence(raw_sequence, prefix="sgrna_seed")
-        workspace_files.append(seed_filepath)
+    tool_args: dict[str, Any] = {}
 
-    tool_args: dict[str, Any] = {"filepath": seed_filepath}
+    if raw_sequence:
+        tool_args["seed_sequence"] = raw_sequence
+        state_updates: dict[str, Any] = {"sgrna_design_seed_sequence": raw_sequence}
+    elif filepath_candidate:
+        tool_args["filepath"] = filepath_candidate
+        state_updates = {"current_filepath": filepath_candidate}
+    else:
+        # 4. Default wildtype
+        default_wildtype = "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG"
+        tool_args["seed_sequence"] = default_wildtype
+        state_updates = {"sgrna_design_seed_sequence": default_wildtype}
+
+    # Extract optional parameters
     n_samples = _extract_int_setting(text, ("n_samples", "samples", "num_samples"))
     if n_samples is not None and n_samples > 0:
         tool_args["n_samples"] = n_samples
@@ -1446,11 +1483,18 @@ def _resolve_sgrna_design_request(text: str) -> Tuple[dict[str, Any], dict[str, 
     device = _extract_string_setting(text, ("device", "torch_device", "dev"))
     if device:
         tool_args["device"] = device
+    sampling_mode = _extract_string_setting(text, ("sampling_mode", "mode", "sampling"))
+    if sampling_mode and sampling_mode.lower() in ("mcmc", "naive"):
+        tool_args["sampling_mode"] = sampling_mode.lower()
+    max_length = _extract_int_setting(text, ("max_length", "maxlen"))
+    if max_length is not None and max_length > 0:
+        tool_args["max_length"] = max_length
+    path_to_model = _extract_string_setting(text, ("path_to_model", "model_path", "model_dir"))
+    if path_to_model:
+        tool_args["path_to_model"] = path_to_model
 
-    state_updates = {
-        "current_filepath": seed_filepath,
-        "workspace_files": workspace_files,
-    }
+    if workspace_files:
+        state_updates["workspace_files"] = workspace_files
     return tool_args, state_updates
 
 
@@ -1753,7 +1797,22 @@ def crispr_specialist_node(state: AgentState) -> AgentState:
     state["active_specialist"] = "crispr_specialist"
     user_text = state.get("input_sequence", "")
     lowered = user_text.lower()
-    if _needs_sgrna_handle_design(lowered):
+    if _needs_sgrna_handle_score(lowered):
+        seq = _extract_sgrna_seed_sequence(user_text)
+        if seq:
+            tool_args = {"sequence": seq}
+            state_updates = {"sgrna_design_score_sequence": seq}
+        else:
+            filepath = _extract_path_with_suffixes(user_text, ("fasta", "fa", "txt", "seq"))
+            if filepath:
+                tool_args = {"sequence": read_sequence(filepath)}
+                state_updates = {"current_filepath": filepath}
+            else:
+                default_wildtype = "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG"
+                tool_args = {"sequence": default_wildtype}
+                state_updates = {"sgrna_design_score_sequence": default_wildtype}
+        tool_name = "score_sgrna_handle_with_crgpt"
+    elif _needs_sgrna_handle_design(lowered):
         tool_args, state_updates = _resolve_sgrna_design_request(user_text)
         tool_name = "design_sgrna_handle_with_crgpt"
     else:
@@ -2192,7 +2251,22 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     return state
         elif state.get("active_specialist") == "crispr_specialist":
             raw_crispr_text = state.get("input_sequence", "")
-            if _needs_sgrna_handle_design(raw_crispr_text.lower()):
+            if _needs_sgrna_handle_score(raw_crispr_text.lower()):
+                seq = _extract_sgrna_seed_sequence(raw_crispr_text)
+                if seq:
+                    tool_args = {"sequence": seq}
+                    state_updates = {"sgrna_design_score_sequence": seq}
+                else:
+                    filepath = _extract_path_with_suffixes(raw_crispr_text, ("fasta", "fa", "txt", "seq"))
+                    if filepath:
+                        tool_args = {"sequence": read_sequence(filepath)}
+                        state_updates = {"current_filepath": filepath}
+                    else:
+                        default_wildtype = "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG"
+                        tool_args = {"sequence": default_wildtype}
+                        state_updates = {"sgrna_design_score_sequence": default_wildtype}
+                tool_name = "score_sgrna_handle_with_crgpt"
+            elif _needs_sgrna_handle_design(raw_crispr_text.lower()):
                 tool_args, state_updates = _resolve_sgrna_design_request(raw_crispr_text)
                 tool_name = "design_sgrna_handle_with_crgpt"
             else:
@@ -2499,22 +2573,33 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["current_filepath"] = optimized_sgrna_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [optimized_sgrna_filepath]
         elif tool_name == "design_sgrna_handle_with_crgpt":
-            input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
+            input_filepath = str(tool_result.get("input_filepath") or state.get("current_filepath", ""))
             if input_filepath:
                 state["current_filepath"] = input_filepath
                 if input_filepath.startswith("workspace/"):
                     state["workspace_files"] = state.get("workspace_files", []) + [input_filepath]
+            seed_seq = str(tool_result.get("seed_sequence", ""))
+            if seed_seq:
+                state["sgrna_design_seed_sequence"] = seed_seq
             best_sequence = str(tool_result.get("best_sequence", ""))
             if best_sequence:
                 state["candidate_sequence"] = best_sequence
             state["sgrna_design_generated_count"] = int(tool_result.get("generated_count", 0))
             state["sgrna_design_best_nn_score"] = float(tool_result.get("best_nn_score", 0.0))
+            best_ll = tool_result.get("best_log_likelihood")
+            if best_ll is not None:
+                state["sgrna_design_best_log_likelihood"] = float(best_ll)
             state["sgrna_design_best_mutation_count"] = int(tool_result.get("best_mutation_count", 0))
+            state["sgrna_design_sampling_mode"] = str(tool_result.get("sampling_mode", "mcmc"))
             state["sgrna_design_model_path"] = str(tool_result.get("model_path", ""))
             output_fasta_filepath = str(tool_result.get("output_fasta_filepath", ""))
             if output_fasta_filepath:
                 state["sgrna_design_output_filepath"] = output_fasta_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [output_fasta_filepath]
+            output_ali_filepath = str(tool_result.get("output_ali_filepath", ""))
+            if output_ali_filepath:
+                state["sgrna_design_output_ali_filepath"] = output_ali_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_ali_filepath]
             summary_json_filepath = str(tool_result.get("summary_json_filepath", ""))
             if summary_json_filepath:
                 state["sgrna_design_summary_filepath"] = summary_json_filepath
@@ -2523,6 +2608,19 @@ def tool_execution_node(state: AgentState) -> AgentState:
             if best_sequence_filepath:
                 state["current_filepath"] = best_sequence_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [best_sequence_filepath]
+        elif tool_name == "score_sgrna_handle_with_crgpt":
+            seq = str(tool_result.get("sequence", ""))
+            if seq:
+                state["sgrna_design_score_sequence"] = seq
+            state["sgrna_design_score_nn_score"] = float(tool_result.get("nn_score", 0.0))
+            state["sgrna_design_score_log_likelihood"] = float(tool_result.get("log_likelihood", 0.0))
+            sd = tool_result.get("structure_distance")
+            if sd is not None:
+                state["sgrna_design_score_structure_distance"] = int(sd)
+            mfe = tool_result.get("mfe")
+            if mfe is not None:
+                state["sgrna_design_score_mfe"] = float(mfe)
+            state["sgrna_design_score_constraint_mutation_count"] = int(tool_result.get("constraint_mutation_count", 0))
         elif tool_name == "run_blastn_similarity_search":
             state["blast_hit_count"] = int(tool_result.get("hit_count", 0))
             state["blast_subject_mode"] = str(tool_result.get("subject_mode", ""))
@@ -2941,12 +3039,20 @@ def critic_node(state: AgentState) -> AgentState:
             f"crisot_best_mutation={state.get('crisot_best_mutation', '')}; "
             f"crisot_best_delta_spec={state.get('crisot_best_delta_spec', 0.0)}; "
             f"crisot_optimized_available={state.get('crisot_optimized_available', False)}; "
+            f"sgrna_design_seed_sequence={state.get('sgrna_design_seed_sequence', '')}; "
             f"sgrna_design_generated_count={state.get('sgrna_design_generated_count', 0)}; "
             f"sgrna_design_best_nn_score={state.get('sgrna_design_best_nn_score', 0.0)}; "
+            f"sgrna_design_best_log_likelihood={state.get('sgrna_design_best_log_likelihood', '')}; "
             f"sgrna_design_best_mutation_count={state.get('sgrna_design_best_mutation_count', 0)}; "
+            f"sgrna_design_sampling_mode={state.get('sgrna_design_sampling_mode', 'mcmc')}; "
             f"sgrna_design_output_filepath={state.get('sgrna_design_output_filepath', '')}; "
+            f"sgrna_design_output_ali_filepath={state.get('sgrna_design_output_ali_filepath', '')}; "
             f"sgrna_design_summary_filepath={state.get('sgrna_design_summary_filepath', '')}; "
             f"sgrna_design_model_path={state.get('sgrna_design_model_path', '')}; "
+            f"sgrna_design_score_sequence={state.get('sgrna_design_score_sequence', '')}; "
+            f"sgrna_design_score_nn_score={state.get('sgrna_design_score_nn_score', 0.0)}; "
+            f"sgrna_design_score_log_likelihood={state.get('sgrna_design_score_log_likelihood', 0.0)}; "
+            f"sgrna_design_score_constraint_mutation_count={state.get('sgrna_design_score_constraint_mutation_count', 0)}; "
             f"cai_score={cai_score}; "
             f"codonw_metrics_filepath={state.get('codonw_metrics_filepath', '')}; "
             f"codonw_enc={state.get('codonw_enc', 0.0)}; "

@@ -1,6 +1,6 @@
 """AgentState definition for the RNA Design multi-agent workflow."""
 
-from typing import Any, Literal, TypedDict
+from typing import Any, Literal, Optional, TypedDict
 
 from langchain_core.messages import HumanMessage
 
@@ -26,12 +26,27 @@ class AgentState(TypedDict, total=False):
     crisot_best_mutation: str
     crisot_best_delta_spec: float
     crisot_optimized_available: bool
+    # ═══════════════════════════════════════════════════════════════════════════
+    # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 design_sgrna_handle_with_crgpt
+    # 的 INTERFACE LOCK 注释。任何修改必须全部同步。
+    # ═══════════════════════════════════════════════════════════════════════════
+    sgrna_design_seed_sequence: str
     sgrna_design_generated_count: int
     sgrna_design_best_nn_score: float
+    sgrna_design_best_log_likelihood: Optional[float] = None
     sgrna_design_best_mutation_count: int
+    sgrna_design_sampling_mode: str
     sgrna_design_output_filepath: str
+    sgrna_design_output_ali_filepath: str
     sgrna_design_summary_filepath: str
     sgrna_design_model_path: str
+    sgrna_design_score_sequence: str
+    sgrna_design_score_nn_score: float
+    sgrna_design_score_log_likelihood: float
+    sgrna_design_score_structure_distance: Optional[int] = None
+    sgrna_design_score_mfe: Optional[float] = None
+    sgrna_design_score_constraint_mutation_count: int
     cai_score: float
     codonw_metrics_filepath: str
     codonw_enc: float

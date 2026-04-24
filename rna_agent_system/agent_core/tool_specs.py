@@ -162,15 +162,30 @@ class CrisotOptimizeOutput(_OutBase):
 
 
 class SgRNADesignOutput(_OutBase):
-    input_filepath: str
+    seed_sequence: str = ""
+    input_filepath: Optional[str] = None
     best_sequence: str = ""
     best_sequence_filepath: str = ""
     generated_count: int = 0
     best_nn_score: float = 0.0
+    best_log_likelihood: Optional[float] = None
     best_mutation_count: int = 0
+    sampling_mode: str = "mcmc"
     model_path: str = ""
     output_fasta_filepath: str = ""
+    output_ali_filepath: Optional[str] = None
     summary_json_filepath: str = ""
+    model: str
+
+
+class SgRNADesignScoreOutput(_OutBase):
+    sequence: str = ""
+    normalized_sequence: str = ""
+    nn_score: float = 0.0
+    log_likelihood: float = 0.0
+    structure_distance: Optional[int] = None
+    mfe: Optional[float] = None
+    constraint_mutation_count: int = 0
     model: str
 
 
@@ -983,20 +998,56 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=CrisotOptimizeOutput,
         status=ToolStatus.partial,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/sgrna_design_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/nodes.py
+    #   - docs/tools/design_sgrna_handle_with_crgpt.md
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # 本次修改的基准日期：2026-04-24。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "design_sgrna_handle_with_crgpt": ToolSpec(
         identity="design_sgrna_handle_with_crgpt",
         display_name="CRGPT sgRNA handle design",
-        version="0.1.0-port8017",
+        version="0.3.0-port8017",
         source="https://github.com/bitguolab/sgrna_design",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8017/design",
-        capabilities=["Generate sgRNA handle candidates from a seed sequence."],
-        limitations=["Depends on model assets and torch/runtime constraints."],
+        capabilities=[
+            "Generate sgRNA handle candidates from a seed sequence.",
+            "Supports both MCMC annealing (original sample.py) and naive model.generate modes.",
+        ],
+        limitations=["Depends on model assets and torch/runtime constraints.", "MCMC mode requires ViennaRNA."],
         task_tags=["sgrna_handle_design"],
         requires=[ToolDependency(name="sgrna_design microservice", detail="microservices/sgrna_design_service (port 8017)")],
-        produces=["best_sequence", "output_fasta_filepath"],
+        produces=["best_sequence", "output_fasta_filepath", "output_ali_filepath", "summary_json_filepath", "best_log_likelihood"],
         input_model=tool_wrappers.SgRNADesignInput,
         output_model=SgRNADesignOutput,
+        status=ToolStatus.partial,
+    ),
+    "score_sgrna_handle_with_crgpt": ToolSpec(
+        identity="score_sgrna_handle_with_crgpt",
+        display_name="CRGPT sgRNA handle scoring",
+        version="0.2.0-port8017",
+        source="https://github.com/bitguolab/sgrna_design",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8017/score",
+        capabilities=[
+            "Score a single sgRNA handle sequence with CRGPT (nn_score + log_likelihood).",
+            "Also returns ViennaRNA structure distance / MFE and constraint mutation count.",
+        ],
+        limitations=["Depends on model assets and torch/runtime constraints.", "Requires ViennaRNA for structure metrics."],
+        task_tags=["sgrna_handle_scoring"],
+        requires=[ToolDependency(name="sgrna_design microservice", detail="microservices/sgrna_design_service (port 8017)")],
+        produces=["nn_score", "log_likelihood", "structure_distance", "mfe", "constraint_mutation_count"],
+        input_model=tool_wrappers.SgRNADesignScoreInput,
+        output_model=SgRNADesignScoreOutput,
         status=ToolStatus.partial,
     ),
     # INTERFACE LOCK (v0.3.0): ODesign tool spec. Locked contract. Modify only in sync with:

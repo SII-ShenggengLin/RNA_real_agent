@@ -464,9 +464,12 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 上游仓库 | [bitguolab/sgrna_design](https://github.com/bitguolab/sgrna_design.git) |
 | 微服务目录 | `microservices/sgrna_design_service/` |
 | 接口 | `GET /health`、`POST /design` |
-| Agent 工具 | `design_sgrna_handle_with_crgpt(filepath)` |
+| Agent 工具 | `design_sgrna_handle_with_crgpt(seed_sequence, filepath, ...)` |
 
 **关键注意事项**：
+- 支持两种采样模式：`mcmc`（原始 MCMC/annealing，默认）和 `naive`（直接 `model.generate`）
+- `mcmc` 模式 **需要 ViennaRNA** (`conda install -c bioconda viennarna`)
+- `seed_sequence` 与 `filepath` 二选一提供种子序列；均不提供时使用内置 61-nt wildtype
 - 需要 `torch>=2.6`（`pytorch_model.bin` 加载安全限制）
 - torch CUDA 版本需与服务器驱动匹配
 

@@ -18,6 +18,21 @@ from pydantic import BaseModel, Field
 from transformers import AutoModelForCausalLM, GPT2Tokenizer
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/sgrna_design_service/main.py  ← 本文件
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/design_sgrna_handle_with_crgpt.md
+# 规则：任何 Pydantic 模型字段增删、端点路径/签名变动、返回值结构调整，
+# 必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# 本次修改的基准日期：2026-04-24。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 APP_DIR = Path(__file__).resolve().parent
 _RNA_AGENT_SYSTEM_ROOT = APP_DIR.parents[1]
 _DEFAULT_UPSTREAM_ROOT = (_RNA_AGENT_SYSTEM_ROOT / "external_repos" / "sgrna_design").resolve()
@@ -55,12 +70,28 @@ class DesignRequest(BaseModel):
         le=40,
         description="Maximum number of mutations allowed relative to seed sequence.",
     )
-    temperature: float = Field(default=1.0, gt=0.0, le=5.0)
+    temperature: Optional[float] = Field(
+        default=None,
+        gt=0.0,
+        le=100.0,
+        description="MCMC annealing temperature (mcmc mode) or transformer sampling temperature (naive mode). "
+        "When omitted, defaults to 20.0 for mcmc and 1.0 for naive.",
+    )
+    max_length: Optional[int] = Field(
+        default=None,
+        ge=1,
+        le=120,
+        description="Optional target sequence length for naive mode (overrides auto-computed max_new_tokens).",
+    )
     max_overlap: int = Field(
         default=21,
         ge=1,
         le=60,
         description="Maximum longest-common-substring overlap among accepted sequences.",
+    )
+    sampling_mode: str = Field(
+        default="mcmc",
+        description="Sampling strategy: 'mcmc' (original MCMC/annealing from sample.py) or 'naive' (direct model.generate).",
     )
     path_to_model: Optional[str] = Field(
         default=None,
@@ -70,6 +101,10 @@ class DesignRequest(BaseModel):
         default=None,
         description="Optional torch device override such as `cuda:0` or `cpu`.",
     )
+    output_dir: Optional[str] = Field(
+        default=None,
+        description="Optional output directory override. Defaults to workspace/sgrna_design_service.",
+    )
 
 
 class CandidateRecord(BaseModel):
@@ -77,6 +112,7 @@ class CandidateRecord(BaseModel):
     sequence: str
     mutation_count: int
     nn_score: float
+    log_likelihood: Optional[float] = None
     structure_distance: Optional[int] = None
     mfe: Optional[float] = None
 
@@ -88,10 +124,37 @@ class DesignResponse(BaseModel):
     model_path: str
     device: str
     has_vienna_rna: bool
+    sampling_mode: str
     output_fasta_path: str
+    output_ali_path: Optional[str] = None
     summary_json_path: str
     candidates: List[CandidateRecord]
     notes: List[str]
+    model: str = "sgrna_design_crgpt"
+
+
+class ScoreRequest(BaseModel):
+    """Request schema for single-sequence scoring."""
+
+    sequence: str = Field(..., description="sgRNA handle sequence to score (DNA/RNA).")
+    path_to_model: Optional[str] = Field(
+        default=None,
+        description="Optional model directory (relative to sgrna_design root or absolute path).",
+    )
+    device: Optional[str] = Field(
+        default=None,
+        description="Optional torch device override such as `cuda:0` or `cpu`.",
+    )
+
+
+class ScoreResponse(BaseModel):
+    sequence: str
+    normalized_sequence: str
+    nn_score: float
+    log_likelihood: float
+    structure_distance: Optional[int] = None
+    mfe: Optional[float] = None
+    constraint_mutation_count: int
     model: str = "sgrna_design_crgpt"
 
 
@@ -124,6 +187,7 @@ class _ModelRuntime:
         model.eval().to(device)
         self.tokenizer = tokenizer
         self.model = model
+        self.cross_entropy = torch.nn.CrossEntropyLoss()
         self.model_path = model_path
         self.device = device
 
@@ -144,6 +208,29 @@ class _ModelRuntime:
             )
             loss = float(output["loss"].item())
         return float(math.exp(loss))
+
+    def log_likelihood(self, sequence: str) -> float:
+        """Return negative cross-entropy (log-likelihood) of a sequence."""
+        if self.model is None or self.tokenizer is None or self.device is None:
+            raise RuntimeError("Model runtime has not been initialized.")
+        if self.cross_entropy is None:
+            self.cross_entropy = torch.nn.CrossEntropyLoss()
+        wrapped = f"e{sequence}e"
+        encoded = self.tokenizer(wrapped, return_tensors="pt")
+        input_ids = encoded["input_ids"].to(self.device)
+        attention_mask = encoded.get("attention_mask")
+        if attention_mask is not None:
+            attention_mask = attention_mask.to(self.device)
+        with torch.no_grad():
+            output = self.model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                labels=input_ids,
+            )
+            logits = output["logits"]
+            logits = logits.view(-1, logits.size(-1))
+            target = input_ids.view(-1)
+        return float(-self.cross_entropy(logits, target).item())
 
     def generate_batch(
         self,
@@ -222,10 +309,6 @@ def _enforce_fixed_positions(sequence: str) -> str:
     return "".join(chars)
 
 
-def _seq_constraint(sequence: str) -> bool:
-    return all(idx < len(sequence) and sequence[idx] == base for idx, base in _FIXED_BASES.items())
-
-
 def _count_mutations(seed: str, sequence: str) -> int:
     return sum(1 for i in range(min(len(seed), len(sequence))) if seed[i] != sequence[i])
 
@@ -259,9 +342,28 @@ def _random_mutation_candidate(seed: str, max_mutations: int) -> str:
     return _enforce_fixed_positions("".join(chars))
 
 
+def mutate_dna(dna: str) -> str:
+    """Randomly mutate one position in the DNA sequence (original sample.py logic)."""
+    pos = random.randint(0, len(dna) - 1)
+    base = random.choice(["A", "C", "G", "T"])
+    return dna[:pos] + base + dna[pos + 1 :]
+
+
+def _seq_constraint_change_count(sequence: str) -> int:
+    """Return number of constraint violations (original sample.py logic)."""
+    change = 0
+    for idx, base in _FIXED_BASES.items():
+        if idx < len(sequence) and sequence[idx] != base:
+            change += 1
+    return change
+
+
 def _compute_structure_metrics(sequence: str) -> Tuple[Optional[int], Optional[float]]:
     if _RNA_LIB is None:
-        return None, None
+        raise RuntimeError(
+            "ViennaRNA (RNA module) is required for structure scoring but not installed. "
+            "Please install it (e.g., 'conda install -c bioconda viennarna') and restart the service."
+        )
     try:
         structure, mfe = _RNA_LIB.fold(sequence)
         if len(structure) == len(_ACTUAL_STRUCTURE):
@@ -269,8 +371,8 @@ def _compute_structure_metrics(sequence: str) -> Tuple[Optional[int], Optional[f
         else:
             distance = None
         return distance, float(mfe)
-    except Exception:
-        return None, None
+    except Exception as exc:
+        raise RuntimeError(f"ViennaRNA structure scoring failed for sequence: {exc}") from exc
 
 
 def _resolve_device(raw_device: Optional[str]) -> str:
@@ -288,7 +390,170 @@ def _ensure_device_available(device: str) -> None:
         )
 
 
-def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: Path) -> Dict[str, Any]:
+def _design_candidates_mcmc(
+    payload: DesignRequest, upstream_root: Path, model_path: Path
+) -> Dict[str, Any]:
+    """MCMC annealing design ported from upstream sample.py."""
+    raw_seed = payload.seed_sequence or _DEFAULT_WILDTYPE
+    normalized_seed = _enforce_fixed_positions(_normalize_dna_sequence(raw_seed))
+    seed_length = len(normalized_seed)
+    if seed_length < 40 or seed_length > 120:
+        raise ValueError(
+            f"Seed length should be in [40, 120] for current model; got {seed_length}."
+        )
+    if payload.max_overlap >= seed_length:
+        raise ValueError(
+            f"`max_overlap` must be smaller than seed length ({seed_length})."
+        )
+
+    device = _resolve_device(payload.device)
+    _ensure_device_available(device)
+    _RUNTIME.ensure_loaded(str(model_path), device, upstream_root)
+    nn_score_fn = _RUNTIME.score_sequence
+
+    # MCMC annealing (original sample.py logic)
+    samples = [normalized_seed]
+    structure_scores: List[Optional[int]] = [None]
+    nn_scores: List[float] = [nn_score_fn(normalized_seed)]
+    mfes: List[Optional[float]] = [None]
+    names: List[str] = ["wild"]
+
+    # Pre-compute wildtype structure metrics
+    try:
+        wild_structure_score, wild_mfe = _compute_structure_metrics(normalized_seed)
+        structure_scores[0] = wild_structure_score
+        mfes[0] = wild_mfe
+    except RuntimeError:
+        pass  # will be caught later if RNA is missing
+
+    mut = payload.mutation_number
+    T = payload.temperature if payload.temperature is not None else 20.0
+    max_overlap = payload.max_overlap
+    n_samples = payload.n_samples
+
+    while len(samples) <= n_samples + 1:
+        traj = [normalized_seed]
+        current_dna = normalized_seed
+        current_structure_score, current_mfe = _compute_structure_metrics(normalized_seed)
+        current_nn_score = nn_score_fn(normalized_seed)
+        mut_num = 0
+        while mut_num < mut:
+            mutated_dna = mutate_dna(current_dna)
+            change = _seq_constraint_change_count(mutated_dna)
+            if mutated_dna != current_dna and change == 0:
+                mutated_structure_score, mutated_mfe = _compute_structure_metrics(mutated_dna)
+                mutated_nn_score = nn_score_fn(mutated_dna)
+                if (
+                    mutated_structure_score <= current_structure_score
+                    and mutated_nn_score <= current_nn_score
+                ):
+                    traj.append(mutated_dna)
+                    current_dna = mutated_dna
+                    current_structure_score = mutated_structure_score
+                    current_mfe = mutated_mfe
+                    current_nn_score = mutated_nn_score
+                    mut_num = _count_mutations(samples[0], current_dna)
+                elif (
+                    math.log10(mutated_structure_score / current_structure_score)
+                    < 1 / T
+                    and mutated_nn_score <= current_nn_score
+                ):
+                    traj.append(mutated_dna)
+                    current_dna = mutated_dna
+                    current_structure_score = mutated_structure_score
+                    current_mfe = mutated_mfe
+                    current_nn_score = mutated_nn_score
+                    mut_num = _count_mutations(samples[0], current_dna)
+                else:
+                    current_dna = traj[-1]
+            else:
+                current_dna = traj[-1]
+        l_max = 0
+        for s in samples:
+            l = _longest_common_substring(s, traj[-1])
+            if l > l_max:
+                l_max = l
+        if l_max < max_overlap:
+            samples.append(traj[-1])
+            # Re-score the accepted final sequence to ensure consistent metrics
+            final_structure_score, final_mfe = _compute_structure_metrics(traj[-1])
+            final_nn_score = nn_score_fn(traj[-1])
+            structure_scores.append(final_structure_score)
+            nn_scores.append(final_nn_score)
+            mfes.append(final_mfe)
+            names.append(f"gen_{len(samples) - 1}")
+
+    notes: List[str] = []
+    if len(samples) < n_samples + 1:
+        notes.append(
+            "Could not satisfy requested sample count under overlap/mutation constraints; "
+            f"returned {len(samples) - 1} designed candidates."
+        )
+
+    candidates: List[Dict[str, Any]] = []
+    for name, sequence, nn_score, structure_score, mfe in zip(
+        names, samples, nn_scores, structure_scores, mfes
+    ):
+        mutation_count = _count_mutations(normalized_seed, sequence)
+        ll = _RUNTIME.log_likelihood(sequence) if name != "wild" else None
+        candidates.append(
+            {
+                "name": name,
+                "sequence": sequence,
+                "mutation_count": mutation_count,
+                "nn_score": nn_score,
+                "log_likelihood": ll,
+                "structure_distance": structure_score,
+                "mfe": mfe,
+            }
+        )
+
+    output_dir = _resolve_output_dir(payload.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    fasta_path = (output_dir / f"sgrna_design_{timestamp}.fasta").resolve()
+    ali_path = (output_dir / f"sgrna_design_{timestamp}.ali").resolve()
+    summary_path = (output_dir / f"sgrna_design_{timestamp}.json").resolve()
+
+    with fasta_path.open("w", encoding="utf-8") as handle:
+        for record in candidates:
+            score_text = f"{record['nn_score']:.4f}"
+            mfe_text = "NA" if record["mfe"] is None else f"{record['mfe']:.2f}"
+            handle.write(
+                f">{record['name']}|score={score_text}|mfe={mfe_text}|mut={record['mutation_count']}\n"
+            )
+            handle.write(f"{record['sequence']}\n")
+
+    with ali_path.open("w", encoding="utf-8") as handle:
+        for record in candidates:
+            seq2 = record["sequence"]
+            align_marker = ""
+            for a, b in zip(normalized_seed.upper(), seq2.upper()):
+                align_marker += "|" if a == b else " "
+            handle.write(f">{record['name']}\n{normalized_seed}\n{align_marker}\n{seq2}\n")
+
+    summary_payload = {
+        "input_seed": raw_seed,
+        "normalized_seed": normalized_seed,
+        "generated_count": max(0, len(candidates) - 1),
+        "model_path": str(model_path),
+        "device": device,
+        "has_vienna_rna": _RNA_LIB is not None,
+        "sampling_mode": "mcmc",
+        "notes": notes,
+        "candidates": candidates,
+    }
+    summary_path.write_text(json.dumps(summary_payload, ensure_ascii=True, indent=2), encoding="utf-8")
+    summary_payload["output_fasta_path"] = str(fasta_path)
+    summary_payload["output_ali_path"] = str(ali_path)
+    summary_payload["summary_json_path"] = str(summary_path)
+    return summary_payload
+
+
+def _design_candidates_naive(
+    payload: DesignRequest, upstream_root: Path, model_path: Path
+) -> Dict[str, Any]:
+    """Direct model.generate design (naive mode, similar to upstream naive_sample.py)."""
     raw_seed = payload.seed_sequence or _DEFAULT_WILDTYPE
     normalized_seed = _enforce_fixed_positions(_normalize_dna_sequence(raw_seed))
     seed_length = len(normalized_seed)
@@ -310,15 +575,19 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
     attempts = 0
     max_attempts = max(60, payload.n_samples * 40)
     prompt_seed = f"e{normalized_seed[: max(24, min(40, seed_length - 8))]}"
-    max_new_tokens = max(10, seed_length - len(prompt_seed) + 1)
+    if payload.max_length is not None:
+        max_new_tokens = max(1, payload.max_length - len(prompt_seed) + 1)
+    else:
+        max_new_tokens = max(10, seed_length - len(prompt_seed) + 1)
 
+    temperature_naive = payload.temperature if payload.temperature is not None else 1.0
     while len(accepted_sequences) < payload.n_samples + 1 and attempts < max_attempts:
         remaining = payload.n_samples + 1 - len(accepted_sequences)
         batch_size = min(32, max(6, remaining * 4))
         generated_texts = _RUNTIME.generate_batch(
             prompt_seed=prompt_seed,
             batch_size=batch_size,
-            temperature=payload.temperature,
+            temperature=temperature_naive,
             max_new_tokens=max_new_tokens,
         )
         attempts += 1
@@ -326,7 +595,7 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
             candidate = _sanitize_generated_text(raw_text, normalized_seed)
             if candidate in accepted_sequences:
                 continue
-            if not _seq_constraint(candidate):
+            if _seq_constraint_change_count(candidate) != 0:
                 continue
             if _count_mutations(normalized_seed, candidate) > payload.mutation_number:
                 continue
@@ -364,6 +633,7 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
         name = "wild" if idx == 0 else f"gen_{idx}"
         mutation_count = _count_mutations(normalized_seed, sequence)
         nn_score = _RUNTIME.score_sequence(sequence)
+        ll = _RUNTIME.log_likelihood(sequence) if name != "wild" else None
         structure_distance, mfe = _compute_structure_metrics(sequence)
         candidates.append(
             {
@@ -371,15 +641,17 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
                 "sequence": sequence,
                 "mutation_count": mutation_count,
                 "nn_score": nn_score,
+                "log_likelihood": ll,
                 "structure_distance": structure_distance,
                 "mfe": mfe,
             }
         )
 
-    _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_dir = _resolve_output_dir(payload.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    fasta_path = (_OUTPUT_DIR / f"sgrna_design_{timestamp}.fasta").resolve()
-    summary_path = (_OUTPUT_DIR / f"sgrna_design_{timestamp}.json").resolve()
+    fasta_path = (output_dir / f"sgrna_design_{timestamp}.fasta").resolve()
+    summary_path = (output_dir / f"sgrna_design_{timestamp}.json").resolve()
     with fasta_path.open("w", encoding="utf-8") as handle:
         for record in candidates:
             score_text = f"{record['nn_score']:.4f}"
@@ -396,6 +668,7 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
         "model_path": str(model_path),
         "device": device,
         "has_vienna_rna": _RNA_LIB is not None,
+        "sampling_mode": "naive",
         "notes": notes,
         "candidates": candidates,
     }
@@ -403,6 +676,27 @@ def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: 
     summary_payload["output_fasta_path"] = str(fasta_path)
     summary_payload["summary_json_path"] = str(summary_path)
     return summary_payload
+
+
+def _resolve_output_dir(raw_output_dir: Optional[str]) -> Path:
+    if raw_output_dir:
+        candidate = Path(raw_output_dir).expanduser().resolve()
+        return candidate
+    return _OUTPUT_DIR
+
+
+def _design_candidates(payload: DesignRequest, upstream_root: Path, model_path: Path) -> Dict[str, Any]:
+    mode = (payload.sampling_mode or "mcmc").strip().lower()
+    if mode == "mcmc":
+        if _RNA_LIB is None:
+            raise ValueError(
+                "ViennaRNA is required for MCMC sampling mode but is not installed. "
+                "Please install it or switch to sampling_mode='naive'."
+            )
+        return _design_candidates_mcmc(payload, upstream_root, model_path)
+    if mode == "naive":
+        return _design_candidates_naive(payload, upstream_root, model_path)
+    raise ValueError(f"Unsupported sampling_mode: {payload.sampling_mode}. Use 'mcmc' or 'naive'.")
 
 
 app = FastAPI(
@@ -473,8 +767,62 @@ def design(payload: DesignRequest) -> DesignResponse:
         model_path=str(result["model_path"]),
         device=str(result["device"]),
         has_vienna_rna=bool(result["has_vienna_rna"]),
+        sampling_mode=str(result.get("sampling_mode", "mcmc")),
         output_fasta_path=str(result["output_fasta_path"]),
+        output_ali_path=str(result["output_ali_path"]) if result.get("output_ali_path") else None,
         summary_json_path=str(result["summary_json_path"]),
         candidates=candidate_records,
         notes=list(result.get("notes", [])),
+    )
+
+
+@app.post("/score", response_model=ScoreResponse)
+def score(payload: ScoreRequest) -> ScoreResponse:
+    upstream_root = _resolve_upstream_root()
+    if not upstream_root.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "sgrna_design upstream repo not found. "
+                f"Expected at: {upstream_root}. "
+                "Clone it first or set SGRNA_DESIGN_ROOT."
+            ),
+        )
+    model_path = _resolve_model_path(upstream_root, payload.path_to_model)
+    if not model_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Model path does not exist. "
+                f"Resolved model path: {model_path}. "
+                "Please ensure trained model files are available."
+            ),
+        )
+    try:
+        normalized = _enforce_fixed_positions(_normalize_dna_sequence(payload.sequence))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    device = _resolve_device(payload.device)
+    _ensure_device_available(device)
+    _RUNTIME.ensure_loaded(str(model_path), device, upstream_root)
+
+    nn_score = _RUNTIME.score_sequence(normalized)
+    log_likelihood = _RUNTIME.log_likelihood(normalized)
+    constraint_count = _seq_constraint_change_count(normalized)
+    structure_distance: Optional[int] = None
+    mfe: Optional[float] = None
+    try:
+        structure_distance, mfe = _compute_structure_metrics(normalized)
+    except RuntimeError:
+        pass
+
+    return ScoreResponse(
+        sequence=payload.sequence,
+        normalized_sequence=normalized,
+        nn_score=nn_score,
+        log_likelihood=log_likelihood,
+        structure_distance=structure_distance,
+        mfe=mfe,
+        constraint_mutation_count=constraint_count,
     )
