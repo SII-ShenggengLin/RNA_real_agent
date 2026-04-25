@@ -1631,13 +1631,59 @@ def score_sgrna_handle_with_crgpt(
         _raise_service_error(exc, "sgRNA score")
 
 
-class MrnaToolInput(BaseModel):
-    """Input schema for workspace-backed mRNA/RNA sequence tools (filepath only)."""
+# ═══════════════════════════════════════════════════════════════════════════════
+# ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/viennarna_fold/main.py
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/viennarna_rna_tools.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class _ViennaParamsMixin(BaseModel):
+    """Shared ViennaRNA energy-model parameters (mirrors upstream vrna_md_t / CLI flags)."""
+
+    temp_c: float = Field(default=37.0, description="Rescale energy parameters to this temperature (C).")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model: 0, 1, 2, or 3.")
+    no_lp: bool = Field(default=False, description="Disallow lonely pairs (helices of length 1).")
+    no_gu: bool = Field(default=False, description="Do not allow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Do not allow GU pairs at the end of helices.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration in molar (M).")
+    no_tetra: bool = Field(default=False, description="Omit special stabilizing energies for tri-/tetra-/hexaloops.")
+    energy_model: Optional[int] = Field(default=None, description="Set energy model (rarely used).")
+    nsp: Optional[str] = Field(default=None, description="Allow non-standard pairs, e.g. '-GA'.")
+    param_file: Optional[str] = Field(default=None, description="Custom energy parameter file path (or 'DNA').")
+
+
+class FoldViennaInput(BaseModel):
+    """Input for ViennaRNA RNAfold (MFE + optional partition function / centroid / MEA)."""
 
     filepath: str = Field(
         ...,
-        description="Path to mRNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.",
+        description="Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.",
     )
+    temp_c: float = Field(default=37.0, description="Folding temperature (Celsius).")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model.")
+    no_lp: bool = Field(default=False, description="Disallow lonely pairs.")
+    no_gu: bool = Field(default=False, description="Disallow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Disallow GU closing pairs.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration (M).")
+    no_tetra: bool = Field(default=False, description="Omit special hairpin loop energies.")
+    energy_model: Optional[int] = Field(default=None, description="Energy model index.")
+    nsp: Optional[str] = Field(default=None, description="Non-standard pair specification.")
+    param_file: Optional[str] = Field(default=None, description="Custom parameter file.")
+    constraint: Optional[str] = Field(default=None, description="Hard constraint dot-bracket string.")
+    shape_file: Optional[str] = Field(default=None, description="Path to SHAPE reactivity data file.")
+    shape_method: str = Field(default="D", description="SHAPE method: D, Z, or W.")
+    partfunc: bool = Field(default=False, description="Compute partition function and centroid.")
+    circ: bool = Field(default=False, description="Assume circular RNA.")
+    gquad: bool = Field(default=False, description="Include G-quadruplex formation.")
+    service_url: str = Field(default="http://127.0.0.1:8003/fold", description="ViennaRNA fold endpoint.")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2594,43 +2640,90 @@ def analyze_cds_codon_metrics_with_codonw_slim(
     }
 
 
-@tool(args_schema=MrnaToolInput)
+@tool(args_schema=FoldViennaInput)
 def predict_rna_secondary_structure(
-    filepath: str, service_url: str = "http://localhost:8003/fold"
+    filepath: str,
+    temp_c: float = 37.0,
+    dangles: int = 2,
+    no_lp: bool = False,
+    no_gu: bool = False,
+    no_closing_gu: bool = False,
+    salt: Optional[float] = None,
+    no_tetra: bool = False,
+    energy_model: Optional[int] = None,
+    nsp: Optional[str] = None,
+    param_file: Optional[str] = None,
+    constraint: Optional[str] = None,
+    shape_file: Optional[str] = None,
+    shape_method: str = "D",
+    partfunc: bool = False,
+    circ: bool = False,
+    gquad: bool = False,
+    service_url: str = "http://127.0.0.1:8003/fold",
 ) -> dict[str, Any]:
-    """Predict RNA secondary structure and MFE using ViennaRNA service.
+    """Predict RNA secondary structure and MFE using ViennaRNA RNAfold.
+
+    Supports partition function (-p), constraints (-C), SHAPE-guided folding,
+    circular RNA (--circ), G-quadruplexes (--gquad), and full energy-model tuning.
 
     Args:
-        filepath: Workspace file path containing RNA sequence content.
-            IMPORTANT: You must pass a filepath in workspace, NOT raw sequence text.
+        filepath: Workspace file path containing RNA sequence.
+        temp_c, dangles, no_lp, no_gu, no_closing_gu, salt, no_tetra,
+        energy_model, nsp, param_file: Energy-model parameters.
+        constraint: Hard constraint dot-bracket string.
+        shape_file: Path to SHAPE reactivity data file.
+        shape_method: SHAPE method (D/Z/W).
+        partfunc: Compute partition function and centroid structure.
+        circ: Assume circular RNA.
+        gquad: Include G-quadruplex formation.
         service_url: REST endpoint for ViennaRNA fold microservice.
 
     Returns:
-        Dict containing ``structure`` and ``mfe_kcal_per_mol`` plus audit fields.
-
-    Raises:
-        ValueError: If ViennaRNA API request fails or response payload is invalid.
+        Dict containing structure, mfe, and optional ensemble/centroid/MEA fields.
     """
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    payload: dict[str, Any] = {
+        "sequence": sequence,
+        "params": {
+            "temp_c": temp_c,
+            "dangles": dangles,
+            "noLP": no_lp,
+            "noGU": no_gu,
+            "noClosingGU": no_closing_gu,
+            "salt": salt,
+            "noTetra": no_tetra,
+            "energyModel": energy_model,
+            "nsp": nsp,
+            "paramFile": param_file,
+        },
+        "constraint": constraint,
+        "shape_file": shape_file,
+        "shape_method": shape_method,
+        "partfunc": partfunc,
+        "circ": circ,
+        "gquad": gquad,
+    }
     try:
-        response = requests.post(
-            service_url,
-            json={"sequence": sequence},
-            timeout=20,
-        )
+        response = requests.post(service_url, json=payload, timeout=60)
         response.raise_for_status()
-        payload = response.json()
-        if "structure" not in payload or "mfe" not in payload:
-            raise ValueError("Missing `structure` or `mfe` in ViennaRNA response.")
-        return {
-            "input_filepath": filepath,
-            "structure": str(payload["structure"]),
-            "mfe_kcal_per_mol": float(payload["mfe"]),
-            "backend": str(payload.get("backend", "")),
-            "model": str(payload.get("model", "ViennaRNA-RNAfold")),
-        }
+        body = response.json()
     except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA")
+        _raise_service_error(exc, "ViennaRNA RNAfold")
+    if "structure" not in body or "mfe" not in body:
+        raise ValueError("Missing `structure` or `mfe` in ViennaRNA response.")
+    return {
+        "input_filepath": filepath,
+        "structure": str(body["structure"]),
+        "mfe_kcal_per_mol": float(body["mfe"]),
+        "backend": str(body.get("backend", "")),
+        "model": str(body.get("model", "ViennaRNA-RNAfold")),
+        "ensemble_free_energy": body.get("ensemble_free_energy"),
+        "centroid_structure": body.get("centroid_structure"),
+        "centroid_distance": body.get("centroid_distance"),
+        "mea_structure": body.get("mea_structure"),
+        "mea_score": body.get("mea_score"),
+        "mea_gamma": body.get("mea_gamma"),
+    }
 
 
 def _parse_two_rna_strands_from_file(content: str) -> tuple[str, str]:
@@ -2687,9 +2780,53 @@ class SirnaDuplexViennaInput(BaseModel):
             "or two plain RNA lines without headers."
         ),
     )
+    temp_c: float = Field(default=37.0, description="Folding temperature (Celsius).")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model.")
+    no_lp: bool = Field(default=False, description="Disallow lonely pairs.")
+    no_gu: bool = Field(default=False, description="Disallow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Disallow GU closing pairs.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration (M).")
+    no_tetra: bool = Field(default=False, description="Omit special hairpin loop energies.")
+    energy_model: Optional[int] = Field(default=None, description="Energy model index.")
+    nsp: Optional[str] = Field(default=None, description="Non-standard pair specification.")
+    param_file: Optional[str] = Field(default=None, description="Custom parameter file.")
+    constraint: Optional[str] = Field(default=None, description="Hard constraint dot-bracket string.")
+    shape_file: Optional[str] = Field(default=None, description="Path to SHAPE reactivity data file.")
+    shape_method: str = Field(default="D", description="SHAPE method: D, Z, or W.")
+    concentrations: bool = Field(default=False, description="Compute equilibrium concentrations.")
+    conc_a: Optional[float] = Field(default=None, description="Initial monomer A concentration [mol/L].")
+    conc_b: Optional[float] = Field(default=None, description="Initial monomer B concentration [mol/L].")
+    partfunc: bool = Field(default=False, description="Compute partition function for dimer.")
     service_url: str = Field(
         default="http://127.0.0.1:8003/sirna-duplex",
         description="REST endpoint for ViennaRNA duplex cofold.",
+    )
+
+
+class RnaUpViennaInput(BaseModel):
+    """Input for ViennaRNA RNAup RNA-RNA interaction thermodynamics."""
+
+    filepath1: str = Field(..., description="Workspace file with first RNA sequence (target, typically longer).")
+    filepath2: str = Field(..., description="Workspace file with second RNA sequence (probe / small RNA).")
+    temp_c: float = Field(default=37.0, description="Folding temperature (Celsius).")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model.")
+    no_lp: bool = Field(default=False, description="Disallow lonely pairs.")
+    no_gu: bool = Field(default=False, description="Disallow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Disallow GU closing pairs.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration (M).")
+    no_tetra: bool = Field(default=False, description="Omit special hairpin loop energies.")
+    energy_model: Optional[int] = Field(default=None, description="Energy model index.")
+    nsp: Optional[str] = Field(default=None, description="Non-standard pair specification.")
+    param_file: Optional[str] = Field(default=None, description="Custom parameter file.")
+    ulength: int = Field(default=4, ge=1, le=100, description="Length of unstructured region (-u).")
+    window: int = Field(default=25, ge=1, le=1000, description="Maximal interaction region length (-w).")
+    include_both: bool = Field(default=False, description="Include unpaired probabilities in both RNAs (-b).")
+    extend5: int = Field(default=0, ge=0, description="Extend interaction on 5' side (-5).")
+    extend3: int = Field(default=0, ge=0, description="Extend interaction on 3' side (-3).")
+    contributions: str = Field(default="S", description="Contributions to output (-c): S, H, I, M, E.")
+    service_url: str = Field(
+        default="http://127.0.0.1:8003/rnaup",
+        description="REST endpoint for ViennaRNA RNAup.",
     )
 
 
@@ -2709,10 +2846,21 @@ class AsoAccessibilityViennaInput(BaseModel):
         le=500,
         description="ASO length (nt) used for joint unpaired stretch probability.",
     )
+    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model.")
+    no_lp: bool = Field(default=False, description="Disallow lonely pairs.")
+    no_gu: bool = Field(default=False, description="Disallow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Disallow GU closing pairs.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration (M).")
+    no_tetra: bool = Field(default=False, description="Omit special hairpin loop energies.")
+    energy_model: Optional[int] = Field(default=None, description="Energy model index.")
+    nsp: Optional[str] = Field(default=None, description="Non-standard pair specification.")
+    param_file: Optional[str] = Field(default=None, description="Custom parameter file.")
     winsize: int = Field(default=70, ge=3, le=800, description="RNAplfold window size -W.")
     span: int = Field(default=70, ge=2, le=800, description="RNAplfold max pair span -L.")
     unpaired_ulength: int = Field(default=25, ge=1, le=500, description="RNAplfold -u upper bound (auto-expanded server-side).")
-    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+    cutoff: Optional[float] = Field(default=None, description="RNAplfold -c probability cutoff.")
+    opening_energies: bool = Field(default=False, description="RNAplfold -O: return opening energies instead of probabilities.")
 
 
 class PlfoldLocalProfileViennaInput(BaseModel):
@@ -2723,6 +2871,16 @@ class PlfoldLocalProfileViennaInput(BaseModel):
         default="http://127.0.0.1:8003/plfold-profiles",
         description="REST endpoint for ViennaRNA RNAplfold profile (lunp column 1).",
     )
+    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model.")
+    no_lp: bool = Field(default=False, description="Disallow lonely pairs.")
+    no_gu: bool = Field(default=False, description="Disallow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Disallow GU closing pairs.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration (M).")
+    no_tetra: bool = Field(default=False, description="Omit special hairpin loop energies.")
+    energy_model: Optional[int] = Field(default=None, description="Energy model index.")
+    nsp: Optional[str] = Field(default=None, description="Non-standard pair specification.")
+    param_file: Optional[str] = Field(default=None, description="Custom parameter file.")
     winsize: int = Field(default=70, ge=3, le=800, description="RNAplfold -W window size.")
     span: int = Field(default=70, ge=2, le=800, description="RNAplfold -L max pair span.")
     unpaired_ulength: int = Field(
@@ -2731,7 +2889,8 @@ class PlfoldLocalProfileViennaInput(BaseModel):
         le=500,
         description="RNAplfold -u upper bound for stretch probabilities in lunp output.",
     )
-    temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+    cutoff: Optional[float] = Field(default=None, description="RNAplfold -c probability cutoff.")
+    opening_energies: bool = Field(default=False, description="RNAplfold -O: return opening energies instead of probabilities.")
 
 
 class InverseFoldViennaInput(BaseModel):
@@ -2747,49 +2906,161 @@ class InverseFoldViennaInput(BaseModel):
     )
     repeats: int = Field(default=1, ge=1, le=500, description="RNAinverse repeat searches (-R).")
     temp_c: float = Field(default=37.0, description="Temperature in Celsius.")
+    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model.")
+    no_gu: bool = Field(default=False, description="Disallow GU pairs.")
+    no_closing_gu: bool = Field(default=False, description="Disallow GU closing pairs.")
+    salt: Optional[float] = Field(default=None, description="Salt concentration (M).")
+    no_tetra: bool = Field(default=False, description="Omit special hairpin loop energies.")
+    energy_model: Optional[int] = Field(default=None, description="Energy model index.")
+    nsp: Optional[str] = Field(default=None, description="Non-standard pair specification.")
+    param_file: Optional[str] = Field(default=None, description="Custom parameter file.")
     function_mode: str = Field(
         default="m",
         description="RNAinverse -F: m (MFE target), p (partition), or mp.",
     )
+    final_cost: Optional[float] = Field(default=None, description="RNAinverse -f: stop threshold for -Fp.")
+    alphabet: Optional[str] = Field(default=None, description="RNAinverse -a: custom nucleotide alphabet.")
 
 
 @tool(args_schema=SirnaDuplexViennaInput)
 def compute_sirna_duplex_binding_vienna(
     filepath: str,
+    temp_c: float = 37.0,
+    dangles: int = 2,
+    no_lp: bool = False,
+    no_gu: bool = False,
+    no_closing_gu: bool = False,
+    salt: Optional[float] = None,
+    no_tetra: bool = False,
+    energy_model: Optional[int] = None,
+    nsp: Optional[str] = None,
+    param_file: Optional[str] = None,
+    constraint: Optional[str] = None,
+    shape_file: Optional[str] = None,
+    shape_method: str = "D",
+    concentrations: bool = False,
+    conc_a: Optional[float] = None,
+    conc_b: Optional[float] = None,
+    partfunc: bool = False,
     service_url: str = "http://127.0.0.1:8003/sirna-duplex",
 ) -> dict[str, Any]:
-    """Compute siRNA sense/antisense duplex MFE via ViennaRNA (RNAcofold / RNAlib).
+    """Compute siRNA sense/antisense duplex MFE via ViennaRNA RNAcofold.
 
-    Args:
-        filepath: File with two FASTA records (sense then antisense) or two RNA lines.
-        service_url: ViennaRNA fold microservice duplex endpoint.
-
-    Returns:
-        Dict with sense/antisense, cofold structure, mfe (kcal/mol), backend, and input path.
+    Supports concentration-dependent equilibrium analysis (-c) and partition function (-p).
     """
     raw = read_sequence(filepath)
     sense, antisense = _parse_two_rna_strands_from_file(raw)
+    payload: dict[str, Any] = {
+        "sense": sense,
+        "antisense": antisense,
+        "params": {
+            "temp_c": temp_c,
+            "dangles": dangles,
+            "noLP": no_lp,
+            "noGU": no_gu,
+            "noClosingGU": no_closing_gu,
+            "salt": salt,
+            "noTetra": no_tetra,
+            "energyModel": energy_model,
+            "nsp": nsp,
+            "paramFile": param_file,
+        },
+        "constraint": constraint,
+        "shape_file": shape_file,
+        "shape_method": shape_method,
+        "concentrations": concentrations,
+        "conc_A": conc_a,
+        "conc_B": conc_b,
+        "partfunc": partfunc,
+    }
     try:
-        response = requests.post(
-            service_url,
-            json={"sense": sense, "antisense": antisense},
-            timeout=120,
-        )
+        response = requests.post(service_url, json=payload, timeout=120)
         response.raise_for_status()
-        payload = response.json()
+        body = response.json()
     except requests.RequestException as exc:
         _raise_service_error(exc, "ViennaRNA duplex")
-    if "mfe" not in payload or "structure" not in payload:
+    if "mfe" not in body or "structure" not in body:
         raise ValueError("Invalid duplex response: expected `mfe` and `structure`.")
     return {
         "input_filepath": filepath,
-        "sense": str(payload.get("sense", sense)),
-        "antisense": str(payload.get("antisense", antisense)),
-        "cofold_sequence": str(payload.get("cofold_sequence", "")),
-        "structure": str(payload["structure"]),
-        "mfe_kcal_per_mol": float(payload["mfe"]),
-        "backend": str(payload.get("backend", "")),
-        "model": str(payload.get("model", "ViennaRNA-RNAcofold")),
+        "sense": str(body.get("sense", sense)),
+        "antisense": str(body.get("antisense", antisense)),
+        "cofold_sequence": str(body.get("cofold_sequence", "")),
+        "structure": str(body["structure"]),
+        "mfe_kcal_per_mol": float(body["mfe"]),
+        "backend": str(body.get("backend", "")),
+        "model": str(body.get("model", "ViennaRNA-RNAcofold")),
+        "ensemble_free_energy": body.get("ensemble_free_energy"),
+        "equilibrium_concentrations": body.get("equilibrium_concentrations"),
+    }
+
+
+@tool(args_schema=RnaUpViennaInput)
+def compute_rna_rna_interaction_vienna(
+    filepath1: str,
+    filepath2: str,
+    temp_c: float = 37.0,
+    dangles: int = 2,
+    no_lp: bool = False,
+    no_gu: bool = False,
+    no_closing_gu: bool = False,
+    salt: Optional[float] = None,
+    no_tetra: bool = False,
+    energy_model: Optional[int] = None,
+    nsp: Optional[str] = None,
+    param_file: Optional[str] = None,
+    ulength: int = 4,
+    window: int = 25,
+    include_both: bool = False,
+    extend5: int = 0,
+    extend3: int = 0,
+    contributions: str = "S",
+    service_url: str = "http://127.0.0.1:8003/rnaup",
+) -> dict[str, Any]:
+    """Compute RNA-RNA interaction thermodynamics via ViennaRNA RNAup.
+
+    Returns interaction energy, structure, and raw stdout for downstream parsing.
+    """
+    seq1 = _normalize_nucleic_sequence(read_sequence(filepath1))
+    seq2 = _normalize_nucleic_sequence(read_sequence(filepath2))
+    payload: dict[str, Any] = {
+        "sequence1": seq1,
+        "sequence2": seq2,
+        "params": {
+            "temp_c": temp_c,
+            "dangles": dangles,
+            "noLP": no_lp,
+            "noGU": no_gu,
+            "noClosingGU": no_closing_gu,
+            "salt": salt,
+            "noTetra": no_tetra,
+            "energyModel": energy_model,
+            "nsp": nsp,
+            "paramFile": param_file,
+        },
+        "ulength": ulength,
+        "window": window,
+        "include_both": include_both,
+        "extend5": extend5,
+        "extend3": extend3,
+        "contributions": contributions,
+    }
+    try:
+        response = requests.post(service_url, json=payload, timeout=300)
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "ViennaRNA RNAup")
+    return {
+        "input_filepath1": filepath1,
+        "input_filepath2": filepath2,
+        "sequence1": seq1,
+        "sequence2": seq2,
+        "interaction_energy": body.get("interaction_energy"),
+        "interaction_structure": body.get("interaction_structure"),
+        "raw_stdout": body.get("raw_stdout", ""),
+        "backend": str(body.get("backend", "")),
+        "model": str(body.get("model", "ViennaRNA-RNAup")),
     }
 
 
@@ -2800,10 +3071,21 @@ def compute_aso_target_accessibility_vienna(
     region_end: int,
     service_url: str = "http://127.0.0.1:8003/aso-accessibility",
     aso_oligo_length: int = 18,
+    temp_c: float = 37.0,
+    dangles: int = 2,
+    no_lp: bool = False,
+    no_gu: bool = False,
+    no_closing_gu: bool = False,
+    salt: Optional[float] = None,
+    no_tetra: bool = False,
+    energy_model: Optional[int] = None,
+    nsp: Optional[str] = None,
+    param_file: Optional[str] = None,
     winsize: int = 70,
     span: int = 70,
     unpaired_ulength: int = 25,
-    temp_c: float = 37.0,
+    cutoff: Optional[float] = None,
+    opening_energies: bool = False,
 ) -> dict[str, Any]:
     """Estimate target mRNA local accessibility (RNAplfold) for an ASO binding region.
 
@@ -2821,40 +3103,50 @@ def compute_aso_target_accessibility_vienna(
         and joint unpaired probability for a contiguous stretch (when computable).
     """
     sequence_text = read_sequence(filepath)
+    payload: dict[str, Any] = {
+        "sequence": sequence_text,
+        "region_start": region_start,
+        "region_end": region_end,
+        "aso_oligo_length": aso_oligo_length,
+        "params": {
+            "temp_c": temp_c,
+            "dangles": dangles,
+            "noLP": no_lp,
+            "noGU": no_gu,
+            "noClosingGU": no_closing_gu,
+            "salt": salt,
+            "noTetra": no_tetra,
+            "energyModel": energy_model,
+            "nsp": nsp,
+            "paramFile": param_file,
+        },
+        "winsize": winsize,
+        "span": span,
+        "unpaired_ulength": unpaired_ulength,
+        "cutoff": cutoff,
+        "opening_energies": opening_energies,
+    }
     try:
-        response = requests.post(
-            service_url,
-            json={
-                "sequence": sequence_text,
-                "region_start": region_start,
-                "region_end": region_end,
-                "aso_oligo_length": aso_oligo_length,
-                "winsize": winsize,
-                "span": span,
-                "unpaired_ulength": unpaired_ulength,
-                "temp_c": temp_c,
-            },
-            timeout=600,
-        )
+        response = requests.post(service_url, json=payload, timeout=600)
         response.raise_for_status()
-        payload = response.json()
+        body = response.json()
     except requests.RequestException as exc:
         _raise_service_error(exc, "ViennaRNA accessibility")
     return {
         "input_filepath": filepath,
-        "sequence_length": int(payload.get("sequence_length", 0)),
-        "region_start": int(payload.get("region_start", region_start)),
-        "region_end": int(payload.get("region_end", region_end)),
-        "mean_unpaired_prob_single_nt": payload.get("mean_unpaired_prob_single_nt"),
-        "joint_unpaired_prob_stretch_ending_at_region_end": payload.get(
+        "sequence_length": int(body.get("sequence_length", 0)),
+        "region_start": int(body.get("region_start", region_start)),
+        "region_end": int(body.get("region_end", region_end)),
+        "mean_unpaired_prob_single_nt": body.get("mean_unpaired_prob_single_nt"),
+        "joint_unpaired_prob_stretch_ending_at_region_end": body.get(
             "joint_unpaired_prob_stretch_ending_at_region_end"
         ),
-        "aso_oligo_length_used": int(payload.get("aso_oligo_length_used", aso_oligo_length)),
-        "plfold_winsize": int(payload.get("winsize", winsize)),
-        "plfold_span": int(payload.get("span", span)),
-        "plfold_unpaired_ulength": int(payload.get("unpaired_ulength", unpaired_ulength)),
-        "backend": str(payload.get("backend", "")),
-        "model": str(payload.get("model", "ViennaRNA-RNAplfold")),
+        "aso_oligo_length_used": int(body.get("aso_oligo_length_used", aso_oligo_length)),
+        "plfold_winsize": int(body.get("winsize", winsize)),
+        "plfold_span": int(body.get("span", span)),
+        "plfold_unpaired_ulength": int(body.get("unpaired_ulength", unpaired_ulength)),
+        "backend": str(body.get("backend", "")),
+        "model": str(body.get("model", "ViennaRNA-RNAplfold")),
     }
 
 
@@ -2862,10 +3154,21 @@ def compute_aso_target_accessibility_vienna(
 def predict_rna_local_accessibility_profile_vienna(
     filepath: str,
     service_url: str = "http://127.0.0.1:8003/plfold-profiles",
+    temp_c: float = 37.0,
+    dangles: int = 2,
+    no_lp: bool = False,
+    no_gu: bool = False,
+    no_closing_gu: bool = False,
+    salt: Optional[float] = None,
+    no_tetra: bool = False,
+    energy_model: Optional[int] = None,
+    nsp: Optional[str] = None,
+    param_file: Optional[str] = None,
     winsize: int = 70,
     span: int = 70,
     unpaired_ulength: int = 25,
-    temp_c: float = 37.0,
+    cutoff: Optional[float] = None,
+    opening_energies: bool = False,
 ) -> dict[str, Any]:
     """Run ViennaRNA ``RNAplfold`` for local single-nucleotide unpaired probabilities (accessibility curve).
 
@@ -2886,27 +3189,37 @@ def predict_rna_local_accessibility_profile_vienna(
         ValueError: If the service request fails or the response is invalid.
     """
     sequence_text = read_sequence(filepath)
+    payload: dict[str, Any] = {
+        "sequence": sequence_text,
+        "params": {
+            "temp_c": temp_c,
+            "dangles": dangles,
+            "noLP": no_lp,
+            "noGU": no_gu,
+            "noClosingGU": no_closing_gu,
+            "salt": salt,
+            "noTetra": no_tetra,
+            "energyModel": energy_model,
+            "nsp": nsp,
+            "paramFile": param_file,
+        },
+        "winsize": winsize,
+        "span": span,
+        "unpaired_ulength": unpaired_ulength,
+        "cutoff": cutoff,
+        "opening_energies": opening_energies,
+    }
     try:
-        response = requests.post(
-            service_url,
-            json={
-                "sequence": sequence_text,
-                "winsize": winsize,
-                "span": span,
-                "unpaired_ulength": unpaired_ulength,
-                "temp_c": temp_c,
-            },
-            timeout=600,
-        )
+        response = requests.post(service_url, json=payload, timeout=600)
         response.raise_for_status()
-        payload = response.json()
+        body = response.json()
     except requests.RequestException as exc:
         _raise_service_error(exc, "ViennaRNA RNAplfold profile")
     required = ("positions", "unpaired_prob_1nt", "sequence_length")
-    if any(k not in payload for k in required):
+    if any(k not in body for k in required):
         raise ValueError(f"Invalid plfold-profiles response; expected keys {required}.")
-    positions = payload["positions"]
-    probs = payload["unpaired_prob_1nt"]
+    positions = body["positions"]
+    probs = body["unpaired_prob_1nt"]
     if not isinstance(positions, list) or not isinstance(probs, list):
         raise ValueError("`positions` and `unpaired_prob_1nt` must be JSON arrays.")
     if len(positions) != len(probs):
@@ -2918,17 +3231,17 @@ def predict_rna_local_accessibility_profile_vienna(
     out_fp = save_text_file(tsv_body, prefix="vienna_rnaplfold_profile", suffix=".tsv")
     return {
         "input_filepath": filepath,
-        "sequence_length": int(payload.get("sequence_length", 0)),
+        "sequence_length": int(body.get("sequence_length", 0)),
         "profile_positions_count": len(positions),
-        "mean_unpaired_prob_1nt": float(payload.get("mean_unpaired_prob_1nt", 0.0)),
-        "min_unpaired_prob_1nt": float(payload.get("min_unpaired_prob_1nt", 0.0)),
-        "max_unpaired_prob_1nt": float(payload.get("max_unpaired_prob_1nt", 0.0)),
-        "plfold_winsize": int(payload.get("winsize", winsize)),
-        "plfold_span": int(payload.get("span", span)),
-        "plfold_unpaired_ulength_effective": int(payload.get("unpaired_ulength_effective", unpaired_ulength)),
+        "mean_unpaired_prob_1nt": float(body.get("mean_unpaired_prob_1nt", 0.0)),
+        "min_unpaired_prob_1nt": float(body.get("min_unpaired_prob_1nt", 0.0)),
+        "max_unpaired_prob_1nt": float(body.get("max_unpaired_prob_1nt", 0.0)),
+        "plfold_winsize": int(body.get("winsize", winsize)),
+        "plfold_span": int(body.get("span", span)),
+        "plfold_unpaired_ulength_effective": int(body.get("unpaired_ulength_effective", unpaired_ulength)),
         "lunp_profile_tsv_filepath": out_fp,
-        "backend": str(payload.get("backend", "")),
-        "model": str(payload.get("model", "ViennaRNA-RNAplfold")),
+        "backend": str(body.get("backend", "")),
+        "model": str(body.get("model", "ViennaRNA-RNAplfold")),
     }
 
 
@@ -2938,7 +3251,17 @@ def inverse_fold_rna_secondary_structure_vienna(
     service_url: str = "http://127.0.0.1:8003/inverse-fold",
     repeats: int = 1,
     temp_c: float = 37.0,
+    dangles: int = 2,
+    no_gu: bool = False,
+    no_closing_gu: bool = False,
+    salt: Optional[float] = None,
+    no_tetra: bool = False,
+    energy_model: Optional[int] = None,
+    nsp: Optional[str] = None,
+    param_file: Optional[str] = None,
     function_mode: str = "m",
+    final_cost: Optional[float] = None,
+    alphabet: Optional[str] = None,
 ) -> dict[str, Any]:
     """Inverse-fold an RNA secondary structure to a sequence (ViennaRNA RNAinverse).
 
@@ -2958,33 +3281,43 @@ def inverse_fold_rna_secondary_structure_vienna(
         raise ValueError("Inverse-fold input file is empty.")
     structure = lines[0]
     start_sequence = lines[1] if len(lines) > 1 else ""
+    payload: dict[str, Any] = {
+        "structure": structure,
+        "start_sequence": start_sequence,
+        "params": {
+            "temp_c": temp_c,
+            "dangles": dangles,
+            "noGU": no_gu,
+            "noClosingGU": no_closing_gu,
+            "salt": salt,
+            "noTetra": no_tetra,
+            "energyModel": energy_model,
+            "nsp": nsp,
+            "paramFile": param_file,
+        },
+        "repeats": repeats,
+        "function_mode": function_mode,
+        "final_cost": final_cost,
+        "alphabet": alphabet,
+    }
     try:
-        response = requests.post(
-            service_url,
-            json={
-                "structure": structure,
-                "start_sequence": start_sequence,
-                "repeats": repeats,
-                "temp_c": temp_c,
-                "function_mode": function_mode,
-            },
-            timeout=300,
-        )
+        response = requests.post(service_url, json=payload, timeout=300)
         response.raise_for_status()
-        payload = response.json()
+        body = response.json()
     except requests.RequestException as exc:
         _raise_service_error(exc, "ViennaRNA inverse-fold")
-    if "best_sequence" not in payload:
+    if "best_sequence" not in body:
         raise ValueError("Invalid inverse-fold response: missing `best_sequence`.")
     out = {
         "input_filepath": filepath,
-        "target_structure": str(payload.get("structure", structure)),
-        "best_sequence": str(payload["best_sequence"]),
-        "hamming_distance": payload.get("hamming_distance"),
-        "backend": str(payload.get("backend", "")),
-        "model": str(payload.get("model", "ViennaRNA-RNAinverse")),
+        "target_structure": str(body.get("structure", structure)),
+        "best_sequence": str(body["best_sequence"]),
+        "hamming_distance": body.get("hamming_distance"),
+        "partition_probability": body.get("partition_probability"),
+        "backend": str(body.get("backend", "")),
+        "model": str(body.get("model", "ViennaRNA-RNAinverse")),
     }
-    best_fp = save_sequence(str(payload["best_sequence"]), prefix="vienna_inverse")
+    best_fp = save_sequence(str(body["best_sequence"]), prefix="vienna_inverse")
     out["best_sequence_filepath"] = best_fp
     return out
 
@@ -4409,6 +4742,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     score_rna_ligand_binding_with_rnasmol,
     predict_mrna_stability_with_rnastop,
     predict_putative_ires_with_iresfinder,
+    compute_rna_rna_interaction_vienna,
     compute_aso_target_accessibility_vienna,
     predict_rna_local_accessibility_profile_vienna,
     inverse_fold_rna_secondary_structure_vienna,

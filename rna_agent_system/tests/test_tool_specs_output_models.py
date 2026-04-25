@@ -4,7 +4,6 @@ from agent_core.tool_specs import TOOL_SPECS
 
 
 def test_tool_specs_have_output_models_for_registered_tools():
-    # Keep this minimal: ensure specs exist for tools we rely on for normalization/validation.
     must_exist = [
         "predict_rna_secondary_structure",
         "predict_rna_secondary_structure_with_linearfold",
@@ -12,6 +11,7 @@ def test_tool_specs_have_output_models_for_registered_tools():
         "predict_rna_secondary_structure_with_linearfold_zuker",
         "run_blastn_similarity_search",
         "compute_sirna_duplex_binding_vienna",
+        "compute_rna_rna_interaction_vienna",
         "design_sirna_with_evitar",
     ]
     for name in must_exist:
@@ -30,9 +30,13 @@ def test_viennarna_fold_output_model_accepts_minimal_payload():
             "mfe_kcal_per_mol": -3.4,
             "backend": "RNAfold-cli",
             "model": "ViennaRNA-RNAfold",
+            "ensemble_free_energy": -3.8,
+            "centroid_structure": "....",
+            "centroid_distance": 0.0,
         }
     )
     assert validated.mfe_kcal_per_mol == -3.4
+    assert validated.ensemble_free_energy == -3.8
 
 
 def test_rnaplfold_profile_tool_spec_output_model():
@@ -55,3 +59,20 @@ def test_rnaplfold_profile_tool_spec_output_model():
         }
     )
 
+
+def test_rnaup_tool_spec_output_model():
+    spec = TOOL_SPECS["compute_rna_rna_interaction_vienna"]
+    assert spec.output_model is not None
+    spec.output_model.model_validate(
+        {
+            "input_filepath1": "workspace/seq1.fasta",
+            "input_filepath2": "workspace/seq2.fasta",
+            "sequence1": "AUGC",
+            "sequence2": "CGUA",
+            "interaction_energy": -12.3,
+            "interaction_structure": "((((&))))",
+            "raw_stdout": "# RNAup output\n",
+            "backend": "RNAup-cli",
+            "model": "ViennaRNA-RNAup",
+        }
+    )

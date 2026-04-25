@@ -240,7 +240,12 @@ class AgentState(TypedDict, total=False):
     evitar_middlegc: float
     evitar_allow_path: str
     evitar_ban_path: str
+    # ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
+    # 关联文件清单见 microservices/viennarna_fold/main.py 顶部的 INTERFACE LOCK。
+    # 任何字段增删必须同步更新全部关联文件并重新跑通端到端测试。
     vienna_sirna_duplex_mfe: float
+    vienna_rnaup_interaction_energy: Optional[float] = None
+    vienna_rnaup_interaction_structure: Optional[str] = None
     vienna_aso_mean_unpaired: float
     vienna_aso_joint_unpaired: float
     vienna_inverse_best_sequence: str

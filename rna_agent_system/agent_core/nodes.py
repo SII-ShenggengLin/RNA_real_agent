@@ -11,6 +11,12 @@ from typing import Any, Optional, Tuple
 from langchain_core.messages import AIMessage, ToolMessage
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
+# 关联文件清单见 microservices/viennarna_fold/main.py 顶部的 INTERFACE LOCK。
+# 任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 microservices/linearfold_service/main.py 顶部的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
@@ -22,6 +28,7 @@ from agent_core.tool_specs import TOOL_SPECS
 from agent_core.tools import (
     ALL_LANGCHAIN_AGENT_TOOLS,
     calculate_crispr_specificity_with_crisot,
+    compute_rna_rna_interaction_vienna,
     compute_aso_target_accessibility_vienna,
     predict_rna_local_accessibility_profile_vienna,
     compute_sirna_duplex_binding_vienna,
@@ -127,6 +134,21 @@ def _needs_sirna_duplex_vienna(user_text: str) -> bool:
         "结合能",
     )
     return any(k in user_text for k in keys)
+
+
+def _needs_rnaup_vienna(user_text: str) -> bool:
+    keys = (
+        "rnaup",
+        "rna up",
+        "rna-rna interaction",
+        "rna rna interaction",
+        "interaction thermodynamics",
+        "accessibility + binding",
+        "结合热力学",
+        "相互作用",
+        "rnaup",
+    )
+    return any(k in user_text.lower() for k in keys)
 
 
 def _needs_codonw_standalone(user_text: str) -> bool:
@@ -2243,6 +2265,22 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
             }
         ]
         content = "mRNA specialist (rule-based): ViennaRNA RNAinverse secondary-structure inverse fold."
+    elif _needs_rnaup_vienna(user_text):
+        fp1, created1 = _resolve_sequence_input(raw_text)
+        # For RNAup we need two sequences; if only one file is provided, use the same for both as a fallback
+        fp2 = fp1
+        state["current_filepath"] = fp1
+        if created1 or fp1.startswith("workspace/"):
+            state["workspace_files"] = state.get("workspace_files", []) + [fp1]
+        tool_calls = [
+            {
+                "name": "compute_rna_rna_interaction_vienna",
+                "args": {"filepath1": fp1, "filepath2": fp2},
+                "id": f"call_{uuid.uuid4().hex[:8]}",
+                "type": "tool_call",
+            }
+        ]
+        content = "mRNA specialist (rule-based): ViennaRNA RNAup RNA-RNA interaction thermodynamics."
     elif _needs_aso_region_plfold_accessibility(raw_text):
         filepath_aso, created_workspace_file = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath_aso
@@ -2606,6 +2644,18 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 {
                     "name": "inverse_fold_rna_secondary_structure_vienna",
                     "args": {"filepath": inv_fp, "repeats": repeats},
+                }
+            ]
+        elif _needs_rnaup_vienna(user_text):
+            fp1, created1 = _resolve_sequence_input(state.get("input_sequence", ""))
+            fp2 = fp1
+            state["current_filepath"] = fp1
+            if created1 or fp1.startswith("workspace/"):
+                state["workspace_files"] = state.get("workspace_files", []) + [fp1]
+            fallback_calls = [
+                {
+                    "name": "compute_rna_rna_interaction_vienna",
+                    "args": {"filepath1": fp1, "filepath2": fp2},
                 }
             ]
         elif _needs_aso_region_plfold_accessibility(state.get("input_sequence", "")):
@@ -3423,6 +3473,14 @@ def tool_execution_node(state: AgentState) -> AgentState:
             anti = str(tool_result.get("antisense", ""))
             if sense and anti:
                 state["candidate_sequence"] = f"{sense}&{anti}"
+        elif tool_name == "compute_rna_rna_interaction_vienna":
+            input_filepath1 = str(tool_result.get("input_filepath1", state.get("current_filepath", "")))
+            if input_filepath1:
+                state["current_filepath"] = input_filepath1
+            ie = tool_result.get("interaction_energy")
+            if ie is not None:
+                state["vienna_rnaup_interaction_energy"] = float(ie)
+            state["vienna_rnaup_interaction_structure"] = str(tool_result.get("interaction_structure", ""))
         elif tool_name == "compute_aso_target_accessibility_vienna":
             input_filepath = str(tool_result.get("input_filepath", state.get("current_filepath", "")))
             if input_filepath:
@@ -3645,6 +3703,8 @@ def critic_node(state: AgentState) -> AgentState:
             f"evitar_allow_path={state.get('evitar_allow_path', '')}; "
             f"evitar_ban_path={state.get('evitar_ban_path', '')}; "
             f"vienna_sirna_duplex_mfe={state.get('vienna_sirna_duplex_mfe', 0.0)}; "
+            f"vienna_rnaup_interaction_energy={state.get('vienna_rnaup_interaction_energy', 0.0)}; "
+            f"vienna_rnaup_interaction_structure={state.get('vienna_rnaup_interaction_structure', '')}; "
             f"vienna_aso_mean_unpaired={state.get('vienna_aso_mean_unpaired', 0.0)}; "
             f"vienna_aso_joint_unpaired={state.get('vienna_aso_joint_unpaired', 0.0)}; "
             f"vienna_inverse_best_sequence={state.get('vienna_inverse_best_sequence', '')}; "

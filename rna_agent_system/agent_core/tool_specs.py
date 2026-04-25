@@ -66,6 +66,12 @@ class ViennaFoldOutput(_OutBase):
     mfe_kcal_per_mol: float
     backend: str = ""
     model: str = "ViennaRNA-RNAfold"
+    ensemble_free_energy: Optional[float] = None
+    centroid_structure: Optional[str] = None
+    centroid_distance: Optional[float] = None
+    mea_structure: Optional[str] = None
+    mea_score: Optional[float] = None
+    mea_gamma: Optional[float] = None
 
 
 class ViennaDuplexOutput(_OutBase):
@@ -76,6 +82,20 @@ class ViennaDuplexOutput(_OutBase):
     mfe_kcal_per_mol: float
     backend: str = ""
     model: str
+    ensemble_free_energy: Optional[float] = None
+    equilibrium_concentrations: Optional[Dict[str, float]] = None
+
+
+class ViennaRnaUpOutput(_OutBase):
+    input_filepath1: str
+    input_filepath2: str
+    sequence1: str
+    sequence2: str
+    interaction_energy: Optional[float] = None
+    interaction_structure: Optional[str] = None
+    raw_stdout: str = ""
+    backend: str = ""
+    model: str = "ViennaRNA-RNAup"
 
 
 class ViennaAsoAccessibilityOutput(_OutBase):
@@ -114,6 +134,7 @@ class ViennaInverseFoldOutput(_OutBase):
     best_sequence: str
     best_sequence_filepath: str
     hamming_distance: Optional[int] = None
+    partition_probability: Optional[float] = None
     backend: str = ""
     model: str
 
@@ -683,11 +704,24 @@ class DotBracketUnpairedFractionOutput(_OutBase):
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/viennarna_fold/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/viennarna_rna_tools.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同步更新全部文件
+# 并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 TOOL_SPECS: Dict[str, ToolSpec] = {
     "compute_sirna_duplex_binding_vienna": ToolSpec(
         identity="compute_sirna_duplex_binding_vienna",
         display_name="ViennaRNA duplex cofold (siRNA sense/antisense)",
-        version="0.2.0-port8003",
+        version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8003/sirna-duplex",
@@ -778,7 +812,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "predict_rna_secondary_structure": ToolSpec(
         identity="predict_rna_secondary_structure",
         display_name="ViennaRNA RNAfold (secondary structure)",
-        version="0.2.0-port8003",
+        version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8003/fold",
@@ -787,14 +821,34 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         task_tags=["rna_secondary_structure_prediction"],
         requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
         produces=["structure", "mfe_kcal_per_mol"],
-        input_model=tool_wrappers.MrnaToolInput,
+        input_model=tool_wrappers.FoldViennaInput,
         output_model=ViennaFoldOutput,
+        status=ToolStatus.available,
+    ),
+    "compute_rna_rna_interaction_vienna": ToolSpec(
+        identity="compute_rna_rna_interaction_vienna",
+        display_name="ViennaRNA RNAup (RNA-RNA interaction thermodynamics)",
+        version="0.4.0-port8003",
+        source="https://github.com/ViennaRNA/ViennaRNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8003/rnaup",
+        capabilities=[
+            "Calculate thermodynamics of RNA-RNA interactions: accessibility + binding energy.",
+        ],
+        limitations=[
+            "Requires RNAup executable on PATH; RNAlib Python API not used for RNAup.",
+        ],
+        task_tags=["rna_rna_interaction", "rnaup"],
+        requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
+        produces=["interaction_energy", "interaction_structure", "raw_stdout"],
+        input_model=tool_wrappers.RnaUpViennaInput,
+        output_model=ViennaRnaUpOutput,
         status=ToolStatus.available,
     ),
     "compute_aso_target_accessibility_vienna": ToolSpec(
         identity="compute_aso_target_accessibility_vienna",
         display_name="ViennaRNA RNAplfold accessibility (ASO)",
-        version="0.2.0-port8003",
+        version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8003/aso-accessibility",
@@ -810,7 +864,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "predict_rna_local_accessibility_profile_vienna": ToolSpec(
         identity="predict_rna_local_accessibility_profile_vienna",
         display_name="ViennaRNA RNAplfold local accessibility profile",
-        version="0.3.0-port8003",
+        version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8003/plfold-profiles",
@@ -830,7 +884,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "inverse_fold_rna_secondary_structure_vienna": ToolSpec(
         identity="inverse_fold_rna_secondary_structure_vienna",
         display_name="ViennaRNA RNAinverse (inverse folding)",
-        version="0.2.0-port8003",
+        version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8003/inverse-fold",
