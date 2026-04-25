@@ -249,9 +249,19 @@ class AgentState(TypedDict, total=False):
     vienna_aso_mean_unpaired: float
     vienna_aso_joint_unpaired: float
     vienna_inverse_best_sequence: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 run_blastn_similarity_search
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
     blast_hit_count: int
     blast_tabular_tsv_filepath: str
     blast_subject_mode: str
+    blast_hits_preview: str
+    blast_preview_truncated: bool
+    blast_blastn_command: str
+    blast_resolved_query_path: str
+    blast_resolved_subject: str
     sequence_gc_content: float
     dot_bracket_unpaired_fraction: float
     design_model: str

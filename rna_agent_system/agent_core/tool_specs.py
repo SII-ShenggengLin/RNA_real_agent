@@ -24,11 +24,29 @@ class _OutBase(BaseModel):
 
 
 class BlastnSearchOutput(_OutBase):
+    """BLAST+ blastn search output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: run_blastn_similarity_search (wrapper return dict)
+    - microservices/blast_service/main.py :: BlastnResponse
+    - agent_core/state.py :: blast_* fields
+    - agent_core/nodes.py :: tool_execution_node blast branch
+    - docs/RNA_AGENT_SYSTEM_GUIDE.md
+    """
+
     hit_count: int
+    hits_preview: str = ""
+    preview_truncated: bool = False
+    tabular_output_truncated: bool = False
+    blastn_command: str = ""
+    makeblastdb_command: Optional[str] = None
+    stderr: str = ""
     subject_mode: str
-    query_filepath: str
-    tabular_tsv_filepath: str
+    resolved_query_path: str = ""
+    resolved_subject: str = ""
     model: str
+    query_filepath: str
+    tabular_tsv_filepath: str = ""
 
 
 class EvitarDesignOutput(_OutBase):
@@ -793,10 +811,23 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=EvitarDesignOutput,
         status=ToolStatus.partial,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/blast_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/nodes.py
+    #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "run_blastn_similarity_search": ToolSpec(
         identity="run_blastn_similarity_search",
         display_name="BLAST+ blastn similarity search",
-        version="0.1.0",
+        version="0.2.0",
         source="https://blast.ncbi.nlm.nih.gov/Blast.cgi",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8019/blastn",
@@ -804,10 +835,17 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Not a siRNA off-target production pipeline by itself; returns alignments/hits only."],
         task_tags=["blastn_similarity_search", "off_target_screening_support"],
         requires=[ToolDependency(name="BLAST+ microservice", detail="microservices/blast_service (port 8019)")],
-        produces=["hit_count", "tabular_tsv_filepath"],
+        produces=["hit_count", "hits_preview", "tabular_tsv_filepath", "subject_mode", "blastn_command", "makeblastdb_command", "stderr"],
         input_model=tool_wrappers.BlastnSearchInput,
         output_model=BlastnSearchOutput,
-        status=ToolStatus.partial,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="blastn against subject FASTA",
+                input={"filepath": "workspace/query.fa", "subject_fasta_path": "workspace/subject.fa", "task": "blastn-short"},
+                output_excerpt={"hit_count": 3, "subject_mode": "fasta"},
+            )
+        ],
     ),
     "predict_rna_secondary_structure": ToolSpec(
         identity="predict_rna_secondary_structure",

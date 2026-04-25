@@ -22,6 +22,12 @@ from langchain_core.messages import AIMessage, ToolMessage
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 run_blastn_similarity_search 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 from agent_core.file_manager import read_sequence, save_sequence, save_text_file
 from agent_core.state import AgentState
 from agent_core.tool_specs import TOOL_SPECS
@@ -1304,6 +1310,11 @@ def _build_blast_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
         args["strand"] = "plus"
     elif "strand=minus" in lowered or "strand minus" in lowered:
         args["strand"] = "minus"
+
+    outfmt = _extract_string_setting(raw_text, ("outfmt", "out_fmt", "output_format"))
+    if outfmt is not None:
+        args["outfmt"] = outfmt
+
     return args
 
 
@@ -2988,6 +2999,11 @@ def tool_execution_node(state: AgentState) -> AgentState:
         elif tool_name == "run_blastn_similarity_search":
             state["blast_hit_count"] = int(tool_result.get("hit_count", 0))
             state["blast_subject_mode"] = str(tool_result.get("subject_mode", ""))
+            state["blast_hits_preview"] = str(tool_result.get("hits_preview", ""))
+            state["blast_preview_truncated"] = bool(tool_result.get("preview_truncated", False))
+            state["blast_blastn_command"] = str(tool_result.get("blastn_command", ""))
+            state["blast_resolved_query_path"] = str(tool_result.get("resolved_query_path", ""))
+            state["blast_resolved_subject"] = str(tool_result.get("resolved_subject", ""))
             tab_fp = str(tool_result.get("tabular_tsv_filepath", ""))
             if tab_fp:
                 state["blast_tabular_tsv_filepath"] = tab_fp
@@ -3711,6 +3727,10 @@ def critic_node(state: AgentState) -> AgentState:
             f"blast_hit_count={state.get('blast_hit_count', 0)}; "
             f"blast_tabular_tsv_filepath={state.get('blast_tabular_tsv_filepath', '')}; "
             f"blast_subject_mode={state.get('blast_subject_mode', '')}; "
+            f"blast_hits_preview={state.get('blast_hits_preview', '')[:80]}; "
+            f"blast_blastn_command={state.get('blast_blastn_command', '')[:80]}; "
+            f"blast_resolved_query_path={state.get('blast_resolved_query_path', '')}; "
+            f"blast_resolved_subject={state.get('blast_resolved_subject', '')}; "
             f"sequence_gc_content={state.get('sequence_gc_content', 0.0)}; "
             f"dot_bracket_unpaired_fraction={state.get('dot_bracket_unpaired_fraction', 0.0)}; "
             f"retries={retry_count}"

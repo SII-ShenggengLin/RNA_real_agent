@@ -539,7 +539,7 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 | 微服务目录 | `microservices/blast_service/` |
 | 环境 | `python=3.10` + bioconda `blast` |
 | 接口 | `GET /health`、`POST /blastn` |
-| Agent 工具 | `run_blastn_similarity_search(filepath, subject_fasta_path=..., subject_db=...)` |
+| Agent 工具 | `run_blastn_similarity_search(filepath, subject_fasta_path=..., subject_db=..., task=..., evalue=..., word_size=..., max_target_seqs=..., perc_identity=..., strand=..., outfmt=...)` |
 
 **关键注意事项**：
 - `subject_fasta_path`（现场 `makeblastdb`）或 `subject_db`（已有库前缀）**二选一**

@@ -76,3 +76,25 @@ def test_rnaup_tool_spec_output_model():
             "model": "ViennaRNA-RNAup",
         }
     )
+
+
+def test_blastn_search_tool_spec_output_model():
+    spec = TOOL_SPECS["run_blastn_similarity_search"]
+    assert spec.output_model is not None
+    spec.output_model.model_validate(
+        {
+            "hit_count": 5,
+            "hits_preview": "q1\tsubj1\t100.00\t8\t0\t0\t1\t8\t1\t8\t0.001\t16.0",
+            "preview_truncated": False,
+            "tabular_output_truncated": False,
+            "blastn_command": "blastn -query /tmp/query.fa -db /tmp/db -task blastn-short -evalue 10 -max_target_seqs 50 -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore' -strand both",
+            "makeblastdb_command": "makeblastdb -in /tmp/subj.fa -dbtype nucl -out /tmp/db -title subject",
+            "stderr": "",
+            "subject_mode": "fasta",
+            "resolved_query_path": "/tmp/query.fa",
+            "resolved_subject": "/tmp/subj.fa",
+            "model": "ncbi-blastn",
+            "query_filepath": "workspace/query.fa",
+            "tabular_tsv_filepath": "workspace/blastn_out_abc.tsv",
+        }
+    )

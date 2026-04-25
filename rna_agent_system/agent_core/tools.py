@@ -117,6 +117,13 @@ def _attach_service_logs(
         )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 run_blastn_similarity_search 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 class BlastnSearchInput(BaseModel):
     """Input schema for NCBI BLAST+ blastn (microservice on port 8019)."""
 
@@ -147,6 +154,10 @@ class BlastnSearchInput(BaseModel):
         description="Optional minimum percent identity filter passed to blastn.",
     )
     strand: str = Field(default="both", description="blastn -strand: both | plus | minus.")
+    outfmt: Optional[str] = Field(
+        default=None,
+        description="Optional blastn -outfmt argument override (default is tabular format 6).",
+    )
     service_url: str = Field(
         default="http://127.0.0.1:8019/blastn",
         description="URL for the blast_service POST /blastn endpoint.",
@@ -570,9 +581,18 @@ def run_blastn_similarity_search(
     max_target_seqs: int = 50,
     perc_identity: Optional[float] = None,
     strand: str = "both",
+    outfmt: Optional[str] = None,
     service_url: str = "http://127.0.0.1:8019/blastn",
 ) -> dict[str, Any]:
     """Run NCBI blastn against a subject FASTA or an existing nucleotide BLAST database.
+
+    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: BlastnSearchOutput / run_blastn_similarity_search ToolSpec
+    - agent_core/state.py :: blast_* fields
+    - agent_core/nodes.py :: _build_blast_tool_args / tool_execution_node blast branch
+    - microservices/blast_service/main.py :: BlastnRequest / BlastnResponse
+    - docs/RNA_AGENT_SYSTEM_GUIDE.md
 
     Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
     Provide exactly one of ``subject_fasta_path`` or ``subject_db``. The query is read from
@@ -588,6 +608,7 @@ def run_blastn_similarity_search(
         max_target_seqs: Maximum aligned subject sequences to report.
         perc_identity: Optional percent identity cutoff.
         strand: Query/subject strand option.
+        outfmt: Optional blastn -outfmt override (default tabular format 6).
         service_url: POST endpoint for the blast microservice.
 
     Returns:
@@ -624,6 +645,8 @@ def run_blastn_similarity_search(
         payload["word_size"] = int(word_size)
     if perc_identity is not None:
         payload["perc_identity"] = float(perc_identity)
+    if outfmt is not None:
+        payload["outfmt"] = str(outfmt)
     try:
         response = requests.post(service_url, json=payload, timeout=660)
         response.raise_for_status()
