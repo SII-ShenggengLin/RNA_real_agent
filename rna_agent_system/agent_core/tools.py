@@ -726,6 +726,12 @@ class DotBracketUnpairedFractionInput(BaseModel):
         default="http://127.0.0.1:8020/unpaired-fraction",
         description="POST endpoint for unpaired-fraction microservice.",
     )
+    timeout_seconds: float = Field(
+        default=120.0,
+        gt=0.0,
+        le=600.0,
+        description="HTTP request timeout in seconds.",
+    )
 
 
 @tool(args_schema=RnaGcContentInput)
@@ -786,8 +792,21 @@ def compute_rna_sequence_gc_content(
 def compute_dot_bracket_unpaired_fraction(
     filepath: str,
     service_url: str = "http://127.0.0.1:8020/unpaired-fraction",
+    timeout_seconds: float = 120.0,
 ) -> dict[str, Any]:
     """Fraction of unpaired bases in a dot-bracket RNA secondary structure: count('.')/length.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: DotBracketUnpairedFractionOutput /
+      compute_dot_bracket_unpaired_fraction ToolSpec
+    - agent_core/state.py :: dot_bracket_unpaired_fraction / dot_bracket_structure_length /
+      dot_bracket_dot_count fields
+    - agent_core/nodes.py :: _needs_dot_bracket_unpaired_fraction_metric /
+      tool_execution_node unpaired fraction branch
+    - microservices/rna_sequence_metrics_service/main.py ::
+      UnpairedFractionRequest / UnpairedFractionResponse
+    - docs/tools/compute_dot_bracket_unpaired_fraction.md
 
     The structure string must use only ``. ( ) [ ] { } < >`` as in ViennaRNA / LinearFold dot-bracket
     notation. Requires ``rna_sequence_metrics_service`` on port 8020.
@@ -795,6 +814,7 @@ def compute_dot_bracket_unpaired_fraction(
     Args:
         filepath: Text file containing the structure (FASTA with structure on sequence line is ok).
         service_url: POST ``/unpaired-fraction`` endpoint.
+        timeout_seconds: HTTP request timeout in seconds.
 
     Returns:
         Dict with ``unpaired_fraction``, ``dot_count``, ``structure_length``, and paths.
@@ -802,13 +822,12 @@ def compute_dot_bracket_unpaired_fraction(
     Raises:
         ValueError: If the HTTP call fails or the structure contains invalid characters.
     """
-    read_sequence(filepath)
     struct_abs = _absolute_path_under_project(filepath)
     try:
         response = requests.post(
             service_url,
             json={"structure_filepath": struct_abs},
-            timeout=120,
+            timeout=float(timeout_seconds),
         )
         response.raise_for_status()
         body = response.json()

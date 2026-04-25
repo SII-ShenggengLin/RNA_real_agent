@@ -740,6 +740,16 @@ class RnaGcContentOutput(_OutBase):
 
 
 class DotBracketUnpairedFractionOutput(_OutBase):
+    """Dot-bracket unpaired fraction output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: compute_dot_bracket_unpaired_fraction (wrapper return dict)
+    - microservices/rna_sequence_metrics_service/main.py :: UnpairedFractionResponse
+    - agent_core/state.py :: dot_bracket_* fields
+    - agent_core/nodes.py :: tool_execution_node unpaired fraction branch
+    - docs/tools/compute_dot_bracket_unpaired_fraction.md
+    """
+
     input_filepath: str
     resolved_filepath: str
     structure_length: int

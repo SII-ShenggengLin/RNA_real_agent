@@ -272,8 +272,14 @@ class AgentState(TypedDict, total=False):
     sequence_gc_count: int = 0
     sequence_g_count: int = 0
     sequence_c_count: int = 0
-    # ── dot-bracket unpaired fraction ──
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Dot-bracket unpaired fraction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 compute_dot_bracket_unpaired_fraction
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
     dot_bracket_unpaired_fraction: float
+    dot_bracket_structure_length: int = 0
+    dot_bracket_dot_count: int = 0
     design_model: str
     rnarl_model_type: str
     rnarl_checkpoint_path: str

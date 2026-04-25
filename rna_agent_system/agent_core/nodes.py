@@ -221,7 +221,11 @@ def _resolve_dot_bracket_structure_filepath(raw_text: str) -> Tuple[str, bool]:
     """Return (filepath, created_workspace_file) for a dot-bracket structure."""
     fp = _extract_path_with_suffixes(raw_text, ("ss", "struct", "dbn", "txt"))
     if fp:
-        read_sequence(fp)
+        path_obj = Path(fp)
+        if not path_obj.is_absolute():
+            path_obj = (PROJECT_ROOT / fp).resolve()
+        if not path_obj.is_file():
+            raise ValueError(f"Structure file not found: {fp}")
         return fp, False
 
     struct_m = re.search(
@@ -3024,8 +3028,13 @@ def tool_execution_node(state: AgentState) -> AgentState:
             state["sequence_gc_count"] = int(tool_result.get("gc_count", 0))
             state["sequence_g_count"] = int(tool_result.get("g_count", 0))
             state["sequence_c_count"] = int(tool_result.get("c_count", 0))
+        # Dot-bracket unpaired fraction INTERFACE LOCK (v0.1.0):
+        # 结果回写字段必须与 agent_core/state.py 中 dot_bracket_* 字段及
+        # agent_core/tool_specs.py 中 DotBracketUnpairedFractionOutput 保持一一对应。
         elif tool_name == "compute_dot_bracket_unpaired_fraction":
             state["dot_bracket_unpaired_fraction"] = float(tool_result.get("unpaired_fraction", 0.0))
+            state["dot_bracket_structure_length"] = int(tool_result.get("structure_length", 0))
+            state["dot_bracket_dot_count"] = int(tool_result.get("dot_count", 0))
         # codonw-slim INTERFACE LOCK (v0.2.0): 结果回写字段必须与
         # agent_core/state.py 中 codonw_* 字段及 agent_core/tool_specs.py
         # 中 CodonwSlimOutput 保持一一对应。任何增删需同步。
