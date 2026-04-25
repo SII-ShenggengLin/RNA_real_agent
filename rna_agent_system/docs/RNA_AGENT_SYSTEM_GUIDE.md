@@ -127,7 +127,7 @@ rna_agent_system/
 | 8011 | `crisot_service` | CRISOT | CRISPR off-target 打分/优化 | ✅ Linux |
 | 8012 | `odesign_service` | ODesign | 生物分子设计（RNA 相关） | ✅ Linux GPU |
 | 8013 | `iresfinder_service` | IRESfinder | IRES 预测（Python 3 重实现） | ✅ Linux |
-| 8014 | `lineardesign_service` | LinearDesign | 蛋白→mRNA CDS 设计 | ✅ Linux |
+| 8014 | `lineardesign_service` | LinearDesign | 蛋白→mRNA CDS 设计（单序列 / 批量） | ✅ Linux |
 | 8015 | `linearfold_service` | LinearFold | RNA 二级结构预测 | ✅ Linux |
 | 8016 | `evitar_service` | Evitar | siRNA/Cas13 设计（Perl CLI） | ✅ Linux |
 | 8017 | `sgrna_design_service` | CRGPT | sgRNA handle 设计 | ✅ Linux GPU |
@@ -199,7 +199,8 @@ User Input → Router → Specialist → Tool Execution → Critic → End / 回
 | 9 | RiboDiffusion 三级扩散逆折叠（`ribodiffusion` / `ribo diffusion` / `nodes._needs_ribodiffusion_design`） | `design_rna_inverse_fold_with_ribodiffusion` |
 | 10 | 结构→序列（`rhodesign` + `.pdb`） | `design_rna_sequence_with_rhodesign` |
 | 11 | ODesign 设计 | `run_odesign_inference` |
-| 12 | LinearDesign CDS 设计 | `design_mrna_cds_with_lineardesign` |
+| 12 | LinearDesign CDS 设计（单序列） | `design_mrna_cds_with_lineardesign` |
+| 12b | LinearDesign CDS 批量设计 | `design_mrna_cds_batch_with_lineardesign` |
 | 13 | RNARL CDS 设计（含 `rnarl` 关键词） | `design_mrna_cds_with_rnarl` |
 | 14 | GEMORNA CDS 设计 | `design_mrna_cds_with_gemorna` |
 | 15 | 结构预测（默认） | `analyze_cds_codon_metrics_with_codonw_slim` → `predict_rna_secondary_structure` (ViennaRNA) / `predict_rna_secondary_structure_with_linearfold` |
@@ -441,12 +442,15 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 |------|------|
 | 上游仓库 | [LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign.git) |
 | 微服务目录 | `microservices/lineardesign_service/` |
-| 接口 | `GET /health`、`POST /generate/cds` |
-| Agent 工具 | `design_mrna_cds_with_lineardesign(filepath)` |
+| 接口 | `GET /health`、`POST /generate/cds`、`POST /generate/cds/batch` |
+| Agent 工具（单序列） | `design_mrna_cds_with_lineardesign(filepath, lambda_value=0.0, codon_usage_path=None, verbose=False)` |
+| Agent 工具（批量） | `design_mrna_cds_batch_with_lineardesign(filepath, lambda_value=0.0, codon_usage_path=None, verbose=False)` |
 
 **关键注意事项**：
 - 部署后需在 `external_repos/LinearDesign/` 执行 `make` 生成 `bin/LinearDesign_2D`
 - 可通过 `LINEARDESIGN_ROOT` 环境变量覆盖目录
+- Batch 端点接收 FASTA 或多行纯文本文件，每条序列独立运行，共享同一组 `lambda` / `codon_usage_path` / `verbose` 参数
+- 上层 workflow API 支持通过 constraints 传递 `lineardesign_codon_usage_path` 和 `lineardesign_verbose`
 
 ### 6.13 LinearFold (端口 8015)
 

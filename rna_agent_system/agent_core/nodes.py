@@ -23,6 +23,7 @@ from agent_core.tools import (
     score_sgrna_handle_with_crgpt,
     design_sirna_with_evitar,
     design_mrna_cds_with_lineardesign,
+    design_mrna_cds_batch_with_lineardesign,
     design_rna_sequence_with_rhodesign,
     design_rna_inverse_fold_with_ribodiffusion,
     design_mrna_cds_with_gemorna,
@@ -731,6 +732,14 @@ def _needs_lineardesign(text: str) -> bool:
     )
 
 
+def _needs_lineardesign_batch(text: str) -> bool:
+    """Detect batch-design intent for LinearDesign."""
+    lowered = text.lower()
+    has_batch_kw = any(k in lowered for k in ["batch", "bulk", "multiple", "批量", "批量设计"])
+    has_ld_kw = any(k in lowered for k in ["lineardesign", "linear design"])
+    return has_batch_kw and has_ld_kw
+
+
 def _needs_5utr_design(text: str) -> bool:
     lowered = text.lower()
     return "5utr" in lowered or "5'utr" in lowered or "5 utr" in lowered
@@ -815,7 +824,9 @@ def _resolve_protein_to_cds_tool(user_text: str, raw_text: str) -> tuple[str, di
     INTERFACE LOCK (v0.2.0): The dispatch logic and RNARL model_type extraction
     must stay in sync with docs/tools/design_mrna_cds_with_rnarl.md.
     """
-    if _needs_lineardesign(user_text):
+    if _needs_lineardesign_batch(user_text):
+        tool_name = "design_mrna_cds_batch_with_lineardesign"
+    elif _needs_lineardesign(user_text):
         tool_name = "design_mrna_cds_with_lineardesign"
     elif _needs_rnarl_design(user_text):
         tool_name = "design_mrna_cds_with_rnarl"
@@ -2345,11 +2356,13 @@ def mrna_specialist_node(state: AgentState) -> AgentState:
                 "type": "tool_call",
             }
         ]
+        lineardesign_batch_mode = _needs_lineardesign_batch(user_text)
         content = (
-            "mRNA specialist (rule-based): dispatch LinearDesign design."
+            "mRNA specialist (rule-based): dispatch LinearDesign batch design."
+            if lineardesign_batch_mode
+            else "mRNA specialist (rule-based): dispatch LinearDesign design."
             if lineardesign_mode
-            else
-            "mRNA specialist (rule-based): dispatch RNARL design."
+            else "mRNA specialist (rule-based): dispatch RNARL design."
             if rnarl_mode
             else "mRNA specialist (rule-based): dispatch GEMORNA design."
         )
@@ -2951,10 +2964,166 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["tertiary_log_filepath"] = log_filepath
                 state["workspace_files"] = state.get("workspace_files", []) + [log_filepath]
             state["mean_plddt"] = float(tool_result.get("mean_plddt", 0.0))
+        # ═══════════════════════════════════════════════════════════════════════
+        # LinearDesign single-sequence branch
+        # INTERFACE LOCK (v0.2.0): Locked branch. Modify only in sync with:
+        #   - microservices/lineardesign_service/main.py
+        #   - agent_core/tools.py :: design_mrna_cds_with_lineardesign
+        #   - agent_core/tool_specs.py :: LinearDesignCdsOutput
+        #   - agent_core/state.py :: lineardesign_* fields
+        #   - docs/change_logs/lineardesign_interface_v0.2.0.md
+        # 本次修改的基准日期：2026-04-24。
+        # ═══════════════════════════════════════════════════════════════════════
+        elif tool_name == "design_mrna_cds_with_lineardesign":
+            output_filepath = str(tool_result.get("output_filepath", ""))
+            generated_sequence = str(tool_result.get("generated_sequence", ""))
+            structure = str(tool_result.get("structure", ""))
+            mfe_val = float(tool_result.get("mfe", 0.0))
+            cai_val = float(tool_result.get("cai_score", 0.0))
+
+            if output_filepath:
+                state["current_filepath"] = output_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
+            state["candidate_sequence"] = generated_sequence
+            state["design_model"] = str(tool_result.get("model", ""))
+
+            # LinearDesign-specific state fields (decoupled from RNARL/GEMORNA)
+            state["lineardesign_output_filepath"] = output_filepath
+            state["lineardesign_generated_sequence"] = generated_sequence
+            state["lineardesign_structure"] = structure
+            state["lineardesign_mfe"] = mfe_val
+            state["lineardesign_cai_score"] = cai_val
+            state["lineardesign_lambda_value"] = float(tool_result.get("lambda_value", 0.0))
+            state["lineardesign_codon_usage_path"] = str(tool_result.get("codon_usage_path", ""))
+            state["lineardesign_raw_output"] = str(tool_result.get("raw_output", ""))
+            state["lineardesign_stderr"] = str(tool_result.get("stderr", ""))
+            state["lineardesign_model"] = str(tool_result.get("model", ""))
+
+            # Backward-compatible shared fields
+            state["cai_score"] = cai_val
+            state["mfe"] = mfe_val
+            if structure:
+                structure_filepath = save_sequence(structure, prefix="structure")
+                state["structure_filepath"] = structure_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+
+            user_text = state.get("input_sequence", "").lower()
+            raw_user = state.get("input_sequence", "")
+            if _needs_secondary_structure(user_text):
+                if _needs_linearfold(user_text):
+                    lf_args = _build_linearfold_tool_args(state["current_filepath"], raw_user)
+                    fold_result = predict_rna_secondary_structure_with_linearfold.invoke(lf_args)
+                    fold_msg_name = "predict_rna_secondary_structure_with_linearfold"
+                else:
+                    fold_result = predict_rna_secondary_structure.invoke({"filepath": state["current_filepath"]})
+                    fold_msg_name = "predict_rna_secondary_structure"
+                out_messages.append(
+                    ToolMessage(
+                        content=json.dumps(fold_result, ensure_ascii=True),
+                        tool_call_id=f"call_{uuid.uuid4().hex[:8]}",
+                        name=fold_msg_name,
+                    )
+                )
+                if isinstance(fold_result, dict):
+                    state["mfe"] = float(fold_result.get("mfe", 0.0))
+                    structure = str(fold_result.get("structure", ""))
+                    if structure:
+                        structure_filepath = save_sequence(structure, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+                else:
+                    mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(fold_result))
+                    structure_match = re.search(r"structure=([^;]+)", str(fold_result))
+                    if mfe_match:
+                        state["mfe"] = float(mfe_match.group(1))
+                    if structure_match:
+                        structure = structure_match.group(1).strip()
+                        structure_filepath = save_sequence(structure, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+
+        # ═══════════════════════════════════════════════════════════════════════
+        # LinearDesign batch branch
+        # INTERFACE LOCK (v0.2.0): Locked branch. Modify only in sync with:
+        #   - microservices/lineardesign_service/main.py
+        #   - agent_core/tools.py :: design_mrna_cds_batch_with_lineardesign
+        #   - agent_core/tool_specs.py :: LinearDesignCdsBatchOutput
+        #   - agent_core/state.py :: lineardesign_* fields
+        #   - docs/change_logs/lineardesign_interface_v0.2.0.md
+        # 本次修改的基准日期：2026-04-24。
+        # ═══════════════════════════════════════════════════════════════════════
+        elif tool_name == "design_mrna_cds_batch_with_lineardesign":
+            output_filepath = str(tool_result.get("output_filepath", ""))
+            best_sequence = str(tool_result.get("best_generated_sequence", ""))
+            best_structure = str(tool_result.get("best_structure", ""))
+            best_mfe = float(tool_result.get("best_mfe", 0.0))
+            best_cai = float(tool_result.get("best_cai_score", 0.0))
+
+            if output_filepath:
+                state["current_filepath"] = output_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [output_filepath]
+            state["candidate_sequence"] = best_sequence
+            state["design_model"] = str(tool_result.get("model", ""))
+
+            # LinearDesign-specific state fields
+            state["lineardesign_output_filepath"] = output_filepath
+            state["lineardesign_generated_sequence"] = best_sequence
+            state["lineardesign_structure"] = best_structure
+            state["lineardesign_mfe"] = best_mfe
+            state["lineardesign_cai_score"] = best_cai
+            state["lineardesign_lambda_value"] = float(tool_result.get("lambda_value", 0.0))
+            state["lineardesign_codon_usage_path"] = str(tool_result.get("codon_usage_path", ""))
+            state["lineardesign_batch_json_filepath"] = str(tool_result.get("batch_json_filepath", ""))
+            state["lineardesign_batch_count"] = int(tool_result.get("count", 0))
+            state["lineardesign_batch_success_count"] = int(tool_result.get("success_count", 0))
+            state["lineardesign_model"] = str(tool_result.get("model", ""))
+
+            # Backward-compatible shared fields
+            state["cai_score"] = best_cai
+            state["mfe"] = best_mfe
+            if best_structure:
+                structure_filepath = save_sequence(best_structure, prefix="structure")
+                state["structure_filepath"] = structure_filepath
+                state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+
+            user_text = state.get("input_sequence", "").lower()
+            raw_user = state.get("input_sequence", "")
+            if _needs_secondary_structure(user_text):
+                if _needs_linearfold(user_text):
+                    lf_args = _build_linearfold_tool_args(state["current_filepath"], raw_user)
+                    fold_result = predict_rna_secondary_structure_with_linearfold.invoke(lf_args)
+                    fold_msg_name = "predict_rna_secondary_structure_with_linearfold"
+                else:
+                    fold_result = predict_rna_secondary_structure.invoke({"filepath": state["current_filepath"]})
+                    fold_msg_name = "predict_rna_secondary_structure"
+                out_messages.append(
+                    ToolMessage(
+                        content=json.dumps(fold_result, ensure_ascii=True),
+                        tool_call_id=f"call_{uuid.uuid4().hex[:8]}",
+                        name=fold_msg_name,
+                    )
+                )
+                if isinstance(fold_result, dict):
+                    state["mfe"] = float(fold_result.get("mfe", 0.0))
+                    structure = str(fold_result.get("structure", ""))
+                    if structure:
+                        structure_filepath = save_sequence(structure, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+                else:
+                    mfe_match = re.search(r"mfe=([-+]?\d*\.?\d+)", str(fold_result))
+                    structure_match = re.search(r"structure=([^;]+)", str(fold_result))
+                    if mfe_match:
+                        state["mfe"] = float(mfe_match.group(1))
+                    if structure_match:
+                        structure = structure_match.group(1).strip()
+                        structure_filepath = save_sequence(structure, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+
         elif tool_name in {
             "design_mrna_cds_with_gemorna",
             "design_mrna_cds_with_rnarl",
-            "design_mrna_cds_with_lineardesign",
             "design_5utr_with_gemorna",
             "design_3utr_with_gemorna",
         }:

@@ -44,7 +44,13 @@ def _trace_compact(wf: WFResult, *, debug: bool) -> Optional[List[Dict[str, Any]
 
 
 _STRICT_INPUT_KEYS = set(MrnaWorkflowInput.model_fields.keys())
-_STRIP_CONSTRAINT_KEYS = frozenset({"lineardesign_service_url", "lineardesign_lambda", "task_type"})
+_STRIP_CONSTRAINT_KEYS = frozenset({
+    "lineardesign_service_url",
+    "lineardesign_lambda",
+    "lineardesign_codon_usage_path",
+    "lineardesign_verbose",
+    "task_type",
+})
 
 
 def _sanitize_constraints(constraints: Optional[Dict[str, Any]]) -> Dict[str, Any]:
@@ -104,6 +110,8 @@ def protein_to_cds_sequence(
     executor: ToolExecutor,
     service_url: str = "http://127.0.0.1:8014/generate/cds",
     lambda_value: float = 0.0,
+    codon_usage_path: Optional[str] = None,
+    verbose: bool = False,
 ) -> str:
     """Run LinearDesign tool once; return RNA/DNA CDS string."""
 
@@ -115,12 +123,16 @@ def protein_to_cds_sequence(
         raise ProteinToCdsError(f"Invalid amino-acid characters: {''.join(invalid)}")
 
     fp = save_sequence(cleaned, prefix="api_protein")
-    res = executor.run_tool(
-        "design_mrna_cds_with_lineardesign",
-        filepath=fp,
-        service_url=service_url,
-        lambda_value=lambda_value,
-    )
+    tool_kwargs: dict[str, Any] = {
+        "filepath": fp,
+        "service_url": service_url,
+        "lambda_value": lambda_value,
+    }
+    if codon_usage_path is not None:
+        tool_kwargs["codon_usage_path"] = codon_usage_path
+    if verbose:
+        tool_kwargs["verbose"] = verbose
+    res = executor.run_tool("design_mrna_cds_with_lineardesign", **tool_kwargs)
     if not res.success:
         msg = str(res.error)
         raise ProteinToCdsError(f"LinearDesign failed: {msg}")
@@ -144,11 +156,15 @@ def execute_mrna_workflow_http(
             c_all = dict(req.constraints or {})
             ld_url = str(c_all.pop("lineardesign_service_url", "http://127.0.0.1:8014/generate/cds"))
             ld_lambda = float(c_all.pop("lineardesign_lambda", 0.0))
+            ld_codon = c_all.pop("lineardesign_codon_usage_path", None)
+            ld_verbose = bool(c_all.pop("lineardesign_verbose", False))
             cds = protein_to_cds_sequence(
                 str(req.protein),
                 executor=ex,
                 service_url=ld_url,
                 lambda_value=ld_lambda,
+                codon_usage_path=str(ld_codon) if ld_codon is not None else None,
+                verbose=ld_verbose,
             )
             inp = MrnaWorkflowInput(sequence=cds, candidate_mode="direct")
             inp = _merge_constraints_into_input(inp, c_all or None)

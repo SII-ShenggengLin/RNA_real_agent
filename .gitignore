@@ -19,6 +19,9 @@
 rna_agent_system/workspace/*
 !rna_agent_system/workspace/.gitkeep
 
+# Compiled binaries in submodules (should be rebuilt on target host)
+rna_agent_system/external_repos/LinearDesign/bin/
+
 # Model weights (managed outside git — download or copy to server directly)
 *.pt
 *.pth

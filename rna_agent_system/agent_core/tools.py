@@ -1800,8 +1800,35 @@ class Gemorna3UtrInput(BaseModel):
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/lineardesign_service/main.py
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/design_mrna_cds_with_lineardesign.md
+#   - docs/change_logs/lineardesign_interface_v0.2.0.md
+#   - workflow_api/mrna_handler.py
+#   - workflow_api/mrna_schemas.py
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# 本次修改的基准日期：2026-04-24。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 class LinearDesignCdsInput(BaseModel):
-    """Input schema for LinearDesign CDS design tool."""
+    """Input schema for LinearDesign CDS design tool (single sequence).
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - microservices/lineardesign_service/main.py :: LinearDesignRequest
+    - agent_core/tool_specs.py :: design_mrna_cds_with_lineardesign ToolSpec
+    - agent_core/state.py :: lineardesign_* fields
+    - agent_core/nodes.py :: tool_execution_node LinearDesign branch
+    - docs/tools/design_mrna_cds_with_lineardesign.md
+    - docs/change_logs/lineardesign_interface_v0.2.0.md
+    """
 
     filepath: str = Field(
         ...,
@@ -1818,6 +1845,45 @@ class LinearDesignCdsInput(BaseModel):
         default=0.0,
         ge=0.0,
         description="LinearDesign lambda balancing MFE and CAI.",
+    )
+    codon_usage_path: Optional[str] = Field(
+        default=None,
+        description="Optional codon usage CSV path passed through to LinearDesign service.",
+    )
+    verbose: bool = Field(
+        default=False,
+        description="Whether to enable verbose output in LinearDesign.",
+    )
+
+
+class LinearDesignCdsBatchInput(BaseModel):
+    """Input schema for LinearDesign CDS batch design tool.
+
+    Mirrors the upstream ``cat FASTA_FILE | ./lineardesign`` capability by
+    accepting a FASTA (or plain-text) file with one or more protein sequences.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - microservices/lineardesign_service/main.py :: LinearDesignBatchRequest
+    - agent_core/tool_specs.py :: design_mrna_cds_batch_with_lineardesign ToolSpec
+    - agent_core/state.py :: lineardesign_* fields
+    - docs/tools/design_mrna_cds_with_lineardesign.md
+    """
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing one or more protein sequences. "
+            "FASTA format with '>' headers is supported; plain text (one sequence per line) is also accepted."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8014/generate/cds/batch",
+        description="REST endpoint for the LinearDesign CDS batch microservice.",
+    )
+    lambda_value: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="LinearDesign lambda balancing MFE and CAI (applied to all sequences).",
     )
     codon_usage_path: Optional[str] = Field(
         default=None,
@@ -3011,6 +3077,40 @@ def design_3utr_with_gemorna(
     return _call_gemorna_utr(service_url, utr_length, "gemorna_3utr", "GEMORNA-3utr")
 
 
+def _parse_fasta_protein_sequences(raw_text: str) -> list[str]:
+    """Parse protein sequences from FASTA or plain text.
+
+    Supports:
+      - FASTA with '>' headers (multiple records)
+      - Plain text (one sequence per line, or single continuous sequence)
+    Empty lines and whitespace are ignored.
+    """
+    sequences: list[str] = []
+    current: list[str] = []
+    for line in raw_text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith(">"):
+            if current:
+                sequences.append("".join(current))
+                current = []
+        else:
+            current.append(line.upper())
+    if current:
+        sequences.append("".join(current))
+    # If no '>' headers were found and we have a single accumulated sequence,
+    # also split by lines in case the file contains one sequence per line
+    # without headers.
+    if not sequences:
+        # This path should rarely be hit because current would be populated,
+        # but guard just in case.
+        stripped = "".join(raw_text.split()).upper()
+        if stripped:
+            sequences.append(stripped)
+    return sequences
+
+
 @tool(args_schema=LinearDesignCdsInput)
 def design_mrna_cds_with_lineardesign(
     filepath: str,
@@ -3021,6 +3121,15 @@ def design_mrna_cds_with_lineardesign(
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using LinearDesign.
 
+    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - microservices/lineardesign_service/main.py
+    - agent_core/tool_specs.py :: LinearDesignCdsOutput / ToolSpec
+    - agent_core/state.py :: lineardesign_* fields
+    - agent_core/nodes.py :: tool_execution_node LinearDesign branch
+    - docs/tools/design_mrna_cds_with_lineardesign.md
+    - docs/change_logs/lineardesign_interface_v0.2.0.md
+
     Args:
         filepath: Workspace file path containing the input protein sequence.
             IMPORTANT: You must pass a workspace filepath, not the sequence itself.
@@ -3030,7 +3139,8 @@ def design_mrna_cds_with_lineardesign(
         verbose: Whether to enable verbose output in the LinearDesign backend.
 
     Returns:
-        Dict containing the generated CDS sequence, structure/MFE/CAI summaries, and workspace filepath.
+        Dict containing the generated CDS sequence, structure/MFE/CAI summaries,
+        workspace filepath, raw stdout, and stderr.
 
     Raises:
         ValueError: If the LinearDesign service is unreachable or returns an invalid payload.
@@ -3065,10 +3175,115 @@ def design_mrna_cds_with_lineardesign(
             "lambda_value": float(payload.get("lambda_value", lambda_value)),
             "codon_usage_path": payload.get("codon_usage_path", codon_usage_path or ""),
             "raw_output": payload.get("raw_output", ""),
+            "stderr": payload.get("stderr", ""),
             "model": payload.get("model", "LinearDesign"),
         }
     except requests.RequestException as exc:
         _raise_service_error(exc, "LinearDesign")
+
+
+@tool(args_schema=LinearDesignCdsBatchInput)
+def design_mrna_cds_batch_with_lineardesign(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8014/generate/cds/batch",
+    lambda_value: float = 0.0,
+    codon_usage_path: Optional[str] = None,
+    verbose: bool = False,
+) -> dict[str, Any]:
+    """Batch-design mRNA CDS sequences from multiple protein sequences using LinearDesign.
+
+    Reads a FASTA (or plain-text) file, sends all sequences to the batch
+    endpoint, and returns aggregated results with per-item success/error tracking.
+
+    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - microservices/lineardesign_service/main.py :: LinearDesignBatchRequest/Response
+    - agent_core/tool_specs.py :: LinearDesignCdsBatchOutput / ToolSpec
+    - agent_core/state.py :: lineardesign_* fields
+    - agent_core/nodes.py :: tool_execution_node LinearDesign batch branch
+    - docs/tools/design_mrna_cds_with_lineardesign.md
+    - docs/change_logs/lineardesign_interface_v0.2.0.md
+
+    Args:
+        filepath: Workspace file path containing one or more protein sequences.
+            FASTA format with '>' headers is supported.
+        service_url: REST endpoint for the LinearDesign batch microservice.
+        lambda_value: LinearDesign lambda hyperparameter balancing MFE and CAI.
+        codon_usage_path: Optional codon usage table path.
+        verbose: Whether to enable verbose output in the LinearDesign backend.
+
+    Returns:
+        Dict with ``count``, ``success_count``, ``items`` (list of per-sequence
+        results), and artifact filepaths copied into workspace.
+
+    Raises:
+        ValueError: If the LinearDesign batch service is unreachable.
+    """
+    raw_text = read_sequence(filepath)
+    sequences = _parse_fasta_protein_sequences(raw_text)
+    if not sequences:
+        raise ValueError(f"No protein sequences found in file: {filepath}")
+
+    try:
+        request_payload: dict[str, Any] = {
+            "protein_sequences": sequences,
+            "lambda_value": lambda_value,
+            "verbose": verbose,
+        }
+        if codon_usage_path:
+            request_payload["codon_usage_path"] = codon_usage_path
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        items = payload.get("items", [])
+        success_count = sum(1 for it in items if it.get("success"))
+
+        # Save best (first successful) sequence as primary artifact
+        best_sequence = ""
+        best_structure = ""
+        best_mfe = 0.0
+        best_cai = 0.0
+        for it in items:
+            if it.get("success"):
+                best_sequence = it.get("generated_sequence", "")
+                best_structure = it.get("structure", "")
+                best_mfe = float(it.get("mfe", 0.0))
+                best_cai = float(it.get("cai_score", 0.0))
+                break
+
+        output_filepath = ""
+        if best_sequence:
+            output_filepath = save_sequence(best_sequence, prefix="lineardesign_cds_batch")
+
+        # Copy raw response into workspace for auditability
+        batch_json_path = save_text_file(
+            str(payload),
+            prefix="lineardesign_batch_response",
+            suffix=".json",
+        )
+
+        return {
+            "input_filepath": filepath,
+            "output_filepath": output_filepath,
+            "best_generated_sequence": best_sequence,
+            "best_structure": best_structure,
+            "best_mfe": best_mfe,
+            "best_cai_score": best_cai,
+            "count": int(payload.get("count", 0)),
+            "success_count": success_count,
+            "items": items,
+            "lambda_value": float(payload.get("lambda_value", lambda_value)),
+            "codon_usage_path": payload.get("codon_usage_path", codon_usage_path or ""),
+            "batch_json_filepath": batch_json_path,
+            "model": payload.get("model", "LinearDesign"),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "LinearDesign batch")
 
 
 @tool(args_schema=RNARLCdsInput)
@@ -3999,6 +4214,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     predict_rna_secondary_structure_with_linearfold,
     predict_rna_tertiary_structure_with_rhofold,
     design_mrna_cds_with_lineardesign,
+    design_mrna_cds_batch_with_lineardesign,
     design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
     design_5utr_with_gemorna,

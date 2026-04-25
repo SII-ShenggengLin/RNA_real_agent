@@ -276,13 +276,6 @@ class SgRNADesignScoreOutput(_OutBase):
     model: str
 
 
-class ProteinToCdsOutput(_OutBase):
-    input_filepath: str
-    output_filepath: str
-    generated_sequence: str
-    model: str
-
-
 class GemornaCdsOutput(_OutBase):
     """GEMORNA CDS design output schema.
 
@@ -328,7 +321,35 @@ class Gemorna3UtrOutput(_OutBase):
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/lineardesign_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - docs/tools/design_mrna_cds_with_lineardesign.md
+#   - docs/change_logs/lineardesign_interface_v0.2.0.md
+#   - workflow_api/mrna_handler.py
+#   - workflow_api/mrna_schemas.py
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# 本次修改的基准日期：2026-04-24。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 class LinearDesignCdsOutput(_OutBase):
+    """LinearDesign single-sequence CDS design output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: design_mrna_cds_with_lineardesign return dict
+    - microservices/lineardesign_service/main.py :: LinearDesignResponse
+    - agent_core/state.py :: lineardesign_* fields
+    - agent_core/nodes.py :: tool_execution_node LinearDesign branch
+    - docs/change_logs/lineardesign_interface_v0.2.0.md
+    """
+
     input_filepath: str
     output_filepath: str
     generated_sequence: str
@@ -338,6 +359,46 @@ class LinearDesignCdsOutput(_OutBase):
     lambda_value: float
     codon_usage_path: str
     raw_output: str
+    stderr: str = ""
+    model: str
+
+
+class LinearDesignCdsBatchItemOutput(_OutBase):
+    """Per-item result inside a LinearDesign batch response."""
+
+    success: bool
+    generated_sequence: str = ""
+    structure: str = ""
+    mfe: float = 0.0
+    cai_score: float = 0.0
+    raw_output: str = ""
+    stderr: str = ""
+    error: str = ""
+
+
+class LinearDesignCdsBatchOutput(_OutBase):
+    """LinearDesign batch CDS design output schema.
+
+    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: design_mrna_cds_batch_with_lineardesign return dict
+    - microservices/lineardesign_service/main.py :: LinearDesignBatchResponse
+    - agent_core/state.py :: lineardesign_* fields
+    - agent_core/nodes.py :: tool_execution_node LinearDesign batch branch
+    - docs/change_logs/lineardesign_interface_v0.2.0.md
+    """
+
+    input_filepath: str
+    output_filepath: str
+    best_generated_sequence: str = ""
+    best_structure: str = ""
+    best_mfe: float = 0.0
+    best_cai_score: float = 0.0
+    count: int
+    success_count: int
+    items: List[LinearDesignCdsBatchItemOutput]
+    lambda_value: float
+    codon_usage_path: str
+    batch_json_filepath: str
     model: str
 
 
@@ -779,20 +840,70 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearFoldOutput,
         status=ToolStatus.available,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/lineardesign_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/nodes.py
+    #   - docs/tools/design_mrna_cds_with_lineardesign.md
+    #   - docs/change_logs/lineardesign_interface_v0.2.0.md
+    #   - workflow_api/mrna_handler.py
+    #   - workflow_api/mrna_schemas.py
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # 本次修改的基准日期：2026-04-24。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "design_mrna_cds_with_lineardesign": ToolSpec(
         identity="design_mrna_cds_with_lineardesign",
         display_name="LinearDesign protein→CDS design",
-        version="0.1.0-port8014",
+        version="0.2.0-port8014",
         source="https://github.com/LinearDesignSoftware/LinearDesign",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8014/generate/cds",
-        capabilities=["Generate CDS sequence from protein sequence via LinearDesign binary wrapper."],
-        limitations=["Requires server-side compiled binaries and compatible runtime environment."],
+        capabilities=[
+            "Generate CDS sequence from a single protein sequence via LinearDesign binary wrapper.",
+            "Expose lambda (MFE/CAI balance), custom codon usage tables, and verbose logging.",
+        ],
+        limitations=[
+            "Requires server-side compiled binaries (run `make` in external_repos/LinearDesign).",
+            "Single-sequence endpoint; for bulk design use the batch tool.",
+        ],
         task_tags=["protein_to_cds_design"],
-        requires=[ToolDependency(name="Linux", detail="Documented deployment target"), ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service")],
-        produces=["output_filepath", "generated_sequence"],
+        requires=[
+            ToolDependency(name="Linux", detail="Documented deployment target"),
+            ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service (port 8014)"),
+        ],
+        produces=["output_filepath", "generated_sequence", "structure", "mfe", "cai_score", "raw_output", "stderr"],
         input_model=tool_wrappers.LinearDesignCdsInput,
         output_model=LinearDesignCdsOutput,
+        status=ToolStatus.partial,
+    ),
+    "design_mrna_cds_batch_with_lineardesign": ToolSpec(
+        identity="design_mrna_cds_batch_with_lineardesign",
+        display_name="LinearDesign protein→CDS batch design",
+        version="0.2.0-port8014",
+        source="https://github.com/LinearDesignSoftware/LinearDesign",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8014/generate/cds/batch",
+        capabilities=[
+            "Batch-generate CDS sequences from multiple protein sequences (FASTA or plain text).",
+            "Mirrors upstream ``cat FASTA_FILE | ./lineardesign`` capability.",
+        ],
+        limitations=[
+            "Requires server-side compiled binaries (run `make` in external_repos/LinearDesign).",
+            "All sequences share the same lambda and codon usage settings.",
+        ],
+        task_tags=["protein_to_cds_design", "batch_design"],
+        requires=[
+            ToolDependency(name="Linux", detail="Documented deployment target"),
+            ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service (port 8014)"),
+        ],
+        produces=["output_filepath", "best_generated_sequence", "count", "success_count", "items", "batch_json_filepath"],
+        input_model=tool_wrappers.LinearDesignCdsBatchInput,
+        output_model=LinearDesignCdsBatchOutput,
         status=ToolStatus.partial,
     ),
     # INTERFACE LOCK (v0.2.0): RNARL tool spec. See docs/tools/design_mrna_cds_with_rnarl.md

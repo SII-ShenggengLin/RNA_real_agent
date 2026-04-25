@@ -84,6 +84,35 @@ class AgentState(TypedDict, total=False):
     codonw_raau: Optional[dict[str, Any]] = None
     codonw_bases: Optional[dict[str, Any]] = None
     # ═══════════════════════════════════════════════════════════════════════════
+    # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/lineardesign_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py
+    #   - agent_core/state.py  ← 本文件
+    #   - agent_core/nodes.py
+    #   - docs/tools/design_mrna_cds_with_lineardesign.md
+    #   - docs/change_logs/lineardesign_interface_v0.2.0.md
+    #   - workflow_api/mrna_handler.py
+    #   - workflow_api/mrna_schemas.py
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # 本次修改的基准日期：2026-04-24。
+    # ═══════════════════════════════════════════════════════════════════════════
+    lineardesign_output_filepath: str
+    lineardesign_generated_sequence: str
+    lineardesign_structure: str
+    lineardesign_mfe: float
+    lineardesign_cai_score: float
+    lineardesign_lambda_value: float
+    lineardesign_codon_usage_path: str
+    lineardesign_raw_output: str
+    lineardesign_stderr: str
+    lineardesign_model: str
+    lineardesign_batch_json_filepath: str
+    lineardesign_batch_count: int
+    lineardesign_batch_success_count: int
+    # ═══════════════════════════════════════════════════════════════════════════
     mfe: float
     structure_filepath: str
     design_input_pdb_filepath: str

@@ -254,7 +254,7 @@ MrnaWorkflowInput
   - **必选其一**：非空 **`sequence`**、非空 **`sequences`**、或非空 **`protein`**（互斥）。
   - **`task_type`**：默认 `"mrna"`（占位路由）。
   - **`task_id`**：可选；传入则写入底层 `TaskState.task_id`。
-  - **`constraints`**：可选对象；仅 **`MrnaWorkflowInput`** 允许的字段会被合并（另支持 **`lineardesign_service_url`** / **`lineardesign_lambda`**，仅在 **`protein`** 路径用于 LinearDesign）。
+  - **`constraints`**：可选对象；仅 **`MrnaWorkflowInput`** 允许的字段会被合并（另支持 **`lineardesign_service_url`** / **`lineardesign_lambda`** / **`lineardesign_codon_usage_path`** / **`lineardesign_verbose`**，仅在 **`protein`** 路径用于 LinearDesign）。
   - **`top_k`**：可选；截断返回的 **`candidates`** 列表长度（**`best_candidate`** 仍为全流程最优）。
   - **`debug`**：`true` 时在成功响应中带 **`trace`**（工具调用摘要）；发生内部异常且 `debug=true` 时，`debug_detail` 含 traceback 文本。**默认不向客户端暴露 traceback**。
 - **响应**：**`MrnaWorkflowHttpResponse`**：`task_id`、`success`、`task_type`、`best_candidate`（字典）、`candidates`、`summary`、`errors`（校验/编排失败）、`warnings`（工具调用失败条目）、可选 `trace` / `debug_detail`。
@@ -269,6 +269,7 @@ MrnaWorkflowInput
 python cli/mrna_workflow.py --sequence AUGCAUGCAUGCAU --task-id demo-001 --json
 python cli/mrna_workflow.py --sequences AUGCAU,GCAUGCAU --top-k 2
 python cli/mrna_workflow.py --protein MKWV --constraints '{"lineardesign_service_url":"http://127.0.0.1:8014/generate/cds"}'
+python cli/mrna_workflow.py --protein MKWV --constraints '{"lineardesign_lambda":0.3,"lineardesign_codon_usage_path":"codon_usage_freq_table_yeast.csv","lineardesign_verbose":true}'
 ```
 
 失败时进程退出码 **1**。

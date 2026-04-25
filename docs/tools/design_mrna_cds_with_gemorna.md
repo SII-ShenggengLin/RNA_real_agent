@@ -3,7 +3,7 @@
 - **source**: `https://github.com/RainaBio/GEMORNA`
 - **endpoint**: `http://127.0.0.1:8004/generate/cds`
 - **input schema**: `rna_agent_system/agent_core/tools.py:GemornaCdsInput`
-- **output schema**: `rna_agent_system/agent_core/tool_specs.py:ProteinToCdsOutput`
+- **output schema**: `rna_agent_system/agent_core/tool_specs.py:GemornaCdsOutput`
 
 ## 能力边界
 

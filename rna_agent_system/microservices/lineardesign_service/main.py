@@ -1,4 +1,23 @@
-"""LinearDesign microservice for protein-to-mRNA CDS design."""
+"""LinearDesign microservice for protein-to-mRNA CDS design.
+
+INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+关联文件清单（修改时必须全部同步）：
+  - microservices/lineardesign_service/main.py  ← 本文件
+  - agent_core/tools.py :: design_mrna_cds_with_lineardesign /
+                          design_mrna_cds_batch_with_lineardesign
+  - agent_core/tool_specs.py :: LinearDesignCdsOutput /
+                                LinearDesignCdsBatchOutput /
+                                design_mrna_cds_with_lineardesign ToolSpec
+  - agent_core/state.py :: lineardesign_* fields
+  - agent_core/nodes.py :: tool_execution_node LinearDesign branches
+  - docs/tools/design_mrna_cds_with_lineardesign.md
+  - docs/change_logs/lineardesign_interface_v0.2.0.md
+  - workflow_api/mrna_handler.py
+  - workflow_api/mrna_schemas.py
+规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+本次修改的基准日期：2026-04-24。
+"""
 
 from __future__ import annotations
 
@@ -6,7 +25,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -38,39 +57,6 @@ def _resolve_lineardesign_root() -> Path:
         return canonical
 
     return canonical
-
-
-app = FastAPI(
-    title="LinearDesign Service (Port 8014 Deployment)",
-    description="Design mRNA CDS from a protein sequence via LinearDesign.",
-    version="0.1.0-port8014",
-)
-
-
-class LinearDesignRequest(BaseModel):
-    protein_sequence: str = Field(..., min_length=1, description="Input protein sequence.")
-    lambda_value: float = Field(
-        default=0.0,
-        ge=0.0,
-        description="LinearDesign lambda balancing MFE and CAI.",
-    )
-    codon_usage_path: Optional[str] = Field(
-        default=None,
-        description="Optional codon usage CSV path. Defaults to human table in LinearDesign repo.",
-    )
-    verbose: bool = Field(default=False, description="Enable verbose output in LinearDesign.")
-
-
-class LinearDesignResponse(BaseModel):
-    generated_sequence: str
-    structure: str
-    mfe: float
-    cai_score: float
-    lambda_value: float
-    codon_usage_path: str
-    model: str = "LinearDesign"
-    raw_output: str
-    stderr: str
 
 
 def _resolve_codon_usage_path(lineardesign_root: Path, path_value: Optional[str]) -> Path:
@@ -113,6 +99,125 @@ def _extract_output_fields(raw_output: str) -> tuple[str, str, float, float]:
     )
 
 
+def _run_lineardesign_once(
+    lineardesign_bin: Path,
+    lineardesign_root: Path,
+    protein_sequence: str,
+    lambda_value: float,
+    verbose: bool,
+    codon_usage_path: Path,
+) -> dict[str, Any]:
+    """Execute LinearDesign binary for a single protein sequence.
+
+    Returns a dict with keys: generated_sequence, structure, mfe, cai_score,
+    raw_output, stderr.
+    """
+    cmd = [
+        str(lineardesign_bin),
+        f"{lambda_value}",
+        "1" if verbose else "0",
+        str(codon_usage_path),
+    ]
+    env = os.environ.copy()
+    process = subprocess.run(
+        cmd,
+        input=protein_sequence + "\n",
+        text=True,
+        capture_output=True,
+        cwd=str(lineardesign_root),
+        env=env,
+        check=False,
+    )
+
+    if process.returncode != 0:
+        raise RuntimeError(
+            "LinearDesign execution failed. "
+            f"returncode={process.returncode}; stderr={process.stderr.strip()}"
+        )
+
+    generated_sequence, structure, mfe, cai_score = _extract_output_fields(process.stdout)
+    return {
+        "generated_sequence": generated_sequence,
+        "structure": structure,
+        "mfe": mfe,
+        "cai_score": cai_score,
+        "raw_output": process.stdout,
+        "stderr": process.stderr,
+    }
+
+
+app = FastAPI(
+    title="LinearDesign Service (Port 8014 Deployment)",
+    description="Design mRNA CDS from a protein sequence via LinearDesign.",
+    version="0.2.0-port8014",
+)
+
+
+class LinearDesignRequest(BaseModel):
+    protein_sequence: str = Field(..., min_length=1, description="Input protein sequence.")
+    lambda_value: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="LinearDesign lambda balancing MFE and CAI.",
+    )
+    codon_usage_path: Optional[str] = Field(
+        default=None,
+        description="Optional codon usage CSV path. Defaults to human table in LinearDesign repo.",
+    )
+    verbose: bool = Field(default=False, description="Enable verbose output in LinearDesign.")
+
+
+class LinearDesignResponse(BaseModel):
+    generated_sequence: str
+    structure: str
+    mfe: float
+    cai_score: float
+    lambda_value: float
+    codon_usage_path: str
+    model: str = "LinearDesign"
+    raw_output: str
+    stderr: str
+
+
+class LinearDesignBatchRequest(BaseModel):
+    protein_sequences: list[str] = Field(
+        ...,
+        min_length=1,
+        description="List of protein sequences to design in batch.",
+    )
+    lambda_value: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="LinearDesign lambda balancing MFE and CAI (applied to all sequences).",
+    )
+    codon_usage_path: Optional[str] = Field(
+        default=None,
+        description="Optional codon usage CSV path. Defaults to human table in LinearDesign repo.",
+    )
+    verbose: bool = Field(default=False, description="Enable verbose output in LinearDesign.")
+
+
+class LinearDesignBatchItem(BaseModel):
+    """Result for one sequence in a batch run."""
+
+    success: bool
+    generated_sequence: str = ""
+    structure: str = ""
+    mfe: float = 0.0
+    cai_score: float = 0.0
+    raw_output: str = ""
+    stderr: str = ""
+    error: str = ""
+
+
+class LinearDesignBatchResponse(BaseModel):
+    items: list[LinearDesignBatchItem]
+    count: int
+    lambda_value: float
+    codon_usage_path: str
+    model: str = "LinearDesign"
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -144,44 +249,100 @@ def generate_cds(payload: LinearDesignRequest) -> LinearDesignResponse:
     if not protein_sequence:
         raise HTTPException(status_code=400, detail="Protein sequence is empty.")
 
-    cmd = [
-        str(lineardesign_bin),
-        f"{payload.lambda_value}",
-        "1" if payload.verbose else "0",
-        str(codon_usage_path),
-    ]
-    env = os.environ.copy()
-    process = subprocess.run(
-        cmd,
-        input=protein_sequence + "\n",
-        text=True,
-        capture_output=True,
-        cwd=str(lineardesign_root),
-        env=env,
-        check=False,
-    )
-
-    if process.returncode != 0:
-        raise HTTPException(
-            status_code=500,
-            detail=(
-                "LinearDesign execution failed. "
-                f"returncode={process.returncode}; stderr={process.stderr.strip()}"
-            ),
-        )
-
     try:
-        generated_sequence, structure, mfe, cai_score = _extract_output_fields(process.stdout)
-    except ValueError as exc:
+        result = _run_lineardesign_once(
+            lineardesign_bin=lineardesign_bin,
+            lineardesign_root=lineardesign_root,
+            protein_sequence=protein_sequence,
+            lambda_value=payload.lambda_value,
+            verbose=payload.verbose,
+            codon_usage_path=codon_usage_path,
+        )
+    except (RuntimeError, ValueError) as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return LinearDesignResponse(
-        generated_sequence=generated_sequence,
-        structure=structure,
-        mfe=mfe,
-        cai_score=cai_score,
+        generated_sequence=result["generated_sequence"],
+        structure=result["structure"],
+        mfe=result["mfe"],
+        cai_score=result["cai_score"],
         lambda_value=payload.lambda_value,
         codon_usage_path=str(codon_usage_path),
-        raw_output=process.stdout,
-        stderr=process.stderr,
+        raw_output=result["raw_output"],
+        stderr=result["stderr"],
+    )
+
+
+@app.post("/generate/cds/batch", response_model=LinearDesignBatchResponse)
+def generate_cds_batch(payload: LinearDesignBatchRequest) -> LinearDesignBatchResponse:
+    """Batch design CDS for multiple protein sequences.
+
+    Each sequence is run independently against the same lambda / codon table /
+    verbose settings, mirroring the upstream ``cat FASTA_FILE | ./lineardesign``
+    capability.
+    """
+    lineardesign_root = _resolve_lineardesign_root()
+    lineardesign_bin = lineardesign_root / "bin" / "LinearDesign_2D"
+    if not lineardesign_bin.exists():
+        canonical = _canonical_lineardesign_root()
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                f"LinearDesign binary not found: {lineardesign_bin}. "
+                f"Expected checkout at {canonical} (run `make` there), "
+                "or set LINEARDESIGN_ROOT to a directory that contains bin/LinearDesign_2D."
+            ),
+        )
+
+    codon_usage_path = _resolve_codon_usage_path(lineardesign_root, payload.codon_usage_path)
+    if not codon_usage_path.exists():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Codon usage table not found: {codon_usage_path}",
+        )
+
+    items: list[LinearDesignBatchItem] = []
+    for idx, raw_seq in enumerate(payload.protein_sequences):
+        protein_sequence = raw_seq.strip().upper()
+        if not protein_sequence:
+            items.append(
+                LinearDesignBatchItem(
+                    success=False,
+                    error=f"Sequence at index {idx} is empty.",
+                )
+            )
+            continue
+        try:
+            result = _run_lineardesign_once(
+                lineardesign_bin=lineardesign_bin,
+                lineardesign_root=lineardesign_root,
+                protein_sequence=protein_sequence,
+                lambda_value=payload.lambda_value,
+                verbose=payload.verbose,
+                codon_usage_path=codon_usage_path,
+            )
+            items.append(
+                LinearDesignBatchItem(
+                    success=True,
+                    generated_sequence=result["generated_sequence"],
+                    structure=result["structure"],
+                    mfe=result["mfe"],
+                    cai_score=result["cai_score"],
+                    raw_output=result["raw_output"],
+                    stderr=result["stderr"],
+                )
+            )
+        except (RuntimeError, ValueError) as exc:
+            items.append(
+                LinearDesignBatchItem(
+                    success=False,
+                    error=str(exc),
+                )
+            )
+
+    return LinearDesignBatchResponse(
+        items=items,
+        count=len(items),
+        lambda_value=payload.lambda_value,
+        codon_usage_path=str(codon_usage_path),
     )
