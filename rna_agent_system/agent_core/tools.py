@@ -18,6 +18,12 @@ from agent_core.file_manager import (
     save_text_file,
 )
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 microservices/linearfold_service/main.py 顶部的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 
 def _normalize_nucleic_sequence(raw_text: str) -> str:
     """Normalize plain-text or FASTA-like nucleotide input for downstream tools."""
@@ -1741,6 +1747,86 @@ class LinearFoldSecondaryInput(BaseModel):
         default=2,
         description="Dangling-end model: 0 or 2 (LinearFold --dangles).",
     )
+    sharpturn: bool = Field(
+        default=False,
+        description="Enable sharpturn in prediction.",
+    )
+    constraints: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional constraint string (? . ( ) ) for constrained prediction. "
+            "If provided, length must match the sequence."
+        ),
+    )
+    shape_file_path: Optional[str] = Field(
+        default=None,
+        description="Optional path to SHAPE reactivity data file (mutually exclusive with constraints).",
+    )
+
+
+class LinearFoldEvalInput(BaseModel):
+    """Input schema for LinearFold energy evaluation (eval mode)."""
+
+    sequence_filepath: str = Field(
+        ...,
+        description="Path to a workspace file containing the RNA sequence.",
+    )
+    structure_filepath: str = Field(
+        ...,
+        description="Path to a workspace file containing the dot-bracket structure.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8015/eval",
+        description="REST endpoint for the LinearFold eval microservice.",
+    )
+    use_vienna: bool = Field(
+        default=False,
+        description="If true, request LinearFold-V (Vienna energy parameters).",
+    )
+    dangles: int = Field(
+        default=2,
+        description="Dangling-end model: 0 or 2.",
+    )
+    verbose: bool = Field(
+        default=False,
+        description="Return per-loop energy decomposition.",
+    )
+
+
+class LinearFoldZukerSuboptInput(BaseModel):
+    """Input schema for LinearFold Zuker suboptimal structures."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to a workspace file containing RNA sequence (plain or FASTA).",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8015/fold/zuker_subopt",
+        description="REST endpoint for the LinearFold Zuker subopt microservice.",
+    )
+    beam_size: int = Field(
+        default=100,
+        ge=0,
+        le=10000,
+        description="Beam size for LinearFold (0 = infinite beam).",
+    )
+    use_vienna: bool = Field(
+        default=False,
+        description="If true, request LinearFold-V (Vienna energy parameters).",
+    )
+    dangles: int = Field(
+        default=2,
+        description="Dangling-end model: 0 or 2.",
+    )
+    sharpturn: bool = Field(
+        default=False,
+        description="Enable sharpturn in prediction.",
+    )
+    delta: float = Field(
+        default=5.0,
+        ge=0.0,
+        description="Energy range (kcal/mol) for suboptimal structures.",
+    )
 
 
 class GemornaCdsInput(BaseModel):
@@ -2910,6 +2996,9 @@ def predict_rna_secondary_structure_with_linearfold(
     beam_size: int = 100,
     use_vienna: bool = False,
     dangles: int = 2,
+    sharpturn: bool = False,
+    constraints: Optional[str] = None,
+    shape_file_path: Optional[str] = None,
 ) -> dict[str, Any]:
     """Predict RNA secondary structure and MFE using the LinearFold service.
 
@@ -2919,12 +3008,127 @@ def predict_rna_secondary_structure_with_linearfold(
         beam_size: LinearFold beam size (default 100).
         use_vienna: Use LinearFold-V (Vienna parameters) when True.
         dangles: 0 or 2 for dangling-end treatment.
+        sharpturn: Enable sharpturn in prediction.
+        constraints: Optional constraint string (? . ( ) ) for constrained prediction.
+        shape_file_path: Optional path to SHAPE reactivity data file.
 
     Returns:
         Dict with sequence, structure, mfe, backend, model, and input filepath.
 
     Raises:
         ValueError: If the LinearFold request fails or the response is invalid.
+    """
+    sequence = read_sequence(filepath).strip()
+    if dangles not in (0, 2):
+        raise ValueError("LinearFold dangles must be 0 or 2.")
+    body: dict[str, Any] = {
+        "sequence": sequence,
+        "beam_size": beam_size,
+        "use_vienna": use_vienna,
+        "dangles": dangles,
+        "sharpturn": sharpturn,
+    }
+    if constraints is not None:
+        body["constraints"] = constraints
+    if shape_file_path is not None:
+        body["shape_file_path"] = shape_file_path
+    try:
+        response = requests.post(service_url, json=body, timeout=600)
+        response.raise_for_status()
+        payload = response.json()
+        if "structure" not in payload or "mfe" not in payload:
+            raise ValueError("Missing `structure` or `mfe` in LinearFold response.")
+        return {
+            "filepath": filepath,
+            "sequence": str(payload.get("sequence", "")),
+            "structure": str(payload["structure"]),
+            "mfe": float(payload["mfe"]),
+            "backend": str(payload.get("backend", "")),
+            "model": str(payload.get("model", "LinearFold")),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "LinearFold")
+
+
+@tool(args_schema=LinearFoldEvalInput)
+def evaluate_rna_structure_with_linearfold(
+    sequence_filepath: str,
+    structure_filepath: str,
+    service_url: str = "http://127.0.0.1:8015/eval",
+    use_vienna: bool = False,
+    dangles: int = 2,
+    verbose: bool = False,
+) -> dict[str, Any]:
+    """Evaluate free energy of a known RNA structure using LinearFold.
+
+    Args:
+        sequence_filepath: Workspace file path containing the RNA sequence.
+        structure_filepath: Workspace file path containing the dot-bracket structure.
+        service_url: REST endpoint for the LinearFold eval microservice.
+        use_vienna: Use LinearFold-V (Vienna parameters) when True.
+        dangles: 0 or 2 for dangling-end treatment.
+        verbose: Return per-loop energy decomposition.
+
+    Returns:
+        Dict with sequence, structure, energy, backend, model, and input filepath.
+    """
+    sequence = read_sequence(sequence_filepath).strip()
+    structure = read_sequence(structure_filepath).strip()
+    if dangles not in (0, 2):
+        raise ValueError("LinearFold dangles must be 0 or 2.")
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sequence": sequence,
+                "structure": structure,
+                "use_vienna": use_vienna,
+                "dangles": dangles,
+                "verbose": verbose,
+            },
+            timeout=600,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "energy" not in payload:
+            raise ValueError("Missing `energy` in LinearFold eval response.")
+        return {
+            "sequence_filepath": sequence_filepath,
+            "structure_filepath": structure_filepath,
+            "sequence": str(payload.get("sequence", "")),
+            "structure": str(payload.get("structure", "")),
+            "energy": float(payload["energy"]),
+            "backend": str(payload.get("backend", "")),
+            "model": str(payload.get("model", "LinearFold")),
+            "verbose_details": payload.get("verbose_details"),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "LinearFold")
+
+
+@tool(args_schema=LinearFoldZukerSuboptInput)
+def predict_rna_secondary_structure_with_linearfold_zuker(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8015/fold/zuker_subopt",
+    beam_size: int = 100,
+    use_vienna: bool = False,
+    dangles: int = 2,
+    sharpturn: bool = False,
+    delta: float = 5.0,
+) -> dict[str, Any]:
+    """Enumerate Zuker suboptimal RNA structures using LinearFold.
+
+    Args:
+        filepath: Workspace file path containing RNA sequence content.
+        service_url: REST endpoint for the LinearFold Zuker subopt microservice.
+        beam_size: LinearFold beam size (default 100).
+        use_vienna: Use LinearFold-V (Vienna parameters) when True.
+        dangles: 0 or 2 for dangling-end treatment.
+        sharpturn: Enable sharpturn in prediction.
+        delta: Energy range (kcal/mol) for suboptimal structures.
+
+    Returns:
+        Dict with sequence, mfe, structures list, backend, model, and input filepath.
     """
     sequence = read_sequence(filepath).strip()
     if dangles not in (0, 2):
@@ -2937,18 +3141,20 @@ def predict_rna_secondary_structure_with_linearfold(
                 "beam_size": beam_size,
                 "use_vienna": use_vienna,
                 "dangles": dangles,
+                "sharpturn": sharpturn,
+                "delta": delta,
             },
             timeout=600,
         )
         response.raise_for_status()
         payload = response.json()
-        if "structure" not in payload or "mfe" not in payload:
-            raise ValueError("Missing `structure` or `mfe` in LinearFold response.")
+        if "structures" not in payload or "mfe" not in payload:
+            raise ValueError("Missing `structures` or `mfe` in LinearFold Zuker response.")
         return {
             "filepath": filepath,
             "sequence": str(payload.get("sequence", "")),
-            "structure": str(payload["structure"]),
             "mfe": float(payload["mfe"]),
+            "structures": list(payload.get("structures", [])),
             "backend": str(payload.get("backend", "")),
             "model": str(payload.get("model", "LinearFold")),
         }
@@ -4212,6 +4418,8 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     run_blastn_similarity_search,
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
+    evaluate_rna_structure_with_linearfold,
+    predict_rna_secondary_structure_with_linearfold_zuker,
     predict_rna_tertiary_structure_with_rhofold,
     design_mrna_cds_with_lineardesign,
     design_mrna_cds_batch_with_lineardesign,

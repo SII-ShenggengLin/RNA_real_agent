@@ -1,13 +1,54 @@
-"""LinearFold RNA secondary-structure prediction microservice."""
+"""LinearFold RNA secondary-structure prediction microservice.
+
+Upstream: https://github.com/LinearFold/LinearFold
+This service directly invokes the upstream C++ binaries
+(``bin/linearfold_c`` and ``bin/linearfold_v``) to avoid being limited by the
+thin Python wrapper script, thereby exposing the full upstream capability set:
+
+- Standard folding (``/fold``)
+- Constrained folding (``/fold`` with ``constraints``)
+- SHAPE-guided folding (``/fold`` with ``shape_file_path``)
+- Zuker suboptimal structures (``/fold/zuker_subopt``)
+- Energy evaluation of a known structure (``/eval``)
+
+═══════════════════════════════════════════════════════════════════════════════
+LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+═══════════════════════════════════════════════════════════════════════════════
+关联文件清单（修改时必须全部同步）：
+  - microservices/linearfold_service/main.py  ← 本文件
+  - agent_core/tools.py :: LinearFoldSecondaryInput / LinearFoldEvalInput /
+                           LinearFoldZukerSuboptInput /
+                           predict_rna_secondary_structure_with_linearfold /
+                           evaluate_rna_structure_with_linearfold /
+                           predict_rna_secondary_structure_with_linearfold_zuker
+  - agent_core/tool_specs.py :: LinearFoldOutput / LinearFoldEvalOutput /
+                                LinearFoldZukerSuboptOutput /
+                                predict_rna_secondary_structure_with_linearfold /
+                                evaluate_rna_structure_with_linearfold /
+                                predict_rna_secondary_structure_with_linearfold_zuker
+                                ToolSpec entries
+  - agent_core/nodes.py :: _build_linearfold_tool_args /
+                           _build_linearfold_eval_tool_args /
+                           _build_linearfold_zuker_tool_args /
+                           tool_execution_node LinearFold branches
+  - docs/tools/predict_rna_secondary_structure_with_linearfold.md
+  - docs/workflows/rna_secondary_structure_linearfold_workflow.md
+  - docs/tasks/rna_secondary_structure_linearfold.md
+  - rna_agent_system/docs/RNA_AGENT_SYSTEM_GUIDE.md
+规则：任何字段增删、端点路径/签名变动、返回值结构调整、C++ 二进制调用方式
+      变更，必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交
+      将被回退。
+本次修改的基准日期：2026-04-25。
+═══════════════════════════════════════════════════════════════════════════════
+"""
 
 from __future__ import annotations
 
 import os
 import re
 import subprocess
-import sys
 from pathlib import Path
-from typing import Tuple
+from typing import List, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -16,6 +57,7 @@ from pydantic import BaseModel, Field
 APP_DIR = Path(__file__).resolve().parent
 _RNA_AGENT_SYSTEM_ROOT = APP_DIR.parents[1]
 
+# Regex for a structure + energy line, e.g. "....((..)).... (-3.50)"
 _STRUCTURE_LINE = re.compile(
     r"^([.()]+)\s+\(\s*(-?\d+(?:\.\d+)?)\s*\)\s*$"
 )
@@ -35,9 +77,6 @@ def _resolve_linearfold_root() -> Path:
 def _linearfold_binaries_exist(root: Path) -> Tuple[bool, str]:
     c = root / "bin" / "linearfold_c"
     v = root / "bin" / "linearfold_v"
-    script = root / "linearfold"
-    if not script.is_file():
-        return False, f"Missing {script} (clone LinearFold and run make)."
     if not c.is_file() or not v.is_file():
         return False, f"Missing {c} or {v}; run `make` under {root}."
     return True, "ok"
@@ -53,8 +92,70 @@ def _normalize_sequence(raw: str) -> str:
     return re.sub(r"[^AUGC]", "", merged)
 
 
-def _parse_linearfold_stdout(stdout: str) -> Tuple[str, float, str]:
-    """Return (structure, mfe, sequence) from last prediction block."""
+def _build_cmd(
+    root: Path,
+    *,
+    beam_size: int = 100,
+    use_vienna: bool = False,
+    sharpturn: bool = False,
+    verbose: bool = False,
+    is_eval: bool = False,
+    constraints: bool = False,
+    zuker: bool = False,
+    delta: float = 5.0,
+    shape_file_path: str = "",
+    fasta: bool = False,
+    dangles: int = 2,
+) -> List[str]:
+    """Construct the command line for the upstream C++ binary.
+
+    The upstream ``main()`` expects 11 positional arguments:
+    1. beamsize   2. sharpturn   3. verbose   4. eval   5. constraints
+    6. zuker      7. delta       8. shape_file_path
+    9. fasta      10. dangles
+    """
+    ok, msg = _linearfold_binaries_exist(root)
+    if not ok:
+        raise RuntimeError(msg)
+
+    binary = root / ("bin/linearfold_v" if use_vienna else "bin/linearfold_c")
+    return [
+        str(binary),
+        str(beam_size),
+        "1" if sharpturn else "0",
+        "1" if verbose else "0",
+        "1" if is_eval else "0",
+        "1" if constraints else "0",
+        "1" if zuker else "0",
+        str(delta),
+        shape_file_path,
+        "1" if fasta else "0",
+        str(dangles),
+    ]
+
+
+def _run_subprocess(cmd: List[str], stdin: str, cwd: Path) -> str:
+    proc = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        input=stdin,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=600,
+    )
+    if proc.returncode != 0:
+        err = (proc.stderr or proc.stdout or "").strip()
+        raise RuntimeError(f"LinearFold exited {proc.returncode}: {err}")
+    return proc.stdout
+
+
+def _parse_fold_stdout(stdout: str) -> Tuple[str, float, str]:
+    """Return (structure, mfe, sequence) from the last valid prediction block.
+
+    Handles both standard mode (seq -> structure) and constraint mode
+    (seq -> constraint -> structure), as well as SHAPE-guided mode.
+    """
     lines = [ln.rstrip() for ln in stdout.splitlines() if ln.strip()]
     seq = ""
     structure = ""
@@ -62,15 +163,21 @@ def _parse_linearfold_stdout(stdout: str) -> Tuple[str, float, str]:
     i = 0
     while i < len(lines):
         line = lines[i].strip()
+        # Track the most recent sequence line
+        if re.fullmatch(r"[AUGC]+", line.upper()):
+            seq = line.upper()
+        # Look ahead for a structure line
         if i + 1 < len(lines):
             nxt = lines[i + 1].strip()
             m = _STRUCTURE_LINE.match(nxt)
-            if m and re.fullmatch(r"[AUGC]+", line.upper()):
-                seq = line.upper()
-                structure = m.group(1)
-                mfe = float(m.group(2))
-                i += 2
-                continue
+            if m:
+                # Confirm the current line is either a sequence or a constraint
+                # (not another structure line)
+                if re.fullmatch(r"[AUGC]+", line.upper()) or re.fullmatch(r"[?.()]+", line):
+                    structure = m.group(1)
+                    mfe = float(m.group(2))
+                    i += 2
+                    continue
         i += 1
     if not structure:
         raise ValueError(
@@ -80,64 +187,134 @@ def _parse_linearfold_stdout(stdout: str) -> Tuple[str, float, str]:
     return structure, mfe, seq
 
 
-def _run_linearfold(
-    root: Path,
-    sequence: str,
-    beam_size: int,
-    use_vienna: bool,
-    dangles: int,
-) -> Tuple[str, float, str, str]:
-    ok, msg = _linearfold_binaries_exist(root)
-    if not ok:
-        raise RuntimeError(msg)
+def _parse_zuker_stdout(stdout: str) -> Tuple[List[Tuple[str, float]], str]:
+    """Parse Zuker suboptimal-structures output.
 
-    cmd = [
-        sys.executable,
-        str(root / "linearfold"),
-        "-b",
-        str(beam_size),
-        "-d",
-        str(dangles),
-    ]
-    if use_vienna:
-        cmd.append("-V")
+    Upstream prints the optimal structure first, then
+    ``Zuker suboptimal structures...``, then one line per suboptimal.
+    We return *all* structures (including the optimal one) so the caller
+    can use the first entry as MFE.
+    """
+    lines = [ln.rstrip() for ln in stdout.splitlines() if ln.strip()]
+    seq = ""
+    structures: List[Tuple[str, float]] = []
 
-    proc = subprocess.run(
-        cmd,
-        cwd=str(root),
-        input=sequence + "\n",
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=600,
-    )
-    if proc.returncode != 0:
-        err = (proc.stderr or proc.stdout or "").strip()
-        raise RuntimeError(f"LinearFold exited {proc.returncode}: {err}")
+    for line in lines:
+        line = line.strip()
+        if re.fullmatch(r"[AUGC]+", line.upper()) and not seq:
+            seq = line.upper()
+            continue
+        if "Zuker suboptimal structures" in line:
+            continue
+        m = _STRUCTURE_LINE.match(line)
+        if m:
+            structures.append((m.group(1), float(m.group(2))))
 
-    structure, mfe, out_seq = _parse_linearfold_stdout(proc.stdout)
-    backend = "LinearFold-V" if use_vienna else "LinearFold-C"
-    if out_seq and out_seq != sequence:
-        # Should not happen for single-sequence stdin; keep requested sequence in response.
-        pass
-    return structure, mfe, sequence, backend
+    if not structures:
+        raise ValueError("Could not parse Zuker suboptimal output.")
+    return structures, seq
 
+
+def _parse_eval_stdout(stdout: str) -> Tuple[float, str, Optional[str]]:
+    """Parse eval-mode output.
+
+    Returns (energy, sequence, verbose_details).
+    Verbose details are everything before the ``seq`` / ``structure (energy)`` pair.
+    """
+    lines = [ln.rstrip() for ln in stdout.splitlines() if ln.strip()]
+    seq = ""
+    energy = 0.0
+    verbose_lines: List[str] = []
+
+    # Eval stdout (non-verbose):
+    #   seq
+    #   structure (energy)
+    #
+    # Eval stdout (verbose):
+    #   Hairpin loop ( 13, 21) CG : 4.50
+    #   ...
+    #   External loop : -1.70
+    #   seq
+    #   structure (energy)
+
+    # We scan from the bottom to find the structure line, then the seq line.
+    # Everything before that is verbose detail.
+
+    structure_line_idx = -1
+    for idx in range(len(lines) - 1, -1, -1):
+        m = _STRUCTURE_LINE.match(lines[idx].strip())
+        if m:
+            structure_line_idx = idx
+            energy = float(m.group(2))
+            break
+
+    if structure_line_idx < 0:
+        raise ValueError("Could not parse LinearFold eval output: no structure line found.")
+
+    if structure_line_idx > 0:
+        candidate_seq = lines[structure_line_idx - 1].strip()
+        if re.fullmatch(r"[AUGC]+", candidate_seq.upper()):
+            seq = candidate_seq.upper()
+            if structure_line_idx > 1:
+                verbose_lines = lines[: structure_line_idx - 1]
+        else:
+            # seq might be missing if something went wrong upstream
+            verbose_lines = lines[:structure_line_idx]
+
+    verbose_details = "\n".join(verbose_lines) if verbose_lines else None
+    return energy, seq, verbose_details
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FastAPI application
+# ═══════════════════════════════════════════════════════════════════════════════
 
 app = FastAPI(
     title="LinearFold Service (Port 8015)",
-    description="Linear-time RNA secondary structure prediction via LinearFold.",
-    version="0.1.0-port8015",
+    description=(
+        "Linear-time RNA secondary structure prediction via LinearFold. "
+        "Exposes the full upstream surface: standard fold, constrained fold, "
+        "SHAPE-guided fold, Zuker suboptimal enumeration, and energy evaluation."
+    ),
+    version="0.2.0",
 )
 
 
+# ---------------------------------------------------------------------------
+# /fold — standard, constrained, or SHAPE-guided folding
+# ---------------------------------------------------------------------------
+
 class FoldRequest(BaseModel):
-    sequence: str = Field(..., min_length=1, description="RNA sequence (plain or FASTA body).")
-    beam_size: int = Field(default=100, ge=0, le=10000, description="Beam size; 0 means infinite beam.")
+    sequence: str = Field(
+        ..., min_length=1,
+        description="RNA sequence (plain text or FASTA body)."
+    )
+    beam_size: int = Field(
+        default=100, ge=0, le=10000,
+        description="Beam size; 0 means infinite beam."
+    )
     use_vienna: bool = Field(
         default=False,
-        description="If true, use LinearFold-V (Vienna parameters); else LinearFold-C.",
+        description="If true, use LinearFold-V (Vienna parameters); else LinearFold-C."
     )
     dangles: int = Field(default=2, description="0 or 2; passed to LinearFold --dangles.")
+    sharpturn: bool = Field(
+        default=False, description="Enable sharpturn in prediction."
+    )
+    constraints: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional constraint string (? . ( ) ) for constrained prediction. "
+            "Length must match the sequence."
+        ),
+    )
+    shape_file_path: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional path to SHAPE reactivity data file. "
+            "Mutually exclusive with ``constraints``."
+        ),
+    )
 
 
 class FoldResponse(BaseModel):
@@ -146,18 +323,6 @@ class FoldResponse(BaseModel):
     mfe: float
     backend: str
     model: str = "LinearFold"
-
-
-@app.get("/health")
-def health() -> dict[str, str | bool]:
-    root = _resolve_linearfold_root()
-    ok, msg = _linearfold_binaries_exist(root)
-    return {
-        "status": "ok" if ok else "degraded",
-        "linearfold_root": str(root),
-        "binaries_ready": ok,
-        "detail": msg if not ok else "LinearFold script and bin/linearfold_c|v present.",
-    }
 
 
 @app.post("/fold", response_model=FoldResponse)
@@ -170,28 +335,204 @@ def fold(payload: FoldRequest) -> FoldResponse:
     if not sequence:
         raise HTTPException(status_code=400, detail="No RNA sequence after normalization.")
 
-    try:
-        structure, mfe, seq_out, backend = _run_linearfold(
-            root,
-            sequence,
-            payload.beam_size,
-            payload.use_vienna,
-            payload.dangles,
+    if payload.constraints is not None and payload.shape_file_path is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot use constraints and SHAPE simultaneously."
         )
+
+    # Build stdin according to upstream mode expectations
+    if payload.constraints is not None:
+        constraint = payload.constraints.strip()
+        if len(constraint) != len(sequence):
+            raise HTTPException(
+                status_code=400,
+                detail="Constraint length must match sequence length."
+            )
+        stdin = f"{sequence}\n{constraint}\n"
+        is_constraints = True
+    else:
+        stdin = f"{sequence}\n"
+        is_constraints = False
+
+    shape_path = payload.shape_file_path or ""
+
+    try:
+        cmd = _build_cmd(
+            root,
+            beam_size=payload.beam_size,
+            use_vienna=payload.use_vienna,
+            sharpturn=payload.sharpturn,
+            is_eval=False,
+            constraints=is_constraints,
+            zuker=False,
+            delta=5.0,
+            shape_file_path=shape_path,
+            dangles=payload.dangles,
+        )
+        stdout = _run_subprocess(cmd, stdin, root)
+        structure, mfe, out_seq = _parse_fold_stdout(stdout)
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    if len(structure) != len(seq_out):
-        raise HTTPException(
-            status_code=500,
-            detail="Structure length mismatch vs sequence.",
-        )
-
+    backend = "LinearFold-V" if payload.use_vienna else "LinearFold-C"
     return FoldResponse(
-        sequence=seq_out,
+        sequence=out_seq or sequence,
         structure=structure,
         mfe=mfe,
         backend=backend,
     )
+
+
+# ---------------------------------------------------------------------------
+# /fold/zuker_subopt — Zuker suboptimal structures
+# ---------------------------------------------------------------------------
+
+class ZukerSuboptRequest(BaseModel):
+    sequence: str = Field(..., min_length=1, description="RNA sequence.")
+    beam_size: int = Field(default=100, ge=0, le=10000)
+    use_vienna: bool = Field(default=False)
+    dangles: int = Field(default=2)
+    sharpturn: bool = Field(default=False)
+    delta: float = Field(
+        default=5.0, ge=0.0,
+        description="Energy range (kcal/mol) for suboptimal structures."
+    )
+
+
+class SuboptimalStructure(BaseModel):
+    structure: str
+    energy: float
+
+
+class ZukerSuboptResponse(BaseModel):
+    sequence: str
+    mfe: float
+    structures: List[SuboptimalStructure]
+    backend: str
+    model: str = "LinearFold"
+
+
+@app.post("/fold/zuker_subopt", response_model=ZukerSuboptResponse)
+def zuker_subopt(payload: ZukerSuboptRequest) -> ZukerSuboptResponse:
+    if payload.dangles not in (0, 2):
+        raise HTTPException(status_code=400, detail="dangles must be 0 or 2.")
+
+    root = _resolve_linearfold_root()
+    sequence = _normalize_sequence(payload.sequence)
+    if not sequence:
+        raise HTTPException(status_code=400, detail="No RNA sequence after normalization.")
+
+    try:
+        cmd = _build_cmd(
+            root,
+            beam_size=payload.beam_size,
+            use_vienna=payload.use_vienna,
+            sharpturn=payload.sharpturn,
+            is_eval=False,
+            constraints=False,
+            zuker=True,
+            delta=payload.delta,
+            dangles=payload.dangles,
+        )
+        stdout = _run_subprocess(cmd, f"{sequence}\n", root)
+        structures, out_seq = _parse_zuker_stdout(stdout)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    backend = "LinearFold-V" if payload.use_vienna else "LinearFold-C"
+    mfe = structures[0][1] if structures else 0.0
+    return ZukerSuboptResponse(
+        sequence=out_seq or sequence,
+        mfe=mfe,
+        structures=[SuboptimalStructure(structure=s, energy=e) for s, e in structures],
+        backend=backend,
+    )
+
+
+# ---------------------------------------------------------------------------
+# /eval — evaluate free energy of a known structure
+# ---------------------------------------------------------------------------
+
+class EvalRequest(BaseModel):
+    sequence: str = Field(..., min_length=1, description="RNA sequence.")
+    structure: str = Field(
+        ..., min_length=1,
+        description="Dot-bracket secondary structure to evaluate."
+    )
+    use_vienna: bool = Field(default=False)
+    dangles: int = Field(default=2)
+    verbose: bool = Field(
+        default=False, description="Return per-loop energy decomposition."
+    )
+
+
+class EvalResponse(BaseModel):
+    sequence: str
+    structure: str
+    energy: float
+    backend: str
+    model: str = "LinearFold"
+    verbose_details: Optional[str] = None
+
+
+@app.post("/eval", response_model=EvalResponse)
+def eval_structure(payload: EvalRequest) -> EvalResponse:
+    if payload.dangles not in (0, 2):
+        raise HTTPException(status_code=400, detail="dangles must be 0 or 2.")
+
+    root = _resolve_linearfold_root()
+    sequence = _normalize_sequence(payload.sequence)
+    if not sequence:
+        raise HTTPException(status_code=400, detail="No RNA sequence after normalization.")
+
+    structure = payload.structure.strip()
+    if len(structure) != len(sequence):
+        raise HTTPException(
+            status_code=400,
+            detail="Structure length must match sequence length."
+        )
+
+    try:
+        cmd = _build_cmd(
+            root,
+            use_vienna=payload.use_vienna,
+            verbose=payload.verbose,
+            is_eval=True,
+            dangles=payload.dangles,
+        )
+        stdout = _run_subprocess(cmd, f"{sequence}\n{structure}\n", root)
+        energy, out_seq, verbose_details = _parse_eval_stdout(stdout)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    backend = "LinearFold-V" if payload.use_vienna else "LinearFold-C"
+    return EvalResponse(
+        sequence=out_seq or sequence,
+        structure=structure,
+        energy=energy,
+        backend=backend,
+        verbose_details=verbose_details,
+    )
+
+
+# ---------------------------------------------------------------------------
+# /health
+# ---------------------------------------------------------------------------
+
+@app.get("/health")
+def health() -> dict[str, str | bool]:
+    root = _resolve_linearfold_root()
+    ok, msg = _linearfold_binaries_exist(root)
+    return {
+        "status": "ok" if ok else "degraded",
+        "linearfold_root": str(root),
+        "binaries_ready": ok,
+        "detail": msg if not ok else "LinearFold binaries present.",
+    }

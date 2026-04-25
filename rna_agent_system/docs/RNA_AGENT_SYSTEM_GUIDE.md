@@ -128,7 +128,7 @@ rna_agent_system/
 | 8012 | `odesign_service` | ODesign | 生物分子设计（RNA 相关） | ✅ Linux GPU |
 | 8013 | `iresfinder_service` | IRESfinder | IRES 预测（Python 3 重实现） | ✅ Linux |
 | 8014 | `lineardesign_service` | LinearDesign | 蛋白→mRNA CDS 设计（单序列 / 批量） | ✅ Linux |
-| 8015 | `linearfold_service` | LinearFold | RNA 二级结构预测 | ✅ Linux |
+| 8015 | `linearfold_service` | LinearFold | RNA 二级结构预测 / 约束折叠 / SHAPE 引导 / Zuker 次优 / 能量评估 | ✅ Linux |
 | 8016 | `evitar_service` | Evitar | siRNA/Cas13 设计（Perl CLI） | ✅ Linux |
 | 8017 | `sgrna_design_service` | CRGPT | sgRNA handle 设计 | ✅ Linux GPU |
 | 8018 | `codonw_slim_service` | codonw-slim | CDS 密码子指标（CAI/Fop/CBI/Nc 等） | ✅ Linux |
@@ -458,11 +458,12 @@ CDS 设计（GEMORNA / RNARL / LinearDesign）完成后，若用户请求含结�
 |------|------|
 | 上游仓库 | [LinearFold/LinearFold](https://github.com/LinearFold/LinearFold.git) |
 | 微服务目录 | `microservices/linearfold_service/` |
-| 接口 | `GET /health`、`POST /fold` |
-| Agent 工具 | `predict_rna_secondary_structure_with_linearfold(filepath)` |
+| 接口 | `GET /health`、`POST /fold`、`POST /fold/zuker_subopt`、`POST /eval` |
+| Agent 工具 | `predict_rna_secondary_structure_with_linearfold(filepath)`、`evaluate_rna_structure_with_linearfold(...)`、`predict_rna_secondary_structure_with_linearfold_zuker(filepath)` |
 
 **关键注意事项**：
 - 部署后需在 `external_repos/LinearFold/` 执行 `make` 生成 `bin/linearfold_c` + `bin/linearfold_v`
+- 服务层直接调用上游 C++ 二进制（绕过 Python 包装脚本），暴露完整上游能力
 - 可通过 `LINEARFOLD_ROOT` 环境变量覆盖目录
 
 ### 6.14 Evitar (端口 8016)

@@ -127,6 +127,25 @@ class LinearFoldOutput(_OutBase):
     model: str
 
 
+class LinearFoldEvalOutput(_OutBase):
+    filepath: str
+    sequence: str
+    structure: str
+    energy: float
+    backend: str = ""
+    model: str
+    verbose_details: Optional[str] = None
+
+
+class LinearFoldZukerSuboptOutput(_OutBase):
+    filepath: str
+    sequence: str
+    mfe: float
+    structures: List[Dict[str, Any]]
+    backend: str = ""
+    model: str
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -824,20 +843,66 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=ViennaInverseFoldOutput,
         status=ToolStatus.available,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/linearfold_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/nodes.py
+    #   - docs/tools/predict_rna_secondary_structure_with_linearfold.md
+    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+    # ═══════════════════════════════════════════════════════════════════════════════
     "predict_rna_secondary_structure_with_linearfold": ToolSpec(
         identity="predict_rna_secondary_structure_with_linearfold",
         display_name="LinearFold secondary structure",
-        version="0.1.0-port8015",
+        version="0.2.0-port8015",
         source="https://github.com/LinearFold/LinearFold",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8015/fold",
-        capabilities=["Predict RNA secondary structure with linear-time algorithm (beam search)."],
+        capabilities=[
+            "Predict RNA secondary structure with linear-time algorithm (beam search).",
+            "Supports constrained folding and SHAPE-guided folding.",
+        ],
         limitations=["Approximates search with beam; results depend on beam size and parameterization."],
         task_tags=["rna_secondary_structure_prediction"],
         requires=[ToolDependency(name="LinearFold microservice", detail="microservices/linearfold_service (port 8015)")],
         produces=["structure", "mfe"],
         input_model=tool_wrappers.LinearFoldSecondaryInput,
         output_model=LinearFoldOutput,
+        status=ToolStatus.available,
+    ),
+    "evaluate_rna_structure_with_linearfold": ToolSpec(
+        identity="evaluate_rna_structure_with_linearfold",
+        display_name="LinearFold structure energy evaluation",
+        version="0.2.0-port8015",
+        source="https://github.com/LinearFold/LinearFold",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8015/eval",
+        capabilities=["Evaluate free energy of a given RNA secondary structure."],
+        limitations=["Only supports dot-bracket notation; pseudoknots are ignored."],
+        task_tags=["rna_secondary_structure_evaluation"],
+        requires=[ToolDependency(name="LinearFold microservice", detail="microservices/linearfold_service (port 8015)")],
+        produces=["energy"],
+        input_model=tool_wrappers.LinearFoldEvalInput,
+        output_model=LinearFoldEvalOutput,
+        status=ToolStatus.available,
+    ),
+    "predict_rna_secondary_structure_with_linearfold_zuker": ToolSpec(
+        identity="predict_rna_secondary_structure_with_linearfold_zuker",
+        display_name="LinearFold Zuker suboptimal structures",
+        version="0.2.0-port8015",
+        source="https://github.com/LinearFold/LinearFold",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8015/fold/zuker_subopt",
+        capabilities=["Enumerate Zuker suboptimal RNA secondary structures within an energy window."],
+        limitations=["Number of suboptimal structures grows with sequence length and energy window."],
+        task_tags=["rna_secondary_structure_prediction"],
+        requires=[ToolDependency(name="LinearFold microservice", detail="microservices/linearfold_service (port 8015)")],
+        produces=["structures", "mfe"],
+        input_model=tool_wrappers.LinearFoldZukerSuboptInput,
+        output_model=LinearFoldZukerSuboptOutput,
         status=ToolStatus.available,
     ),
     # ═══════════════════════════════════════════════════════════════════════════════

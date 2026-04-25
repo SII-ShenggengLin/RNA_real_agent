@@ -10,6 +10,12 @@ from typing import Any, Optional, Tuple
 
 from langchain_core.messages import AIMessage, ToolMessage
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
+# 关联文件清单见 microservices/linearfold_service/main.py 顶部的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 from agent_core.file_manager import read_sequence, save_sequence, save_text_file
 from agent_core.state import AgentState
 from agent_core.tool_specs import TOOL_SPECS
@@ -41,6 +47,8 @@ from agent_core.tools import (
     predict_putative_ires_with_iresfinder,
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
+    evaluate_rna_structure_with_linearfold,
+    predict_rna_secondary_structure_with_linearfold_zuker,
     predict_rna_tertiary_structure_with_rhofold,
     run_odesign_inference,
     score_crispr_off_target_with_crisot,
@@ -790,6 +798,49 @@ def _build_linearfold_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
     dangles = _extract_int_setting(raw_text, ("dangles", "dangle"))
     if dangles in (0, 2):
         args["dangles"] = dangles
+    if "sharpturn" in lowered:
+        args["sharpturn"] = True
+    return args
+
+
+def _build_linearfold_eval_tool_args(
+    sequence_filepath: str, structure_filepath: str, raw_text: str
+) -> dict[str, Any]:
+    args: dict[str, Any] = {
+        "sequence_filepath": sequence_filepath,
+        "structure_filepath": structure_filepath,
+    }
+    lowered = raw_text.lower()
+    if "linearfold-v" in lowered or "linearfold_v" in lowered:
+        args["use_vienna"] = True
+    elif "linearfold" in lowered and "vienna" in lowered:
+        args["use_vienna"] = True
+    dangles = _extract_int_setting(raw_text, ("dangles", "dangle"))
+    if dangles in (0, 2):
+        args["dangles"] = dangles
+    if "verbose" in lowered:
+        args["verbose"] = True
+    return args
+
+
+def _build_linearfold_zuker_tool_args(filepath: str, raw_text: str) -> dict[str, Any]:
+    args: dict[str, Any] = {"filepath": filepath}
+    lowered = raw_text.lower()
+    if "linearfold-v" in lowered or "linearfold_v" in lowered:
+        args["use_vienna"] = True
+    elif "linearfold" in lowered and "vienna" in lowered:
+        args["use_vienna"] = True
+    beam = _extract_int_setting(raw_text, ("beam_size", "beamsize", "beam"))
+    if beam is not None and beam >= 0:
+        args["beam_size"] = beam
+    dangles = _extract_int_setting(raw_text, ("dangles", "dangle"))
+    if dangles in (0, 2):
+        args["dangles"] = dangles
+    if "sharpturn" in lowered:
+        args["sharpturn"] = True
+    delta = _extract_float_setting(raw_text, ("delta",))
+    if delta is not None and delta >= 0:
+        args["delta"] = delta
     return args
 
 
@@ -2941,6 +2992,23 @@ def tool_execution_node(state: AgentState) -> AgentState:
                     structure_filepath = save_sequence(structure, prefix="structure")
                     state["structure_filepath"] = structure_filepath
                     state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+        elif tool_name == "evaluate_rna_structure_with_linearfold":
+            if isinstance(tool_result, dict):
+                state["linearfold_eval_energy"] = float(tool_result.get("energy", 0.0))
+                verbose = tool_result.get("verbose_details")
+                if verbose:
+                    state["linearfold_eval_verbose"] = str(verbose)
+        elif tool_name == "predict_rna_secondary_structure_with_linearfold_zuker":
+            if isinstance(tool_result, dict):
+                state["mfe"] = float(tool_result.get("mfe", 0.0))
+                structures = tool_result.get("structures", [])
+                if structures:
+                    first_struct = str(structures[0].get("structure", ""))
+                    if first_struct:
+                        structure_filepath = save_sequence(first_struct, prefix="structure")
+                        state["structure_filepath"] = structure_filepath
+                        state["workspace_files"] = state.get("workspace_files", []) + [structure_filepath]
+                    state["linearfold_zuker_structures"] = structures
         # INTERFACE LOCK (v0.2.0) — RhoFold result ingestion
         # The keys read from tool_result must stay in sync with:
         # - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold return dict
