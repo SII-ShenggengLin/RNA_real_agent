@@ -677,6 +677,25 @@ def run_blastn_similarity_search(
     return meta
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rna_sequence_metrics_service/main.py
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - agent_core/workflow_tools/rna_gc_content_workflow.py
+#   - agent_core/workflows/mrna_workflow.py
+#   - agent_core/workflows/mrna_scoring.py
+#   - agent_core/workflow_baseline_eval.py
+#   - tests/test_rna_gc_content_workflow.py
+#   - tests/test_compute_rna_sequence_gc_content.py
+#   - docs/tools/compute_rna_sequence_gc_content.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class RnaGcContentInput(BaseModel):
     """Input schema for RNA/DNA GC fraction (microservice on port 8020)."""
 
@@ -687,6 +706,12 @@ class RnaGcContentInput(BaseModel):
     service_url: str = Field(
         default="http://127.0.0.1:8020/gc-content",
         description="POST endpoint for GC content microservice.",
+    )
+    timeout_seconds: float = Field(
+        default=120.0,
+        gt=0,
+        le=600,
+        description="HTTP request timeout in seconds.",
     )
 
 
@@ -707,8 +732,17 @@ class DotBracketUnpairedFractionInput(BaseModel):
 def compute_rna_sequence_gc_content(
     filepath: str,
     service_url: str = "http://127.0.0.1:8020/gc-content",
+    timeout_seconds: float = 120.0,
 ) -> dict[str, Any]:
     """Compute (G+C)/N for an RNA or DNA sequence file (N = count of A/U/G/C after normalization).
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: RnaGcContentOutput / compute_rna_sequence_gc_content ToolSpec
+    - agent_core/state.py :: sequence_gc_* fields
+    - agent_core/nodes.py :: _needs_rna_gc_content_metric / tool_execution_node GC branch
+    - microservices/rna_sequence_metrics_service/main.py :: GcContentRequest / GcContentResponse
+    - docs/tools/compute_rna_sequence_gc_content.md
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
@@ -716,6 +750,7 @@ def compute_rna_sequence_gc_content(
     Args:
         filepath: Sequence file (plain or FASTA); T is treated as U, non-letters removed.
         service_url: POST ``/gc-content`` endpoint.
+        timeout_seconds: HTTP request timeout in seconds.
 
     Returns:
         Dict with ``gc_content``, counts, and resolved paths.
@@ -729,7 +764,7 @@ def compute_rna_sequence_gc_content(
         response = requests.post(
             service_url,
             json={"sequence_filepath": seq_abs},
-            timeout=120,
+            timeout=float(timeout_seconds),
         )
         response.raise_for_status()
         body = response.json()

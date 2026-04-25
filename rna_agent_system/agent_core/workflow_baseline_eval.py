@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 from agent_core.file_manager import PROJECT_ROOT
+from agent_core.sequence_utils import compute_gc_content, normalize_rna_sequence
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
 from agent_core.workflows.mrna_workflow import MrnaWorkflowInput, run_mrna_workflow
@@ -27,13 +28,16 @@ class StubGcTool:
         fp = kwargs.get("filepath", "")
         path = Path(PROJECT_ROOT / fp) if not Path(fp).is_absolute() else Path(fp)
         text = path.read_text(encoding="utf-8")
-        seq = "".join(
-            ln.strip().upper().replace("T", "U")
-            for ln in text.splitlines()
-            if ln.strip() and not ln.startswith(">")
-        )
-        gc = (seq.count("G") + seq.count("C")) / max(len(seq), 1)
-        return {"gc_content": float(gc), "sequence_length": len(seq), "model": "stub_gc"}
+        seq = normalize_rna_sequence(text)
+        result = compute_gc_content(seq)
+        return {
+            "gc_content": result["gc_content"],
+            "sequence_length": result["sequence_length"],
+            "g_count": result["g_count"],
+            "c_count": result["c_count"],
+            "gc_count": result["gc_count"],
+            "model": "stub_gc",
+        }
 
 
 class StubFoldTool:

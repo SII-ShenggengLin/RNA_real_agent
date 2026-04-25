@@ -43,8 +43,12 @@ def test_run_rna_gc_content_parses_metrics(gc_sample_filepath):
         def json(self):
             return fake_body
 
+        def raise_for_status(self):
+            if not self.ok:
+                raise requests.HTTPError(response=self)
+
     with patch(
-        "agent_core.workflow_tools.rna_gc_content_workflow.requests.post",
+        "agent_core.tools.requests.post",
         return_value=_Resp(),
     ):
         out = run_rna_gc_content_workflow(
@@ -69,8 +73,12 @@ def test_run_rna_gc_content_http_error(gc_sample_filepath):
         def json(self):
             return {"detail": "not found"}
 
+        def raise_for_status(self):
+            if not self.ok:
+                raise requests.HTTPError(response=self)
+
     with patch(
-        "agent_core.workflow_tools.rna_gc_content_workflow.requests.post",
+        "agent_core.tools.requests.post",
         return_value=_Resp(),
     ):
         out = run_rna_gc_content_workflow(
@@ -81,7 +89,7 @@ def test_run_rna_gc_content_http_error(gc_sample_filepath):
 
     assert out.success is False
     assert out.error is not None
-    assert out.error.get("status_code") == 400
+    assert "ValueError" in out.error.get("type", "")
 
 
 def test_python_function_tool_and_executor_writes_trace(gc_sample_filepath):
@@ -105,8 +113,12 @@ def test_python_function_tool_and_executor_writes_trace(gc_sample_filepath):
                 "model": "rna-sequence-metrics-gc",
             }
 
+        def raise_for_status(self):
+            if not self.ok:
+                raise requests.HTTPError(response=self)
+
     with patch(
-        "agent_core.workflow_tools.rna_gc_content_workflow.requests.post",
+        "agent_core.tools.requests.post",
         return_value=_Resp(),
     ):
         reg = ToolRegistry()

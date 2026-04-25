@@ -702,7 +702,33 @@ class ODesignInferenceOutput(_OutBase):
     model: str
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rna_sequence_metrics_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/nodes.py
+#   - agent_core/workflow_tools/rna_gc_content_workflow.py
+#   - agent_core/workflows/mrna_workflow.py
+#   - agent_core/workflows/mrna_scoring.py
+#   - agent_core/workflow_baseline_eval.py
+#   - tests/test_rna_gc_content_workflow.py
+#   - tests/test_compute_rna_sequence_gc_content.py
+#   - docs/tools/compute_rna_sequence_gc_content.md
+# ═══════════════════════════════════════════════════════════════════════════════
+
 class RnaGcContentOutput(_OutBase):
+    """GC content output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: compute_rna_sequence_gc_content (wrapper return dict)
+    - microservices/rna_sequence_metrics_service/main.py :: GcContentResponse
+    - agent_core/state.py :: sequence_gc_* fields
+    - agent_core/nodes.py :: tool_execution_node GC branch
+    """
+
     input_filepath: str
     resolved_filepath: str
     sequence_length: int
@@ -1576,6 +1602,22 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=ODesignInferenceOutput,
         status=ToolStatus.partial,
     ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/rna_sequence_metrics_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/nodes.py
+    #   - agent_core/workflow_tools/rna_gc_content_workflow.py
+    #   - agent_core/workflows/mrna_workflow.py
+    #   - agent_core/workflows/mrna_scoring.py
+    #   - agent_core/workflow_baseline_eval.py
+    #   - tests/test_rna_gc_content_workflow.py
+    #   - tests/test_compute_rna_sequence_gc_content.py
+    #   - docs/tools/compute_rna_sequence_gc_content.md
+    # ═══════════════════════════════════════════════════════════════════════════════
     "compute_rna_sequence_gc_content": ToolSpec(
         identity="compute_rna_sequence_gc_content",
         display_name="RNA sequence GC content",
@@ -1587,10 +1629,17 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Ignores non-AUGC characters; does not check biological correctness beyond parsing."],
         task_tags=["sequence_composition", "gc_content"],
         requires=[ToolDependency(name="rna_sequence_metrics microservice", detail="microservices/rna_sequence_metrics_service (port 8020)")],
-        produces=["gc_content", "sequence_length", "gc_count"],
+        produces=["gc_content", "sequence_length", "gc_count", "g_count", "c_count", "input_filepath", "resolved_filepath", "model"],
         input_model=tool_wrappers.RnaGcContentInput,
         output_model=RnaGcContentOutput,
         status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="GC content of a FASTA sequence",
+                input={"filepath": "workspace/sequence.fasta"},
+                output_excerpt={"gc_content": 0.52, "sequence_length": 150, "gc_count": 78},
+            )
+        ],
     ),
     "compute_dot_bracket_unpaired_fraction": ToolSpec(
         identity="compute_dot_bracket_unpaired_fraction",

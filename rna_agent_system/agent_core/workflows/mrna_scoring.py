@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Mapping, Optional
 
+from agent_core.sequence_utils import compute_gc_content, normalize_rna_sequence
+
 
 @dataclass(frozen=True)
 class MrnaScoreWeights:
@@ -37,13 +39,19 @@ def _optional_float(val: Any) -> Optional[float]:
 
 
 def gc_fraction_from_sequence(sequence: str) -> float:
-    """(G+C) / length for normalized AUCG string; empty → 0.0."""
+    """(G+C) / length for normalized AUCG string; empty → 0.0.
+
+    Uses the shared normalization/computation so local fallback scores are
+    consistent with the microservice.
+    """
 
     if not sequence:
         return 0.0
-    g = sequence.count("G")
-    c = sequence.count("C")
-    return (g + c) / float(len(sequence))
+    normalized = normalize_rna_sequence(sequence)
+    if not normalized:
+        return 0.0
+    result = compute_gc_content(normalized)
+    return float(result["gc_content"])
 
 
 def gc_band_score(gc: float, *, low: float = 0.42, mid: float = 0.50, high: float = 0.58) -> float:

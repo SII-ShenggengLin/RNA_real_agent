@@ -173,6 +173,12 @@ def _needs_codonw_standalone(user_text: str) -> bool:
     return False
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 compute_rna_sequence_gc_content
+# 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+# ═══════════════════════════════════════════════════════════════════════════════
+
 def _needs_rna_gc_content_metric(user_text: str) -> bool:
     """Explicit GC-content / (G+C) fraction request (not generic sequence design)."""
     lowered = user_text.lower()
@@ -3009,8 +3015,15 @@ def tool_execution_node(state: AgentState) -> AgentState:
                 state["blast_tabular_tsv_filepath"] = tab_fp
                 if tab_fp.startswith("workspace/"):
                     state["workspace_files"] = state.get("workspace_files", []) + [tab_fp]
+        # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0):
+        # 结果回写字段必须与 agent_core/state.py 中 sequence_gc_* 字段及
+        # agent_core/tool_specs.py 中 RnaGcContentOutput 保持一一对应。
         elif tool_name == "compute_rna_sequence_gc_content":
             state["sequence_gc_content"] = float(tool_result.get("gc_content", 0.0))
+            state["sequence_gc_length"] = int(tool_result.get("sequence_length", 0))
+            state["sequence_gc_count"] = int(tool_result.get("gc_count", 0))
+            state["sequence_g_count"] = int(tool_result.get("g_count", 0))
+            state["sequence_c_count"] = int(tool_result.get("c_count", 0))
         elif tool_name == "compute_dot_bracket_unpaired_fraction":
             state["dot_bracket_unpaired_fraction"] = float(tool_result.get("unpaired_fraction", 0.0))
         # codonw-slim INTERFACE LOCK (v0.2.0): 结果回写字段必须与

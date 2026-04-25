@@ -262,7 +262,17 @@ class AgentState(TypedDict, total=False):
     blast_blastn_command: str
     blast_resolved_query_path: str
     blast_resolved_subject: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 compute_rna_sequence_gc_content
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
     sequence_gc_content: float
+    sequence_gc_length: int = 0
+    sequence_gc_count: int = 0
+    sequence_g_count: int = 0
+    sequence_c_count: int = 0
+    # ── dot-bracket unpaired fraction ──
     dot_bracket_unpaired_fraction: float
     design_model: str
     rnarl_model_type: str

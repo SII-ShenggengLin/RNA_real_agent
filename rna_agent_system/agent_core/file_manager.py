@@ -40,6 +40,14 @@ def copy_file_to_workspace(source_path: str, prefix: str, suffix: Optional[str] 
     return f"workspace/{filename}"
 
 
+def resolve_project_path(filepath: str) -> str:
+    """Resolve a workspace-relative path to absolute, or pass through absolute paths."""
+    path_obj = Path(filepath.strip())
+    if path_obj.is_absolute():
+        return str(path_obj.resolve())
+    return str((PROJECT_ROOT / filepath).resolve())
+
+
 def read_sequence(filepath: str) -> str:
     """Read sequence content from workspace or absolute path."""
     path_obj = Path(filepath)
