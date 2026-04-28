@@ -67,7 +67,7 @@ This project implements an RNA design agent system:
 - Tool interface: LangChain `@tool`
 - Tool runtime: FastAPI + Conda
 - Agent architecture: **Five-layer** (Capability → Workflow → Planning → Session → Runner)
-- Current mode: **rule-driven** (`RuleBasedPlanner` / `ExecutionController` / `MrnaCdsDesignCritic`; architecture supports swapping to LLM mode without touching Layer 2 or below)
+- Current mode: **rule-driven** (`RuleBasedPlanner` / `ExecutionController`; architecture supports swapping to LLM mode without touching Layer 2 or below). mRNA CDS design has no critic — ranking by `-mfe + codon_count * log(CAI)` is sufficient.
 
 ---
 
@@ -221,7 +221,7 @@ rna_agent_system/
 ### 6.1 Workflow Graph
 
 ```
-User Input → Router → Specialist → Tool Execution → Critic → End / Retry
+User Input → Router → Specialist → Tool Execution → [Optional Critic] → End / Retry
 ```
 
 ### 6.2 Router (rule-based)
@@ -284,10 +284,13 @@ The router dispatches to a specialist based on keyword matching in user text:
 
 After CDS design (GEMORNA / RNARL / LinearDesign), if the user request implies structure prediction, `tool_execution_node` automatically chains a folding tool.
 
-### 6.4 Critic (rule-based evaluation)
+### 6.4 Critic (rule-based evaluation, currently unused for mRNA CDS)
+
+> mRNA CDS design intentionally has **no critic**. Re-running the same design tools on the same protein sequence does not yield better candidates; ranking by the combined score is sufficient.
 
 | Scenario | Rule | Behavior |
 |----------|------|----------|
+| mRNA CDS design | — | **No critic** — ranking only |
 | siRNA | `off_target_genes > 0` | reject → retry |
 | mRNA structure prediction | `mfe > -20.0` | reject → retry |
 | RNAplfold whole-sequence profile | — | pass (MFE critic is not applied to avoid false rejects on "local structure" queries) |
@@ -360,8 +363,8 @@ Current submodules: GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RiboDiffusio
 
 | ID | Limitation | Impact |
 |----|------------|--------|
-| L1 | Router / Specialist / Critic are rule-based (`RuleBasedPlanner`) | Limited complex NL understanding; LLM backend reserved for future (Layer 3 is backend-pluggable) |
-| L2 | Critic MFE threshold `-20.0` is unreasonable for short sequences | Short sequences are repeatedly rejected until retries are exhausted |
+| L1 | Router / Specialist are rule-based (`RuleBasedPlanner`) | Limited complex NL understanding; LLM backend reserved for future (Layer 3 is backend-pluggable) |
+| L2 | Critic MFE threshold `-20.0` (when used) is unreasonable for short sequences | Short sequences are repeatedly rejected until retries are exhausted |
 | L3 | siRNA efficiency / off-target capabilities have no production implementation | Historical mocks (ports 8001/8002) were removed; only Evitar / Vienna duplex remain |
 | L4 | RhoFold is single-sequence mode only | MSA database not connected |
 | L5 | RNASTOP only supports stability prediction | Beam / MCTS optimization not connected |
@@ -373,7 +376,7 @@ Current submodules: GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RiboDiffusio
 1. Keep the rule-based mode stable while all tool chains are verified end-to-end.
 2. Replace mock services with real implementations where needed.
 3. After the tool ecosystem stabilizes, restore configurable LLM mode.
-4. Introduce finer specialists, stronger critics, and multi-tool chaining planning.
+4. Introduce finer specialists, optional critics for safety-critical workflows, and multi-tool chaining planning.
 
 ---
 

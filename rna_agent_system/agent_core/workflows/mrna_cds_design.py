@@ -18,7 +18,6 @@ from agent_core.file_manager import save_sequence, save_text_file
 from agent_core.workflow_models import Candidate, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
 from agent_core.workflows.mrna_scoring import (
-    MrnaScoreWeights,
     compute_mrna_metric_bundle,
     score_mrna_candidate,
 )
@@ -37,7 +36,6 @@ class MrnaCdsDesignInput(BaseModel):
     model_type: str = Field(default="Homo sapiens mRNA", description="RNARL model type.")
     run_fold: bool = Field(default=True)
     run_gc: bool = Field(default=True)
-    score_weights: Optional[MrnaScoreWeights] = None
     target_gc_mid: Optional[float] = Field(default=None, description="Override GC band mid-point for scoring.")
 
 
@@ -54,6 +52,8 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         "predict_rna_secondary_structure_with_linearfold",
         "compute_rna_sequence_gc_content",
         "compute_dot_bracket_unpaired_fraction",
+        "predict_mrna_stability_with_rnastop",
+        "compute_cai_for_cds_sequence",
     ]
 
     def __init__(self, capability_registry: CapabilityRegistry):
@@ -182,6 +182,8 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         fold_tool: Optional[str] = None
         structure: Optional[str] = None
         unpaired: Optional[float] = None
+        rnastop_overall_stability: Optional[float] = None
+        cai_score: Optional[float] = None
 
         # ── GC content ──
         if self.capabilities.has("compute_rna_sequence_gc_content"):
@@ -233,12 +235,44 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
                     "mrna_cds_design unpaired_failed error=%s", unp_res.error
                 )
 
+        # ── RNASTOP overall stability ──
+        if self.capabilities.has("predict_mrna_stability_with_rnastop"):
+            rnastop_args: dict[str, Any] = {"filepath": filepath}
+            if structure:
+                rnastop_args["structure"] = structure
+            rnastop_res = self.capabilities.get(
+                "predict_mrna_stability_with_rnastop"
+            ).invoke(rnastop_args, state=self._workflow_state)
+            if rnastop_res.success:
+                rnastop_overall_stability = _pick_float(
+                    rnastop_res.output, "overall_stability"
+                )
+            else:
+                _LOGGER.warning(
+                    "mrna_cds_design rnastop_failed error=%s", rnastop_res.error
+                )
+
+        # ── CAI (always computed via compute_cai_for_cds_sequence) ──
+        if self.capabilities.has("compute_cai_for_cds_sequence"):
+            cai_res = self.capabilities.get("compute_cai_for_cds_sequence").invoke(
+                {"filepath": filepath, "species": "Homo sapiens"},
+                state=self._workflow_state,
+            )
+            if cai_res.success:
+                cai_score = _pick_float(cai_res.output, "cai_score")
+            else:
+                _LOGGER.warning(
+                    "mrna_cds_design cai_failed error=%s", cai_res.error
+                )
+
         bundle = compute_mrna_metric_bundle(
             sequence=candidate.sequence,
             gc_from_tools=gc_content,
             sequence_length_from_tools=seq_len,
             mfe_kcal_per_mol=mfe,
             unpaired_fraction=unpaired,
+            rnastop_overall_stability=rnastop_overall_stability,
+            cai_score=cai_score,
         )
         bundle["fold_tool"] = fold_tool
         bundle["target_gc_mid"] = candidate.metadata.get("target_gc_mid")
@@ -248,9 +282,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         return bundle
 
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
-        kwargs: dict[str, Any] = {
-            "weights": metrics.get("_score_weights"),
-        }
+        kwargs: dict[str, Any] = {}
         tgc = metrics.get("target_gc_mid")
         if tgc is not None:
             kwargs["gc_mid"] = float(tgc)
@@ -285,6 +317,8 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
                 f"MFE={mb.get('mfe_kcal_per_mol'):.2f}({mb.get('fold_tool', '?')})" if mb.get("mfe_kcal_per_mol") is not None else "MFE=N/A",
                 f"MFE/nt={mb.get('mfe_per_nt'):.4f}" if mb.get("mfe_per_nt") is not None else "MFE/nt=N/A",
                 f"unpaired={mb.get('unpaired_fraction'):.3f}" if mb.get("unpaired_fraction") is not None else "unpaired=N/A",
+                f"RNASTOP={mb.get('rnastop_overall_stability'):.4f}" if mb.get("rnastop_overall_stability") is not None else "RNASTOP=N/A",
+                f"CAI={mb.get('cai_score'):.4f}" if mb.get("cai_score") is not None else "CAI=N/A",
                 f"total_score={scores.get('total_score', 0.0):.3f}",
             ]
             detail_lines.append(" | ".join(line_parts))

@@ -1,41 +1,18 @@
-"""Simple mRNA ranking scores built from tool metrics + sequence-derived features.
+"""mRNA ranking scores: combined stability + expression metric.
 
-Weights and normalization rules are explicit so other workflows (UTR, circRNA, intron) can reuse
-the same helper pattern with different ``MrnaScoreWeights``.
+Core formula:
+    total_score = -mfe + codon_count * log(CAI)
+
+Other component scores (gc_component, mfe_component, unpaired_component) are
+computed for display / summary purposes only; they do not affect ranking.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import math
 from typing import Any, Dict, Mapping, Optional
 
 from agent_core.sequence_utils import compute_gc_content, normalize_rna_sequence
-
-
-@dataclass(frozen=True)
-class MrnaScoreWeights:
-    """Default weights for ``total_score`` (components are in [0, 1]).
-
-    For CDS design the three dimensions are GC content, normalised MFE,
-    and dot-bracket unpaired fraction.  Length is not scored because the
-    protein sequence fixes the CDS length.
-    """
-
-    gc: float = 0.40
-    mfe: float = 0.35
-    unpaired: float = 0.25
-
-    def normalized(self) -> MrnaScoreWeights:
-        """Scale weights to sum to 1.0."""
-
-        s = self.gc + self.mfe + self.unpaired
-        if s <= 0:
-            return MrnaScoreWeights(gc=1.0 / 3, mfe=1.0 / 3, unpaired=1.0 / 3)
-        return MrnaScoreWeights(
-            gc=self.gc / s,
-            mfe=self.mfe / s,
-            unpaired=self.unpaired / s,
-        )
 
 
 def _optional_float(val: Any) -> Optional[float]:
@@ -48,11 +25,7 @@ def _optional_float(val: Any) -> Optional[float]:
 
 
 def gc_fraction_from_sequence(sequence: str) -> float:
-    """(G+C) / length for normalized AUCG string; empty → 0.0.
-
-    Uses the shared normalization/computation so local fallback scores are
-    consistent with the microservice.
-    """
+    """(G+C) / length for normalized AUCG string; empty → 0.0."""
 
     if not sequence:
         return 0.0
@@ -64,11 +37,7 @@ def gc_fraction_from_sequence(sequence: str) -> float:
 
 
 def gc_band_score(gc: float, *, low: float = 0.42, mid: float = 0.50, high: float = 0.58) -> float:
-    """Triangle peak at ``mid``; 0 outside [low, high].
-
-    Interpretation: many designs target moderate GC for balance of stability vs expression;
-    adjust ``low/high`` if your organism panel differs.
-    """
+    """Triangle peak at ``mid``; 0 outside [low, high]."""
 
     if gc <= low or gc >= high:
         return 0.0
@@ -80,16 +49,7 @@ def gc_band_score(gc: float, *, low: float = 0.42, mid: float = 0.50, high: floa
 def mfe_stability_component(
     mfe_kcal_per_mol: Optional[float], *, sequence_length: int
 ) -> float:
-    """Map folding energy normalised by sequence length to [0, 1].
-
-    *mfe_kcal_per_mol* is divided by *sequence_length* to yield
-    kcal/mol per nucleotide.  This makes MFE scores comparable across
-    CDS of different lengths.
-
-    Normalised range roughly [-0.30, -0.02] per nt.
-    Missing / NaN → **0.45** (slightly below neutral) so failed folds do
-    not dominate ranking.
-    """
+    """Map folding energy normalised by sequence length to [0, 1]."""
 
     if mfe_kcal_per_mol is None or sequence_length <= 0:
         return 0.45
@@ -104,12 +64,7 @@ def mfe_stability_component(
 def unpaired_band_score(
     unpaired: Optional[float], *, low: float = 0.30, mid: float = 0.50, high: float = 0.70
 ) -> float:
-    """Triangle peak at ``mid``; 0 outside [low, high].
-
-    A moderate unpaired fraction is preferred: too low means excessive
-    secondary-structure folding, too high means the CDS is structurally
-    too loose.
-    """
+    """Triangle peak at ``mid``; 0 outside [low, high]."""
     if unpaired is None:
         return 0.45
     try:
@@ -130,6 +85,8 @@ def compute_mrna_metric_bundle(
     sequence_length_from_tools: Optional[int],
     mfe_kcal_per_mol: Optional[float],
     unpaired_fraction: Optional[float] = None,
+    rnastop_overall_stability: Optional[float] = None,
+    cai_score: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Collect canonical keys used by scoring and summaries."""
 
@@ -153,38 +110,59 @@ def compute_mrna_metric_bundle(
         "mfe_kcal_per_mol": mfe_kcal_per_mol,
         "mfe_per_nt": mfe_per_nt,
         "unpaired_fraction": unpaired_fraction,
+        "rnastop_overall_stability": rnastop_overall_stability,
+        "cai_score": cai_score,
     }
 
 
 def score_mrna_candidate(
     bundle: Mapping[str, Any],
     *,
-    weights: Optional[MrnaScoreWeights] = None,
     gc_low: float = 0.42,
     gc_mid: float = 0.50,
     gc_high: float = 0.58,
 ) -> Dict[str, float]:
-    """Return component scores and ``total_score`` in [0, 1].
+    """Return component scores and ``total_score``.
 
-    ``bundle`` should include keys from ``compute_mrna_metric_bundle`` or compatible.
+    ``total_score`` is computed as ``-mfe + codon_count * log(CAI)``.
+    Other components (gc_component, mfe_component, unpaired_component) are
+    computed for display / summary purposes only.
     """
-
-    w = (weights or MrnaScoreWeights()).normalized()
 
     gc = float(bundle.get("gc_content", 0.0))
     length_nt = int(bundle.get("sequence_length", 0))
     mfe_raw = bundle.get("mfe_kcal_per_mol")
     unpaired_raw = bundle.get("unpaired_fraction")
+    cai_raw = bundle.get("cai_score")
 
     gc_c = gc_band_score(gc, low=gc_low, mid=gc_mid, high=gc_high)
     mfe_c = mfe_stability_component(_optional_float(mfe_raw), sequence_length=length_nt)
     unp_c = unpaired_band_score(_optional_float(unpaired_raw))
 
-    total = w.gc * gc_c + w.mfe * mfe_c + w.unpaired * unp_c
-    return {
+    result: Dict[str, float] = {
         "gc_component": float(gc_c),
         "mfe_component": float(mfe_c),
         "unpaired_component": float(unp_c),
-        "total_score": float(total),
         "mfe_per_nt": bundle.get("mfe_per_nt"),
     }
+
+    if cai_raw is not None:
+        result["cai_score"] = float(cai_raw)
+
+    # total_score = -mfe + codon_count * log(CAI)
+    if mfe_raw is not None and cai_raw is not None:
+        try:
+            cai_val = float(cai_raw)
+            mfe_val = float(mfe_raw)
+            if cai_val > 0.0 and length_nt > 0:
+                codon_count = length_nt // 3
+                combined_score = -mfe_val + codon_count * math.log(cai_val)
+                result["combined_score"] = float(combined_score)
+                result["total_score"] = float(combined_score)
+                return result
+        except (TypeError, ValueError):
+            pass
+
+    # Fallback when CAI or MFE is missing (should not happen in normal operation)
+    result["total_score"] = 0.0
+    return result

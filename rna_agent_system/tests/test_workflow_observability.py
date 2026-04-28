@@ -9,7 +9,7 @@ import pytest
 from agent_core.file_manager import PROJECT_ROOT
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
-from agent_core.workflow_baseline_eval import StubFoldTool, StubGcTool
+from agent_core.workflow_baseline_eval import StubCaiTool, StubFoldTool, StubGcTool
 from agent_core.workflows.mrna_workflow import MrnaWorkflowInput, run_mrna_workflow
 
 
@@ -79,10 +79,12 @@ def test_trace_contains_tool_steps():
     reg = ToolRegistry()
     reg.register(StubGcTool())
     reg.register(StubFoldTool())
+    reg.register(StubCaiTool())
     ex = ToolExecutor(reg)
     inp = MrnaWorkflowInput(sequence="AUGCAU", persist_run=False)
     out = run_mrna_workflow(inp, executor=ex)
-    assert len(out.trace) == 2
+    assert len(out.trace) == 3
     names = {r.tool_name for r in out.trace}
     assert "compute_rna_sequence_gc_content" in names
     assert "predict_rna_secondary_structure_with_linearfold" in names
+    assert "compute_cai_for_cds_sequence" in names

@@ -8,7 +8,7 @@ from agent_core.file_manager import PROJECT_ROOT
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
 from agent_core.tool_runtime import ToolResult
-from agent_core.workflow_baseline_eval import StubFoldTool, StubGcTool
+from agent_core.workflow_baseline_eval import StubCaiTool, StubFoldTool, StubGcTool
 from agent_core.workflows.mrna_workflow import MrnaWorkflowInput, run_mrna_workflow
 
 
@@ -36,6 +36,7 @@ def test_mrna_workflow_end_to_end_best_candidate():
     reg = ToolRegistry()
     reg.register(StubGcTool())
     reg.register(StubFoldTool())
+    reg.register(StubCaiTool())
     ex = ToolExecutor(reg)
 
     seq_a = "AUGCCCGGGUUUAAAUUUAAAUUUAAA"  # 27 nt, partial swaps for synonymous mode
@@ -50,7 +51,7 @@ def test_mrna_workflow_end_to_end_best_candidate():
     assert out.best_candidate.rank == 1
     assert len(out.all_candidates) == 2
     assert out.best_candidate.scores["total_score"] >= out.all_candidates[-1].scores["total_score"]
-    assert len(out.trace) == 4  # 2 candidates × 2 tools
+    assert len(out.trace) == 6  # 2 candidates × 3 tools (gc + fold + cai)
     assert all(r.success for r in out.trace)
 
 
@@ -66,5 +67,5 @@ def test_mrna_workflow_tools_fail_gracefully():
     assert out.best_candidate is not None
     assert len(out.errors) >= 2
     assert not any(r.success for r in out.trace)
-    # MFE missing → neutral component; GC from tools missing → local GC still scores.
-    assert out.best_candidate.scores["total_score"] > 0
+    # All tools failed → CAI and MFE missing → total_score falls back to 0.0
+    assert out.best_candidate.scores["total_score"] == 0.0

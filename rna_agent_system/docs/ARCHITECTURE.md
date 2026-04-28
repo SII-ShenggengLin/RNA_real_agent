@@ -78,14 +78,14 @@ START → router_node → [sirna|mrna|crispr]_specialist_node
 |------|------|----------------|
 | `router_node` | `graph_nodes.py` | Thin wrapper around `RuleBasedPlanner` (Layer 3) |
 | `tool_execution_node` | `graph_nodes.py` | Delegates to `ExecutionController` (Layer 3), which invokes Layer 1 `Capability` objects |
-| `critic_node` | `graph_nodes.py` | Hard thresholds; preserved from legacy `nodes.py` |
+| `critic_node` | `graph_nodes.py` | Optional quality gate (currently unused for mRNA CDS; ranking is sufficient) |
 | *(specialist logic)* | `planning/rule_based/specialists/` | Deterministic tool selection extracted from retired monolithic `nodes.py` |
 
 ### 2.3 Conditional Edges
 
 - Router → Specialist: determined by keyword matching on `user_text`.
 - Specialist → Tool Execution: deterministic tool selection.
-- Tool Execution → Critic: always.
+- Tool Execution → Critic: optional (only if a workflow is registered with a critic in `WORKFLOW_CRITIC_PAIRS`).
 - Critic → Specialist (retry) or END: based on `critic_verdict` and `retry_count < max_retries`.
 
 ---
@@ -265,7 +265,7 @@ Lightweight classification for RNA workflow routing (no planner / DSL).
 |--------|---------|
 | `workflows/mrna_workflow.py` | `MrnaWorkflow` / `run_mrna_workflow` — fixed pipeline: generate candidates → save → ToolExecutor (GC + LinearFold MFE) → `mrna_scoring.py` → sort → `WorkflowResult` |
 | `workflows/mrna_candidates.py` | Candidate generation helpers |
-| `workflows/mrna_scoring.py` | Simple ranking scores built from tool metrics + sequence-derived features. Weights: `gc=0.40`, `mfe=0.35`, `length=0.25` |
+| `workflows/mrna_scoring.py` | Ranking scores: `total_score = -mfe + codon_count * log(CAI)`; component scores (GC, MFE, unpaired) computed for display only |
 
 **Key functions in `mrna_scoring.py`**
 
@@ -276,7 +276,7 @@ Lightweight classification for RNA workflow routing (no planner / DSL).
 | `mfe_stability_component(mfe_kcal_per_mol) -> float` | Maps MFE to [0, 1]; missing → 0.45 |
 | `length_target_score(length_nt, *, target_nt) -> float` | Triangular peak at target; ignore if `None` |
 | `compute_mrna_metric_bundle(...)` | Collects canonical keys: `gc_content`, `gc_content_local`, `sequence_length`, `mfe_kcal_per_mol`, `target_length_nt` |
-| `score_mrna_candidate(bundle, *, weights=None, target_length_nt=None) -> dict[str, float]` | Returns `gc_component`, `mfe_component`, `length_component`, `total_score` in [0, 1] |
+| `score_mrna_candidate(bundle, *, gc_low/mid/high) -> dict[str, float]` | Returns `gc_component`, `mfe_component`, `unpaired_component`, `total_score` (combined formula) |
 
 ### 4.2 `workflow_tools/` — Runnable Workflow Tools
 
@@ -423,7 +423,7 @@ Read the dot-bracket section in `TOOLS_AND_TASKS.md` first, then check `agent_co
 
 1. Add the canonical name to `IMPLEMENTED_TASK_TYPES` in `workflow_dispatch.py`.
 2. Build the handler module (pattern: `workflows/{type}_workflow.py`).
-3. Add scoring components reusing `sequence_utils.py` and the `MrnaScoreWeights` pattern in `mrna_scoring.py`.
+3. Add scoring components reusing `sequence_utils.py` and the combined-formula pattern in `mrna_scoring.py`.
 
 ### Add a new workflow tool wrapper
 
@@ -667,7 +667,7 @@ The monolithic 3,786-line `nodes.py` was retired in commit `8fc361d`. All logic 
 | `nodes.py` `router_node` | ✅ Migrated | `planning/rule_based/router.py` + `planner.py` |
 | `nodes.py` `*_specialist_node` | ✅ Migrated | `planning/rule_based/specialists/{mrna,sirna,crispr}_specialist.py` |
 | `nodes.py` `tool_execution_node` | ✅ Migrated | `capabilities/base.py` + `capabilities/writebacks.py` |
-| `nodes.py` `critic_node` | ✅ Preserved (thin wrapper) | `graph_nodes.py` (hard rules) + `workflows/mrna_cds_critic.py` (workflow critic) |
+| `nodes.py` `critic_node` | ✅ Simplified | `graph_nodes.py` (thin wrapper); mRNA CDS has no critic — ranking is sufficient |
 | `workflows/mrna_workflow.py` | ✅ Integrated | Layer 2 `MrnaWorkflow` + `MrnaCdsDesignWorkflow` |
 | `workflow_api/app.py` | ✅ Integrated | Layer 5 via `AgentRunner` |
 | `frontend/app.py` | ✅ Integrated | Layer 5 via `AgentRunner` |
@@ -682,7 +682,7 @@ The migration was executed in the following order (all steps completed):
 2. ✅ **Extract rule-based planner** from `nodes.py` into `planning/rule_based/` without changing behaviour.
 3. ✅ **Build Layer 1 capabilities** for the tools used by the mRNA golden path; replace manual if-elif with auto-writeback.
 4. ✅ **Unify paths**: LangGraph calls `MrnaCdsDesignWorkflow` as a compound capability via `ExecutionController`.
-5. ✅ **Generalize Layer 2**: extract `BaseDomainWorkflow`; implement `MrnaCdsDesignWorkflow` with paired `MrnaCdsDesignCritic`.
+5. ✅ **Generalize Layer 2**: extract `BaseDomainWorkflow`; implement `MrnaCdsDesignWorkflow` (scoring via `-mfe + codon_count * log(CAI)`; no critic needed).
 6. 📝 **Add LLM planner backend**: reserved for future — serialize `TOOL_SPECS`, let LLM choose tools; keep rule backend as fallback.
 7. ✅ **Add Layer 4 memory**: `SessionMemory` + `WorkspaceManager` with session isolation.
 
@@ -883,7 +883,6 @@ class MrnaWorkflow(BaseDomainWorkflow[MrnaWorkflowInput, WorkflowResult]):
 
     def __init__(self, capability_registry: CapabilityRegistry):
         self.capabilities = capability_registry
-        self.scoring_weights = MrnaScoreWeights(gc=0.40, mfe=0.35, length=0.25)
 
     def generate_candidates(self, inp: MrnaWorkflowInput) -> list[Candidate]:
         cands = []
@@ -903,17 +902,16 @@ class MrnaWorkflow(BaseDomainWorkflow[MrnaWorkflowInput, WorkflowResult]):
         filepath = save_sequence_to_workspace(candidate.sequence)
         fold = self.capabilities.get("predict_rna_secondary_structure").invoke({"filepath": filepath})
         gc = self.capabilities.get("compute_rna_sequence_gc_content").invoke({"filepath": filepath})
-        codon = self.capabilities.get("analyze_cds_codon_metrics_with_codonw_slim").invoke({"filepath": filepath})
+        cai = self.capabilities.get("compute_cai_for_cds_sequence").invoke({"filepath": filepath, "species": "Homo sapiens"})
         return {
             "mfe_kcal_per_mol": fold.get("mfe_kcal_per_mol"),
             "gc_content": gc.get("gc_content"),
-            "cai_score": codon.get("cai_score"),
+            "cai_score": cai.get("cai_score"),
             "sequence_length": len(candidate.sequence)
         }
 
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
-        return score_mrna_candidate(metrics, weights=self.scoring_weights,
-                                     target_length_nt=metrics.get("sequence_length"))
+        return score_mrna_candidate(metrics)
 ```
 
 #### Workflow as a compound capability
@@ -1022,7 +1020,7 @@ class ExecutionController:
 
 > **Scope**: why Workflow and Critic must be designed together, and how their coupling varies by task type.
 >
-> **Implementation status**: `MrnaCdsDesignCritic` is implemented (`workflows/mrna_cds_critic.py`); `SirnaCritic` and `CrisprCritic` are design proposals only.
+> **Implementation status**: `MrnaCdsDesignCritic` was **removed** (see §9.3.1 below); `SirnaCritic` and `CrisprCritic` remain design proposals only.
 
 ### 9.1 Why this matters more than Planner design
 
@@ -1038,13 +1036,10 @@ A bad Planner might choose a sub-optimal sequence. A **mismatched Workflow–Cri
 
 ### 9.2 Design principle: critic must reflect the workflow's objective function
 
-**Rule**: the Critic’s pass/fail criteria should be derivable from the Workflow’s scoring function.
+**Rule**: when a Critic *is* used, its pass/fail criteria should be derivable from the Workflow’s scoring function.
 
 ```python
-# MrnaWorkflow
-self.scoring_weights = MrnaScoreWeights(gc=0.40, mfe=0.35, length=0.25)
-
-# MrnaCritic — uses the SAME weights and thresholds
+# Hypothetical future Critic for a safety-critical workflow
 def should_accept(candidate: Candidate) -> bool:
     scores = candidate.scores
     return (
@@ -1054,35 +1049,26 @@ def should_accept(candidate: Candidate) -> bool:
     )
 ```
 
-If the Workflow scoring changes (e.g., adding a codon-adaptation weight), the Critic must be updated in the same PR. They share a **joint objective**.
+If the Workflow scoring changes, the Critic must be updated in the same PR. They share a **joint objective**.
 
 ### 9.3 Task-type-specific critic strategies
 
-Different RNA design tasks require different Workflow–Critic contracts:
+Different RNA design tasks require different Workflow–Critic contracts. Some tasks benefit from retry; others do not.
 
-#### mRNA design (multi-candidate optimization)
+#### mRNA CDS design — **NO CRITIC** (ranking-only)
+
+> **Rationale for removal**: `MrnaCdsDesignCritic` was deleted because retrying the same protein sequence with the same design tools does not produce meaningfully different candidates. The workflow already generates diversity (LinearDesign λ=[0,1,4,10] + RNARL + GEMORNA), evaluates every candidate, and ranks them by `-mfe + codon_count * log(CAI)`. A retry loop would only waste compute.
 
 | Aspect | Design |
 |--------|--------|
-| Workflow | Generate N candidates → evaluate all → score → rank |
-| Critic strategy | **Relative**: "Is the best candidate good enough?" If not, increase diversity (e.g., add RNARL or change lambda) and regenerate. |
-| Retry action | Change candidate-generation parameters, not just re-run same tool |
+| Workflow | Generate N candidates → evaluate all (GC, fold, RNASTOP, CAI) → score → rank |
+| Critic strategy | **None** — ranking is sufficient |
+| Retry action | N/A |
 
 ```python
-class MrnaCdsDesignCritic(Critic):
-    def should_retry(self, workflow_result: WorkflowResult, state: dict[str, Any]) -> bool:
-        best = workflow_result.best_candidate
-        scores = best.scores
-        if scores.get("total_score", 0.0) < 0.70:
-            state.setdefault("next_constraints", {})["increase_diversity"] = True
-            return True
-        if scores.get("mfe_component", 0.0) < 0.5:
-            state["next_constraints"]["prioritize_stability"] = True
-            return True
-        return False
+# workflows/registry.py — mrna_cds_design is intentionally absent
+WORKFLOW_CRITIC_PAIRS: Dict[str, Tuple[Type[Any], Type[Critic]]] = {}
 ```
-
-*(The actual implementation lives in `workflows/mrna_cds_critic.py`.)*
 
 #### siRNA design (off-target safety-critical)
 
@@ -1128,34 +1114,34 @@ class CrisprCritic(Critic):
         return True  # keep optimizing
 ```
 
-### 9.4 Critic as a per-workflow plugin
+### 9.4 Critic as an optional per-workflow plugin
 
-Because critic logic is tightly coupled to workflow scoring, the Critic should **not** be a global singleton. It should be registered alongside its Workflow:
+Critic logic is tightly coupled to workflow scoring, so when one exists it should be registered alongside its Workflow. However, **not every workflow needs a critic**:
 
 ```python
 # workflows/registry.py
+# Only workflows that genuinely benefit from retry are registered here.
+# mRNA CDS design is intentionally omitted — see §9.3.1.
 WORKFLOW_CRITIC_PAIRS = {
-    "mrna_design": (MrnaWorkflow, MrnaCritic),
     "sirna_design": (SirnaWorkflow, SirnaCritic),
     "crispr_optimization": (CrisprWorkflow, CrisprCritic),
 }
 ```
 
-The `ExecutionController` looks up the appropriate Critic based on which Workflow was invoked:
+The `ExecutionController` looks up the critic only if the workflow is registered:
 
 ```python
 def execute(self, plan: ExecutionPlan, state: AgentState) -> AgentState:
     for step in plan.steps:
         ...
         if step.type == "workflow":
-            workflow_cls, critic_cls = WORKFLOW_CRITIC_PAIRS[step.target]
-            critic = critic_cls()
-            if critic.should_retry(result, state):
+            critic = get_critic_for_workflow(step.target)
+            if critic is not None and critic.should_retry(result, state):
                 # Replan: same workflow with modified parameters
                 pass
 ```
 
-### 9.5 Two-level critic architecture
+### 9.5 Two-level critic architecture (future)
 
 For complex tasks, a single pass/fail critic is not enough. We propose a **two-level** design:
 
@@ -1182,13 +1168,13 @@ class TwoLevelCritic:
 
 ### 9.6 Summary: Workflow–Critic design checklist
 
-When adding a new task type, verify:
+When adding a new task type, decide whether a Critic is needed, then verify:
 
 1. [ ] The Workflow’s scoring function is explicit and documented.
-2. [ ] The Critic’s thresholds are derivable from the scoring function (same metrics, compatible ranges).
-3. [ ] The Critic knows what to change on retry (parameter adjustment strategy, not just "try again").
+2. [ ] If a Critic is used, its thresholds are derivable from the scoring function (same metrics, compatible ranges).
+3. [ ] If a Critic is used, it knows what to change on retry (parameter adjustment strategy, not just "try again").
 4. [ ] Step-level failures (tool errors) are handled separately from workflow-level quality failures.
-5. [ ] Both are registered as a pair in `WORKFLOW_CRITIC_PAIRS`.
+5. [ ] If a Critic is used, both are registered as a pair in `WORKFLOW_CRITIC_PAIRS`.
 
 ---
 

@@ -18,7 +18,7 @@ from agent_core.workflow_models import Candidate, TaskState, WorkflowResult, sor
 from agent_core.workflow_run_storage import build_public_summary, persist_mrna_workflow_run
 
 from agent_core.sequence_utils import normalize_rna_sequence
-from .mrna_scoring import MrnaScoreWeights, compute_mrna_metric_bundle, score_mrna_candidate
+from .mrna_scoring import compute_mrna_metric_bundle, score_mrna_candidate
 
 _LOGGER = logging.getLogger("agent_core.workflows.mrna")
 
@@ -30,7 +30,6 @@ class MrnaWorkflowInput(BaseModel):
 
     sequence: Optional[str] = Field(default=None, description="Single RNA/DNA sequence string.")
     sequences: Optional[List[str]] = Field(default=None, description="Multiple sequences.")
-    score_weights: Optional[MrnaScoreWeights] = None
 
     gc_tool_name: str = Field(
         default="compute_rna_sequence_gc_content",
@@ -72,26 +71,19 @@ class MrnaWorkflow:
     Workflow code does not invoke subprocess or HTTP directly; tools remain in ``agent_core.tools``.
     """
 
-    def __init__(
-        self,
-        executor: ToolExecutor,
-        *,
-        weights: Optional[MrnaScoreWeights] = None,
-    ):
+    def __init__(self, executor: ToolExecutor):
         self.executor = executor
-        self.weights = weights or MrnaScoreWeights()
 
     @classmethod
     def from_default_registry(
         cls,
         *,
         include_demo: bool = False,
-        weights: Optional[MrnaScoreWeights] = None,
     ) -> MrnaWorkflow:
         """Build workflow with ``build_default_tool_registry()`` + executor."""
 
         reg = build_default_tool_registry(include_demo=include_demo)
-        return cls(ToolExecutor(reg), weights=weights)
+        return cls(ToolExecutor(reg))
 
     def run(
         self,
@@ -212,18 +204,32 @@ class MrnaWorkflow:
                 else:
                     errors.append(f"{cand.id}:fold:{_err_summary(fold_res.error)}")
 
+            cai_score: Optional[float] = None
+            t0 = time.perf_counter()
+            cai_res = self.executor.run_tool_for_workflow(
+                "compute_cai_for_cds_sequence",
+                task=task,
+                candidate=cand,
+                step_name="cai",
+                filepath=filepath,
+                species="Homo sapiens",
+            )
+            _log_tool_end(task.task_id, cand.id, "compute_cai_for_cds_sequence", cai_res, time.perf_counter() - t0)
+            if cai_res.success:
+                cai_score = _pick_float(cai_res.metrics, cai_res.artifacts.get("result"), "cai_score")
+            else:
+                errors.append(f"{cand.id}:cai:{_err_summary(cai_res.error)}")
+
             bundle = compute_mrna_metric_bundle(
                 sequence=cand.sequence,
                 gc_from_tools=gc_content,
                 sequence_length_from_tools=seq_len_tool,
                 mfe_kcal_per_mol=mfe,
+                cai_score=cai_score,
             )
             cand.metadata["metrics_bundle"] = bundle
 
-            scored = score_mrna_candidate(
-                bundle,
-                weights=inp.score_weights or self.weights,
-            )
+            scored = score_mrna_candidate(bundle)
             cand.scores.clear()
             cand.scores.update(scored)
             cand.scores.update(
@@ -326,11 +332,11 @@ def run_mrna_workflow(
     """Functional entry point: builds registry/executor if omitted."""
 
     if executor is not None:
-        wf = MrnaWorkflow(executor, weights=inp.score_weights)
+        wf = MrnaWorkflow(executor)
         return wf.run(inp, task_id=task_id, audit_http_request=audit_http_request)
     reg = registry or build_default_tool_registry(include_demo=False)
     ex = ToolExecutor(reg)
-    wf = MrnaWorkflow(ex, weights=inp.score_weights)
+    wf = MrnaWorkflow(ex)
     return wf.run(inp, task_id=task_id, audit_http_request=audit_http_request)
 
 

@@ -563,7 +563,7 @@ These findings were established during a codebase audit and remain true:
 
 - The system is a **deterministic rule-driven workflow**, not an open-ended agent.
 - The LangGraph path critic is a hard threshold checker (`mfe > -20.0`).
-- The Workflow path uses a score-based critic (`MrnaCdsDesignCritic`) co-designed with its workflow.
+- The mRNA CDS Workflow path has **no critic** — ranking by `-mfe + codon_count * log(CAI)` is sufficient. Re-running the same tools on the same protein does not improve candidates.
 - Retry logic is bounded by `max_retries = 3` (graph path) or `ExecutionPlan.max_retries` (workflow path).
 
 ### Supported tasks audit (current ground truth)

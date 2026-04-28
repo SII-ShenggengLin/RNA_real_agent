@@ -12,7 +12,7 @@
 The codebase has completed the **five-layer architecture migration** (commits `dbc4ba1`–`88296c5`). Layer 0–5 are all implemented and wired together:
 - Layer 0: Tool wrappers, specs, registry, executor (frozen)
 - Layer 1: `Capability` + `CapabilityRegistry` + declarative writebacks (`capabilities/`)
-- Layer 2: `BaseDomainWorkflow` + `MrnaCdsDesignWorkflow` + paired `MrnaCdsDesignCritic` (`workflows/`)
+- Layer 2: `BaseDomainWorkflow` + `MrnaCdsDesignWorkflow` (`workflows/`) — scoring uses `-mfe + codon_count * log(CAI)`; no retry critic (re-running the same tools on the same protein does not improve candidates)
 - Layer 3: `Planner` / `ExecutionController` / `RuleBasedPlanner` (`planning/`)
 - Layer 4: `SessionMemory` + `WorkspaceManager` (in-memory, swappable)
 - Layer 5: `AgentRunner` unified façade (Streamlit / FastAPI / CLI)

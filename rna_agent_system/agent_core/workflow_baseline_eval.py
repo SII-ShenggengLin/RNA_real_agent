@@ -52,6 +52,21 @@ class StubFoldTool:
         return {"mfe": float(mfe), "structure": "." * max(ln, 1), "model": "stub_fold"}
 
 
+class StubCaiTool:
+    name = "compute_cai_for_cds_sequence"
+
+    def invoke(self, kwargs):
+        return {
+            "cai_score": 0.85,
+            "species": "Homo sapiens",
+            "codon_count": 9,
+            "valid_codons": 9,
+            "invalid_codons": 0,
+            "stop_codons_encountered": 0,
+            "model": "stub_cai",
+        }
+
+
 def build_stub_mrna_registry() -> ToolRegistry:
     reg = ToolRegistry()
     reg.register(StubGcTool())

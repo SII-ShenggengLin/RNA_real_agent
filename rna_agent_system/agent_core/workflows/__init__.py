@@ -3,14 +3,13 @@
 from agent_core.workflows.base import BaseDomainWorkflow
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
 from .mrna_candidates import build_candidates
-from .mrna_scoring import MrnaScoreWeights, gc_fraction_from_sequence, score_mrna_candidate
+from .mrna_scoring import gc_fraction_from_sequence, score_mrna_candidate
 from .mrna_workflow import MrnaWorkflow, MrnaWorkflowInput, run_mrna_workflow
 
 __all__ = [
     "BaseDomainWorkflow",
     "MrnaCdsDesignInput",
     "MrnaCdsDesignWorkflow",
-    "MrnaScoreWeights",
     "MrnaWorkflow",
     "MrnaWorkflowInput",
     "build_candidates",

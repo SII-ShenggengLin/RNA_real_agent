@@ -11,7 +11,7 @@ def _have_fastapi() -> bool:
 
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
-from agent_core.workflow_baseline_eval import StubFoldTool, StubGcTool
+from agent_core.workflow_baseline_eval import StubCaiTool, StubFoldTool, StubGcTool
 
 
 @pytest.fixture()
@@ -19,6 +19,7 @@ def stub_registry():
     reg = ToolRegistry()
     reg.register(StubGcTool())
     reg.register(StubFoldTool())
+    reg.register(StubCaiTool())
     return reg
 
 
