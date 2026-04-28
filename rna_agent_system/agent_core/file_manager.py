@@ -11,33 +11,52 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE_DIR = PROJECT_ROOT / "workspace"
 
 
-def save_sequence(content: str, prefix: str = "seq") -> str:
+def _resolve_dir(*, session_id: str = "") -> Path:
+    """Return the appropriate workspace directory, optionally scoped to a session."""
+    if session_id:
+        return WORKSPACE_DIR / "sessions" / session_id
+    return WORKSPACE_DIR
+
+
+def save_sequence(content: str, prefix: str = "seq", *, session_id: str = "") -> str:
     """Save sequence content into workspace and return relative filepath."""
-    WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
+    dir_path = _resolve_dir(session_id=session_id)
+    dir_path.mkdir(parents=True, exist_ok=True)
     filename = f"{prefix}_{uuid4().hex[:10]}.fasta"
-    absolute_path = WORKSPACE_DIR / filename
+    absolute_path = dir_path / filename
     absolute_path.write_text(content, encoding="utf-8")
-    return f"workspace/{filename}"
+    rel = absolute_path.relative_to(PROJECT_ROOT)
+    return str(rel).replace("\\", "/")
 
 
-def save_text_file(content: str, prefix: str, suffix: str) -> str:
+def save_text_file(content: str, prefix: str, suffix: str, *, session_id: str = "") -> str:
     """Save an arbitrary text artifact into workspace and return relative filepath."""
-    WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
+    dir_path = _resolve_dir(session_id=session_id)
+    dir_path.mkdir(parents=True, exist_ok=True)
     filename = f"{prefix}_{uuid4().hex[:10]}{suffix}"
-    absolute_path = WORKSPACE_DIR / filename
+    absolute_path = dir_path / filename
     absolute_path.write_text(content, encoding="utf-8")
-    return f"workspace/{filename}"
+    rel = absolute_path.relative_to(PROJECT_ROOT)
+    return str(rel).replace("\\", "/")
 
 
-def copy_file_to_workspace(source_path: str, prefix: str, suffix: Optional[str] = None) -> str:
+def copy_file_to_workspace(
+    source_path: str,
+    prefix: str,
+    suffix: Optional[str] = None,
+    *,
+    session_id: str = "",
+) -> str:
     """Copy an existing file into workspace and return the relative filepath."""
-    WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
+    dir_path = _resolve_dir(session_id=session_id)
+    dir_path.mkdir(parents=True, exist_ok=True)
     source = Path(source_path)
     target_suffix = suffix or source.suffix
     filename = f"{prefix}_{uuid4().hex[:10]}{target_suffix}"
-    target = WORKSPACE_DIR / filename
+    target = dir_path / filename
     shutil.copyfile(source, target)
-    return f"workspace/{filename}"
+    rel = target.relative_to(PROJECT_ROOT)
+    return str(rel).replace("\\", "/")
 
 
 def resolve_project_path(filepath: str) -> str:

@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Iterator, Optional
 
 from langchain_core.messages import AIMessage, HumanMessage
 
 from agent_core.capabilities.base import build_default_capability_registry
 from agent_core.planning.base import ExecutionController, Planner
+from agent_core.session_memory import SessionMemory
 from agent_core.state import AgentState, default_state
 from agent_core.tool_executor import ToolExecutor
 from agent_core.workflows import MrnaCdsDesignWorkflow
@@ -25,6 +26,10 @@ class AgentRunner:
     compiled_graph:
         Optional pre-compiled LangGraph graph.  When provided,
         ``.run_chat()`` uses it for backward compatibility.
+    session_memory:
+        Optional ``SessionMemory`` for multi-turn persistence.
+        When *None* (default), every call to ``.run()`` starts from a
+        fresh state — the legacy single-turn behaviour.
     """
 
     def __init__(
@@ -33,6 +38,7 @@ class AgentRunner:
         executor: ToolExecutor,
         *,
         compiled_graph: Optional[Any] = None,
+        session_memory: Optional[SessionMemory] = None,
     ):
         self.planner = planner
         self.executor = executor
@@ -45,6 +51,7 @@ class AgentRunner:
             workflow_registry=self.workflow_registry,
         )
         self._compiled_graph = compiled_graph
+        self.memory = session_memory
 
     def run(
         self,
@@ -59,9 +66,16 @@ class AgentRunner:
         ``compiled_graph``.  If you need the legacy LangGraph path, call
         ``run_chat()`` instead.
         """
-        if state is None:
-            state = default_state(user_input)
+        explicit_state = state is not None
+        if explicit_state:
+            # Backward compatibility: caller supplied an explicit state.
+            state["user_text"] = user_input
+            state["messages"] = state.get("messages", []) + [HumanMessage(content=user_input)]
         else:
+            if self.memory is not None:
+                state = self.memory.load(session_id)
+            else:
+                state = default_state("")
             state["user_text"] = user_input
             state["messages"] = state.get("messages", []) + [HumanMessage(content=user_input)]
 
@@ -85,7 +99,12 @@ class AgentRunner:
         def _replan(s: dict[str, Any]) -> Any:
             return self.planner.plan_with_state(user_input, s)
 
-        return self.controller.execute(plan, state, replan_fn=_replan)
+        result_state = self.controller.execute(plan, state, replan_fn=_replan)
+
+        if self.memory is not None and session_id and not explicit_state:
+            self.memory.save(session_id, result_state)
+
+        return result_state
 
     def run_chat(self, user_input: str) -> AgentState:
         """Legacy LangGraph chat path.
@@ -101,7 +120,7 @@ class AgentRunner:
         state = default_state(user_input)
         return self._compiled_graph.invoke(state)
 
-    def stream_chat(self, user_input: str):
+    def stream_chat(self, user_input: str, *, session_id: str = "") -> Iterator[Any]:
         """Yield step-by-step events from the LangGraph compiled graph.
 
         Returns an iterator compatible with Streamlit's ``st.empty()``
@@ -110,8 +129,20 @@ class AgentRunner:
         Falls back to ``.run()`` when no compiled graph is available.
         """
         if self._compiled_graph is not None:
-            state = default_state(user_input)
-            yield from self._compiled_graph.stream(state)
+            if self.memory is not None:
+                state = self.memory.load(session_id)
+            else:
+                state = default_state("")
+            state["user_text"] = user_input
+            state["messages"] = state.get("messages", []) + [HumanMessage(content=user_input)]
+            final_state: Optional[dict[str, Any]] = None
+            for event in self._compiled_graph.stream(state):
+                yield event
+                for v in event.values():
+                    if isinstance(v, dict) and "messages" in v:
+                        final_state = v
+            if final_state is not None and self.memory is not None and session_id:
+                self.memory.save(session_id, final_state)
         else:
-            state = self.run(user_input)
+            state = self.run(user_input, session_id=session_id)
             yield {"runner": state}

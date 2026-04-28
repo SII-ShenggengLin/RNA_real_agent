@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import uuid
 from pathlib import Path
 
 import streamlit as st
@@ -14,6 +15,7 @@ if str(APP_ROOT) not in sys.path:
 
 from agent_core.graph import compiled_graph
 from agent_core.runner import AgentRunner
+from agent_core.session_memory import SessionMemory
 from agent_core.state import default_state
 from agent_core.planning.rule_based.planner import RuleBasedPlanner
 from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
@@ -23,6 +25,7 @@ _runner = AgentRunner(
     planner=RuleBasedPlanner(),
     executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
     compiled_graph=compiled_graph,
+    session_memory=SessionMemory(),
 )
 
 
@@ -33,6 +36,9 @@ st.caption("Rule-based workflow: Router → Specialist → Tool Execution → Cr
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 
 def _message_text(message_obj) -> str:
@@ -71,7 +77,7 @@ if user_input:
 
         final_state = None
         try:
-            for step_event in _runner.stream_chat(user_input):
+            for step_event in _runner.stream_chat(user_input, session_id=st.session_state.session_id):
                 for node_name, node_state in step_event.items():
                     msg = f"- `{node_name}` 执行完成"
                     detail_lines.append(msg)
