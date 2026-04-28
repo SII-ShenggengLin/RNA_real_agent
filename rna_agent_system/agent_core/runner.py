@@ -82,7 +82,10 @@ class AgentRunner:
             AIMessage(content=f"Router decision (rule-based): {route}")
         ]
 
-        return self.controller.execute(plan, state)
+        def _replan(s: dict[str, Any]) -> Any:
+            return self.planner.plan_with_state(user_input, s)
+
+        return self.controller.execute(plan, state, replan_fn=_replan)
 
     def run_chat(self, user_input: str) -> AgentState:
         """Legacy LangGraph chat path.

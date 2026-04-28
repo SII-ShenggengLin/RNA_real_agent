@@ -130,6 +130,9 @@ def score_mrna_candidate(
     *,
     weights: Optional[MrnaScoreWeights] = None,
     target_length_nt: Optional[int] = None,
+    gc_low: float = 0.42,
+    gc_mid: float = 0.50,
+    gc_high: float = 0.58,
 ) -> Dict[str, float]:
     """Return component scores and ``total_score`` in [0, 1].
 
@@ -144,7 +147,7 @@ def score_mrna_candidate(
     tl_raw = target_length_nt if target_length_nt is not None else bundle.get("target_length_nt")
     tl: Optional[int] = int(tl_raw) if isinstance(tl_raw, int) else None
 
-    gc_c = gc_band_score(gc)
+    gc_c = gc_band_score(gc, low=gc_low, mid=gc_mid, high=gc_high)
     mfe_c = mfe_stability_component(_optional_float(mfe_raw))
     len_c = length_target_score(length_nt, target_nt=tl)
 

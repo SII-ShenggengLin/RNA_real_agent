@@ -78,28 +78,84 @@ class ExecutionController:
     workflow_registry: Optional[Dict[str, Any]] = None
     critic: Optional[Critic] = None
 
-    def execute(self, plan: ExecutionPlan, state: dict[str, Any]) -> dict[str, Any]:
-        """Run every step in *plan* and return the updated *state*."""
-        for step in plan.steps:
-            result = self._run_step(step, state)
-            if step.output_key:
-                state[step.output_key] = result
+    def execute(
+        self,
+        plan: ExecutionPlan,
+        state: dict[str, Any],
+        *,
+        replan_fn: Optional[Callable[[dict[str, Any]], ExecutionPlan]] = None,
+    ) -> dict[str, Any]:
+        """Run every step in *plan* and return the updated *state*.
 
-            # Merge workflow internal state writebacks into outer state
-            if step.type == "workflow" and hasattr(result, "_state_writeback"):
-                wb = getattr(result, "_state_writeback", {})
-                if isinstance(wb, dict):
-                    for key, value in wb.items():
-                        state[key] = value
+        When a workflow step triggers a critic retry and *replan_fn* is
+        provided, the controller increments ``retry_count``, calls
+        ``replan_fn(state)`` to obtain a new plan, and re-executes from the
+        first step.  This is a **workflow-level** retry: the entire
+        ``MrnaCdsDesignWorkflow`` is re-run, not individual capabilities.
+        """
+        from agent_core.workflows.registry import get_critic_for_workflow
 
-            # Critic checks the *result* of this step if it's a workflow
-            if step.type == "workflow" and self.critic is not None:
-                if isinstance(result, WorkflowResult) and self.critic.should_retry(result, state):
-                    state["_critic_should_retry"] = True
-                    break
+        while True:
+            retry_triggered = False
 
-        state["_plan_executed"] = True
-        return state
+            for step in plan.steps:
+                result = self._run_step(step, state)
+                if step.output_key:
+                    state[step.output_key] = result
+
+                # Merge workflow internal state writebacks into outer state
+                if step.type == "workflow" and hasattr(result, "_state_writeback"):
+                    wb = getattr(result, "_state_writeback", {})
+                    if isinstance(wb, dict):
+                        for key, value in wb.items():
+                            state[key] = value
+
+                # Critic checks the *result* of this step if it's a workflow
+                if step.type == "workflow":
+                    critic = self._resolve_critic(step, get_critic_for_workflow)
+                    if critic is not None and isinstance(result, WorkflowResult):
+                        if critic.should_retry(result, state):
+                            state["_critic_should_retry"] = True
+                            retry_triggered = True
+                            break
+
+            if not retry_triggered:
+                state["_plan_executed"] = True
+                return state
+
+            # Workflow-level retry bookkeeping
+            retry_count = state.get("retry_count", 0)
+            if retry_count >= plan.max_retries:
+                state["_plan_executed"] = True
+                return state
+
+            state["retry_count"] = retry_count + 1
+
+            if replan_fn is not None:
+                plan = replan_fn(state)
+                if not isinstance(plan, ExecutionPlan):
+                    raise RuntimeError("replan_fn must return an ExecutionPlan")
+            else:
+                state["_plan_executed"] = True
+                return state
+
+    def _resolve_critic(
+        self,
+        step: PlanStep,
+        get_critic_for_workflow: Callable[[str], Optional[Critic]],
+    ) -> Optional[Critic]:
+        """Return the critic for a workflow step.
+
+        Priority:
+        1. Registry lookup via ``get_critic_for_workflow``.
+        2. Fallback to ``self.critic`` (global override).
+        """
+        if step.type != "workflow":
+            return None
+        critic = get_critic_for_workflow(step.target)
+        if critic is not None:
+            return critic
+        return self.critic
 
     def _run_step(self, step: PlanStep, state: dict[str, Any]) -> Any:
         inputs = self._resolve_bindings(step.input_binding, state)

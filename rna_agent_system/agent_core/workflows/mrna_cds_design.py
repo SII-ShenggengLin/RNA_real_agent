@@ -38,6 +38,7 @@ class MrnaCdsDesignInput(BaseModel):
     run_gc: bool = Field(default=True)
     score_weights: Optional[MrnaScoreWeights] = None
     target_length_nt: Optional[int] = Field(default=None)
+    target_gc_mid: Optional[float] = Field(default=None, description="Override GC band mid-point for scoring.")
 
 
 class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResult]):
@@ -100,6 +101,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
                 "protein_sequence": inp.protein_sequence,
                 "protein_filepath": protein_fp,
                 "design_output": output,
+                "target_gc_mid": getattr(inp, "target_gc_mid", None),
             },
         )
         _LOGGER.info("mrna_cds_design candidate_generated len_nt=%d", len(generated_sequence))
@@ -141,15 +143,21 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             mfe_kcal_per_mol=mfe,
             target_length_nt=candidate.metadata.get("target_length_nt"),
         )
+        bundle["target_gc_mid"] = candidate.metadata.get("target_gc_mid")
         candidate.metadata["metrics_bundle"] = bundle
         return bundle
 
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
-        return score_mrna_candidate(
-            metrics,
-            weights=metrics.get("_score_weights"),
-            target_length_nt=metrics.get("target_length_nt"),
-        )
+        kwargs: dict[str, Any] = {
+            "weights": metrics.get("_score_weights"),
+            "target_length_nt": metrics.get("target_length_nt"),
+        }
+        tgc = metrics.get("target_gc_mid")
+        if tgc is not None:
+            kwargs["gc_mid"] = float(tgc)
+            kwargs["gc_low"] = float(tgc) - 0.08
+            kwargs["gc_high"] = float(tgc) + 0.08
+        return score_mrna_candidate(metrics, **kwargs)
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
         if not candidates:

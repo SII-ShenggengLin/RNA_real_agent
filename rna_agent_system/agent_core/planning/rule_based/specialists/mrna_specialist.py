@@ -368,6 +368,21 @@ class MrnaSpecialist:
         workflow_input["run_fold"] = True
         workflow_input["run_gc"] = True
 
+        # Apply critic-driven constraints from previous retry iterations
+        constraints = state.get("next_constraints", {})
+        if constraints.get("prioritize_stability"):
+            if design_tool == "lineardesign":
+                workflow_input["lambda_value"] = min(
+                    1.0, workflow_input.get("lambda_value", 0.0) + 0.5
+                )
+        if constraints.get("increase_diversity"):
+            alternatives = [t for t in ("lineardesign", "rnarl", "gemorna") if t != design_tool]
+            if alternatives:
+                design_tool = alternatives[0]
+                workflow_input["design_tool"] = design_tool
+        if "target_gc_mid" in constraints:
+            workflow_input["target_gc_mid"] = constraints["target_gc_mid"]
+
         return ExecutionPlan(steps=[
             PlanStep(
                 step_id="cds_design",
