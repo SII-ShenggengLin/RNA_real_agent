@@ -15,10 +15,8 @@ from agent_core.workflow_models import WorkflowResult
 class MrnaCdsDesignCritic(Critic):
     """Quality gate for mRNA CDS design.
 
-    Retry rules (co-designed with ``MrnaCdsDesignWorkflow.score``):
-    - ``total_score < 0.70``       → retry (increase diversity)
-    - ``mfe_component < 0.5``      → retry (prioritise stability)
-    - ``gc_component == 0``        → retry (target GC mid = 0.50)
+    Current rule (simplified):
+    - ``gc_component < 0.5``  → retry (increase diversity)
     - ``retry_count >= max_retries`` → do **not** retry
     """
 
@@ -37,26 +35,10 @@ class MrnaCdsDesignCritic(Critic):
             return False
 
         scores = workflow_result.best_candidate.scores
-        total_score = scores.get("total_score", 0.0)
-        mfe_component = scores.get("mfe_component", 0.0)
         gc_component = scores.get("gc_component", 0.0)
 
-        next_constraints: dict[str, Any] = state.setdefault("next_constraints", {})
-
-        if total_score < 0.70:
-            next_constraints["increase_diversity"] = True
-            state["critic_verdict"] = "reject"
-            state["next_action"] = "retry"
-            return True
-
-        if mfe_component < 0.5:
-            next_constraints["prioritize_stability"] = True
-            state["critic_verdict"] = "reject"
-            state["next_action"] = "retry"
-            return True
-
-        if gc_component == 0.0:
-            next_constraints["target_gc_mid"] = 0.50
+        if gc_component < 0.5:
+            state.setdefault("next_constraints", {})["increase_diversity"] = True
             state["critic_verdict"] = "reject"
             state["next_action"] = "retry"
             return True

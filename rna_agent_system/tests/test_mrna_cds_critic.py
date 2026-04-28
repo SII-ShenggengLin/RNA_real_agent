@@ -41,7 +41,7 @@ def _make_result(total_score: float, mfe_component: float, gc_component: float) 
 # ─────────────────────────────────────────────────────────────────────────────
 
 class TestMrnaCdsDesignCritic:
-    def test_pass_when_scores_are_good(self) -> None:
+    def test_pass_when_gc_component_good(self) -> None:
         critic = MrnaCdsDesignCritic()
         state: dict[str, Any] = {"retry_count": 0, "max_retries": 2}
         result = _make_result(total_score=0.75, mfe_component=0.6, gc_component=0.8)
@@ -49,33 +49,26 @@ class TestMrnaCdsDesignCritic:
         assert state["critic_verdict"] == "pass"
         assert state["next_action"] == "finish"
 
-    def test_retry_when_total_score_below_threshold(self) -> None:
+    def test_retry_when_gc_component_below_threshold(self) -> None:
         critic = MrnaCdsDesignCritic()
         state: dict[str, Any] = {"retry_count": 0, "max_retries": 2}
-        result = _make_result(total_score=0.65, mfe_component=0.6, gc_component=0.8)
+        result = _make_result(total_score=0.80, mfe_component=0.6, gc_component=0.4)
         assert critic.should_retry(result, state) is True
         assert state["next_constraints"]["increase_diversity"] is True
         assert state["critic_verdict"] == "reject"
         assert state["next_action"] == "retry"
-
-    def test_retry_when_mfe_component_low(self) -> None:
-        critic = MrnaCdsDesignCritic()
-        state: dict[str, Any] = {"retry_count": 0, "max_retries": 2}
-        result = _make_result(total_score=0.80, mfe_component=0.3, gc_component=0.8)
-        assert critic.should_retry(result, state) is True
-        assert state["next_constraints"]["prioritize_stability"] is True
 
     def test_retry_when_gc_component_zero(self) -> None:
         critic = MrnaCdsDesignCritic()
         state: dict[str, Any] = {"retry_count": 0, "max_retries": 2}
         result = _make_result(total_score=0.80, mfe_component=0.6, gc_component=0.0)
         assert critic.should_retry(result, state) is True
-        assert state["next_constraints"]["target_gc_mid"] == 0.50
+        assert state["next_constraints"]["increase_diversity"] is True
 
     def test_no_retry_when_max_retries_reached(self) -> None:
         critic = MrnaCdsDesignCritic()
         state: dict[str, Any] = {"retry_count": 2, "max_retries": 2}
-        result = _make_result(total_score=0.65, mfe_component=0.3, gc_component=0.0)
+        result = _make_result(total_score=0.80, mfe_component=0.3, gc_component=0.0)
         assert critic.should_retry(result, state) is False
         assert state["critic_verdict"] == "reject"
         assert state["next_action"] == "finish"
@@ -85,14 +78,6 @@ class TestMrnaCdsDesignCritic:
         state: dict[str, Any] = {"retry_count": 0, "max_retries": 2}
         result = WorkflowResult(success=False, task_id="test_002", summary="fail", errors=["boom"])
         assert critic.should_retry(result, state) is False
-
-    def test_priority_total_score_over_mfe(self) -> None:
-        """When both total_score and mfe_component fail, total_score rule fires first."""
-        critic = MrnaCdsDesignCritic()
-        state: dict[str, Any] = {"retry_count": 0, "max_retries": 2}
-        result = _make_result(total_score=0.60, mfe_component=0.3, gc_component=0.8)
-        assert critic.should_retry(result, state) is True
-        assert state["next_constraints"]["increase_diversity"] is True
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -141,8 +126,8 @@ class FakeWorkflow:
 
 def test_controller_triggers_retry_and_replans() -> None:
     """ExecutionController must rerun the workflow when critic says retry."""
-    # First run: low score → retry; second run: good score → pass
-    result_bad = _make_result(total_score=0.60, mfe_component=0.6, gc_component=0.8)
+    # First run: low gc → retry; second run: good gc → pass
+    result_bad = _make_result(total_score=0.80, mfe_component=0.6, gc_component=0.4)
     result_good = _make_result(total_score=0.75, mfe_component=0.6, gc_component=0.8)
 
     fake_wf = FakeWorkflow(result_bad)
@@ -187,7 +172,7 @@ def test_controller_triggers_retry_and_replans() -> None:
 
 def test_controller_respects_max_retries() -> None:
     """When critic always wants retry, controller must stop at max_retries."""
-    result_bad = _make_result(total_score=0.60, mfe_component=0.6, gc_component=0.8)
+    result_bad = _make_result(total_score=0.80, mfe_component=0.6, gc_component=0.4)
     fake_wf = FakeWorkflow(result_bad)
     reg = FakeCapabilityRegistry()
     controller = ExecutionController(
@@ -222,7 +207,7 @@ def test_controller_respects_max_retries() -> None:
 
 def test_controller_no_replan_fn_returns_early_on_retry() -> None:
     """Without replan_fn, controller stops after first retry trigger."""
-    result_bad = _make_result(total_score=0.60, mfe_component=0.6, gc_component=0.8)
+    result_bad = _make_result(total_score=0.80, mfe_component=0.6, gc_component=0.4)
     fake_wf = FakeWorkflow(result_bad)
     reg = FakeCapabilityRegistry()
     controller = ExecutionController(

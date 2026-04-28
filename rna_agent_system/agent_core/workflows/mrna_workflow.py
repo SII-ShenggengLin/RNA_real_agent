@@ -33,7 +33,12 @@ class MrnaWorkflowInput(BaseModel):
 
     candidate_mode: CandidateMode = Field(
         default="direct",
-        description="direct | synonymous_minimal | tail_augment — see ``generate_candidate_sequences``.",
+        description=(
+            "direct | synonymous_minimal | tail_augment — see ``generate_candidate_sequences``.\n"
+            "**direct** (default) does NOT create new sequences; it only normalises "
+            "the input sequence(s) (strip FASTA headers, T→U, etc.). Use this for pure scoring.\n"
+            "synonymous_minimal and tail_augment are experimental diversity generators."
+        ),
     )
     sequence: Optional[str] = Field(default=None, description="Single RNA/DNA sequence string.")
     sequences: Optional[List[str]] = Field(default=None, description="Multiple sequences (direct mode).")
@@ -125,6 +130,12 @@ class MrnaWorkflow:
             synonym_source=inp.synonym_source,
             max_synonymous_variants=inp.max_synonymous_variants,
             tail_augment_extra=inp.tail_augment_extra,
+        )
+        _LOGGER.info(
+            "mrna_candidate_mode=%s input_seqs=%d generated_candidates=%d",
+            inp.candidate_mode,
+            len(inp.sequences or []) + (1 if inp.sequence else 0),
+            len(raw_seqs),
         )
         candidates = build_candidates(raw_seqs, source=f"mrna:{inp.candidate_mode}")
 
