@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agent_core.nodes import (
+from agent_core.planning.rule_based.parsers.common import (
     _needs_sgrna_handle_design,
     _needs_sgrna_handle_score,
     _resolve_crisot_request,
@@ -20,14 +20,14 @@ class CrisprSpecialist:
         lowered = raw_text.lower()
 
         if _needs_sgrna_handle_score(lowered):
-            from agent_core.nodes import _extract_sgrna_seed_sequence
+            from agent_core.planning.rule_based.parsers.common import _extract_sgrna_seed_sequence
             seq = _extract_sgrna_seed_sequence(raw_text)
             if seq:
                 tool_args = {"sequence": seq}
                 state_updates = {"sgrna_design_score_sequence": seq}
             else:
                 from agent_core.file_manager import read_sequence
-                from agent_core.nodes import _extract_path_with_suffixes
+                from agent_core.planning.rule_based.parsers.common import _extract_path_with_suffixes
                 filepath = _extract_path_with_suffixes(raw_text, ("fasta", "fa", "txt", "seq"))
                 if filepath:
                     tool_args = {"sequence": read_sequence(filepath)}

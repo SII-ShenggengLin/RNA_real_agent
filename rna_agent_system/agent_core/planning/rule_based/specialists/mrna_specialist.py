@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from agent_core.file_manager import save_sequence
-from agent_core.nodes import (
+from agent_core.planning.rule_based.parsers.common import (
     _build_codonw_tool_args,
     _build_linearfold_tool_args,
     _build_ribodiffusion_tool_args,
@@ -185,7 +185,7 @@ class MrnaSpecialist:
         ])
 
     def _plan_iresfinder(self, raw_text: str, state: dict[str, Any]) -> ExecutionPlan:
-        from agent_core.nodes import _build_iresfinder_tool_args
+        from agent_core.planning.rule_based.parsers.common import _build_iresfinder_tool_args
         filepath, created = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created or filepath.startswith("workspace/"):
@@ -201,7 +201,7 @@ class MrnaSpecialist:
         ])
 
     def _plan_inverse_fold(self, raw_text: str, state: dict[str, Any]) -> ExecutionPlan:
-        from agent_core.nodes import _ensure_inverse_fold_structure_file
+        from agent_core.planning.rule_based.parsers.common import _ensure_inverse_fold_structure_file
         import re
         inv_fp = _ensure_inverse_fold_structure_file(raw_text, state.get("current_filepath"))
         state["current_filepath"] = inv_fp
@@ -265,7 +265,7 @@ class MrnaSpecialist:
         ])
 
     def _plan_unpaired_fraction(self, raw_text: str, state: dict[str, Any]) -> ExecutionPlan:
-        from agent_core.nodes import _resolve_dot_bracket_structure_filepath
+        from agent_core.planning.rule_based.parsers.common import _resolve_dot_bracket_structure_filepath
         ss_fp, created = _resolve_dot_bracket_structure_filepath(raw_text)
         state["current_filepath"] = ss_fp
         if created or ss_fp.startswith("workspace/"):
@@ -281,7 +281,7 @@ class MrnaSpecialist:
         ])
 
     def _plan_blast(self, raw_text: str, state: dict[str, Any]) -> ExecutionPlan:
-        from agent_core.nodes import _build_blast_tool_args
+        from agent_core.planning.rule_based.parsers.common import _build_blast_tool_args
         filepath, created = _resolve_sequence_input(raw_text)
         state["current_filepath"] = filepath
         if created or filepath.startswith("workspace/"):
@@ -329,7 +329,7 @@ class MrnaSpecialist:
         ])
 
     def _plan_utr(self, raw_text: str, state: dict[str, Any]) -> ExecutionPlan:
-        from agent_core.nodes import _extract_utr_length
+        from agent_core.planning.rule_based.parsers.common import _extract_utr_length
         tool_name, tool_args = _resolve_utr_tool(raw_text)
         tool_args["utr_length"] = _extract_utr_length(raw_text)
         return ExecutionPlan(steps=[
@@ -384,7 +384,7 @@ class MrnaSpecialist:
         user_text = raw_text.lower()
         filepath = state.get("current_filepath")
         if not filepath:
-            from agent_core.nodes import _extract_rna_sequence
+            from agent_core.planning.rule_based.parsers.common import _extract_rna_sequence
             filepath = save_sequence(_extract_rna_sequence(raw_text), prefix="mrna")
             state["current_filepath"] = filepath
             state["workspace_files"] = state.get("workspace_files", []) + [filepath]

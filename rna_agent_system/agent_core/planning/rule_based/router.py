@@ -6,8 +6,7 @@ from typing import Literal
 
 from agent_core.planning.base import AgentContext
 
-# Re-use the existing predicate helpers from nodes.py without moving them yet.
-from agent_core.nodes import (
+from agent_core.planning.rule_based.parsers.common import (
     _needs_blast_search,
     _needs_crispr_mode,
     _needs_evitar_mode,

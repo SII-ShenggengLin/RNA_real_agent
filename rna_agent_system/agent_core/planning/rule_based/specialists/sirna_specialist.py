@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from agent_core.file_manager import save_sequence
-from agent_core.nodes import (
+from agent_core.planning.rule_based.parsers.common import (
     _build_evitar_tool_args,
     _ensure_duplex_fasta_workspace_path,
     _needs_evitar_mode,

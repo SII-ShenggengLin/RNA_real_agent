@@ -103,11 +103,12 @@ class AgentRunner:
 
         Returns an iterator compatible with Streamlit's ``st.empty()``
         progress display pattern.
+
+        Falls back to ``.run()`` when no compiled graph is available.
         """
-        if self._compiled_graph is None:
-            raise RuntimeError(
-                "AgentRunner was created without a compiled_graph; "
-                "use .run() for the new unified path, or pass compiled_graph=..."
-            )
-        state = default_state(user_input)
-        yield from self._compiled_graph.stream(state)
+        if self._compiled_graph is not None:
+            state = default_state(user_input)
+            yield from self._compiled_graph.stream(state)
+        else:
+            state = self.run(user_input)
+            yield {"runner": state}
