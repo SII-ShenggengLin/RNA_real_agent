@@ -538,6 +538,8 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 
 There are **20 tasks** with corresponding workflows. Both directories previously had `INDEX.md` files; this table replaces them.
 
+> **Note on routing**: Every task in this table is currently dispatched via **deterministic keyword-based routing** (`router_node` → `specialist_node`). This is an intentional phase-1 design choice to keep tests fast, reproducible, and debuggable. See `ARCHITECTURE.md` §8 for the rationale and the planned migration to LLM-driven routing.
+
 | # | Task | Workflow | Domain |
 |---|------|----------|--------|
 | 1 | `sirna_duplex_energy` | `sirna_duplex_energy_workflow` | siRNA / antisense |

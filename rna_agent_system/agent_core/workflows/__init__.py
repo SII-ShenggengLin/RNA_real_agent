@@ -1,11 +1,16 @@
 """Reusable workflow orchestration (mRNA ranking and future UTR/circRNA variants)."""
 
+from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
 from .mrna_candidates import CandidateMode, build_candidates, generate_candidate_sequences
 from .mrna_scoring import MrnaScoreWeights, gc_fraction_from_sequence, score_mrna_candidate
 from .mrna_workflow import MrnaWorkflow, MrnaWorkflowInput, run_mrna_workflow
 
 __all__ = [
+    "BaseDomainWorkflow",
     "CandidateMode",
+    "MrnaCdsDesignInput",
+    "MrnaCdsDesignWorkflow",
     "MrnaScoreWeights",
     "MrnaWorkflow",
     "MrnaWorkflowInput",

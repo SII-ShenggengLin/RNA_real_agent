@@ -13,7 +13,17 @@ if str(APP_ROOT) not in sys.path:
     sys.path.insert(0, str(APP_ROOT))
 
 from agent_core.graph import compiled_graph
+from agent_core.runner import AgentRunner
 from agent_core.state import default_state
+from agent_core.planning.rule_based.planner import RuleBasedPlanner
+from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
+
+# Unified entry point: AgentRunner wraps both the new path and the legacy graph.
+_runner = AgentRunner(
+    planner=RuleBasedPlanner(),
+    executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+    compiled_graph=compiled_graph,
+)
 
 
 st.set_page_config(page_title="RNA Design Agent", page_icon="🧬", layout="wide")
@@ -61,7 +71,7 @@ if user_input:
 
         final_state = None
         try:
-            for step_event in compiled_graph.stream(default_state(user_input)):
+            for step_event in _runner.stream_chat(user_input):
                 for node_name, node_state in step_event.items():
                     msg = f"- `{node_name}` 执行完成"
                     detail_lines.append(msg)
@@ -87,6 +97,16 @@ if user_input:
                     if crisot_parts:
                         detail_lines.append(f"  - CRISOT结果: {', '.join(crisot_parts)}")
 
+                    # New-path workflow result display
+                    wf_result = node_state.get("workflow_result")
+                    if wf_result is not None and hasattr(wf_result, "best_candidate"):
+                        bc = wf_result.best_candidate
+                        if bc:
+                            detail_lines.append(
+                                f"  - Workflow best: score={bc.scores.get('total_score', 'N/A')} "
+                                f"source={bc.source} len={len(bc.sequence)}"
+                            )
+
                     detail_box.markdown("\n".join(detail_lines))
                     final_state = node_state
         except Exception as exc:
@@ -97,6 +117,10 @@ if user_input:
         final_report = "流程执行完成，但未生成最终报告。"
         if final_state and final_state.get("final_report"):
             final_report = final_state["final_report"]
+        elif final_state and final_state.get("workflow_result"):
+            wf = final_state["workflow_result"]
+            if wf and hasattr(wf, "summary"):
+                final_report = f"Workflow complete: {wf.summary}"
 
         status_box.success("执行完成")
         st.markdown(f"**最终结果：** {final_report}")

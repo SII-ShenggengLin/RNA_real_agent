@@ -3,7 +3,7 @@
 > **This file has been consolidated.**  
 > All authoritative documentation now lives in `rna_agent_system/docs/`:
 > - `README.md` — project overview, capability matrix, quick start
-> - `ARCHITECTURE.md` — architecture, core module APIs, Interface Lock Policy
+> - `ARCHITECTURE.md` — architecture, core module APIs, Interface Lock Policy, **and the deterministic-routing design decision (§8)**
 > - `TOOLS_AND_TASKS.md` — per-tool specs, task definitions, workflow patterns
 > - `DEVELOPMENT.md` — deployment, testing, change logs, enhancement proposals
 
