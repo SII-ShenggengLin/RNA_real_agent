@@ -3,9 +3,21 @@
 > **This file has been consolidated.**  
 > All authoritative documentation now lives in `rna_agent_system/docs/`:
 > - `README.md` — project overview, capability matrix, quick start
-> - `ARCHITECTURE.md` — architecture, core module APIs, Interface Lock Policy, **and the deterministic-routing design decision (§8)**
+> - `ARCHITECTURE.md` — architecture, core module APIs, Interface Lock Policy, **and the five-layer architecture (§9)**
 > - `TOOLS_AND_TASKS.md` — per-tool specs, task definitions, workflow patterns
 > - `DEVELOPMENT.md` — deployment, testing, change logs, enhancement proposals
+
+## Project Phase
+
+The codebase has completed the **five-layer architecture migration** (commits `dbc4ba1`–`88296c5`). Layer 0–5 are all implemented and wired together:
+- Layer 0: Tool wrappers, specs, registry, executor (frozen)
+- Layer 1: `Capability` + `CapabilityRegistry` + declarative writebacks (`capabilities/`)
+- Layer 2: `BaseDomainWorkflow` + `MrnaCdsDesignWorkflow` + paired `MrnaCdsDesignCritic` (`workflows/`)
+- Layer 3: `Planner` / `ExecutionController` / `RuleBasedPlanner` (`planning/`)
+- Layer 4: `SessionMemory` + `WorkspaceManager` (in-memory, swappable)
+- Layer 5: `AgentRunner` unified façade (Streamlit / FastAPI / CLI)
+
+The monolithic 3,786-line `nodes.py` was retired and replaced by thin `graph_nodes.py` wrappers.
 
 ## Interface Lock Policy (retained here for visibility)
 

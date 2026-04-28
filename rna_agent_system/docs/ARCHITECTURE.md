@@ -76,12 +76,10 @@ START → router_node → [sirna|mrna|crispr]_specialist_node
 
 | Node | File | Responsibility |
 |------|------|----------------|
-| `router_node` | `nodes.py` | Keyword-based dispatch to a specialist |
-| `sirna_specialist_node` | `nodes.py` | Decide which siRNA tool to call |
-| `mrna_specialist_node` | `nodes.py` | Decide which mRNA / structure / design tool to call (priority-ordered matching) |
-| `crispr_specialist_node` | `nodes.py` | Decide which CRISPR tool to call |
-| `tool_execution_node` | `nodes.py` | Invoke the selected tool, write results into `AgentState`, and auto-chain downstream tools (e.g., CDS design → fold) |
-| `critic_node` | `nodes.py` | Apply hard thresholds (MFE, off-target count) and decide pass / retry |
+| `router_node` | `graph_nodes.py` | Thin wrapper around `RuleBasedPlanner` (Layer 3) |
+| `tool_execution_node` | `graph_nodes.py` | Delegates to `ExecutionController` (Layer 3), which invokes Layer 1 `Capability` objects |
+| `critic_node` | `graph_nodes.py` | Hard thresholds; preserved from legacy `nodes.py` |
+| *(specialist logic)* | `planning/rule_based/specialists/` | Deterministic tool selection extracted from retired monolithic `nodes.py` |
 
 ### 2.3 Conditional Edges
 
@@ -435,10 +433,10 @@ Read the dot-bracket section in `TOOLS_AND_TASKS.md` first, then check `agent_co
 
 ---
 
-## 9. Target Architecture: Five-Layer Design
+## 9. Five-Layer Architecture
 
-> **Status**: architecture proposal (not yet fully implemented).  
-> **Goal**: replace the monolithic `nodes.py` with a layered system where deterministic routing and LLM-driven routing can coexist, and where the LangGraph chat path and the Workflow API path share the same domain logic.
+> **Status**: **Implemented** (commits `dbc4ba1`–`88296c5`).  
+> **Goal**: a layered system where deterministic routing and LLM-driven routing can coexist, and where the LangGraph chat path and the Workflow API path share the same domain logic.
 
 ### 9.1 Overview
 
@@ -483,18 +481,14 @@ Read the dot-bracket section in `TOOLS_AND_TASKS.md` first, then check `agent_co
 
 **Responsibility**: turn a single tool invocation into a typed, self-describing sub-task result, and write it back to state automatically.
 
-**Why this layer exists**: the current `tool_execution_node` contains ~800 lines of `if tool_name == "..."` manual result unpacking. Layer 1 replaces that with a declarative mapping driven by `ToolSpec.output_model`.
+**Why this layer exists**: the legacy `tool_execution_node` (in the retired 3,786-line `nodes.py`) contained ~800 lines of `if tool_name == "..."` manual result unpacking. Layer 1 replaced that with a declarative mapping driven by `ToolSpec.output_model`.
 
-**Interface**
+**Implementation**
 
-```python
-class Capability(Protocol):
-    name: str
-    required_tools: list[str]
-
-    def invoke(self, ctx: CapabilityContext) -> CapabilityResult: ...
-    def normalize(self, raw: ToolResult) -> dict[str, Any]: ...
-```
+| File | Role |
+|------|------|
+| `agent_core/capabilities/base.py` | `Capability` dataclass + `CapabilityRegistry`; wraps `ToolExecutor` and validates `output_model` |
+| `agent_core/capabilities/writebacks.py` | Declarative `STANDARD_WRITEBACKS` mapping (30+ tools); replaces the old manual if-elif chain |
 
 **State contract**: instead of 80+ flat fields (`crisot_score`, `lineardesign_mfe`, …), the agent state stores:
 
@@ -503,7 +497,7 @@ tool_results: dict[str, Any]   # tool_name → normalized result dict
 candidates: list[Candidate]    # from workflow_models.py
 ```
 
-Adding a new tool no longer requires editing `state.py`. You only register its `Capability` implementation.
+Adding a new tool no longer requires editing `state.py`. You register its `Capability` and add a writeback entry in `capabilities/writebacks.py`.
 
 ---
 
@@ -516,11 +510,11 @@ Adding a new tool no longer requires editing `state.py`. You only register its `
 **Base abstraction**
 
 ```python
-class BaseDomainWorkflow(ABC):
+class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
     name: str
     required_capabilities: list[str]
 
-    def run(self, inp: WorkflowInput) -> WorkflowResult:
+    def run(self, inp: WorkflowInputT) -> WorkflowResultT:
         candidates = self.generate_candidates(inp)
         for cand in candidates:
             metrics = self.evaluate(cand)      # calls Layer 1 capabilities
@@ -528,21 +522,24 @@ class BaseDomainWorkflow(ABC):
         return self.rank_and_format(candidates)
 ```
 
-**Current assets mapped to this layer**
+**Implemented workflows**
 
-- `workflows/mrna_workflow.py` → `MrnaWorkflow(BaseDomainWorkflow)`
-- `workflows/mrna_scoring.py` → scoring logic extracted into `MrnaWorkflow.score()`
-- Future: `SirnaWorkflow`, `CrisprWorkflow`, `CircrnaWorkflow` following the same pattern.
+| Workflow | File | Status |
+|----------|------|--------|
+| `MrnaWorkflow` | `workflows/mrna_workflow.py` | ✅ Available (GC + fold + scoring pipeline) |
+| `MrnaCdsDesignWorkflow` | `workflows/mrna_cds_design.py` | ✅ Available (golden path: LinearDesign/RNARL/GEMORNA → fold → GC → score → rank) |
+| `SirnaWorkflow` | — | 📝 Design only (see §9.11, §9.12) |
+| `CrisprWorkflow` | — | 📝 Design only |
 
-**Critical design decision: LangGraph must be able to call workflows**
+**Workflow as a compound capability**
 
-Currently the Streamlit chat path (`compiled_graph`) and the Workflow API path (`MrnaWorkflow`) are completely separate. In the target architecture, a specialist node (Layer 3) should emit a call to `run_mrna_workflow` just like it emits a call to any other capability. The workflow itself is a **compound capability** from the planner’s point of view.
+The `ExecutionController` (Layer 3) can invoke a workflow just like a single tool. From the Planner’s perspective, calling `workflow_mrna_cds_design` is identical to calling `predict_rna_secondary_structure` — both are a single `PlanStep`. The Planner decides **what** to do; the Workflow decides **how** to do it well.
 
 ---
 
 ### 9.4 Layer 3 — Planning & Control
 
-**Responsibility**: convert a user’s natural language request into an `ExecutionPlan` (a DAG or linear sequence of capabilities/workflows), then dispatch and monitor execution.
+**Responsibility**: convert a user’s natural language request into an `ExecutionPlan` (a linear sequence of capabilities/workflows), then dispatch and monitor execution.
 
 **Why this is the other most important layer**: this is the **decision-making brain**. It decides *what* to do, *in what order*, and *when to stop or retry*. It is also the exact layer we will swap from rules to LLM in the future.
 
@@ -551,51 +548,55 @@ Currently the Streamlit chat path (`compiled_graph`) and the Workflow API path (
 ```python
 class Planner(ABC):
     @abstractmethod
-    def plan(self, request: UserRequest, ctx: AgentContext) -> ExecutionPlan: ...
+    def plan(self, user_text: str, context: AgentContext) -> ExecutionPlan: ...
 
 class ExecutionPlan(BaseModel):
     steps: list[PlanStep]
-    fallback_strategy: FallbackStrategy
+    max_retries: int = 2
+    fallback_on_error: Literal["abort", "skip", "retry_with_alternative"] = "retry_with_alternative"
 ```
 
 **Backend implementations**
 
-| Backend | Class | When to use |
-|---------|-------|-------------|
-| Rule-based | `RuleBasedPlanner` | Now. Extracted from current `router_node` + `specialist_node` logic. Zero LLM cost, fully testable. |
-| LLM function-calling | `LLMFunctionCallingPlanner` | Future. Serializes `TOOL_SPECS` into the system prompt. LLM emits `tool_name` + structured args. |
-| Hybrid | `HybridPlanner` | Future v2. Simple intents → rule; ambiguous / multi-step intents → LLM. |
+| Backend | Class | Status | When to use |
+|---------|-------|--------|-------------|
+| Rule-based | `RuleBasedPlanner` | ✅ Implemented | Zero LLM cost, fully testable. Extracted from legacy `router_node` + `specialist_node`. |
+| LLM function-calling | `LLMFunctionCallingPlanner` | 📝 Future | Serializes `TOOL_SPECS` into the system prompt. LLM emits `tool_name` + structured args. |
+| Hybrid | `HybridPlanner` | 📝 Future v2 | Simple intents → rule; ambiguous / multi-step intents → LLM. |
 
-**Rule-based breakdown (current logic, refactored)**
+**Rule-based structure (implemented)**
 
 ```
 planning/
-├── base.py                  # Planner + ExecutionPlan abstractions
+├── base.py                  # Planner + ExecutionPlan + ExecutionController + Critic abstractions
 ├── rule_based/
-│   ├── router.py            # keyword → domain (was router_node)
+│   ├── router.py            # keyword → domain
+│   ├── planner.py           # orchestrates router + specialists
 │   ├── specialists/
 │   │   ├── mrna_specialist.py
 │   │   ├── sirna_specialist.py
 │   │   └── crispr_specialist.py
 │   └── parsers/             # NL → structured args
-│       ├── evitar_parser.py
-│       ├── lineardesign_parser.py
-│       └── ...
+│       └── common.py        # ~1,700 lines of detection + param builders
 └── llm_based/
-    └── function_calling_planner.py
+    └── (reserved for future)
 ```
 
 **Execution control**
 
-The planner produces a plan, but a separate lightweight **controller** (or the existing LangGraph graph) executes it step by step and applies the critic:
+`ExecutionController` (in `planning/base.py`) is the bridge between Planner and lower layers. It is **stateful** and executes the plan step by step:
 
 ```python
 class ExecutionController:
     def execute(self, plan: ExecutionPlan, state: AgentState) -> AgentState:
         for step in plan.steps:
-            result = self.run_step(step, state)
-            if self.critic.should_retry(result):
-                ...
+            inputs = self._resolve_bindings(step.input_binding, state)
+            if step.type == "capability":
+                result = self.capabilities.get(step.target).invoke(inputs)
+            else:  # workflow
+                result = self.workflows.get(step.target).run(inputs)
+            self._write_result(state, step.output_key, result)
+            ...
 ```
 
 This keeps the planner **stateless** and **pure** (input → plan), which makes testing and swapping backends trivial.
@@ -606,17 +607,13 @@ This keeps the planner **stateless** and **pure** (input → plan), which makes 
 
 **Responsibility**: persist context across turns.
 
-**Minimum viable scope**
+**Implementation**
 
-```python
-class SessionMemory:
-    def load(self, session_id: str) -> AgentState: ...
-    def save(self, session_id: str, state: AgentState) -> None: ...
-
-class WorkspaceManager:
-    def add_file(self, session_id: str, file_path: str) -> str: ...
-    def list_files(self, session_id: str) -> list[str]: ...
-```
+| File | Class | Description |
+|------|-------|-------------|
+| `agent_core/session_memory.py` | `SessionMemory` | In-memory dict store (`load` / `save`). Can be swapped for Redis/SQLite without changing `AgentRunner`. |
+| `agent_core/workspace_manager.py` | `WorkspaceManager` | Session-scoped directory management |
+| `agent_core/file_manager.py` | `save_sequence`, `read_sequence`, etc. | Workspace file I/O helpers |
 
 RNA design is iterative. A typical session looks like:
 1. "Design an mRNA for GFP"
@@ -631,52 +628,65 @@ Without Layer 4, turn 3 does not know which candidate was chosen in turn 1.
 
 **Responsibility**: human-facing UI and programmatic API.
 
-**Refactor target**: both Streamlit and FastAPI should call the same `AgentRunner`, never import `compiled_graph` or `MrnaWorkflow` directly.
+**Implementation**
+
+`AgentRunner` (`agent_core/runner.py`) is the unified façade. All presentation layers go through it:
 
 ```python
 class AgentRunner:
-    def __init__(self, planner_backend: str = "rule"):
-        self.planner = create_planner(planner_backend)
-        self.memory = SessionMemory()
+    def __init__(self, planner: Planner, executor: ToolExecutor, *, session_memory=None):
+        self.planner = planner
+        self.executor = executor
+        self.capability_registry = build_default_capability_registry(executor)
+        self.workflow_registry = {"mrna_cds_design": MrnaCdsDesignWorkflow(...)}
+        self.controller = ExecutionController(...)
 
-    def run(self, user_input: str, session_id: str) -> AgentResponse:
-        state = self.memory.load(session_id)
-        state["user_text"] = user_input
-        result = self.compiled_graph.invoke(state)
-        self.memory.save(session_id, result)
-        return AgentResponse.from_state(result)
+    def run(self, user_input: str, session_id: str = "") -> dict: ...
+    def run_chat(self, user_input: str, session_id: str = "") -> dict: ...
+    def stream_chat(self, user_input: str, session_id: str = "") -> Iterator[dict]: ...
 ```
 
----
+**Presentation layer mapping**
 
-### 9.7 Current → Target Mapping
-
-| Current file | Current problem | Target home |
-|--------------|-----------------|-------------|
-| `agent_core/tools.py` | ✅ good | Layer 0 (unchanged) |
-| `agent_core/tool_executor.py` | ✅ good | Layer 0 (unchanged) |
-| `nodes.py` `_build_*_args` | mixed with orchestration | `planning/rule_based/parsers/` |
-| `nodes.py` `router_node` | mixed with orchestration | `planning/rule_based/router.py` |
-| `nodes.py` `*_specialist_node` | mixed with orchestration | `planning/rule_based/specialists/` |
-| `nodes.py` `tool_execution_node` | 800-line if-elif | `capabilities/base.py` + auto-writeback |
-| `nodes.py` `critic_node` | mixed with orchestration | `planning/control/critic.py` |
-| `workflows/mrna_workflow.py` | good but isolated | Layer 2 `MrnaWorkflow` |
-| `workflow_api/app.py` | calls workflow directly | Layer 5 via `AgentRunner` |
-| `frontend/app.py` | imports `compiled_graph` directly | Layer 5 via `AgentRunner` |
+| Layer | File | Uses `AgentRunner` |
+|-------|------|-------------------|
+| Streamlit UI | `frontend/app.py` | ✅ `stream_chat()` |
+| FastAPI API | `workflow_api/app.py` | ✅ `run()` |
+| CLI | `cli/mrna_workflow.py` | ✅ via `workflow_api/` handlers |
+| LangGraph legacy | `graph.py` / `graph_nodes.py` | ✅ `RuleBasedPlanner` + `ExecutionController` |
 
 ---
 
-### 9.8 Migration Path (implementation order)
+### 9.7 Migration Completed
 
-1. **Define top-level interface** (`AgentRunner`, `Planner`, `ExecutionPlan`) and run one golden-path end-to-end test (mRNA design from chat UI).
-2. **Extract rule-based planner** from `nodes.py` into `planning/rule_based/` without changing behaviour.
-3. **Build Layer 1 capabilities** for the 3–4 tools used by the mRNA golden path; replace manual if-elif with auto-writeback.
-4. **Unify paths**: make LangGraph call `MrnaWorkflow` as a compound capability.
-5. **Generalize Layer 2**: extract `BaseDomainWorkflow`, implement a second domain (siRNA or CRISPR).
-6. **Add LLM planner backend**: serialize `TOOL_SPECS`, let LLM choose tools; keep rule backend as fallback.
-7. **Add Layer 4 memory**: multi-turn session persistence.
+The monolithic 3,786-line `nodes.py` was retired in commit `8fc361d`. All logic has been migrated to the five-layer architecture:
 
-> **Key rule**: at every step, the system must remain end-to-end runnable. Never leave the codebase in a "half-refactored, nothing works" state.
+| Original location | Migration status | New home |
+|-------------------|-----------------|----------|
+| `nodes.py` `_build_*_args` | ✅ Migrated | `planning/rule_based/parsers/common.py` |
+| `nodes.py` `router_node` | ✅ Migrated | `planning/rule_based/router.py` + `planner.py` |
+| `nodes.py` `*_specialist_node` | ✅ Migrated | `planning/rule_based/specialists/{mrna,sirna,crispr}_specialist.py` |
+| `nodes.py` `tool_execution_node` | ✅ Migrated | `capabilities/base.py` + `capabilities/writebacks.py` |
+| `nodes.py` `critic_node` | ✅ Preserved (thin wrapper) | `graph_nodes.py` (hard rules) + `workflows/mrna_cds_critic.py` (workflow critic) |
+| `workflows/mrna_workflow.py` | ✅ Integrated | Layer 2 `MrnaWorkflow` + `MrnaCdsDesignWorkflow` |
+| `workflow_api/app.py` | ✅ Integrated | Layer 5 via `AgentRunner` |
+| `frontend/app.py` | ✅ Integrated | Layer 5 via `AgentRunner` |
+
+---
+
+### 9.8 Migration History
+
+The migration was executed in the following order (all steps completed):
+
+1. ✅ **Define top-level interface** (`AgentRunner`, `Planner`, `ExecutionPlan`) and run one golden-path end-to-end test (mRNA design from chat UI).
+2. ✅ **Extract rule-based planner** from `nodes.py` into `planning/rule_based/` without changing behaviour.
+3. ✅ **Build Layer 1 capabilities** for the tools used by the mRNA golden path; replace manual if-elif with auto-writeback.
+4. ✅ **Unify paths**: LangGraph calls `MrnaCdsDesignWorkflow` as a compound capability via `ExecutionController`.
+5. ✅ **Generalize Layer 2**: extract `BaseDomainWorkflow`; implement `MrnaCdsDesignWorkflow` with paired `MrnaCdsDesignCritic`.
+6. 📝 **Add LLM planner backend**: reserved for future — serialize `TOOL_SPECS`, let LLM choose tools; keep rule backend as fallback.
+7. ✅ **Add Layer 4 memory**: `SessionMemory` + `WorkspaceManager` with session isolation.
+
+> **Key rule followed**: at every step, the system remained end-to-end runnable. The codebase was never left in a "half-refactored, nothing works" state.
 
 ---
 
@@ -1011,6 +1021,8 @@ class ExecutionController:
 ## 9. Workflow–Critic Co-Design
 
 > **Scope**: why Workflow and Critic must be designed together, and how their coupling varies by task type.
+>
+> **Implementation status**: `MrnaCdsDesignCritic` is implemented (`workflows/mrna_cds_critic.py`); `SirnaCritic` and `CrisprCritic` are design proposals only.
 
 ### 9.1 Why this matters more than Planner design
 
@@ -1057,14 +1069,20 @@ Different RNA design tasks require different Workflow–Critic contracts:
 | Retry action | Change candidate-generation parameters, not just re-run same tool |
 
 ```python
-class MrnaCritic(Critic):
-    def should_retry(self, workflow_result: WorkflowResult, state: AgentState) -> bool:
+class MrnaCdsDesignCritic(Critic):
+    def should_retry(self, workflow_result: WorkflowResult, state: dict[str, Any]) -> bool:
         best = workflow_result.best_candidate
-        if best.scores["total_score"] < 0.70:
-            state["next_generation_strategy"] = "increase_diversity"
+        scores = best.scores
+        if scores.get("total_score", 0.0) < 0.70:
+            state.setdefault("next_constraints", {})["increase_diversity"] = True
+            return True
+        if scores.get("mfe_component", 0.0) < 0.5:
+            state["next_constraints"]["prioritize_stability"] = True
             return True
         return False
 ```
+
+*(The actual implementation lives in `workflows/mrna_cds_critic.py`.)*
 
 #### siRNA design (off-target safety-critical)
 

@@ -273,10 +273,11 @@ When locking a new tool interface, add a comment block like this in **all** affe
    ├── start.sh
    └── install_*.sh    (optional)
 3. Add @tool wrapper in agent_core/tools.py
-4. Add routing logic in agent_core/nodes.py (specialist + parsing)
-5. Add state fields in agent_core/state.py (if needed)
-6. Add node/edge in agent_core/graph.py (if new specialist needed)
-7. Test order: raw command → microservice endpoint → Agent invocation → frontend
+4. Add routing logic in agent_core/planning/rule_based/parsers/common.py (specialist + parsing)
+5. Add a writeback entry in agent_core/capabilities/writebacks.py (auto state writeback)
+6. Add state fields in agent_core/state.py (if needed)
+7. Add node/edge in agent_core/graph.py (if new specialist needed)
+8. Test order: raw command → microservice endpoint → Agent invocation → frontend
 ```
 
 ---
@@ -450,20 +451,21 @@ These findings were established during a codebase audit and remain true:
 
 ### Tool registry audit
 
-- The registry in `nodes.py` is **static** (hard-coded lists like `SIRNA_TOOLS`, `MRNA_TOOLS`, `CRISPR_TOOLS`).
-- Tool selection is deterministic, not LLM-planned.
+- `ToolRegistry` (`tool_registry.py`) + `CapabilityRegistry` (`capabilities/base.py`) are dynamic and driven by `TOOL_SPECS`.
+- Tool selection remains deterministic (`RuleBasedPlanner`), but the architecture supports swapping to `LLMFunctionCallingPlanner` without touching Layer 2 or below.
 
 ### Schema audit
 
 - Input schemas are enforced via Pydantic models in `tools.py`.
-- Output schemas exist in `tool_specs.py` but are not always strictly validated at runtime.
-- Error schemas are largely missing; errors propagate as raw exception strings.
+- Output schemas in `tool_specs.py` are validated at runtime by `Capability` via `output_model.model_validate()`.
+- Error schemas are largely missing; errors propagate as raw exception strings. (Still true.)
 
 ### Planning / critic / retry audit
 
 - The system is a **deterministic rule-driven workflow**, not an open-ended agent.
-- The critic is a hard threshold checker (e.g., `mfe > -20.0`), not an LLM reviewer.
-- Retry logic is bounded by `max_retries = 3`.
+- The LangGraph path critic is a hard threshold checker (`mfe > -20.0`).
+- The Workflow path uses a score-based critic (`MrnaCdsDesignCritic`) co-designed with its workflow.
+- Retry logic is bounded by `max_retries = 3` (graph path) or `ExecutionPlan.max_retries` (workflow path).
 
 ### Supported tasks audit (current ground truth)
 

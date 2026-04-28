@@ -66,7 +66,8 @@ This project implements an RNA design agent system:
 - Frontend: Streamlit
 - Tool interface: LangChain `@tool`
 - Tool runtime: FastAPI + Conda
-- Current mode: **rule-driven** (Router / Specialist / Critic are all rule-based; tools are stable and can later be switched to LLM mode)
+- Agent architecture: **Five-layer** (Capability → Workflow → Planning → Session → Runner)
+- Current mode: **rule-driven** (`RuleBasedPlanner` / `ExecutionController` / `MrnaCdsDesignCritic`; architecture supports swapping to LLM mode without touching Layer 2 or below)
 
 ---
 
@@ -77,7 +78,7 @@ rna_agent_system/
 ├── agent_core/                 # Agent orchestration layer
 │   ├── state.py                #   AgentState definition
 │   ├── graph.py                #   LangGraph workflow builder
-│   ├── nodes.py                #   Router / Specialist / Critic node logic
+│   ├── graph_nodes.py          #   Thin LangGraph wrappers (replaced monolithic nodes.py)
 │   ├── tools.py                #   @tool wrappers (HTTP → microservices)
 │   ├── tool_specs.py           #   Pydantic output schemas & ToolSpec registry
 │   ├── tool_registry.py        #   Minimal name→callable registry
@@ -87,7 +88,12 @@ rna_agent_system/
 │   ├── workflow_dispatch.py    #   Task-type classifier
 │   ├── sequence_utils.py       #   Shared normalization / GC / dot-bracket math
 │   ├── file_manager.py         #   workspace file I/O
-│   ├── workflows/              #   Higher-level workflow modules
+│   ├── session_memory.py       #   Layer 4: multi-turn session persistence
+│   ├── workspace_manager.py    #   Layer 4: session-scoped directory management
+│   ├── runner.py               #   Layer 5: unified AgentRunner façade
+│   ├── capabilities/           #   Layer 1: atomic tool wrappers + auto-writeback
+│   ├── planning/               #   Layer 3: Planner + ExecutionController + rule-based backends
+│   ├── workflows/              #   Layer 2: higher-level workflow modules
 │   └── workflow_tools/         #   LangChain Runnable workflow tools
 ├── frontend/
 │   └── app.py                  # Streamlit chat UI
@@ -350,7 +356,7 @@ Current submodules: GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RiboDiffusio
 
 | ID | Limitation | Impact |
 |----|------------|--------|
-| L1 | Router / Specialist / Critic are rule-based | Limited complex natural-language understanding |
+| L1 | Router / Specialist / Critic are rule-based (`RuleBasedPlanner`) | Limited complex NL understanding; LLM backend reserved for future (Layer 3 is backend-pluggable) |
 | L2 | Critic MFE threshold `-20.0` is unreasonable for short sequences | Short sequences are repeatedly rejected until retries are exhausted |
 | L3 | siRNA efficiency / off-target capabilities have no production implementation | Historical mocks (ports 8001/8002) were removed; only Evitar / Vienna duplex remain |
 | L4 | RhoFold is single-sequence mode only | MSA database not connected |
