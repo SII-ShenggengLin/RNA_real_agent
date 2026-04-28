@@ -23,7 +23,7 @@ def _make_result(total_score: float, mfe_component: float, gc_component: float) 
             "total_score": total_score,
             "mfe_component": mfe_component,
             "gc_component": gc_component,
-            "length_component": 1.0,
+
         },
     )
     return WorkflowResult(

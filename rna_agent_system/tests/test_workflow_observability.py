@@ -60,7 +60,7 @@ def test_workflow_persist_request_and_result_json(stub_ex):
 def test_workflow_failed_run_still_persisted(stub_ex):
     parent = _run_parent()
     inp = MrnaWorkflowInput(
-        candidate_mode="direct",
+
         sequence="",
         persist_run=True,
         artifact_runs_parent=str(parent),

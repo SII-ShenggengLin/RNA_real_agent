@@ -81,24 +81,14 @@ def _resolve_sequence_inputs(req: MrnaWorkflowHttpRequest) -> MrnaWorkflowInput:
     """Build ``MrnaWorkflowInput`` from validated HTTP request (no protein translation here)."""
 
     raw_c = dict(req.constraints or {})
-    mode = str(raw_c.get("candidate_mode", "direct"))
-    synonym_source = raw_c.get("synonym_source")
     merge_extra = _sanitize_constraints(raw_c)
 
     if req.sequence is not None and str(req.sequence).strip():
-        inp = MrnaWorkflowInput(
-            candidate_mode=mode,  # type: ignore[arg-type]
-            sequence=str(req.sequence).strip(),
-            synonym_source=synonym_source,
-        )
+        inp = MrnaWorkflowInput(sequence=str(req.sequence).strip())
         return _merge_constraints_into_input(inp, merge_extra)
 
     if req.sequences:
-        inp = MrnaWorkflowInput(
-            candidate_mode=mode,  # type: ignore[arg-type]
-            sequences=list(req.sequences),
-            synonym_source=synonym_source,
-        )
+        inp = MrnaWorkflowInput(sequences=list(req.sequences))
         return _merge_constraints_into_input(inp, merge_extra)
 
     raise ValueError("missing sequence source")
@@ -166,7 +156,7 @@ def execute_mrna_workflow_http(
                 codon_usage_path=str(ld_codon) if ld_codon is not None else None,
                 verbose=ld_verbose,
             )
-            inp = MrnaWorkflowInput(sequence=cds, candidate_mode="direct")
+            inp = MrnaWorkflowInput(sequence=cds)
             inp = _merge_constraints_into_input(inp, c_all or None)
         else:
             inp = _resolve_sequence_inputs(req)

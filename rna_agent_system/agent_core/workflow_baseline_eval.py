@@ -72,15 +72,12 @@ def load_baseline_samples(path: Optional[Path] = None) -> List[Dict[str, Any]]:
 def iter_sample_inputs(
     samples: List[Dict[str, Any]],
     *,
-    target_length_nt: Optional[int] = None,
     persist_run: bool = False,
 ) -> Iterator[Tuple[str, MrnaWorkflowInput]]:
     for row in samples:
         sid = str(row.get("id", "sample"))
         inp = MrnaWorkflowInput(
             sequence=str(row["sequence"]).strip(),
-            candidate_mode="direct",
-            target_length_nt=target_length_nt,
             persist_run=persist_run,
         )
         yield sid, inp
@@ -118,7 +115,6 @@ def evaluate_sample(
 def run_baseline_batch(
     *,
     samples_path: Optional[Path] = None,
-    target_length_nt: Optional[int] = None,
     persist_run: bool = False,
     executor: Optional[ToolExecutor] = None,
 ) -> List[Dict[str, Any]]:
@@ -127,7 +123,6 @@ def run_baseline_batch(
     ex = executor or make_stub_mrna_executor()
     for sid, inp in iter_sample_inputs(
         samples,
-        target_length_nt=target_length_nt,
         persist_run=persist_run,
     ):
         rows.append(evaluate_sample(sid, inp, executor=ex))

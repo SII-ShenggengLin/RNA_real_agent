@@ -17,39 +17,19 @@ from agent_core.tool_runtime import ToolResult
 from agent_core.workflow_models import Candidate, TaskState, WorkflowResult, sort_candidates_by_score
 from agent_core.workflow_run_storage import build_public_summary, persist_mrna_workflow_run
 
-from .mrna_candidates import CandidateMode, build_candidates, generate_candidate_sequences
+from agent_core.sequence_utils import normalize_rna_sequence
 from .mrna_scoring import MrnaScoreWeights, compute_mrna_metric_bundle, score_mrna_candidate
 
 _LOGGER = logging.getLogger("agent_core.workflows.mrna")
 
 
 class MrnaWorkflowInput(BaseModel):
-    """Inputs for ``MrnaWorkflow``.
-
-    Provide either ``sequence`` / ``sequences`` or rely on ``candidate_mode`` + sources.
-    """
+    """Inputs for ``MrnaWorkflow`` — pure scoring of existing sequence(s)."""
 
     model_config = ConfigDict(extra="forbid")
 
-    candidate_mode: CandidateMode = Field(
-        default="direct",
-        description=(
-            "direct | synonymous_minimal | tail_augment — see ``generate_candidate_sequences``.\n"
-            "**direct** (default) does NOT create new sequences; it only normalises "
-            "the input sequence(s) (strip FASTA headers, T→U, etc.). Use this for pure scoring.\n"
-            "synonymous_minimal and tail_augment are experimental diversity generators."
-        ),
-    )
     sequence: Optional[str] = Field(default=None, description="Single RNA/DNA sequence string.")
-    sequences: Optional[List[str]] = Field(default=None, description="Multiple sequences (direct mode).")
-    synonym_source: Optional[str] = Field(default=None, description="CDS for synonymous_minimal mode.")
-    max_synonymous_variants: int = Field(default=5, ge=1, le=64)
-    tail_augment_extra: int = Field(default=2, ge=0, le=32, description="Extra poly-A tail variants when mode is tail_augment.")
-
-    target_length_nt: Optional[int] = Field(
-        default=None,
-        description="If set, length component prefers this many nucleotides.",
-    )
+    sequences: Optional[List[str]] = Field(default=None, description="Multiple sequences.")
     score_weights: Optional[MrnaScoreWeights] = None
 
     gc_tool_name: str = Field(
@@ -123,21 +103,18 @@ class MrnaWorkflow:
         started_at = datetime.now(timezone.utc)
         inp_dict = inp.model_dump(mode="json")
 
-        raw_seqs = generate_candidate_sequences(
-            mode=inp.candidate_mode,
-            sequences=inp.sequences,
-            sequence=inp.sequence,
-            synonym_source=inp.synonym_source,
-            max_synonymous_variants=inp.max_synonymous_variants,
-            tail_augment_extra=inp.tail_augment_extra,
-        )
-        _LOGGER.info(
-            "mrna_candidate_mode=%s input_seqs=%d generated_candidates=%d",
-            inp.candidate_mode,
-            len(inp.sequences or []) + (1 if inp.sequence else 0),
-            len(raw_seqs),
-        )
-        candidates = build_candidates(raw_seqs, source=f"mrna:{inp.candidate_mode}")
+        raw_seqs: List[str] = []
+        if inp.sequences:
+            raw_seqs = [normalize_rna_sequence(s) for s in inp.sequences if s]
+        elif inp.sequence:
+            one = normalize_rna_sequence(inp.sequence)
+            if one:
+                raw_seqs = [one]
+        _LOGGER.info("mrna_scoring input_seqs=%d candidates=%d", len(inp.sequences or []) + (1 if inp.sequence else 0), len(raw_seqs))
+        candidates = [
+            Candidate(sequence=s, sequence_type="mrna", source="mrna:direct", metadata={"generator": "normalize"})
+            for s in raw_seqs if s
+        ]
 
         task_kwargs: Dict[str, Any] = {
             "task_type": "mrna_ranking_minimal",
@@ -150,9 +127,8 @@ class MrnaWorkflow:
         task = TaskState(**task_kwargs)
 
         _LOGGER.info(
-            "mrna_task_start task_id=%s mode=%s persist=%s",
+            "mrna_task_start task_id=%s persist=%s",
             task.task_id,
-            inp.candidate_mode,
             inp.persist_run,
         )
 
@@ -175,10 +151,9 @@ class MrnaWorkflow:
             return wf
 
         _LOGGER.info(
-            "mrna_candidates_generated task_id=%s count=%s source=%s",
+            "mrna_candidates_generated task_id=%s count=%s",
             task.task_id,
             len(candidates),
-            inp.candidate_mode,
         )
 
         for cand in candidates:
@@ -242,14 +217,12 @@ class MrnaWorkflow:
                 gc_from_tools=gc_content,
                 sequence_length_from_tools=seq_len_tool,
                 mfe_kcal_per_mol=mfe,
-                target_length_nt=inp.target_length_nt,
             )
             cand.metadata["metrics_bundle"] = bundle
 
             scored = score_mrna_candidate(
                 bundle,
                 weights=inp.score_weights or self.weights,
-                target_length_nt=inp.target_length_nt,
             )
             cand.scores.clear()
             cand.scores.update(scored)

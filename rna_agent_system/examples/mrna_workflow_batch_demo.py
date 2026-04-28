@@ -36,13 +36,6 @@ def main() -> int:
         help="Path to mrna_baseline_samples.json",
     )
     p.add_argument("--json", action="store_true", help="Print full row objects as JSON array.")
-    p.add_argument(
-        "--target-length",
-        type=int,
-        default=None,
-        dest="target_length_nt",
-        help="Optional target_length_nt passed into MrnaWorkflowInput.",
-    )
     args = p.parse_args()
 
     if not args.samples.is_file():
@@ -51,7 +44,6 @@ def main() -> int:
 
     rows = run_baseline_batch(
         samples_path=args.samples,
-        target_length_nt=args.target_length_nt,
         persist_run=False,
     )
     if args.json:

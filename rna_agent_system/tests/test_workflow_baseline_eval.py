@@ -35,7 +35,7 @@ def test_compare_candidates_within_sample():
             "AAAAAAAAUGCCCCCCCCCCUUUUUUUUUUUUUUAAAAAAAAAA",
             "GCCGCCGCCGCC",
         ],
-        candidate_mode="direct",
+
         persist_run=False,
     )
     row = evaluate_sample("pair", inp)

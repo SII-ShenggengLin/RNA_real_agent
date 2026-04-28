@@ -28,9 +28,9 @@ class MrnaWorkflowHttpRequest(BaseModel):
     constraints: Optional[Dict[str, Any]] = Field(
         default=None,
         description=(
-            "Optional workflow knobs: candidate_mode, target_length_nt, gc_service_url, fold_service_url, "
+            "Optional workflow knobs: gc_service_url, fold_service_url, "
             "lineardesign_service_url, lineardesign_lambda, lineardesign_codon_usage_path, lineardesign_verbose, "
-            "run_gc_tool, run_fold_tool, max_synonymous_variants, synonym_source, etc."
+            "run_gc_tool, run_fold_tool, score_weights, etc."
         ),
     )
     top_k: Optional[int] = Field(default=None, ge=1, le=256, description="Limit returned ranked candidates.")

@@ -41,9 +41,7 @@ def test_mrna_workflow_end_to_end_best_candidate():
     seq_a = "AUGCCCGGGUUUAAAUUUAAAUUUAAA"  # 27 nt, partial swaps for synonymous mode
     seq_b = "AUGCCCGGGUUUAAAUUUAAAUUUAAA"
     inp = MrnaWorkflowInput(
-        candidate_mode="direct",
         sequences=[seq_a, seq_b + "AAA"],
-        target_length_nt=30,
         persist_run=False,
     )
     out = run_mrna_workflow(inp, executor=ex)
@@ -62,7 +60,7 @@ def test_mrna_workflow_tools_fail_gracefully():
     reg.register(_FailFoldTool())
     ex = ToolExecutor(reg)
 
-    inp = MrnaWorkflowInput(sequence="AUGCAUGCAUGCAU", candidate_mode="direct", persist_run=False)
+    inp = MrnaWorkflowInput(sequence="AUGCAUGCAUGCAU", persist_run=False)
     out = run_mrna_workflow(inp, executor=ex)
     assert out.success is True
     assert out.best_candidate is not None

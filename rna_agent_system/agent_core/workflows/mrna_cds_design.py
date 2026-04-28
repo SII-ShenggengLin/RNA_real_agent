@@ -38,7 +38,6 @@ class MrnaCdsDesignInput(BaseModel):
     run_fold: bool = Field(default=True)
     run_gc: bool = Field(default=True)
     score_weights: Optional[MrnaScoreWeights] = None
-    target_length_nt: Optional[int] = Field(default=None)
     target_gc_mid: Optional[float] = Field(default=None, description="Override GC band mid-point for scoring.")
 
 
@@ -239,7 +238,6 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             gc_from_tools=gc_content,
             sequence_length_from_tools=seq_len,
             mfe_kcal_per_mol=mfe,
-            target_length_nt=candidate.metadata.get("target_length_nt"),
             unpaired_fraction=unpaired,
         )
         bundle["fold_tool"] = fold_tool
@@ -252,7 +250,6 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
         kwargs: dict[str, Any] = {
             "weights": metrics.get("_score_weights"),
-            "target_length_nt": metrics.get("target_length_nt"),
         }
         tgc = metrics.get("target_gc_mid")
         if tgc is not None:

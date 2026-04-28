@@ -16,29 +16,25 @@ from agent_core.sequence_utils import compute_gc_content, normalize_rna_sequence
 class MrnaScoreWeights:
     """Default weights for ``total_score`` (components are in [0, 1]).
 
-    For CDS-only design the length component is normally 0 because the
-    protein fixes the CDS length.  Unpaired fraction (from dot-bracket)
-    is added as a new structural-quality dimension.
+    For CDS design the three dimensions are GC content, normalised MFE,
+    and dot-bracket unpaired fraction.  Length is not scored because the
+    protein sequence fixes the CDS length.
     """
 
     gc: float = 0.40
     mfe: float = 0.35
     unpaired: float = 0.25
-    length: float = 0.0
 
     def normalized(self) -> MrnaScoreWeights:
         """Scale weights to sum to 1.0."""
 
-        s = self.gc + self.mfe + self.unpaired + self.length
+        s = self.gc + self.mfe + self.unpaired
         if s <= 0:
-            return MrnaScoreWeights(
-                gc=1.0 / 3, mfe=1.0 / 3, unpaired=1.0 / 3, length=0.0
-            )
+            return MrnaScoreWeights(gc=1.0 / 3, mfe=1.0 / 3, unpaired=1.0 / 3)
         return MrnaScoreWeights(
             gc=self.gc / s,
             mfe=self.mfe / s,
             unpaired=self.unpaired / s,
-            length=self.length / s,
         )
 
 
@@ -82,47 +78,27 @@ def gc_band_score(gc: float, *, low: float = 0.42, mid: float = 0.50, high: floa
 
 
 def mfe_stability_component(
-    mfe_kcal_per_mol: Optional[float], *, sequence_length: Optional[int] = None
+    mfe_kcal_per_mol: Optional[float], *, sequence_length: int
 ) -> float:
-    """Map folding energy (kcal/mol, typically negative) to [0, 1].
+    """Map folding energy normalised by sequence length to [0, 1].
 
-    When *sequence_length* is provided the MFE is normalised by length
-    (kcal/mol per nt) so that scores are comparable across different CDS
-    lengths.
+    *mfe_kcal_per_mol* is divided by *sequence_length* to yield
+    kcal/mol per nucleotide.  This makes MFE scores comparable across
+    CDS of different lengths.
 
+    Normalised range roughly [-0.30, -0.02] per nt.
     Missing / NaN → **0.45** (slightly below neutral) so failed folds do
     not dominate ranking.
     """
 
-    if mfe_kcal_per_mol is None:
+    if mfe_kcal_per_mol is None or sequence_length <= 0:
         return 0.45
     try:
-        mfe = float(mfe_kcal_per_mol)
+        mfe = float(mfe_kcal_per_mol) / sequence_length
     except (TypeError, ValueError):
         return 0.45
-
-    if sequence_length and sequence_length > 0:
-        mfe = mfe / sequence_length
-        # Normalised range roughly [-0.30, -0.02] per nt
-        x = (-mfe - 0.02) / 0.28
-    else:
-        # Legacy linear map: [-50,-5] → [1, 0]
-        x = (-mfe - 5.0) / 45.0
+    x = (-mfe - 0.02) / 0.25
     return float(min(1.0, max(0.0, x)))
-
-
-def length_target_score(length_nt: int, *, target_nt: Optional[int]) -> float:
-    """If ``target_nt`` is None → always 1.0 (ignore length). Else triangular peak at target."""
-
-    if target_nt is None or target_nt <= 0:
-        return 1.0
-    # Within ±25% of target full score at center; linear decay to 0 at ±40%.
-    delta = abs(length_nt - target_nt) / float(target_nt)
-    if delta <= 0.25:
-        return 1.0
-    if delta >= 0.40:
-        return 0.0
-    return 1.0 - (delta - 0.25) / (0.40 - 0.25)
 
 
 def unpaired_band_score(
@@ -153,7 +129,6 @@ def compute_mrna_metric_bundle(
     gc_from_tools: Optional[float],
     sequence_length_from_tools: Optional[int],
     mfe_kcal_per_mol: Optional[float],
-    target_length_nt: Optional[int],
     unpaired_fraction: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Collect canonical keys used by scoring and summaries."""
@@ -177,7 +152,6 @@ def compute_mrna_metric_bundle(
         "sequence_length": int(length_eff),
         "mfe_kcal_per_mol": mfe_kcal_per_mol,
         "mfe_per_nt": mfe_per_nt,
-        "target_length_nt": target_length_nt,
         "unpaired_fraction": unpaired_fraction,
     }
 
@@ -186,7 +160,6 @@ def score_mrna_candidate(
     bundle: Mapping[str, Any],
     *,
     weights: Optional[MrnaScoreWeights] = None,
-    target_length_nt: Optional[int] = None,
     gc_low: float = 0.42,
     gc_mid: float = 0.50,
     gc_high: float = 0.58,
@@ -202,26 +175,16 @@ def score_mrna_candidate(
     length_nt = int(bundle.get("sequence_length", 0))
     mfe_raw = bundle.get("mfe_kcal_per_mol")
     unpaired_raw = bundle.get("unpaired_fraction")
-    tl_raw = (
-        target_length_nt
-        if target_length_nt is not None
-        else bundle.get("target_length_nt")
-    )
-    tl: Optional[int] = int(tl_raw) if isinstance(tl_raw, int) else None
 
     gc_c = gc_band_score(gc, low=gc_low, mid=gc_mid, high=gc_high)
-    mfe_c = mfe_stability_component(
-        _optional_float(mfe_raw), sequence_length=length_nt if length_nt > 0 else None
-    )
+    mfe_c = mfe_stability_component(_optional_float(mfe_raw), sequence_length=length_nt)
     unp_c = unpaired_band_score(_optional_float(unpaired_raw))
-    len_c = length_target_score(length_nt, target_nt=tl)
 
-    total = w.gc * gc_c + w.mfe * mfe_c + w.unpaired * unp_c + w.length * len_c
+    total = w.gc * gc_c + w.mfe * mfe_c + w.unpaired * unp_c
     return {
         "gc_component": float(gc_c),
         "mfe_component": float(mfe_c),
         "unpaired_component": float(unp_c),
-        "length_component": float(len_c),
         "total_score": float(total),
         "mfe_per_nt": bundle.get("mfe_per_nt"),
     }
