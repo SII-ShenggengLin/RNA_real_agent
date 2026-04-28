@@ -150,7 +150,9 @@ rna_agent_system/
 | `design_sgrna_handle_with_crgpt` | sgrna_design | 8017 | `sgrna_handle_design` | `filepath` / seed | `best_sequence` | partial (GPU/weights) |
 | `design_sirna_with_evitar` | Evitar | 8016 | `sirna_design_evitar` | `filepath`, `mode` | candidate list | partial (Linux only) |
 | `compute_rna_sequence_gc_content` | RNA metrics | 8020 | — | `filepath` | `gc_content`, 5 fields | available |
+| `compute_rna_sequence_u_content` | RNA metrics | 8020 | — | `filepath` | `u_fraction`, 3 fields | available |
 | `compute_dot_bracket_unpaired_fraction` | RNA metrics | 8020 | — | `filepath` | `unpaired_fraction`, 3 fields | available |
+| `compute_cai_for_cds_sequence` | Pure Python (Kazusa) | — | `cds_codon_metrics` | `filepath`, `species` | `cai_score`, 6 fields | available |
 
 ### 4.2 Task Master Table
 
@@ -207,7 +209,7 @@ rna_agent_system/
 | 8017 | `microservices/sgrna_design_service/` | CRGPT | sgRNA handle design | ✅ Linux GPU |
 | 8018 | `microservices/codonw_slim_service/` | codonw-slim | CDS codon metrics (CAI / Fop / CBI / Nc) | ✅ Linux |
 | 8019 | `microservices/blast_service/` | BLAST+ | blastn nucleotide similarity search | ✅ Linux |
-| 8020 | `microservices/rna_sequence_metrics_service/` | RNA metrics | Sequence GC content; dot-bracket unpaired fraction | ✅ Linux |
+| 8020 | `microservices/rna_sequence_metrics_service/` | RNA metrics | Sequence GC content; U content; dot-bracket unpaired fraction | ✅ Linux |
 | 8021 | `microservices/ribodiffusion_service/` | RiboDiffusion | PDB tertiary structure → RNA sequence (diffusion inverse folding) | ✅ Linux GPU |
 
 > New tools should use ports starting from **8022**.
@@ -230,7 +232,7 @@ The router dispatches to a specialist based on keyword matching in user text:
 |--------|--------------------------------|
 | `sirna_specialist` | `sirna`, `off-target`, `duplex`, `cofold`, `evitar`, `cas13`, `rnaxs`, `predsi` |
 | `crispr_specialist` | `crispr`, `cas9`, `sgrna`, `crisot`, `guide rna`, `crgpt`, `sgrna handle` |
-| `mrna_specialist` | `mrna`, `design`, `protein`, `cds`, `fold`, `structure`, `gemorna`, `lineardesign`, `linearfold`, `rhofold`, `rhodesign`, `ribodiffusion`, `rnasmol`, `rnastop`, `gernabind`, `ires`, `stability`, `aso`, `plfold`, `inverse fold`, `codonw`, `blast`, `blastn`, `gc content`, `unpaired fraction`, etc. |
+| `mrna_specialist` | `mrna`, `design`, `protein`, `cds`, `fold`, `structure`, `gemorna`, `lineardesign`, `linearfold`, `rhofold`, `rhodesign`, `ribodiffusion`, `rnasmol`, `rnastop`, `gernabind`, `ires`, `stability`, `aso`, `plfold`, `inverse fold`, `codonw`, `blast`, `blastn`, `gc content`, `u content`, `cai`, `codon adaptation index`, `unpaired fraction`, etc. |
 | Default | `mrna_specialist` |
 
 ### 6.3 Specialist Dispatch
@@ -266,7 +268,9 @@ The router dispatches to a specialist based on keyword matching in user text:
 | 6 | mRNA stability (`stability` / `degradation` / `rnastop`) | `predict_mrna_stability_with_rnastop` |
 | 7 | Codon metrics (`codonw` / `codon usage`) | `analyze_cds_codon_metrics_with_codonw_slim` |
 | 7b | GC content | `compute_rna_sequence_gc_content` |
-| 7c | Dot-bracket unpaired fraction | `compute_dot_bracket_unpaired_fraction` |
+| 7c | U content | `compute_rna_sequence_u_content` |
+| 7d | Dot-bracket unpaired fraction | `compute_dot_bracket_unpaired_fraction` |
+| 7e | CAI (direct Kazusa) | `compute_cai_for_cds_sequence` |
 | 8 | BLAST search | `run_blastn_similarity_search` |
 | 9 | RiboDiffusion inverse folding | `design_rna_inverse_fold_with_ribodiffusion` |
 | 10 | Structure → sequence (`rhodesign` + `.pdb`) | `design_rna_sequence_with_rhodesign` |

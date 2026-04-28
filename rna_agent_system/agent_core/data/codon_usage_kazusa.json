@@ -1,0 +1,2840 @@
+{
+  "Homo sapiens": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.46
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.19
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.44
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.46
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.54
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.22
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.56
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.54
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.08
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.3
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.47
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.05
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.24
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.29
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.42
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.08
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.2
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.32
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.58
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.18
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.07
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.28
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.27
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.11
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.4
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.11
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.73
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.2
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.36
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.25
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.47
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.47
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.36
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.53
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.24
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.17
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.28
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.43
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.21
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.11
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.57
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.21
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.18
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.27
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.46
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.16
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.24
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.4
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.54
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.34
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.12
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.23
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.42
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.25
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.46
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.11
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.58
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.25
+    }
+  },
+  "Mus musculus": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.44
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.2
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.43
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.48
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.56
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.22
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.57
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.52
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.07
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.14
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.28
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.49
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.05
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.23
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.31
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.41
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.08
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.2
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.3
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.59
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.17
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.08
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.29
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.26
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.12
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.39
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.1
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.74
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.19
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.34
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.25
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.43
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.5
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.35
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.57
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.24
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.16
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.29
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.39
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.22
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.1
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.61
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.22
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.17
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.29
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.45
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.18
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.25
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.38
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.55
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.33
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.12
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.23
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.41
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.26
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.46
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.09
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.59
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.23
+    }
+  },
+  "Rattus norvegicus": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.42
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.19
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.4
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.45
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.58
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.23
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.6
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.55
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.06
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.14
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.28
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.5
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.06
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.22
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.12
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.3
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.39
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.09
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.2
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.31
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.61
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.18
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.08
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.28
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.25
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.12
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.41
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.11
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.75
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.2
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.33
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.24
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.41
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.52
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.36
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.59
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.24
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.15
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.28
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.38
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.2
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.11
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.62
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.21
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.16
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.28
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.43
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.17
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.25
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.39
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.57
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.33
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.11
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.23
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.39
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.25
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.47
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.1
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.61
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.24
+    }
+  },
+  "Drosophila melanogaster": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.38
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.08
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.37
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.29
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.62
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.24
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.63
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.71
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.05
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.09
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.41
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.25
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.18
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.2
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.33
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.1
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.13
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.4
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.16
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.15
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.33
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.6
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.33
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.09
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.25
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.3
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.15
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.43
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.29
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.7
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.15
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.34
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.17
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.44
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.14
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.47
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.38
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.56
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.25
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.19
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.2
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.3
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.09
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.26
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.7
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.11
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.19
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.19
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.53
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.21
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.24
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.45
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.47
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.43
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.11
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.17
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.33
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.29
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.47
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.19
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.67
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.07
+    }
+  },
+  "Caenorhabditis elegans": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.49
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.21
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.56
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.55
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.51
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.13
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.44
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.45
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.11
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.26
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.43
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.39
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.23
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.18
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.25
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.18
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.61
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.21
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.17
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.09
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.39
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.1
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.09
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.53
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.66
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.23
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.14
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.2
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.34
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.09
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.53
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.32
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.62
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.31
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.18
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.38
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.1
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.16
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.34
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.59
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.29
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.15
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.41
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.08
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.39
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.36
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.68
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.2
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.22
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.2
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.32
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.12
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.16
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.31
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.62
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.59
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.23
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.13
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.38
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.08
+    }
+  },
+  "Danio rerio": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.47
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.2
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.43
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.5
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.53
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.18
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.57
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.5
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.07
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.16
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.36
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.46
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.07
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.18
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.14
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.31
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.42
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.13
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.18
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.24
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.58
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.18
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.07
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.3
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.26
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.12
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.41
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.15
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.74
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.12
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.34
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.26
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.4
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.16
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.5
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.29
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.6
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.22
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.16
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.31
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.49
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.26
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.13
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.51
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.19
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.22
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.32
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.47
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.22
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.23
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.3
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.53
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.28
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.11
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.25
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.36
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.34
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.44
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.13
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.64
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.16
+    }
+  },
+  "Arabidopsis thaliana": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.51
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.28
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.52
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.6
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.49
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.13
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.48
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.4
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.14
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.2
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.36
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.44
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.22
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.1
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.2
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.26
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.38
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.61
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.17
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.17
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.11
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.39
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.07
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.11
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.33
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.56
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.12
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.11
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.18
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.44
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.09
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.41
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.34
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.52
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.16
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.35
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.2
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.48
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.13
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.24
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.31
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.49
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.35
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.15
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.51
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.2
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.4
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.43
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.68
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.34
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.19
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.16
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.32
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.14
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.15
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.27
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.52
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.37
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.26
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.14
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.48
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.16
+    }
+  },
+  "Saccharomyces cerevisiae": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.59
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.26
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.56
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.63
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.41
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.16
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.44
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.37
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.28
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.21
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.47
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.3
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.29
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.1
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.23
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.31
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.64
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.14
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.06
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.15
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.36
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.06
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.14
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.42
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.69
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.07
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.11
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.12
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.31
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.04
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.46
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.35
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.59
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.16
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.26
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.22
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.41
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.11
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.27
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.3
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.58
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.48
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.14
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.42
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.21
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.39
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.38
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.65
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.47
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.21
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.22
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.35
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.19
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.21
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.29
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.7
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.22
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.19
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.11
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.3
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.12
+    }
+  },
+  "Escherichia coli K-12": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.57
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.11
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.53
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.42
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.43
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.11
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.47
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.58
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.15
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.64
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.36
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.12
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.16
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.0
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.12
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.17
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.55
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.36
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.1
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.13
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.45
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.44
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.05
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.14
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.3
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.07
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.46
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.55
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.7
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.07
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.58
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.16
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.47
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.14
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.35
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.47
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.53
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.33
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.07
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.13
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.73
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.02
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.24
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.27
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.03
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.25
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.11
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.65
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.29
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.18
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.31
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.35
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.46
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.17
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.21
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.7
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.13
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.4
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.38
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.3
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.12
+    }
+  },
+  "Bacillus subtilis": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.68
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.2
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.65
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.46
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.32
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.13
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.35
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.54
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.21
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.23
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.61
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.24
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.16
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.1
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.15
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.23
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.28
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.68
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.18
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.11
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.09
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.32
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.2
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.05
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.19
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.52
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.1
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.24
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.44
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.48
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.17
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.49
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.16
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.56
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.11
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.37
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.17
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.44
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.23
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.13
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.4
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.7
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.25
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.27
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.3
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.1
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.28
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.24
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.64
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.19
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.26
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.22
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.36
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.34
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.2
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.28
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.68
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.31
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.26
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.26
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.32
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.16
+    }
+  },
+  "Cricetulus griseus": {
+    "UUU": {
+      "aa": "F",
+      "fraction": 0.47
+    },
+    "UCU": {
+      "aa": "S",
+      "fraction": 0.22
+    },
+    "UAU": {
+      "aa": "Y",
+      "fraction": 0.44
+    },
+    "UGU": {
+      "aa": "C",
+      "fraction": 0.47
+    },
+    "UUC": {
+      "aa": "F",
+      "fraction": 0.53
+    },
+    "UCC": {
+      "aa": "S",
+      "fraction": 0.22
+    },
+    "UAC": {
+      "aa": "Y",
+      "fraction": 0.56
+    },
+    "UGC": {
+      "aa": "C",
+      "fraction": 0.53
+    },
+    "UUA": {
+      "aa": "L",
+      "fraction": 0.06
+    },
+    "UCA": {
+      "aa": "S",
+      "fraction": 0.14
+    },
+    "UAA": {
+      "aa": "*",
+      "fraction": 0.26
+    },
+    "UGA": {
+      "aa": "*",
+      "fraction": 0.5
+    },
+    "UUG": {
+      "aa": "L",
+      "fraction": 0.14
+    },
+    "UCG": {
+      "aa": "S",
+      "fraction": 0.05
+    },
+    "UAG": {
+      "aa": "*",
+      "fraction": 0.24
+    },
+    "UGG": {
+      "aa": "W",
+      "fraction": 1.0
+    },
+    "CUU": {
+      "aa": "L",
+      "fraction": 0.13
+    },
+    "CCU": {
+      "aa": "P",
+      "fraction": 0.31
+    },
+    "CAU": {
+      "aa": "H",
+      "fraction": 0.44
+    },
+    "CGU": {
+      "aa": "R",
+      "fraction": 0.11
+    },
+    "CUC": {
+      "aa": "L",
+      "fraction": 0.19
+    },
+    "CCC": {
+      "aa": "P",
+      "fraction": 0.32
+    },
+    "CAC": {
+      "aa": "H",
+      "fraction": 0.56
+    },
+    "CGC": {
+      "aa": "R",
+      "fraction": 0.18
+    },
+    "CUA": {
+      "aa": "L",
+      "fraction": 0.08
+    },
+    "CCA": {
+      "aa": "P",
+      "fraction": 0.29
+    },
+    "CAA": {
+      "aa": "Q",
+      "fraction": 0.24
+    },
+    "CGA": {
+      "aa": "R",
+      "fraction": 0.14
+    },
+    "CUG": {
+      "aa": "L",
+      "fraction": 0.39
+    },
+    "CCG": {
+      "aa": "P",
+      "fraction": 0.08
+    },
+    "CAG": {
+      "aa": "Q",
+      "fraction": 0.76
+    },
+    "CGG": {
+      "aa": "R",
+      "fraction": 0.19
+    },
+    "AUU": {
+      "aa": "I",
+      "fraction": 0.35
+    },
+    "ACU": {
+      "aa": "T",
+      "fraction": 0.26
+    },
+    "AAU": {
+      "aa": "N",
+      "fraction": 0.45
+    },
+    "AGU": {
+      "aa": "S",
+      "fraction": 0.15
+    },
+    "AUC": {
+      "aa": "I",
+      "fraction": 0.51
+    },
+    "ACC": {
+      "aa": "T",
+      "fraction": 0.37
+    },
+    "AAC": {
+      "aa": "N",
+      "fraction": 0.55
+    },
+    "AGC": {
+      "aa": "S",
+      "fraction": 0.22
+    },
+    "AUA": {
+      "aa": "I",
+      "fraction": 0.14
+    },
+    "ACA": {
+      "aa": "T",
+      "fraction": 0.29
+    },
+    "AAA": {
+      "aa": "K",
+      "fraction": 0.39
+    },
+    "AGA": {
+      "aa": "R",
+      "fraction": 0.19
+    },
+    "AUG": {
+      "aa": "M",
+      "fraction": 1.0
+    },
+    "ACG": {
+      "aa": "T",
+      "fraction": 0.08
+    },
+    "AAG": {
+      "aa": "K",
+      "fraction": 0.61
+    },
+    "AGG": {
+      "aa": "R",
+      "fraction": 0.19
+    },
+    "GUU": {
+      "aa": "V",
+      "fraction": 0.18
+    },
+    "GCU": {
+      "aa": "A",
+      "fraction": 0.32
+    },
+    "GAU": {
+      "aa": "D",
+      "fraction": 0.47
+    },
+    "GGU": {
+      "aa": "G",
+      "fraction": 0.2
+    },
+    "GUC": {
+      "aa": "V",
+      "fraction": 0.24
+    },
+    "GCC": {
+      "aa": "A",
+      "fraction": 0.37
+    },
+    "GAC": {
+      "aa": "D",
+      "fraction": 0.53
+    },
+    "GGC": {
+      "aa": "G",
+      "fraction": 0.34
+    },
+    "GUA": {
+      "aa": "V",
+      "fraction": 0.12
+    },
+    "GCA": {
+      "aa": "A",
+      "fraction": 0.23
+    },
+    "GAA": {
+      "aa": "E",
+      "fraction": 0.41
+    },
+    "GGA": {
+      "aa": "G",
+      "fraction": 0.25
+    },
+    "GUG": {
+      "aa": "V",
+      "fraction": 0.46
+    },
+    "GCG": {
+      "aa": "A",
+      "fraction": 0.07
+    },
+    "GAG": {
+      "aa": "E",
+      "fraction": 0.59
+    },
+    "GGG": {
+      "aa": "G",
+      "fraction": 0.21
+    }
+  }
+}

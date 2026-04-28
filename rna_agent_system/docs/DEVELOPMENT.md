@@ -13,9 +13,11 @@
 5. [New Tool Standard Procedure](#5-new-tool-standard-procedure)
 6. [Change Log: GC Content Interface v0.1.0](#6-change-log-gc-content-interface-v010)
 7. [Change Log: Dot-Bracket Unpaired Fraction v0.1.0](#7-change-log-dot-bracket-unpaired-fraction-v010)
-8. [Change Log: LinearDesign Interface v0.2.0](#8-change-log-lineardesign-interface-v020)
-9. [Architecture Audit Summary](#9-architecture-audit-summary)
-10. [Enhancement Proposals](#10-enhancement-proposals)
+8. [Change Log: RNA Sequence U Content v0.1.0](#8-change-log-rna-sequence-u-content-v010)
+9. [Change Log: CAI for CDS v0.1.0](#9-change-log-cai-for-cds-v010)
+10. [Change Log: LinearDesign Interface v0.2.0](#10-change-log-lineardesign-interface-v020)
+11. [Architecture Audit Summary](#11-architecture-audit-summary)
+12. [Enhancement Proposals](#12-enhancement-proposals)
 
 ---
 
@@ -360,7 +362,104 @@ Read `agent_core/sequence_utils.py` and `microservices/rna_sequence_metrics_serv
 
 ---
 
-## 8. Change Log: LinearDesign Interface v0.2.0
+---
+
+## 8. Change Log: RNA Sequence U Content v0.1.0
+
+> **Status**: LOCKED — Any future modification must synchronize all files listed below and re-run the full test suite.  
+> **Locked on**: 2026-04-28
+
+### What is locked
+
+- **Input schema** (`RnaUContentInput`): `filepath`, `service_url`, `timeout_seconds`
+- **Output schema** (`RnaUContentOutput`): `input_filepath`, `resolved_filepath`, `sequence_length`, `u_count`, `u_fraction`, `model`
+- **ToolSpec identity**: `compute_rna_sequence_u_content`
+- **Microservice endpoint**: `POST /u-content` on port `8020`
+- **State fields**: `sequence_u_fraction`, `sequence_u_count`, `sequence_u_length`
+
+### Architecture decisions
+
+1. **LangChain tool is the single source of truth for HTTP** — `agent_core/tools.py::compute_rna_sequence_u_content` is the only place that calls `requests.post` to port 8020 `/u-content`.
+2. **`agent_core/sequence_utils.py` provides shared computation** — `compute_u_content()` is used by both the microservice and local stubs/scoring modules.
+3. **Complete state tracking** — 3 fields tracked (`sequence_u_fraction`, `sequence_u_count`, `sequence_u_length`), not just the scalar fraction.
+
+### Synchronization checklist
+
+If you change any locked contract, update **all** of these and re-run tests:
+
+- [ ] `microservices/rna_sequence_metrics_service/main.py`
+- [ ] `agent_core/tools.py`
+- [ ] `agent_core/tool_specs.py`
+- [ ] `agent_core/state.py`
+- [ ] `agent_core/capabilities/writebacks.py`
+- [ ] `agent_core/sequence_utils.py`
+- [ ] `tests/test_compute_rna_sequence_u_content.py`
+- [ ] `rna_agent_system/docs/DEVELOPMENT.md`
+
+### Tests that must pass
+
+```bash
+pytest tests/test_compute_rna_sequence_u_content.py -v
+pytest tests/ -x --ignore=tests/integration -m "not integration"
+```
+
+### Notes for future maintainers
+
+- Do **not** add duplicate HTTP logic in workflow tools or scoring modules. Always delegate to `compute_rna_sequence_u_content.invoke()`.
+- If you change normalization rules in the microservice, you **must** update `sequence_utils.py` as well, or local fallback scores and stub test results will diverge.
+
+---
+
+## 9. Change Log: CAI for CDS v0.1.0
+
+> **Status**: LOCKED — Any future modification must synchronize all files listed below and re-run the full test suite.  
+> **Locked on**: 2026-04-28
+
+### What is locked
+
+- **Input schema** (`CaiForCdsInput`): `filepath`, `species`, `custom_codon_table_path`
+- **Output schema** (`CaiForCdsOutput`): `input_filepath`, `cai_score`, `species`, `cds_length_nt`, `codon_count`, `valid_codons`, `invalid_codons`, `stop_codons_encountered`, `model`
+- **ToolSpec identity**: `compute_cai_for_cds_sequence`
+- **Transport**: `python_api` (pure Python, no microservice)
+- **State fields**: `cai_for_cds_score`, `cai_for_cds_species`, `cai_for_cds_length_nt`, `cai_for_cds_codon_count`
+
+### Architecture decisions
+
+1. **Pure Python calculation** — CAI is a deterministic geometric-mean algorithm (Sharp & Li, 1987). No external binary or HTTP microservice is required. The tool runs directly in `agent_core/tools.py`.
+2. **Kazusa Codon Usage Database as default source** — Built-in tables scraped from https://www.kazusa.or.jp/codon/ and shipped as `agent_core/data/codon_usage_kazusa.json`. This avoids runtime network dependencies.
+3. **Custom table support** — Users can provide their own JSON codon usage table via `custom_codon_table_path`, enabling tissue-specific or engineered host tables.
+4. **Species aliases** — Common names (`human`, `mouse`, `ecoli`, `cho`, etc.) are mapped to canonical Kazusa species names so LLM agents do not need exact Latin names.
+5. **CDS validation** — Input is strictly validated as CDS (length multiple of 3, AUGC only). Stop codons are excluded from the CAI calculation.
+
+### Synchronization checklist
+
+If you change any locked contract, update **all** of these and re-run tests:
+
+- [ ] `agent_core/tools.py`
+- [ ] `agent_core/tool_specs.py`
+- [ ] `agent_core/state.py`
+- [ ] `agent_core/capabilities/writebacks.py`
+- [ ] `agent_core/sequence_utils.py`
+- [ ] `agent_core/data/codon_usage_kazusa.json`
+- [ ] `tests/test_compute_cai_for_cds_sequence.py`
+- [ ] `rna_agent_system/docs/DEVELOPMENT.md`
+
+### Tests that must pass
+
+```bash
+pytest tests/test_compute_cai_for_cds_sequence.py -v
+pytest tests/ -x --ignore=tests/integration -m "not integration"
+```
+
+### Notes for future maintainers
+
+- Do **not** add an HTTP microservice wrapper for this tool. That would duplicate the calculation and add an unnecessary runtime dependency.
+- If you update the built-in Kazusa tables, ensure the JSON schema stays consistent: `{codon: {aa: str, fraction: float}}`.
+- The `fraction` field in Kazusa data is the *relative frequency within the amino-acid group* (sums to 1.0 per group). `build_cai_weights()` converts these to Sharp & Li relative adaptiveness weights (max = 1.0).
+
+---
+
+## 10. Change Log: LinearDesign Interface v0.2.0
 
 > **Status**: LOCKED — Any future modification must synchronize all files listed below and re-run the full test suite.  
 > **Locked on**: 2026-04-24
@@ -445,7 +544,7 @@ If you change any locked contract, update **all** of these and re-run tests:
 
 ---
 
-## 9. Architecture Audit Summary
+## 11. Architecture Audit Summary
 
 These findings were established during a codebase audit and remain true:
 
@@ -481,7 +580,7 @@ These findings were established during a codebase audit and remain true:
 
 ---
 
-## 10. Enhancement Proposals
+## 12. Enhancement Proposals
 
 The following proposals are **not yet fully implemented** but are documented for future development:
 

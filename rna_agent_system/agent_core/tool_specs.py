@@ -759,6 +759,72 @@ class DotBracketUnpairedFractionOutput(_OutBase):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rna_sequence_metrics_service/main.py
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/capabilities/writebacks.py
+#   - agent_core/sequence_utils.py
+#   - tests/test_compute_rna_sequence_u_content.py
+#   - rna_agent_system/docs/DEVELOPMENT.md
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RnaUContentOutput(_OutBase):
+    """U content output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: compute_rna_sequence_u_content (wrapper return dict)
+    - microservices/rna_sequence_metrics_service/main.py :: UContentResponse
+    - agent_core/state.py :: sequence_u_* fields
+    - agent_core/capabilities/writebacks.py :: compute_rna_sequence_u_content writeback
+    """
+
+    input_filepath: str
+    resolved_filepath: str
+    sequence_length: int
+    u_count: int
+    u_fraction: float
+    model: str
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - agent_core/tools.py
+#   - agent_core/tool_specs.py  ← 本文件
+#   - agent_core/state.py
+#   - agent_core/capabilities/writebacks.py
+#   - agent_core/sequence_utils.py
+#   - agent_core/data/codon_usage_kazusa.json
+#   - tests/test_compute_cai_for_cds_sequence.py
+#   - rna_agent_system/docs/DEVELOPMENT.md
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CaiForCdsOutput(_OutBase):
+    """CAI output schema for CDS sequences.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: compute_cai_for_cds_sequence (wrapper return dict)
+    - agent_core/state.py :: cai_for_cds_* fields
+    - agent_core/capabilities/writebacks.py :: compute_cai_for_cds_sequence writeback
+    """
+
+    input_filepath: str
+    cai_score: float
+    species: str
+    cds_length_nt: int
+    codon_count: int
+    valid_codons: int
+    invalid_codons: int
+    stop_codons_encountered: int
+    model: str
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
 # 关联文件清单（修改时必须全部同步）：
 #   - microservices/viennarna_fold/main.py
@@ -1666,6 +1732,83 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         input_model=tool_wrappers.DotBracketUnpairedFractionInput,
         output_model=DotBracketUnpairedFractionOutput,
         status=ToolStatus.available,
+    ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - microservices/rna_sequence_metrics_service/main.py
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/capabilities/writebacks.py
+    #   - agent_core/sequence_utils.py
+    #   - tests/test_compute_rna_sequence_u_content.py
+    #   - rna_agent_system/docs/DEVELOPMENT.md
+    # ═══════════════════════════════════════════════════════════════════════════════
+    "compute_rna_sequence_u_content": ToolSpec(
+        identity="compute_rna_sequence_u_content",
+        display_name="RNA sequence U content",
+        version="0.1.0-port8020",
+        source="in-repo microservice (no external algorithm)",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8020/u-content",
+        capabilities=["Compute U/N from a sequence file (A/U/G/C only after normalization)."],
+        limitations=["Ignores non-AUGC characters; does not check biological correctness beyond parsing."],
+        task_tags=["sequence_composition", "u_content"],
+        requires=[ToolDependency(name="rna_sequence_metrics microservice", detail="microservices/rna_sequence_metrics_service (port 8020)")],
+        produces=["u_fraction", "sequence_length", "u_count", "input_filepath", "resolved_filepath", "model"],
+        input_model=tool_wrappers.RnaUContentInput,
+        output_model=RnaUContentOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="U content of a FASTA sequence",
+                input={"filepath": "workspace/sequence.fasta"},
+                output_excerpt={"u_fraction": 0.25, "sequence_length": 12, "u_count": 3},
+            )
+        ],
+    ),
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/capabilities/writebacks.py
+    #   - agent_core/sequence_utils.py
+    #   - agent_core/data/codon_usage_kazusa.json
+    #   - tests/test_compute_cai_for_cds_sequence.py
+    #   - rna_agent_system/docs/DEVELOPMENT.md
+    # ═══════════════════════════════════════════════════════════════════════════════
+    "compute_cai_for_cds_sequence": ToolSpec(
+        identity="compute_cai_for_cds_sequence",
+        display_name="CAI for CDS (Kazusa tables)",
+        version="0.1.0",
+        source="https://www.kazusa.or.jp/codon/",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=[
+            "Compute Codon Adaptation Index (CAI) for a coding sequence using Kazusa codon usage tables.",
+            "Supports built-in tables for human, mouse, rat, fly, worm, zebrafish, arabidopsis, yeast, ecoli, bsubtilis, cho.",
+            "Allows custom codon usage tables via JSON file.",
+        ],
+        limitations=[
+            "Input must be a valid CDS (length multiple of 3, AUGC only after normalization).",
+            "Stop codons are excluded from the CAI calculation.",
+        ],
+        task_tags=["cds_codon_metrics", "cai", "codon_usage"],
+        requires=[],
+        produces=["cai_score", "species", "cds_length_nt", "codon_count", "valid_codons", "invalid_codons", "stop_codons_encountered"],
+        input_model=tool_wrappers.CaiForCdsInput,
+        output_model=CaiForCdsOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="CAI of a human CDS",
+                input={"filepath": "workspace/cds.fa", "species": "human"},
+                output_excerpt={"cai_score": 0.85, "species": "Homo sapiens", "codon_count": 100},
+            )
+        ],
     ),
 }
 

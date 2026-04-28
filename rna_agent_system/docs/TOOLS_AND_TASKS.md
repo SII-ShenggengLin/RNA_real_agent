@@ -81,13 +81,20 @@
 | Tool | Port | Input (key fields) | Output (key fields) | Notes |
 |------|------|--------------------|---------------------|-------|
 | `compute_rna_sequence_gc_content` | 8020 | `filepath` | `gc_content`, `sequence_length`, `gc_count`, `g_count`, `c_count` | v0.1.0; T→U normalization |
+| `compute_rna_sequence_u_content` | 8020 | `filepath` | `u_fraction`, `sequence_length`, `u_count` | v0.1.0; T→U normalization |
 | `compute_dot_bracket_unpaired_fraction` | 8020 | `filepath` | `unpaired_fraction`, `structure_length`, `dot_count` | v0.1.0; validates characters |
+
+### CDS metrics
+
+| Tool | Port | Input (key fields) | Output (key fields) | Notes |
+|------|------|--------------------|---------------------|-------|
+| `compute_cai_for_cds_sequence` | — (pure Python) | `filepath`, `species`, optional `custom_codon_table_path` | `cai_score`, `species`, `cds_length_nt`, `codon_count`, `valid_codons` | v0.1.0; Kazusa tables; 11 built-in species; stop codons excluded |
+| `analyze_cds_codon_metrics_with_codonw_slim` | 8018 | `filepath` (in-frame CDS) | `cai_score`, metrics JSON | v0.2.0; requires `install_codonw_slim.sh`; 3 CAI refs only |
 
 ### Other
 
 | Tool | Port | Input (key fields) | Output (key fields) | Notes |
 |------|------|--------------------|---------------------|-------|
-| `analyze_cds_codon_metrics_with_codonw_slim` | 8018 | `filepath` (in-frame CDS) | `cai_score`, metrics JSON | v0.2.0; requires `install_codonw_slim.sh` |
 | `run_blastn_similarity_search` | 8019 | `filepath`, `subject_fasta_path` **or** `subject_db` | `hit_count`, `tabular_tsv_filepath` | v0.2.0; mutually exclusive subject modes |
 | `predict_mrna_stability_with_rnastop` | 8009 | `filepath`, optional `structure`/`loop_type` | `mean_reactivity`, `mean_deg_mg_ph10`, `mean_deg_mg_50c`, `overall_stability` | v0.1.0; >1022 nt truncated |
 | `predict_putative_ires_with_iresfinder` | 8013 | `filepath`, `mode` (0/1/2), window params | probability scores | v0.2.0; DNA-normalized input (U→T) |
@@ -429,13 +436,18 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 |------|-------------|
 | Microservice | `microservices/rna_sequence_metrics_service/` |
 | Environment | `python=3.10` + FastAPI (no third-party algorithm dependencies) |
-| Endpoints | `GET /health`, `POST /gc-content`, `POST /unpaired-fraction` |
-| Agent tools | `compute_rna_sequence_gc_content(filepath)`, `compute_dot_bracket_unpaired_fraction(filepath)` |
+| Endpoints | `GET /health`, `POST /gc-content`, `POST /u-content`, `POST /unpaired-fraction` |
+| Agent tools | `compute_rna_sequence_gc_content(filepath)`, `compute_rna_sequence_u_content(filepath)`, `compute_dot_bracket_unpaired_fraction(filepath)` |
 
 **GC content**
 
 - Reads sequence from file, normalizes (strip FASTA headers, uppercase, T→U, drop non-AUGC), then computes `gc_content = (G+C)/N`.
 - State fields: `sequence_gc_content`, `sequence_gc_length`, `sequence_gc_count`, `sequence_g_count`, `sequence_c_count`.
+
+**U content**
+
+- Reads sequence from file, normalizes (strip FASTA headers, uppercase, T→U, drop non-AUGC), then computes `u_fraction = U_count / N`.
+- State fields: `sequence_u_fraction`, `sequence_u_count`, `sequence_u_length`.
 
 **Unpaired fraction**
 
@@ -447,7 +459,28 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 
 ## 10. Other Tools
 
-### 10.1 codonw-slim (Port 8018)
+### 10.1 CAI for CDS (Pure Python)
+
+| Item | Description |
+|------|-------------|
+| Source | [Kazusa Codon Usage Database](https://www.kazusa.or.jp/codon/) |
+| Data file | `agent_core/data/codon_usage_kazusa.json` |
+| Transport | Pure Python (`python_api`); no microservice, no port |
+| Agent tool | `compute_cai_for_cds_sequence(filepath, species="Homo sapiens", custom_codon_table_path=None)` |
+
+**Built-in species (11)**
+
+Human, Mouse, Rat, Fruit fly, Worm, Zebrafish, Arabidopsis, Yeast, E. coli K-12, B. subtilis, Chinese hamster (CHO).
+
+**Key notes**
+
+- Input must be a valid CDS (length multiple of 3; AUGC only after normalization).
+- Stop codons (UAA/UAG/UGA) are excluded from the CAI calculation.
+- Uses Sharp & Li relative adaptiveness weights computed from Kazusa fractions.
+- Custom tables accepted as JSON: `{codon: {aa: str, fraction: float}}`.
+- State fields: `cai_for_cds_score`, `cai_for_cds_species`, `cai_for_cds_length_nt`, `cai_for_cds_codon_count`.
+
+### 10.2 codonw-slim (Port 8018)
 
 | Item | Description |
 |------|-------------|
@@ -469,7 +502,7 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 - **Must run `bash install_codonw_slim.sh` after `conda env create`**.
 - Input must be in-frame CDS; trailing non-multiple-of-3 bases are auto-truncated.
 
-### 10.2 BLAST+ (Port 8019)
+### 10.3 BLAST+ (Port 8019)
 
 | Item | Description |
 |------|-------------|
@@ -483,7 +516,7 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 - `subject_fasta_path` (on-the-fly `makeblastdb`) and `subject_db` (existing DB prefix) are **mutually exclusive**.
 - Agent layer writes full results to `workspace/blastn_out_*.tsv`.
 
-### 10.3 RNASTOP (Port 8009)
+### 10.4 RNASTOP (Port 8009)
 
 | Item | Description |
 |------|-------------|
@@ -500,7 +533,7 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 - Sequences >1022 nt are truncated.
 - Only stability prediction is exposed; beam/MCTS optimization is not connected.
 
-### 10.4 IRESfinder (Port 8013)
+### 10.5 IRESfinder (Port 8013)
 
 | Item | Description |
 |------|-------------|
@@ -516,7 +549,7 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 - Input is DNA-normalized (U→T).
 - CPU only.
 
-### 10.5 ODesign (Port 8012)
+### 10.6 ODesign (Port 8012)
 
 | Item | Description |
 |------|-------------|
@@ -549,6 +582,7 @@ There are **20 tasks** with corresponding workflows. Both directories previously
 | 5 | `aso_accessibility_viennarna` | `aso_accessibility_viennarna_workflow` | RNA 2° structure |
 | 6 | `inverse_folding_viennarna` | `inverse_folding_viennarna_workflow` | RNA 2° structure |
 | 7 | `cds_codon_metrics` | `cds_codon_metrics_workflow` | mRNA / CDS |
+| 7b | `cai_computation` | `cai_computation_workflow` | mRNA / CDS |
 | 8 | `protein_to_cds_design` | `protein_to_cds_design_workflow` | mRNA / CDS |
 | 9 | `mrna_stability_prediction` | `mrna_stability_prediction_workflow` | mRNA / CDS |
 | 10 | `ires_prediction` | `ires_prediction_workflow` | mRNA / CDS |
@@ -584,6 +618,7 @@ Every workflow follows the same 7-step template:
 | `aso_accessibility_viennarna` | validate | none | none | `compute_aso_target_accessibility_vienna` | none | optional by accessibility | format |
 | `inverse_folding_viennarna` | validate | none | `inverse_fold_rna_secondary_structure_vienna` | none | none | none | format |
 | `cds_codon_metrics` | validate | none | none | `analyze_cds_codon_metrics_with_codonw_slim` | none | optional by CAI | format |
+| `cai_computation` | validate | none | none | `compute_cai_for_cds_sequence` | none | none | format |
 | `protein_to_cds_design` | validate | none | `design_mrna_cds_*` | optional evaluate | optional filter | optional rerank | format |
 | `mrna_stability_prediction` | validate | none | none | `predict_mrna_stability_with_rnastop` | none | optional sort | format |
 | `ires_prediction` | validate | none | none | `predict_putative_ires_with_iresfinder` | optional threshold | by max_score | format |

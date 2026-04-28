@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from agent_core.sequence_utils import (
     compute_dot_bracket_unpaired_fraction,
     compute_gc_content,
+    compute_u_content,
     extract_dot_bracket,
     normalize_rna_sequence,
     validate_dot_bracket,
@@ -23,7 +24,7 @@ RNA_AGENT_SYSTEM_ROOT = Path(__file__).resolve().parents[2]
 
 app = FastAPI(
     title="RNA sequence metrics",
-    description="GC content from sequence files; unpaired-base fraction from dot-bracket secondary structure.",
+    description="GC content / U content from sequence files; unpaired-base fraction from dot-bracket secondary structure.",
     version="0.1.0",
 )
 
@@ -121,6 +122,46 @@ def unpaired_fraction(payload: UnpairedFractionRequest) -> UnpairedFractionRespo
         structure_length=metrics["structure_length"],
         dot_count=metrics["dot_count"],
         unpaired_fraction=metrics["unpaired_fraction"],
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# U Content
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class UContentRequest(BaseModel):
+    sequence_filepath: str = Field(
+        ...,
+        description="Absolute or rna_agent_system-relative path to plain RNA/DNA or FASTA.",
+    )
+
+
+class UContentResponse(BaseModel):
+    input_filepath: str
+    resolved_filepath: str
+    sequence_length: int
+    u_count: int
+    u_fraction: float
+    model: str = "rna-u-content"
+
+
+@app.post("/u-content", response_model=UContentResponse)
+def u_content(payload: UContentRequest) -> UContentResponse:
+    path = _resolve_host_path(payload.sequence_filepath)
+    if not path.is_file():
+        raise HTTPException(status_code=400, detail=f"sequence_filepath not found: {path}")
+    raw = path.read_text(encoding="utf-8")
+    seq = normalize_rna_sequence(raw)
+    metrics = compute_u_content(seq)
+    if metrics["sequence_length"] == 0:
+        raise HTTPException(status_code=400, detail="No A/U/G/C nucleotides found after normalization.")
+    return UContentResponse(
+        input_filepath=payload.sequence_filepath,
+        resolved_filepath=str(path),
+        sequence_length=metrics["sequence_length"],
+        u_count=metrics["u_count"],
+        u_fraction=metrics["u_fraction"],
     )
 
 

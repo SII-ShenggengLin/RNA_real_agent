@@ -17,6 +17,13 @@ from agent_core.file_manager import (
     save_sequence,
     save_text_file,
 )
+from agent_core.sequence_utils import (
+    build_cai_weights,
+    compute_cai,
+    normalize_cds_sequence,
+    resolve_species_name,
+    _load_builtin_codon_tables,
+)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
@@ -734,6 +741,41 @@ class DotBracketUnpairedFractionInput(BaseModel):
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - microservices/rna_sequence_metrics_service/main.py
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/capabilities/writebacks.py
+#   - agent_core/sequence_utils.py
+#   - tests/test_compute_rna_sequence_u_content.py
+#   - rna_agent_system/docs/DEVELOPMENT.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RnaUContentInput(BaseModel):
+    """Input schema for RNA/DNA U fraction (microservice on port 8020)."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8020/u-content",
+        description="POST endpoint for U content microservice.",
+    )
+    timeout_seconds: float = Field(
+        default=120.0,
+        gt=0,
+        le=600,
+        description="HTTP request timeout in seconds.",
+    )
+
+
 @tool(args_schema=RnaGcContentInput)
 def compute_rna_sequence_gc_content(
     filepath: str,
@@ -840,6 +882,174 @@ def compute_dot_bracket_unpaired_fraction(
         "dot_count": int(body.get("dot_count", 0)),
         "unpaired_fraction": float(body.get("unpaired_fraction", 0.0)),
         "model": str(body.get("model", "rna-sequence-metrics-unpaired")),
+    }
+
+
+@tool(args_schema=RnaUContentInput)
+def compute_rna_sequence_u_content(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8020/u-content",
+    timeout_seconds: float = 120.0,
+) -> dict[str, Any]:
+    """Compute U/N for an RNA or DNA sequence file (N = count of A/U/G/C after normalization).
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: RnaUContentOutput / compute_rna_sequence_u_content ToolSpec
+    - agent_core/state.py :: sequence_u_* fields
+    - agent_core/capabilities/writebacks.py :: compute_rna_sequence_u_content writeback
+    - microservices/rna_sequence_metrics_service/main.py :: UContentRequest / UContentResponse
+    - rna_agent_system/docs/DEVELOPMENT.md
+
+    Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
+    absolute server path; long sequences should not be pasted into the chat.
+
+    Args:
+        filepath: Sequence file (plain or FASTA); T is treated as U, non-letters removed.
+        service_url: POST ``/u-content`` endpoint.
+        timeout_seconds: HTTP request timeout in seconds.
+
+    Returns:
+        Dict with ``u_fraction``, counts, and resolved paths.
+
+    Raises:
+        ValueError: If the HTTP call fails or the service reports an error.
+    """
+    read_sequence(filepath)
+    seq_abs = _absolute_path_under_project(filepath)
+    try:
+        response = requests.post(
+            service_url,
+            json={"sequence_filepath": seq_abs},
+            timeout=float(timeout_seconds),
+        )
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "RNA sequence metrics (U)")
+    return {
+        "input_filepath": filepath,
+        "resolved_filepath": str(body.get("resolved_filepath", "")),
+        "sequence_length": int(body.get("sequence_length", 0)),
+        "u_count": int(body.get("u_count", 0)),
+        "u_fraction": float(body.get("u_fraction", 0.0)),
+        "model": str(body.get("model", "rna-u-content")),
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# ═══════════════════════════════════════════════════════════════════════════════
+# 关联文件清单（修改时必须全部同步）：
+#   - agent_core/tools.py  ← 本文件
+#   - agent_core/tool_specs.py
+#   - agent_core/state.py
+#   - agent_core/capabilities/writebacks.py
+#   - agent_core/sequence_utils.py
+#   - agent_core/data/codon_usage_kazusa.json
+#   - tests/test_compute_cai_for_cds_sequence.py
+#   - rna_agent_system/docs/DEVELOPMENT.md
+# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
+# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CaiForCdsInput(BaseModel):
+    """Input schema for CDS CAI computation using Kazusa codon usage tables."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to CDS sequence file (workspace or absolute); FASTA or plain text. Must be in-frame (length multiple of 3).",
+    )
+    species: str = Field(
+        default="Homo sapiens",
+        description=(
+            "Species name for the reference codon usage table. "
+            "Built-in aliases: human, mouse, rat, fly, worm, zebrafish, "
+            "arabidopsis, yeast, ecoli, bsubtilis, cho. "
+            "If no built-in table matches, a custom_codon_table_path must be provided."
+        ),
+    )
+    custom_codon_table_path: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional path to a custom codon usage JSON file. "
+            "Format: {\"codon\": {\"aa\": \"X\", \"fraction\": 0.42}, ...}. "
+            "When provided, ``species`` is used only for metadata/labeling."
+        ),
+    )
+
+
+@tool(args_schema=CaiForCdsInput)
+def compute_cai_for_cds_sequence(
+    filepath: str,
+    species: str = "Homo sapiens",
+    custom_codon_table_path: Optional[str] = None,
+) -> dict[str, Any]:
+    """Compute Codon Adaptation Index (CAI) for a CDS sequence file.
+
+    Uses Kazusa codon usage tables (Sharp & Li weights) by default.
+    Supports built-in tables for common species plus custom JSON tables.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: CaiForCdsOutput / compute_cai_for_cds_sequence ToolSpec
+    - agent_core/state.py :: cai_for_cds_* fields
+    - agent_core/capabilities/writebacks.py :: compute_cai_for_cds_sequence writeback
+    - agent_core/sequence_utils.py :: normalize_cds_sequence / build_cai_weights / compute_cai
+    - rna_agent_system/docs/DEVELOPMENT.md
+
+    The input sequence is validated as CDS (length multiple of 3, AUGC only).
+    Stop codons (UAA/UAG/UGA) are excluded from the CAI calculation.
+
+    Args:
+        filepath: CDS sequence file (plain or FASTA); T is treated as U.
+        species: Reference species for built-in codon table.
+        custom_codon_table_path: Optional custom codon usage JSON path.
+
+    Returns:
+        Dict with ``cai_score``, species, codon counts, and validity metrics.
+
+    Raises:
+        ValueError: If the file is unreadable, not a valid CDS, or no codon table found.
+    """
+    raw = read_sequence(filepath)
+    cds_seq = normalize_cds_sequence(raw)
+
+    if custom_codon_table_path:
+        import json as _json
+        from pathlib import Path as _Path
+        p = _Path(custom_codon_table_path)
+        if not p.is_file():
+            raise ValueError(f"Custom codon table not found: {custom_codon_table_path}")
+        with p.open("r", encoding="utf-8") as fh:
+            codon_fractions: dict[str, Any] = _json.load(fh)
+        if not isinstance(codon_fractions, dict):
+            raise ValueError("Custom codon table must be a JSON object.")
+        resolved_species = species
+    else:
+        builtin = _load_builtin_codon_tables()
+        resolved_species = resolve_species_name(species)
+        if resolved_species not in builtin:
+            available = ", ".join(sorted(builtin.keys()))
+            raise ValueError(
+                f"No built-in codon table for '{species}' (resolved: '{resolved_species}'). "
+                f"Available: {available}. Provide a custom_codon_table_path."
+            )
+        codon_fractions = builtin[resolved_species]
+
+    weights = build_cai_weights(codon_fractions)
+    metrics = compute_cai(cds_seq, weights)
+
+    return {
+        "input_filepath": filepath,
+        "cai_score": float(metrics["cai_score"]),
+        "species": resolved_species,
+        "cds_length_nt": len(cds_seq),
+        "codon_count": int(metrics["codon_count"]),
+        "valid_codons": int(metrics["valid_codons"]),
+        "invalid_codons": int(metrics["invalid_codons"]),
+        "stop_codons_encountered": int(metrics["stop_codons_encountered"]),
+        "model": "cai-kazusa",
     }
 
 

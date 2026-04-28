@@ -29,6 +29,23 @@ STANDARD_WRITEBACKS: dict[str, WritebackRule] = {
         "c_count": "sequence_c_count",
     },
     # ═══════════════════════════════════════════════════════════════════════
+    # U content (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "compute_rna_sequence_u_content": {
+        "u_fraction": "sequence_u_fraction",
+        "sequence_length": "sequence_u_length",
+        "u_count": "sequence_u_count",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
+    # CAI for CDS (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "compute_cai_for_cds_sequence": {
+        "cai_score": "cai_for_cds_score",
+        "species": "cai_for_cds_species",
+        "cds_length_nt": "cai_for_cds_length_nt",
+        "codon_count": "cai_for_cds_codon_count",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
     # Dot-bracket unpaired fraction (v0.1.0 INTERFACE LOCK)
     # ═══════════════════════════════════════════════════════════════════════
     "compute_dot_bracket_unpaired_fraction": {

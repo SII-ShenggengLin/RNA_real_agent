@@ -273,6 +273,23 @@ class AgentState(TypedDict, total=False):
     sequence_g_count: int = 0
     sequence_c_count: int = 0
     # ═══════════════════════════════════════════════════════════════════════════
+    # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 compute_rna_sequence_u_content
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    sequence_u_fraction: float
+    sequence_u_count: int = 0
+    sequence_u_length: int = 0
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 compute_cai_for_cds_sequence
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    cai_for_cds_score: float
+    cai_for_cds_species: str = ""
+    cai_for_cds_length_nt: int = 0
+    cai_for_cds_codon_count: int = 0
+    # ═══════════════════════════════════════════════════════════════════════════
     # Dot-bracket unpaired fraction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
     # 关联文件清单见 agent_core/tool_specs.py 中 compute_dot_bracket_unpaired_fraction
     # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
