@@ -282,13 +282,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         return bundle
 
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
-        kwargs: dict[str, Any] = {}
-        tgc = metrics.get("target_gc_mid")
-        if tgc is not None:
-            kwargs["gc_mid"] = float(tgc)
-            kwargs["gc_low"] = float(tgc) - 0.08
-            kwargs["gc_high"] = float(tgc) + 0.08
-        return score_mrna_candidate(metrics, **kwargs)
+        return score_mrna_candidate(metrics)
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
         if not candidates:

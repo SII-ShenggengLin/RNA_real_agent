@@ -272,11 +272,9 @@ Lightweight classification for RNA workflow routing (no planner / DSL).
 | Symbol | Description |
 |--------|-------------|
 | `gc_fraction_from_sequence(sequence: str) -> float` | Local GC fallback using `sequence_utils` |
-| `gc_band_score(gc, *, low=0.42, mid=0.50, high=0.58) -> float` | Triangle peak at `mid`; 0 outside band |
-| `mfe_stability_component(mfe_kcal_per_mol) -> float` | Maps MFE to [0, 1]; missing → 0.45 |
-| `length_target_score(length_nt, *, target_nt) -> float` | Triangular peak at target; ignore if `None` |
+| `gc_fraction_from_sequence(sequence: str) -> float` | Local GC fallback using `sequence_utils` |
 | `compute_mrna_metric_bundle(...)` | Collects canonical keys: `gc_content`, `gc_content_local`, `sequence_length`, `mfe_kcal_per_mol`, `target_length_nt` |
-| `score_mrna_candidate(bundle, *, gc_low/mid/high) -> dict[str, float]` | Returns `gc_component`, `mfe_component`, `unpaired_component`, `total_score` (combined formula) |
+| `score_mrna_candidate(bundle) -> dict[str, float]` | Returns `total_score` = `-mfe + codon_count * log(CAI)`; raw metrics preserved for display |
 
 ### 4.2 `workflow_tools/` — Runnable Workflow Tools
 
@@ -1038,16 +1036,7 @@ A bad Planner might choose a sub-optimal sequence. A **mismatched Workflow–Cri
 
 **Rule**: when a Critic *is* used, its pass/fail criteria should be derivable from the Workflow’s scoring function.
 
-```python
-# Hypothetical future Critic for a safety-critical workflow
-def should_accept(candidate: Candidate) -> bool:
-    scores = candidate.scores
-    return (
-        scores["gc_component"] >= 0.6 and   # GC in acceptable band
-        scores["mfe_component"] >= 0.5 and  # structure is stable enough
-        scores["total_score"] >= 0.70       # overall quality bar
-    )
-```
+For example, if a Workflow ranks candidates by a combined formula such as `-mfe + codon_count * log(CAI)`, a paired Critic should check the same raw metrics (MFE, CAI) and overall score — not introduce unrelated thresholds that the Workflow does not optimize.
 
 If the Workflow scoring changes, the Critic must be updated in the same PR. They share a **joint objective**.
 
