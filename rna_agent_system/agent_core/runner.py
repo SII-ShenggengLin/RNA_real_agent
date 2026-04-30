@@ -11,7 +11,7 @@ from agent_core.planning.base import ExecutionController, Planner
 from agent_core.session_memory import SessionMemory
 from agent_core.state import AgentState, default_state
 from agent_core.tool_executor import ToolExecutor
-from agent_core.workflows import MrnaCdsDesignWorkflow
+from agent_core.workflows import FullLengthMrnaDesignWorkflow, MrnaCdsDesignWorkflow
 
 
 class AgentRunner:
@@ -45,6 +45,7 @@ class AgentRunner:
         self.capability_registry = build_default_capability_registry(executor)
         self.workflow_registry: dict[str, Any] = {
             "mrna_cds_design": MrnaCdsDesignWorkflow(self.capability_registry),
+            "full_length_mrna_design": FullLengthMrnaDesignWorkflow(self.capability_registry),
         }
         self.controller = ExecutionController(
             capability_registry=self.capability_registry,

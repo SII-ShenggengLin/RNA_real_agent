@@ -193,6 +193,15 @@ class AgentState(TypedDict, total=False):
     rnastop_mfe: float
     rnastop_checkpoint_path: str
     rnastop_device: str
+    # INTERFACE LOCK (v0.1.0) — GEMORNA UTR prediction state fields
+    # Any field addition/removal must be synchronized with:
+    # - microservices/gemorna_service/main.py :: Utr5MrlPredictionResponse / Utr3StabilityPredictionResponse
+    # - agent_core/tools.py :: predict_5utr_mrl_with_gemorna / predict_3utr_stability_with_gemorna return dict
+    # - agent_core/tool_specs.py :: Gemorna5UtrMrlPredictionOutput / Gemorna3UtrStabilityPredictionOutput
+    gemorna_5utr_predicted_mrl: float
+    gemorna_5utr_mrl_model: str
+    gemorna_3utr_predicted_stability: float
+    gemorna_3utr_stability_model: str
     # INTERFACE LOCK (v0.2.0) — IRESfinder state fields
     # The canonical contract is the state after the 2026-04-23 refactor.
     # Any field addition/removal must be synchronized with:

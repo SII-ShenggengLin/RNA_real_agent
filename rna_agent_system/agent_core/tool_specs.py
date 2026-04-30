@@ -379,6 +379,34 @@ class Gemorna3UtrOutput(_OutBase):
     model: str
 
 
+class Gemorna5UtrMrlPredictionOutput(_OutBase):
+    """GEMORNA 5'UTR MRL prediction output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: predict_5utr_mrl_with_gemorna (wrapper return dict)
+    - microservices/gemorna_service/main.py :: Utr5MrlPredictionResponse
+    """
+
+    input_filepath: str
+    input_sequence: str
+    predicted_mrl: float
+    model: str
+
+
+class Gemorna3UtrStabilityPredictionOutput(_OutBase):
+    """GEMORNA 3'UTR stability prediction output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: predict_3utr_stability_with_gemorna (wrapper return dict)
+    - microservices/gemorna_service/main.py :: Utr3StabilityPredictionResponse
+    """
+
+    input_filepath: str
+    input_sequence: str
+    predicted_stability: float
+    model: str
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单（修改时必须全部同步）：
@@ -1238,6 +1266,44 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         produces=["output_filepath", "generated_sequence"],
         input_model=tool_wrappers.Gemorna3UtrInput,
         output_model=Gemorna3UtrOutput,
+        status=ToolStatus.partial,
+    ),
+    # INTERFACE LOCK (v0.1.0): GEMORNA 5'UTR MRL prediction tool spec. Modify only in sync with:
+    # - agent_core/tools.py :: predict_5utr_mrl_with_gemorna
+    # - microservices/gemorna_service/main.py :: UtrPredictionRequest / Utr5MrlPredictionResponse
+    "predict_5utr_mrl_with_gemorna": ToolSpec(
+        identity="predict_5utr_mrl_with_gemorna",
+        display_name="GEMORNA 5'UTR MRL prediction",
+        version="0.1.0",
+        source="https://github.com/RainaBio/GEMORNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8004/predict/5utr_mrl",
+        capabilities=["Predict 5'UTR Mean Ribosomal Load (MRL) via GEMORNA."],
+        limitations=["Requires Linux GPU and checkpoints; Python ABI constraints (3.10) as documented."],
+        task_tags=["utr_prediction", "5utr_mrl_prediction"],
+        requires=[ToolDependency(name="GPU", detail="GEMORNA inference"), ToolDependency(name="GEMORNA microservice", detail="microservices/gemorna_service (port 8004)")],
+        produces=["input_sequence", "predicted_mrl"],
+        input_model=tool_wrappers.Gemorna5UtrPredictionInput,
+        output_model=Gemorna5UtrMrlPredictionOutput,
+        status=ToolStatus.partial,
+    ),
+    # INTERFACE LOCK (v0.1.0): GEMORNA 3'UTR stability prediction tool spec. Modify only in sync with:
+    # - agent_core/tools.py :: predict_3utr_stability_with_gemorna
+    # - microservices/gemorna_service/main.py :: UtrPredictionRequest / Utr3StabilityPredictionResponse
+    "predict_3utr_stability_with_gemorna": ToolSpec(
+        identity="predict_3utr_stability_with_gemorna",
+        display_name="GEMORNA 3'UTR stability prediction",
+        version="0.1.0",
+        source="https://github.com/RainaBio/GEMORNA",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8004/predict/3utr_stability",
+        capabilities=["Predict 3'UTR stability via GEMORNA."],
+        limitations=["Requires Linux GPU and checkpoints; Python ABI constraints (3.10) as documented."],
+        task_tags=["utr_prediction", "3utr_stability_prediction"],
+        requires=[ToolDependency(name="GPU", detail="GEMORNA inference"), ToolDependency(name="GEMORNA microservice", detail="microservices/gemorna_service (port 8004)")],
+        produces=["input_sequence", "predicted_stability"],
+        input_model=tool_wrappers.Gemorna3UtrPredictionInput,
+        output_model=Gemorna3UtrStabilityPredictionOutput,
         status=ToolStatus.partial,
     ),
     # INTERFACE LOCK (v0.2.0): RhoFold tool spec. Locked contract. Modify only in sync with:

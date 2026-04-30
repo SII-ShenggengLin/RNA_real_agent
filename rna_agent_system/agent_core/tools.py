@@ -2219,6 +2219,48 @@ class Gemorna3UtrInput(BaseModel):
     )
 
 
+class Gemorna5UtrPredictionInput(BaseModel):
+    """Input schema for GEMORNA 5'UTR MRL prediction tool.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - microservices/gemorna_service/main.py :: UtrPredictionRequest
+    - agent_core/tool_specs.py :: predict_5utr_mrl_with_gemorna ToolSpec
+    """
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing the 5'UTR RNA sequence. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8004/predict/5utr_mrl",
+        description="REST endpoint for the GEMORNA 5'UTR MRL prediction microservice.",
+    )
+
+
+class Gemorna3UtrPredictionInput(BaseModel):
+    """Input schema for GEMORNA 3'UTR stability prediction tool.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - microservices/gemorna_service/main.py :: UtrPredictionRequest
+    - agent_core/tool_specs.py :: predict_3utr_stability_with_gemorna ToolSpec
+    """
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing the 3'UTR RNA sequence. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8004/predict/3utr_stability",
+        description="REST endpoint for the GEMORNA 3'UTR stability prediction microservice.",
+    )
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单（修改时必须全部同步）：
@@ -3903,6 +3945,92 @@ def design_3utr_with_gemorna(
     return _call_gemorna_utr(service_url, utr_length, "gemorna_3utr", "GEMORNA-3utr")
 
 
+def _call_gemorna_prediction(
+    service_url: str,
+    filepath: str,
+    default_model: str,
+) -> dict[str, Any]:
+    """Shared HTTP helper for GEMORNA 5'UTR MRL / 3'UTR stability prediction wrappers."""
+    sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    try:
+        response = requests.post(
+            service_url,
+            json={"sequence": sequence},
+            timeout=300,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "predicted_mrl" not in payload and "predicted_stability" not in payload:
+            raise ValueError(f"Missing prediction value in {default_model} response.")
+        return {
+            "input_filepath": filepath,
+            "input_sequence": payload.get("input_sequence", sequence),
+            "predicted_mrl": payload.get("predicted_mrl"),
+            "predicted_stability": payload.get("predicted_stability"),
+            "model": payload.get("model", default_model),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, default_model)
+
+
+@tool(args_schema=Gemorna5UtrPredictionInput)
+def predict_5utr_mrl_with_gemorna(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8004/predict/5utr_mrl",
+) -> dict[str, Any]:
+    """Predict 5'UTR Mean Ribosomal Load (MRL) using GEMORNA.
+
+    INTERFACE LOCK (v0.1.0): The return dict keys must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna5UtrMrlPredictionOutput
+    - microservices/gemorna_service/main.py :: Utr5MrlPredictionResponse
+
+    Args:
+        filepath: Path to a file containing the 5'UTR RNA sequence.
+            IMPORTANT: pass a filepath rather than long inline sequence text.
+        service_url: REST endpoint for the GEMORNA 5'UTR MRL prediction microservice.
+
+    Returns:
+        Dict containing:
+            input_filepath (str): Original filepath passed in.
+            input_sequence (str): Normalized RNA sequence evaluated.
+            predicted_mrl (float): Predicted Mean Ribosomal Load score.
+            model (str): Model identifier.
+
+    Raises:
+        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
+    """
+    return _call_gemorna_prediction(service_url, filepath, "GEMORNA-5utr-mrl")
+
+
+@tool(args_schema=Gemorna3UtrPredictionInput)
+def predict_3utr_stability_with_gemorna(
+    filepath: str,
+    service_url: str = "http://127.0.0.1:8004/predict/3utr_stability",
+) -> dict[str, Any]:
+    """Predict 3'UTR stability using GEMORNA.
+
+    INTERFACE LOCK (v0.1.0): The return dict keys must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna3UtrStabilityPredictionOutput
+    - microservices/gemorna_service/main.py :: Utr3StabilityPredictionResponse
+
+    Args:
+        filepath: Path to a file containing the 3'UTR RNA sequence.
+            IMPORTANT: pass a filepath rather than long inline sequence text.
+        service_url: REST endpoint for the GEMORNA 3'UTR stability prediction microservice.
+
+    Returns:
+        Dict containing:
+            input_filepath (str): Original filepath passed in.
+            input_sequence (str): Normalized RNA sequence evaluated.
+            predicted_stability (float): Predicted stability score.
+            model (str): Model identifier.
+
+    Raises:
+        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
+    """
+    return _call_gemorna_prediction(service_url, filepath, "GEMORNA-3utr-stability")
+
+
 def _parse_fasta_protein_sequences(raw_text: str) -> list[str]:
     """Parse protein sequences from FASTA or plain text.
 
@@ -5048,6 +5176,8 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     design_mrna_cds_with_gemorna,
     design_5utr_with_gemorna,
     design_3utr_with_gemorna,
+    predict_5utr_mrl_with_gemorna,
+    predict_3utr_stability_with_gemorna,
     design_rna_sequence_with_rhodesign,
     design_rna_inverse_fold_with_ribodiffusion,
     run_odesign_inference,

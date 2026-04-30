@@ -150,6 +150,21 @@ STANDARD_WRITEBACKS: dict[str, WritebackRule] = {
         "model": "design_model",
     },
     # ═══════════════════════════════════════════════════════════════════════
+    # GEMORNA UTR prediction (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "predict_5utr_mrl_with_gemorna": {
+        "input_filepath": "current_filepath",
+        "input_sequence": "candidate_sequence",
+        "predicted_mrl": "gemorna_5utr_predicted_mrl",
+        "model": "gemorna_5utr_mrl_model",
+    },
+    "predict_3utr_stability_with_gemorna": {
+        "input_filepath": "current_filepath",
+        "input_sequence": "candidate_sequence",
+        "predicted_stability": "gemorna_3utr_predicted_stability",
+        "model": "gemorna_3utr_stability_model",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
     # RhoFold tertiary structure (v0.2.0 INTERFACE LOCK)
     # ═══════════════════════════════════════════════════════════════════════
     "predict_rna_tertiary_structure_with_rhofold": {

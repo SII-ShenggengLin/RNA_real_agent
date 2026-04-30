@@ -108,29 +108,93 @@ class UtrDesignResponse(BaseModel):
     model: str
 
 
+class UtrPredictionRequest(BaseModel):
+    """GEMORNA UTR prediction request (5'UTR MRL / 3'UTR stability).
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Field changes must stay synchronized with:
+    - agent_core/tools.py :: Gemorna5UtrPredictionInput / Gemorna3UtrPredictionInput
+    - agent_core/tool_specs.py :: predict_5utr_mrl_with_gemorna / predict_3utr_stability_with_gemorna ToolSpec
+    """
+
+    sequence: str = Field(
+        ...,
+        min_length=10,
+        description="RNA sequence to evaluate. Must contain only A/C/G/U (T is auto-converted to U).",
+    )
+
+    @field_validator("sequence")
+    @classmethod
+    def _validate_rna_sequence(cls, v: str) -> str:
+        cleaned = v.strip().upper().replace("T", "U")
+        valid = set("ACGU")
+        invalid = [ch for ch in cleaned if ch not in valid]
+        if invalid:
+            raise ValueError(f"Sequence contains invalid characters: {invalid}. Only A/C/G/U/T allowed.")
+        if len(cleaned) < 10:
+            raise ValueError(f"Sequence must be at least 10 nt; got {len(cleaned)}.")
+        return cleaned
+
+
+class Utr5MrlPredictionResponse(BaseModel):
+    """GEMORNA 5'UTR MRL prediction response.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna5UtrMrlPredictionOutput
+    - agent_core/tools.py :: predict_5utr_mrl_with_gemorna wrapper return dict
+    """
+
+    input_sequence: str
+    predicted_mrl: float
+    model: str = "GEMORNA-5utr-mrl"
+
+
+class Utr3StabilityPredictionResponse(BaseModel):
+    """GEMORNA 3'UTR stability prediction response.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must stay synchronized with:
+    - agent_core/tool_specs.py :: Gemorna3UtrStabilityPredictionOutput
+    - agent_core/tools.py :: predict_3utr_stability_with_gemorna wrapper return dict
+    """
+
+    input_sequence: str
+    predicted_stability: float
+    model: str = "GEMORNA-3utr-stability"
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 def _require_runtime_assets(mode: str) -> None:
-    """Verify that required assets exist for the requested generation mode."""
-    required_paths: list[Path] = [
-        GEMORNA_ROOT / "src" / "generate.py",
-    ]
+    """Verify that required assets exist for the requested generation/prediction mode."""
+    required_paths: list[Path] = []
 
     if mode == "cds":
         required_paths += [
+            GEMORNA_ROOT / "src" / "generate.py",
             GEMORNA_ROOT / "vocab" / "prot_vocab.pkl",
             GEMORNA_ROOT / "vocab" / "cds_vocab.pkl",
             CHECKPOINT_DIR / "gemorna_cds.pt",
         ]
     elif mode == "5utr":
         required_paths += [
+            GEMORNA_ROOT / "src" / "generate.py",
             CHECKPOINT_DIR / "gemorna_5utr.pt",
         ]
     elif mode == "3utr":
         required_paths += [
+            GEMORNA_ROOT / "src" / "generate.py",
             CHECKPOINT_DIR / "gemorna_3utr.pt",
+        ]
+    elif mode == "pred_5utr":
+        required_paths += [
+            GEMORNA_ROOT / "src" / "main_pred5UTR.py",
+            CHECKPOINT_DIR / "5utr.pt",
+        ]
+    elif mode == "pred_3utr":
+        required_paths += [
+            GEMORNA_ROOT / "src" / "main_pred3UTR.py",
+            CHECKPOINT_DIR / "3utr.pt",
         ]
     else:
         raise HTTPException(status_code=400, detail=f"Unsupported GEMORNA mode: {mode}")
@@ -284,3 +348,91 @@ def generate_3utr(payload: UtrDesignRequest) -> UtrDesignResponse:
     response schema are canonical. Do not change without updating wrapper + tool spec.
     """
     return _run_gemorna_utr("3utr", payload.utr_length)
+
+
+
+def _extract_prediction_value(stdout: str) -> float:
+    """Extract the numeric prediction from GEMORNA prediction stdout.
+
+    Expected format: '{sequence} {value:.2f}'
+    """
+    lines = [line.strip() for line in stdout.splitlines() if line.strip()]
+    for line in lines:
+        # Try to find a floating point number at the end of the line
+        parts = line.split()
+        if parts:
+            try:
+                return float(parts[-1])
+            except ValueError:
+                continue
+    raise HTTPException(
+        status_code=500,
+        detail=f"Unable to parse prediction value from stdout: {stdout}",
+    )
+
+
+def _run_gemorna_prediction(mode: str, sequence: str) -> float:
+    """Run GEMORNA prediction for 5'UTR MRL or 3'UTR stability."""
+    _require_runtime_assets(f"pred_{mode}")
+    if mode == "5utr":
+        script = "src/main_pred5UTR.py"
+        ckpt = "checkpoints/5utr.pt"
+    elif mode == "3utr":
+        script = "src/main_pred3UTR.py"
+        ckpt = "checkpoints/3utr.pt"
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported prediction mode: {mode}")
+
+    command = [
+        sys.executable,
+        script,
+        "--sequence",
+        sequence,
+        "--ckpt_path",
+        ckpt,
+    ]
+    result = subprocess.run(
+        command,
+        cwd=GEMORNA_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    if result.returncode != 0:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "message": f"GEMORNA {mode.upper()} prediction failed.",
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+            },
+        )
+    return _extract_prediction_value(result.stdout)
+
+
+@app.post("/predict/5utr_mrl", response_model=Utr5MrlPredictionResponse)
+def predict_5utr_mrl(payload: UtrPredictionRequest) -> Utr5MrlPredictionResponse:
+    """GEMORNA 5'UTR MRL prediction endpoint.
+
+    INTERFACE LOCK (v0.1.0): The CLI invocation (--sequence ...) and
+    response schema are canonical. Do not change without updating wrapper + tool spec.
+    """
+    predicted_mrl = _run_gemorna_prediction("5utr", payload.sequence)
+    return Utr5MrlPredictionResponse(
+        input_sequence=payload.sequence,
+        predicted_mrl=predicted_mrl,
+    )
+
+
+@app.post("/predict/3utr_stability", response_model=Utr3StabilityPredictionResponse)
+def predict_3utr_stability(payload: UtrPredictionRequest) -> Utr3StabilityPredictionResponse:
+    """GEMORNA 3'UTR stability prediction endpoint.
+
+    INTERFACE LOCK (v0.1.0): The CLI invocation (--sequence ...) and
+    response schema are canonical. Do not change without updating wrapper + tool spec.
+    """
+    predicted_stability = _run_gemorna_prediction("3utr", payload.sequence)
+    return Utr3StabilityPredictionResponse(
+        input_sequence=payload.sequence,
+        predicted_stability=predicted_stability,
+    )

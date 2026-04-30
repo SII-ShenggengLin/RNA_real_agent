@@ -690,6 +690,8 @@ The migration was executed in the following order (all steps completed):
 
 ## 9.10 Full-Length mRNA Design Workflow
 
+> **Status**: ✅ Implemented (`agent_core/workflows/full_length_mrna_design.py`)
+>
 > **Prerequisite**: GEMORNA supports generating CDS, 5'UTR, and 3'UTR independently. This enables both end-to-end full-length generation and hybrid strategies (e.g., LinearDesign CDS + GEMORNA UTRs).
 
 ### 9.10.1 Why this workflow is distinct from CDS-only design
@@ -782,19 +784,31 @@ def evaluate(self, candidate: Candidate) -> dict[str, Any]:
     }
 ```
 
-### 9.10.4 Scoring weights
+### 9.10.4 Scoring formula
 
-Full-length mRNA uses a distinct weight profile because UTR quality matters equally:
+Full-length mRNA uses a simple additive score that directly reflects the three
+functional modules (CDS translation efficiency + 5'UTR initiation + 3'UTR stability):
 
 ```python
-class FullLengthMrnaScoreWeights(BaseModel):
-    cds_cai: float = 0.25
-    cds_mfe: float = 0.20
-    full_length_mfe: float = 0.20       # UTR-CDS structural coordination
-    utr5_ires: float = 0.10             # Translation initiation potential
-    utr_structure_balance: float = 0.10 # 5'UTR should not be overly folded
-    overall_stability: float = 0.15
+total_score = cds_combined_score / cds_length + utr5_mrl + utr3_stability
 ```
+
+Where:
+- `cds_combined_score`: the classic CDS-only score (`-mfe + codon_count * log(CAI)`)
+- `cds_length`: nucleotide length of the CDS segment
+- `utr5_mrl`: GEMORNA predicted Mean Ribosomal Load for 5'UTR
+- `utr3_stability`: GEMORNA predicted stability score for 3'UTR
+
+**Rationale**: The old weighted-normalisation approach (v0.1.0) was abandoned
+because it obscured the biological interpretability of each module. The new
+formula keeps CDS quality per-nucleotide (so longer CDS are not automatically
+penalised), adds the 5'UTR MRL directly (higher = better translation initiation),
+and adds the 3'UTR stability score directly (higher = longer half-life).
+
+All other metrics (full-length MFE, IRES potential, GC content, RNASTOP
+overall_stability, 5'UTR folding balance) are **still computed during evaluation**
+and included in the output report for human review, but they do **not**
+participate in ranking.
 
 ### 9.10.5 Critic strategy
 
