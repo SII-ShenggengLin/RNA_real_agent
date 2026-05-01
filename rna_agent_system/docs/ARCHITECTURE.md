@@ -692,97 +692,74 @@ The migration was executed in the following order (all steps completed):
 
 > **Status**: ✅ Implemented (`agent_core/workflows/full_length_mrna_design.py`)
 >
-> **Prerequisite**: GEMORNA supports generating CDS, 5'UTR, and 3'UTR independently. This enables both end-to-end full-length generation and hybrid strategies (e.g., LinearDesign CDS + GEMORNA UTRs).
+> **Architecture**: Reuses `MrnaCdsDesignWorkflow` for CDS generation and evaluation;
+> only full-length and UTR metrics are computed incrementally.
 
 ### 9.10.1 Why this workflow is distinct from CDS-only design
 
 | Dimension | CDS-only (`mrna_cds_design`) | Full-length (`full_length_mrna_design`) |
 |-----------|------------------------------|----------------------------------------|
 | **Biological goal** | Maximize translation efficiency | Balance translation + UTR regulation + overall stability |
-| **Generation tools** | LinearDesign, RNARL | **GEMORNA** (primary) + hybrid combinations |
-| **Evaluation scope** | CDS internal: CAI, MFE, GC | **Segmented**: 5'UTR, CDS, 3'UTR + full-length coordination |
-| **Key extra metrics** | — | UTR structure complexity, IRES potential, UTR-CDS interaction |
+| **Generation tools** | LinearDesign, RNARL, GEMORNA | `MrnaCdsDesignWorkflow` + GEMORNA UTRs |
+| **Evaluation scope** | CDS internal: CAI, MFE, GC | **Segmented**: CDS (reused) + 5'UTR + 3'UTR + full-length coordination |
+| **Key extra metrics** | — | UTR MRL, UTR stability, IRES potential, full-length MFE |
 
-### 9.10.2 Candidate generation strategies
+### 9.10.2 Candidate generation
 
-Because GEMORNA can generate components independently, the workflow supports **three generation strategies**:
+**Strategy C only** (CDS-only baseline + UTR append).
 
-**Strategy A: GEMORNA end-to-end**
+`generate_candidates()` calls `MrnaCdsDesignWorkflow.run()` to obtain already-evaluated CDS candidates, then appends 3×3 UTR combinations (short/medium/long) from GEMORNA.
+
 ```python
-gemorna_full = capabilities["design_mrna_cds_with_gemorna"].invoke({
-    "filepath": protein_filepath,
-    "mode": "full_length"  # 5'UTR + CDS + 3'UTR
-})
-# GEMORNA returns: {full_sequence, utr5_region, cds_region, utr3_region}
+cds_workflow = MrnaCdsDesignWorkflow(capability_registry)
+cds_result = cds_workflow.run(MrnaCdsDesignInput(protein_sequence=...))
+for cds_cand in cds_result.all_candidates:
+    for utr5_preset in ("short", "medium", "long"):
+        for utr3_preset in ("short", "medium", "long"):
+            full_seq = utr5 + cds_cand.sequence + utr3
 ```
 
-**Strategy B: Hybrid — best-of-breed CDS + GEMORNA UTRs**
-```python
-ld_cds = capabilities["design_mrna_cds_with_lineardesign"].invoke({
-    "filepath": protein_filepath,
-    "lambda_value": 0.5
-})
-utr5 = capabilities["design_mrna_cds_with_gemorna"].invoke({
-    "mode": "utr5_only",
-    "target_length": 50
-})
-utr3 = capabilities["design_mrna_cds_with_gemorna"].invoke({
-    "mode": "utr3_only",
-    "target_length": 100
-})
-# Direct concatenation: UTR5 + CDS + UTR3
-# The only constraint is that the CDS length must be a multiple of 3.
-full_sequence = utr5["sequence"] + ld_cds["generated_sequence"] + utr3["sequence"]
-```
+CDS metrics (`mfe_kcal_per_mol`, `cai_score`, `gc_content`) are carried forward via `candidate.metadata["cds_metrics"]` so the full-length workflow never re-evaluates the CDS segment.
 
-**Strategy C: CDS-only baseline + UTR append**
-```python
-# Use existing CDS-only candidates, attach standard / GEMORNA UTRs
-# Useful when user already has a validated CDS and only needs UTRs
-# Concatenation rule is the same: UTR5 + CDS + UTR3, CDS length % 3 == 0.
-```
+### 9.10.3 Incremental evaluation pipeline
 
-### 9.10.3 Segmented evaluation pipeline
-
-The evaluation must know region boundaries. These come from GEMORNA metadata (Strategy A) or from concatenation logic (Strategy B/C).
+Only full-length and UTR metrics are computed. CDS metrics are read from the reused `metrics_bundle`.
 
 ```python
 def evaluate(self, candidate: Candidate) -> dict[str, Any]:
-    seq = candidate.sequence
-    utr5, cds, utr3 = self._segment_by_metadata(seq, candidate.metadata)
-    
-    full_fp = save_sequence_to_workspace(seq)
-    cds_fp = save_sequence_to_workspace(cds)
-    utr5_fp = save_sequence_to_workspace(utr5)
-    
-    # 1. Full-length structure (UTR-CDS interaction is critical)
+    # Reuse CDS metrics from MrnaCdsDesignWorkflow
+    cds_metrics = candidate.metadata.get("cds_metrics", {})
+    cds_mfe = cds_metrics.get("mfe_kcal_per_mol")
+    cds_cai = cds_metrics.get("cai_score")
+    cds_gc  = cds_metrics.get("gc_content")
+
+    # 1. Full-length structure
     full_fold = capabilities["predict_rna_secondary_structure"].invoke({"filepath": full_fp})
     
-    # 2. CDS metrics (conventional)
-    cds_metrics = capabilities["analyze_cds_codon_metrics_with_codonw_slim"].invoke({"filepath": cds_fp})
-    gc = capabilities["compute_rna_sequence_gc_content"].invoke({"filepath": full_fp})
-    
-    # 3. 5'UTR specific
-    utr5_metrics = {}
+    # 2. 5'UTR specific
     if len(utr5) >= 30:
         ires = capabilities["predict_putative_ires_with_iresfinder"].invoke({"filepath": utr5_fp})
-        utr5_metrics["ires_max_score"] = max(ires.get("scores", [0]))
+    
+    # 3. 5'UTR MRL & 3'UTR stability (GEMORNA)
+    utr5_mrl = capabilities["predict_5utr_mrl_with_gemorna"].invoke({"filepath": utr5_fp})
+    utr3_stab = capabilities["predict_3utr_stability_with_gemorna"].invoke({"filepath": utr3_fp})
     
     # 4. Full-length stability
     stability = capabilities["predict_mrna_stability_with_rnastop"].invoke({"filepath": full_fp})
     
     return {
+        "cds_cai": cds_cai,
+        "cds_mfe": cds_mfe,
+        "cds_gc": cds_gc,
         "full_length_mfe": full_fold.get("mfe_kcal_per_mol"),
-        "full_length_structure": full_fold.get("structure"),
-        "cds_cai": cds_metrics.get("cai_score"),
-        "cds_gc": gc.get("gc_content"),
-        "utr5_ires_potential": utr5_metrics.get("ires_max_score", 0),
-        "utr5_length": len(utr5),
-        "utr3_length": len(utr3),
-        "overall_stability": stability.get("overall_stability"),
-        "total_length": len(seq)
+        "utr5_ires_potential": ires_max_score,
+        "utr5_predicted_mrl": utr5_mrl,
+        "utr3_predicted_stability": utr3_stab,
+        "overall_stability": stability,
     }
 ```
+
+**Not called**: `analyze_cds_codon_metrics_with_codonw_slim`, `compute_cai_for_cds_sequence`, `compute_rna_sequence_gc_content` for the CDS segment.
 
 ### 9.10.4 Scoring formula (rank aggregation / Borda count)
 

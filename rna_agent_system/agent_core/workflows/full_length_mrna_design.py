@@ -1,10 +1,12 @@
 """Full-length mRNA design workflow — 5'UTR + CDS + 3'UTR (Layer 2).
 
-Protein sequence → CDS candidates (LinearDesign λ=[0,1,4,10] + RNARL + GEMORNA)
-→ UTR combinations (GEMORNA short/medium/long) → segmented evaluation →
-full-length scoring → ranking → WorkflowResult.
+Protein sequence → CDS candidates via MrnaCdsDesignWorkflow (generate + evaluate)
+→ UTR combinations (GEMORNA short/medium/long) → full-length / UTR incremental
+evaluation → full-length scoring → ranking → WorkflowResult.
 
 Strategy: Only Strategy C is implemented (CDS-only baseline + UTR append).
+Architecture: Full-length workflow reuses MrnaCdsDesignWorkflow for CDS
+generation and evaluation; only full-length and UTR metrics are computed here.
 """
 
 from __future__ import annotations
@@ -16,10 +18,11 @@ from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
-from agent_core.file_manager import save_sequence, save_text_file
+from agent_core.file_manager import save_sequence
 from agent_core.planning.base import Critic
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
 from agent_core.workflows.mrna_scoring import score_mrna_candidate
 
 _LOGGER = logging.getLogger("agent_core.workflows.full_length_mrna_design")
@@ -45,13 +48,7 @@ class FullLengthMrnaDesignInput(BaseModel):
 def score_full_length_mrna_candidate(
     metrics: dict[str, Any],
 ) -> dict[str, Any]:
-    """Score a full-length mRNA candidate.
-
-    Returns per-module raw scores.  Ranking is performed in
-    ``rank_and_format`` via rank aggregation (Borda count):
-    each module is sorted independently, ranks are summed,
-    and candidates are ordered by the total rank.
-    """
+    """Return per-module raw scores for Borda-count ranking in rank_and_format."""
 
     cds_length = int(metrics.get("cds_length", 0))
 
@@ -84,26 +81,21 @@ def score_full_length_mrna_candidate(
 class FullLengthMrnaDesignWorkflow(
     BaseDomainWorkflow[FullLengthMrnaDesignInput, WorkflowResult]
 ):
-    """Full-length mRNA design: protein → CDS + UTR combinations → evaluate → score → rank."""
+    """Protein → CDS (via MrnaCdsDesignWorkflow) + UTR → incremental eval → Borda rank."""
 
     name = "full_length_mrna_design"
     description = (
         "Design full-length mRNA (5'UTR + CDS + 3'UTR) from protein sequence, "
-        "evaluate segmented metrics, score, and rank candidates."
+        "reuse MrnaCdsDesignWorkflow for CDS generation and evaluation, "
+        "evaluate full-length + UTR metrics incrementally, score, and rank candidates."
     )
     required_capabilities = [
-        "design_mrna_cds_with_lineardesign",
-        "design_mrna_cds_with_rnarl",
-        "design_mrna_cds_with_gemorna",
         "design_5utr_with_gemorna",
         "design_3utr_with_gemorna",
         "predict_5utr_mrl_with_gemorna",
         "predict_3utr_stability_with_gemorna",
         "predict_rna_secondary_structure",
         "predict_rna_secondary_structure_with_linearfold",
-        "compute_rna_sequence_gc_content",
-        "compute_cai_for_cds_sequence",
-        "analyze_cds_codon_metrics_with_codonw_slim",
         "predict_putative_ires_with_iresfinder",
         "predict_mrna_stability_with_rnastop",
     ]
@@ -128,22 +120,32 @@ class FullLengthMrnaDesignWorkflow(
     def generate_candidates(self, inp: FullLengthMrnaDesignInput) -> list[Candidate]:
         """Generate full-length candidates via Strategy C (CDS baseline + UTR append).
 
-        Step 1: Generate CDS candidates (same as MrnaCdsDesignWorkflow).
-        Step 2: For each CDS, generate 3×3 UTR combinations (short/medium/long).
+        Step 1: Delegate CDS generation and evaluation to MrnaCdsDesignWorkflow.
+        Step 2: For each evaluated CDS, generate 3×3 UTR combinations.
         Total: up to 6 unique CDS × 9 UTR combos = 54 candidates.
         """
-        protein_fp = save_sequence(inp.protein_sequence, prefix="protein")
-        _LOGGER.info(
-            "full_length_mrna_design protein_saved filepath=%s len_aa=%d",
-            protein_fp,
-            len(inp.protein_sequence),
+        # ── Step 1: Reuse CDS workflow for generation + evaluation ──
+        cds_inp = MrnaCdsDesignInput(
+            protein_sequence=inp.protein_sequence,
+            design_tool=inp.design_tool,
+            lambda_value=inp.lambda_value,
+            model_type=inp.model_type,
+            run_fold=inp.run_fold,
+            run_gc=inp.run_gc,
         )
+        cds_workflow = MrnaCdsDesignWorkflow(self.capabilities)
+        cds_result = cds_workflow.run(cds_inp)
 
-        # ── Step 1: CDS candidates ──
-        cds_candidates = self._generate_cds_candidates(inp, protein_fp)
+        cds_candidates = cds_result.all_candidates
         if not cds_candidates:
-            _LOGGER.warning("no_cds_candidates_generated")
+            _LOGGER.warning("cds_workflow produced no candidates")
             return []
+
+        _LOGGER.info(
+            "cds_workflow_completed candidates=%d best_total_score=%s",
+            len(cds_candidates),
+            cds_result.best_candidate.scores.get("total_score") if cds_result.best_candidate else None,
+        )
 
         # ── Step 2: UTR combinations ──
         utr_presets = self._resolve_utr_presets(inp.utr_mode)
@@ -158,6 +160,10 @@ class FullLengthMrnaDesignWorkflow(
                     len(cds_seq),
                 )
                 continue
+
+            # Reuse CDS evaluation results stored by MrnaCdsDesignWorkflow
+            cds_metrics = cds_cand.metadata.get("metrics_bundle", {})
+            cds_scores = cds_cand.scores
 
             for utr5_preset in utr_presets:
                 utr5_seq = self._generate_utr("5utr", utr5_preset)
@@ -184,7 +190,8 @@ class FullLengthMrnaDesignWorkflow(
                             "cds_length": len(cds_seq),
                             "cds_source": cds_cand.source,
                             "protein_sequence": inp.protein_sequence,
-                            "protein_filepath": protein_fp,
+                            "cds_metrics": cds_metrics,
+                            "cds_scores": cds_scores,
                         },
                     )
                     full_candidates.append(candidate)
@@ -209,81 +216,6 @@ class FullLengthMrnaDesignWorkflow(
             len(full_candidates),
             len(unique),
         )
-        return unique
-
-    def _generate_cds_candidates(
-        self, inp: FullLengthMrnaDesignInput, protein_fp: str
-    ) -> list[Candidate]:
-        """Produce CDS candidates using the same logic as MrnaCdsDesignWorkflow."""
-
-        design_configs: list[tuple[str, dict[str, Any]]] = []
-
-        if inp.design_tool in ("all", "lineardesign"):
-            for lam in (0.0, 1.0, 4.0, 10.0):
-                design_configs.append(("lineardesign", {"lambda_value": lam}))
-
-        if inp.design_tool in ("all", "rnarl"):
-            design_configs.append(("rnarl", {"model_type": inp.model_type}))
-
-        if inp.design_tool in ("all", "gemorna"):
-            design_configs.append(("gemorna", {}))
-
-        candidates: list[Candidate] = []
-        for tool_name, extra_args in design_configs:
-            try:
-                cap_name = f"design_mrna_cds_with_{tool_name}"
-                if not self.capabilities.has(cap_name):
-                    _LOGGER.warning("capability missing: %s", cap_name)
-                    continue
-
-                cap = self.capabilities.get(cap_name)
-                args: dict[str, Any] = {"filepath": protein_fp, **extra_args}
-                cap_result = cap.invoke(args, state=self._workflow_state)
-
-                if not cap_result.success:
-                    _LOGGER.warning(
-                        "cds_design failed tool=%s error=%s", tool_name, cap_result.error
-                    )
-                    continue
-
-                seq = str(cap_result.output.get("generated_sequence", ""))
-                if not seq:
-                    _LOGGER.warning("cds_design empty tool=%s", tool_name)
-                    continue
-
-                param_label = ""
-                if tool_name == "lineardesign" and "lambda_value" in extra_args:
-                    param_label = f"_lambda{extra_args['lambda_value']}"
-
-                candidate = Candidate(
-                    sequence=seq,
-                    sequence_type="mrna",
-                    source=f"cds_design:{tool_name}{param_label}",
-                    metadata={
-                        "design_tool": tool_name,
-                        "design_params": extra_args,
-                        "protein_sequence": inp.protein_sequence,
-                        "protein_filepath": protein_fp,
-                    },
-                )
-                candidates.append(candidate)
-                _LOGGER.info(
-                    "cds_candidate_generated tool=%s params=%s len_nt=%d",
-                    tool_name,
-                    extra_args,
-                    len(seq),
-                )
-            except Exception as exc:
-                _LOGGER.error("cds_design exception tool=%s err=%s", tool_name, exc)
-
-        # Deduplicate by sequence
-        seen: set[str] = set()
-        unique: list[Candidate] = []
-        for c in candidates:
-            if c.sequence not in seen:
-                seen.add(c.sequence)
-                unique.append(c)
-
         return unique
 
     def _resolve_utr_presets(self, utr_mode: str) -> list[str]:
@@ -330,15 +262,24 @@ class FullLengthMrnaDesignWorkflow(
             return None
 
     def evaluate(self, candidate: Candidate) -> dict[str, Any]:
-        """Run segmented evaluation on a full-length candidate."""
+        """Run incremental evaluation on a full-length candidate.
+
+        CDS metrics are reused from MrnaCdsDesignWorkflow results stored in
+        candidate metadata. Only full-length and UTR metrics are computed here.
+        """
         seq = candidate.sequence
         utr5 = candidate.metadata.get("utr5_sequence", "")
         cds = candidate.metadata.get("cds_sequence", "")
         utr3 = candidate.metadata.get("utr3_sequence", "")
 
+        # ── Reuse CDS metrics from MrnaCdsDesignWorkflow ──
+        cds_metrics = candidate.metadata.get("cds_metrics", {})
+        cds_mfe = cds_metrics.get("mfe_kcal_per_mol")
+        cds_cai = cds_metrics.get("cai_score")
+        cds_gc = cds_metrics.get("gc_content")
+
         # Save segments to workspace
         full_fp = save_sequence(seq, prefix="full_mrna")
-        cds_fp = save_sequence(cds, prefix="cds")
         utr5_fp = save_sequence(utr5, prefix="utr5")
         utr3_fp = save_sequence(utr3, prefix="utr3")
         candidate.metadata["workspace_filepath"] = full_fp
@@ -365,56 +306,20 @@ class FullLengthMrnaDesignWorkflow(
                     else:
                         _LOGGER.warning("full_fold linearfold_failed error=%s", lf_res.error)
 
-        # ── 2. CDS metrics ──
-        cds_metrics: dict[str, Any] = {}
-        if self.capabilities.has("analyze_cds_codon_metrics_with_codonw_slim"):
-            cw_res = self.capabilities.get("analyze_cds_codon_metrics_with_codonw_slim").invoke(
-                {"filepath": cds_fp}, state=self._workflow_state
-            )
-            if cw_res.success:
-                cds_metrics = dict(cw_res.output)
-            else:
-                _LOGGER.warning("codonw_failed error=%s", cw_res.error)
-
-        gc_content: Optional[float] = None
-        if self.capabilities.has("compute_rna_sequence_gc_content"):
-            gc_res = self.capabilities.get("compute_rna_sequence_gc_content").invoke(
-                {"filepath": full_fp}, state=self._workflow_state
-            )
-            if gc_res.success:
-                gc_content = _pick_float(gc_res.output, "gc_content")
-            else:
-                _LOGGER.warning("gc_failed error=%s", gc_res.error)
-
-        cai_score: Optional[float] = None
-        if self.capabilities.has("compute_cai_for_cds_sequence"):
-            cai_res = self.capabilities.get("compute_cai_for_cds_sequence").invoke(
-                {"filepath": cds_fp, "species": "Homo sapiens"},
-                state=self._workflow_state,
-            )
-            if cai_res.success:
-                cai_score = _pick_float(cai_res.output, "cai_score")
-            else:
-                _LOGGER.warning("cai_failed error=%s", cai_res.error)
-
-        # Use dedicated CAI tool directly (CodonW CAI is not used for scoring)
-        effective_cai = cai_score
-
-        # ── 3. 5'UTR specific — IRES potential ──
+        # ── 2. 5'UTR specific — IRES potential ──
         utr5_metrics: dict[str, Any] = {}
         if len(utr5) >= 30 and self.capabilities.has("predict_putative_ires_with_iresfinder"):
             ires_res = self.capabilities.get("predict_putative_ires_with_iresfinder").invoke(
                 {"filepath": utr5_fp}, state=self._workflow_state
             )
             if ires_res.success:
-                # IRESfinder returns max_score directly; scores list may also exist
                 max_score = _pick_float(ires_res.output, "max_score")
                 if max_score is not None:
                     utr5_metrics["ires_max_score"] = max_score
             else:
                 _LOGGER.warning("ires_failed error=%s", ires_res.error)
 
-        # ── 4. Full-length stability ──
+        # ── 3. Full-length stability ──
         overall_stability: Optional[float] = None
         if self.capabilities.has("predict_mrna_stability_with_rnastop"):
             rnastop_args: dict[str, Any] = {"filepath": full_fp}
@@ -428,7 +333,7 @@ class FullLengthMrnaDesignWorkflow(
             else:
                 _LOGGER.warning("rnastop_failed error=%s", rnastop_res.error)
 
-        # ── 5. 5'UTR folding ──
+        # ── 4. 5'UTR folding ──
         utr5_fold: Optional[dict[str, Any]] = None
         if len(utr5) >= 10 and self.capabilities.has("predict_rna_secondary_structure"):
             utr5_fold_res = self.capabilities.get("predict_rna_secondary_structure").invoke(
@@ -439,7 +344,7 @@ class FullLengthMrnaDesignWorkflow(
             else:
                 _LOGGER.warning("utr5_fold_failed error=%s", utr5_fold_res.error)
 
-        # ── 6. 5'UTR MRL prediction (GEMORNA) ──
+        # ── 5. 5'UTR MRL prediction (GEMORNA) ──
         utr5_predicted_mrl: Optional[float] = None
         if self.capabilities.has("predict_5utr_mrl_with_gemorna"):
             mrl_res = self.capabilities.get("predict_5utr_mrl_with_gemorna").invoke(
@@ -450,7 +355,7 @@ class FullLengthMrnaDesignWorkflow(
             else:
                 _LOGGER.warning("utr5_mrl_prediction_failed error=%s", mrl_res.error)
 
-        # ── 7. 3'UTR stability prediction (GEMORNA) ──
+        # ── 6. 3'UTR stability prediction (GEMORNA) ──
         utr3_predicted_stability: Optional[float] = None
         if self.capabilities.has("predict_3utr_stability_with_gemorna"):
             stab_res = self.capabilities.get("predict_3utr_stability_with_gemorna").invoke(
@@ -464,9 +369,9 @@ class FullLengthMrnaDesignWorkflow(
         metrics: dict[str, Any] = {
             "full_length_mfe": _pick_float(full_fold, "mfe_kcal_per_mol") if full_fold else None,
             "full_length_structure": full_fold.get("structure") if full_fold else None,
-            "cds_cai": effective_cai,
-            "cds_mfe": _pick_float(cds_metrics, "mfe_kcal_per_mol") if cds_metrics else None,
-            "cds_gc": gc_content,
+            "cds_cai": cds_cai,
+            "cds_mfe": cds_mfe,
+            "cds_gc": cds_gc,
             "cds_length": len(cds),
             "utr5_ires_potential": utr5_metrics.get("ires_max_score", 0),
             "utr5_length": len(utr5),
