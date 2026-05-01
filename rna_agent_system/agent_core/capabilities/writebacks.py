@@ -386,6 +386,55 @@ STANDARD_WRITEBACKS: dict[str, WritebackRule] = {
         "prediction_filepaths": "odesign_prediction_filepaths",
         "run_log_filepath": "odesign_run_log_filepath",
     },
+    # ═══════════════════════════════════════════════════════════════════════
+    # Extract RNA from CIF (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "extract_rna_sequence_from_cif": {
+        "sequence": "extract_rna_from_cif_sequence",
+        "chain_id": "extract_rna_from_cif_chain_id",
+        "residue_count": "extract_rna_from_cif_residue_count",
+        "is_rna": "extract_rna_from_cif_is_rna",
+        "warnings": "extract_rna_from_cif_warnings",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
+    # ODesign aptamer input JSON builder (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "build_odesign_aptamer_input_json": {
+        "input_json_filepath": "odesign_aptamer_input_json_filepath",
+        "design_config": "odesign_aptamer_input_design_config",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
+    # ColabFold protein structure prediction (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "predict_protein_structure_with_colabfold": {
+        "pdb_filepath": "protein_structure_pdb_filepath",
+        "mean_pae": "protein_structure_mean_pae",
+        "mean_plddt": "protein_structure_mean_plddt",
+        "ranking_confidence": "protein_structure_ranking_confidence",
+        "model_scores": "protein_structure_model_scores",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
+    # Structure alignment (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "score_structure_alignment": {
+        "rmsd": "structure_rmsd",
+        "tm_score": "structure_tm_score",
+        "aligned_residue_count": "structure_aligned_residue_count",
+        "superposition_matrix": "structure_superposition_matrix",
+        "warning": "structure_alignment_warning",
+    },
+    # ═══════════════════════════════════════════════════════════════════════
+    # Protein binding hotspot identification (v0.1.0 INTERFACE LOCK)
+    # ═══════════════════════════════════════════════════════════════════════
+    "identify_protein_binding_hotspots": {
+        "hotspot_residues": "hotspot_residues",
+        "hotspot_patch_size": "hotspot_patch_size",
+        "patch_center_coords": "patch_center_coords",
+        "exposed_basic_count": "hotspot_exposed_basic_count",
+        "protein_structure_path": "hotspot_protein_structure_path",
+        "chain_id": "hotspot_chain_id",
+        "warning": "hotspot_warning",
+    },
 }
 
 

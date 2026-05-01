@@ -5118,6 +5118,729 @@ def run_odesign_inference(
         _raise_service_error(exc, "ODesign")
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Extract RNA from CIF INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 同步文件清单：
+#   - agent_core/tools.py :: extract_rna_sequence_from_cif
+#   - agent_core/tool_specs.py :: ExtractRnaFromCifOutput / ToolSpec
+#   - agent_core/state.py :: extract_rna_from_cif_* fields
+#   - agent_core/capabilities/writebacks.py :: writeback mapping
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class ExtractRnaFromCifInput(BaseModel):
+    """Input schema for extracting RNA sequence from a CIF/MMCIF file."""
+
+    cif_filepath: str = Field(
+        ...,
+        description="Path to CIF/MMCIF file (workspace or absolute).",
+    )
+    chain_id: Optional[str] = Field(
+        default=None,
+        description="Chain ID to extract; auto-detect first RNA chain if omitted.",
+    )
+
+
+@tool(args_schema=ExtractRnaFromCifInput)
+def extract_rna_sequence_from_cif(
+    cif_filepath: str,
+    chain_id: Optional[str] = None,
+) -> dict[str, Any]:
+    """Extract RNA sequence from a CIF/MMCIF file using biopython.
+
+    Detects RNA vs DNA vs protein by checking for the O2' atom.
+    Non-standard nucleotides are represented as 'N' with a warning recorded.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: ExtractRnaFromCifOutput / ToolSpec
+    - agent_core/state.py :: extract_rna_from_cif_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+
+    Args:
+        cif_filepath: CIF/MMCIF file path.
+        chain_id: Optional chain ID; if omitted the first RNA chain is selected.
+
+    Returns:
+        Dict with ``sequence``, ``chain_id``, ``residue_count``, ``is_rna``,
+        ``warnings``, and paths.
+
+    Raises:
+        ValueError: If no RNA chain is found or the specified chain does not exist.
+        ImportError: If biopython is not installed.
+    """
+    try:
+        from Bio.PDB.MMCIFParser import MMCIFParser
+    except ImportError as exc:
+        raise ImportError(
+            "biopython is required for CIF parsing. Install it with: pip install biopython"
+        ) from exc
+
+    parser = MMCIFParser(QUIET=True)
+    structure = parser.get_structure("cif_structure", cif_filepath)
+
+    rna_chains = []
+    for model in structure:
+        for chain in model:
+            is_rna_chain = False
+            for residue in chain:
+                if residue.id[0].strip():  # Skip hetero atoms / waters
+                    continue
+                atom_names = {atom.name for atom in residue}
+                if "O2'" in atom_names:
+                    is_rna_chain = True
+                    break
+            if is_rna_chain:
+                rna_chains.append(chain)
+
+    if not rna_chains:
+        raise ValueError(
+            f"No RNA chain found in {cif_filepath}. "
+            "Ensure the file contains RNA residues with O2' atoms."
+        )
+
+    selected_chain = None
+    if chain_id is not None:
+        for ch in rna_chains:
+            if ch.id == chain_id:
+                selected_chain = ch
+                break
+        if selected_chain is None:
+            available = [ch.id for ch in rna_chains]
+            raise ValueError(
+                f"Chain '{chain_id}' not found or is not RNA. "
+                f"Available RNA chains: {available}"
+            )
+    else:
+        selected_chain = rna_chains[0]
+
+    # Standard RNA base mapping
+    base_map = {
+        "A": "A", "U": "U", "G": "G", "C": "C",
+        "DA": "A", "DT": "T", "DG": "G", "DC": "C",
+    }
+    sequence_parts = []
+    non_standard_warnings = []
+    residue_count = 0
+    for residue in selected_chain:
+        if residue.id[0].strip():  # Skip hetero / water
+            continue
+        residue_count += 1
+        resname = residue.resname.strip()
+        base = base_map.get(resname, None)
+        if base is None:
+            if len(resname) == 1 and resname in "AUGC":
+                base = resname
+            else:
+                base = "N"
+                non_standard_warnings.append(
+                    f"Non-standard residue '{resname}' at position {residue.id[1]}"
+                )
+        sequence_parts.append(base)
+
+    sequence = "".join(sequence_parts)
+    warnings = "; ".join(non_standard_warnings) if non_standard_warnings else ""
+
+    return {
+        "sequence": sequence,
+        "chain_id": selected_chain.id,
+        "residue_count": residue_count,
+        "is_rna": True,
+        "cif_filepath": cif_filepath,
+        "warnings": warnings,
+        "model": "biopython-mmcif-extract",
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ODesign aptamer input JSON builder INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 同步文件清单：
+#   - agent_core/tools.py :: build_odesign_aptamer_input_json
+#   - agent_core/tool_specs.py :: BuildOdesignAptamerOutput / ToolSpec
+#   - agent_core/state.py :: odesign_aptamer_input_* fields
+#   - agent_core/capabilities/writebacks.py :: writeback mapping
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class BuildOdesignAptamerInput(BaseModel):
+    """Input schema for building ODesign aptamer design JSON."""
+
+    protein_structure_path: str = Field(
+        ...,
+        description="Path to protein PDB or CIF file.",
+    )
+    protein_chain_id: str = Field(
+        ...,
+        description="Protein chain ID, e.g. 'C'.",
+    )
+    protein_sequence_length: int = Field(
+        ...,
+        ge=1,
+        description="Protein sequence length.",
+    )
+    hotspot_residues: str = Field(
+        ...,
+        description="Hotspot residues, format like 'C/18,C/90,C/79,C/49'.",
+    )
+    aptamer_length: int = Field(
+        ...,
+        ge=1,
+        description="Desired RNA aptamer length in nucleotides.",
+    )
+    output_prefix: Optional[str] = Field(
+        default=None,
+        description="Output filename prefix.",
+    )
+
+
+@tool(args_schema=BuildOdesignAptamerInput)
+def build_odesign_aptamer_input_json(
+    protein_structure_path: str,
+    protein_chain_id: str,
+    protein_sequence_length: int,
+    hotspot_residues: str,
+    aptamer_length: int,
+    output_prefix: Optional[str] = None,
+) -> dict[str, Any]:
+    """Build an ODesign input JSON for RNA aptamer design against a protein target.
+
+    Constructs the JSON structure for ODesign ``odesign_base_na_rigid`` + ``rna`` modality.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: BuildOdesignAptamerOutput / ToolSpec
+    - agent_core/state.py :: odesign_aptamer_input_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+
+    Args:
+        protein_structure_path: Protein structure file path.
+        protein_chain_id: Protein chain ID.
+        protein_sequence_length: Length of the protein sequence.
+        hotspot_residues: Comma-separated hotspot residues.
+        aptamer_length: Target aptamer length in nt.
+        output_prefix: Optional filename prefix for the generated JSON.
+
+    Returns:
+        Dict with ``input_json_filepath`` and ``design_config``.
+    """
+    prefix = output_prefix or "odesign_aptamer_input"
+    design_config = [
+        {
+            "name": prefix,
+            "ref_file": protein_structure_path,
+            "chains": [
+                {
+                    "chain_type": "proteinChain",
+                    "sequence": f"{protein_chain_id}/1-{protein_sequence_length}",
+                },
+                {
+                    "chain_type": "rnaChain",
+                    "sequence": f"{aptamer_length}-{aptamer_length}",
+                },
+            ],
+            "hotspot": hotspot_residues,
+            "center_method": "hotspot_center",
+        }
+    ]
+
+    json_content = json.dumps(design_config, indent=2, ensure_ascii=False)
+    input_json_filepath = save_text_file(
+        json_content,
+        prefix=prefix,
+        suffix=".json",
+    )
+
+    return {
+        "input_json_filepath": input_json_filepath,
+        "design_config": design_config,
+        "model": "odesign-aptamer-input-builder",
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ColabFold protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 同步文件清单：
+#   - agent_core/tools.py :: predict_protein_structure_with_colabfold
+#   - microservices/colabfold_service/main.py
+#   - agent_core/tool_specs.py :: ColabFoldProteinOutput / ToolSpec
+#   - agent_core/state.py :: protein_structure_* fields
+#   - agent_core/capabilities/writebacks.py :: writeback mapping
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class ColabFoldProteinInput(BaseModel):
+    """Input schema for ColabFold protein structure prediction.
+
+    Because ColabFold installation is complex (CUDA + JAX + ~3-5 GB weights),
+    the microservice may not be fully deployed yet. The wrapper raises
+    NotImplementedError when called until the service is ready.
+    """
+
+    filepath: str = Field(
+        ...,
+        description="Path to FASTA file containing protein sequence(s).",
+    )
+    num_models: int = Field(
+        default=5,
+        ge=1,
+        le=5,
+        description="Number of AlphaFold2 models to use.",
+    )
+    num_recycles: int = Field(
+        default=3,
+        ge=1,
+        le=12,
+        description="Number of recycling iterations.",
+    )
+    stop_at_score: float = Field(
+        default=100,
+        ge=0,
+        description="Early stopping threshold (pLDDT).",
+    )
+    msa_mode: str = Field(
+        default="mmseqs2_uniref_env",
+        description="MSA generation mode.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8022/predict/protein",
+        description="ColabFold microservice endpoint.",
+    )
+    timeout_seconds: int = Field(
+        default=7200,
+        ge=60,
+        le=28800,
+        description="Request timeout in seconds.",
+    )
+
+
+@tool(args_schema=ColabFoldProteinInput)
+def predict_protein_structure_with_colabfold(
+    filepath: str,
+    num_models: int = 5,
+    num_recycles: int = 3,
+    stop_at_score: float = 100,
+    msa_mode: str = "mmseqs2_uniref_env",
+    service_url: str = "http://127.0.0.1:8022/predict/protein",
+    timeout_seconds: int = 7200,
+) -> dict[str, Any]:
+    """Predict protein 3D structure from sequence using ColabFold (AlphaFold2 + MMseqs2).
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - microservices/colabfold_service/main.py
+    - agent_core/tool_specs.py :: ColabFoldProteinOutput / ToolSpec
+    - agent_core/state.py :: protein_structure_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+
+    Args:
+        filepath: FASTA file with protein sequence.
+        num_models: Number of models.
+        num_recycles: Recycling iterations.
+        stop_at_score: pLDDT early-stop threshold.
+        msa_mode: MSA generation mode.
+        service_url: ColabFold microservice URL.
+        timeout_seconds: HTTP timeout (default 7200 s = 2 h).
+
+    Returns:
+        Dict with ``pdb_filepath``, ``mean_pae``, ``mean_plddt``,
+        ``ranking_confidence``, ``model_scores``.
+
+    Raises:
+        NotImplementedError: Until the ColabFold microservice is fully deployed.
+    """
+    raise NotImplementedError("ColabFold microservice not yet deployed")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Protein binding hotspot identification INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 同步文件清单：
+#   - agent_core/tools.py :: identify_protein_binding_hotspots
+#   - agent_core/tool_specs.py :: IdentifyProteinBindingHotspotsOutput / ToolSpec
+#   - agent_core/state.py :: hotspot_* fields
+#   - agent_core/capabilities/writebacks.py :: writeback mapping
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class IdentifyProteinBindingHotspotsInput(BaseModel):
+    """Input schema for protein binding hotspot identification."""
+
+    protein_structure_path: str = Field(
+        ...,
+        description="Path to protein PDB or CIF file.",
+    )
+    chain_id: str = Field(
+        default="",
+        description="Protein chain ID to analyze.",
+    )
+
+
+@tool(args_schema=IdentifyProteinBindingHotspotsInput)
+def identify_protein_binding_hotspots(
+    protein_structure_path: str,
+    chain_id: str = "",
+) -> dict[str, Any]:
+    """Automatically identify RNA aptamer binding hotspot residues on a protein surface.
+
+    Algorithm:
+      1. Parse protein coordinates with biopython (PDB or CIF).
+      2. Compute per-residue SASA with freesasa.
+      3. Filter exposed residues (relative SASA > 30%).
+      4. Filter basic residues (Arg/Lys/His).
+      5. Spatial clustering of exposed basic residues with DBSCAN (eps=10 A, min_samples=2).
+      6. Select largest patch and output its center residues as hotspots.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: IdentifyProteinBindingHotspotsOutput / ToolSpec
+    - agent_core/state.py :: hotspot_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+
+    Args:
+        protein_structure_path: Path to the protein structure file (PDB or CIF).
+        chain_id: Chain ID to analyze; if omitted the first chain is used.
+
+    Returns:
+        Dict with ``hotspot_residues``, ``hotspot_patch_size``,
+        ``patch_center_coords``, ``exposed_basic_count``.
+
+    Raises:
+        ValueError: If the file is unreadable, chain not found, or no suitable residues.
+        ImportError: If biopython, freesasa, or scikit-learn is not installed.
+    """
+    try:
+        from Bio.PDB import PDBParser, PDBIO, MMCIFParser
+        from Bio.PDB.PDBExceptions import PDBConstructionException
+        import freesasa
+        from sklearn.cluster import DBSCAN
+        import numpy as np
+    except ImportError as exc:
+        raise ImportError(
+            "biopython, freesasa, and scikit-learn are required for hotspot identification. "
+            "Install with: pip install biopython freesasa scikit-learn"
+        ) from exc
+
+    path_obj = Path(protein_structure_path)
+    suffix = path_obj.suffix.lower()
+
+    # Parse structure
+    try:
+        if suffix in {".cif", ".mmcif"}:
+            parser = MMCIFParser(QUIET=True)
+            structure = parser.get_structure("prot", protein_structure_path)
+        else:
+            parser = PDBParser(QUIET=True)
+            structure = parser.get_structure("prot", protein_structure_path)
+    except PDBConstructionException as exc:
+        raise ValueError(f"Structure parsing failed: {exc}") from exc
+
+    # Select chain
+    target_chain = None
+    available_chains = []
+    for model in structure:
+        for ch in model:
+            available_chains.append(ch.id)
+            if chain_id and ch.id == chain_id:
+                target_chain = ch
+            elif not chain_id and target_chain is None:
+                target_chain = ch
+        if target_chain is not None and chain_id:
+            break
+
+    if target_chain is None:
+        raise ValueError(
+            f"Chain '{chain_id}' not found. Available chains: {available_chains}"
+        )
+    resolved_chain_id = target_chain.id
+
+    # Build a temporary PDB for freesasa if input is CIF,
+    # otherwise use the PDB file directly.
+    tmp_pdb_path = None
+    try:
+        if suffix in {".cif", ".mmcif"}:
+            from tempfile import NamedTemporaryFile
+            io = PDBIO()
+            io.set_structure(structure)
+            with NamedTemporaryFile(suffix=".pdb", delete=False, mode="w") as fh:
+                tmp_pdb_path = fh.name
+                io.save(tmp_pdb_path)
+            fs_structure = freesasa.Structure(tmp_pdb_path)
+        else:
+            fs_structure = freesasa.Structure(protein_structure_path)
+
+        result = freesasa.calc(fs_structure)
+        areas = result.residueAreas()
+    finally:
+        if tmp_pdb_path is not None:
+            Path(tmp_pdb_path).unlink(missing_ok=True)
+
+    if resolved_chain_id not in areas:
+        raise ValueError(
+            f"Chain '{resolved_chain_id}' not found in freesasa output. "
+            f"Available chains: {list(areas.keys())}"
+        )
+
+    # Identify exposed basic residues
+    basic_residues = {"ARG", "LYS", "HIS"}
+    exposed_basic = []
+    for residue in target_chain:
+        if residue.id[0].strip():  # Skip hetero / water
+            continue
+        resname = residue.resname.strip()
+        resnum = str(residue.id[1])
+        if resnum not in areas[resolved_chain_id]:
+            continue
+        ra = areas[resolved_chain_id][resnum]
+        rel_sasa = float(ra.relativeTotal) if ra.hasRelativeAreas else 0.0
+        if rel_sasa > 0.3 and resname in basic_residues:
+            ca_coord = None
+            for atom in residue:
+                if atom.name == "CA":
+                    ca_coord = atom.coord
+                    break
+            if ca_coord is not None:
+                exposed_basic.append(
+                    {
+                        "resname": resname,
+                        "resnum": resnum,
+                        "coord": ca_coord,
+                        "rel_sasa": rel_sasa,
+                    }
+                )
+
+    if not exposed_basic:
+        return {
+            "hotspot_residues": "",
+            "hotspot_patch_size": 0,
+            "patch_center_coords": [0.0, 0.0, 0.0],
+            "exposed_basic_count": 0,
+            "protein_structure_path": protein_structure_path,
+            "chain_id": resolved_chain_id,
+            "model": "freesasa-dbscan-hotspot",
+            "warning": "No exposed basic residues found (relSASA > 30%).",
+        }
+
+    # DBSCAN clustering on CA coordinates
+    coords = np.array([r["coord"] for r in exposed_basic])
+    if len(coords) >= 2:
+        clustering = DBSCAN(eps=10.0, min_samples=2).fit(coords)
+        labels = clustering.labels_
+    else:
+        labels = np.array([-1])
+
+    # Build clusters (noise points treated as singleton clusters)
+    from collections import defaultdict
+    clusters = defaultdict(list)
+    for i, label in enumerate(labels):
+        clusters[label].append(i)
+
+    # Find largest cluster
+    largest_label = max(clusters.keys(), key=lambda k: len(clusters[k]))
+    patch_indices = clusters[largest_label]
+    patch_residues = [exposed_basic[i] for i in patch_indices]
+    patch_size = len(patch_residues)
+
+    patch_coords = np.array([r["coord"] for r in patch_residues])
+    center = patch_coords.mean(axis=0).tolist()
+
+    hotspot = ",".join(
+        f"{resolved_chain_id}/{r['resnum']}" for r in patch_residues
+    )
+
+    return {
+        "hotspot_residues": hotspot,
+        "hotspot_patch_size": patch_size,
+        "patch_center_coords": center,
+        "exposed_basic_count": len(exposed_basic),
+        "protein_structure_path": protein_structure_path,
+        "chain_id": resolved_chain_id,
+        "model": "freesasa-dbscan-hotspot",
+        "warning": "",
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Structure alignment (RMSD + TM-score) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 同步文件清单：
+#   - agent_core/tools.py :: score_structure_alignment
+#   - agent_core/tool_specs.py :: StructureAlignmentOutput / ToolSpec
+#   - agent_core/state.py :: structure_rmsd / structure_tm_score fields
+#   - agent_core/capabilities/writebacks.py :: writeback mapping
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class StructureAlignmentInput(BaseModel):
+    """Input schema for RNA 3D structure alignment scoring."""
+
+    reference_pdb_filepath: str = Field(
+        ...,
+        description="Path to reference PDB file.",
+    )
+    predicted_pdb_filepath: str = Field(
+        ...,
+        description="Path to predicted PDB file.",
+    )
+    chain_id: Optional[str] = Field(
+        default=None,
+        description="Chain ID to align; auto-detect if omitted.",
+    )
+    atom_type: str = Field(
+        default="C1'",
+        description="Atom type to align, e.g. 'C1'' for RNA or 'CA' for protein.",
+    )
+
+
+@tool(args_schema=StructureAlignmentInput)
+def score_structure_alignment(
+    reference_pdb_filepath: str,
+    predicted_pdb_filepath: str,
+    chain_id: Optional[str] = None,
+    atom_type: str = "C1'",
+) -> dict[str, Any]:
+    """Compute RMSD and TM-score between two RNA 3D structures.
+
+    Uses biopython PDBParser and SVDSuperimposer for alignment.
+    If residue counts differ, aligns the shorter length and records a warning.
+    Missing atoms are skipped with a warning.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: StructureAlignmentOutput / ToolSpec
+    - agent_core/state.py :: structure_rmsd / structure_tm_score fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+
+    Args:
+        reference_pdb_filepath: Reference structure PDB path.
+        predicted_pdb_filepath: Predicted structure PDB path.
+        chain_id: Optional chain ID; auto-detects first chain if omitted.
+        atom_type: Atom name used for superposition (default C1' for RNA).
+
+    Returns:
+        Dict with ``rmsd``, ``tm_score``, ``aligned_residue_count``,
+        ``superposition_matrix``, ``warning``.
+
+    Raises:
+        ValueError: If chain not found, atom missing, or parsing fails.
+        ImportError: If biopython is not installed.
+    """
+    try:
+        from Bio.PDB import PDBParser, SVDSuperimposer
+        from Bio.PDB.PDBExceptions import PDBConstructionException
+    except ImportError as exc:
+        raise ImportError(
+            "biopython is required for structure alignment. Install it with: pip install biopython"
+        ) from exc
+
+    parser = PDBParser(QUIET=True)
+
+    def _get_chain(structure, target_chain_id):
+        for model in structure:
+            for ch in model:
+                if target_chain_id is None or ch.id == target_chain_id:
+                    return ch
+        available = []
+        for model in structure:
+            for ch in model:
+                available.append(ch.id)
+        raise ValueError(
+            f"Chain '{target_chain_id}' not found. Available chains: {available}"
+        )
+
+    def _extract_coords(chain_obj, target_atom):
+        coords = []
+        res_ids = []
+        for residue in chain_obj:
+            if residue.id[0].strip():  # Skip hetero / water
+                continue
+            for atom in residue:
+                if atom.name == target_atom:
+                    coords.append(atom.coord)
+                    res_ids.append(residue.id[1])
+                    break
+        return coords, res_ids
+
+    try:
+        ref_structure = parser.get_structure("ref", reference_pdb_filepath)
+        pred_structure = parser.get_structure("pred", predicted_pdb_filepath)
+    except PDBConstructionException as exc:
+        raise ValueError(f"PDB parsing failed: {exc}") from exc
+
+    ref_chain = _get_chain(ref_structure, chain_id)
+    pred_chain = _get_chain(pred_structure, chain_id)
+
+    ref_coords, ref_res_ids = _extract_coords(ref_chain, atom_type)
+    pred_coords, pred_res_ids = _extract_coords(pred_chain, atom_type)
+
+    if not ref_coords:
+        raise ValueError(
+            f"No '{atom_type}' atoms found in reference chain '{ref_chain.id}'."
+        )
+    if not pred_coords:
+        raise ValueError(
+            f"No '{atom_type}' atoms found in predicted chain '{pred_chain.id}'."
+        )
+
+    # Align shorter length
+    min_len = min(len(ref_coords), len(pred_coords))
+    if len(ref_coords) != len(pred_coords):
+        warning = (
+            f"Residue counts differ ({len(ref_coords)} vs {len(pred_coords)}); "
+            f"aligning first {min_len} residues."
+        )
+    else:
+        warning = ""
+
+    ref_coords_arr = ref_coords[:min_len]
+    pred_coords_arr = pred_coords[:min_len]
+
+    if len(ref_coords_arr) < 3:
+        raise ValueError(
+            f"Need at least 3 atoms for alignment; got {len(ref_coords_arr)}."
+        )
+
+    sup = SVDSuperimposer()
+    sup.set(ref_coords_arr, pred_coords_arr)
+    sup.run()
+
+    rmsd = float(sup.get_rms())
+    rot, tran = sup.get_rotran()
+
+    # TM-score calculation
+    L_aligned = min_len
+    L_target = max(len(ref_coords), len(pred_coords))
+
+    if L_aligned <= 15:
+        d0 = 0.5
+    else:
+        d0 = 1.24 * ((L_aligned - 15) ** (1.0 / 3.0)) - 1.8
+        if d0 < 0.5:
+            d0 = 0.5
+
+    transformed_coords = [rot @ c + tran for c in pred_coords_arr]
+    distances = [
+        float(((ref_coords_arr[i] - transformed_coords[i]) ** 2).sum() ** 0.5)
+        for i in range(L_aligned)
+    ]
+    tm_score = sum(1.0 / (1.0 + (d / d0) ** 2) for d in distances) / L_target
+
+    superposition_matrix = [
+        [float(rot[i][j]) for j in range(3)] + [float(tran[i])]
+        for i in range(3)
+    ]
+
+    return {
+        "rmsd": rmsd,
+        "tm_score": tm_score,
+        "aligned_residue_count": L_aligned,
+        "superposition_matrix": superposition_matrix,
+        "reference_pdb_filepath": reference_pdb_filepath,
+        "predicted_pdb_filepath": predicted_pdb_filepath,
+        "chain_id": ref_chain.id,
+        "atom_type": atom_type,
+        "warning": warning,
+        "model": "biopython-svd-alignment",
+    }
+
+
 # ---------------------------------------------------------------------------
 # LangChain tool sets (single source of truth for graph + tool registry)
 # ---------------------------------------------------------------------------
@@ -5181,6 +5904,11 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     design_rna_sequence_with_rhodesign,
     design_rna_inverse_fold_with_ribodiffusion,
     run_odesign_inference,
+    extract_rna_sequence_from_cif,
+    build_odesign_aptamer_input_json,
+    predict_protein_structure_with_colabfold,
+    identify_protein_binding_hotspots,
+    score_structure_alignment,
 ]
 
 ALL_LANGCHAIN_AGENT_TOOLS: list[Any] = (

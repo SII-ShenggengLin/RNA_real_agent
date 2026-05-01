@@ -1,0 +1,16 @@
+# ColabFold protein structure prediction microservice on port 8022.
+# NOTE: This is a framework environment. ColabFold itself requires
+# additional setup (jax[cuda], openmm, alphafold weights ~3-5 GB).
+name: colabfold_service_env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - pip
+  - biopython
+  - pip:
+      - fastapi==0.109.2
+      - uvicorn[standard]==0.27.1
+      - pydantic==2.6.1
+      - colabfold[alphafold]

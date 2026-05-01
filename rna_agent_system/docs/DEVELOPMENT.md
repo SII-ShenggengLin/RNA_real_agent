@@ -580,6 +580,32 @@ These findings were established during a codebase audit and remain true:
 
 ---
 
+## 13. Change Log: RNA Aptamer Design Tools (v0.1.0)
+
+Added 2026-05-01.
+
+### New tools
+
+| Tool | Transport | Files touched |
+|------|-----------|---------------|
+| `extract_rna_sequence_from_cif` | Pure Python (biopython) | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py` |
+| `build_odesign_aptamer_input_json` | Pure Python | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py` |
+| `predict_protein_structure_with_colabfold` | HTTP (framework) | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py`, + new `microservices/colabfold_service/` |
+| `identify_protein_binding_hotspots` | Pure Python (freesasa + DBSCAN) | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py` |
+| `score_structure_alignment` | Pure Python (biopython) | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py` |
+
+### New dependencies
+
+- `biopython>=1.79`
+- `freesasa>=2.2`
+- `scikit-learn` (for DBSCAN hotspot clustering)
+
+### Microservice added
+
+- `microservices/colabfold_service/` — framework only (FastAPI returns 501 until JAX + AlphaFold weights are deployed).
+
+---
+
 ## 12. Enhancement Proposals
 
 The following proposals are **not yet fully implemented** but are documented for future development:

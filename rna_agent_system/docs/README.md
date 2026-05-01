@@ -153,6 +153,11 @@ rna_agent_system/
 | `compute_rna_sequence_u_content` | RNA metrics | 8020 | — | `filepath` | `u_fraction`, 3 fields | available |
 | `compute_dot_bracket_unpaired_fraction` | RNA metrics | 8020 | — | `filepath` | `unpaired_fraction`, 3 fields | available |
 | `compute_cai_for_cds_sequence` | Pure Python (Kazusa) | — | `cds_codon_metrics` | `filepath`, `species` | `cai_score`, 6 fields | available |
+| `extract_rna_sequence_from_cif` | Pure Python (biopython) | — | `rna_sequence_extraction` | `cif_filepath`, optional `chain_id` | `sequence`, `chain_id`, `residue_count`, `is_rna` | available |
+| `build_odesign_aptamer_input_json` | Pure Python | — | `odesign_aptamer_input` | `protein_structure_path`, `protein_chain_id`, `hotspot_residues`, `aptamer_length` | `input_json_filepath`, `design_config` | available |
+| `predict_protein_structure_with_colabfold` | ColabFold | 8022 | `protein_structure_prediction` | `filepath` (FASTA) | `pdb_filepath`, `mean_plddt`, `model_scores` | partial (framework) |
+| `identify_protein_binding_hotspots` | Pure Python (freesasa + DBSCAN) | — | `protein_hotspot_identification` | `protein_structure_path`, `chain_id` | `hotspot_residues`, `hotspot_patch_size`, `patch_center_coords` | available |
+| `score_structure_alignment` | Pure Python (biopython) | — | `structure_alignment` | `reference_pdb_filepath`, `predicted_pdb_filepath` | `rmsd`, `tm_score`, `aligned_residue_count` | available |
 
 ### 4.2 Task Master Table
 
@@ -178,6 +183,10 @@ rna_agent_system/
 | `crispr_offtarget_search` | Partial | workflow | `search_crispr_off_targets_with_crisot` | No | Genome + Cas-OFFinder |
 | `crispr_sgrna_optimization` | Partial | workflow | `optimize_sgrna_with_crisot` | No | Can be very slow |
 | `sgrna_handle_design` | Partial | workflow | `design_sgrna_handle_with_crgpt` | No | Model / torch |
+| `rna_aptamer_design` | Partial | workflow | `build_odesign_aptamer_input_json` → `run_odesign_inference` | No | Requires ODesign GPU/weights |
+| `protein_structure_prediction` | Partial | workflow | `predict_protein_structure_with_colabfold` | No | Framework only; needs JAX + AlphaFold weights |
+| `protein_hotspot_identification` | Yes | workflow | `identify_protein_binding_hotspots` | Yes | Requires freesasa + scikit-learn |
+| `structure_alignment` | Yes | workflow | `score_structure_alignment` | Yes | Requires biopython |
 
 ### 4.3 Removed Capabilities
 
@@ -211,8 +220,9 @@ rna_agent_system/
 | 8019 | `microservices/blast_service/` | BLAST+ | blastn nucleotide similarity search | ✅ Linux |
 | 8020 | `microservices/rna_sequence_metrics_service/` | RNA metrics | Sequence GC content; U content; dot-bracket unpaired fraction | ✅ Linux |
 | 8021 | `microservices/ribodiffusion_service/` | RiboDiffusion | PDB tertiary structure → RNA sequence (diffusion inverse folding) | ✅ Linux GPU |
+| 8022 | `microservices/colabfold_service/` | ColabFold | Protein structure prediction (AlphaFold2 + MMseqs2) | ⚠️ Framework only |
 
-> New tools should use ports starting from **8022**.
+> New tools should use ports starting from **8023**.
 
 ---
 
@@ -241,7 +251,6 @@ The router dispatches to a specialist based on keyword matching in user text:
 
 | Condition | Tool called |
 |-----------|-------------|
-| Default siRNA | `predict_sirna_efficiency` + `check_off_target` (historical; currently limited) |
 | Evitar keywords | `design_sirna_with_evitar` |
 | siRNA duplex / cofold semantics | `compute_sirna_duplex_binding_vienna` |
 
@@ -279,7 +288,13 @@ The router dispatches to a specialist based on keyword matching in user text:
 | 12b | LinearDesign CDS (batch) | `design_mrna_cds_batch_with_lineardesign` |
 | 13 | RNARL CDS design | `design_mrna_cds_with_rnarl` |
 | 14 | GEMORNA CDS design | `design_mrna_cds_with_gemorna` |
-| 15 | Default structure prediction | `analyze_cds_codon_metrics_with_codonw_slim` → `predict_rna_secondary_structure` or `predict_rna_secondary_structure_with_linearfold` |
+| 15 | ODesign aptamer input JSON | `build_odesign_aptamer_input_json` |
+| 16 | ODesign inference | `run_odesign_inference` |
+| 17 | Extract RNA from CIF | `extract_rna_sequence_from_cif` |
+| 18 | Structure alignment / RMSD+TM-score | `score_structure_alignment` |
+| 19 | Protein hotspot identification | `identify_protein_binding_hotspots` |
+| 20 | Protein structure prediction | `predict_protein_structure_with_colabfold` |
+| 21 | Default structure prediction | `analyze_cds_codon_metrics_with_codonw_slim` → `predict_rna_secondary_structure` or `predict_rna_secondary_structure_with_linearfold` |
 | — | Text contains `rhofold` / `3d` / `tertiary` | Additional `predict_rna_tertiary_structure_with_rhofold` |
 
 After CDS design (GEMORNA / RNARL / LinearDesign), if the user request implies structure prediction, `tool_execution_node` automatically chains a folding tool.

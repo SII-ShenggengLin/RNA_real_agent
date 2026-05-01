@@ -136,7 +136,7 @@ When the deterministic system is fully tested and performance is validated, the 
 
 **Key structural observations**
 
-- **INTERFACE LOCK** blocks group fields by tool (CRISOT v0.2.0, sgrna_design v0.3.0, codonw-slim v0.2.0, LinearDesign v0.2.0, RiboDiffusion v0.2.0, GerNA-Bind, RNAsmOL v0.2.0, RNASTOP v0.1.0, IRESfinder v0.2.0, ViennaRNA v0.4.0, BLAST+ v0.2.0, GC content v0.1.0, dot-bracket unpaired fraction v0.1.0).
+- **INTERFACE LOCK** blocks group fields by tool (CRISOT v0.2.0, sgrna_design v0.3.0, codonw-slim v0.2.0, LinearDesign v0.2.0, RiboDiffusion v0.2.0, GerNA-Bind, RNAsmOL v0.2.0, RNASTOP v0.1.0, IRESfinder v0.2.0, ViennaRNA v0.4.0, BLAST+ v0.2.0, GC content v0.1.0, dot-bracket unpaired fraction v0.1.0, extract RNA from CIF v0.1.0, ODesign aptamer input v0.1.0, ColabFold protein structure v0.1.0, structure alignment v0.1.0).
 - Each lock lists the full set of files that must be updated in sync.
 
 **Notable generic fields**
@@ -363,7 +363,8 @@ If you need to change **any** of the locked contracts, update **all** of these f
 - `agent_core/tools.py`
 - `agent_core/tool_specs.py`
 - `agent_core/state.py`
-- `agent_core/nodes.py`
+- `agent_core/graph_nodes.py`
+- `agent_core/capabilities/writebacks.py`
 - `agent_core/workflow_tools/rna_gc_content_workflow.py`
 - `agent_core/workflows/mrna_workflow.py`
 - `agent_core/workflows/mrna_scoring.py`
@@ -414,7 +415,7 @@ Read the dot-bracket section in `TOOLS_AND_TASKS.md` first, then check `agent_co
 2. Add its spec to `agent_core/tool_specs.py`.
 3. Register it in `ALL_LANGCHAIN_AGENT_TOOLS`.
 4. If it writes to agent state, add an INTERFACE LOCK block in `agent_core/state.py`.
-5. Add routing logic in `agent_core/nodes.py`.
+5. Add routing logic in `agent_core/graph_nodes.py` (or `planning/rule_based/specialists/` for deterministic keyword-based routing).
 6. Add a microservice under `microservices/<tool>_service/`.
 
 ### Add a new workflow type

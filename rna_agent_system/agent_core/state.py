@@ -317,6 +317,55 @@ class AgentState(TypedDict, total=False):
     next_action: Literal["retry", "finish"]
     critic_verdict: Literal["pass", "reject"]
     final_report: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Extract RNA from CIF INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 extract_rna_sequence_from_cif
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    extract_rna_from_cif_sequence: str
+    extract_rna_from_cif_chain_id: str
+    extract_rna_from_cif_residue_count: int
+    extract_rna_from_cif_is_rna: bool
+    extract_rna_from_cif_warnings: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # ODesign aptamer input JSON builder INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 build_odesign_aptamer_input_json
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    odesign_aptamer_input_json_filepath: str
+    odesign_aptamer_input_design_config: list[dict[str, Any]]
+    # ═══════════════════════════════════════════════════════════════════════════
+    # ColabFold protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 predict_protein_structure_with_colabfold
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    protein_structure_pdb_filepath: str
+    protein_structure_mean_pae: float
+    protein_structure_mean_plddt: float
+    protein_structure_ranking_confidence: float
+    protein_structure_model_scores: list[dict[str, Any]]
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Structure alignment (RMSD + TM-score) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 score_structure_alignment
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    structure_rmsd: float
+    structure_tm_score: float
+    structure_aligned_residue_count: int
+    structure_superposition_matrix: list[list[float]]
+    structure_alignment_warning: str
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Protein binding hotspot identification INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 identify_protein_binding_hotspots
+    # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
+    # ═══════════════════════════════════════════════════════════════════════════
+    hotspot_residues: str
+    hotspot_patch_size: int
+    patch_center_coords: list[float]
+    hotspot_exposed_basic_count: int
+    hotspot_protein_structure_path: str
+    hotspot_chain_id: str
+    hotspot_warning: str
 
 
 def default_state(user_text: str) -> AgentState:

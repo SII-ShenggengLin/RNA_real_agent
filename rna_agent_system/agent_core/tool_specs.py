@@ -30,7 +30,7 @@ class BlastnSearchOutput(_OutBase):
     - agent_core/tools.py :: run_blastn_similarity_search (wrapper return dict)
     - microservices/blast_service/main.py :: BlastnResponse
     - agent_core/state.py :: blast_* fields
-    - agent_core/nodes.py :: tool_execution_node blast branch
+    - agent_core/graph_nodes.py :: tool_execution_node blast branch
     - docs/RNA_AGENT_SYSTEM_GUIDE.md
     """
 
@@ -193,7 +193,7 @@ class LinearFoldZukerSuboptOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -209,7 +209,7 @@ class CodonwSlimOutput(_OutBase):
     - agent_core/tools.py :: analyze_cds_codon_metrics_with_codonw_slim (wrapper return dict)
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeResponse
     - agent_core/state.py :: codonw_* fields
-    - agent_core/nodes.py :: tool_execution_node codonw branch
+    - agent_core/graph_nodes.py :: tool_execution_node codonw branch
     """
 
     input_filepath: str
@@ -414,7 +414,7 @@ class Gemorna3UtrStabilityPredictionOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - docs/tools/design_mrna_cds_with_lineardesign.md
 #   - docs/change_logs/lineardesign_interface_v0.2.0.md
 #   - workflow_api/mrna_handler.py
@@ -432,7 +432,7 @@ class LinearDesignCdsOutput(_OutBase):
     - agent_core/tools.py :: design_mrna_cds_with_lineardesign return dict
     - microservices/lineardesign_service/main.py :: LinearDesignResponse
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/nodes.py :: tool_execution_node LinearDesign branch
+    - agent_core/graph_nodes.py :: tool_execution_node LinearDesign branch
     - docs/change_logs/lineardesign_interface_v0.2.0.md
     """
 
@@ -469,7 +469,7 @@ class LinearDesignCdsBatchOutput(_OutBase):
     - agent_core/tools.py :: design_mrna_cds_batch_with_lineardesign return dict
     - microservices/lineardesign_service/main.py :: LinearDesignBatchResponse
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/nodes.py :: tool_execution_node LinearDesign batch branch
+    - agent_core/graph_nodes.py :: tool_execution_node LinearDesign batch branch
     - docs/change_logs/lineardesign_interface_v0.2.0.md
     """
 
@@ -512,7 +512,7 @@ class RhoFoldOutput(_OutBase):
 
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (wrapper return dict)
-    - agent_core/nodes.py :: rhofold result ingestion
+    - agent_core/graph_nodes.py :: rhofold result ingestion
     - microservices/rhofold_service/main.py :: RhoFoldPredictResponse
     - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     """
@@ -551,7 +551,7 @@ class RhoDesignOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -563,7 +563,7 @@ class RiboDiffusionOutput(_OutBase):
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: design_rna_inverse_fold_with_ribodiffusion (wrapper return dict)
     - microservices/ribodiffusion_service/main.py :: RiboDiffusionResponse
-    - agent_core/nodes.py :: tool_execution_node RiboDiffusion branch
+    - agent_core/graph_nodes.py :: tool_execution_node RiboDiffusion branch
     - agent_core/state.py :: ribodiffusion_* fields
     """
 
@@ -583,7 +583,7 @@ class RiboDiffusionOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -636,7 +636,7 @@ class RNASTOPPredictionOutput(_OutBase):
     synchronized with:
     - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    - agent_core/graph_nodes.py :: tool_execution_node RNASTOP branch
     - agent_core/state.py :: rnastop_* fields
     - docs/tools/predict_mrna_stability_with_rnastop.md
     """
@@ -668,7 +668,7 @@ class RNASTOPPredictionOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - docs/tools/predict_putative_ires_with_iresfinder.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -684,7 +684,7 @@ class IRESfinderPredictionOutput(_OutBase):
     - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
     - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
     - agent_core/state.py :: iresfinder_* fields
-    - agent_core/nodes.py :: tool_execution_node IRESfinder branch
+    - agent_core/graph_nodes.py :: tool_execution_node IRESfinder branch
     - docs/tools/predict_putative_ires_with_iresfinder.md
     """
 
@@ -730,6 +730,91 @@ class ODesignInferenceOutput(_OutBase):
     model: str
 
 
+class BuildOdesignAptamerOutput(_OutBase):
+    """ODesign aptamer input JSON builder output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: build_odesign_aptamer_input_json (wrapper return dict)
+    - agent_core/state.py :: odesign_aptamer_input_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+    """
+    input_json_filepath: str
+    design_config: Dict[str, Any]
+    model: str
+
+
+class ExtractRnaFromCifOutput(_OutBase):
+    """Extract RNA from CIF output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: extract_rna_sequence_from_cif (wrapper return dict)
+    - agent_core/state.py :: extract_rna_from_cif_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+    """
+    sequence: str
+    chain_id: str
+    residue_count: int
+    is_rna: bool
+    cif_filepath: str
+    warnings: str = ""
+    model: str
+
+
+class ColabFoldProteinOutput(_OutBase):
+    """ColabFold protein structure prediction output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: predict_protein_structure_with_colabfold (wrapper return dict)
+    - microservices/colabfold_service/main.py
+    - agent_core/state.py :: protein_structure_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+    """
+    pdb_filepath: str = ""
+    mean_pae: float = 0.0
+    mean_plddt: float = 0.0
+    ranking_confidence: float = 0.0
+    model_scores: List[Dict[str, Any]] = Field(default_factory=list)
+    model: str = "colabfold"
+
+
+class IdentifyProteinBindingHotspotsOutput(_OutBase):
+    """Protein binding hotspot identification output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: identify_protein_binding_hotspots (wrapper return dict)
+    - agent_core/state.py :: hotspot_* fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+    """
+    hotspot_residues: str
+    hotspot_patch_size: int
+    patch_center_coords: List[float]
+    exposed_basic_count: int
+    protein_structure_path: str
+    chain_id: str
+    model: str
+    warning: str = ""
+
+
+class StructureAlignmentOutput(_OutBase):
+    """Structure alignment (RMSD + TM-score) output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: score_structure_alignment (wrapper return dict)
+    - agent_core/state.py :: structure_rmsd / structure_tm_score fields
+    - agent_core/capabilities/writebacks.py :: writeback mapping
+    """
+    rmsd: float
+    tm_score: float
+    aligned_residue_count: int
+    superposition_matrix: List[List[float]]
+    reference_pdb_filepath: str
+    predicted_pdb_filepath: str
+    chain_id: str
+    atom_type: str
+    warning: str = ""
+    model: str
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
 # 关联文件清单（修改时必须全部同步）：
@@ -737,7 +822,7 @@ class ODesignInferenceOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - agent_core/workflow_tools/rna_gc_content_workflow.py
 #   - agent_core/workflows/mrna_workflow.py
 #   - agent_core/workflows/mrna_scoring.py
@@ -754,7 +839,7 @@ class RnaGcContentOutput(_OutBase):
     - agent_core/tools.py :: compute_rna_sequence_gc_content (wrapper return dict)
     - microservices/rna_sequence_metrics_service/main.py :: GcContentResponse
     - agent_core/state.py :: sequence_gc_* fields
-    - agent_core/nodes.py :: tool_execution_node GC branch
+    - agent_core/graph_nodes.py :: tool_execution_node GC branch
     """
 
     input_filepath: str
@@ -774,7 +859,7 @@ class DotBracketUnpairedFractionOutput(_OutBase):
     - agent_core/tools.py :: compute_dot_bracket_unpaired_fraction (wrapper return dict)
     - microservices/rna_sequence_metrics_service/main.py :: UnpairedFractionResponse
     - agent_core/state.py :: dot_bracket_* fields
-    - agent_core/nodes.py :: tool_execution_node unpaired fraction branch
+    - agent_core/graph_nodes.py :: tool_execution_node unpaired fraction branch
     - docs/tools/compute_dot_bracket_unpaired_fraction.md
     """
 
@@ -859,7 +944,7 @@ class CaiForCdsOutput(_OutBase):
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/graph_nodes.py
 #   - docs/tools/viennarna_rna_tools.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同步更新全部文件
 # 并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -902,7 +987,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - docs/tools/design_sirna_with_evitar.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -949,7 +1034,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -1071,7 +1156,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - microservices/linearfold_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - docs/tools/predict_rna_secondary_structure_with_linearfold.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -1134,7 +1219,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - docs/tools/design_mrna_cds_with_lineardesign.md
     #   - docs/change_logs/lineardesign_interface_v0.2.0.md
     #   - workflow_api/mrna_handler.py
@@ -1310,7 +1395,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: RhoFoldInput / predict_rna_tertiary_structure_with_rhofold
     # - agent_core/tool_specs.py :: RhoFoldOutput
     # - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
-    # - agent_core/nodes.py :: rhofold result ingestion
+    # - agent_core/graph_nodes.py :: rhofold result ingestion
     # - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
         identity="predict_rna_tertiary_structure_with_rhofold",
@@ -1424,7 +1509,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # synchronized with:
     # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    # - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    # - agent_core/graph_nodes.py :: tool_execution_node RNASTOP branch
     # - agent_core/state.py :: rnastop_* fields
     # - docs/tools/predict_mrna_stability_with_rnastop.md
     "predict_mrna_stability_with_rnastop": ToolSpec(
@@ -1459,7 +1544,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
     # - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest / IRESfinderPredictResponse
     # - agent_core/state.py :: iresfinder_* fields
-    # - agent_core/nodes.py :: tool_execution_node IRESfinder branch
+    # - agent_core/graph_nodes.py :: tool_execution_node IRESfinder branch
     "predict_putative_ires_with_iresfinder": ToolSpec(
         identity="predict_putative_ires_with_iresfinder",
         display_name="IRESfinder prediction",
@@ -1537,7 +1622,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - frontend/app.py
     #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
     # 规则：任何字段增删、端点路径变更、输入/输出模型变动、返回值结构调整，
@@ -1680,7 +1765,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - docs/tools/design_sgrna_handle_with_crgpt.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -1744,6 +1829,172 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=ODesignInferenceOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.1.0): ODesign aptamer input JSON builder tool spec.
+    # Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: BuildOdesignAptamerInput / build_odesign_aptamer_input_json
+    # - agent_core/state.py :: odesign_aptamer_input_* fields
+    # - agent_core/capabilities/writebacks.py :: writeback mapping
+    "build_odesign_aptamer_input_json": ToolSpec(
+        identity="build_odesign_aptamer_input_json",
+        display_name="ODesign aptamer input JSON builder",
+        version="0.1.0",
+        source="in-repo utility (no external algorithm)",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=["Generate ODesign input JSON for protein-targeted RNA aptamer design."],
+        limitations=["Does not validate that the protein structure or hotspot residues are biologically correct."],
+        task_tags=["odesign_aptamer_input", "rna_aptamer_design"],
+        requires=[],
+        produces=["input_json_filepath", "design_config"],
+        input_model=tool_wrappers.BuildOdesignAptamerInput,
+        output_model=BuildOdesignAptamerOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Build ODesign aptamer input JSON",
+                input={
+                    "protein_structure_path": "workspace/protein.pdb",
+                    "protein_chain_id": "C",
+                    "protein_sequence_length": 300,
+                    "hotspot_residues": "C/18,C/90",
+                    "aptamer_length": 30,
+                },
+                output_excerpt={"input_json_filepath": "workspace/odesign_aptamer_input_abc123.json"},
+            )
+        ],
+    ),
+    # INTERFACE LOCK (v0.1.0): Extract RNA from CIF tool spec.
+    # Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: ExtractRnaFromCifInput / extract_rna_sequence_from_cif
+    # - agent_core/state.py :: extract_rna_from_cif_* fields
+    # - agent_core/capabilities/writebacks.py :: writeback mapping
+    "extract_rna_sequence_from_cif": ToolSpec(
+        identity="extract_rna_sequence_from_cif",
+        display_name="Extract RNA sequence from CIF/MMCIF",
+        version="0.1.0",
+        source="in-repo utility (biopython)",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=["Extract RNA sequence from a CIF/MMCIF file using O2' atom detection."],
+        limitations=["Requires biopython. Non-standard nucleotides are reported as 'N'."],
+        task_tags=["rna_sequence_extraction", "structure_parsing"],
+        requires=[ToolDependency(name="biopython", detail="pip install biopython")],
+        produces=["sequence", "chain_id", "residue_count", "is_rna", "warnings"],
+        input_model=tool_wrappers.ExtractRnaFromCifInput,
+        output_model=ExtractRnaFromCifOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Extract RNA from CIF",
+                input={"cif_filepath": "workspace/structure.cif"},
+                output_excerpt={"sequence": "AUGC...", "chain_id": "A", "residue_count": 50},
+            )
+        ],
+    ),
+    # INTERFACE LOCK (v0.1.0): ColabFold protein structure prediction tool spec.
+    # Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: ColabFoldProteinInput / predict_protein_structure_with_colabfold
+    # - microservices/colabfold_service/main.py
+    # - agent_core/state.py :: protein_structure_* fields
+    # - agent_core/capabilities/writebacks.py :: writeback mapping
+    "predict_protein_structure_with_colabfold": ToolSpec(
+        identity="predict_protein_structure_with_colabfold",
+        display_name="ColabFold protein structure prediction",
+        version="0.1.0",
+        source="https://github.com/sokrypton/ColabFold",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8022/predict/protein",
+        capabilities=["Predict protein 3D structure from sequence using AlphaFold2 + MMseqs2."],
+        limitations=[
+            "Requires GPU + JAX + ~3-5 GB weights. Microservice is not yet fully deployed.",
+        ],
+        task_tags=["protein_structure_prediction", "alphafold2"],
+        requires=[
+            ToolDependency(name="GPU", detail="ColabFold inference"),
+            ToolDependency(name="ColabFold microservice", detail="microservices/colabfold_service (port 8022)"),
+        ],
+        produces=["pdb_filepath", "mean_pae", "mean_plddt", "ranking_confidence", "model_scores"],
+        input_model=tool_wrappers.ColabFoldProteinInput,
+        output_model=ColabFoldProteinOutput,
+        status=ToolStatus.partial,
+        examples=[
+            ToolExample(
+                title="Predict protein structure",
+                input={"filepath": "workspace/protein.fa"},
+                output_excerpt={"mean_plddt": 85.0, "pdb_filepath": "workspace/prediction/rank_1.pdb"},
+            )
+        ],
+    ),
+    # INTERFACE LOCK (v0.1.0): Protein binding hotspot identification tool spec.
+    # Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: IdentifyProteinBindingHotspotsInput / identify_protein_binding_hotspots
+    # - agent_core/state.py :: hotspot_* fields
+    # - agent_core/capabilities/writebacks.py :: writeback mapping
+    "identify_protein_binding_hotspots": ToolSpec(
+        identity="identify_protein_binding_hotspots",
+        display_name="Identify protein binding hotspots (RNA aptamer)",
+        version="0.1.0",
+        source="in-repo utility (freesasa + biopython + DBSCAN)",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=[
+            "Identify RNA aptamer binding hotspots on protein surface via SASA + basic residue clustering.",
+        ],
+        limitations=[
+            "Requires biopython, freesasa, and scikit-learn.",
+            "Hotspot algorithm is heuristic; results should be validated experimentally.",
+        ],
+        task_tags=["protein_hotspot", "aptamer_design", "sasa"],
+        requires=[
+            ToolDependency(name="biopython", detail="pip install biopython"),
+            ToolDependency(name="freesasa", detail="pip install freesasa"),
+            ToolDependency(name="scikit-learn", detail="pip install scikit-learn"),
+        ],
+        produces=["hotspot_residues", "hotspot_patch_size", "patch_center_coords", "exposed_basic_count"],
+        input_model=tool_wrappers.IdentifyProteinBindingHotspotsInput,
+        output_model=IdentifyProteinBindingHotspotsOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Identify hotspots on a protein",
+                input={"protein_structure_path": "workspace/protein.pdb", "chain_id": "A"},
+                output_excerpt={"hotspot_residues": "A/18,A/90,A/79,A/49", "hotspot_patch_size": 4},
+            )
+        ],
+    ),
+    # INTERFACE LOCK (v0.1.0): Structure alignment tool spec.
+    # Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: StructureAlignmentInput / score_structure_alignment
+    # - agent_core/state.py :: structure_rmsd / structure_tm_score fields
+    # - agent_core/capabilities/writebacks.py :: writeback mapping
+    "score_structure_alignment": ToolSpec(
+        identity="score_structure_alignment",
+        display_name="RNA structure alignment (RMSD + TM-score)",
+        version="0.1.0",
+        source="in-repo utility (biopython SVDSuperimposer)",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=["Compute RMSD and TM-score between two RNA 3D structures."],
+        limitations=[
+            "Requires biopython. If residue counts differ, only the shorter length is aligned.",
+        ],
+        task_tags=["structure_alignment", "rmsd", "tm_score"],
+        requires=[ToolDependency(name="biopython", detail="pip install biopython")],
+        produces=["rmsd", "tm_score", "aligned_residue_count", "superposition_matrix", "warning"],
+        input_model=tool_wrappers.StructureAlignmentInput,
+        output_model=StructureAlignmentOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Align two RNA structures",
+                input={
+                    "reference_pdb_filepath": "workspace/ref.pdb",
+                    "predicted_pdb_filepath": "workspace/pred.pdb",
+                },
+                output_excerpt={"rmsd": 2.5, "tm_score": 0.85, "aligned_residue_count": 50},
+            )
+        ],
+    ),
     # ═══════════════════════════════════════════════════════════════════════════════
     # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
@@ -1751,7 +2002,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/nodes.py
+    #   - agent_core/graph_nodes.py
     #   - agent_core/workflow_tools/rna_gc_content_workflow.py
     #   - agent_core/workflows/mrna_workflow.py
     #   - agent_core/workflows/mrna_scoring.py
