@@ -18,7 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence, save_text_file
 from agent_core.planning.base import Critic
-from agent_core.workflow_models import Candidate, WorkflowResult, sort_candidates_by_score
+from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow
 from agent_core.workflows.mrna_scoring import score_mrna_candidate
 
@@ -40,25 +40,17 @@ class FullLengthMrnaDesignInput(BaseModel):
     utr_mode: Literal["short", "medium", "long", "all"] = "all"
     run_fold: bool = Field(default=True)
     run_gc: bool = Field(default=True)
-    target_gc_mid: Optional[float] = Field(default=None, description="Override GC band mid-point for scoring.")
 
 
 def score_full_length_mrna_candidate(
     metrics: dict[str, Any],
-) -> dict[str, float]:
+) -> dict[str, Any]:
     """Score a full-length mRNA candidate.
 
-    Formula (v0.2.0):
-        total_score = cds_combined_score / cds_length + utr5_mrl + utr3_stability
-
-    Where:
-    - cds_combined_score: the classic CDS-only score (-mfe + codon_count * log(CAI))
-    - cds_length: nucleotide length of the CDS segment
-    - utr5_mrl: GEMORNA predicted Mean Ribosomal Load for 5'UTR
-    - utr3_stability: GEMORNA predicted stability score for 3'UTR
-
-    All raw metrics from the evaluate phase are preserved in the returned dict
-    for display purposes, but only the three terms above affect ranking.
+    Returns per-module raw scores.  Ranking is performed in
+    ``rank_and_format`` via rank aggregation (Borda count):
+    each module is sorted independently, ranks are summed,
+    and candidates are ordered by the total rank.
     """
 
     cds_length = int(metrics.get("cds_length", 0))
@@ -71,24 +63,21 @@ def score_full_length_mrna_candidate(
     }
     cds_scores = score_mrna_candidate(cds_bundle)
     cds_combined_score = cds_scores.get("combined_score", 0.0)
-    cds_component = cds_combined_score / cds_length if cds_length > 0 else 0.0
+    cds_component = cds_combined_score / cds_length if cds_length > 0 else None
 
     # 5'UTR MRL component
     utr5_mrl = metrics.get("utr5_predicted_mrl")
-    utr5_component = float(utr5_mrl) if utr5_mrl is not None else 0.0
+    utr5_component = float(utr5_mrl) if utr5_mrl is not None else None
 
     # 3'UTR stability component
     utr3_stability = metrics.get("utr3_predicted_stability")
-    utr3_component = float(utr3_stability) if utr3_stability is not None else 0.0
-
-    total_score = cds_component + utr5_component + utr3_component
+    utr3_component = float(utr3_stability) if utr3_stability is not None else None
 
     return {
-        "total_score": float(total_score),
-        "cds_component": float(cds_component),
+        "cds_component": cds_component,
         "cds_combined_score": float(cds_combined_score),
-        "utr5_mrl": float(utr5_component),
-        "utr3_stability": float(utr3_component),
+        "utr5_mrl": utr5_component,
+        "utr3_stability": utr3_component,
     }
 
 
@@ -196,7 +185,6 @@ class FullLengthMrnaDesignWorkflow(
                             "cds_source": cds_cand.source,
                             "protein_sequence": inp.protein_sequence,
                             "protein_filepath": protein_fp,
-                            "target_gc_mid": getattr(inp, "target_gc_mid", None),
                         },
                     )
                     full_candidates.append(candidate)
@@ -409,8 +397,8 @@ class FullLengthMrnaDesignWorkflow(
             else:
                 _LOGGER.warning("cai_failed error=%s", cai_res.error)
 
-        # Use CodonW CAI if available, otherwise fallback to dedicated CAI tool
-        effective_cai = cds_metrics.get("cai_score") or cai_score
+        # Use dedicated CAI tool directly (CodonW CAI is not used for scoring)
+        effective_cai = cai_score
 
         # ── 3. 5'UTR specific — IRES potential ──
         utr5_metrics: dict[str, Any] = {}
@@ -508,9 +496,43 @@ class FullLengthMrnaDesignWorkflow(
                 errors=["empty_candidate_list"],
             )
 
-        ranked = sort_candidates_by_score(
-            candidates, score_key="total_score", descending=True
-        )
+        def _module_rank(candidates: list[Candidate], score_key: str) -> dict[str, int]:
+            with_score = [
+                (c.scores[score_key], c.id)
+                for c in candidates
+                if score_key in c.scores and c.scores[score_key] is not None
+            ]
+            without_score = [
+                c.id
+                for c in candidates
+                if score_key not in c.scores or c.scores[score_key] is None
+            ]
+            sorted_with = sorted(with_score, key=lambda x: x[0], reverse=True)
+            rank_map: dict[str, int] = {}
+            for rank, (_, cid) in enumerate(sorted_with, start=1):
+                rank_map[cid] = rank
+            penalty_rank = len(with_score) + 1 if with_score else 1
+            for cid in without_score:
+                rank_map[cid] = penalty_rank
+            return rank_map
+
+        cds_rank_map = _module_rank(candidates, "cds_component")
+        utr5_rank_map = _module_rank(candidates, "utr5_mrl")
+        utr3_rank_map = _module_rank(candidates, "utr3_stability")
+
+        for c in candidates:
+            total_rank = cds_rank_map[c.id] + utr5_rank_map[c.id] + utr3_rank_map[c.id]
+            c.scores["total_rank"] = total_rank
+            c.scores["cds_rank"] = cds_rank_map[c.id]
+            c.scores["utr5_rank"] = utr5_rank_map[c.id]
+            c.scores["utr3_rank"] = utr3_rank_map[c.id]
+            # Backward-compatible total_score: negative rank so higher = better
+            c.scores["total_score"] = -total_rank
+
+        ranked = sorted(candidates, key=lambda c: c.scores["total_rank"])
+        for i, c in enumerate(ranked, start=1):
+            c.rank = i
+
         best = ranked[0] if ranked else None
 
         detail_lines: list[str] = []
@@ -541,13 +563,14 @@ class FullLengthMrnaDesignWorkflow(
                 if mb.get("overall_stability") is not None
                 else "RNASTOP=N/A",
                 f"CAI={mb.get('cds_cai'):.4f}" if mb.get("cds_cai") is not None else "CAI=N/A",
-                f"total_score={scores.get('total_score', 0.0):.3f}",
+                f"cdsRank={scores.get('cds_rank')} utr5Rank={scores.get('utr5_rank')} utr3Rank={scores.get('utr3_rank')}",
+                f"total_rank={scores.get('total_rank')}",
             ]
             detail_lines.append(" | ".join(line_parts))
 
         summary_parts = [
             f"candidates={len(ranked)}",
-            f"best_total_score={best.scores.get('total_score') if best else None}",
+            f"best_total_rank={best.scores.get('total_rank') if best else None}",
             "---",
             *detail_lines,
         ]
@@ -564,37 +587,35 @@ class FullLengthMrnaDesignWorkflow(
 class FullLengthMrnaCritic(Critic):
     """Critic for full-length mRNA design.
 
-    Currently returns ``False`` (no retry) to avoid unnecessary compute in the
-    initial rollout. The retry logic is structurally complete and can be enabled
-    by registering the critic in ``WORKFLOW_CRITIC_PAIRS``.
+    Only filters on 5'UTR IRES potential.  IRESfinder outputs a probability
+    in [0, 1]; the default decision threshold is 0.5.  For standard mRNA
+    (cap-dependent translation) a putative IRES in the 5'UTR is undesirable
+    because it can interfere with canonical ribosome loading.
+
+    Retry is triggered **only** when the number of candidates that survive the
+    IRES filter (≤ threshold) drops below ``MIN_GOOD_CANDIDATES``.
     """
 
+    IRES_THRESHOLD: float = 0.5
+    MIN_GOOD_CANDIDATES: int = 5
+
     def should_retry(self, workflow_result: WorkflowResult, state: dict[str, Any]) -> bool:
-        best = workflow_result.best_candidate
-        if best is None:
+        all_candidates = workflow_result.all_candidates
+        if not all_candidates:
             return False
 
-        mb = best.metadata.get("metrics_bundle", {})
+        # Count candidates that are explicitly bad (IRES > threshold)
+        bad_count = 0
+        for c in all_candidates:
+            mb = c.metadata.get("metrics_bundle", {})
+            ires = mb.get("utr5_ires_potential")
+            if ires is not None and float(ires) > self.IRES_THRESHOLD:
+                bad_count += 1
 
-        # Failure mode 1: full-length structure too unstable
-        full_mfe = mb.get("full_length_mfe")
-        if full_mfe is not None and full_mfe > -10:
+        remaining = len(all_candidates) - bad_count
+        if remaining < self.MIN_GOOD_CANDIDATES:
             state.setdefault("next_constraints", {})
-            state["next_constraints"]["avoid_utr_cds_interaction"] = True
-            return True
-
-        # Failure mode 2: 5'UTR overly folded (blocks ribosome access)
-        utr5_mfe = best.metadata.get("utr5_mfe", 0)
-        if utr5_mfe is not None and utr5_mfe < -15:
-            state.setdefault("next_constraints", {})
-            state["next_constraints"]["utr5_max_stability"] = -10
-            return True
-
-        # Failure mode 3: CDS quality insufficient
-        cds_cai = mb.get("cds_cai")
-        if cds_cai is not None and cds_cai < 0.5:
-            state.setdefault("next_constraints", {})
-            state["next_constraints"]["prioritize_cai"] = True
+            state["next_constraints"]["avoid_ires_in_5utr"] = True
             return True
 
         return False

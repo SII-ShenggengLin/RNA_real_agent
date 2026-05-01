@@ -28,9 +28,11 @@ from agent_core.workflows.mrna_cds_design import MrnaCdsDesignWorkflow
 #: Workflows without a critic are omitted; ExecutionController treats
 #: missing entries as "no critic → no retry".
 #:
-#: NOTE: full_length_mrna_design has a structurally-complete critic but is
-#: currently disabled (returns False) to avoid unnecessary compute during
-#: initial rollout. Uncomment the line below to enable retry logic.
+#: NOTE: full_length_mrna_design critic is structurally complete (IRES-based
+#: filtering with a minimum-remaining-candidates threshold). It is not yet
+#: registered here to avoid automatic retry loops during production validation.
+#: Uncomment the line below to enable retry logic once the filter threshold has
+#: been calibrated on real data.
 WORKFLOW_CRITIC_PAIRS: Dict[str, Tuple[Type[Any], Type[Critic]]] = {
     # "full_length_mrna_design": (FullLengthMrnaDesignWorkflow, FullLengthMrnaCritic),
 }

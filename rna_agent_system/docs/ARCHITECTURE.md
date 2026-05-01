@@ -784,26 +784,34 @@ def evaluate(self, candidate: Candidate) -> dict[str, Any]:
     }
 ```
 
-### 9.10.4 Scoring formula
+### 9.10.4 Scoring formula (rank aggregation / Borda count)
 
-Full-length mRNA uses a simple additive score that directly reflects the three
-functional modules (CDS translation efficiency + 5'UTR initiation + 3'UTR stability):
+Full-length mRNA uses **rank aggregation** to combine the three functional modules.
+This avoids the quantity-scale mismatch problem (e.g. CDS component ≈ 0.3 while
+UTR5 MRL ≈ 6.5) that occurs when raw values are added directly.
 
 ```python
-total_score = cds_combined_score / cds_length + utr5_mrl + utr3_stability
+# 1. Rank each module independently (descending; higher = better)
+cds_rank      = rank_by(candidates, key="cds_component",      descending=True)
+utr5_rank     = rank_by(candidates, key="utr5_mrl",           descending=True)
+utr3_rank     = rank_by(candidates, key="utr3_stability",     descending=True)
+
+# 2. Sum the three ranks
+total_rank = cds_rank + utr5_rank + utr3_rank
+
+# 3. Sort by total_rank ascending (smaller sum = better overall candidate)
 ```
 
 Where:
-- `cds_combined_score`: the classic CDS-only score (`-mfe + codon_count * log(CAI)`)
-- `cds_length`: nucleotide length of the CDS segment
+- `cds_component`: `cds_combined_score / cds_length` from the classic CDS-only score (`-mfe + codon_count * log(CAI)`)
 - `utr5_mrl`: GEMORNA predicted Mean Ribosomal Load for 5'UTR
 - `utr3_stability`: GEMORNA predicted stability score for 3'UTR
 
-**Rationale**: The old weighted-normalisation approach (v0.1.0) was abandoned
-because it obscured the biological interpretability of each module. The new
-formula keeps CDS quality per-nucleotide (so longer CDS are not automatically
-penalised), adds the 5'UTR MRL directly (higher = better translation initiation),
-and adds the 3'UTR stability score directly (higher = longer half-life).
+**Rationale**: Raw values from different predictors live on incompatible scales.
+Ranking normalises each module to the same ordinal scale (1 … N), so a one-position
+advantage in CDS quality is worth exactly as much as a one-position advantage in
+UTR stability. Missing values are handled by assigning the worst possible rank to
+the affected candidate in that module only.
 
 All other metrics (full-length MFE, IRES potential, GC content, RNASTOP
 overall_stability, 5'UTR folding balance) are **still computed during evaluation**
@@ -812,29 +820,30 @@ participate in ranking.
 
 ### 9.10.5 Critic strategy
 
-The critic for full-length design has more failure modes than CDS-only:
+The critic filters candidates on **5'UTR IRES potential** only.  IRESfinder outputs
+a probability in `[0, 1]`; the default decision threshold is `0.5`.  For standard
+mRNA (cap-dependent translation) a putative IRES in the 5'UTR is undesirable
+because it can interfere with canonical ribosome loading.
+
+Retry is triggered **only** when the number of candidates that survive the IRES
+filter (≤ `0.5`) drops below `MIN_GOOD_CANDIDATES = 5`:
 
 ```python
 class FullLengthMrnaCritic(Critic):
+    IRES_THRESHOLD: float = 0.5
+    MIN_GOOD_CANDIDATES: int = 5
+
     def should_retry(self, workflow_result: WorkflowResult, state: AgentState) -> bool:
-        best = workflow_result.best_candidate
-        
-        # Failure mode 1: full-length structure is too unstable
-        if best.scores.get("full_length_mfe", 0) > -10:
-            state["next_constraints"]["avoid_utr_cds_interaction"] = True
+        all_candidates = workflow_result.all_candidates
+        bad_count = sum(
+            1 for c in all_candidates
+            if c.metadata.get("metrics_bundle", {}).get("utr5_ires_potential")
+            is not None and float(...) > self.IRES_THRESHOLD
+        )
+        remaining = len(all_candidates) - bad_count
+        if remaining < self.MIN_GOOD_CANDIDATES:
+            state["next_constraints"]["avoid_ires_in_5utr"] = True
             return True
-        
-        # Failure mode 2: 5'UTR is overly folded (blocks ribosome access)
-        utr5_mfe = best.metadata.get("utr5_mfe", 0)
-        if utr5_mfe < -15:
-            state["next_constraints"]["utr5_max_stability"] = -10
-            return True
-        
-        # Failure mode 3: CDS quality is insufficient
-        if best.scores.get("cds_cai", 0) < 0.5:
-            state["next_constraints"]["prioritize_cai"] = True
-            return True
-        
         return False
 ```
 

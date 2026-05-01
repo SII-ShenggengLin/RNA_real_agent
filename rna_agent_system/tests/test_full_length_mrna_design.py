@@ -30,12 +30,9 @@ from agent_core.workflows.full_length_mrna_design import (
 
 
 def test_score_full_length_formula():
-    """New formula: cds_combined_score / cds_length + utr5_mrl + utr3_stability."""
+    """Per-module raw scores returned for later rank aggregation."""
     # cds_combined_score = -(-30.0) + (100/3) * log(1.0) = 30.0 + 0 = 30.0
     # cds_component = 30.0 / 100 = 0.3
-    # utr5_mrl = 6.5
-    # utr3_stability = 0.8
-    # total = 0.3 + 6.5 + 0.8 = 7.6
     metrics = {
         "cds_cai": 1.0,
         "cds_mfe": -30.0,
@@ -44,38 +41,39 @@ def test_score_full_length_formula():
         "utr3_predicted_stability": 0.8,
     }
     scores = score_full_length_mrna_candidate(metrics)
-    assert scores["total_score"] == pytest.approx(7.6, abs=1e-6)
     assert scores["cds_component"] == pytest.approx(0.3, abs=1e-6)
     assert scores["utr5_mrl"] == pytest.approx(6.5, abs=1e-6)
     assert scores["utr3_stability"] == pytest.approx(0.8, abs=1e-6)
+    assert "cds_combined_score" in scores
 
 
 def test_score_full_length_missing_utr_predictions():
-    """Missing UTR predictions default to 0.0; CDS-only score still contributes."""
+    """Missing UTR predictions are returned as None."""
     metrics = {
         "cds_cai": 1.0,
         "cds_mfe": -30.0,
         "cds_length": 100,
     }
     scores = score_full_length_mrna_candidate(metrics)
-    assert scores["utr5_mrl"] == 0.0
-    assert scores["utr3_stability"] == 0.0
-    assert scores["total_score"] == pytest.approx(0.3, abs=1e-6)
+    assert scores["utr5_mrl"] is None
+    assert scores["utr3_stability"] is None
+    assert scores["cds_component"] == pytest.approx(0.3, abs=1e-6)
 
 
 def test_score_full_length_missing_cds():
-    """Missing CDS metrics yield 0 CDS component; UTR scores still sum."""
+    """Missing CDS metrics are returned as None."""
     metrics = {
         "utr5_predicted_mrl": 5.0,
         "utr3_predicted_stability": 0.5,
     }
     scores = score_full_length_mrna_candidate(metrics)
-    assert scores["cds_component"] == 0.0
-    assert scores["total_score"] == pytest.approx(5.5, abs=1e-6)
+    assert scores["cds_component"] is None
+    assert scores["utr5_mrl"] == pytest.approx(5.0, abs=1e-6)
+    assert scores["utr3_stability"] == pytest.approx(0.5, abs=1e-6)
 
 
 def test_score_full_length_pure_cds():
-    """When only CDS metrics are present, score equals cds_component only."""
+    """When only CDS metrics are present, UTR scores are None."""
     metrics = {
         "cds_cai": 1.0,
         "cds_mfe": -30.0,
@@ -85,9 +83,8 @@ def test_score_full_length_pure_cds():
     # cds_combined_score = 30.0 + 33*log(1.0) = 30.0
     # cds_component = 30.0 / 100 = 0.3
     assert scores["cds_component"] == pytest.approx(0.3, abs=1e-6)
-    assert scores["utr5_mrl"] == 0.0
-    assert scores["utr3_stability"] == 0.0
-    assert scores["total_score"] == pytest.approx(0.3, abs=1e-6)
+    assert scores["utr5_mrl"] is None
+    assert scores["utr3_stability"] is None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -103,7 +100,8 @@ def test_input_defaults():
     assert inp.utr_mode == "all"
     assert inp.run_fold is True
     assert inp.run_gc is True
-    assert inp.target_gc_mid is None
+    assert inp.run_fold is True
+    assert inp.run_gc is True
 
 
 def test_input_valid_tools():
@@ -441,10 +439,12 @@ def test_evaluate_returns_expected_keys():
     assert "utr3_predicted_stability" in metrics
 
 
-def test_score_produces_total_score():
+def test_rank_aggregation_produces_total_rank():
+    """Rank aggregation (Borda count): each module sorted independently,
+    ranks summed, candidates ordered by total_rank."""
     reg = _make_registry_for_eval()
     wf = FullLengthMrnaDesignWorkflow(reg)
-    candidate = Candidate(
+    c1 = Candidate(
         sequence="GGGAAACCCUUUAUGCCCGGGUUUAAAUUU",
         metadata={
             "utr5_sequence": "GGGAAACCCUUU",
@@ -452,12 +452,26 @@ def test_score_produces_total_score():
             "utr3_sequence": "AAAUUU",
         },
     )
-    metrics = wf.evaluate(candidate)
-    scores = wf.score(metrics)
-    assert "total_score" in scores
-    # New formula: cds_combined_score / cds_length + utr5_mrl + utr3_stability
-    # With mocked values this should be a positive number >> 0
-    assert scores["total_score"] > 0.0
+    c2 = Candidate(
+        sequence="CCCUUUGGGAAAUUUGGGCCCAAACCC",
+        metadata={
+            "utr5_sequence": "CCCUUU",
+            "cds_sequence": "GGGAAAUUUGGGCCC",
+            "utr3_sequence": "AAACCC",
+        },
+    )
+    for c in [c1, c2]:
+        metrics = wf.evaluate(c)
+        c.scores = wf.score(metrics)
+    result = wf.rank_and_format([c1, c2])
+    # With identical mock values, stable sort gives c1 rank=1 in each
+    # module, c2 rank=2 → total_rank c1=3, c2=6
+    assert result.success is True
+    assert result.best_candidate is c1
+    assert c1.scores["total_rank"] == 3
+    assert c2.scores["total_rank"] == 6
+    assert c1.scores["cds_rank"] == 1
+    assert c2.scores["cds_rank"] == 2
 
 
 def test_rank_and_format_with_candidates():
@@ -493,72 +507,93 @@ def test_rank_and_format_empty_candidates():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_critic_no_retry_when_best_is_good():
+def _make_candidates(good: int, bad: int, missing: int = 0) -> list[Candidate]:
+    """Helper to build candidate lists for critic tests.
+
+    good  → IRES potential = 0.3 (below threshold)
+    bad   → IRES potential = 0.8 (above threshold)
+    missing → no utr5_ires_potential key at all
+    """
+    cands: list[Candidate] = []
+    for i in range(good):
+        cands.append(Candidate(
+            sequence=f"GOOD{i}", scores={},
+            metadata={"metrics_bundle": {"utr5_ires_potential": 0.3}},
+        ))
+    for i in range(bad):
+        cands.append(Candidate(
+            sequence=f"BAD{i}", scores={},
+            metadata={"metrics_bundle": {"utr5_ires_potential": 0.8}},
+        ))
+    for i in range(missing):
+        cands.append(Candidate(
+            sequence=f"MISS{i}", scores={},
+            metadata={"metrics_bundle": {}},
+        ))
+    return cands
+
+
+def test_critic_no_retry_when_remaining_sufficient():
+    """7 good + 3 bad → 7 remain ≥ 5 → no retry."""
     critic = FullLengthMrnaCritic()
-    best = Candidate(
-        sequence="AUG",
-        scores={"total_score": 10.0},
-        metadata={
-            "utr5_mfe": -5.0,
-            "metrics_bundle": {"full_length_mfe": -20.0, "cds_cai": 0.8},
-        },
+    cands = _make_candidates(good=7, bad=3)
+    result = WorkflowResult(
+        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
     )
-    result = WorkflowResult(success=True, task_id="t1", best_candidate=best)
     state: dict[str, Any] = {}
     assert critic.should_retry(result, state) is False
     assert "next_constraints" not in state
 
 
-def test_critic_retry_on_unstable_full_length():
+def test_critic_retry_when_remaining_below_threshold():
+    """3 good + 7 bad → 3 remain < 5 → retry."""
     critic = FullLengthMrnaCritic()
-    best = Candidate(
-        sequence="AUG",
-        scores={"total_score": 10.0},
-        metadata={
-            "utr5_mfe": -5.0,
-            "metrics_bundle": {"full_length_mfe": -5.0, "cds_cai": 0.8},
-        },
+    cands = _make_candidates(good=3, bad=7)
+    result = WorkflowResult(
+        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
     )
-    result = WorkflowResult(success=True, task_id="t1", best_candidate=best)
     state: dict[str, Any] = {}
     assert critic.should_retry(result, state) is True
-    assert state["next_constraints"]["avoid_utr_cds_interaction"] is True
+    assert state["next_constraints"]["avoid_ires_in_5utr"] is True
 
 
-def test_critic_retry_on_overly_folded_utr5():
+def test_critic_no_retry_when_remaining_equals_min():
+    """5 good + 5 bad → 5 remain == 5 → no retry."""
     critic = FullLengthMrnaCritic()
-    best = Candidate(
-        sequence="AUG",
-        scores={"total_score": 10.0},
-        metadata={
-            "utr5_mfe": -20.0,
-            "metrics_bundle": {"full_length_mfe": -20.0, "cds_cai": 0.8},
-        },
+    cands = _make_candidates(good=5, bad=5)
+    result = WorkflowResult(
+        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
     )
-    result = WorkflowResult(success=True, task_id="t1", best_candidate=best)
+    state: dict[str, Any] = {}
+    assert critic.should_retry(result, state) is False
+
+
+def test_critic_retry_when_all_ires_missing_and_total_below_min():
+    """4 candidates all missing IRES → 4 remain < 5 → retry."""
+    critic = FullLengthMrnaCritic()
+    cands = _make_candidates(good=0, bad=0, missing=4)
+    result = WorkflowResult(
+        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
+    )
     state: dict[str, Any] = {}
     assert critic.should_retry(result, state) is True
-    assert state["next_constraints"]["utr5_max_stability"] == -10
+    assert state["next_constraints"]["avoid_ires_in_5utr"] is True
 
 
-def test_critic_retry_on_low_cds_cai():
+def test_critic_no_retry_when_all_ires_missing_but_total_sufficient():
+    """6 candidates all missing IRES → 6 remain ≥ 5 → no retry."""
     critic = FullLengthMrnaCritic()
-    best = Candidate(
-        sequence="AUG",
-        scores={"total_score": 10.0},
-        metadata={
-            "utr5_mfe": -5.0,
-            "metrics_bundle": {"full_length_mfe": -20.0, "cds_cai": 0.3},
-        },
+    cands = _make_candidates(good=0, bad=0, missing=6)
+    result = WorkflowResult(
+        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
     )
-    result = WorkflowResult(success=True, task_id="t1", best_candidate=best)
     state: dict[str, Any] = {}
-    assert critic.should_retry(result, state) is True
-    assert state["next_constraints"]["prioritize_cai"] is True
+    assert critic.should_retry(result, state) is False
 
 
 def test_critic_no_best_candidate():
+    """Empty candidate list → no retry."""
     critic = FullLengthMrnaCritic()
-    result = WorkflowResult(success=False, task_id="t1", best_candidate=None)
+    result = WorkflowResult(success=False, task_id="t1", best_candidate=None, all_candidates=[])
     state: dict[str, Any] = {}
     assert critic.should_retry(result, state) is False
