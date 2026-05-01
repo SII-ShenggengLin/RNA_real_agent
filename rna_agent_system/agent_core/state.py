@@ -174,6 +174,15 @@ class AgentState(TypedDict, total=False):
     rnasmol_device: str
     rnasmol_dataset: str
     rnasmol_perturbation_type: str
+    # INTERFACE LOCK (v0.1.0) — EGARPS state fields
+    # Any field addition/removal must be synchronized with:
+    # - microservices/egarps_service/main.py :: EGARPSResponse
+    # - agent_core/tools.py :: score_rna_protein_complex_with_egarps return dict
+    # - agent_core/tool_specs.py :: EGARPSOutput
+    egarps_complex_id: str
+    egarps_native_probability: float
+    egarps_academic: bool
+    egarps_pdb_path: str
     # INTERFACE LOCK (v0.1.0) — RNASTOP state fields
     # Any field addition/removal must be synchronized with:
     # - microservices/rnastop_service/main.py :: StabilityPredictionResponse

@@ -1,0 +1,22 @@
+# Model weights (large files downloaded from upstream)
+weights/*.pth
+esm2_models/*.pt
+rna_fm_models/*.pth
+
+# Intermediate processing artifacts
+example/*.pkl
+example/*_protein.pdb
+example/*_rna.pdb
+example/*ESM2*.pkl
+example/*FM*.pkl
+example/*onehot*.pkl
+example/*position*.pkl
+example/*ss*.pkl
+example/*torsion*.pkl
+example/*rsa*.pkl
+example/*lap*.pkl
+example/*pocketness*.pkl
+example/result.txt
+
+# Downloaded archive
+weights.zip

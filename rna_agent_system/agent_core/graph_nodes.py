@@ -46,7 +46,7 @@ _FLOAT_FIELDS = [
     "crisot_score","crisot_spec","crisot_best_delta_spec","sgrna_design_best_nn_score",
     "sgrna_design_score_nn_score","sgrna_design_score_log_likelihood","cai_score",
     "codonw_enc","codonw_fop","codonw_cbi","codonw_hydropathy","codonw_aromaticity",
-    "mfe","mean_plddt","gernabind_probability","rnasmol_probability","rnastop_mean_reactivity",
+    "mfe","mean_plddt","gernabind_probability","rnasmol_probability","egarps_native_probability","rnastop_mean_reactivity",
     "rnastop_mean_deg_mg_ph10","rnastop_mean_deg_mg_50c","rnastop_overall_stability","rnastop_mfe",
     "iresfinder_max_score","iresfinder_decision_threshold","vienna_sirna_duplex_mfe",
     "vienna_rnaup_interaction_energy","vienna_aso_mean_unpaired","vienna_aso_joint_unpaired",
@@ -57,7 +57,7 @@ _FLOAT_FIELDS = [
     "codonw_cds_length_codons","sequence_recovery_rate",
 ]
 _INT_FIELDS = [
-    "crisot_rescore_sgrna_count","gernabind_predicted_label","rnasmol_predicted_label",
+    "crisot_rescore_sgrna_count","gernabind_predicted_label","rnasmol_predicted_label","egarps_academic",
     "iresfinder_positive_count","iresfinder_fragment_count","iresfinder_mode",
     "iresfinder_window_size","iresfinder_step_size","blast_hit_count","evitar_result_count",
     "evitar_limitnum","evitar_repeatnum","evitar_pmcuff",
@@ -76,7 +76,7 @@ _STR_FIELDS = [
     "codonw_normalization_note","design_model","rnarl_model_type","rnarl_checkpoint_path",
     "rnarl_esm2_model_path","design_input_pdb_filepath","designed_sequence_fasta_filepath",
     "tertiary_structure_filepath","ligand_smiles","gernabind_checkpoint_path",
-    "gernabind_preprocessing_pdb_path","rnasmol_checkpoint_path","rnastop_prediction_filepath",
+    "gernabind_preprocessing_pdb_path","rnasmol_checkpoint_path","egarps_complex_id","egarps_pdb_path","rnastop_prediction_filepath",
     "rnastop_checkpoint_path","iresfinder_result_tsv_filepath","iresfinder_best_fragment_id",
     "iresfinder_model","odesign_input_json_filepath","odesign_output_dir","odesign_run_log_filepath",
     "odesign_model_name","odesign_design_modality","evitar_mode","evitar_predict",

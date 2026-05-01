@@ -60,6 +60,12 @@
 | `score_rna_ligand_binding_with_rnasmol` | 8007 | `filepath`, `smiles`, `dataset`, `perturbation_type`, `device`, `checkpoint_path` | `probability_positive`, `predicted_label` | v0.2.0; 6 weight files |
 | `score_rna_ligand_binding_with_gernabind` | 8010 | `filepath`, `smiles`, `dataset`, `split_method` | `probability`, `predicted_label` | v0.1.0; auto-calls RhoFold if no PDB |
 
+### RNA-protein complex scoring
+
+| Tool | Port | Input (key fields) | Output (key fields) | Notes |
+|------|------|--------------------|---------------------|-------|
+| `score_rna_protein_complex_with_egarps` | 8023 | `filepath` (PDB), `academic` | `complex_id`, `native_probability` | v0.1.0; GPU required; non-academic mode skips DSSR/NACCESS |
+
 ### CRISPR / sgRNA
 
 | Tool | Port | Input (key fields) | Output (key fields) | Notes |
@@ -361,6 +367,24 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 - Local RNA-FM: `external_repos/GerNA-Bind/Model/RNA-FM_pretrained.pth`.
 - If no `pdb_path` provided, auto-calls `rhofold_service` to generate 3D structure.
 - Device can be set via `GERNABIND_DEVICE` env var.
+
+### 6.3 EGARPS+ (Port 8023)
+
+| Item | Description |
+|------|-------------|
+| Upstream | [hzau-liulab/EGARPS](https://github.com/hzau-liulab/EGARPS) |
+| Microservice | `microservices/egarps_service/` |
+| Environment | `egarps_env` (Python 3.10 + PyTorch 1.12.1 + DGL 1.0.1 + CUDA 11.6) |
+| Endpoints | `GET /health`, `POST /score` |
+| Agent tool | `score_rna_protein_complex_with_egarps(filepath, academic=False)` |
+
+**Key notes**
+
+- GPU required for inference (hard-coded `cuda` in upstream).
+- Non-academic mode (`academic=False`, default) skips DSSR and NACCESS, using zero-padding for missing features. Performance may degrade slightly.
+- Academic mode (`academic=True`) requires DSSR and NACCESS licenses.
+- ESM2 and RNA-FM checkpoints are cached locally under `external_repos/EGARPS/esm2_models/` and `rna_fm_models/`.
+- GHECOM is not available from upstream; a stub script is used to generate zero-valued pocketness features.
 
 ---
 

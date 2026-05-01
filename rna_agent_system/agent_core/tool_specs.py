@@ -629,6 +629,21 @@ class GerNABindScoreOutput(_OutBase):
     model: str
 
 
+class EGARPSOutput(_OutBase):
+    """EGARPS+ RNA-protein complex scoring output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: score_rna_protein_complex_with_egarps (wrapper return dict)
+    - microservices/egarps_service/main.py :: EGARPSResponse
+    - agent_core/state.py :: egarps_* fields
+    """
+    complex_id: str
+    native_probability: float
+    academic: bool
+    model: str
+    pdb_path: str
+
+
 class RNASTOPPredictionOutput(_OutBase):
     """RNASTOP prediction output schema.
 
@@ -1502,6 +1517,28 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         produces=["probability_positive", "predicted_label"],
         input_model=tool_wrappers.GerNABindScoreInput,
         output_model=GerNABindScoreOutput,
+        status=ToolStatus.available,
+    ),
+    # INTERFACE LOCK (v0.1.0) — score_rna_protein_complex_with_egarps
+    # Any field addition/removal must be synchronized with:
+    # - microservices/egarps_service/main.py :: EGARPSRequest / EGARPSResponse
+    # - agent_core/tools.py :: EGARPSInput / score_rna_protein_complex_with_egarps
+    # - agent_core/tool_specs.py :: EGARPSOutput
+    # - agent_core/state.py :: egarps_* fields
+    "score_rna_protein_complex_with_egarps": ToolSpec(
+        identity="score_rna_protein_complex_with_egarps",
+        display_name="EGARPS+ RNA-protein complex scoring",
+        version="0.1.0",
+        source="https://github.com/hzau-liulab/EGARPS",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8023/score",
+        capabilities=["Score RNA-protein complex structures with EGARPS+ graph learning model."],
+        limitations=["Non-academic mode uses reduced features (no DSSR/NACCESS). Academic mode requires DSSR and NACCESS licenses. GPU required for inference."],
+        task_tags=["rna_protein_scoring"],
+        requires=[ToolDependency(name="GPU", detail="EGARPS+ inference"), ToolDependency(name="EGARPS+ microservice", detail="microservices/egarps_service (port 8023)")],
+        produces=["complex_id", "native_probability", "academic", "pdb_path"],
+        input_model=tool_wrappers.EGARPSInput,
+        output_model=EGARPSOutput,
         status=ToolStatus.available,
     ),
     # INTERFACE LOCK (v0.1.0) — predict_mrna_stability_with_rnastop

@@ -1,0 +1,8 @@
+{
+"dssp": "/root/miniconda3/envs/egarps_env/bin/mkdssp", 
+"dssr": "", 
+"naccess": "", 
+"ghecom": "/root/miniconda3/envs/egarps_env/bin/ghecom",
+"checkpoint_for_esm": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/EGARPS/esm2_models/esm2_t33_650M_UR50D.pt",
+"checkpoint_for_fm": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/EGARPS/rna_fm_models/RNA-FM_pretrained.pth"
+}

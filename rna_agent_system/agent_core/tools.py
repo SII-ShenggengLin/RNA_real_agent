@@ -2668,6 +2668,31 @@ class GerNABindScoreInput(BaseModel):
     )
 
 
+class EGARPSInput(BaseModel):
+    """Input schema for EGARPS+ RNA-protein complex scoring.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - microservices/egarps_service/main.py :: EGARPSRequest
+    - agent_core/tool_specs.py :: score_rna_protein_complex_with_egarps ToolSpec
+    """
+
+    filepath: str = Field(
+        ...,
+        description="Path to a PDB file containing the RNA-protein complex structure.",
+    )
+    academic: bool = Field(
+        default=False,
+        description=(
+            "If True, use full academic mode (requires DSSR and NACCESS licenses). "
+            "If False, use non-academic mode with reduced features."
+        ),
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8023/score",
+        description="REST endpoint for the EGARPS+ microservice.",
+    )
+
+
 class RNASTOPPredictionInput(BaseModel):
     """Input schema for RNASTOP stability prediction.
 
@@ -4749,6 +4774,59 @@ def score_rna_ligand_binding_with_gernabind(
         return payload
     except requests.RequestException as exc:
         _raise_service_error(exc, "GerNA-Bind")
+
+
+@tool(args_schema=EGARPSInput)
+def score_rna_protein_complex_with_egarps(
+    filepath: str,
+    academic: bool = False,
+    service_url: str = "http://127.0.0.1:8023/score",
+) -> dict[str, Any]:
+    """Score RNA-protein complex structure using the EGARPS+ microservice.
+
+    INTERFACE LOCK (v0.1.0): The return dict keys below are the canonical interface.
+    Any addition/removal must be synchronized with:
+    - microservices/egarps_service/main.py :: EGARPSResponse
+    - agent_core/tool_specs.py :: EGARPSOutput
+    - agent_core/state.py :: egarps_* fields
+
+    Args:
+        filepath: Path to a PDB file containing the RNA-protein complex structure.
+        academic: If True, use full academic mode (requires DSSR and NACCESS licenses).
+            If False (default), use non-academic mode with reduced features.
+        service_url: REST endpoint for the EGARPS+ microservice.
+
+    Returns:
+        Dict with the following canonical keys (INTERFACE LOCK):
+            complex_id (str): Identifier of the RNA-protein complex.
+            native_probability (float): Probability of being a native structure (0-1).
+            academic (bool): Whether academic mode was used.
+            model (str): Model identifier.
+            pdb_path (str): Path to the input PDB file.
+
+    Raises:
+        ValueError: If the EGARPS+ service is unreachable or returns an invalid payload.
+    """
+    try:
+        request_payload: dict[str, Any] = {
+            "pdb_path": filepath,
+            "academic": academic,
+        }
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=900,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "native_probability" not in payload:
+            raise ValueError(
+                "Missing `native_probability` in EGARPS+ response."
+            )
+        payload["input_filepath"] = filepath
+        return payload
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "EGARPS+")
 
 
 @tool(args_schema=RNASTOPPredictionInput)

@@ -1,0 +1,25 @@
+name: EGARPS
+channels:
+  - schrodinger
+  - dglteam/label/cu116
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10.12
+  - dgl=1.0.1.cu116
+  - pdbfixer
+  - pymol
+  - pip:
+      - torch==1.12.1+cu116
+      - atom3==0.1.4
+      - biopandas==0.4.1
+      - biopython==1.83
+      - fair-esm==2.0.0
+      - networkx==3.1
+      - joblib
+      - pandas
+      - rna-fm
+      - scikit-learn
+      - scipy
+      - numpy
