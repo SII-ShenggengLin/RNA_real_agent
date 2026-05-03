@@ -554,6 +554,34 @@ def _needs_odesign_mode(text: str) -> bool:
     return "odesign" in text
 
 
+def _needs_aptamer_design(text: str) -> bool:
+    """Detect RNA aptamer design requests against a protein target."""
+    aptamer_keywords = [
+        "aptamer",
+        "适配体",
+        "核酸适配体",
+        "rna aptamer",
+        "aptamer design",
+        "适配体设计",
+        "生成适配体",
+        "generate aptamer",
+        "design aptamer",
+    ]
+    protein_keywords = [
+        "protein",
+        "蛋白",
+        "target",
+        "靶点",
+        "靶蛋白",
+        "受体",
+    ]
+    has_aptamer = any(k in text for k in aptamer_keywords)
+    has_protein = any(k in text for k in protein_keywords)
+    # Also trigger if user explicitly asks for "odesign aptamer"
+    explicit_odesign_aptamer = "odesign" in text and "aptamer" in text
+    return (has_aptamer and has_protein) or explicit_odesign_aptamer
+
+
 def _needs_crispr_mode(text: str) -> bool:
     return any(
         k in text

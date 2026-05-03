@@ -136,7 +136,7 @@ When the deterministic system is fully tested and performance is validated, the 
 
 **Key structural observations**
 
-- **INTERFACE LOCK** blocks group fields by tool (CRISOT v0.2.0, sgrna_design v0.3.0, codonw-slim v0.2.0, LinearDesign v0.2.0, RiboDiffusion v0.2.0, GerNA-Bind, RNAsmOL v0.2.0, RNASTOP v0.1.0, IRESfinder v0.2.0, ViennaRNA v0.4.0, BLAST+ v0.2.0, GC content v0.1.0, dot-bracket unpaired fraction v0.1.0, extract RNA from CIF v0.1.0, ODesign aptamer input v0.1.0, ColabFold protein structure v0.1.0, structure alignment v0.1.0).
+- **INTERFACE LOCK** blocks group fields by tool (CRISOT v0.2.0, sgrna_design v0.3.0, codonw-slim v0.2.0, LinearDesign v0.2.0, RiboDiffusion v0.2.0, GerNA-Bind, RNAsmOL v0.2.0, RNASTOP v0.1.0, IRESfinder v0.2.0, ViennaRNA v0.4.0, BLAST+ v0.2.0, GC content v0.1.0, dot-bracket unpaired fraction v0.1.0, extract RNA from CIF v0.1.0, ODesign aptamer input v0.1.0, ProteinX protein structure v0.1.0, structure alignment v0.1.0).
 - Each lock lists the full set of files that must be updated in sync.
 
 **Notable generic fields**

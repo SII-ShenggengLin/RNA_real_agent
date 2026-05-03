@@ -344,8 +344,8 @@ class AgentState(TypedDict, total=False):
     odesign_aptamer_input_json_filepath: str
     odesign_aptamer_input_design_config: list[dict[str, Any]]
     # ═══════════════════════════════════════════════════════════════════════════
-    # ColabFold protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-    # 关联文件清单见 agent_core/tool_specs.py 中 predict_protein_structure_with_colabfold
+    # ProteinX protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单见 agent_core/tool_specs.py 中 predict_protein_structure_with_proteinx
     # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。
     # ═══════════════════════════════════════════════════════════════════════════
     protein_structure_pdb_filepath: str

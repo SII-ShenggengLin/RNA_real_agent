@@ -23,6 +23,10 @@ from agent_core.workflows.full_length_mrna_design import (
     FullLengthMrnaDesignWorkflow,
 )
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignWorkflow
+from agent_core.workflows.rna_aptamer_design import (
+    RnaAptamerCritic,
+    RnaAptamerDesignWorkflow,
+)
 
 #: Mapping of workflow step target → (workflow_class, critic_class).
 #: Workflows without a critic are omitted; ExecutionController treats
@@ -31,10 +35,11 @@ from agent_core.workflows.mrna_cds_design import MrnaCdsDesignWorkflow
 #: NOTE: full_length_mrna_design critic is structurally complete (IRES-based
 #: filtering with a minimum-remaining-candidates threshold). It is not yet
 #: registered here to avoid automatic retry loops during production validation.
-#: Uncomment the line below to enable retry logic once the filter threshold has
-#: been calibrated on real data.
+#: rna_aptamer_design critic is also structurally complete (GC-filter + EGARPS
+#: threshold). Uncomment to enable retry once calibrated on real data.
 WORKFLOW_CRITIC_PAIRS: Dict[str, Tuple[Type[Any], Type[Critic]]] = {
     # "full_length_mrna_design": (FullLengthMrnaDesignWorkflow, FullLengthMrnaCritic),
+    # "rna_aptamer_design": (RnaAptamerDesignWorkflow, RnaAptamerCritic),
 }
 
 

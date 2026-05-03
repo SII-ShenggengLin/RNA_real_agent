@@ -775,12 +775,11 @@ class ExtractRnaFromCifOutput(_OutBase):
     model: str
 
 
-class ColabFoldProteinOutput(_OutBase):
-    """ColabFold protein structure prediction output schema.
+class ProteinXProteinOutput(_OutBase):
+    """ProteinX protein structure prediction output schema.
 
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: predict_protein_structure_with_colabfold (wrapper return dict)
-    - microservices/colabfold_service/main.py
+    - agent_core/tools.py :: predict_protein_structure_with_proteinx (wrapper return dict)
     - agent_core/state.py :: protein_structure_* fields
     - agent_core/capabilities/writebacks.py :: writeback mapping
     """
@@ -789,7 +788,7 @@ class ColabFoldProteinOutput(_OutBase):
     mean_plddt: float = 0.0
     ranking_confidence: float = 0.0
     model_scores: List[Dict[str, Any]] = Field(default_factory=list)
-    model: str = "colabfold"
+    model: str = "proteinx"
 
 
 class IdentifyProteinBindingHotspotsOutput(_OutBase):
@@ -1928,32 +1927,32 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (v0.1.0): ColabFold protein structure prediction tool spec.
+    # INTERFACE LOCK (v0.1.0): ProteinX protein structure prediction tool spec.
     # Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: ColabFoldProteinInput / predict_protein_structure_with_colabfold
-    # - microservices/colabfold_service/main.py
+    # - agent_core/tools.py :: ProteinXProteinInput / predict_protein_structure_with_proteinx
+    # - microservices/proteinx_service/main.py
     # - agent_core/state.py :: protein_structure_* fields
     # - agent_core/capabilities/writebacks.py :: writeback mapping
-    "predict_protein_structure_with_colabfold": ToolSpec(
-        identity="predict_protein_structure_with_colabfold",
-        display_name="ColabFold protein structure prediction",
+    "predict_protein_structure_with_proteinx": ToolSpec(
+        identity="predict_protein_structure_with_proteinx",
+        display_name="ProteinX (Protenix) protein structure prediction",
         version="0.1.0",
-        source="https://github.com/sokrypton/ColabFold",
+        source="https://github.com/bytedance/Protenix",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8022/predict/protein",
-        capabilities=["Predict protein 3D structure from sequence using AlphaFold2 + MMseqs2."],
+        capabilities=["Predict protein 3D structure from sequence using Protenix."],
         limitations=[
-            "Requires GPU + JAX + ~3-5 GB weights. Microservice is not yet fully deployed.",
+            "Requires GPU for inference. MSA disabled by default (use msa_mode='protenix' to enable).",
         ],
-        task_tags=["protein_structure_prediction", "alphafold2"],
+        task_tags=["protein_structure_prediction", "proteinx"],
         requires=[
-            ToolDependency(name="GPU", detail="ColabFold inference"),
-            ToolDependency(name="ColabFold microservice", detail="microservices/colabfold_service (port 8022)"),
+            ToolDependency(name="GPU", detail="Protenix inference"),
+            ToolDependency(name="Proteinx microservice", detail="microservices/proteinx_service (port 8022)"),
         ],
         produces=["pdb_filepath", "mean_pae", "mean_plddt", "ranking_confidence", "model_scores"],
-        input_model=tool_wrappers.ColabFoldProteinInput,
-        output_model=ColabFoldProteinOutput,
-        status=ToolStatus.partial,
+        input_model=tool_wrappers.ProteinXProteinInput,
+        output_model=ProteinXProteinOutput,
+        status=ToolStatus.available,
         examples=[
             ToolExample(
                 title="Predict protein structure",

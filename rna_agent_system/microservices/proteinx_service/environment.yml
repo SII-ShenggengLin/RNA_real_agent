@@ -1,0 +1,15 @@
+name: proteinx_service
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - protenix
+      - fastapi
+      - uvicorn
+      - pydantic
+      - biopython

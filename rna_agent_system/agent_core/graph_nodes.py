@@ -63,7 +63,7 @@ _INT_FIELDS = [
     "evitar_limitnum","evitar_repeatnum","evitar_pmcuff",
 ]
 _BOOL_FIELDS = ["crisot_optimized_available","iresfinder_has_putative_ires","evitar_off_target"]
-_LIST_FIELDS = ["odesign_prediction_filepaths"]
+_LIST_FIELDS = ["odesign_prediction_filepaths","protein_structure_model_scores"]
 _DICT_FIELDS = ["codonw_silent_base_usage","codonw_bases2"]
 _STR_FIELDS = [
     "crisot_target_sequence","crisot_input_csv_filepath","crisot_output_csv_filepath",
@@ -85,6 +85,7 @@ _STR_FIELDS = [
     "vienna_rnaup_interaction_structure","vienna_inverse_best_sequence","blast_tabular_tsv_filepath",
     "blast_subject_mode","blast_hits_preview","blast_blastn_command","blast_resolved_query_path",
     "blast_resolved_subject",
+    "protein_structure_pdb_filepath",
 ]
 
 

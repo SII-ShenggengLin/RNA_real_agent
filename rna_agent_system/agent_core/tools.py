@@ -5436,23 +5436,17 @@ def build_odesign_aptamer_input_json(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ColabFold protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# ProteinX protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
 # 同步文件清单：
-#   - agent_core/tools.py :: predict_protein_structure_with_colabfold
-#   - microservices/colabfold_service/main.py
-#   - agent_core/tool_specs.py :: ColabFoldProteinOutput / ToolSpec
+#   - agent_core/tools.py :: predict_protein_structure_with_proteinx
+#   - agent_core/tool_specs.py :: ProteinXProteinOutput / ToolSpec
 #   - agent_core/state.py :: protein_structure_* fields
 #   - agent_core/capabilities/writebacks.py :: writeback mapping
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-class ColabFoldProteinInput(BaseModel):
-    """Input schema for ColabFold protein structure prediction.
-
-    Because ColabFold installation is complex (CUDA + JAX + ~3-5 GB weights),
-    the microservice may not be fully deployed yet. The wrapper raises
-    NotImplementedError when called until the service is ready.
-    """
+class ProteinXProteinInput(BaseModel):
+    """Input schema for ProteinX (Protenix) protein structure prediction."""
 
     filepath: str = Field(
         ...,
@@ -5462,26 +5456,26 @@ class ColabFoldProteinInput(BaseModel):
         default=5,
         ge=1,
         le=5,
-        description="Number of AlphaFold2 models to use.",
+        description="Number of inference samples to generate.",
     )
     num_recycles: int = Field(
         default=3,
         ge=1,
         le=12,
-        description="Number of recycling iterations.",
+        description="Number of Pairformer cycles (ignored when use_default_params is true).",
     )
     stop_at_score: float = Field(
         default=100,
         ge=0,
-        description="Early stopping threshold (pLDDT).",
+        description="Early stopping threshold (pLDDT). Not enforced by Protenix.",
     )
     msa_mode: str = Field(
-        default="mmseqs2_uniref_env",
-        description="MSA generation mode.",
+        default="none",
+        description="MSA generation mode. 'none' disables MSA; 'protenix' enables Protenix MSA server.",
     )
     service_url: str = Field(
         default="http://127.0.0.1:8022/predict/protein",
-        description="ColabFold microservice endpoint.",
+        description="ProteinX microservice endpoint.",
     )
     timeout_seconds: int = Field(
         default=7200,
@@ -5491,32 +5485,35 @@ class ColabFoldProteinInput(BaseModel):
     )
 
 
-@tool(args_schema=ColabFoldProteinInput)
-def predict_protein_structure_with_colabfold(
+@tool(args_schema=ProteinXProteinInput)
+def predict_protein_structure_with_proteinx(
     filepath: str,
     num_models: int = 5,
     num_recycles: int = 3,
     stop_at_score: float = 100,
-    msa_mode: str = "mmseqs2_uniref_env",
+    msa_mode: str = "none",
     service_url: str = "http://127.0.0.1:8022/predict/protein",
     timeout_seconds: int = 7200,
 ) -> dict[str, Any]:
-    """Predict protein 3D structure from sequence using ColabFold (AlphaFold2 + MMseqs2).
+    """Predict protein 3D structure from sequence using ProteinX (Protenix).
+
+    Requires the ``proteinx_service`` microservice on port 8022.
+    Pass a filepath under ``workspace/`` or an absolute server path.
 
     INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
     canonical interface. Any addition/removal must be synchronized with:
-    - microservices/colabfold_service/main.py
-    - agent_core/tool_specs.py :: ColabFoldProteinOutput / ToolSpec
+    - microservices/proteinx_service/main.py
+    - agent_core/tool_specs.py :: ProteinXProteinOutput / ToolSpec
     - agent_core/state.py :: protein_structure_* fields
     - agent_core/capabilities/writebacks.py :: writeback mapping
 
     Args:
         filepath: FASTA file with protein sequence.
-        num_models: Number of models.
-        num_recycles: Recycling iterations.
-        stop_at_score: pLDDT early-stop threshold.
-        msa_mode: MSA generation mode.
-        service_url: ColabFold microservice URL.
+        num_models: Number of inference samples to generate.
+        num_recycles: Pairformer cycles (ignored when Protenix use_default_params is true).
+        stop_at_score: pLDDT early-stop threshold (interface compat, not enforced).
+        msa_mode: MSA mode. 'none' disables MSA; 'protenix' enables Protenix MSA server.
+        service_url: ProteinX microservice URL.
         timeout_seconds: HTTP timeout (default 7200 s = 2 h).
 
     Returns:
@@ -5524,9 +5521,33 @@ def predict_protein_structure_with_colabfold(
         ``ranking_confidence``, ``model_scores``.
 
     Raises:
-        NotImplementedError: Until the ColabFold microservice is fully deployed.
+        ValueError: If the HTTP call fails or the service reports an error.
     """
-    raise NotImplementedError("ColabFold microservice not yet deployed")
+    seq_abs = _absolute_path_under_project(filepath)
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "sequence_filepath": str(seq_abs),
+                "num_models": num_models,
+                "num_recycles": num_recycles,
+                "stop_at_score": stop_at_score,
+                "msa_mode": msa_mode,
+            },
+            timeout=float(timeout_seconds),
+        )
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "ProteinX")
+    return {
+        "pdb_filepath": str(body.get("pdb_filepath", "")),
+        "mean_pae": float(body.get("mean_pae", 0.0)),
+        "mean_plddt": float(body.get("mean_plddt", 0.0)),
+        "ranking_confidence": float(body.get("ranking_confidence", 0.0)),
+        "model_scores": list(body.get("model_scores", [])),
+        "model": str(body.get("model", "proteinx")),
+    }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -5984,7 +6005,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     run_odesign_inference,
     extract_rna_sequence_from_cif,
     build_odesign_aptamer_input_json,
-    predict_protein_structure_with_colabfold,
+    predict_protein_structure_with_proteinx,
     identify_protein_binding_hotspots,
     score_structure_alignment,
 ]

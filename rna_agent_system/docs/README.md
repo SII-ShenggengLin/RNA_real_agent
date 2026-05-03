@@ -155,7 +155,7 @@ rna_agent_system/
 | `compute_cai_for_cds_sequence` | Pure Python (Kazusa) | — | `cds_codon_metrics` | `filepath`, `species` | `cai_score`, 6 fields | available |
 | `extract_rna_sequence_from_cif` | Pure Python (biopython) | — | `rna_sequence_extraction` | `cif_filepath`, optional `chain_id` | `sequence`, `chain_id`, `residue_count`, `is_rna` | available |
 | `build_odesign_aptamer_input_json` | Pure Python | — | `odesign_aptamer_input` | `protein_structure_path`, `protein_chain_id`, `hotspot_residues`, `aptamer_length` | `input_json_filepath`, `design_config` | available |
-| `predict_protein_structure_with_colabfold` | ColabFold | 8022 | `protein_structure_prediction` | `filepath` (FASTA) | `pdb_filepath`, `mean_plddt`, `model_scores` | partial (framework) |
+| `predict_protein_structure_with_proteinx` | ProteinX (Protenix) | 8022 | `protein_structure_prediction` | `filepath` (FASTA) | `pdb_filepath`, `mean_plddt`, `model_scores` | available (needs GPU) |
 | `identify_protein_binding_hotspots` | Pure Python (freesasa + DBSCAN) | — | `protein_hotspot_identification` | `protein_structure_path`, `chain_id` | `hotspot_residues`, `hotspot_patch_size`, `patch_center_coords` | available |
 | `score_structure_alignment` | Pure Python (biopython) | — | `structure_alignment` | `reference_pdb_filepath`, `predicted_pdb_filepath` | `rmsd`, `tm_score`, `aligned_residue_count` | available |
 
@@ -184,7 +184,7 @@ rna_agent_system/
 | `crispr_sgrna_optimization` | Partial | workflow | `optimize_sgrna_with_crisot` | No | Can be very slow |
 | `sgrna_handle_design` | Partial | workflow | `design_sgrna_handle_with_crgpt` | No | Model / torch |
 | `rna_aptamer_design` | Partial | workflow | `build_odesign_aptamer_input_json` → `run_odesign_inference` | No | Requires ODesign GPU/weights |
-| `protein_structure_prediction` | Partial | workflow | `predict_protein_structure_with_colabfold` | No | Framework only; needs JAX + AlphaFold weights |
+| `protein_structure_prediction` | Yes | workflow | `predict_protein_structure_with_proteinx` | No | Needs GPU + Protenix weights on first run |
 | `protein_hotspot_identification` | Yes | workflow | `identify_protein_binding_hotspots` | Yes | Requires freesasa + scikit-learn |
 | `structure_alignment` | Yes | workflow | `score_structure_alignment` | Yes | Requires biopython |
 
@@ -220,7 +220,7 @@ rna_agent_system/
 | 8019 | `microservices/blast_service/` | BLAST+ | blastn nucleotide similarity search | ✅ Linux |
 | 8020 | `microservices/rna_sequence_metrics_service/` | RNA metrics | Sequence GC content; U content; dot-bracket unpaired fraction | ✅ Linux |
 | 8021 | `microservices/ribodiffusion_service/` | RiboDiffusion | PDB tertiary structure → RNA sequence (diffusion inverse folding) | ✅ Linux GPU |
-| 8022 | `microservices/colabfold_service/` | ColabFold | Protein structure prediction (AlphaFold2 + MMseqs2) | ⚠️ Framework only |
+| 8022 | `microservices/proteinx_service/` | ProteinX (Protenix) | Protein structure prediction | ✅ Linux GPU |
 
 > New tools should use ports starting from **8023**.
 
@@ -293,7 +293,7 @@ The router dispatches to a specialist based on keyword matching in user text:
 | 17 | Extract RNA from CIF | `extract_rna_sequence_from_cif` |
 | 18 | Structure alignment / RMSD+TM-score | `score_structure_alignment` |
 | 19 | Protein hotspot identification | `identify_protein_binding_hotspots` |
-| 20 | Protein structure prediction | `predict_protein_structure_with_colabfold` |
+| 20 | Protein structure prediction | `predict_protein_structure_with_proteinx` |
 | 21 | Default structure prediction | `analyze_cds_codon_metrics_with_codonw_slim` → `predict_rna_secondary_structure` or `predict_rna_secondary_structure_with_linearfold` |
 | — | Text contains `rhofold` / `3d` / `tertiary` | Additional `predict_rna_tertiary_structure_with_rhofold` |
 

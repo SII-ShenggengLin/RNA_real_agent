@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Literal, Optional
 
 # Canonical names (stable API contract).
-IMPLEMENTED_TASK_TYPES = frozenset({"mrna"})
+IMPLEMENTED_TASK_TYPES = frozenset({"mrna", "aptamer"})
 PLACEHOLDER_TASK_TYPES = frozenset({"utr5", "utr3", "circrna", "ires", "intron"})
 KNOWN_TASK_TYPES = IMPLEMENTED_TASK_TYPES | PLACEHOLDER_TASK_TYPES
 
@@ -47,6 +47,8 @@ def normalize_task_type(raw: str) -> str:
         return "circrna"
     if x in {"intron", "introns"}:
         return "intron"
+    if x in {"aptamer", "rnaaptamer", "rna_aptamer", "核酸适配体"}:
+        return "aptamer"
     return x
 
 

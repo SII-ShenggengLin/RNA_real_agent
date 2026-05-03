@@ -404,9 +404,9 @@ STANDARD_WRITEBACKS: dict[str, WritebackRule] = {
         "design_config": "odesign_aptamer_input_design_config",
     },
     # ═══════════════════════════════════════════════════════════════════════
-    # ColabFold protein structure prediction (v0.1.0 INTERFACE LOCK)
+    # ProteinX protein structure prediction (v0.1.0 INTERFACE LOCK)
     # ═══════════════════════════════════════════════════════════════════════
-    "predict_protein_structure_with_colabfold": {
+    "predict_protein_structure_with_proteinx": {
         "pdb_filepath": "protein_structure_pdb_filepath",
         "mean_pae": "protein_structure_mean_pae",
         "mean_plddt": "protein_structure_mean_plddt",

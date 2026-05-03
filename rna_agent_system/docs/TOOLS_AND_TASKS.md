@@ -657,7 +657,7 @@ Every workflow follows the same 7-step template:
 | `crispr_sgrna_optimization` | validate | none | `optimize_sgrna_with_crisot` | built-in | by available | none | format |
 | `sgrna_handle_design` | validate | normalize | `design_sgrna_handle_with_crgpt` | built-in | none | by NN score | format |
 | `rna_aptamer_design` | validate | none | `build_odesign_aptamer_input_json` | `run_odesign_inference` | none | none | format |
-| `protein_structure_prediction` | validate | none | none | `predict_protein_structure_with_colabfold` | none | none | format |
+| `protein_structure_prediction` | validate | none | none | `predict_protein_structure_with_proteinx` | none | none | format |
 | `protein_hotspot_identification` | validate | parse | none | `identify_protein_binding_hotspots` | by relSASA | by patch size | format |
 | `structure_alignment` | validate | parse | none | `score_structure_alignment` | none | by TM-score | format |
 

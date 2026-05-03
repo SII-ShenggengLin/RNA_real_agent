@@ -7,6 +7,12 @@ from agent_core.workflows.full_length_mrna_design import (
     score_full_length_mrna_candidate,
 )
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
+from agent_core.workflows.rna_aptamer_design import (
+    RnaAptamerDesignInput,
+    RnaAptamerDesignWorkflow,
+    RnaAptamerCritic,
+    score_aptamer_candidate,
+)
 from .mrna_candidates import build_candidates
 from .mrna_scoring import gc_fraction_from_sequence, score_mrna_candidate
 from .mrna_workflow import MrnaWorkflow, MrnaWorkflowInput, run_mrna_workflow
@@ -19,9 +25,13 @@ __all__ = [
     "MrnaCdsDesignWorkflow",
     "MrnaWorkflow",
     "MrnaWorkflowInput",
+    "RnaAptamerDesignInput",
+    "RnaAptamerDesignWorkflow",
+    "RnaAptamerCritic",
     "build_candidates",
     "gc_fraction_from_sequence",
     "run_mrna_workflow",
+    "score_aptamer_candidate",
     "score_full_length_mrna_candidate",
     "score_mrna_candidate",
 ]
