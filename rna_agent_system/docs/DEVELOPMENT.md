@@ -257,7 +257,7 @@ When locking a new tool interface, add a comment block like this in **all** affe
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/capabilities/writebacks.py
 #   - frontend/app.py
 #   - rna_agent_system/docs/DEVELOPMENT.md
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -312,7 +312,7 @@ If you change any locked contract, update **all** of these and re-run tests:
 - [ ] `agent_core/tools.py`
 - [ ] `agent_core/tool_specs.py`
 - [ ] `agent_core/state.py`
-- [ ] `agent_core/nodes.py`
+- [ ] `agent_core/capabilities/writebacks.py`
 - [ ] `agent_core/workflow_tools/rna_gc_content_workflow.py`
 - [ ] `agent_core/workflows/mrna_workflow.py`
 - [ ] `agent_core/workflows/mrna_scoring.py`
@@ -531,7 +531,7 @@ If you change any locked contract, update **all** of these and re-run tests:
 - [ ] `agent_core/tools.py`
 - [ ] `agent_core/tool_specs.py`
 - [ ] `agent_core/state.py`
-- [ ] `agent_core/nodes.py`
+- [ ] `agent_core/capabilities/writebacks.py`
 - [ ] `workflow_api/mrna_handler.py`
 - [ ] `workflow_api/mrna_schemas.py`
 - [ ] `tests/test_integration_registry_smoke.py`
@@ -612,7 +612,7 @@ The following proposals are **not yet fully implemented** but are documented for
 
 ### Proposal 1: Unified task routing with `ToolSpec.task_tags`
 
-- **Problem**: Router keywords and Specialist dispatch tables are scattered across `nodes.py` and drift over time.
+- **Problem**: Router keywords and Specialist dispatch tables are scattered across `planning/rule_based/parsers/common.py` and `graph_nodes.py` and drift over time.
 - **Design**: Add `task_tags: list[str]` to `ToolSpec`. Build a bidirectional index (`tag -> list[tool_name]`). Router outputs a canonical `task_id`; workflow uses the index to select tools.
 - **Affected tasks**: All.
 - **Risks**: Maintenance cost of keeping tags accurate.

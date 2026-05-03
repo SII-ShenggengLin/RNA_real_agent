@@ -86,7 +86,7 @@ if user_input:
                         latest = _message_text(node_state["messages"][-1])
                         detail_lines.append(f"  - {_truncate(latest)}")
 
-                    # CRISOT INTERFACE LOCK (v0.2.0): 展示字段必须与 state.py / nodes.py 同步
+                    # CRISOT INTERFACE LOCK (v0.2.0): 展示字段必须与 state.py / writebacks.py 同步
                     crisot_parts: list[str] = []
                     if "crisot_score" in node_state:
                         crisot_parts.append(f"score={node_state.get('crisot_score', 'N/A')}")

@@ -704,8 +704,7 @@ def _needs_ribodiffusion_design(text: str) -> bool:
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py  ← 本文件
-#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+#   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1140,8 +1139,7 @@ def _extract_gernabind_overrides(text: str) -> dict[str, str]:
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py  ← 本文件
-#   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+#   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════

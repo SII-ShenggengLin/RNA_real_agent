@@ -102,7 +102,7 @@ The current agent uses **deterministic keyword-based routing** (`router_node` �
 |---------|------------------------------------------|
 | **Test cost & efficiency** | Every routing branch is explicit code. We can unit-test each `if/elif` path without calling an LLM, making regression tests fast and cheap. |
 | **Reproducibility** | Same input → same tool → same output. No temperature or prompt-drift variance. |
-| **Debugging** | When a wrong tool is called, the bug is in `nodes.py` logic, not in an LLM’s latent reasoning. Stack traces point to exact lines. |
+| **Debugging** | When a wrong tool is called, the bug is in `planning/rule_based/parsers/common.py` or `graph_nodes.py` logic, not in an LLM’s latent reasoning. Stack traces point to exact lines. |
 | **Baseline performance** | If the agent cannot perform well with perfect (hand-coded) routing, it will not perform well with LLM-driven routing either. Deterministic routing lets us validate that the **tools and evaluation metrics** are sound before adding the extra variable of LLM decision-making. |
 
 ### 8.2 How this relates to the clear tool interfaces
@@ -240,7 +240,7 @@ Lightweight classification for RNA workflow routing (no planner / DSL).
 
 **Constants**
 
-- `IMPLEMENTED_TASK_TYPES = {"mrna"}`
+- `IMPLEMENTED_TASK_TYPES = {"mrna", "aptamer"}`
 - `PLACEHOLDER_TASK_TYPES = {"utr5", "utr3", "circrna", "ires", "intron"}`
 
 ### 3.9 `agent_core/sequence_utils.py` — Shared Sequence Utilities

@@ -31,7 +31,6 @@ class BlastnSearchOutput(_OutBase):
     - microservices/blast_service/main.py :: BlastnResponse
     - agent_core/state.py :: blast_* fields
     - agent_core/graph_nodes.py :: tool_execution_node blast branch
-    - docs/RNA_AGENT_SYSTEM_GUIDE.md
     """
 
     hit_count: int
@@ -194,7 +193,6 @@ class LinearFoldZukerSuboptOutput(_OutBase):
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
 #   - agent_core/graph_nodes.py
-#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -415,8 +413,6 @@ class Gemorna3UtrStabilityPredictionOutput(_OutBase):
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
 #   - agent_core/graph_nodes.py
-#   - docs/tools/design_mrna_cds_with_lineardesign.md
-#   - docs/change_logs/lineardesign_interface_v0.2.0.md
 #   - workflow_api/mrna_handler.py
 #   - workflow_api/mrna_schemas.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
@@ -433,7 +429,6 @@ class LinearDesignCdsOutput(_OutBase):
     - microservices/lineardesign_service/main.py :: LinearDesignResponse
     - agent_core/state.py :: lineardesign_* fields
     - agent_core/graph_nodes.py :: tool_execution_node LinearDesign branch
-    - docs/change_logs/lineardesign_interface_v0.2.0.md
     """
 
     input_filepath: str
@@ -470,7 +465,6 @@ class LinearDesignCdsBatchOutput(_OutBase):
     - microservices/lineardesign_service/main.py :: LinearDesignBatchResponse
     - agent_core/state.py :: lineardesign_* fields
     - agent_core/graph_nodes.py :: tool_execution_node LinearDesign batch branch
-    - docs/change_logs/lineardesign_interface_v0.2.0.md
     """
 
     input_filepath: str
@@ -514,7 +508,6 @@ class RhoFoldOutput(_OutBase):
     - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (wrapper return dict)
     - agent_core/graph_nodes.py :: rhofold result ingestion
     - microservices/rhofold_service/main.py :: RhoFoldPredictResponse
-    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     """
 
     input_filepath: str
@@ -552,7 +545,6 @@ class RhoDesignOutput(_OutBase):
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
 #   - agent_core/graph_nodes.py
-#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -584,7 +576,6 @@ class RiboDiffusionOutput(_OutBase):
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
 #   - agent_core/graph_nodes.py
-#   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -596,7 +587,6 @@ class RNAsmolScoreOutput(_OutBase):
     - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
     - microservices/rnasmol_service/main.py :: ScoreResponse
     - agent_core/state.py :: rnasmol_* fields
-    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     """
     input_filepath: str
     smiles: str
@@ -618,7 +608,6 @@ class GerNABindScoreOutput(_OutBase):
     - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind (wrapper return dict)
     - microservices/gernabind_service/main.py :: ScoreResponse
     - agent_core/state.py :: gernabind_* fields
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
     """
     input_filepath: str
     smiles: str
@@ -653,7 +642,6 @@ class RNASTOPPredictionOutput(_OutBase):
     - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
     - agent_core/graph_nodes.py :: tool_execution_node RNASTOP branch
     - agent_core/state.py :: rnastop_* fields
-    - docs/tools/predict_mrna_stability_with_rnastop.md
     """
 
     input_filepath: str
@@ -684,7 +672,6 @@ class RNASTOPPredictionOutput(_OutBase):
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
 #   - agent_core/graph_nodes.py
-#   - docs/tools/predict_putative_ires_with_iresfinder.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # 本次修改的基准日期：2026-04-23。
@@ -700,7 +687,6 @@ class IRESfinderPredictionOutput(_OutBase):
     - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
     - agent_core/state.py :: iresfinder_* fields
     - agent_core/graph_nodes.py :: tool_execution_node IRESfinder branch
-    - docs/tools/predict_putative_ires_with_iresfinder.md
     """
 
     input_filepath: str
@@ -843,7 +829,6 @@ class StructureAlignmentOutput(_OutBase):
 #   - agent_core/workflow_baseline_eval.py
 #   - tests/test_rna_gc_content_workflow.py
 #   - tests/test_compute_rna_sequence_gc_content.py
-#   - docs/tools/compute_rna_sequence_gc_content.md
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class RnaGcContentOutput(_OutBase):
@@ -874,7 +859,6 @@ class DotBracketUnpairedFractionOutput(_OutBase):
     - microservices/rna_sequence_metrics_service/main.py :: UnpairedFractionResponse
     - agent_core/state.py :: dot_bracket_* fields
     - agent_core/graph_nodes.py :: tool_execution_node unpaired fraction branch
-    - docs/tools/compute_dot_bracket_unpaired_fraction.md
     """
 
     input_filepath: str
@@ -959,7 +943,6 @@ class CaiForCdsOutput(_OutBase):
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
 #   - agent_core/graph_nodes.py
-#   - docs/tools/viennarna_rna_tools.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同步更新全部文件
 # 并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1002,7 +985,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
     #   - agent_core/graph_nodes.py
-    #   - docs/tools/design_sirna_with_evitar.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # 本次修改的基准日期：2026-04-24。
@@ -1049,7 +1031,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
     #   - agent_core/graph_nodes.py
-    #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # ═══════════════════════════════════════════════════════════════════════════════
@@ -1234,8 +1215,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
     #   - agent_core/graph_nodes.py
-    #   - docs/tools/design_mrna_cds_with_lineardesign.md
-    #   - docs/change_logs/lineardesign_interface_v0.2.0.md
     #   - workflow_api/mrna_handler.py
     #   - workflow_api/mrna_schemas.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
@@ -1410,7 +1389,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tool_specs.py :: RhoFoldOutput
     # - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
     # - agent_core/graph_nodes.py :: rhofold result ingestion
-    # - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
         identity="predict_rna_tertiary_structure_with_rhofold",
         display_name="RhoFold tertiary structure prediction",
@@ -1478,7 +1456,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: RNAsmolScoreInput / score_rna_ligand_binding_with_rnasmol
     # - agent_core/tool_specs.py :: RNAsmolScoreOutput
     # - agent_core/state.py :: rnasmol_* fields
-    # - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(
         identity="score_rna_ligand_binding_with_rnasmol",
         display_name="RNAsmol RNA-ligand scoring",
@@ -1501,7 +1478,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: GerNABindScoreInput / score_rna_ligand_binding_with_gernabind
     # - agent_core/tool_specs.py :: GerNABindScoreOutput
     # - agent_core/state.py :: gernabind_* fields
-    # - docs/tools/score_rna_ligand_binding_with_gernabind.md
     "score_rna_ligand_binding_with_gernabind": ToolSpec(
         identity="score_rna_ligand_binding_with_gernabind",
         display_name="GerNA-Bind RNA-ligand scoring",
@@ -1547,7 +1523,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
     # - agent_core/graph_nodes.py :: tool_execution_node RNASTOP branch
     # - agent_core/state.py :: rnastop_* fields
-    # - docs/tools/predict_mrna_stability_with_rnastop.md
     "predict_mrna_stability_with_rnastop": ToolSpec(
         identity="predict_mrna_stability_with_rnastop",
         display_name="RNASTOP stability/degradation prediction",
@@ -1660,7 +1635,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/state.py
     #   - agent_core/graph_nodes.py
     #   - frontend/app.py
-    #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
     # 规则：任何字段增删、端点路径变更、输入/输出模型变动、返回值结构调整，
     #      必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # 本次修改的基准日期：2026-04-24。
@@ -2045,7 +2019,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/workflow_baseline_eval.py
     #   - tests/test_rna_gc_content_workflow.py
     #   - tests/test_compute_rna_sequence_gc_content.py
-    #   - docs/tools/compute_rna_sequence_gc_content.md
     # ═══════════════════════════════════════════════════════════════════════════════
     "compute_rna_sequence_gc_content": ToolSpec(
         identity="compute_rna_sequence_gc_content",

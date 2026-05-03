@@ -504,7 +504,7 @@ class SgRNADesignInput(BaseModel):
     - microservices/sgrna_design_service/main.py :: DesignRequest
     - agent_core/tool_specs.py :: design_sgrna_handle_with_crgpt ToolSpec
     - agent_core/state.py :: sgrna_design_* fields
-    - agent_core/nodes.py :: _resolve_sgrna_design_request
+    - agent_core/planning/rule_based/parsers/common.py :: _resolve_sgrna_design_request
     - docs/tools/design_sgrna_handle_with_crgpt.md
     """
 
@@ -597,9 +597,8 @@ def run_blastn_similarity_search(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: BlastnSearchOutput / run_blastn_similarity_search ToolSpec
     - agent_core/state.py :: blast_* fields
-    - agent_core/nodes.py :: _build_blast_tool_args / tool_execution_node blast branch
+    - agent_core/planning/rule_based/parsers/common.py :: _build_blast_tool_args / agent_core/capabilities/writebacks.py :: blast writeback
     - microservices/blast_service/main.py :: BlastnRequest / BlastnResponse
-    - docs/RNA_AGENT_SYSTEM_GUIDE.md
 
     Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
     Provide exactly one of ``subject_fasta_path`` or ``subject_db``. The query is read from
@@ -691,14 +690,13 @@ def run_blastn_similarity_search(
 #   - agent_core/tools.py  ← 本文件
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
+#   - agent_core/capabilities/writebacks.py
 #   - agent_core/workflow_tools/rna_gc_content_workflow.py
 #   - agent_core/workflows/mrna_workflow.py
 #   - agent_core/workflows/mrna_scoring.py
 #   - agent_core/workflow_baseline_eval.py
 #   - tests/test_rna_gc_content_workflow.py
 #   - tests/test_compute_rna_sequence_gc_content.py
-#   - docs/tools/compute_rna_sequence_gc_content.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -788,9 +786,8 @@ def compute_rna_sequence_gc_content(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RnaGcContentOutput / compute_rna_sequence_gc_content ToolSpec
     - agent_core/state.py :: sequence_gc_* fields
-    - agent_core/nodes.py :: _needs_rna_gc_content_metric / tool_execution_node GC branch
+    - agent_core/planning/rule_based/parsers/common.py :: _needs_rna_gc_content_metric / agent_core/capabilities/writebacks.py :: GC writeback
     - microservices/rna_sequence_metrics_service/main.py :: GcContentRequest / GcContentResponse
-    - docs/tools/compute_rna_sequence_gc_content.md
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
@@ -844,11 +841,10 @@ def compute_dot_bracket_unpaired_fraction(
       compute_dot_bracket_unpaired_fraction ToolSpec
     - agent_core/state.py :: dot_bracket_unpaired_fraction / dot_bracket_structure_length /
       dot_bracket_dot_count fields
-    - agent_core/nodes.py :: _needs_dot_bracket_unpaired_fraction_metric /
-      tool_execution_node unpaired fraction branch
+    - agent_core/planning/rule_based/parsers/common.py :: _needs_dot_bracket_unpaired_fraction_metric /
+      agent_core/capabilities/writebacks.py :: unpaired fraction writeback
     - microservices/rna_sequence_metrics_service/main.py ::
       UnpairedFractionRequest / UnpairedFractionResponse
-    - docs/tools/compute_dot_bracket_unpaired_fraction.md
 
     The structure string must use only ``. ( ) [ ] { } < >`` as in ViennaRNA / LinearFold dot-bracket
     notation. Requires ``rna_sequence_metrics_service`` on port 8020.
@@ -1083,9 +1079,8 @@ def design_sirna_with_evitar(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
     - agent_core/state.py :: evitar_* fields
-    - agent_core/nodes.py :: _build_evitar_tool_args / tool_execution_node Evitar branch
+    - agent_core/planning/rule_based/parsers/common.py :: _build_evitar_tool_args / agent_core/capabilities/writebacks.py :: Evitar writeback
     - microservices/evitar_service/main.py :: EvitarDesignRequest / EvitarDesignResponse
-    - docs/tools/design_sirna_with_evitar.md
 
     Args:
         filepath: Path to an input FASTA file.
@@ -1691,7 +1686,7 @@ def design_sgrna_handle_with_crgpt(
     interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: SgRNADesignOutput
     - agent_core/state.py :: sgrna_design_* fields
-    - agent_core/nodes.py :: tool_execution_node sgrna_design branch
+    - agent_core/capabilities/writebacks.py :: sgrna_design writeback
 
     Args:
         seed_sequence: Inline seed/wildtype sgRNA handle sequence (DNA/RNA).
@@ -1845,7 +1840,7 @@ class SgRNADesignScoreInput(BaseModel):
     - microservices/sgrna_design_service/main.py :: ScoreRequest
     - agent_core/tool_specs.py :: score_sgrna_handle_with_crgpt ToolSpec
     - agent_core/state.py :: sgrna_design_score_* fields
-    - agent_core/nodes.py :: tool_execution_node score_sgrna branch
+    - agent_core/capabilities/writebacks.py :: score_sgrna writeback
     """
 
     sequence: str = Field(
@@ -1925,8 +1920,7 @@ def score_sgrna_handle_with_crgpt(
 #   - agent_core/tools.py  ← 本文件
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
-#   - docs/tools/viennarna_rna_tools.md
+#   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1989,7 +1983,7 @@ class CodonwSlimAnalyzeInput(BaseModel):
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest
     - agent_core/tool_specs.py :: analyze_cds_codon_metrics_with_codonw_slim ToolSpec
     - agent_core/state.py :: codonw_* fields
-    - agent_core/nodes.py :: _build_codonw_tool_args / tool_execution_node codonw branch
+    - agent_core/planning/rule_based/parsers/common.py :: _build_codonw_tool_args / agent_core/capabilities/writebacks.py :: codonw writeback
     """
 
     filepath: str = Field(
@@ -2268,9 +2262,7 @@ class Gemorna3UtrPredictionInput(BaseModel):
 #   - agent_core/tools.py  ← 本文件
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
-#   - docs/tools/design_mrna_cds_with_lineardesign.md
-#   - docs/change_logs/lineardesign_interface_v0.2.0.md
+#   - agent_core/capabilities/writebacks.py
 #   - workflow_api/mrna_handler.py
 #   - workflow_api/mrna_schemas.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
@@ -2286,9 +2278,7 @@ class LinearDesignCdsInput(BaseModel):
     - microservices/lineardesign_service/main.py :: LinearDesignRequest
     - agent_core/tool_specs.py :: design_mrna_cds_with_lineardesign ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/nodes.py :: tool_execution_node LinearDesign branch
-    - docs/tools/design_mrna_cds_with_lineardesign.md
-    - docs/change_logs/lineardesign_interface_v0.2.0.md
+    - agent_core/capabilities/writebacks.py :: lineardesign writeback
     """
 
     filepath: str = Field(
@@ -2327,7 +2317,6 @@ class LinearDesignCdsBatchInput(BaseModel):
     - microservices/lineardesign_service/main.py :: LinearDesignBatchRequest
     - agent_core/tool_specs.py :: design_mrna_cds_batch_with_lineardesign ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - docs/tools/design_mrna_cds_with_lineardesign.md
     """
 
     filepath: str = Field(
@@ -2411,8 +2400,7 @@ class RhoFoldInput(BaseModel):
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RhoFoldOutput / predict_rna_tertiary_structure_with_rhofold ToolSpec
     - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
-    - agent_core/nodes.py :: rhofold result ingestion (tool_result field names)
-    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
+    - agent_core/capabilities/writebacks.py :: rhofold writeback
 
     This wrapper exposes the single-sequence prediction mode only.
     MSA-based prediction is not exposed because local MSA databases
@@ -2501,8 +2489,7 @@ class RhoDesignInput(BaseModel):
 #   - agent_core/tools.py  ← 本文件
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
-#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+#   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2545,8 +2532,7 @@ class RiboDiffusionInput(BaseModel):
 #   - agent_core/tools.py  ← 本文件
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
-#   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+#   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2557,7 +2543,6 @@ class RNAsmolScoreInput(BaseModel):
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - microservices/rnasmol_service/main.py :: ScoreRequest
     - agent_core/tool_specs.py :: score_rna_ligand_binding_with_rnasmol ToolSpec
-    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     """
 
     filepath: str = Field(
@@ -2611,7 +2596,6 @@ class GerNABindScoreInput(BaseModel):
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
     - microservices/gernabind_service/main.py :: ScoreRequest
     - agent_core/tool_specs.py :: score_rna_ligand_binding_with_gernabind ToolSpec
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
     """
 
     filepath: str = Field(
@@ -2700,7 +2684,6 @@ class RNASTOPPredictionInput(BaseModel):
     synchronized with:
     - microservices/rnastop_service/main.py :: StabilityPredictionRequest
     - agent_core/tool_specs.py :: predict_mrna_stability_with_rnastop ToolSpec
-    - docs/tools/predict_mrna_stability_with_rnastop.md
 
     RNASTOP predicts per-nucleotide degradation profiles (reactivity, deg_Mg_pH10,
     deg_Mg_50C).  The caller may supply a pre-computed secondary structure and/or
@@ -2754,8 +2737,7 @@ class IRESfinderPredictionInput(BaseModel):
     - agent_core/tool_specs.py :: predict_putative_ires_with_iresfinder ToolSpec
     - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest
     - agent_core/state.py :: iresfinder_* fields
-    - agent_core/nodes.py :: tool_execution_node IRESfinder branch
-    - docs/tools/predict_putative_ires_with_iresfinder.md
+    - agent_core/capabilities/writebacks.py :: IRESfinder writeback
     """
 
     filepath: str = Field(
@@ -2916,7 +2898,7 @@ def analyze_cds_codon_metrics_with_codonw_slim(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: CodonwSlimOutput / analyze_cds_codon_metrics_with_codonw_slim ToolSpec
     - agent_core/state.py :: codonw_* fields
-    - agent_core/nodes.py :: _build_codonw_tool_args / tool_execution_node codonw branch
+    - agent_core/planning/rule_based/parsers/common.py :: _build_codonw_tool_args / agent_core/capabilities/writebacks.py :: codonw writeback
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest / CodonwAnalyzeResponse
 
     Wraps the `codonw-slim` library (CodonW) over HTTP. Input should be a **CDS**
@@ -4105,9 +4087,7 @@ def design_mrna_cds_with_lineardesign(
     - microservices/lineardesign_service/main.py
     - agent_core/tool_specs.py :: LinearDesignCdsOutput / ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/nodes.py :: tool_execution_node LinearDesign branch
-    - docs/tools/design_mrna_cds_with_lineardesign.md
-    - docs/change_logs/lineardesign_interface_v0.2.0.md
+    - agent_core/capabilities/writebacks.py :: lineardesign writeback
 
     Args:
         filepath: Workspace file path containing the input protein sequence.
@@ -4179,9 +4159,7 @@ def design_mrna_cds_batch_with_lineardesign(
     - microservices/lineardesign_service/main.py :: LinearDesignBatchRequest/Response
     - agent_core/tool_specs.py :: LinearDesignCdsBatchOutput / ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/nodes.py :: tool_execution_node LinearDesign batch branch
-    - docs/tools/design_mrna_cds_with_lineardesign.md
-    - docs/change_logs/lineardesign_interface_v0.2.0.md
+    - agent_core/capabilities/writebacks.py :: lineardesign batch writeback
 
     Args:
         filepath: Workspace file path containing one or more protein sequences.
@@ -4356,8 +4334,7 @@ def predict_rna_tertiary_structure_with_rhofold(
 
     INTERFACE LOCK (v0.2.0): Locked return dict keys. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RhoFoldOutput
-    - agent_core/nodes.py :: rhofold result ingestion (pdb_filepath, ct_filepath, etc.)
-    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
+    - agent_core/capabilities/writebacks.py :: rhofold writeback
 
     Args:
         filepath: Workspace file path containing the input RNA sequence.
@@ -4627,7 +4604,6 @@ def score_rna_ligand_binding_with_rnasmol(
     - microservices/rnasmol_service/main.py :: ScoreResponse
     - agent_core/tool_specs.py :: RNAsmolScoreOutput
     - agent_core/state.py :: rnasmol_* fields
-    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
 
     Args:
         filepath: Path to a file containing the RNA sequence.
@@ -4706,7 +4682,6 @@ def score_rna_ligand_binding_with_gernabind(
     - microservices/gernabind_service/main.py :: ScoreResponse
     - agent_core/tool_specs.py :: GerNABindScoreOutput
     - agent_core/state.py :: gernabind_* fields
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
 
     Args:
         filepath: Path to a file containing the RNA sequence.
@@ -4844,9 +4819,8 @@ def predict_mrna_stability_with_rnastop(
     Any addition/removal must be synchronized with:
     - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     - agent_core/tool_specs.py :: RNASTOPPredictionOutput
-    - agent_core/nodes.py :: tool_execution_node RNASTOP branch
+    - agent_core/capabilities/writebacks.py :: RNASTOP writeback
     - agent_core/state.py :: rnastop_* fields
-    - docs/tools/predict_mrna_stability_with_rnastop.md
 
     Args:
         filepath: Path to a file containing the RNA sequence.

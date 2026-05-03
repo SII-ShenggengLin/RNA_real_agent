@@ -90,9 +90,7 @@ class AgentState(TypedDict, total=False):
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py
     #   - agent_core/state.py  ← 本文件
-    #   - agent_core/nodes.py
-    #   - docs/tools/design_mrna_cds_with_lineardesign.md
-    #   - docs/change_logs/lineardesign_interface_v0.2.0.md
+    #   - agent_core/capabilities/writebacks.py
     #   - workflow_api/mrna_handler.py
     #   - workflow_api/mrna_schemas.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
@@ -126,8 +124,7 @@ class AgentState(TypedDict, total=False):
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py
     #   - agent_core/state.py  ← 本文件
-    #   - agent_core/nodes.py
-    #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
+    #   - agent_core/capabilities/writebacks.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # ═══════════════════════════════════════════════════════════════════════════
@@ -143,7 +140,6 @@ class AgentState(TypedDict, total=False):
     # - microservices/gernabind_service/main.py :: ScoreResponse / BindingSiteResponse
     # - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind return dict
     # - agent_core/tool_specs.py :: GerNABindScoreOutput
-    # - docs/tools/score_rna_ligand_binding_with_gernabind.md
     gernabind_probability: float
     gernabind_predicted_label: int
     gernabind_checkpoint_path: str
@@ -156,8 +152,7 @@ class AgentState(TypedDict, total=False):
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py
     #   - agent_core/state.py  ← 本文件
-    #   - agent_core/nodes.py
-    #   - docs/tools/score_rna_ligand_binding_with_rnasmol.md
+    #   - agent_core/capabilities/writebacks.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # ═══════════════════════════════════════════════════════════════════════════
@@ -166,7 +161,6 @@ class AgentState(TypedDict, total=False):
     # - microservices/rnasmol_service/main.py :: ScoreResponse
     # - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol return dict
     # - agent_core/tool_specs.py :: RNAsmolScoreOutput
-    # - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     rnasmol_probability: float
     rnasmol_predicted_label: int
     rnasmol_raw_logits: list[float]
@@ -188,8 +182,7 @@ class AgentState(TypedDict, total=False):
     # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
     # - agent_core/tool_specs.py :: RNASTOPPredictionOutput
-    # - agent_core/nodes.py :: tool_execution_node RNASTOP branch
-    # - docs/tools/predict_mrna_stability_with_rnastop.md
+    # - agent_core/capabilities/writebacks.py :: tool_execution_node RNASTOP branch
     rnastop_prediction_filepath: str
     rnastop_sequence: str
     rnastop_used_sequence: str
@@ -217,8 +210,7 @@ class AgentState(TypedDict, total=False):
     # - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
     # - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
     # - agent_core/tool_specs.py :: IRESfinderPredictionOutput
-    # - agent_core/nodes.py :: tool_execution_node IRESfinder branch
-    # - docs/tools/predict_putative_ires_with_iresfinder.md
+    # - agent_core/capabilities/writebacks.py :: tool_execution_node IRESfinder branch
     iresfinder_result_tsv_filepath: str
     iresfinder_has_putative_ires: bool
     iresfinder_max_score: float
