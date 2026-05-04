@@ -305,6 +305,145 @@ async def predict_protein(request: ProteinXPredictRequest) -> ProteinXPredictRes
     )
 
 
+class ProteinXComplexRequest(BaseModel):
+    """Request schema for RNA-protein complex prediction."""
+
+    protein_sequence: str = Field(
+        ...,
+        description="Protein amino-acid sequence (1-letter codes).",
+    )
+    rna_sequence: str = Field(
+        ...,
+        description="RNA sequence (A/U/G/C).",
+    )
+    num_models: int = Field(default=1, ge=1, le=5)
+    num_recycles: int = Field(default=10, ge=1, le=12)
+    msa_mode: str = Field(default="none")
+    model_name: str = Field(default="protenix_base_default_v1.0.0")
+    use_default_params: bool = Field(default=True)
+
+
+class ProteinXComplexResponse(BaseModel):
+    """Response schema for RNA-protein complex prediction."""
+
+    pdb_filepath: str = ""
+    mean_pae: float = 0.0
+    mean_plddt: float = 0.0
+    ranking_confidence: float = 0.0
+    ipTM: float = 0.0
+    model_scores: List[Dict[str, Any]] = Field(default_factory=list)
+    model: str = "proteinx"
+    note: str = ""
+
+
+@app.post("/predict/complex", response_model=ProteinXComplexResponse)
+async def predict_complex(request: ProteinXComplexRequest) -> ProteinXComplexResponse:
+    """Run ProteinX RNA-protein complex structure prediction."""
+    protein_seq = re.sub(r"[^A-Za-z]", "", request.protein_sequence).upper()
+    rna_seq = re.sub(r"[^AUGC]", "", request.rna_sequence.upper().replace("T", "U"))
+    if not protein_seq:
+        raise HTTPException(status_code=400, detail="Protein sequence is empty after normalization.")
+    if not rna_seq:
+        raise HTTPException(status_code=400, detail="RNA sequence is empty after normalization.")
+
+    sample_name = "proteinx_complex"
+    protenix_input = [
+        {
+            "name": sample_name,
+            "covalent_bonds": [],
+            "sequences": [
+                {
+                    "proteinChain": {
+                        "count": 1,
+                        "sequence": protein_seq,
+                        "modifications": [],
+                    }
+                },
+                {
+                    "rnaChain": {
+                        "count": 1,
+                        "sequence": rna_seq,
+                    }
+                },
+            ],
+        }
+    ]
+
+    run_dir = tempfile.mkdtemp(prefix="proteinx_complex_run_", dir=SERVICE_WORKDIR)
+    input_json_path = Path(run_dir) / "input.json"
+    with open(input_json_path, "w", encoding="utf-8") as f:
+        json.dump(protenix_input, f, indent=2)
+
+    dump_dir = Path(run_dir) / "output"
+    dump_dir.mkdir(parents=True, exist_ok=True)
+
+    use_msa = request.msa_mode.lower() not in ("", "none", "false", "no")
+
+    cmd = [
+        "protenix",
+        "pred",
+        "-i", str(input_json_path),
+        "-o", str(dump_dir),
+        "-s", "101",
+        "-n", request.model_name,
+        "--use_msa", str(use_msa).lower(),
+        "--use_default_params", str(request.use_default_params).lower(),
+        "--sample", str(request.num_models),
+    ]
+    if not request.use_default_params:
+        cmd.extend(["--cycle", str(request.num_recycles)])
+
+    try:
+        proc = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Protenix CLI not found. Ensure protenix is installed: {exc}",
+        )
+    except subprocess.TimeoutExpired:
+        raise HTTPException(
+            status_code=504,
+            detail="Protenix inference timed out after 3600 seconds.",
+        )
+
+    if proc.returncode != 0:
+        err_detail = proc.stderr[-2000:] if len(proc.stderr) > 2000 else proc.stderr
+        raise HTTPException(
+            status_code=500,
+            detail=f"Protenix inference failed (rc={proc.returncode}): {err_detail}",
+        )
+
+    try:
+        result = _parse_best_result(dump_dir, sample_name)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Output parsing failed: {exc}. stderr: {proc.stderr[-1000:]}",
+        )
+
+    # Extract ipTM from best model scores
+    ipTM = 0.0
+    if result.get("model_scores"):
+        ipTM = float(result["model_scores"][0].get("iptm", 0.0))
+
+    return ProteinXComplexResponse(
+        pdb_filepath=result["pdb_filepath"],
+        mean_pae=result["mean_pae"],
+        mean_plddt=result["mean_plddt"],
+        ranking_confidence=result["ranking_confidence"],
+        ipTM=ipTM,
+        model_scores=result["model_scores"],
+        model=request.model_name,
+        note="",
+    )
+
+
 @app.get("/health")
 async def health() -> dict[str, str]:
     """Health check endpoint."""

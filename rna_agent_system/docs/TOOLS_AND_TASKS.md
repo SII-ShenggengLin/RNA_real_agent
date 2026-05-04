@@ -60,11 +60,13 @@
 | `score_rna_ligand_binding_with_rnasmol` | 8007 | `filepath`, `smiles`, `dataset`, `perturbation_type`, `device`, `checkpoint_path` | `probability_positive`, `predicted_label` | v0.2.0; 6 weight files |
 | `score_rna_ligand_binding_with_gernabind` | 8010 | `filepath`, `smiles`, `dataset`, `split_method` | `probability`, `predicted_label` | v0.1.0; auto-calls RhoFold if no PDB |
 
-### RNA-protein complex scoring
+### RNA-protein complex scoring & design
 
 | Tool | Port | Input (key fields) | Output (key fields) | Notes |
 |------|------|--------------------|---------------------|-------|
 | `score_rna_protein_complex_with_egarps` | 8023 | `filepath` (PDB), `academic` | `complex_id`, `native_probability` | v0.1.0; GPU required; non-academic mode skips DSSR/NACCESS |
+| `predict_rna_protein_complex_with_proteinx` | 8022 | `protein_filepath`, `rna_filepath` | `pdb_filepath`, `mean_plddt`, `ipTM`, `ranking_confidence` | v0.1.0; `rnaChain` + `proteinChain`; GPU |
+| `analyze_rna_protein_interface` | — (pure Python) | `complex_pdb_filepath`, `protein_chain_id`, `rna_chain_id` | `interface_contacts`, `buried_sasa`, `hydrogen_bonds`, `salt_bridges` | v0.1.0; biopython + freesasa |
 
 ### CRISPR / sgRNA
 
@@ -386,6 +388,40 @@ Returns: `best_sequence`, `hamming_distance`, `partition_probability`.
 - ESM2 and RNA-FM checkpoints are cached locally under `external_repos/EGARPS/esm2_models/` and `rna_fm_models/`.
 - GHECOM is not available from upstream; a stub script is used to generate zero-valued pocketness features.
 
+### 6.4 ProteinX RNA-Protein Complex Prediction (Port 8022)
+
+| Item | Description |
+|------|-------------|
+| Upstream | [bytedance/Protenix](https://github.com/bytedance/Protenix) |
+| Microservice | `microservices/proteinx_service/` (same service, new `/predict/complex` endpoint) |
+| Environment | Same as protein prediction |
+| Endpoint | `POST /predict/complex` |
+| Agent tool | `predict_rna_protein_complex_with_proteinx(protein_filepath, rna_filepath, num_models=1)` |
+
+**Key notes**
+
+- Submits both `proteinChain` and `rnaChain` to Protenix for joint structure prediction.
+- Outputs `ipTM` (interface predicted TM-score) from the best model confidence JSON.
+- Used in the RNA aptamer design workflow as a parallel quality metric alongside EGARPS.
+
+### 6.5 RNA-Protein Interface Analysis (Pure Python)
+
+| Item | Description |
+|------|-------------|
+| Source | In-repo utility (`agent_core/tools.py`) |
+| Transport | Pure Python (`python_api`); no microservice, no port |
+| Agent tool | `analyze_rna_protein_interface(complex_pdb_filepath, protein_chain_id="A", rna_chain_id="B", contact_cutoff=5.0)` |
+
+**Metrics computed**
+
+| Metric | Method |
+|--------|--------|
+| `interface_contacts` | Residue pairs with any atom ≤ `contact_cutoff` Å |
+| `buried_sasa` | ΔSASA = (protein_SASA + RNA_SASA) − complex_SASA via freesasa |
+| `hydrogen_bonds` | Donor-acceptor atoms 2.5–3.5 Å apart |
+| `salt_bridges` | Charged residues (Arg/Lys/His vs Asp/Glu) ≤ 4.0 Å apart |
+| `interface_area` | Approximated as `buried_sasa × 0.5` |
+
 ---
 
 ## 7. CRISPR / sgRNA Tools
@@ -656,7 +692,7 @@ Every workflow follows the same 7-step template:
 | `crispr_offtarget_search` | validate | none | none | `search_crispr_off_targets_with_crisot` | by count | by spec | format |
 | `crispr_sgrna_optimization` | validate | none | `optimize_sgrna_with_crisot` | built-in | by available | none | format |
 | `sgrna_handle_design` | validate | normalize | `design_sgrna_handle_with_crgpt` | built-in | none | by NN score | format |
-| `rna_aptamer_design` | validate | none | `build_odesign_aptamer_input_json` | `run_odesign_inference` | none | none | format |
+| `rna_aptamer_design` | validate | none | `build_odesign_aptamer_input_json` | `run_odesign_inference` + `predict_rna_protein_complex_with_proteinx` + `analyze_rna_protein_interface` | none | none | format |
 | `protein_structure_prediction` | validate | none | none | `predict_protein_structure_with_proteinx` | none | none | format |
 | `protein_hotspot_identification` | validate | parse | none | `identify_protein_binding_hotspots` | by relSASA | by patch size | format |
 | `structure_alignment` | validate | parse | none | `score_structure_alignment` | none | by TM-score | format |

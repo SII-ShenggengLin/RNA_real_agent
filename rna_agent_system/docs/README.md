@@ -156,6 +156,8 @@ rna_agent_system/
 | `extract_rna_sequence_from_cif` | Pure Python (biopython) | — | `rna_sequence_extraction` | `cif_filepath`, optional `chain_id` | `sequence`, `chain_id`, `residue_count`, `is_rna` | available |
 | `build_odesign_aptamer_input_json` | Pure Python | — | `odesign_aptamer_input` | `protein_structure_path`, `protein_chain_id`, `hotspot_residues`, `aptamer_length` | `input_json_filepath`, `design_config` | available |
 | `predict_protein_structure_with_proteinx` | ProteinX (Protenix) | 8022 | `protein_structure_prediction` | `filepath` (FASTA) | `pdb_filepath`, `mean_plddt`, `model_scores` | available (needs GPU) |
+| `predict_rna_protein_complex_with_proteinx` | ProteinX (Protenix) | 8022 | `rna_protein_complex_prediction` | `protein_filepath`, `rna_filepath` | `pdb_filepath`, `mean_plddt`, `ipTM`, `ranking_confidence` | available (needs GPU) |
+| `analyze_rna_protein_interface` | Pure Python (biopython + freesasa) | — | `rna_protein_interface_analysis` | `complex_pdb_filepath`, `protein_chain_id`, `rna_chain_id` | `interface_contacts`, `buried_sasa`, `hydrogen_bonds`, `salt_bridges` | available |
 | `identify_protein_binding_hotspots` | Pure Python (freesasa + DBSCAN) | — | `protein_hotspot_identification` | `protein_structure_path`, `chain_id` | `hotspot_residues`, `hotspot_patch_size`, `patch_center_coords` | available |
 | `score_structure_alignment` | Pure Python (biopython) | — | `structure_alignment` | `reference_pdb_filepath`, `predicted_pdb_filepath` | `rmsd`, `tm_score`, `aligned_residue_count` | available |
 
@@ -183,7 +185,7 @@ rna_agent_system/
 | `crispr_offtarget_search` | Partial | workflow | `search_crispr_off_targets_with_crisot` | No | Genome + Cas-OFFinder |
 | `crispr_sgrna_optimization` | Partial | workflow | `optimize_sgrna_with_crisot` | No | Can be very slow |
 | `sgrna_handle_design` | Partial | workflow | `design_sgrna_handle_with_crgpt` | No | Model / torch |
-| `rna_aptamer_design` | Partial | workflow | `build_odesign_aptamer_input_json` → `run_odesign_inference` | No | Requires ODesign GPU/weights |
+| `rna_aptamer_design` | Partial | workflow | `build_odesign_aptamer_input_json` → `run_odesign_inference` → `predict_rna_protein_complex_with_proteinx` + `analyze_rna_protein_interface` | No | Requires ODesign + Protenix GPU/weights |
 | `protein_structure_prediction` | Yes | workflow | `predict_protein_structure_with_proteinx` | No | Needs GPU + Protenix weights on first run |
 | `protein_hotspot_identification` | Yes | workflow | `identify_protein_binding_hotspots` | Yes | Requires freesasa + scikit-learn |
 | `structure_alignment` | Yes | workflow | `score_structure_alignment` | Yes | Requires biopython |

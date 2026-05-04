@@ -32,65 +32,35 @@ from agent_core.workflows.rna_aptamer_design import (
 def test_score_aptamer_perfect_metrics():
     """All ideal metrics should produce a high total score."""
     metrics = {
-        "gc_content": 0.50,
-        "mfe_kcal_per_mol": -50.0,
         "rhofold_mean_plddt": 95.0,
         "egarps_native_probability": 0.90,
-        "unpaired_fraction": 0.30,
+        "proteinx_ipTM": 0.85,
     }
     scores = score_aptamer_candidate(metrics)
     assert scores["egarps_component"] == pytest.approx(0.90, abs=1e-6)
     assert scores["rhofold_component"] == pytest.approx(0.95, abs=1e-6)
-    assert scores["mfe_component"] > 0.95  # sigmoid(-50) ≈ 0.997
-    assert scores["gc_component"] == pytest.approx(1.0, abs=1e-6)
-    assert scores["unpaired_component"] == pytest.approx(1.0, abs=1e-6)
-    assert scores["total_score"] > 0.90
+    assert scores["iptm_component"] == pytest.approx(0.85, abs=1e-6)
+    assert scores["total_score"] == pytest.approx(2.70, abs=1e-6)
 
 
 def test_score_aptamer_missing_metrics():
     """Missing metrics should contribute 0.0 for that component."""
-    metrics = {
-        "gc_content": 0.50,
-        "mfe_kcal_per_mol": -20.0,
-    }
+    metrics = {"rhofold_mean_plddt": 50.0}
     scores = score_aptamer_candidate(metrics)
     assert scores["egarps_component"] == 0.0
+    assert scores["rhofold_component"] == pytest.approx(0.50, abs=1e-6)
+    assert scores["iptm_component"] == 0.0
+    assert scores["total_score"] == pytest.approx(0.50, abs=1e-6)
+
+
+def test_score_aptamer_only_egarps():
+    """Only EGARPS available should still produce a valid score."""
+    metrics = {"egarps_native_probability": 0.60}
+    scores = score_aptamer_candidate(metrics)
+    assert scores["egarps_component"] == pytest.approx(0.60, abs=1e-6)
     assert scores["rhofold_component"] == 0.0
-    assert scores["unpaired_component"] == 0.0
-    assert scores["gc_component"] == pytest.approx(1.0, abs=1e-6)
-    assert scores["mfe_component"] > 0.0
-
-
-def test_score_aptamer_bad_gc():
-    """GC far from 50% should penalise the score."""
-    metrics = {"gc_content": 0.90}
-    scores = score_aptamer_candidate(metrics)
-    assert scores["gc_component"] < 0.1
-
-
-def test_score_aptamer_unstable_mfe():
-    """Positive MFE (unstable) should produce a low MFE component."""
-    metrics = {"mfe_kcal_per_mol": 5.0}
-    scores = score_aptamer_candidate(metrics)
-    assert scores["mfe_component"] < 0.1
-
-
-def test_score_aptamer_custom_weights():
-    """Custom weights should shift the total score."""
-    metrics = {
-        "gc_content": 0.50,
-        "mfe_kcal_per_mol": -20.0,
-        "rhofold_mean_plddt": 50.0,
-        "egarps_native_probability": 0.0,
-        "unpaired_fraction": 0.30,
-    }
-    # With default weights, total is moderate
-    default_scores = score_aptamer_candidate(metrics)
-    # With high EGARPS weight but 0 EGARPS score, total should be lower
-    low_egarps_scores = score_aptamer_candidate(
-        metrics, weight_egarps=0.8, weight_rhofold=0.05, weight_mfe=0.05, weight_gc=0.05, weight_unpaired=0.05
-    )
-    assert low_egarps_scores["total_score"] < default_scores["total_score"]
+    assert scores["iptm_component"] == 0.0
+    assert scores["total_score"] == pytest.approx(0.60, abs=1e-6)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -104,7 +74,8 @@ def test_input_defaults():
     assert inp.aptamer_length == 30
     assert inp.n_odesign_samples == 5
     assert inp.odesign_seeds == [42]
-    assert inp.weight_egarps == 0.35
+    assert inp.weight_egarps == 0.50
+    assert inp.weight_rhofold == 0.50
 
 
 def test_input_dict_coercion():
@@ -194,20 +165,6 @@ def _make_registry_for_evaluation() -> MagicMock:
             output={"gc_content": 0.48, "sequence_length": 30},
         )
 
-    def _fold_invoke(args, state=None):
-        return CapabilityResult(
-            success=True,
-            tool_name="predict_rna_secondary_structure",
-            output={"mfe_kcal_per_mol": -25.0, "structure": "....(((())))...."},
-        )
-
-    def _unpaired_invoke(args, state=None):
-        return CapabilityResult(
-            success=True,
-            tool_name="compute_dot_bracket_unpaired_fraction",
-            output={"unpaired_fraction": 0.25, "structure_length": 16, "dot_count": 4},
-        )
-
     def _rhofold_invoke(args, state=None):
         return CapabilityResult(
             success=True,
@@ -224,18 +181,10 @@ def _make_registry_for_evaluation() -> MagicMock:
 
     caps = {
         "compute_rna_sequence_gc_content": MagicMock(),
-        "predict_rna_secondary_structure": MagicMock(),
-        "predict_rna_secondary_structure_with_linearfold": MagicMock(),
-        "compute_dot_bracket_unpaired_fraction": MagicMock(),
         "predict_rna_tertiary_structure_with_rhofold": MagicMock(),
         "score_rna_protein_complex_with_egarps": MagicMock(),
     }
     caps["compute_rna_sequence_gc_content"].invoke = _gc_invoke
-    caps["predict_rna_secondary_structure"].invoke = _fold_invoke
-    caps["predict_rna_secondary_structure_with_linearfold"].invoke = lambda args, state=None: CapabilityResult(
-        success=True, tool_name="linearfold", output={"mfe": -22.0, "structure": "..."}
-    )
-    caps["compute_dot_bracket_unpaired_fraction"].invoke = _unpaired_invoke
     caps["predict_rna_tertiary_structure_with_rhofold"].invoke = _rhofold_invoke
     caps["score_rna_protein_complex_with_egarps"].invoke = _egarps_invoke
 
@@ -297,14 +246,16 @@ def test_evaluate_returns_expected_keys():
     )
     metrics = wf.evaluate(candidate)
     assert "gc_content" in metrics
-    assert "mfe_kcal_per_mol" in metrics
-    assert "unpaired_fraction" in metrics
     assert "rhofold_mean_plddt" in metrics
     assert "egarps_native_probability" in metrics
+    assert "proteinx_ipTM" in metrics
+    assert "interface_contacts" in metrics
     assert metrics["gc_content"] == pytest.approx(0.48, abs=1e-6)
-    assert metrics["mfe_kcal_per_mol"] == pytest.approx(-25.0, abs=1e-6)
     assert metrics["rhofold_mean_plddt"] == pytest.approx(85.0, abs=1e-6)
     assert metrics["egarps_native_probability"] == pytest.approx(0.72, abs=1e-6)
+    # New capabilities are not in the mocked registry, so they should be None
+    assert metrics["proteinx_ipTM"] is None
+    assert metrics["interface_contacts"] is None
 
 
 def test_score_and_rank_pipeline():
@@ -332,27 +283,15 @@ def test_score_and_rank_pipeline():
     # Evaluation mocks
     def _gc_invoke(args, state=None):
         return CapabilityResult(success=True, tool_name="gc", output={"gc_content": 0.48})
-    def _fold_invoke(args, state=None):
-        return CapabilityResult(success=True, tool_name="fold", output={"mfe_kcal_per_mol": -25.0, "structure": "((..))"})
-    def _unpaired_invoke(args, state=None):
-        return CapabilityResult(success=True, tool_name="unp", output={"unpaired_fraction": 0.25})
     def _rhofold_invoke(args, state=None):
         return CapabilityResult(success=True, tool_name="rho", output={"mean_plddt": 85.0, "pdb_filepath": "workspace/rho.pdb"})
 
     eval_caps = {
         "compute_rna_sequence_gc_content": MagicMock(),
-        "predict_rna_secondary_structure": MagicMock(),
-        "predict_rna_secondary_structure_with_linearfold": MagicMock(),
-        "compute_dot_bracket_unpaired_fraction": MagicMock(),
         "predict_rna_tertiary_structure_with_rhofold": MagicMock(),
         "score_rna_protein_complex_with_egarps": MagicMock(),
     }
     eval_caps["compute_rna_sequence_gc_content"].invoke = _gc_invoke
-    eval_caps["predict_rna_secondary_structure"].invoke = _fold_invoke
-    eval_caps["predict_rna_secondary_structure_with_linearfold"].invoke = lambda args, state=None: CapabilityResult(
-        success=True, tool_name="lf", output={"mfe": -22.0, "structure": "..."}
-    )
-    eval_caps["compute_dot_bracket_unpaired_fraction"].invoke = _unpaired_invoke
     eval_caps["predict_rna_tertiary_structure_with_rhofold"].invoke = _rhofold_invoke
     eval_caps["score_rna_protein_complex_with_egarps"].invoke = lambda args, state=None: CapabilityResult(
         success=True, tool_name="egarps", output={"native_probability": 0.65}
@@ -410,6 +349,7 @@ def test_critic_retry_when_too_few_gc_ok():
     state: dict[str, Any] = {}
     assert critic.should_retry(result, state) is True
     assert state["next_constraints"]["adjust_aptamer_length"] is True
+    assert state["_aptamer_retry_adjust_length"] is True
 
 
 def test_critic_no_retry_when_gc_ok_sufficient():
@@ -422,19 +362,20 @@ def test_critic_no_retry_when_gc_ok_sufficient():
 
 
 def test_critic_retry_when_all_egarps_poor():
-    """All EGARPS scores < 0.3 → retry (needs ≥3 candidates to pass GC filter first)."""
+    """All EGARPS scores < 0.4 → retry (needs ≥3 candidates to pass GC filter first)."""
     critic = RnaAptamerCritic()
     cands = _make_aptamer_candidates(
-        [0.50, 0.50, 0.50], egarps_values=[0.20, 0.25, 0.10]
+        [0.50, 0.50, 0.50], egarps_values=[0.20, 0.35, 0.10]
     )
     result = WorkflowResult(success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands)
     state: dict[str, Any] = {}
     assert critic.should_retry(result, state) is True
     assert state["next_constraints"]["expand_hotspot_region"] is True
+    assert state["_aptamer_expand_hotspot"] is True
 
 
 def test_critic_no_retry_when_some_egarps_good():
-    """At least one EGARPS score ≥ 0.3 → no retry."""
+    """At least one EGARPS score ≥ 0.4 → no retry."""
     critic = RnaAptamerCritic()
     cands = _make_aptamer_candidates(
         [0.50, 0.50, 0.50], egarps_values=[0.20, 0.50, 0.10]

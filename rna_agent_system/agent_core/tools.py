@@ -5525,6 +5525,254 @@ def predict_protein_structure_with_proteinx(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# ProteinX RNA-protein complex prediction (v0.1.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class ProteinXComplexInput(BaseModel):
+    """Input schema for ProteinX RNA-protein complex structure prediction."""
+
+    protein_filepath: str = Field(
+        ...,
+        description="Path to FASTA file containing the protein sequence.",
+    )
+    rna_filepath: str = Field(
+        ...,
+        description="Path to FASTA file containing the RNA sequence.",
+    )
+    num_models: int = Field(default=1, ge=1, le=5)
+    num_recycles: int = Field(default=10, ge=1, le=12)
+    msa_mode: str = Field(default="none")
+    service_url: str = Field(default="http://127.0.0.1:8022/predict/complex")
+    timeout_seconds: int = Field(default=7200, ge=60, le=28800)
+
+
+@tool(args_schema=ProteinXComplexInput)
+def predict_rna_protein_complex_with_proteinx(
+    protein_filepath: str,
+    rna_filepath: str,
+    num_models: int = 1,
+    num_recycles: int = 10,
+    msa_mode: str = "none",
+    service_url: str = "http://127.0.0.1:8022/predict/complex",
+    timeout_seconds: int = 7200,
+) -> dict[str, Any]:
+    """Predict RNA-protein complex structure using ProteinX (Protenix).
+
+    Args:
+        protein_filepath: FASTA file with protein sequence.
+        rna_filepath: FASTA file with RNA sequence.
+        num_models: Number of inference samples.
+        num_recycles: Pairformer cycles.
+        msa_mode: MSA mode ('none' disables MSA).
+        service_url: ProteinX complex prediction endpoint.
+        timeout_seconds: HTTP timeout in seconds.
+
+    Returns:
+        Dict with pdb_filepath, mean_plddt, ipTM, ranking_confidence, model_scores.
+    """
+    protein_abs = _absolute_path_under_project(protein_filepath)
+    rna_abs = _absolute_path_under_project(rna_filepath)
+
+    try:
+        response = requests.post(
+            service_url,
+            json={
+                "protein_sequence": _read_sequence(protein_abs),
+                "rna_sequence": _read_sequence(rna_abs),
+                "num_models": num_models,
+                "num_recycles": num_recycles,
+                "msa_mode": msa_mode,
+            },
+            timeout=float(timeout_seconds),
+        )
+        response.raise_for_status()
+        body = response.json()
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "ProteinX-complex")
+
+    return {
+        "pdb_filepath": str(body.get("pdb_filepath", "")),
+        "mean_pae": float(body.get("mean_pae", 0.0)),
+        "mean_plddt": float(body.get("mean_plddt", 0.0)),
+        "ipTM": float(body.get("ipTM", 0.0)),
+        "ranking_confidence": float(body.get("ranking_confidence", 0.0)),
+        "model_scores": list(body.get("model_scores", [])),
+        "model": str(body.get("model", "proteinx")),
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RNA-protein interface analysis (v0.1.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class RnaProteinInterfaceInput(BaseModel):
+    """Input schema for RNA-protein interface structure analysis."""
+
+    complex_pdb_filepath: str = Field(
+        ...,
+        description="Path to RNA-protein complex PDB or CIF file.",
+    )
+    protein_chain_id: str = Field(default="A", description="Protein chain ID.")
+    rna_chain_id: str = Field(default="B", description="RNA chain ID.")
+    contact_cutoff: float = Field(
+        default=5.0, ge=2.0, le=15.0,
+        description="Distance cutoff (Å) for interface contacts.",
+    )
+
+
+@tool(args_schema=RnaProteinInterfaceInput)
+def analyze_rna_protein_interface(
+    complex_pdb_filepath: str,
+    protein_chain_id: str = "A",
+    rna_chain_id: str = "B",
+    contact_cutoff: float = 5.0,
+) -> dict[str, Any]:
+    """Analyze RNA-protein interface from a complex structure.
+
+    Computes interface contacts, buried SASA, hydrogen bonds, and salt bridges.
+
+    Args:
+        complex_pdb_filepath: Path to complex PDB/CIF.
+        protein_chain_id: Protein chain ID.
+        rna_chain_id: RNA chain ID.
+        contact_cutoff: Distance cutoff in Angstroms.
+
+    Returns:
+        Dict with interface_contacts, buried_sasa, hydrogen_bonds, salt_bridges,
+        interface_area, protein_surface_area, rna_surface_area.
+    """
+    try:
+        from Bio.PDB import PDBParser, MMCIFParser
+        import numpy as np
+    except ImportError as exc:
+        raise ImportError(
+            "biopython and numpy are required for interface analysis. "
+            "Install with: pip install biopython numpy"
+        ) from exc
+
+    path_obj = Path(complex_pdb_filepath)
+    suffix = path_obj.suffix.lower()
+    try:
+        if suffix in {".cif", ".mmcif"}:
+            parser = MMCIFParser(QUIET=True)
+        else:
+            parser = PDBParser(QUIET=True)
+        structure = parser.get_structure("complex", complex_pdb_filepath)
+    except Exception as exc:
+        raise ValueError(f"Structure parsing failed: {exc}") from exc
+
+    # Collect atoms by chain
+    protein_atoms: list[Any] = []
+    rna_atoms: list[Any] = []
+    for model in structure:
+        for chain in model:
+            if chain.id == protein_chain_id:
+                for residue in chain:
+                    if not residue.id[0].strip():
+                        for atom in residue:
+                            protein_atoms.append(atom)
+            elif chain.id == rna_chain_id:
+                for residue in chain:
+                    if not residue.id[0].strip():
+                        for atom in residue:
+                            rna_atoms.append(atom)
+
+    if not protein_atoms or not rna_atoms:
+        raise ValueError(
+            f"Could not find both chains. Protein '{protein_chain_id}' has "
+            f"{len(protein_atoms)} atoms, RNA '{rna_chain_id}' has {len(rna_atoms)} atoms."
+        )
+
+    # Interface contacts
+    interface_contacts = 0
+    contact_pairs: set[tuple[str, str]] = set()
+    for patom in protein_atoms:
+        for ratom in rna_atoms:
+            if patom - ratom <= contact_cutoff:
+                pres = patom.get_parent()
+                rres = ratom.get_parent()
+                if pres is not None and rres is not None:
+                    pair = (f"{pres.resname.strip()}/{pres.id[1]}", f"{rres.resname.strip()}/{rres.id[1]}")
+                    if pair not in contact_pairs:
+                        contact_pairs.add(pair)
+                        interface_contacts += 1
+
+    # Hydrogen bonds and salt bridges (simplified geometric criteria)
+    hydrogen_bonds = 0
+    salt_bridges = 0
+    hbdonor = {"N", "O", "S", "F"}
+    acceptor = {"N", "O", "S"}
+    charged_positive = {"ARG", "LYS", "HIS"}
+    charged_negative = {"ASP", "GLU"}
+
+    for patom in protein_atoms:
+        for ratom in rna_atoms:
+            dist = patom - ratom
+            if dist > 3.5:
+                continue
+            # H-bond: donor-acceptor distance 2.5-3.5 Å
+            if 2.5 <= dist <= 3.5:
+                pelem = patom.element.strip().upper()
+                relem = ratom.element.strip().upper()
+                if (pelem in hbdonor and relem in acceptor) or (pelem in acceptor and relem in hbdonor):
+                    hydrogen_bonds += 1
+            # Salt bridge: charged residues within 4.0 Å
+            if dist <= 4.0:
+                pres = patom.get_parent()
+                rres = ratom.get_parent()
+                if pres is not None and rres is not None:
+                    pname = pres.resname.strip().upper()
+                    rname = rres.resname.strip().upper()
+                    if (pname in charged_positive and rname in charged_negative) or \
+                       (pname in charged_negative and rname in charged_positive):
+                        salt_bridges += 1
+
+    # Buried SASA using freesasa
+    buried_sasa = 0.0
+    protein_surface_area = 0.0
+    rna_surface_area = 0.0
+    try:
+        import freesasa
+        # Compute SASA for the whole complex
+        complex_structure = freesasa.Structure(complex_pdb_filepath)
+        complex_result = freesasa.calc(complex_structure)
+        complex_area = complex_result.totalArea()
+
+        # Build temporary PDBs for individual chains and compute SASA
+        # Use a simplified approach: sum chain areas from residue areas
+        prot_area = 0.0
+        rna_area = 0.0
+        areas = complex_result.residueAreas()
+        for chain_id_val, res_areas in areas.items():
+            for resnum, ra in res_areas.items():
+                if chain_id_val == protein_chain_id:
+                    prot_area += ra.total
+                elif chain_id_val == rna_chain_id:
+                    rna_area += ra.total
+        protein_surface_area = prot_area
+        rna_surface_area = rna_area
+        buried_sasa = max(0.0, prot_area + rna_area - complex_area)
+    except ImportError:
+        pass
+    except Exception as exc:
+        _LOGGER.warning("freesasa_interface_analysis_failed: %s", exc)
+
+    return {
+        "interface_contacts": interface_contacts,
+        "buried_sasa": round(buried_sasa, 2),
+        "hydrogen_bonds": hydrogen_bonds,
+        "salt_bridges": salt_bridges,
+        "interface_area": round(buried_sasa * 0.5, 2),  # Approximation
+        "protein_surface_area": round(protein_surface_area, 2),
+        "rna_surface_area": round(rna_surface_area, 2),
+        "contact_cutoff": contact_cutoff,
+        "complex_pdb_filepath": complex_pdb_filepath,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Protein binding hotspot identification INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
 # 同步文件清单：
 #   - agent_core/tools.py :: identify_protein_binding_hotspots
@@ -5980,6 +6228,8 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     extract_rna_sequence_from_cif,
     build_odesign_aptamer_input_json,
     predict_protein_structure_with_proteinx,
+    predict_rna_protein_complex_with_proteinx,
+    analyze_rna_protein_interface,
     identify_protein_binding_hotspots,
     score_structure_alignment,
 ]

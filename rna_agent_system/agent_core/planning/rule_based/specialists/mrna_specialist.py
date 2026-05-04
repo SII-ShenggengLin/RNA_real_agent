@@ -212,16 +212,19 @@ class MrnaSpecialist:
             # "hotspot_expansion" parameter directly.
             pass
 
-        return ExecutionPlan(steps=[
-            PlanStep(
-                step_id="aptamer_design",
-                type="workflow",
-                target="rna_aptamer_design",
-                input_binding=workflow_input,
-                output_key="workflow_result",
-                description="RNA aptamer design workflow (structure-driven)",
-            )
-        ])
+        return ExecutionPlan(
+            steps=[
+                PlanStep(
+                    step_id="aptamer_design",
+                    type="workflow",
+                    target="rna_aptamer_design",
+                    input_binding=workflow_input,
+                    output_key="workflow_result",
+                    description="RNA aptamer design workflow (structure-driven)",
+                )
+            ],
+            max_retries=3,
+        )
 
     def _plan_odesign(self, raw_text: str, state: dict[str, Any]) -> ExecutionPlan:
         tool_args, state_updates = _extract_odesign_request(raw_text)

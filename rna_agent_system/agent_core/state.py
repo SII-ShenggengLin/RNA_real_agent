@@ -346,6 +346,18 @@ class AgentState(TypedDict, total=False):
     protein_structure_ranking_confidence: float
     protein_structure_model_scores: list[dict[str, Any]]
     # ═══════════════════════════════════════════════════════════════════════════
+    # RNA-protein complex & interface analysis (non-locked, new fields)
+    # ═══════════════════════════════════════════════════════════════════════════
+    rna_protein_complex_pdb_filepath: str = ""
+    rna_protein_complex_mean_plddt: float = 0.0
+    rna_protein_complex_ipTM: float = 0.0
+    rna_protein_complex_ranking_confidence: float = 0.0
+    rna_protein_interface_contacts: int = 0
+    rna_protein_interface_buried_sasa: float = 0.0
+    rna_protein_interface_hydrogen_bonds: int = 0
+    rna_protein_interface_salt_bridges: int = 0
+    rna_protein_interface_area: float = 0.0
+    # ═══════════════════════════════════════════════════════════════════════════
     # Structure alignment (RMSD + TM-score) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
     # 关联文件清单见 agent_core/tool_specs.py 中 score_structure_alignment
     # 的 INTERFACE LOCK 注释。任何字段增删必须同步更新全部关联文件。

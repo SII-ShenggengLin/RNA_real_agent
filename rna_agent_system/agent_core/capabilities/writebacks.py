@@ -413,6 +413,19 @@ STANDARD_WRITEBACKS: dict[str, WritebackRule] = {
         "ranking_confidence": "protein_structure_ranking_confidence",
         "model_scores": "protein_structure_model_scores",
     },
+    "predict_rna_protein_complex_with_proteinx": {
+        "pdb_filepath": "rna_protein_complex_pdb_filepath",
+        "mean_plddt": "rna_protein_complex_mean_plddt",
+        "ipTM": "rna_protein_complex_ipTM",
+        "ranking_confidence": "rna_protein_complex_ranking_confidence",
+    },
+    "analyze_rna_protein_interface": {
+        "interface_contacts": "rna_protein_interface_contacts",
+        "buried_sasa": "rna_protein_interface_buried_sasa",
+        "hydrogen_bonds": "rna_protein_interface_hydrogen_bonds",
+        "salt_bridges": "rna_protein_interface_salt_bridges",
+        "interface_area": "rna_protein_interface_area",
+    },
     # ═══════════════════════════════════════════════════════════════════════
     # Structure alignment (v0.1.0 INTERFACE LOCK)
     # ═══════════════════════════════════════════════════════════════════════

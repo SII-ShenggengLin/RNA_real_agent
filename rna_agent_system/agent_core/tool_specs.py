@@ -777,6 +777,32 @@ class ProteinXProteinOutput(_OutBase):
     model: str = "proteinx"
 
 
+class ProteinXComplexOutput(_OutBase):
+    """ProteinX RNA-protein complex prediction output schema."""
+
+    pdb_filepath: str = ""
+    mean_pae: float = 0.0
+    mean_plddt: float = 0.0
+    ipTM: float = 0.0
+    ranking_confidence: float = 0.0
+    model_scores: List[Dict[str, Any]] = Field(default_factory=list)
+    model: str = "proteinx"
+
+
+class RnaProteinInterfaceOutput(_OutBase):
+    """RNA-protein interface analysis output schema."""
+
+    interface_contacts: int = 0
+    buried_sasa: float = 0.0
+    hydrogen_bonds: int = 0
+    salt_bridges: int = 0
+    interface_area: float = 0.0
+    protein_surface_area: float = 0.0
+    rna_surface_area: float = 0.0
+    contact_cutoff: float = 5.0
+    complex_pdb_filepath: str = ""
+
+
 class IdentifyProteinBindingHotspotsOutput(_OutBase):
     """Protein binding hotspot identification output schema.
 
@@ -1932,6 +1958,58 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
                 title="Predict protein structure",
                 input={"filepath": "workspace/protein.fa"},
                 output_excerpt={"mean_plddt": 85.0, "pdb_filepath": "workspace/prediction/rank_1.pdb"},
+            )
+        ],
+    ),
+    "predict_rna_protein_complex_with_proteinx": ToolSpec(
+        identity="predict_rna_protein_complex_with_proteinx",
+        display_name="ProteinX RNA-protein complex prediction",
+        version="0.1.0",
+        source="https://github.com/bytedance/Protenix",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8022/predict/complex",
+        capabilities=["Predict RNA-protein complex 3D structure using Protenix."],
+        limitations=["Requires GPU for inference."],
+        task_tags=["rna_protein_complex", "proteinx", "aptamer_design"],
+        requires=[
+            ToolDependency(name="GPU", detail="Protenix inference"),
+            ToolDependency(name="Proteinx microservice", detail="microservices/proteinx_service (port 8022)"),
+        ],
+        produces=["pdb_filepath", "mean_plddt", "ipTM", "ranking_confidence", "model_scores"],
+        input_model=tool_wrappers.ProteinXComplexInput,
+        output_model=ProteinXComplexOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Predict RNA-protein complex",
+                input={"protein_filepath": "workspace/protein.fa", "rna_filepath": "workspace/rna.fa"},
+                output_excerpt={"ipTM": 0.75, "mean_plddt": 82.0, "pdb_filepath": "workspace/complex.cif"},
+            )
+        ],
+    ),
+    "analyze_rna_protein_interface": ToolSpec(
+        identity="analyze_rna_protein_interface",
+        display_name="Analyze RNA-protein interface",
+        version="0.1.0",
+        source="in-repo utility (biopython + freesasa)",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=["Compute interface contacts, buried SASA, H-bonds, and salt bridges from a complex PDB."],
+        limitations=["Requires biopython and freesasa. Geometric criteria are approximate."],
+        task_tags=["interface_analysis", "aptamer_design", "structure"],
+        requires=[
+            ToolDependency(name="biopython", detail="pip install biopython"),
+            ToolDependency(name="freesasa", detail="pip install freesasa"),
+        ],
+        produces=["interface_contacts", "buried_sasa", "hydrogen_bonds", "salt_bridges", "interface_area"],
+        input_model=tool_wrappers.RnaProteinInterfaceInput,
+        output_model=RnaProteinInterfaceOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Analyze interface",
+                input={"complex_pdb_filepath": "workspace/complex.pdb", "protein_chain_id": "A", "rna_chain_id": "B"},
+                output_excerpt={"interface_contacts": 24, "buried_sasa": 1250.5, "hydrogen_bonds": 8},
             )
         ],
     ),

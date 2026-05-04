@@ -580,11 +580,22 @@ These findings were established during a codebase audit and remain true:
 
 ---
 
-## 13. Change Log: RNA Aptamer Design Tools (v0.1.0)
+## 13. Change Log: RNA Aptamer Design Tools
 
-Added 2026-05-01.
+### v0.2.0 — Added ProteinX complex prediction & interface analysis (2026-05-04)
 
-### New tools
+| Tool | Transport | Files touched |
+|------|-----------|---------------|
+| `predict_rna_protein_complex_with_proteinx` | HTTP | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py`, + `microservices/proteinx_service/` |
+| `analyze_rna_protein_interface` | Pure Python (biopython + freesasa) | `tools.py`, `tool_specs.py`, `state.py`, `writebacks.py` |
+
+**Scoring simplification**: Removed MFE, GC, and unpaired-fraction components from the aptamer total score. Current formula:
+```
+total_score = EGARPS + (RhoFold_pLDDT / 100) + ipTM
+```
+GC content is still computed (for critic quality gating) but no longer contributes to ranking.
+
+### v0.1.0 — Initial aptamer toolkit (2026-05-01)
 
 | Tool | Transport | Files touched |
 |------|-----------|---------------|

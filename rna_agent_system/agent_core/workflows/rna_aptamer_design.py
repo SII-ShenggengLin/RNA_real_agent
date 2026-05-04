@@ -78,13 +78,9 @@ class RnaAptamerDesignInput(BaseModel):
         description="Random seeds for ODesign inference.",
     )
     # Scoring weights (can be overridden for domain-specific tuning)
-    weight_egarps: float = Field(default=0.35, description="Weight for EGARPS native probability.")
-    weight_rhofold: float = Field(default=0.25, description="Weight for RhoFold pLDDT.")
-    weight_mfe: float = Field(default=0.20, description="Weight for secondary-structure MFE.")
-    weight_gc: float = Field(default=0.15, description="Weight for GC-content closeness to 50%.")
-    weight_unpaired: float = Field(
-        default=0.05, description="Weight for unpaired-fraction closeness to 30%."
-    )
+    # Current scoring uses only EGARPS and RhoFold pLDDT.
+    weight_egarps: float = Field(default=0.50, description="Weight for EGARPS native probability.")
+    weight_rhofold: float = Field(default=0.50, description="Weight for RhoFold pLDDT.")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -105,12 +101,11 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         "build_odesign_aptamer_input_json",
         "run_odesign_inference",
         "compute_rna_sequence_gc_content",
-        "predict_rna_secondary_structure",
-        "predict_rna_secondary_structure_with_linearfold",
-        "compute_dot_bracket_unpaired_fraction",
         "predict_rna_tertiary_structure_with_rhofold",
         "score_rna_protein_complex_with_egarps",
         "extract_rna_sequence_from_cif",
+        "predict_rna_protein_complex_with_proteinx",
+        "analyze_rna_protein_interface",
     ]
 
     def __init__(self, capability_registry: CapabilityRegistry):
@@ -126,6 +121,7 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         if isinstance(inp, dict):
             inp = RnaAptamerDesignInput(**inp)
         self._workflow_state = {}  # reset per run
+        self._workflow_state["_aptamer_input"] = inp
         result = super().run(inp)
         result._state_writeback = dict(self._workflow_state)  # type: ignore[attr-defined]
         return result
@@ -135,10 +131,11 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
         Steps:
           1. Resolve protein structure path.
-          2. Identify binding hotspots (if not provided).
-          3. Build ODesign aptamer input JSON.
-          4. Run ODesign inference.
-          5. Parse prediction files to extract RNA sequences.
+          2. Identify binding hotspots (if not provided), with optional expansion.
+          3. Apply retry constraints (adjust aptamer length / expand hotspot).
+          4. Build ODesign aptamer input JSON.
+          5. Run ODesign inference.
+          6. Parse prediction files to extract RNA sequences.
         """
         # ── 1. Resolve protein structure ──
         protein_path = self._resolve_protein_structure(inp)
@@ -154,6 +151,7 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
         # ── 2. Hotspot identification ──
         hotspot = inp.hotspot_residues
+        expand_hotspot = self._workflow_state.get("_aptamer_expand_hotspot", False)
         if not hotspot:
             _LOGGER.info("hotspot_not_provided running_auto_identification")
             hotspot = self._auto_identify_hotspots(protein_path, inp.chain_id)
@@ -162,13 +160,26 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 return []
             _LOGGER.info("hotspot_auto_identified residues=%s", hotspot)
 
+        # Expand hotspot region if requested by critic retry
+        if expand_hotspot and hotspot:
+            expanded = self._expand_hotspot_residues(protein_path, inp.chain_id, hotspot, window=3)
+            if expanded and expanded != hotspot:
+                _LOGGER.info("hotspot_expanded old=%s new=%s", hotspot, expanded)
+                hotspot = expanded
+
+        # Apply aptamer length adjustment if requested by critic retry
+        aptamer_length = inp.aptamer_length
+        if self._workflow_state.get("_aptamer_retry_adjust_length", False):
+            aptamer_length = min(200, aptamer_length + 5)
+            _LOGGER.info("aptamer_length_adjusted old=%d new=%d", inp.aptamer_length, aptamer_length)
+
         # ── 3. Build ODesign input JSON ──
         json_result = self._build_odesign_json(
             protein_path=protein_path,
             chain_id=inp.chain_id,
             seq_len=protein_seq_len,
             hotspot=hotspot,
-            aptamer_length=inp.aptamer_length,
+            aptamer_length=aptamer_length,
         )
         if not json_result:
             _LOGGER.error("odesign_json_build_failed")
@@ -210,7 +221,7 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                         "protein_structure_path": protein_path,
                         "protein_chain_id": inp.chain_id,
                         "hotspot_residues": hotspot,
-                        "aptamer_length": inp.aptamer_length,
+                        "aptamer_length": aptamer_length,
                         "odesign_prediction_path": prediction_paths[idx] if idx < len(prediction_paths) else None,
                         "odesign_input_json": json_path,
                         "design_params": {
@@ -225,14 +236,14 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         return candidates
 
     def evaluate(self, candidate: Candidate) -> dict[str, Any]:
-        """Run GC + fold + RhoFold + EGARPS on the candidate sequence.
+        """Evaluate an aptamer candidate.
 
         Metrics collected:
-          - gc_content, sequence_length
-          - mfe_kcal_per_mol, fold_tool, secondary_structure
-          - unpaired_fraction
-          - rhofold_pdb_path, rhofold_mean_plddt
-          - egarps_native_probability (optional, if complex structure available)
+          - gc_content (for critic quality gating)
+          - rhofold_mean_plddt (RNA monomer foldability)
+          - egarps_native_probability (ODesign complex quality)
+          - proteinx_ipTM (AlphaFold-family complex confidence)
+          - interface_contacts, buried_sasa, hydrogen_bonds, salt_bridges
         """
         seq = candidate.sequence
         filepath = save_sequence(seq, prefix="aptamer")
@@ -242,58 +253,13 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             "sequence_length": len(seq),
         }
 
-        # ── GC content ──
+        # ── GC content (retained for critic quality gating) ──
         gc_content = self._run_capability_float(
             "compute_rna_sequence_gc_content",
             {"filepath": filepath},
             "gc_content",
         )
         metrics["gc_content"] = gc_content
-
-        # ── Secondary structure (ViennaRNA → LinearFold fallback) ──
-        mfe: Optional[float] = None
-        structure: Optional[str] = None
-        fold_tool: Optional[str] = None
-
-        if self.capabilities.has("predict_rna_secondary_structure"):
-            fold_res = self.capabilities.get("predict_rna_secondary_structure").invoke(
-                {"filepath": filepath}, state=self._workflow_state
-            )
-            if fold_res.success:
-                mfe = _pick_float(fold_res.output, "mfe_kcal_per_mol")
-                structure = fold_res.output.get("structure", "")
-                fold_tool = "ViennaRNA"
-            else:
-                _LOGGER.warning("aptamer_vienna_fold_failed error=%s", fold_res.error)
-                if self.capabilities.has("predict_rna_secondary_structure_with_linearfold"):
-                    lf_res = self.capabilities.get(
-                        "predict_rna_secondary_structure_with_linearfold"
-                    ).invoke({"filepath": filepath}, state=self._workflow_state)
-                    if lf_res.success:
-                        mfe = _pick_float(lf_res.output, "mfe")
-                        structure = lf_res.output.get("structure", "")
-                        fold_tool = "LinearFold"
-                    else:
-                        _LOGGER.warning("aptamer_linearfold_failed error=%s", lf_res.error)
-
-        metrics["mfe_kcal_per_mol"] = mfe
-        metrics["fold_tool"] = fold_tool or "unknown"
-        metrics["secondary_structure"] = structure or ""
-        candidate.metadata["structure"] = structure or ""
-        candidate.metadata["fold_tool"] = fold_tool or "unknown"
-
-        # ── Unpaired fraction ──
-        unpaired: Optional[float] = None
-        if structure and self.capabilities.has("compute_dot_bracket_unpaired_fraction"):
-            struct_fp = save_text_file(structure, prefix="aptamer_structure", suffix=".db")
-            unp_res = self.capabilities.get("compute_dot_bracket_unpaired_fraction").invoke(
-                {"filepath": struct_fp}, state=self._workflow_state
-            )
-            if unp_res.success:
-                unpaired = _pick_float(unp_res.output, "unpaired_fraction")
-            else:
-                _LOGGER.warning("aptamer_unpaired_failed error=%s", unp_res.error)
-        metrics["unpaired_fraction"] = unpaired
 
         # ── RhoFold tertiary structure ──
         rhofold_plddt: Optional[float] = None
@@ -315,16 +281,11 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         egarps_prob: Optional[float] = None
         odesign_pred_path = candidate.metadata.get("odesign_prediction_path")
         if odesign_pred_path and self.capabilities.has("score_rna_protein_complex_with_egarps"):
-            # ODesign may output a complex structure (CIF or PDB).
-            # EGARPS expects PDB; if the file is CIF we skip EGARPS for now
-            # because converting CIF→PDB reliably requires biopython I/O
-            # and we prefer not to add fragile ad-hoc conversion here.
             pred_path_obj = Path(odesign_pred_path)
             suffix = pred_path_obj.suffix.lower()
             if suffix == ".pdb":
                 egarps_prob = self._run_egarps(str(pred_path_obj.resolve()))
             elif suffix in {".cif", ".mmcif"}:
-                # Try to convert CIF to PDB using biopython if available
                 egarps_prob = self._try_egarps_from_cif(str(pred_path_obj.resolve()))
             else:
                 _LOGGER.debug("egarps_skipped_unknown_suffix suffix=%s", suffix)
@@ -332,31 +293,84 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             _LOGGER.debug("egarps_skipped_no_odesign_structure")
         metrics["egarps_native_probability"] = egarps_prob
 
+        # ── ProteinX RNA-protein complex prediction (best-effort) ──
+        iptm: Optional[float] = None
+        proteinx_plddt: Optional[float] = None
+        proteinx_pdb: Optional[str] = None
+        protein_seq = self._resolve_protein_sequence_for_candidate(candidate)
+        if protein_seq and self.capabilities.has("predict_rna_protein_complex_with_proteinx"):
+            # Save protein and RNA sequences as FASTA files
+            protein_fasta = save_sequence(f">protein\n{protein_seq}\n", prefix="protein_for_complex")
+            rna_fasta = save_sequence(f">rna\n{seq}\n", prefix="rna_for_complex")
+            try:
+                cap = self.capabilities.get("predict_rna_protein_complex_with_proteinx")
+                px_res = cap.invoke(
+                    {
+                        "protein_filepath": protein_fasta,
+                        "rna_filepath": rna_fasta,
+                        "num_models": 1,
+                    },
+                    state=self._workflow_state,
+                )
+                if px_res.success:
+                    iptm = _pick_float(px_res.output, "ipTM")
+                    proteinx_plddt = _pick_float(px_res.output, "mean_plddt")
+                    proteinx_pdb = px_res.output.get("pdb_filepath", "")
+                else:
+                    _LOGGER.warning("proteinx_complex_failed error=%s", px_res.error)
+            except Exception as exc:
+                _LOGGER.warning("proteinx_complex_exception exc=%s", exc)
+        metrics["proteinx_ipTM"] = iptm
+        metrics["proteinx_mean_plddt"] = proteinx_plddt
+        metrics["proteinx_pdb_path"] = proteinx_pdb
+
+        # ── Interface analysis on ODesign complex structure (best-effort) ──
+        interface_contacts: Optional[int] = None
+        buried_sasa: Optional[float] = None
+        hydrogen_bonds: Optional[int] = None
+        salt_bridges: Optional[int] = None
+        if odesign_pred_path and self.capabilities.has("analyze_rna_protein_interface"):
+            try:
+                # Try to determine chain IDs from the structure; fallback to defaults
+                protein_chain = candidate.metadata.get("protein_chain_id", "A")
+                rna_chain = "B"  # ODesign typically outputs RNA as chain B
+                cap = self.capabilities.get("analyze_rna_protein_interface")
+                iface_res = cap.invoke(
+                    {
+                        "complex_pdb_filepath": odesign_pred_path,
+                        "protein_chain_id": protein_chain,
+                        "rna_chain_id": rna_chain,
+                        "contact_cutoff": 5.0,
+                    },
+                    state=self._workflow_state,
+                )
+                if iface_res.success:
+                    interface_contacts = iface_res.output.get("interface_contacts")
+                    buried_sasa = _pick_float(iface_res.output, "buried_sasa")
+                    hydrogen_bonds = iface_res.output.get("hydrogen_bonds")
+                    salt_bridges = iface_res.output.get("salt_bridges")
+                else:
+                    _LOGGER.warning("interface_analysis_failed error=%s", iface_res.error)
+            except Exception as exc:
+                _LOGGER.warning("interface_analysis_exception exc=%s", exc)
+        metrics["interface_contacts"] = interface_contacts
+        metrics["buried_sasa"] = buried_sasa
+        metrics["hydrogen_bonds"] = hydrogen_bonds
+        metrics["salt_bridges"] = salt_bridges
+
         candidate.metadata["metrics_bundle"] = metrics
         return metrics
 
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
         """Combine raw metrics into a single aptamer quality score.
 
-        All components are normalised to [0, 1] before weighting to avoid
-        scale-mismatch problems.
+        EGARPS, RhoFold pLDDT, and ProteinX ipTM are each normalised to [0, 1]
+        and added together. Interface metrics are collected but not included in
+        the total score (they are reported for reference).
         """
-        # Retrieve weights from the input that produced these metrics.
-        # We stash the input on the first call via _workflow_state, but
-        # because ``score`` only receives ``metrics``, we fall back to
-        # default weights if the workflow input was not cached.
-        inp = self._workflow_state.get("_aptamer_input")
-        w_egarps = getattr(inp, "weight_egarps", 0.35) if inp else 0.35
-        w_rhofold = getattr(inp, "weight_rhofold", 0.25) if inp else 0.25
-        w_mfe = getattr(inp, "weight_mfe", 0.20) if inp else 0.20
-        w_gc = getattr(inp, "weight_gc", 0.15) if inp else 0.15
-        w_unpaired = getattr(inp, "weight_unpaired", 0.05) if inp else 0.05
-
-        gc_content = metrics.get("gc_content")
-        mfe = metrics.get("mfe_kcal_per_mol")
-        rhofold_plddt = metrics.get("rhofold_mean_plddt")
         egarps_prob = metrics.get("egarps_native_probability")
-        unpaired = metrics.get("unpaired_fraction")
+        rhofold_plddt = metrics.get("rhofold_mean_plddt")
+        iptm = metrics.get("proteinx_ipTM")
 
         scores: dict[str, float] = {}
 
@@ -372,42 +386,18 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         else:
             scores["rhofold_component"] = 0.0
 
-        # MFE: use sigmoid centred at -20 kcal/mol.
-        #   MFE = -20  → score = 0.5
-        #   MFE = -50  → score ≈ 0.95 (very stable, good)
-        #   MFE =  +5  → score ≈ 0.02 (unstable, bad)
-        if mfe is not None:
-            scores["mfe_component"] = 1.0 / (1.0 + math.exp((float(mfe) + 20.0) / 10.0))
+        # ProteinX ipTM: already in [0, 1]
+        if iptm is not None:
+            scores["iptm_component"] = max(0.0, min(1.0, float(iptm)))
         else:
-            scores["mfe_component"] = 0.0
+            scores["iptm_component"] = 0.0
 
-        # GC: Gaussian around 0.5 with σ=0.15.
-        #   0.5  → 1.0
-        #   0.35/0.65 → ~0.37
-        #   0.2/0.8  → ~0.01
-        if gc_content is not None:
-            gc = float(gc_content)
-            scores["gc_component"] = math.exp(-0.5 * ((gc - 0.5) / 0.15) ** 2)
-        else:
-            scores["gc_component"] = 0.0
-
-        # Unpaired fraction: target ~0.3 (some flexibility for induced fit).
-        #   0.3 → 1.0, 0.0 or 0.6 → 0.0
-        if unpaired is not None:
-            up = float(unpaired)
-            scores["unpaired_component"] = max(0.0, 1.0 - abs(up - 0.3) / 0.3)
-        else:
-            scores["unpaired_component"] = 0.0
-
-        # Weighted total
-        total = (
-            w_egarps * scores["egarps_component"]
-            + w_rhofold * scores["rhofold_component"]
-            + w_mfe * scores["mfe_component"]
-            + w_gc * scores["gc_component"]
-            + w_unpaired * scores["unpaired_component"]
+        # Simple sum of normalised components
+        scores["total_score"] = (
+            scores["egarps_component"]
+            + scores["rhofold_component"]
+            + scores["iptm_component"]
         )
-        scores["total_score"] = total
         return scores
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
@@ -433,18 +423,27 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 f"source={c.source}",
                 f"len={len(c.sequence)}nt",
                 f"GC={mb.get('gc_content'):.3f}" if mb.get("gc_content") is not None else "GC=N/A",
-                f"MFE={mb.get('mfe_kcal_per_mol'):.2f}({mb.get('fold_tool', '?')})"
-                if mb.get("mfe_kcal_per_mol") is not None
-                else "MFE=N/A",
-                f"unpaired={mb.get('unpaired_fraction'):.3f}"
-                if mb.get("unpaired_fraction") is not None
-                else "unpaired=N/A",
                 f"RhoFold={mb.get('rhofold_mean_plddt'):.2f}"
                 if mb.get("rhofold_mean_plddt") is not None
                 else "RhoFold=N/A",
                 f"EGARPS={mb.get('egarps_native_probability'):.4f}"
                 if mb.get("egarps_native_probability") is not None
                 else "EGARPS=N/A",
+                f"ipTM={mb.get('proteinx_ipTM'):.4f}"
+                if mb.get("proteinx_ipTM") is not None
+                else "ipTM=N/A",
+                f"contacts={mb.get('interface_contacts')}"
+                if mb.get("interface_contacts") is not None
+                else "contacts=N/A",
+                f"bSASA={mb.get('buried_sasa'):.1f}"
+                if mb.get("buried_sasa") is not None
+                else "bSASA=N/A",
+                f"HB={mb.get('hydrogen_bonds')}"
+                if mb.get("hydrogen_bonds") is not None
+                else "HB=N/A",
+                f"SB={mb.get('salt_bridges')}"
+                if mb.get("salt_bridges") is not None
+                else "SB=N/A",
                 f"total_score={scores.get('total_score', 0.0):.4f}",
             ]
             detail_lines.append(" | ".join(line_parts))
@@ -764,6 +763,124 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         _LOGGER.warning("%s_failed error=%s", cap_name, cap_result.error)
         return None
 
+    def _resolve_protein_sequence_for_candidate(
+        self, candidate: Candidate
+    ) -> Optional[str]:
+        """Return the protein amino-acid sequence if available."""
+        # 1. Try the workflow input cached in state
+        inp = self._workflow_state.get("_aptamer_input")
+        if inp and getattr(inp, "protein_sequence", None):
+            return str(inp.protein_sequence)
+        # 2. Try to parse from the protein structure file
+        protein_path = candidate.metadata.get("protein_structure_path")
+        if protein_path:
+            parsed = self._extract_protein_sequence_from_structure(protein_path)
+            if parsed:
+                return parsed
+        return None
+
+    def _extract_protein_sequence_from_structure(
+        self, protein_path: str
+    ) -> Optional[str]:
+        """Extract protein sequence from a PDB/CIF file using biopython."""
+        try:
+            from Bio.PDB import PDBParser, MMCIFParser
+        except ImportError:
+            _LOGGER.debug("biopython_not_installed cannot_extract_protein_sequence")
+            return None
+        try:
+            path_obj = Path(protein_path)
+            suffix = path_obj.suffix.lower()
+            if suffix in {".cif", ".mmcif"}:
+                parser = MMCIFParser(QUIET=True)
+            else:
+                parser = PDBParser(QUIET=True)
+            structure = parser.get_structure("prot", protein_path)
+            aa_map = {
+                "ALA": "A", "CYS": "C", "ASP": "D", "GLU": "E", "PHE": "F",
+                "GLY": "G", "HIS": "H", "ILE": "I", "LYS": "K", "LEU": "L",
+                "MET": "M", "ASN": "N", "PRO": "P", "GLN": "Q", "ARG": "R",
+                "SER": "S", "THR": "T", "VAL": "V", "TRP": "W", "TYR": "Y",
+            }
+            seq_parts: list[str] = []
+            for model in structure:
+                for chain in model:
+                    for residue in chain:
+                        if residue.id[0].strip():
+                            continue
+                        resname = residue.resname.strip().upper()
+                        if resname in aa_map:
+                            seq_parts.append(aa_map[resname])
+                    break  # Only first chain
+                break  # Only first model
+            return "".join(seq_parts) if seq_parts else None
+        except Exception as exc:
+            _LOGGER.debug("protein_sequence_extraction_failed err=%s", exc)
+            return None
+
+    def _expand_hotspot_residues(
+        self, protein_path: str, chain_id: str, hotspot: str, window: int = 3
+    ) -> str:
+        """Expand hotspot by adding adjacent residue numbers that exist in the structure.
+
+        For each residue in *hotspot* (format "chain/num"), add residues
+        within ±*window* positions. Only residue numbers that actually exist
+        in the target chain are kept.
+        """
+        try:
+            from Bio.PDB import PDBParser, MMCIFParser
+        except ImportError:
+            _LOGGER.debug("biopython_not_installed cannot_expand_hotspot")
+            return hotspot
+
+        path_obj = Path(protein_path)
+        suffix = path_obj.suffix.lower()
+        try:
+            if suffix in {".cif", ".mmcif"}:
+                parser = MMCIFParser(QUIET=True)
+            else:
+                parser = PDBParser(QUIET=True)
+            structure = parser.get_structure("prot", protein_path)
+        except Exception as exc:
+            _LOGGER.debug("structure_parse_failed_for_hotspot_expansion err=%s", exc)
+            return hotspot
+
+        # Collect existing residue numbers for the target chain
+        existing_resnums: set[int] = set()
+        for model in structure:
+            for ch in model:
+                if ch.id == chain_id:
+                    for residue in ch:
+                        if not residue.id[0].strip():  # skip hetero / water
+                            existing_resnums.add(residue.id[1])
+
+        if not existing_resnums:
+            return hotspot
+
+        expanded: set[str] = set()
+        for part in hotspot.split(","):
+            part = part.strip()
+            if not part:
+                continue
+            if "/" in part:
+                cid, num_str = part.split("/", 1)
+            else:
+                cid, num_str = chain_id, part
+            try:
+                num = int(num_str)
+            except ValueError:
+                continue
+            for offset in range(-window, window + 1):
+                new_num = num + offset
+                if new_num in existing_resnums:
+                    expanded.add(f"{cid}/{new_num}")
+
+        # Sort by residue number for stable output
+        sorted_expanded = sorted(
+            expanded, key=lambda x: int(x.split("/", 1)[1])
+        )
+        return ",".join(sorted_expanded) if sorted_expanded else hotspot
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Aptamer-specific scoring helpers
@@ -772,23 +889,15 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
 def score_aptamer_candidate(
     metrics: dict[str, Any],
-    *,
-    weight_egarps: float = 0.35,
-    weight_rhofold: float = 0.25,
-    weight_mfe: float = 0.20,
-    weight_gc: float = 0.15,
-    weight_unpaired: float = 0.05,
 ) -> dict[str, float]:
     """Standalone scoring function for aptamer candidates (reusable outside the workflow).
 
-    Normalises each metric to [0, 1] and returns component scores plus a
-    weighted total_score.
+    EGARPS, RhoFold pLDDT, and ProteinX ipTM are each normalised to [0, 1]
+    and added together.
     """
-    gc_content = metrics.get("gc_content")
-    mfe = metrics.get("mfe_kcal_per_mol")
-    rhofold_plddt = metrics.get("rhofold_mean_plddt")
     egarps_prob = metrics.get("egarps_native_probability")
-    unpaired = metrics.get("unpaired_fraction")
+    rhofold_plddt = metrics.get("rhofold_mean_plddt")
+    iptm = metrics.get("proteinx_ipTM")
 
     scores: dict[str, float] = {}
 
@@ -802,31 +911,16 @@ def score_aptamer_candidate(
     else:
         scores["rhofold_component"] = 0.0
 
-    if mfe is not None:
-        scores["mfe_component"] = 1.0 / (1.0 + math.exp((float(mfe) + 20.0) / 10.0))
+    if iptm is not None:
+        scores["iptm_component"] = max(0.0, min(1.0, float(iptm)))
     else:
-        scores["mfe_component"] = 0.0
+        scores["iptm_component"] = 0.0
 
-    if gc_content is not None:
-        gc = float(gc_content)
-        scores["gc_component"] = math.exp(-0.5 * ((gc - 0.5) / 0.15) ** 2)
-    else:
-        scores["gc_component"] = 0.0
-
-    if unpaired is not None:
-        up = float(unpaired)
-        scores["unpaired_component"] = max(0.0, 1.0 - abs(up - 0.3) / 0.3)
-    else:
-        scores["unpaired_component"] = 0.0
-
-    total = (
-        weight_egarps * scores["egarps_component"]
-        + weight_rhofold * scores["rhofold_component"]
-        + weight_mfe * scores["mfe_component"]
-        + weight_gc * scores["gc_component"]
-        + weight_unpaired * scores["unpaired_component"]
+    scores["total_score"] = (
+        scores["egarps_component"]
+        + scores["rhofold_component"]
+        + scores["iptm_component"]
     )
-    scores["total_score"] = total
     return scores
 
 
@@ -840,11 +934,14 @@ class RnaAptamerCritic(Critic):
 
     Triggers retry when:
       1. Too few candidates survive basic filters (GC in [0.2, 0.8]).
-      2. EGARPS scores are uniformly poor (< 0.3) when EGARPS is available.
+      2. EGARPS scores are uniformly poor (< 0.4) when EGARPS is available.
+
+    The actual retry count limit (max 3) is enforced by the ExecutionController
+    via ExecutionPlan.max_retries.
     """
 
     MIN_SURVIVING_CANDIDATES: int = 3
-    EGARPS_POOR_THRESHOLD: float = 0.3
+    EGARPS_POOR_THRESHOLD: float = 0.4
     GC_MIN: float = 0.2
     GC_MAX: float = 0.8
 
@@ -863,6 +960,8 @@ class RnaAptamerCritic(Critic):
         if gc_ok < self.MIN_SURVIVING_CANDIDATES:
             state.setdefault("next_constraints", {})
             state["next_constraints"]["adjust_aptamer_length"] = True
+            # Signal the workflow to use adjusted length on next run
+            state["_aptamer_retry_adjust_length"] = True
             return True
 
         # If EGARPS was run for at least one candidate and all are poor
@@ -874,6 +973,8 @@ class RnaAptamerCritic(Critic):
         if egarps_values and all(float(v) < self.EGARPS_POOR_THRESHOLD for v in egarps_values):
             state.setdefault("next_constraints", {})
             state["next_constraints"]["expand_hotspot_region"] = True
+            # Signal the workflow to expand hotspot on next run
+            state["_aptamer_expand_hotspot"] = True
             return True
 
         return False
