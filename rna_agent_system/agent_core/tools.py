@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
+import random
 import re
-import time
 from pathlib import Path
 from typing import Any, Optional
 
@@ -25,65 +26,71 @@ from agent_core.sequence_utils import (
     _load_builtin_codon_tables,
 )
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 microservices/linearfold_service/main.py 顶部的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def _extract_sequence(raw_text: str, *, u_to_t: bool = False) -> str:
+    """Parse FASTA-like input, uppercase, and optionally map U→T."""
+    lines = [
+        line.strip()
+        for line in raw_text.splitlines()
+        if line.strip() and not line.lstrip().startswith(">")
+    ]
+    seq = "".join(lines).upper()
+    if u_to_t:
+        seq = seq.replace("U", "T")
+    return re.sub(r"[^A-Z]", "", seq)
+
+
+def _validate_sequence(
+    sequence: str,
+    *,
+    allowed: set[str],
+    tool_name: str,
+    exact_length: int | None = None,
+    min_length: int | None = None,
+    max_length: int | None = None,
+) -> None:
+    """Raise ValueError if sequence violates constraints."""
+    invalid = sorted(set(ch for ch in sequence if ch not in allowed))
+    if invalid:
+        raise ValueError(
+            f"{tool_name} supports only {'/'.join(sorted(allowed))} input. "
+            f"Unsupported characters: {''.join(invalid)}"
+        )
+    if exact_length is not None and len(sequence) != exact_length:
+        raise ValueError(
+            f"{tool_name} expects {exact_length}-nt sequences; got {len(sequence)} nt."
+        )
+    if min_length is not None and len(sequence) < min_length:
+        raise ValueError(
+            f"{tool_name} expects sequence length ≥ {min_length} nt; got {len(sequence)} nt."
+        )
+    if max_length is not None and len(sequence) > max_length:
+        raise ValueError(
+            f"{tool_name} expects sequence length ≤ {max_length} nt; got {len(sequence)} nt."
+        )
 
 
 def _normalize_nucleic_sequence(raw_text: str) -> str:
     """Normalize plain-text or FASTA-like nucleotide input for downstream tools."""
-    sequence_lines = [
-        line.strip()
-        for line in raw_text.splitlines()
-        if line.strip() and not line.lstrip().startswith(">")
-    ]
-    merged = "".join(sequence_lines).upper().replace("T", "U")
-    return re.sub(r"[^A-Z]", "", merged)
+    return _extract_sequence(raw_text).replace("T", "U")
 
 
 def _normalize_crisot_sequence(raw_text: str) -> str:
     """Normalize CRISOT input to uppercase DNA-like sequence with optional N bases."""
-    sequence_lines = [
-        line.strip()
-        for line in raw_text.splitlines()
-        if line.strip() and not line.lstrip().startswith(">")
-    ]
-    merged = "".join(sequence_lines).upper().replace("U", "T")
-    sequence = re.sub(r"[^A-Z]", "", merged)
-    invalid_chars = sorted(set(ch for ch in sequence if ch not in {"A", "C", "G", "T", "N"}))
-    if invalid_chars:
-        raise ValueError(
-            "CRISOT supports only A/C/G/T/U/N input. "
-            f"Unsupported characters: {''.join(invalid_chars)}"
-        )
-    if len(sequence) != 23:
-        raise ValueError(f"CRISOT expects 23-nt sgRNA/target sequences; got {len(sequence)} nt.")
-    return sequence
+    seq = _extract_sequence(raw_text, u_to_t=True)
+    _validate_sequence(seq, allowed={"A", "C", "G", "T", "N"}, tool_name="CRISOT", exact_length=23)
+    return seq
 
 
 def _normalize_sgrna_design_sequence(raw_text: str) -> str:
     """Normalize sgRNA-handle DNA sequence input for sgrna_design service."""
-    sequence_lines = [
-        line.strip()
-        for line in raw_text.splitlines()
-        if line.strip() and not line.lstrip().startswith(">")
-    ]
-    merged = "".join(sequence_lines).upper().replace("U", "T")
-    sequence = re.sub(r"[^A-Z]", "", merged)
-    invalid_chars = sorted(set(ch for ch in sequence if ch not in {"A", "C", "G", "T"}))
-    if invalid_chars:
-        raise ValueError(
-            "sgRNA design supports only A/C/G/T/U input. "
-            f"Unsupported characters: {''.join(invalid_chars)}"
-        )
-    if len(sequence) < 40 or len(sequence) > 120:
-        raise ValueError(
-            "sgRNA design expects a handle/template sequence length between 40 and 120 nt; "
-            f"got {len(sequence)} nt."
-        )
-    return sequence
+    seq = _extract_sequence(raw_text, u_to_t=True)
+    _validate_sequence(seq, allowed={"A", "C", "G", "T"}, tool_name="sgRNA design", min_length=40, max_length=120)
+    return seq
 
 
 
@@ -98,6 +105,24 @@ def _raise_service_error(exc: requests.RequestException, service_name: str) -> N
             detail = response_obj.text
     suffix = f"; detail={detail}" if detail else ""
     raise ValueError(f"{service_name} service request failed: {exc}{suffix}") from exc
+
+
+def _post_json(
+    service_url: str,
+    payload: dict[str, Any],
+    timeout: float,
+    service_name: str,
+) -> dict[str, Any]:
+    """POST *payload* to *service_url* and return the JSON body.
+
+    On any ``requests`` error, delegates to ``_raise_service_error``.
+    """
+    try:
+        response = requests.post(service_url, json=payload, timeout=timeout)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as exc:
+        _raise_service_error(exc, service_name)
 
 
 def _attach_service_logs(
@@ -124,11 +149,9 @@ def _attach_service_logs(
         )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/tool_specs.py 中 run_blastn_similarity_search 的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class BlastnSearchInput(BaseModel):
@@ -171,11 +194,9 @@ class BlastnSearchInput(BaseModel):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # Evitar INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/tool_specs.py 中 design_sirna_with_evitar 的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class EvitarDesignInput(BaseModel):
     """Input schema for Evitar siRNA/Cas13 design tool.
@@ -293,11 +314,9 @@ class EvitarDesignInput(BaseModel):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/tool_specs.py 中 CRISOT ToolSpec 注册区域的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class CrisotScoreInput(BaseModel):
     """Input schema for CRISOT score prediction."""
@@ -491,11 +510,9 @@ class CrisotGenFpInput(BaseModel):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/tool_specs.py 中 design_sgrna_handle_with_crgpt 的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class SgRNADesignInput(BaseModel):
     """Input schema for sgRNA handle design via sgrna_design_service.
@@ -504,7 +521,6 @@ class SgRNADesignInput(BaseModel):
     - microservices/sgrna_design_service/main.py :: DesignRequest
     - agent_core/tool_specs.py :: design_sgrna_handle_with_crgpt ToolSpec
     - agent_core/state.py :: sgrna_design_* fields
-    - agent_core/planning/rule_based/parsers/common.py :: _resolve_sgrna_design_request
     - docs/tools/design_sgrna_handle_with_crgpt.md
     """
 
@@ -597,7 +613,7 @@ def run_blastn_similarity_search(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: BlastnSearchOutput / run_blastn_similarity_search ToolSpec
     - agent_core/state.py :: blast_* fields
-    - agent_core/planning/rule_based/parsers/common.py :: _build_blast_tool_args / agent_core/capabilities/writebacks.py :: blast writeback
+    - agent_core/capabilities/writebacks.py :: blast writeback
     - microservices/blast_service/main.py :: BlastnRequest / BlastnResponse
 
     Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
@@ -653,12 +669,7 @@ def run_blastn_similarity_search(
         payload["perc_identity"] = float(perc_identity)
     if outfmt is not None:
         payload["outfmt"] = str(outfmt)
-    try:
-        response = requests.post(service_url, json=payload, timeout=660)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "BLAST")
+    body = _post_json(service_url, payload, 660, "BLAST")
 
     tabular = str(body.get("tabular_output", "") or "")
     summary_path = ""
@@ -683,23 +694,7 @@ def run_blastn_similarity_search(
     return meta
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/rna_sequence_metrics_service/main.py
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-#   - agent_core/workflow_tools/rna_gc_content_workflow.py
-#   - agent_core/workflows/mrna_workflow.py
-#   - agent_core/workflows/mrna_scoring.py
-#   - agent_core/workflow_baseline_eval.py
-#   - tests/test_rna_gc_content_workflow.py
-#   - tests/test_compute_rna_sequence_gc_content.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RnaGcContentInput(BaseModel):
     """Input schema for RNA/DNA GC fraction (microservice on port 8020)."""
@@ -739,21 +734,7 @@ class DotBracketUnpairedFractionInput(BaseModel):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/rna_sequence_metrics_service/main.py
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-#   - agent_core/sequence_utils.py
-#   - tests/test_compute_rna_sequence_u_content.py
-#   - rna_agent_system/docs/DEVELOPMENT.md
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RnaUContentInput(BaseModel):
     """Input schema for RNA/DNA U fraction (microservice on port 8020)."""
@@ -786,7 +767,7 @@ def compute_rna_sequence_gc_content(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RnaGcContentOutput / compute_rna_sequence_gc_content ToolSpec
     - agent_core/state.py :: sequence_gc_* fields
-    - agent_core/planning/rule_based/parsers/common.py :: _needs_rna_gc_content_metric / agent_core/capabilities/writebacks.py :: GC writeback
+    - agent_core/capabilities/writebacks.py :: GC writeback
     - microservices/rna_sequence_metrics_service/main.py :: GcContentRequest / GcContentResponse
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
@@ -841,8 +822,7 @@ def compute_dot_bracket_unpaired_fraction(
       compute_dot_bracket_unpaired_fraction ToolSpec
     - agent_core/state.py :: dot_bracket_unpaired_fraction / dot_bracket_structure_length /
       dot_bracket_dot_count fields
-    - agent_core/planning/rule_based/parsers/common.py :: _needs_dot_bracket_unpaired_fraction_metric /
-      agent_core/capabilities/writebacks.py :: unpaired fraction writeback
+    - agent_core/capabilities/writebacks.py :: unpaired fraction writeback
     - microservices/rna_sequence_metrics_service/main.py ::
       UnpairedFractionRequest / UnpairedFractionResponse
 
@@ -895,7 +875,7 @@ def compute_rna_sequence_u_content(
     - agent_core/state.py :: sequence_u_* fields
     - agent_core/capabilities/writebacks.py :: compute_rna_sequence_u_content writeback
     - microservices/rna_sequence_metrics_service/main.py :: UContentRequest / UContentResponse
-    - rna_agent_system/docs/DEVELOPMENT.md
+    - rna_agent_system/docs/CONTRIBUTING.md
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
@@ -933,21 +913,7 @@ def compute_rna_sequence_u_content(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-#   - agent_core/sequence_utils.py
-#   - agent_core/data/codon_usage_kazusa.json
-#   - tests/test_compute_cai_for_cds_sequence.py
-#   - rna_agent_system/docs/DEVELOPMENT.md
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class CaiForCdsInput(BaseModel):
     """Input schema for CDS CAI computation using Kazusa codon usage tables."""
@@ -992,7 +958,7 @@ def compute_cai_for_cds_sequence(
     - agent_core/state.py :: cai_for_cds_* fields
     - agent_core/capabilities/writebacks.py :: compute_cai_for_cds_sequence writeback
     - agent_core/sequence_utils.py :: normalize_cds_sequence / build_cai_weights / compute_cai
-    - rna_agent_system/docs/DEVELOPMENT.md
+    - rna_agent_system/docs/CONTRIBUTING.md
 
     The input sequence is validated as CDS (length multiple of 3, AUGC only).
     Stop codons (UAA/UAG/UGA) are excluded from the CAI calculation.
@@ -1049,6 +1015,197 @@ def compute_cai_for_cds_sequence(
     }
 
 
+# ── Junction codon shuffler (pure computation; no microservice) ─────────────
+
+class ShuffleCdsJunctionCodonsInput(BaseModel):
+    """Input schema for synonymous codon shuffling at CDS termini."""
+
+    filepath: str = Field(
+        ...,
+        description="Path to CDS sequence file (workspace or absolute); FASTA or plain text. Must be in-frame (length multiple of 3).",
+    )
+    junction_end: str = Field(
+        ...,
+        description="Which terminus to shuffle: 'n_terminus' (first codons, affects 5'UTR-CDS junction) or 'c_terminus' (last codons, affects CDS-3'UTR junction).",
+    )
+    codon_count: int = Field(
+        default=6,
+        ge=1,
+        le=12,
+        description="Number of terminal codons to shuffle.",
+    )
+    num_variants: int = Field(
+        default=8,
+        ge=1,
+        le=32,
+        description="Number of variant sequences to generate.",
+    )
+    species: str = Field(
+        default="Homo sapiens",
+        description="Species name for the reference codon usage table (same aliases as compute_cai_for_cds_sequence).",
+    )
+    seed: Optional[int] = Field(
+        default=None,
+        description="Optional random seed for reproducible variant generation.",
+    )
+
+
+@tool(args_schema=ShuffleCdsJunctionCodonsInput)
+def shuffle_cds_junction_codons(
+    filepath: str,
+    junction_end: str,
+    codon_count: int = 6,
+    num_variants: int = 8,
+    species: str = "Homo sapiens",
+    seed: Optional[int] = None,
+) -> dict[str, Any]:
+    """Generate synonymous-codon variants at the N- or C-terminus of a CDS.
+
+    Shuffles ``codon_count`` terminal codons while preserving the amino-acid
+    sequence.  Synonymous choices are weighted by the species codon-usage
+    table so that high-CAI variants are naturally favored.
+
+    Use this to alter local RNA secondary structure at module junctions
+    (5'UTR-CDS or CDS-3'UTR) without changing the encoded protein.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: ShuffleCdsJunctionCodonsOutput / shuffle_cds_junction_codons ToolSpec
+    - agent_core/state.py :: shuffle_cds_junction_* fields
+    - agent_core/capabilities/writebacks.py :: shuffle_cds_junction_codons writeback
+    - tests/test_shuffle_cds_junction_codons.py
+
+    Args:
+        filepath: CDS sequence file (plain or FASTA); T is treated as U.
+        junction_end: ``n_terminus`` or ``c_terminus``.
+        codon_count: How many terminal codons to randomize (1--12).
+        num_variants: How many independent variants to return (1--32).
+        species: Reference species for codon-usage weighting.
+        seed: Optional RNG seed for reproducibility.
+
+    Returns:
+        Dict with ``original_sequence``, ``junction_end``, ``shuffled_region``
+        coordinates, and a ``variants`` list.  Each variant contains the full
+        CDS ``sequence``, its ``cai_score``, and a ``changes`` list of
+        ``{codon_index, original_codon, new_codon}``.
+    """
+    raw = read_sequence(filepath)
+    cds_seq = normalize_cds_sequence(raw)
+
+    if junction_end not in ("n_terminus", "c_terminus"):
+        raise ValueError(
+            f"junction_end must be 'n_terminus' or 'c_terminus'; got '{junction_end}'"
+        )
+
+    builtin = _load_builtin_codon_tables()
+    resolved_species = resolve_species_name(species)
+    if resolved_species not in builtin:
+        available = ", ".join(sorted(builtin.keys()))
+        raise ValueError(
+            f"No built-in codon table for '{species}' (resolved: '{resolved_species}'). "
+            f"Available: {available}."
+        )
+    codon_fractions = builtin[resolved_species]
+
+    # Build reverse mapping: amino_acid -> list of (codon, fraction)
+    _STOP = {"UAA", "UAG", "UGA"}
+    aa_to_codons: dict[str, list[tuple[str, float]]] = {}
+    for codon, info in codon_fractions.items():
+        aa = info["aa"]
+        frac = float(info["fraction"])
+        if codon in _STOP:
+            continue
+        aa_to_codons.setdefault(aa, []).append((codon, frac))
+
+    total_codons = len(cds_seq) // 3
+    codon_count = min(codon_count, total_codons)
+
+    if junction_end == "n_terminus":
+        region_start = 0
+        region_end = codon_count
+    else:
+        region_start = total_codons - codon_count
+        region_end = total_codons
+
+    # Prepare position info
+    positions: list[dict[str, Any]] = []
+    for ci in range(region_start, region_end):
+        orig = cds_seq[ci * 3 : ci * 3 + 3]
+        aa = None
+        for c, info in codon_fractions.items():
+            if c == orig:
+                aa = info["aa"]
+                break
+        if aa is None or aa == "*":
+            continue
+        syns = aa_to_codons.get(aa, [])
+        if len(syns) <= 1:
+            continue
+        positions.append({
+            "codon_index": ci,
+            "original": orig,
+            "amino_acid": aa,
+            "synonyms": syns,
+        })
+
+    if not positions:
+        return {
+            "original_sequence": cds_seq,
+            "junction_end": junction_end,
+            "shuffled_region_start": region_start,
+            "shuffled_region_end": region_end,
+            "variants": [],
+            "model": "junction-codon-shuffler",
+        }
+
+    rng = random.Random(seed)
+    weights = build_cai_weights(codon_fractions)
+
+    variants: list[dict[str, Any]] = []
+    seen_seqs: set[str] = {cds_seq}
+
+    max_attempts = num_variants * 10
+    for _ in range(max_attempts):
+        if len(variants) >= num_variants:
+            break
+        seq_list = list(cds_seq)
+        changes: list[dict[str, Any]] = []
+        for pos in positions:
+            syns = pos["synonyms"]
+            # Weighted choice by codon-usage fraction
+            chosen, _ = rng.choices(syns, weights=[f for _, f in syns])[0]
+            if chosen != pos["original"]:
+                ci = pos["codon_index"]
+                seq_list[ci * 3 : ci * 3 + 3] = list(chosen)
+                changes.append({
+                    "codon_index": ci,
+                    "original_codon": pos["original"],
+                    "new_codon": chosen,
+                })
+        new_seq = "".join(seq_list)
+        if new_seq in seen_seqs:
+            continue
+        seen_seqs.add(new_seq)
+        cai_metrics = compute_cai(new_seq, weights)
+        variants.append({
+            "sequence": new_seq,
+            "cai_score": float(cai_metrics["cai_score"]),
+            "changed_codons": len(changes),
+            "changes": changes,
+        })
+
+    variants.sort(key=lambda v: v["cai_score"], reverse=True)
+
+    return {
+        "original_sequence": cds_seq,
+        "junction_end": junction_end,
+        "shuffled_region_start": region_start,
+        "shuffled_region_end": region_end,
+        "variants": variants,
+        "model": "junction-codon-shuffler",
+    }
+
+
 @tool(args_schema=EvitarDesignInput)
 def design_sirna_with_evitar(
     filepath: str,
@@ -1079,7 +1236,7 @@ def design_sirna_with_evitar(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
     - agent_core/state.py :: evitar_* fields
-    - agent_core/planning/rule_based/parsers/common.py :: _build_evitar_tool_args / agent_core/capabilities/writebacks.py :: Evitar writeback
+    - agent_core/capabilities/writebacks.py :: Evitar writeback
     - microservices/evitar_service/main.py :: EvitarDesignRequest / EvitarDesignResponse
 
     Args:
@@ -1214,7 +1371,12 @@ def score_crispr_off_target_with_crisot(
     target_sequence: str,
     service_url: str = "http://127.0.0.1:8011/score",
 ) -> dict[str, Any]:
-    """Score one sgRNA-target pair with CRISOT.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Score one sgRNA-target pair with CRISOT.
 
     Args:
         filepath: Path to a file containing the sgRNA sequence.
@@ -1255,7 +1417,12 @@ def calculate_crispr_specificity_with_crisot(
     off_item: str = "Off",
     service_url: str = "http://127.0.0.1:8011/spec",
 ) -> dict[str, Any]:
-    """Calculate CRISOT specificity from a CSV of one sgRNA and its candidate off-targets.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Calculate CRISOT specificity from a CSV of one sgRNA and its candidate off-targets.
 
     Args:
         csv_filepath: Path to the input CSV. On-target row should appear first.
@@ -1312,7 +1479,12 @@ def search_crispr_off_targets_with_crisot(
     device: str = "G0",
     service_url: str = "http://127.0.0.1:8011/off-spec",
 ) -> dict[str, Any]:
-    """Run CRISOT genome-wide off-target specificity search using Cas-OFFinder.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Run CRISOT genome-wide off-target specificity search using Cas-OFFinder.
 
     Args:
         filepath: Path to a file containing the sgRNA sequence.
@@ -1379,7 +1551,12 @@ def optimize_sgrna_with_crisot(
     device: str = "G0",
     service_url: str = "http://127.0.0.1:8011/optimize",
 ) -> dict[str, Any]:
-    """Optimize one sgRNA with CRISOT-Opti.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Optimize one sgRNA with CRISOT-Opti.
 
     Args:
         filepath: Path to a file containing the target/guide sequence.
@@ -1451,7 +1628,12 @@ def score_batch_crispr_off_targets_with_crisot(
     off_item: str = "Off",
     service_url: str = "http://127.0.0.1:8011/scores",
 ) -> dict[str, Any]:
-    """Batch calculate CRISOT-Score for sgRNA-target pairs in a CSV file.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Batch calculate CRISOT-Score for sgRNA-target pairs in a CSV file.
 
     Args:
         csv_filepath: Path to the input CSV containing sgRNA and target sequences.
@@ -1506,7 +1688,12 @@ def rescore_sgrnas_with_crisot(
     device: str = "G0",
     service_url: str = "http://127.0.0.1:8011/rescore",
 ) -> dict[str, Any]:
-    """Rescore and rerank a list of sgRNAs using CRISOT genome-wide search.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Rescore and rerank a list of sgRNAs using CRISOT genome-wide search.
 
     Args:
         txt_filepath: Path to a TXT file with one sgRNA sequence per line.
@@ -1564,7 +1751,12 @@ def predict_crispr_off_target_with_crisot_fp(
     off_item: str = "Off",
     service_url: str = "http://127.0.0.1:8011/crisot-fp",
 ) -> dict[str, Any]:
-    """Predict CRISPR off-target effects using CRISOT-FP XGBoost models.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Predict CRISPR off-target effects using CRISOT-FP XGBoost models.
 
     Args:
         csv_filepath: Path to the input CSV containing sgRNA and off-target sequences.
@@ -1620,7 +1812,12 @@ def generate_crispr_fingerprint_with_crisot(
     target_sequence: str,
     service_url: str = "http://127.0.0.1:8011/gen-fp",
 ) -> dict[str, Any]:
-    """Generate CRISOT-FP molecular interaction fingerprint for an sgRNA-target pair.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Generate CRISOT-FP molecular interaction fingerprint for an sgRNA-target pair.
 
     Args:
         sgrna: sgRNA sequence (23 nt including PAM).
@@ -1868,7 +2065,12 @@ def score_sgrna_handle_with_crgpt(
     device: Optional[str] = None,
     service_url: str = "http://127.0.0.1:8017/score",
 ) -> dict[str, Any]:
-    """Score a single sgRNA handle sequence using the CRGPT model.
+    """
+    INTERFACE LOCK (v0.3.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Score a single sgRNA handle sequence using the CRGPT model.
 
     Computes nn_score (exp(loss)), log_likelihood (negative cross-entropy),
     ViennaRNA structure distance / MFE, and constraint mutation count.
@@ -1913,17 +2115,7 @@ def score_sgrna_handle_with_crgpt(
         _raise_service_error(exc, "sgRNA score")
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/viennarna_fold/main.py
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class _ViennaParamsMixin(BaseModel):
@@ -1967,11 +2159,9 @@ class FoldViennaInput(BaseModel):
     service_url: str = Field(default="http://127.0.0.1:8003/fold", description="ViennaRNA fold endpoint.")
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/tool_specs.py 中 analyze_cds_codon_metrics_with_codonw_slim
 # 的 INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class CodonwSlimAnalyzeInput(BaseModel):
     """Input schema for codonw-slim CDS codon-usage metrics.
@@ -1983,7 +2173,7 @@ class CodonwSlimAnalyzeInput(BaseModel):
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest
     - agent_core/tool_specs.py :: analyze_cds_codon_metrics_with_codonw_slim ToolSpec
     - agent_core/state.py :: codonw_* fields
-    - agent_core/planning/rule_based/parsers/common.py :: _build_codonw_tool_args / agent_core/capabilities/writebacks.py :: codonw writeback
+    - agent_core/capabilities/writebacks.py :: codonw writeback
     """
 
     filepath: str = Field(
@@ -2255,20 +2445,7 @@ class Gemorna3UtrPredictionInput(BaseModel):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/lineardesign_service/main.py
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-#   - workflow_api/mrna_handler.py
-#   - workflow_api/mrna_schemas.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# 本次修改的基准日期：2026-04-24。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class LinearDesignCdsInput(BaseModel):
@@ -2481,18 +2658,7 @@ class RhoDesignInput(BaseModel):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/ribodiffusion_service/main.py
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RiboDiffusionInput(BaseModel):
     """Input schema for RiboDiffusion tertiary inverse folding."""
@@ -2524,9 +2690,7 @@ class RiboDiffusionInput(BaseModel):
     device: int = Field(default=0, ge=0, description="CUDA device index for the subprocess.")
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
 # 关联文件清单（修改时必须全部同步）：
 #   - microservices/rnasmol_service/main.py
 #   - agent_core/tools.py  ← 本文件
@@ -2535,7 +2699,6 @@ class RiboDiffusionInput(BaseModel):
 #   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RNAsmolScoreInput(BaseModel):
     """Input schema for RNAsmol RNA-ligand scoring.
@@ -2790,7 +2953,7 @@ class ODesignInferenceInput(BaseModel):
     - microservices/odesign_service/main.py :: ODesignInferenceRequest
     - docs/tools/run_odesign_inference.md
     """
-    
+
 
     input_json_filepath: str = Field(
         ...,
@@ -2898,7 +3061,7 @@ def analyze_cds_codon_metrics_with_codonw_slim(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: CodonwSlimOutput / analyze_cds_codon_metrics_with_codonw_slim ToolSpec
     - agent_core/state.py :: codonw_* fields
-    - agent_core/planning/rule_based/parsers/common.py :: _build_codonw_tool_args / agent_core/capabilities/writebacks.py :: codonw writeback
+    - agent_core/capabilities/writebacks.py :: codonw writeback
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest / CodonwAnalyzeResponse
 
     Wraps the `codonw-slim` library (CodonW) over HTTP. Input should be a **CDS**
@@ -2934,12 +3097,7 @@ def analyze_cds_codon_metrics_with_codonw_slim(
         "include_aa_tables": include_aa_tables,
         "include_bases": include_bases,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=120)
-        response.raise_for_status()
-        data = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "codonw-slim")
+    data = _post_json(service_url, payload, 120, "codonw-slim")
 
     metrics_json_filepath = save_text_file(
         json.dumps(data, indent=2, ensure_ascii=True),
@@ -2997,7 +3155,12 @@ def predict_rna_secondary_structure(
     gquad: bool = False,
     service_url: str = "http://127.0.0.1:8003/fold",
 ) -> dict[str, Any]:
-    """Predict RNA secondary structure and MFE using ViennaRNA RNAfold.
+    """
+    INTERFACE LOCK (v0.4.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Predict RNA secondary structure and MFE using ViennaRNA RNAfold.
 
     Supports partition function (-p), constraints (-C), SHAPE-guided folding,
     circular RNA (--circ), G-quadruplexes (--gquad), and full energy-model tuning.
@@ -3039,12 +3202,7 @@ def predict_rna_secondary_structure(
         "circ": circ,
         "gquad": gquad,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=60)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA RNAfold")
+    body = _post_json(service_url, payload, 60, "ViennaRNA RNAfold")
     if "structure" not in body or "mfe" not in body:
         raise ValueError("Missing `structure` or `mfe` in ViennaRNA response.")
     return {
@@ -3280,7 +3438,12 @@ def compute_sirna_duplex_binding_vienna(
     partfunc: bool = False,
     service_url: str = "http://127.0.0.1:8003/sirna-duplex",
 ) -> dict[str, Any]:
-    """Compute siRNA sense/antisense duplex MFE via ViennaRNA RNAcofold.
+    """
+    INTERFACE LOCK (v0.4.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Compute siRNA sense/antisense duplex MFE via ViennaRNA RNAcofold.
 
     Supports concentration-dependent equilibrium analysis (-c) and partition function (-p).
     """
@@ -3309,12 +3472,7 @@ def compute_sirna_duplex_binding_vienna(
         "conc_B": conc_b,
         "partfunc": partfunc,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=120)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA duplex")
+    body = _post_json(service_url, payload, 120, "ViennaRNA duplex")
     if "mfe" not in body or "structure" not in body:
         raise ValueError("Invalid duplex response: expected `mfe` and `structure`.")
     return {
@@ -3353,7 +3511,12 @@ def compute_rna_rna_interaction_vienna(
     contributions: str = "S",
     service_url: str = "http://127.0.0.1:8003/rnaup",
 ) -> dict[str, Any]:
-    """Compute RNA-RNA interaction thermodynamics via ViennaRNA RNAup.
+    """
+    INTERFACE LOCK (v0.4.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Compute RNA-RNA interaction thermodynamics via ViennaRNA RNAup.
 
     Returns interaction energy, structure, and raw stdout for downstream parsing.
     """
@@ -3381,12 +3544,7 @@ def compute_rna_rna_interaction_vienna(
         "extend3": extend3,
         "contributions": contributions,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=300)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA RNAup")
+    body = _post_json(service_url, payload, 300, "ViennaRNA RNAup")
     return {
         "input_filepath1": filepath1,
         "input_filepath2": filepath2,
@@ -3423,7 +3581,12 @@ def compute_aso_target_accessibility_vienna(
     cutoff: Optional[float] = None,
     opening_energies: bool = False,
 ) -> dict[str, Any]:
-    """Estimate target mRNA local accessibility (RNAplfold) for an ASO binding region.
+    """
+    INTERFACE LOCK (v0.4.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Estimate target mRNA local accessibility (RNAplfold) for an ASO binding region.
 
     Args:
         filepath: Full-length target RNA sequence file (plain or FASTA).
@@ -3462,12 +3625,7 @@ def compute_aso_target_accessibility_vienna(
         "cutoff": cutoff,
         "opening_energies": opening_energies,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=600)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA accessibility")
+    body = _post_json(service_url, payload, 600, "ViennaRNA accessibility")
     return {
         "input_filepath": filepath,
         "sequence_length": int(body.get("sequence_length", 0)),
@@ -3506,7 +3664,12 @@ def predict_rna_local_accessibility_profile_vienna(
     cutoff: Optional[float] = None,
     opening_energies: bool = False,
 ) -> dict[str, Any]:
-    """Run ViennaRNA ``RNAplfold`` for local single-nucleotide unpaired probabilities (accessibility curve).
+    """
+    INTERFACE LOCK (v0.4.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Run ViennaRNA ``RNAplfold`` for local single-nucleotide unpaired probabilities (accessibility curve).
 
     Uses the same sliding-window local folding model as ASO accessibility, but returns a **full-sequence**
     profile (lunp first column: probability each base is unpaired in the local context). Writes a TSV
@@ -3545,12 +3708,7 @@ def predict_rna_local_accessibility_profile_vienna(
         "cutoff": cutoff,
         "opening_energies": opening_energies,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=600)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA RNAplfold profile")
+    body = _post_json(service_url, payload, 600, "ViennaRNA RNAplfold profile")
     required = ("positions", "unpaired_prob_1nt", "sequence_length")
     if any(k not in body for k in required):
         raise ValueError(f"Invalid plfold-profiles response; expected keys {required}.")
@@ -3568,6 +3726,8 @@ def predict_rna_local_accessibility_profile_vienna(
     return {
         "input_filepath": filepath,
         "sequence_length": int(body.get("sequence_length", 0)),
+        "positions": positions,
+        "unpaired_prob_1nt": probs,
         "profile_positions_count": len(positions),
         "mean_unpaired_prob_1nt": float(body.get("mean_unpaired_prob_1nt", 0.0)),
         "min_unpaired_prob_1nt": float(body.get("min_unpaired_prob_1nt", 0.0)),
@@ -3599,7 +3759,12 @@ def inverse_fold_rna_secondary_structure_vienna(
     final_cost: Optional[float] = None,
     alphabet: Optional[str] = None,
 ) -> dict[str, Any]:
-    """Inverse-fold an RNA secondary structure to a sequence (ViennaRNA RNAinverse).
+    """
+    INTERFACE LOCK (v0.4.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Inverse-fold an RNA secondary structure to a sequence (ViennaRNA RNAinverse).
 
     Args:
         filepath: First non-empty line: target dot-bracket; optional second line: IUPAC start (N = random).
@@ -3636,12 +3801,7 @@ def inverse_fold_rna_secondary_structure_vienna(
         "final_cost": final_cost,
         "alphabet": alphabet,
     }
-    try:
-        response = requests.post(service_url, json=payload, timeout=300)
-        response.raise_for_status()
-        body = response.json()
-    except requests.RequestException as exc:
-        _raise_service_error(exc, "ViennaRNA inverse-fold")
+    body = _post_json(service_url, payload, 300, "ViennaRNA inverse-fold")
     if "best_sequence" not in body:
         raise ValueError("Invalid inverse-fold response: missing `best_sequence`.")
     out = {
@@ -3669,7 +3829,12 @@ def predict_rna_secondary_structure_with_linearfold(
     constraints: Optional[str] = None,
     shape_file_path: Optional[str] = None,
 ) -> dict[str, Any]:
-    """Predict RNA secondary structure and MFE using the LinearFold service.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Predict RNA secondary structure and MFE using the LinearFold service.
 
     Args:
         filepath: Workspace file path containing RNA sequence content.
@@ -3728,7 +3893,12 @@ def evaluate_rna_structure_with_linearfold(
     dangles: int = 2,
     verbose: bool = False,
 ) -> dict[str, Any]:
-    """Evaluate free energy of a known RNA structure using LinearFold.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Evaluate free energy of a known RNA structure using LinearFold.
 
     Args:
         sequence_filepath: Workspace file path containing the RNA sequence.
@@ -3785,7 +3955,12 @@ def predict_rna_secondary_structure_with_linearfold_zuker(
     sharpturn: bool = False,
     delta: float = 5.0,
 ) -> dict[str, Any]:
-    """Enumerate Zuker suboptimal RNA structures using LinearFold.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Enumerate Zuker suboptimal RNA structures using LinearFold.
 
     Args:
         filepath: Workspace file path containing RNA sequence content.
@@ -3852,7 +4027,10 @@ def design_mrna_cds_with_gemorna(
     Raises:
         ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
     """
-    protein_sequence = read_sequence(filepath).strip()
+    sequences = _parse_fasta_protein_sequences(read_sequence(filepath))
+    if not sequences:
+        raise ValueError(f"No protein sequences found in file: {filepath}")
+    protein_sequence = sequences[0]
     try:
         response = requests.post(
             service_url,
@@ -3969,13 +4147,16 @@ def _call_gemorna_prediction(
         payload = response.json()
         if "predicted_mrl" not in payload and "predicted_stability" not in payload:
             raise ValueError(f"Missing prediction value in {default_model} response.")
-        return {
+        result: dict[str, Any] = {
             "input_filepath": filepath,
             "input_sequence": payload.get("input_sequence", sequence),
-            "predicted_mrl": payload.get("predicted_mrl"),
-            "predicted_stability": payload.get("predicted_stability"),
             "model": payload.get("model", default_model),
         }
+        if "predicted_mrl" in payload:
+            result["predicted_mrl"] = payload["predicted_mrl"]
+        if "predicted_stability" in payload:
+            result["predicted_stability"] = payload["predicted_stability"]
+        return result
     except requests.RequestException as exc:
         _raise_service_error(exc, default_model)
 
@@ -4114,10 +4295,15 @@ def design_mrna_cds_with_lineardesign(
         if codon_usage_path:
             request_payload["codon_usage_path"] = codon_usage_path
 
+        # Empirical: 1273 aa takes ~778s, 1024 aa takes ~507s.
+        # Use 0.8s/aa + 180s buffer to tolerate system load / GC pauses.
+        seq_len = len(protein_sequence)
+        timeout = max(300, int(seq_len * 0.8) + 180)
+
         response = requests.post(
             service_url,
             json=request_payload,
-            timeout=300,
+            timeout=timeout,
         )
         response.raise_for_status()
         payload = response.json()
@@ -4190,10 +4376,14 @@ def design_mrna_cds_batch_with_lineardesign(
         if codon_usage_path:
             request_payload["codon_usage_path"] = codon_usage_path
 
+        # Batch runs sequentially on the server; timeout scales with total work.
+        max_len = max(len(s) for s in sequences)
+        timeout = max(600, int(max_len * 0.8 * len(sequences)) + 180)
+
         response = requests.post(
             service_url,
             json=request_payload,
-            timeout=600,
+            timeout=timeout,
         )
         response.raise_for_status()
         payload = response.json()
@@ -4278,7 +4468,10 @@ def design_mrna_cds_with_rnarl(
     Raises:
         ValueError: If the input protein sequence contains invalid characters or the RNARL service is unreachable.
     """
-    protein_sequence = read_sequence(filepath).strip()
+    sequences = _parse_fasta_protein_sequences(read_sequence(filepath))
+    if not sequences:
+        raise ValueError(f"No protein sequences found in file: {filepath}")
+    protein_sequence = sequences[0]
     valid_residues = set("ARNDCQEGHILKMFPSTWYV*")
     invalid_chars = sorted(set(ch for ch in protein_sequence.upper() if ch not in valid_residues and ch.isalpha()))
     if invalid_chars:
@@ -4510,7 +4703,12 @@ def design_rna_inverse_fold_with_ribodiffusion(
     checkpoint_name: str = "exp_inf",
     device: int = 0,
 ) -> dict[str, Any]:
-    """Generate RNA sequence(s) from a PDB structure using the RiboDiffusion microservice.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Generate RNA sequence(s) from a PDB structure using the RiboDiffusion microservice.
 
     Args:
         pdb_filepath: Path to the input PDB file (workspace or repo-relative path).
@@ -4604,6 +4802,7 @@ def score_rna_ligand_binding_with_rnasmol(
     - microservices/rnasmol_service/main.py :: ScoreResponse
     - agent_core/tool_specs.py :: RNAsmolScoreOutput
     - agent_core/state.py :: rnasmol_* fields
+    - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
 
     Args:
         filepath: Path to a file containing the RNA sequence.
@@ -4682,6 +4881,7 @@ def score_rna_ligand_binding_with_gernabind(
     - microservices/gernabind_service/main.py :: ScoreResponse
     - agent_core/tool_specs.py :: GerNABindScoreOutput
     - agent_core/state.py :: gernabind_* fields
+    - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
 
     Args:
         filepath: Path to a file containing the RNA sequence.
@@ -4856,6 +5056,30 @@ def predict_mrna_stability_with_rnastop(
         ValueError: If the RNASTOP service is unreachable or returns an invalid payload.
     """
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
+    # RNASTOP hard limit: DNABERT encoder supports max 512 tokens.
+    # If exceeded, return a signal immediately without calling the microservice.
+    _RNASTOP_MAX_LEN = 512
+    if len(sequence) > _RNASTOP_MAX_LEN:
+        return {
+            "input_filepath": filepath,
+            "prediction_filepath": "",
+            "sequence": sequence,
+            "used_sequence": sequence[:_RNASTOP_MAX_LEN],
+            "sequence_length": len(sequence),
+            "used_length": _RNASTOP_MAX_LEN,
+            "truncated": True,
+            "exceeded_max_length": True,
+            "structure": "",
+            "loop_type": "",
+            "mfe": 0.0,
+            "mean_reactivity": 0.0,
+            "mean_deg_mg_ph10": 0.0,
+            "mean_deg_mg_50c": 0.0,
+            "overall_stability": 0.0,
+            "checkpoint_path": str(checkpoint_path or ""),
+            "device": str(device or ""),
+            "model": "RNASTOP",
+        }
     try:
         request_payload: dict[str, Any] = {"sequence": sequence}
         if structure is not None:
@@ -4935,7 +5159,12 @@ def predict_putative_ires_with_iresfinder(
     step_size: int = 50,
     decision_threshold: float = 0.5,
 ) -> dict[str, Any]:
-    """Score RNA sequence fragments for putative internal ribosome entry sites (IRES) via IRESfinder.
+    """
+    INTERFACE LOCK (v0.2.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Score RNA sequence fragments for putative internal ribosome entry sites (IRES) via IRESfinder.
 
     Args:
         filepath: Path to a file containing plain sequence or FASTA records.
@@ -5170,14 +5399,7 @@ def run_odesign_inference(
         _raise_service_error(exc, "ODesign")
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # Extract RNA from CIF INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 同步文件清单：
-#   - agent_core/tools.py :: extract_rna_sequence_from_cif
-#   - agent_core/tool_specs.py :: ExtractRnaFromCifOutput / ToolSpec
-#   - agent_core/state.py :: extract_rna_from_cif_* fields
-#   - agent_core/capabilities/writebacks.py :: writeback mapping
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class ExtractRnaFromCifInput(BaseModel):
@@ -5191,6 +5413,56 @@ class ExtractRnaFromCifInput(BaseModel):
         default=None,
         description="Chain ID to extract; auto-detect first RNA chain if omitted.",
     )
+
+
+def _ensure_cif_has_b_iso_or_equiv(cif_filepath: str) -> str:
+    """Return a CIF filepath guaranteed to have _atom_site.B_iso_or_equiv.
+
+    ODesign and some other tools omit the B-factor column in their CIF outputs,
+    which causes biopython's MMCIFParser to crash.  This helper injects a
+    dummy ``0.0`` B-factor column when it is missing and writes the patched
+    content to a temporary file.
+    """
+    import tempfile
+
+    with open(cif_filepath, "r") as fh:
+        lines = fh.readlines()
+
+    header_indices = [
+        i for i, line in enumerate(lines) if line.strip().startswith("_atom_site.")
+    ]
+    if not header_indices:
+        return cif_filepath
+
+    has_b_iso = any(
+        lines[idx].strip().startswith("_atom_site.B_iso_or_equiv")
+        for idx in header_indices
+    )
+    if has_b_iso:
+        return cif_filepath
+
+    data_start = header_indices[-1] + 1
+    data_end = len(lines)
+    for i in range(data_start, len(lines)):
+        stripped = lines[i].strip()
+        if not stripped or stripped.startswith(("_", "loop_", "data_")):
+            data_end = i
+            break
+
+    new_lines = lines[:data_start]
+    new_lines.append("_atom_site.B_iso_or_equiv\n")
+    for i in range(data_start, data_end):
+        line = lines[i]
+        if line.strip() and not line.strip().startswith("#"):
+            new_lines.append(line.rstrip("\n") + " 0.0\n")
+        else:
+            new_lines.append(line)
+    new_lines.extend(lines[data_end:])
+
+    fd, temp_path = tempfile.mkstemp(suffix=".cif")
+    with os.fdopen(fd, "w") as fh:
+        fh.writelines(new_lines)
+    return temp_path
 
 
 @tool(args_schema=ExtractRnaFromCifInput)
@@ -5229,7 +5501,8 @@ def extract_rna_sequence_from_cif(
         ) from exc
 
     parser = MMCIFParser(QUIET=True)
-    structure = parser.get_structure("cif_structure", cif_filepath)
+    patched_path = _ensure_cif_has_b_iso_or_equiv(cif_filepath)
+    structure = parser.get_structure("cif_structure", patched_path)
 
     rna_chains = []
     for model in structure:
@@ -5304,14 +5577,7 @@ def extract_rna_sequence_from_cif(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # ODesign aptamer input JSON builder INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 同步文件清单：
-#   - agent_core/tools.py :: build_odesign_aptamer_input_json
-#   - agent_core/tool_specs.py :: BuildOdesignAptamerOutput / ToolSpec
-#   - agent_core/state.py :: odesign_aptamer_input_* fields
-#   - agent_core/capabilities/writebacks.py :: writeback mapping
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class BuildOdesignAptamerInput(BaseModel):
@@ -5409,14 +5675,7 @@ def build_odesign_aptamer_input_json(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # ProteinX protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 同步文件清单：
-#   - agent_core/tools.py :: predict_protein_structure_with_proteinx
-#   - agent_core/tool_specs.py :: ProteinXProteinOutput / ToolSpec
-#   - agent_core/state.py :: protein_structure_* fields
-#   - agent_core/capabilities/writebacks.py :: writeback mapping
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class ProteinXProteinInput(BaseModel):
@@ -5524,9 +5783,7 @@ def predict_protein_structure_with_proteinx(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # ProteinX RNA-protein complex prediction (v0.1.0)
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class ProteinXComplexInput(BaseModel):
@@ -5557,7 +5814,12 @@ def predict_rna_protein_complex_with_proteinx(
     service_url: str = "http://127.0.0.1:8022/predict/complex",
     timeout_seconds: int = 7200,
 ) -> dict[str, Any]:
-    """Predict RNA-protein complex structure using ProteinX (Protenix).
+    """
+    INTERFACE LOCK (v0.1.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Predict RNA-protein complex structure using ProteinX (Protenix).
 
     Args:
         protein_filepath: FASTA file with protein sequence.
@@ -5578,8 +5840,8 @@ def predict_rna_protein_complex_with_proteinx(
         response = requests.post(
             service_url,
             json={
-                "protein_sequence": _read_sequence(protein_abs),
-                "rna_sequence": _read_sequence(rna_abs),
+                "protein_sequence": read_sequence(protein_abs).strip().split("\n")[-1],
+                "rna_sequence": read_sequence(rna_abs).strip().split("\n")[-1],
                 "num_models": num_models,
                 "num_recycles": num_recycles,
                 "msa_mode": msa_mode,
@@ -5602,9 +5864,7 @@ def predict_rna_protein_complex_with_proteinx(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNA-protein interface analysis (v0.1.0)
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class RnaProteinInterfaceInput(BaseModel):
@@ -5629,7 +5889,12 @@ def analyze_rna_protein_interface(
     rna_chain_id: str = "B",
     contact_cutoff: float = 5.0,
 ) -> dict[str, Any]:
-    """Analyze RNA-protein interface from a complex structure.
+    """
+    INTERFACE LOCK (v0.1.0)
+    Do NOT modify any function signature, Pydantic field, return dict key, or state field
+    without updating all files listed in the lock comment and re-running the full test suite.
+
+    Analyze RNA-protein interface from a complex structure.
 
     Computes interface contacts, buried SASA, hydrogen bonds, and salt bridges.
 
@@ -5645,7 +5910,6 @@ def analyze_rna_protein_interface(
     """
     try:
         from Bio.PDB import PDBParser, MMCIFParser
-        import numpy as np
     except ImportError as exc:
         raise ImportError(
             "biopython and numpy are required for interface analysis. "
@@ -5772,14 +6036,7 @@ def analyze_rna_protein_interface(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # Protein binding hotspot identification INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 同步文件清单：
-#   - agent_core/tools.py :: identify_protein_binding_hotspots
-#   - agent_core/tool_specs.py :: IdentifyProteinBindingHotspotsOutput / ToolSpec
-#   - agent_core/state.py :: hotspot_* fields
-#   - agent_core/capabilities/writebacks.py :: writeback mapping
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class IdentifyProteinBindingHotspotsInput(BaseModel):
@@ -5979,14 +6236,7 @@ def identify_protein_binding_hotspots(
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # Structure alignment (RMSD + TM-score) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 同步文件清单：
-#   - agent_core/tools.py :: score_structure_alignment
-#   - agent_core/tool_specs.py :: StructureAlignmentOutput / ToolSpec
-#   - agent_core/state.py :: structure_rmsd / structure_tm_score fields
-#   - agent_core/capabilities/writebacks.py :: writeback mapping
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class StructureAlignmentInput(BaseModel):
@@ -6044,8 +6294,9 @@ def score_structure_alignment(
         ImportError: If biopython is not installed.
     """
     try:
-        from Bio.PDB import PDBParser, SVDSuperimposer
+        from Bio.PDB import PDBParser
         from Bio.PDB.PDBExceptions import PDBConstructionException
+        from Bio.SVDSuperimposer import SVDSuperimposer
     except ImportError as exc:
         raise ImportError(
             "biopython is required for structure alignment. Install it with: pip install biopython"
@@ -6118,8 +6369,10 @@ def score_structure_alignment(
             f"Need at least 3 atoms for alignment; got {len(ref_coords_arr)}."
         )
 
+    import numpy as np
+
     sup = SVDSuperimposer()
-    sup.set(ref_coords_arr, pred_coords_arr)
+    sup.set(np.array(ref_coords_arr), np.array(pred_coords_arr))
     sup.run()
 
     rmsd = float(sup.get_rms())
@@ -6163,9 +6416,11 @@ def score_structure_alignment(
 
 
 # ---------------------------------------------------------------------------
-# LangChain tool sets (single source of truth for graph + tool registry)
+# LangChain tool sets (single source of truth for the tool registry)
 # ---------------------------------------------------------------------------
 
+
+# Workflow Demo Echo INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
 
 class WorkflowDemoEchoInput(BaseModel):
     """Input for the optional registry/executor smoke-test tool."""
@@ -6175,7 +6430,13 @@ class WorkflowDemoEchoInput(BaseModel):
 
 @tool(args_schema=WorkflowDemoEchoInput)
 def workflow_demo_echo(text: str) -> dict[str, Any]:
-    """Minimal demo tool: echo string and length. Not used by production routing by default."""
+    """Minimal demo tool: echo string and length. Not used by production routing by default.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: WorkflowDemoEchoOutput / workflow_demo_echo ToolSpec
+    - agent_core/state.py :: workflow_demo_echo_* fields (if any)
+    """
 
     return {"echo": text, "length": len(text), "model": "workflow_demo_echo"}
 
@@ -6206,7 +6467,10 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     predict_rna_local_accessibility_profile_vienna,
     inverse_fold_rna_secondary_structure_vienna,
     analyze_cds_codon_metrics_with_codonw_slim,
+    compute_cai_for_cds_sequence,
+    shuffle_cds_junction_codons,
     compute_rna_sequence_gc_content,
+    compute_rna_sequence_u_content,
     compute_dot_bracket_unpaired_fraction,
     run_blastn_similarity_search,
     predict_rna_secondary_structure,
@@ -6229,6 +6493,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     build_odesign_aptamer_input_json,
     predict_protein_structure_with_proteinx,
     predict_rna_protein_complex_with_proteinx,
+    score_rna_protein_complex_with_egarps,
     analyze_rna_protein_interface,
     identify_protein_binding_hotspots,
     score_structure_alignment,

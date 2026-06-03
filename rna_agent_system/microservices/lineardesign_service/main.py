@@ -9,7 +9,6 @@ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
                                 LinearDesignCdsBatchOutput /
                                 design_mrna_cds_with_lineardesign ToolSpec
   - agent_core/state.py :: lineardesign_* fields
-  - agent_core/nodes.py :: tool_execution_node LinearDesign branches
   - docs/tools/design_mrna_cds_with_lineardesign.md
   - docs/change_logs/lineardesign_interface_v0.2.0.md
   - workflow_api/mrna_handler.py
@@ -106,6 +105,7 @@ def _run_lineardesign_once(
     lambda_value: float,
     verbose: bool,
     codon_usage_path: Path,
+    timeout_seconds: Optional[float] = None,
 ) -> dict[str, Any]:
     """Execute LinearDesign binary for a single protein sequence.
 
@@ -127,6 +127,7 @@ def _run_lineardesign_once(
         cwd=str(lineardesign_root),
         env=env,
         check=False,
+        timeout=timeout_seconds,
     )
 
     if process.returncode != 0:
@@ -249,6 +250,10 @@ def generate_cds(payload: LinearDesignRequest) -> LinearDesignResponse:
     if not protein_sequence:
         raise HTTPException(status_code=400, detail="Protein sequence is empty.")
 
+    # Empirical: 0.8 s/aa + 180 s buffer to match client-side timeout.
+    seq_len = len(protein_sequence)
+    timeout_seconds = max(300, int(seq_len * 0.8) + 180)
+
     try:
         result = _run_lineardesign_once(
             lineardesign_bin=lineardesign_bin,
@@ -257,6 +262,7 @@ def generate_cds(payload: LinearDesignRequest) -> LinearDesignResponse:
             lambda_value=payload.lambda_value,
             verbose=payload.verbose,
             codon_usage_path=codon_usage_path,
+            timeout_seconds=timeout_seconds,
         )
     except (RuntimeError, ValueError) as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -313,6 +319,9 @@ def generate_cds_batch(payload: LinearDesignBatchRequest) -> LinearDesignBatchRe
             )
             continue
         try:
+            # Per-sequence timeout to prevent a single long sequence from blocking the batch.
+            seq_len = len(protein_sequence)
+            timeout_seconds = max(300, int(seq_len * 0.8) + 180)
             result = _run_lineardesign_once(
                 lineardesign_bin=lineardesign_bin,
                 lineardesign_root=lineardesign_root,
@@ -320,6 +329,7 @@ def generate_cds_batch(payload: LinearDesignBatchRequest) -> LinearDesignBatchRe
                 lambda_value=payload.lambda_value,
                 verbose=payload.verbose,
                 codon_usage_path=codon_usage_path,
+                timeout_seconds=timeout_seconds,
             )
             items.append(
                 LinearDesignBatchItem(
