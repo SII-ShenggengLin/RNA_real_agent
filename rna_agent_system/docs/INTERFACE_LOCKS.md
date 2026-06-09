@@ -960,6 +960,7 @@ pytest tests/test_ires_prediction.py -v
 - **Added**: `FullLengthBMCScoringFunction` — weighted scoring with junction-aware penalty terms.
 - **Added**: `FullLengthCoordinator` — deterministic rule engine (not LLM) for auditable conflict diagnosis.
 - **Added**: `UContentEvaluator` — evaluates U content for both CDS (via `MrnaCdsDesignWorkflow` sub-evaluator) and full-length sequence.
+- **Restored**: `UTR5MrlEvaluator` and `UTR3StabilityEvaluator` real invocation (previously hard-coded to empty dict in benchmark mode). Both evaluators now call `predict_5utr_mrl_with_gemorna` and `predict_3utr_stability_with_gemorna` respectively.
 - **Modified**: `run()` method — now executes three phases (generate → evaluate/rank → bounded iterative coordination).
 - **Modified**: `rank_and_format()` — automatically detects BMC mode via presence of `junction_score` key and sorts by `total_score` (descending) instead of Borda-count `total_rank`.
 
@@ -977,10 +978,28 @@ Unchanged from v1.0.0:
 - `run_fold: bool` — default `True`
 - `run_gc: bool` — default `True`
 
+#### `required_capabilities` (v2.0.0)
+
+```python
+required_capabilities = [
+    "design_5utr_with_gemorna",               # port 8004
+    "design_3utr_with_gemorna",               # port 8004
+    "predict_5utr_mrl_with_gemorna",          # port 8004
+    "predict_3utr_stability_with_gemorna",    # port 8004
+    "predict_rna_secondary_structure",        # port 8003 (ViennaRNA)
+    "predict_rna_secondary_structure_with_linearfold",  # port 8015
+    "predict_putative_ires_with_iresfinder",  # port 8013
+    "predict_mrna_stability_with_rnastop",    # port 8009
+    "compute_rna_sequence_u_content",         # port 8020
+]
+```
+
+> **Note**: `predict_putative_ires_with_iresfinder` and `predict_mrna_stability_with_rnastop` are registered in `required_capabilities` but may be skipped in certain execution paths (e.g. benchmark timeout guards). `predict_5utr_mrl_with_gemorna` and `predict_3utr_stability_with_gemorna` are **always invoked** via their respective evaluators as of 2026-06-09.
+
 #### Pipeline stages (v2.0.0)
 
 1. `generate_candidates()` → CDS via `MrnaCdsDesignWorkflow` + UTR combinations
-2. `evaluate()` → full-length fold + UTR metrics + **junction metrics** + CDS U content + full-length U content (NEW)
+2. `evaluate()` → full-length fold + **5'UTR MRL (`predict_5utr_mrl_with_gemorna`)** + **3'UTR stability (`predict_3utr_stability_with_gemorna`)** + junction metrics + CDS U content + full-length U content
 3. `score()` → classic Borda-count **OR** BMC `FullLengthBMCScoringFunction` (auto-detected)
 4. `rank_and_format()` → Borda-rank **OR** BMC `total_score` descending
 5. **BMC Phase** (NEW, bounded):

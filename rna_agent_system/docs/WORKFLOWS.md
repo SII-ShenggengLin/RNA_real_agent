@@ -156,7 +156,25 @@ Design complete mRNA molecules including 5'UTR, CDS, and 3'UTR. Reuses `MrnaCdsD
 
 **Since v2.0.0**: Implements **Bounded Multi-Module Coordination (BMC)** — an iterative, rule-based coordinator that diagnoses inter-module conflicts (junction stability, GC continuity) and broadcasts structured feedback to affected modules for refinement.
 
-### 3.2 Candidate generation (Phase 1)
+### 3.2 Required capabilities
+
+```python
+required_capabilities = [
+    "design_5utr_with_gemorna",               # port 8004
+    "design_3utr_with_gemorna",               # port 8004
+    "predict_5utr_mrl_with_gemorna",          # port 8004
+    "predict_3utr_stability_with_gemorna",    # port 8004
+    "predict_rna_secondary_structure",        # port 8003 (ViennaRNA)
+    "predict_rna_secondary_structure_with_linearfold",  # port 8015
+    "predict_putative_ires_with_iresfinder",  # port 8013
+    "predict_mrna_stability_with_rnastop",    # port 8009
+    "compute_rna_sequence_u_content",         # port 8020
+]
+```
+
+> **Note**: `predict_5utr_mrl_with_gemorna` and `predict_3utr_stability_with_gemorna` are **always invoked** during `evaluate()` as of 2026-06-09. `predict_putative_ires_with_iresfinder` and `predict_mrna_stability_with_rnastop` are registered but may be skipped in certain execution paths.
+
+### 3.3 Candidate generation (Phase 1)
 
 ```python
 cds_workflow = MrnaCdsDesignWorkflow(capability_registry)
@@ -169,7 +187,7 @@ for cds_cand in cds_result.all_candidates:
 
 CDS metrics are carried forward via `candidate.metadata["cds_metrics"]`.
 
-### 3.3 Evaluation (Phase 2)
+### 3.4 Evaluation (Phase 2)
 
 | Metric | Tool | Purpose |
 |--------|------|---------|
@@ -184,7 +202,7 @@ CDS metrics are carried forward via `candidate.metadata["cds_metrics"]`.
 | **Junction CDS–3'UTR MFE** | `predict_rna_secondary_structure_with_linearfold` (8015) / `predict_rna_secondary_structure` (8003) fallback | **NEW: Local stability at 3' boundary** |
 | **Junction GC diff** | Local computation | **NEW: GC continuity across boundaries** |
 
-### 3.4 Scoring
+### 3.5 Scoring
 
 #### Classic mode (Borda count, no junction metrics)
 
@@ -210,7 +228,7 @@ total_score = 0.25 * cds_component
 
 `junction_score` rewards stable junctions (more negative MFE) and penalizes GC discontinuities (>15% diff).
 
-### 3.5 Bounded Multi-Module Coordination (Phase 3)
+### 3.6 Bounded Multi-Module Coordination (Phase 3)
 
 After initial ranking, the deterministic `FullLengthCoordinator` inspects the best candidate for inter-module conflicts:
 
@@ -242,7 +260,7 @@ After initial ranking, the deterministic `FullLengthCoordinator` inspects the be
 
 The complete BMC trace (rounds, issues, feedback, modules reinvoked) is recorded in `result._state_writeback["_bmc_trace"]`.
 
-### 3.6 Critic strategy
+### 3.7 Critic strategy
 
 Filters candidates on **5'UTR IRES potential** only. Default threshold: `0.5`. Retry is triggered only when surviving candidates drop below `MIN_GOOD_CANDIDATES = 5`.
 

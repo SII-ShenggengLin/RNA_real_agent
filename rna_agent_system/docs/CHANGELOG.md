@@ -5,6 +5,29 @@
 
 ---
 
+## 2026-06-09 — GEMORNA UTR Evaluators Restored in Full-Length mRNA Design
+
+**Fixed** (`agent_core/workflows/full_length_mrna_design.py`):
+
+| Evaluator | Tool | Previous Behaviour | Current Behaviour |
+|-----------|------|-------------------|-------------------|
+| `UTR5MrlEvaluator` | `predict_5utr_mrl_with_gemorna` (8004) | Skipped (hard-coded empty dict) | **Real invocation** |
+| `UTR3StabilityEvaluator` | `predict_3utr_stability_with_gemorna` (8004) | Skipped (hard-coded empty dict) | **Real invocation** |
+
+**Impact**:
+- `evaluate()` now produces non-`None` values for `utr5_predicted_mrl` and `utr3_predicted_stability` when the GEMORNA microservice is available.
+- Borda-count ranking (`cds_component` + `utr5_mrl` + `utr3_stability`) and BMC weighted scoring now use actual GEMORNA predictions instead of penalising all candidates equally.
+- `required_capabilities` already listed both tools; no interface version bump required.
+
+**Benchmark updates**:
+
+- All 22 `02_full_length_mrna_design_*.json` task files: `expected_tool_chain` updated to include `predict_5utr_mrl_with_gemorna` and `predict_3utr_stability_with_gemorna`.
+- `generate_tasks.py` updated accordingly.
+
+**Files touched**: `workflows/full_length_mrna_design.py`, benchmark task JSONs, `generate_tasks.py`.
+
+---
+
 ## 2026-06-09 — U Content Evaluation Added to mRNA Workflows
 
 **New evaluator** (`agent_core/workflows/evaluators.py`):
