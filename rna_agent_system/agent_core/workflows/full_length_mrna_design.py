@@ -544,14 +544,15 @@ class FullLengthMrnaDesignWorkflow(
         # ── Full-length U content ──
         full_u_content = self._u_content_evaluator.evaluate(candidate, context)
 
-        # NOTE: The following evaluators are skipped in benchmark mode to
-        # avoid timeout on large candidate sets.  They are not part of the
-        # expected_tool_chain for platform coverage tasks.
+        # NOTE: RNASTOP, IRES, and 5'UTR fold evaluators are skipped in
+        # benchmark mode to avoid timeout on large candidate sets.
         rnastop: dict[str, Any] = {}
         ires: dict[str, Any] = {}
         utr5_fold: dict[str, Any] = {}
-        utr5_mrl: dict[str, Any] = {}
-        utr3_stab: dict[str, Any] = {}
+
+        # 5'UTR MRL and 3'UTR stability evaluation (GEMORNA)
+        utr5_mrl = self._utr5_mrl_evaluator.evaluate(candidate, context)
+        utr3_stab = self._utr3_stability_evaluator.evaluate(candidate, context)
 
         # Compute length-normalized MFE and paired fraction from structure
         full_mfe = full_fold.get("mfe_kcal_per_mol")

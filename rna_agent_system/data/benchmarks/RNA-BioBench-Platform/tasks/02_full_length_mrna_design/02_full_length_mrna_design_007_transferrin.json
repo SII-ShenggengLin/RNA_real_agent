@@ -23,7 +23,9 @@
     "predict_mrna_stability_with_rnastop",
     "predict_rna_secondary_structure_with_linearfold",
     "shuffle_cds_junction_codons",
-    "compute_rna_sequence_u_content"
+    "compute_rna_sequence_u_content",
+    "predict_5utr_mrl_with_gemorna",
+    "predict_3utr_stability_with_gemorna"
   ],
   "evaluation_rubric": {
     "junction_mfe_threshold": -15.0,
