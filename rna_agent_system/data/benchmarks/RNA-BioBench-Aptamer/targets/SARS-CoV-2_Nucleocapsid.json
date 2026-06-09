@@ -1,0 +1,27 @@
+{
+  "target_id": "SARS-CoV-2_Nucleocapsid",
+  "target_name": "SARS-CoV-2 Nucleocapsid phosphoprotein",
+  "target_type": "viral",
+  "pdb_id": "6M3M",
+  "pdb_chain": "A",
+  "uniprot_accession": "P0DTC9",
+  "known_hotspot_residues": "A/44,A/45,A/46,A/47,A/48",
+  "hotspot_source": "Literature-reported RNA binding domain (aa 44-174)",
+  "known_aptamer_reference": {
+    "sequence": "AGGGGAGUGGAGGUUGGUUU",
+    "kd_nm": 15.2,
+    "reference": "doi:10.1101/2020.04.17.046920"
+  },
+  "paper_references": [
+    "doi:10.1101/2020.04.17.046920",
+    "doi:10.1016/j.cell.2020.05.015"
+  ],
+  "notes": "Real RNA aptamer target with published binding data",
+  "protein_sequence": "MSDNGPQNQRNAPRITFGGPSDSTGSNQNGERSGARSKQRRPQGLPNNTASWFTALTQHGKEDLKFPRGQGVPINTNSSPDDQIGYYRRATRRIRGGDGKMKDLSPRWYFYYLGTGPEAGLPYGANKDGIIWVATEGALNTPKDHIGTRNPANNAAIVLQLPQGTTLPKGFYAEGSRGGSQASSRSSSRSRNSSRNSTPGSSRGTSPARMAGNGGDAALALLLLDRLNQLESKMSGKGQQQQGQTVTKKSAAEASKKPRQKRTATKAYNVTQAFGRRGPEQTQGNFGDQELIRQGTDYKHWPQIAQFAPSASAFFGMSRIGMEVTPSGTWLTYTGAIKLDDKDPNFKDQVILLNKHIDAYKTFPPTEPKKDKKKKADETQALPQRQKKQQTVTLLPAADLDDFSKQLQQSMSSADSTQA",
+  "protein_length_aa": 419,
+  "sequence_checksum": "B100D0849C3E01FC6C75EAD0E916CE0F",
+  "organism_scientific": "Severe acute respiratory syndrome coronavirus 2",
+  "gene": [
+    "N"
+  ]
+}

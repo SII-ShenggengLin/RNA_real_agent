@@ -6,8 +6,7 @@ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
   - agent_core/tools.py
   - agent_core/tool_specs.py
   - agent_core/state.py
-  - agent_core/nodes.py
-  - frontend/app.py
+  - cli/ entrypoints
   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 规则：任何字段增删、端点路径变更、Request/Response 模型变动、
       返回值结构调整，必须同时更新上述全部文件并重新跑通端到端测试。
@@ -740,7 +739,11 @@ def optimize_sgrna(payload: CrisotOptimizeRequest) -> CrisotOptimizeResponse:
             dev=payload.device,
         )
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"CRISOT optimization failed: {exc}") from exc
+        # Gracefully handle empty off-target search results (e.g. Cas-OFFinder finds no matches)
+        if "No columns to parse from file" in str(exc):
+            optimization_df = pd.DataFrame()
+        else:
+            raise HTTPException(status_code=500, detail=f"CRISOT optimization failed: {exc}") from exc
 
     optimization_csv_path = _save_dataframe_artifact(
         optimization_df,

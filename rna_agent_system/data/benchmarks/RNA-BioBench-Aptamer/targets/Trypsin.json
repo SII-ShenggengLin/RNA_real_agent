@@ -1,0 +1,22 @@
+{
+  "target_id": "Trypsin",
+  "target_name": "Trypsin-1",
+  "target_type": "model",
+  "pdb_id": "1MCT",
+  "pdb_chain": "A",
+  "uniprot_accession": "P07477",
+  "known_hotspot_residues": null,
+  "hotspot_source": "S1 specificity pocket",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1021/bi00244a018"
+  ],
+  "notes": "Serine protease; classic structural biology target",
+  "protein_sequence": "MNPLLILTFVAAALAAPFDDDDKIVGGYNCEENSVPYQVSLNSGYHFCGGSLINEQWVVSAGHCYKSRIQVRLGEHNIEVLEGNEQFINAAKIIRHPQYDRKTLNNDIMLIKLSSRAVINARVSTISLPTAPPATGTKCLISGWGNTASSGADYPDELQCLDAPVLSQAKCEASYPGKITSNMFCVGFLEGGKDSCQGDSGGPVVCNGQLQGVVSWGDGCAQKNKPGVYTKVYNYVKWIKNTIAANS",
+  "protein_length_aa": 247,
+  "sequence_checksum": "B90D5B9F8F1791A5AFE546560ECD79BF",
+  "organism_scientific": "Homo sapiens",
+  "gene": [
+    "PRSS1"
+  ]
+}

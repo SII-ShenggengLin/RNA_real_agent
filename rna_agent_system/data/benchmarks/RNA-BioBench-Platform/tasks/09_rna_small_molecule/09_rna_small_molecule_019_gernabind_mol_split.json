@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_019_gernabind_mol_split",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "GerNA-Bind with mol split method hint",
+  "input": {
+    "rna_sequence": "UAGCGAUUCGCGCUAGCGAUUCGCGCUA",
+    "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": null,
+    "split_method": "mol"
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Synthetic RNA + aspirin SMILES",
+  "paper_reference": null
+}

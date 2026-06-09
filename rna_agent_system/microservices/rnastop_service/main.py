@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 import re
-import sys
 from pathlib import Path
 from threading import Lock
 from typing import Any, Dict, List, Optional, Tuple
@@ -28,7 +27,7 @@ RNASTOP_RNAFM_PRETRAINED_DIR = RNASTOP_ROOT / "RNA-FM-main" / "pretrained"
 RNASTOP_SCRIPTS_RNAFM_PRETRAINED_DIR = RNASTOP_ROOT / "scripts" / "RNA-FM-main" / "pretrained"
 RNASTOP_RNAFM_FILENAME = "RNA-FM_pretrained.pth"
 
-MAX_SEQUENCE_LENGTH = 1022
+MAX_SEQUENCE_LENGTH = 512  # Hard limit: DNABERT encoder supports max 512 tokens
 DEFAULT_MODEL_NAME = "RNASTOP"
 DEFAULT_CHECKPOINT_NAME = "best_model_weights"
 DEFAULT_DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -102,7 +101,6 @@ class StabilityPredictionResponse(BaseModel):
     synchronized with:
     - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
     - agent_core/tool_specs.py :: RNASTOPPredictionOutput
-    - agent_core/nodes.py :: tool_execution_node RNASTOP branch
     - agent_core/state.py :: rnastop_* fields
     - docs/tools/predict_mrna_stability_with_rnastop.md
 

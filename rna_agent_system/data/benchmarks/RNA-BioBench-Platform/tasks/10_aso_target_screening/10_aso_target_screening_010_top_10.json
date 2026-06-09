@@ -1,0 +1,24 @@
+{
+  "task_id": "10_aso_target_screening_010_top_10",
+  "workflow": "aso_target_screening",
+  "category": "edge",
+  "description": "ASO screening with top_n=10 (18mer, step=1, top=10, RNAcofold)",
+  "input": {
+    "target_mrna_filepath": "workspace/test_mrna.fa",
+    "aso_length": 18,
+    "window_step": 1,
+    "top_n_windows": 10,
+    "binding_evaluation_tool": "rnacofold"
+  },
+  "expected_tool_chain": [
+    "compute_aso_target_accessibility_vienna",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_local_accessibility_profile_vienna"
+  ],
+  "evaluation_rubric": {
+    "min_windows": 2,
+    "binding_score_threshold": -10.0
+  },
+  "source": "Parameter variation test",
+  "paper_reference": null
+}

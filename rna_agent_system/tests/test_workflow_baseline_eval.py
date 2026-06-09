@@ -8,9 +8,8 @@ from agent_core.workflow_baseline_eval import (
     DEFAULT_SAMPLES_PATH,
     evaluate_sample,
     load_baseline_samples,
-    run_baseline_batch,
-)
-from agent_core.workflows.mrna_workflow import MrnaWorkflowInput
+    run_baseline_batch)
+from agent_core.workflows.mrna_sequence_scoring import MrnaSequenceScoringInput
 
 
 def test_load_default_baseline_samples():
@@ -20,7 +19,7 @@ def test_load_default_baseline_samples():
 
 
 def test_run_baseline_batch_produces_scores_and_stable_ordering():
-    rows = run_baseline_batch(persist_run=False)
+    rows = run_baseline_batch()
     assert len(rows) >= 3
     assert all(r["success"] for r in rows)
     scores = [r["best_total_score"] for r in rows if r["best_total_score"] is not None]
@@ -30,14 +29,11 @@ def test_run_baseline_batch_produces_scores_and_stable_ordering():
 
 
 def test_compare_candidates_within_sample():
-    inp = MrnaWorkflowInput(
+    inp = MrnaSequenceScoringInput(
         sequences=[
             "AAAAAAAAUGCCCCCCCCCCUUUUUUUUUUUUUUAAAAAAAAAA",
             "GCCGCCGCCGCC",
-        ],
-
-        persist_run=False,
-    )
+        ])
     row = evaluate_sample("pair", inp)
     assert row["success"]
     assert len(row["ordered_scores"]) == 2
@@ -64,8 +60,7 @@ def test_examples_batch_demo_script_exit_zero():
         env=env,
         capture_output=True,
         text=True,
-        timeout=120,
-    )
+        timeout=120)
     assert proc.returncode == 0, proc.stderr
     rows = json.loads(proc.stdout)
     assert isinstance(rows, list) and len(rows) >= 3

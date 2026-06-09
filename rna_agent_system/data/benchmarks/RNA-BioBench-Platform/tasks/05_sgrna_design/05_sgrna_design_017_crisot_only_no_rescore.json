@@ -1,0 +1,29 @@
+{
+  "task_id": "05_sgrna_design_017_crisot_only_no_rescore",
+  "workflow": "sgrna_design",
+  "category": "edge",
+  "description": "sgRNA design with CRISOT off-target only and no CRGPT re-score",
+  "input": {
+    "seed_sequence": "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG",
+    "guide_sequence": "ATGCATGCATGCATGCATGCTGG",
+    "target_sequence": "ATGCATGCATGCATGCATGCTGG",
+    "n_samples": 5,
+    "mutation_number": 3,
+    "sampling_mode": "mcmc",
+    "max_overlap": 21,
+    "evaluate_crgpt_score": false,
+    "evaluate_crisot": true,
+    "weight_nn_score": 0.5,
+    "weight_crisot": 0.5
+  },
+  "expected_tool_chain": [
+    "design_sgrna_handle_with_crgpt",
+    "score_crispr_off_target_with_crisot"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 3,
+    "crisot_score_threshold": 0.6
+  },
+  "source": "Synthetic seed",
+  "paper_reference": null
+}

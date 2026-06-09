@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.10
   - perl
+  - r-base=4.4
   - pip
   - pip:
       - fastapi==0.115.0

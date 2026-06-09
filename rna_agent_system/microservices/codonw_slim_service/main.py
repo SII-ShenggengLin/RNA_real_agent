@@ -11,7 +11,6 @@ codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
   - agent_core/tools.py
   - agent_core/tool_specs.py
   - agent_core/state.py
-  - agent_core/nodes.py
   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 规则：
   1. CodonwAnalyzeRequest / CodonwAnalyzeResponse 的字段增删、类型变动、

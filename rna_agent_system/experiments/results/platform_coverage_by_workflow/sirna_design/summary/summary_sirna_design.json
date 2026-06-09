@@ -1,0 +1,41 @@
+{
+  "workflow": "sirna_design",
+  "generated_at": "2026-06-07T13:22:31.921200+00:00",
+  "total_tasks": 22,
+  "success_count": 22,
+  "failure_count": 0,
+  "success_rate": 1.0,
+  "category_breakdown": {
+    "basic": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "edge": {
+      "total": 11,
+      "success": 11,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "full": {
+      "total": 10,
+      "success": 10,
+      "failure": 0,
+      "success_rate": 1.0
+    }
+  },
+  "error_distribution": {},
+  "timing_seconds": {
+    "mean": 10.141,
+    "median": 0.913,
+    "max": 133.204,
+    "min": 0.367
+  },
+  "tool_correctness_rate": 1.0,
+  "trace_completeness_distribution": {
+    "complete": 22
+  },
+  "raw_results_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/sirna_design/raw/platform_coverage_sirna_design.jsonl",
+  "log_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/sirna_design/logs/run_sirna_design_20260607_132017.log"
+}

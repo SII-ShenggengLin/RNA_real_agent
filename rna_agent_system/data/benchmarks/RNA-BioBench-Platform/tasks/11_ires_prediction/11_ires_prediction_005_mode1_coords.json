@@ -1,0 +1,22 @@
+{
+  "task_id": "11_ires_prediction_005_mode1_coords",
+  "workflow": "ires_prediction",
+  "category": "basic",
+  "description": "IRES prediction mode 1 with FASTA header containing coordinate bounds (start end). Verifies subsequence extraction from header-specified region.",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/mode1_coords.fa",
+    "iresfinder_mode": 1,
+    "probability_threshold": 0.5,
+    "top_n_candidates": 5,
+    "run_structural_validation": false
+  },
+  "expected_tool_chain": [
+    "predict_putative_ires_with_iresfinder"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "probability_threshold": 0.5
+  },
+  "source": "Synthetic sequence with coordinate header (mode 1 subsequence extraction, 800 nt)",
+  "paper_reference": null
+}

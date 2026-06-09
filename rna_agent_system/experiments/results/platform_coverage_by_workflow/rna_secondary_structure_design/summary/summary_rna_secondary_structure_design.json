@@ -1,0 +1,23 @@
+{
+  "workflow": "rna_secondary_structure_design",
+  "total_tasks": 25,
+  "success_count": 25,
+  "fail_count": 0,
+  "success_rate_percent": 100.0,
+  "category_success_rates": {
+    "basic": 100.0,
+    "full": 100.0,
+    "edge": 100.0
+  },
+  "error_distribution": {},
+  "elapsed_seconds": {
+    "mean": 2.951,
+    "median": 0.213,
+    "max": 56.865,
+    "min": 0.038
+  },
+  "tool_correctness_true_percent": 100.0,
+  "trace_completeness_distribution": {
+    "complete": 25
+  }
+}

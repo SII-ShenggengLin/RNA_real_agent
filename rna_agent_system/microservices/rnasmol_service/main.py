@@ -13,7 +13,6 @@
 #        - agent_core/tools.py
 #        - agent_core/tool_specs.py
 #        - agent_core/state.py
-#        - agent_core/nodes.py
 #        - docs/tools/score_rna_ligand_binding_with_rnasmol.md
 #   2. 修改后必须重新运行 RNAsmol 端到端测试（curl / invoke），
 #      覆盖：基本推理、权重智能选择、device 切换、错误边界。

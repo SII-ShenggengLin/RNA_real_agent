@@ -1,0 +1,41 @@
+{
+  "workflow": "rna_tertiary_structure_design",
+  "generated_at": "2026-06-07T09:17:11.726496+00:00",
+  "total_tasks": 20,
+  "success_count": 20,
+  "failure_count": 0,
+  "success_rate": 1.0,
+  "category_breakdown": {
+    "basic": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "edge": {
+      "total": 17,
+      "success": 17,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "full": {
+      "total": 2,
+      "success": 2,
+      "failure": 0,
+      "success_rate": 1.0
+    }
+  },
+  "error_distribution": {},
+  "timing_seconds": {
+    "mean": 93.726,
+    "median": 74.683,
+    "max": 268.68,
+    "min": 20.454
+  },
+  "tool_correctness_rate": 1.0,
+  "trace_completeness_distribution": {
+    "complete": 20
+  },
+  "raw_results_path": "experiments/results/platform_coverage_by_workflow/rna_tertiary_structure_design/raw/platform_coverage_rna_tertiary_structure_design.jsonl",
+  "log_path": "experiments/results/platform_coverage_by_workflow/rna_tertiary_structure_design/logs/run_rna_tertiary_structure_design_20260607_091200.log"
+}

@@ -5,7 +5,6 @@ canonical contract. Any addition/removal must be synchronized with:
 - agent_core/tools.py :: EvitarDesignInput / design_sirna_with_evitar
 - agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
 - agent_core/state.py :: evitar_* fields
-- agent_core/nodes.py :: _build_evitar_tool_args / tool_execution_node Evitar branch
 - docs/tools/design_sirna_with_evitar.md
 
 Deployment notes:
@@ -226,7 +225,16 @@ def design_with_evitar(payload: EvitarDesignRequest) -> EvitarDesignResponse:
     else:
         output_path = (_SERVICE_OUTPUT_DIR / f"evitar_{uuid4().hex[:12]}.txt").resolve()
 
+    # Isolated temp dir per request to prevent concurrent writes to the
+    # default .temptempsi/ directory (Evitar off-target race condition).
+    # NOTE: Evitar sub-scripts reject absolute paths for --temp, so we use a
+    # relative path from the Evitar root directory.
+    temp_name = f".temp_{uuid4().hex[:12]}"
+    request_temp = evitar_root / temp_name
+    request_temp.mkdir(parents=True, exist_ok=True)
+
     cmd = ["perl", str(evitar_script), "--input", str(input_path), "--output", str(output_path)]
+    cmd.extend(["--temp", temp_name])
     if mode == "predesign":
         cmd.extend(["--mode", "predesign"])
     else:
@@ -278,40 +286,45 @@ def design_with_evitar(payload: EvitarDesignRequest) -> EvitarDesignResponse:
                 raise HTTPException(status_code=400, detail=f"List file not found for {flag}: {resolved}")
             cmd.extend([flag, str(resolved)])
 
-    process = subprocess.run(
-        cmd,
-        cwd=str(evitar_root),
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    if process.returncode != 0:
-        raise HTTPException(
-            status_code=500,
-            detail=(
-                "Evitar execution failed; "
-                f"returncode={process.returncode}; stderr={process.stderr.strip()}"
-            ),
+    try:
+        process = subprocess.run(
+            cmd,
+            cwd=str(evitar_root),
+            text=True,
+            capture_output=True,
+            check=False,
         )
-    if _looks_like_runtime_failure(process.stderr):
-        raise HTTPException(
-            status_code=500,
-            detail=(
-                "Evitar runtime failed even though command exited with code 0. "
-                "This is usually caused by non-Linux runtime or incompatible Evitar `bin/` executables. "
-                f"stderr={process.stderr.strip()}"
-            ),
-        )
+        if process.returncode != 0:
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    "Evitar execution failed; "
+                    f"returncode={process.returncode}; stderr={process.stderr.strip()}"
+                ),
+            )
+        if _looks_like_runtime_failure(process.stderr):
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    "Evitar runtime failed even though command exited with code 0. "
+                    "This is usually caused by non-Linux runtime or incompatible Evitar `bin/` executables. "
+                    f"stderr={process.stderr.strip()}"
+                ),
+            )
 
-    result_count, top_results = _parse_output_summary(output_path)
-    return EvitarDesignResponse(
-        mode=mode,
-        predict=predict,
-        input_path=str(input_path),
-        output_path=str(output_path),
-        result_count=result_count,
-        top_results=top_results,
-        command=" ".join(cmd),
-        stdout=process.stdout,
-        stderr=process.stderr,
-    )
+        result_count, top_results = _parse_output_summary(output_path)
+        return EvitarDesignResponse(
+            mode=mode,
+            predict=predict,
+            input_path=str(input_path),
+            output_path=str(output_path),
+            result_count=result_count,
+            top_results=top_results,
+            command=" ".join(cmd),
+            stdout=process.stdout,
+            stderr=process.stderr,
+        )
+    finally:
+        # Always clean up the per-request temp directory.
+        if request_temp.exists():
+            shutil.rmtree(str(request_temp), ignore_errors=True)

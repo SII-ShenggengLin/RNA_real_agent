@@ -1,0 +1,31 @@
+{
+  "task_id": "09_rna_small_molecule_017_full_params_combo",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "full",
+  "description": "Full parameter combination: both tools with secondary structure, dataset and split hints",
+  "input": {
+    "rna_sequence": "AUGCGCAUGCGCAUGCGCAUGC",
+    "smiles": "c1ccc(cc1)C(=O)O",
+    "rna_structure_path": null,
+    "secondary_structure": "((((((((....))))))))..",
+    "scoring_tools": [
+      "rnasmol",
+      "gernabind"
+    ],
+    "dataset": "Robin",
+    "split_method": "random"
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind",
+    "score_rna_ligand_binding_with_rnasmol"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ],
+    "cross_tool_agreement": true
+  },
+  "source": "Synthetic RNA + benzoic acid SMILES",
+  "paper_reference": null
+}

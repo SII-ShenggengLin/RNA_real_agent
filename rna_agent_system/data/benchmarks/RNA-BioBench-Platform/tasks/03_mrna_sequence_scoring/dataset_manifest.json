@@ -1,0 +1,70 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "03_mrna_sequence_scoring_001_basic",
+      "file": "03_mrna_sequence_scoring_001_basic.json",
+      "sha256": "c2da0193ae7b0e78cb8c3a20d86c3b091795764129e216bb6bae63cda894f9bc"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_002_multi_sequence",
+      "file": "03_mrna_sequence_scoring_002_multi_sequence.json",
+      "sha256": "3b11ca70406dc9f71ee47d441dfdf810a9fab95e72665479dbf5d10b5117e523"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_003_real_mrna",
+      "file": "03_mrna_sequence_scoring_003_real_mrna.json",
+      "sha256": "c31110326db696e41bd446621c7e93cda61d1c3d306ee72a84e76bd4a6ac7a97"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_004_gc_rich",
+      "file": "03_mrna_sequence_scoring_004_gc_rich.json",
+      "sha256": "2fbc20a782c594f94dcf03d58d923e81380913a448bd97b0d91b2aa0cf1424be"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_005_au_rich",
+      "file": "03_mrna_sequence_scoring_005_au_rich.json",
+      "sha256": "798b40ad207cad56a853af52678c743407983e166cbbec63a84753b36d399499"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_006_balanced_long",
+      "file": "03_mrna_sequence_scoring_006_balanced_long.json",
+      "sha256": "c80ebacc7c536f8df50f59354f49c8831a92b9829f34cbd123e479a20a163acf"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_007_repeats",
+      "file": "03_mrna_sequence_scoring_007_repeats.json",
+      "sha256": "f046678490a025be3395949f50f7da572f0196207e3fcc0d13faea2985674c50"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_008_spike_fragment",
+      "file": "03_mrna_sequence_scoring_008_spike_fragment.json",
+      "sha256": "979c032b9504380973d87a5a314f8e77b2c1668004e9faea6ca0face4b06d333"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_009_ha_fragment",
+      "file": "03_mrna_sequence_scoring_009_ha_fragment.json",
+      "sha256": "d01fbff9a1654d9c0f571ad7e0d231acf39c6278c021f7457c8c27b4d1603f9c"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_010_luciferase_fragment",
+      "file": "03_mrna_sequence_scoring_010_luciferase_fragment.json",
+      "sha256": "dce5e3ed625d8bcae28663fbaadfe01167a06e5a3741df12f1b885e1e82a5ef1"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_011_skip_gc",
+      "file": "03_mrna_sequence_scoring_011_skip_gc.json",
+      "sha256": "323d192f9df5d27406acc651580139c16d896e2aab291a94242d003e55eff3ae"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_012_skip_fold",
+      "file": "03_mrna_sequence_scoring_012_skip_fold.json",
+      "sha256": "c2f15289747a9066661f8f32632c45fdb72b72f8b508b2d0d5c5da6bfdb8e4a7"
+    },
+    {
+      "task_id": "03_mrna_sequence_scoring_013_skip_both",
+      "file": "03_mrna_sequence_scoring_013_skip_both.json",
+      "sha256": "88c8654da5020d69c2bedeaf0fc848afe2d882dc7dca16ad49d1e2c6f3274803"
+    }
+  ]
+}

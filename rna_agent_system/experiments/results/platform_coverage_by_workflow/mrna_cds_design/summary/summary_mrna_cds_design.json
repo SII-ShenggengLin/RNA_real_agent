@@ -1,0 +1,41 @@
+{
+  "workflow": "mrna_cds_design",
+  "total_tasks": 19,
+  "success_count": 19,
+  "failure_count": 0,
+  "success_rate": 1.0,
+  "by_category": {
+    "basic": {
+      "total": 2,
+      "success": 2,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "edge": {
+      "total": 13,
+      "success": 13,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "full": {
+      "total": 4,
+      "success": 4,
+      "failure": 0,
+      "success_rate": 1.0
+    }
+  },
+  "error_distribution": {},
+  "timing": {
+    "avg_elapsed_seconds": 154.925,
+    "median_elapsed_seconds": 8.817,
+    "max_elapsed_seconds": 1435.214,
+    "min_elapsed_seconds": 0.275,
+    "avg_runner_elapsed_seconds": 156.31,
+    "median_runner_elapsed_seconds": 10.151
+  },
+  "tool_correctness_rate": 1.0,
+  "trace_completeness_distribution": {
+    "complete": 19
+  },
+  "generated_at": "2026-06-05T08:12:28+00:00"
+}

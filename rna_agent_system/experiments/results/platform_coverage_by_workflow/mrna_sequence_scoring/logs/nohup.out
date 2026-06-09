@@ -1,0 +1,37 @@
+============================================================
+Single-workflow runner: mrna_sequence_scoring
+============================================================
+[OK] All registered services for mrna_sequence_scoring are healthy.
+Loaded 13 tasks for mrna_sequence_scoring
+  03_mrna_sequence_scoring_001_basic (basic)
+  03_mrna_sequence_scoring_003_real_mrna (full)
+  03_mrna_sequence_scoring_002_multi_sequence (edge)
+  03_mrna_sequence_scoring_004_gc_rich (edge)
+  03_mrna_sequence_scoring_005_au_rich (edge)
+  03_mrna_sequence_scoring_006_balanced_long (edge)
+  03_mrna_sequence_scoring_007_repeats (edge)
+  03_mrna_sequence_scoring_008_spike_fragment (edge)
+  03_mrna_sequence_scoring_009_ha_fragment (edge)
+  03_mrna_sequence_scoring_010_luciferase_fragment (edge)
+  03_mrna_sequence_scoring_011_skip_gc (edge)
+  03_mrna_sequence_scoring_012_skip_fold (edge)
+  03_mrna_sequence_scoring_013_skip_both (edge)
+Concurrency: 5 worker(s)
+[1/13] 03_mrna_sequence_scoring_005_au_rich success=True elapsed=0.02s tool_correct=True
+[2/13] 03_mrna_sequence_scoring_004_gc_rich success=True elapsed=0.02s tool_correct=True
+[3/13] 03_mrna_sequence_scoring_001_basic success=True elapsed=0.02s tool_correct=True
+[4/13] 03_mrna_sequence_scoring_002_multi_sequence success=True elapsed=0.04s tool_correct=True
+[5/13] 03_mrna_sequence_scoring_003_real_mrna success=True elapsed=0.38s tool_correct=True
+[6/13] 03_mrna_sequence_scoring_007_repeats success=True elapsed=0.07s tool_correct=True
+[7/13] 03_mrna_sequence_scoring_006_balanced_long success=True elapsed=0.08s tool_correct=True
+[8/13] 03_mrna_sequence_scoring_009_ha_fragment success=True elapsed=0.65s tool_correct=True
+[9/13] 03_mrna_sequence_scoring_008_spike_fragment success=True elapsed=0.64s tool_correct=True
+[10/13] 03_mrna_sequence_scoring_010_luciferase_fragment success=True elapsed=0.34s tool_correct=True
+[11/13] 03_mrna_sequence_scoring_012_skip_fold success=True elapsed=0.01s tool_correct=True
+[12/13] 03_mrna_sequence_scoring_011_skip_gc success=True elapsed=0.01s tool_correct=True
+[13/13] 03_mrna_sequence_scoring_013_skip_both success=True elapsed=0.06s tool_correct=True
+
+============================================================
+Results: /inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/mrna_sequence_scoring/raw/platform_coverage_mrna_sequence_scoring.jsonl
+Log:     /inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/mrna_sequence_scoring/logs/run_mrna_sequence_scoring_20260605_120334.log
+Total elapsed: 5.1s

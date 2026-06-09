@@ -1,0 +1,30 @@
+{
+  "task_id": "04_sirna_design_011_candidate_count_1",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA design with candidate_count=1 boundary test",
+  "input": {
+    "mode": "generic",
+    "target_sequence": "GUUAACUUGCCGUCAGCCUUUUCUUUGACCUCUUCUUUCUGUUCAUGUGUAUUUGCUGUCUCUUAGCCC",
+    "candidate_count": 1,
+    "off_target_scan": false,
+    "species": "homo_sapiens",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "gc_range": [
+      0.3,
+      0.7
+    ]
+  },
+  "source": "Synthetic target",
+  "paper_reference": null
+}

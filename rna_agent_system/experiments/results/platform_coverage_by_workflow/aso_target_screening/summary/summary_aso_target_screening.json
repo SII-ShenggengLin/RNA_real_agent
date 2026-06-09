@@ -1,0 +1,47 @@
+{
+  "workflow": "aso_target_screening",
+  "generated_at": "2026-06-06T05:06:27.039704+00:00",
+  "total_tasks": 14,
+  "success_count": 14,
+  "failure_count": 0,
+  "success_rate": 1.0,
+  "category_breakdown": {
+    "basic": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "boundary": {
+      "total": 4,
+      "success": 4,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "edge": {
+      "total": 8,
+      "success": 8,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "full": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    }
+  },
+  "error_distribution": {},
+  "timing_seconds": {
+    "mean": 3.33,
+    "median": 1.425,
+    "max": 28.333,
+    "min": 0.395
+  },
+  "tool_correctness_rate": 1.0,
+  "trace_completeness_distribution": {
+    "complete": 14
+  },
+  "raw_results_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/aso_target_screening/raw/platform_coverage_aso_target_screening.jsonl",
+  "log_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/aso_target_screening/logs/run_aso_target_screening_20260606_050557.log"
+}

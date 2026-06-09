@@ -1,0 +1,95 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "08_rna_aptamer_design_001_basic",
+      "file": "08_rna_aptamer_design_001_basic.json",
+      "sha256": "6cf3f5156f86c3902264b897c4c0228f81d0b6348defd100e231fbecf078cc7c"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_002_nucleocapsid",
+      "file": "08_rna_aptamer_design_002_nucleocapsid.json",
+      "sha256": "6e7cda93c9d9bf870d28bf2b9b064a56277ff1dd66389db0f11e37eec1173a88"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_003_thrombin",
+      "file": "08_rna_aptamer_design_003_thrombin.json",
+      "sha256": "49cf5495d8912802131a2a671fd603ac38a6b174c8489b86cd5f415545c7089e"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_005_lysozyme",
+      "file": "08_rna_aptamer_design_005_lysozyme.json",
+      "sha256": "67aacfe5903c0b727f7dc1f5043b31f5478c9195bced412851801050066f7fb7"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_011_explicit_hotspot",
+      "file": "08_rna_aptamer_design_011_explicit_hotspot.json",
+      "sha256": "94ef350f7d4afa173838c45f31b06d809074498b3b1f14bf0ca77dad36a0d1c5"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_012_short_aptamer",
+      "file": "08_rna_aptamer_design_012_short_aptamer.json",
+      "sha256": "8b71d92f0c3a9626b92725a93acbd6e7717d9a7f04992bf4a0482e4575aec169"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_013_long_aptamer",
+      "file": "08_rna_aptamer_design_013_long_aptamer.json",
+      "sha256": "5b57b2d76bdd22afbdc423653b9fd42551a84288ff65887ab685cba02cc073ac"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_016_high_binding_weight",
+      "file": "08_rna_aptamer_design_016_high_binding_weight.json",
+      "sha256": "3c8689001ae6b6d97a5d0cdf95cf66bed822085033d21689279dbabea51e77da"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_017_high_fold_weight",
+      "file": "08_rna_aptamer_design_017_high_fold_weight.json",
+      "sha256": "1ff59c89acad531e310ca828856a174e9ed3c73b9efe5d1151beb143299e135a"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_018_only_egarps",
+      "file": "08_rna_aptamer_design_018_only_egarps.json",
+      "sha256": "0a7500faf406129d24cb4c29f2f903546147209b6d7200e16e33c11216c6ecd2"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_019_dual_input",
+      "file": "08_rna_aptamer_design_019_dual_input.json",
+      "sha256": "a1c3e8fd8e3976849d9dc7abbfa925475852b331c2af3ec5503d6bd520e04392"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_020_default_weights",
+      "file": "08_rna_aptamer_design_020_default_weights.json",
+      "sha256": "59ff34d14ecdd801de29006f6cef575173337da9907c6032d64a4d122e6ccda9"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_021_boundary_min_length",
+      "file": "08_rna_aptamer_design_021_boundary_min_length.json",
+      "sha256": "9d727894dc0529027bd757c19cfd808d5e81b4b87e6f9bff5371229eb8599241"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_022_boundary_max_length",
+      "file": "08_rna_aptamer_design_022_boundary_max_length.json",
+      "sha256": "9bb772b707487616c3c08af0df1968b74aa0a346cb835cc191787d6ec42d3912"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_023_fold_only_weight",
+      "file": "08_rna_aptamer_design_023_fold_only_weight.json",
+      "sha256": "e6a42f26eb942ed43d34e14b3a0ff45da2b4d4ef364f923936af34794c13e861"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_024_numeric_hotspot",
+      "file": "08_rna_aptamer_design_024_numeric_hotspot.json",
+      "sha256": "74c59ba993fccf7029d115fdfabb509ca5d80705efabb00d6475c6512eaa8ffc"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_025_two_samples",
+      "file": "08_rna_aptamer_design_025_two_samples.json",
+      "sha256": "04e797b3e52f25ebb2cf5c4ba8f0eb0cca090ba7c762fd0e26664b653ea81794"
+    },
+    {
+      "task_id": "08_rna_aptamer_design_026_chain_b",
+      "file": "08_rna_aptamer_design_026_chain_b.json",
+      "sha256": "7b62d439d7fd0e821ee4dc59a8f853ce49fab35303090766735982b58da5732e"
+    }
+  ]
+}

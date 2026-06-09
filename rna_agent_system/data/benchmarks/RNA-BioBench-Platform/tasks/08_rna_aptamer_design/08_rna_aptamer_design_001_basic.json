@@ -1,0 +1,37 @@
+{
+  "task_id": "08_rna_aptamer_design_001_basic",
+  "workflow": "rna_aptamer_design",
+  "category": "basic",
+  "description": "Aptamer design against RNase A using sequence-only input (no structure provided)",
+  "input": {
+    "protein_sequence": "KETAAAKFERQHMDSSTSAASSSNYCNQMMKSRNLTKDRCKPVNTFVHESLADVQAVCSQKNVACKNGQTNCYQSYSTMSITDCRETGSSKYPNCAYKTTQANKHIIVACEGNPYVPVHFDASV",
+    "chain_id": "A",
+    "aptamer_length": 30,
+    "hotspot_residues": null,
+    "n_odesign_samples": 1,
+    "odesign_seeds": [
+      42
+    ],
+    "weight_egarps": 0.5,
+    "weight_rhofold": 0.5
+  },
+  "expected_tool_chain": [
+    "analyze_rna_protein_interface",
+    "build_odesign_aptamer_input_json",
+    "compute_rna_sequence_gc_content",
+    "extract_rna_sequence_from_cif",
+    "identify_protein_binding_hotspots",
+    "predict_protein_structure_with_proteinx",
+    "predict_rna_protein_complex_with_proteinx",
+    "predict_rna_tertiary_structure_with_rhofold",
+    "run_odesign_inference",
+    "score_rna_protein_complex_with_egarps"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "egarps_threshold": 0.3,
+    "rhofold_plddt_threshold": 70.0
+  },
+  "source": "RNase A sequence (PDB 7RSA chain A)",
+  "paper_reference": null
+}

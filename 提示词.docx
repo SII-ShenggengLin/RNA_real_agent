@@ -1,0 +1,160 @@
+你是一名资深的 RNA 多智能体系统测试工程师。现在需要对 RNA-BioBench-Platform benchmark 中的某个 workflow 进行完整、真实、可复现的实验运行。
+
+本次要运行的 workflow 是：【sirna_design】
+其实之前sirna_design这个workflow已经运行过了，但是我修改了，04_sirna_design_013_blast_identity_70，04_sirna_design_021_species_sars_cov_2，04_sirna_design_003_with_offtarget这三个数据的值，请你重新跑一下这三个数据，并覆盖之前的实验结果。
+
+### 一、项目背景与基本原则
+
+- 项目位于 `/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system`。
+- 所有实验结果必须真实、可复现，严禁使用 mock 数据或合成数据。
+- 系统在论文中必须是完整可用的，实验结果必须与系统实际行为完全匹配。
+- 如果发现系统代码有 bug、工具调用失败、参数不匹配、微服务异常等问题，必须**修复系统**，不能跳过或伪造数据。
+- Timeout 错误不应该出现。必须等待任务自然完成，除非确实是代码错误导致失败。禁止因为等待时间不够而 kill 任务。
+
+### 二、前置检查（必须先完成）
+
+在运行任何测试脚本之前，请先完成以下检查：
+
+1. **检查该 workflow 依赖的所有微服务是否正常运行**：
+   - 查看 `experiments/run_platform_coverage.py` 中的 `SERVICE_HEALTH_URLS`，获取该 workflow 对应的 health check URL。
+   - 检查 `agent_core/tools.py` 和 `agent_core/tool_specs.py` 中该 workflow 涉及的工具会调用哪些服务端口。
+   - 对每个 health URL 执行 `curl` 检查，确保返回 HTTP 200。
+   - 如果有服务未启动，按照 `docs/DEPLOYMENT.md` 或 microservices/ 下的 README 启动对应服务。
+   - 如果服务启动失败，先排查端口占用、conda 环境、模型权重路径、依赖包等问题并修复，直到服务正常响应。
+
+2. **检查工具是否已安装**：
+   - 确认该 workflow 调用的外部二进制工具（如 LinearDesign、ViennaRNA、codonw、BLAST、CRISOT 等）已在 PATH 或配置路径中可用。
+   - 对于 GPU 模型服务，确认模型权重文件存在且服务能正常加载。
+   - 不要重新下载模型权重，优先检查现有路径。
+
+3. **检查 benchmark 任务清单**：
+   - 查看 `data/benchmarks/RNA-BioBench-Platform/tasks/` 下对应 workflow 的 JSON 文件数量。
+   - 记录任务总数，作为后续运行总数的校验。
+
+### 三、结果存放规范
+
+结果必须存放在规范的目录中，**禁止使用图编号（如 figure_2_1）命名目录**，应使用实验内容命名：
+experiments/results/ ├── platform_coverage_by_workflow/ │ ├── {workflow_name}/ │ │ ├── raw/ │ │ │ └── platform_coverage_{workflow_name}.jsonl # 每条任务一条JSON │ │ ├── logs/ │ │ │ └── run_{workflow_name}{timestamp}.log # 完整运行日志 │ │ ├── summary/ │ │ │ └── summary{workflow_name}.json # 该workflow汇总统计 │ │ └── plots/ # 可选，后续绘图用 │ └── README.md # 记录各workflow数据位置
+
+
+目录命名示例：
+- `mrna_cds_design` → `experiments/results/platform_coverage_by_workflow/mrna_cds_design/`
+- `full_length_mrna_design` → `experiments/results/platform_coverage_by_workflow/full_length_mrna_design/`
+
+每个 workflow 的数据文件必须包含以下字段（与 `run_platform_coverage.py` 输出保持一致）：
+```json
+{
+  "task_id": "...",
+  "workflow": "...",
+  "category": "...",
+  "success": true/false,
+  "errors": [],
+  "elapsed_seconds": 123.45,
+  "tool_correctness": true/false,
+  "tool_missing": [],
+  "trace_length": 5,
+  "trace_completeness": "complete|partial|none",
+  "recorded_tools": [],
+  "expected_tools": [],
+  "timestamp": "...",
+  "runner_exit_code": 0,
+  "runner_elapsed_seconds": 123
+}
+四、运行脚本规范
+请基于 experiments/run_platform_coverage.py 编写或修改一个针对单个 workflow 的运行脚本：
+
+脚本位置：experiments/run_single_workflow_coverage.py（如果不存在则新建；如果存在则按需要修改）。
+
+输入参数：脚本必须接受 --workflow 参数，例如：
+
+PYTHONPATH="$(pwd):$PYTHONPATH" python experiments/run_single_workflow_coverage.py --workflow {workflow_name}
+任务筛选：只加载 data/benchmarks/RNA-BioBench-Platform/tasks/{workflow_dir}/ 下的 JSON 文件。
+
+并发控制：
+
+CPU-only workflow（如 mrna_sequence_scoring、sirna_design、sgrna_design 等）：并发数不超过 5。注意 lineardesign 比较占内存，如果 workflow 调用了 design_mrna_cds_with_lineardesign，同一时刻运行的任务数不超过 5。
+GPU workflow（如 rna_aptamer_design、rna_tertiary_structure_design 等）：必须逐条运行，并发数 = 1。
+默认 timeout 必须设置得足够大（如每个任务 7200 秒），禁止因 timeout kill 正常运行的任务。
+输出写入：
+
+结果追加写入 experiments/results/platform_coverage_by_workflow/{workflow_name}/raw/platform_coverage_{workflow_name}.jsonl。
+每完成一条任务立即 flush 写入，防止 runner 中断导致数据丢失。
+同时输出运行日志到 logs/run_{workflow_name}_{timestamp}.log。
+错误处理：
+
+如果某条任务失败，记录完整的错误信息到 errors 字段。
+分析失败原因：
+如果是输入校验错误、工具参数错误、workflow 代码逻辑错误 → 修复代码，修复后重跑该任务。
+如果是微服务未响应 → 修复/重启服务后重跑。
+如果是外部工具未安装或找不到 → 检查环境并修复。
+禁止简单标记为失败就跳过。
+五、执行流程
+请按以下步骤执行：
+
+Step 1 - 环境检查：
+
+列出该 workflow 的所有依赖服务 URL 和工具。
+执行 health check 和工具可用性检查。
+向我报告检查结果，如果有任何服务/工具异常，先告诉我，我们一起确认修复方案。
+Step 2 - 脚本准备：
+
+检查 run_single_workflow_coverage.py 是否存在且满足上述规范。
+如果不存在或不符合，创建/修改它。
+向我展示脚本的并发控制逻辑、timeout 设置、结果输出路径。
+Step 3 - 小规模试运行：
+
+先在该 workflow 中挑选 1-2 个任务试运行（优先选 basic 类别）。
+确认输出 JSON 格式正确，trace、tool_correctness、elapsed_seconds 字段完整。
+如果出现任何错误，修复后再继续。
+Step 4 - 完整运行：
+
+使用 nohup 或 screen 后台运行，避免终端断开。
+定期（每完成 5-10 个任务）检查日志和输出文件，确保写入正常。
+如果运行过程中出现 OOM、服务崩溃、代码错误等问题，立即暂停并修复。
+Step 5 - 结果校验与汇总：
+
+统计 raw/platform_coverage_{workflow_name}.jsonl 中的记录数，确认与该 workflow 的任务数一致。
+生成 summary/summary_{workflow_name}.json，包含：
+任务总数、成功数、失败数、成功率
+按 category 的成功率
+按错误类型的失败分布
+平均耗时、中位数耗时、最大耗时
+tool_correctness 为 true 的比例
+trace_completeness 分布
+验证所有字段真实、无缺失、无 mock 数据。
+六、禁止事项
+禁止使用 mock 测试和合成数据。
+禁止因等待时间长而主动 kill 正常运行的任务。
+禁止用图编号命名结果目录。
+禁止跳过失败任务而不修复系统。
+禁止并发超过规定数量（CPU ≤5，GPU =1）。
+七、交付物
+完成后必须提供：
+
+该 workflow 的原始结果文件路径：
+
+experiments/results/platform_coverage_by_workflow/{workflow_name}/raw/platform_coverage_{workflow_name}.jsonl
+运行日志路径：
+
+experiments/results/platform_coverage_by_workflow/{workflow_name}/logs/run_{workflow_name}_{timestamp}.log
+汇总统计文件路径：
+
+experiments/results/platform_coverage_by_workflow/{workflow_name}/summary/summary_{workflow_name}.json
+测试/运行脚本路径：
+
+experiments/run_single_workflow_coverage.py
+任何对系统代码的修复说明（如果有）：
+
+修改了哪些文件
+修改原因
+修复前后的行为变化
+八、异常上报
+如果在任何步骤中遇到以下情况，请立即停止并告诉我：
+
+微服务 health check 失败且你不知道如何启动/修复
+工具调用报错涉及你未修改过的底层代码
+出现 OOM 或 worker 被杀（exit code -9/-15）
+任务连续多个失败且原因不明
+输出 JSON 缺少关键字段
+任何与 AGENTS.md 中 INTERFACE LOCK 冲突的修改需求
+请现在开始执行。

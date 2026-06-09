@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +15,6 @@ from agent_core.sequence_utils import (
     compute_u_content,
     extract_dot_bracket,
     normalize_rna_sequence,
-    validate_dot_bracket,
 )
 
 # rna_agent_system/microservices/rna_sequence_metrics_service/main.py -> parents[2] == rna_agent_system

@@ -1,0 +1,30 @@
+{
+  "task_id": "04_sirna_design_015_fasta_input",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA design using target_fasta_path instead of target_sequence",
+  "input": {
+    "mode": "generic",
+    "target_fasta_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/04_sirna_design/04_sirna_design_015_target_fasta.fa",
+    "candidate_count": 4,
+    "off_target_scan": false,
+    "species": "homo_sapiens",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 2,
+    "gc_range": [
+      0.3,
+      0.7
+    ]
+  },
+  "source": "Synthetic target from FASTA",
+  "paper_reference": null
+}

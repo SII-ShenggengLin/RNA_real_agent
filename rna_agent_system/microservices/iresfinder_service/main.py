@@ -6,7 +6,6 @@ feature engineering, preprocessing, or IO schemas must be synchronized with:
 - agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
 - agent_core/tool_specs.py :: IRESfinderPredictionOutput / TOOL_SPECS
 - agent_core/state.py :: iresfinder_* fields
-- agent_core/nodes.py :: tool_execution_node / critic_node IRESfinder branches
 - docs/tools/predict_putative_ires_with_iresfinder.md
 """
 

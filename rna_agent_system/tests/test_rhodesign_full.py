@@ -5,8 +5,7 @@ Runs both with-2D and without-2D modes against real checkpoints and example data
 
 from __future__ import annotations
 
-import json
-import sys
+import pytest
 import unittest
 from pathlib import Path
 
@@ -16,6 +15,7 @@ SERVICE_URL = "http://127.0.0.1:8006/design/from-structure"
 EXAMPLE_DIR = Path(__file__).resolve().parents[1] / "external_repos" / "RhoDesign" / "example"
 
 
+@pytest.mark.slow
 class TestRhoDesignEndToEnd(unittest.TestCase):
     """Full inference tests requiring GPU + checkpoints."""
 

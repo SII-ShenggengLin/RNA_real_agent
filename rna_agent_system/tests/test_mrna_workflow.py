@@ -1,21 +1,12 @@
 from __future__ import annotations
 
-from pathlib import Path
 
-import pytest
 
-from agent_core.file_manager import PROJECT_ROOT
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
 from agent_core.tool_runtime import ToolResult
 from agent_core.workflow_baseline_eval import StubCaiTool, StubFoldTool, StubGcTool
-from agent_core.workflows.mrna_workflow import MrnaWorkflowInput, run_mrna_workflow
-
-
-@pytest.fixture(autouse=True)
-def _workspace_dir():
-    ws = PROJECT_ROOT / "workspace"
-    ws.mkdir(parents=True, exist_ok=True)
+from agent_core.workflows.mrna_sequence_scoring import MrnaSequenceScoringInput, run_mrna_sequence_scoring
 
 
 class _FailGcTool:
@@ -41,11 +32,9 @@ def test_mrna_workflow_end_to_end_best_candidate():
 
     seq_a = "AUGCCCGGGUUUAAAUUUAAAUUUAAA"  # 27 nt, partial swaps for synonymous mode
     seq_b = "AUGCCCGGGUUUAAAUUUAAAUUUAAA"
-    inp = MrnaWorkflowInput(
-        sequences=[seq_a, seq_b + "AAA"],
-        persist_run=False,
-    )
-    out = run_mrna_workflow(inp, executor=ex)
+    inp = MrnaSequenceScoringInput(
+        sequences=[seq_a, seq_b + "AAA"])
+    out = run_mrna_sequence_scoring(inp, executor=ex)
     assert out.success is True
     assert out.best_candidate is not None
     assert out.best_candidate.rank == 1
@@ -61,8 +50,8 @@ def test_mrna_workflow_tools_fail_gracefully():
     reg.register(_FailFoldTool())
     ex = ToolExecutor(reg)
 
-    inp = MrnaWorkflowInput(sequence="AUGCAUGCAUGCAU", persist_run=False)
-    out = run_mrna_workflow(inp, executor=ex)
+    inp = MrnaSequenceScoringInput(sequence="AUGCAUGCAUGCAU")
+    out = run_mrna_sequence_scoring(inp, executor=ex)
     assert out.success is True
     assert out.best_candidate is not None
     assert len(out.errors) >= 2

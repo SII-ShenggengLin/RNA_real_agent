@@ -1,0 +1,155 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "05_sgrna_design_001_basic",
+      "file": "05_sgrna_design_001_basic.json",
+      "sha256": "2917d049e6c526ddb621646c4d344b1ae3c074627e42396a82fdf7f2437a5cc9"
+    },
+    {
+      "task_id": "05_sgrna_design_002_with_crisot",
+      "file": "05_sgrna_design_002_with_crisot.json",
+      "sha256": "8cdb39c2965ec881682ae79ff4c4666ed20c13eaa35401ac06fbab7ea511ce7f"
+    },
+    {
+      "task_id": "05_sgrna_design_003_real_target",
+      "file": "05_sgrna_design_003_real_target.json",
+      "sha256": "708e904c4aa3b36075a860c4f41298a6c3a736e1f7db3fcd73266e422611e1d9"
+    },
+    {
+      "task_id": "05_sgrna_design_004_seed_001",
+      "file": "05_sgrna_design_004_seed_001.json",
+      "sha256": "6431d7302d38c67283ca653d87184d40514fb422ef7810844c24177249497755"
+    },
+    {
+      "task_id": "05_sgrna_design_005_seed_002",
+      "file": "05_sgrna_design_005_seed_002.json",
+      "sha256": "87496df5be79f04bb1f95fde2906e9195e2de3f8041f9be82b3b3ad74641b79d"
+    },
+    {
+      "task_id": "05_sgrna_design_006_seed_003",
+      "file": "05_sgrna_design_006_seed_003.json",
+      "sha256": "2a0765b9a1dd9a4d94ae1ecac8e2135214ba600d67c4be2faee1800db1fcc25d"
+    },
+    {
+      "task_id": "05_sgrna_design_007_seed_004",
+      "file": "05_sgrna_design_007_seed_004.json",
+      "sha256": "c40278414b8aa7d90449957b4100397d99b4f77be9e2185c2d67afdef47f2053"
+    },
+    {
+      "task_id": "05_sgrna_design_008_seed_005",
+      "file": "05_sgrna_design_008_seed_005.json",
+      "sha256": "24e2e42c1ba8b3654530ceaced96b895dfbab5d70aea61288c9c305ffda592a6"
+    },
+    {
+      "task_id": "05_sgrna_design_009_seed_006",
+      "file": "05_sgrna_design_009_seed_006.json",
+      "sha256": "eeb6dfc90009c638cd20975673be83198146a2cfb621c9194866bbfb992efca4"
+    },
+    {
+      "task_id": "05_sgrna_design_010_seed_007",
+      "file": "05_sgrna_design_010_seed_007.json",
+      "sha256": "27a8edd9c121db68dc9db90dd6cc336c2f62c8f05659c75671669545e5421850"
+    },
+    {
+      "task_id": "05_sgrna_design_011_seed_filepath",
+      "file": "05_sgrna_design_011_seed_filepath.json",
+      "sha256": "83007bfe6d3b36061872d236a9bdb61112a73befe188ed6dddd24d951608a165"
+    },
+    {
+      "task_id": "05_sgrna_design_012_naive_basic",
+      "file": "05_sgrna_design_012_naive_basic.json",
+      "sha256": "b344eea8d3b9dc526bae980a884bfb29ba8cf998d81d31389ca9e9dfac0d8e7b"
+    },
+    {
+      "task_id": "05_sgrna_design_013_naive_with_crisot",
+      "file": "05_sgrna_design_013_naive_with_crisot.json",
+      "sha256": "0b652c9d4577ab44a6f887720fd677118cb9bf0bd9738635e45031e4a0089682"
+    },
+    {
+      "task_id": "05_sgrna_design_014_mcmc_high_temp",
+      "file": "05_sgrna_design_014_mcmc_high_temp.json",
+      "sha256": "3e4e5c7a95acd508bdca5fa6ecda0fd46cca1a940db6d7ee967beffc7171324d"
+    },
+    {
+      "task_id": "05_sgrna_design_015_mcmc_low_temp",
+      "file": "05_sgrna_design_015_mcmc_low_temp.json",
+      "sha256": "611c20d182eb70a3a79fecb6f59fc5a937bef5b429f1214a933bb25c20b293d3"
+    },
+    {
+      "task_id": "05_sgrna_design_016_crgpt_only_with_guide_target",
+      "file": "05_sgrna_design_016_crgpt_only_with_guide_target.json",
+      "sha256": "a96e95e58c607036d60adae4910128368d065bbfec4caa7419e2636ec59093b3"
+    },
+    {
+      "task_id": "05_sgrna_design_017_crisot_only_no_rescore",
+      "file": "05_sgrna_design_017_crisot_only_no_rescore.json",
+      "sha256": "e9dc5bc331b410c8a50722d0263fa349aaaa27d62565d56a64fa98dc3e06b502"
+    },
+    {
+      "task_id": "05_sgrna_design_018_weight_nn_only",
+      "file": "05_sgrna_design_018_weight_nn_only.json",
+      "sha256": "4e8f80ac0e8525c71b796da8c2b2a8dce30927032e409a0683f91ecde750f389"
+    },
+    {
+      "task_id": "05_sgrna_design_019_weight_crisot_only",
+      "file": "05_sgrna_design_019_weight_crisot_only.json",
+      "sha256": "9692edd9a8ac39d67190f8be97f4cd8eaebec6ad8fc0c88ff3b84189dfac5a8d"
+    },
+    {
+      "task_id": "05_sgrna_design_020_high_mutation_large_sample",
+      "file": "05_sgrna_design_020_high_mutation_large_sample.json",
+      "sha256": "a20e8aeea921bac36e9a1583367ca370fd18299033340078d604c8a02bcbe61d"
+    },
+    {
+      "task_id": "05_sgrna_design_021_no_rescore_no_crisot",
+      "file": "05_sgrna_design_021_no_rescore_no_crisot.json",
+      "sha256": "dc47a57d77212040b6ed7a3ba97123a618267e8a9f790e19d2e46f73e97a9c0e"
+    },
+    {
+      "task_id": "05_sgrna_design_022_boundary_mutation_1",
+      "file": "05_sgrna_design_022_boundary_mutation_1.json",
+      "sha256": "fb3a4e98fce94aa6f9a726dfd2575cccbd672314b9e86ac3ba267c0bfe2f0145"
+    },
+    {
+      "task_id": "05_sgrna_design_023_boundary_mutation_40",
+      "file": "05_sgrna_design_023_boundary_mutation_40.json",
+      "sha256": "503d675d58ebd8f67eff43a6d0b9c73249ca2e608558c189f30afed3ba7d5caf"
+    },
+    {
+      "task_id": "05_sgrna_design_024_boundary_overlap_1",
+      "file": "05_sgrna_design_024_boundary_overlap_1.json",
+      "sha256": "903edb42c74ee912ddebb0440503f8d28d86e75fca0efaf0f93994412ba7906e"
+    },
+    {
+      "task_id": "05_sgrna_design_025_boundary_overlap_60",
+      "file": "05_sgrna_design_025_boundary_overlap_60.json",
+      "sha256": "c82dbfc9f6f55b19d4753731b94d0e2319873023ca89ce2d7f5874fa6ddbbf14"
+    },
+    {
+      "task_id": "05_sgrna_design_026_boundary_samples_1",
+      "file": "05_sgrna_design_026_boundary_samples_1.json",
+      "sha256": "2479d8d2c1823127ced2751c9ed9a00c6f273696044e0972e98fa91e27f80cba"
+    },
+    {
+      "task_id": "05_sgrna_design_027_boundary_temp_100",
+      "file": "05_sgrna_design_027_boundary_temp_100.json",
+      "sha256": "12d64dcb44d61bcdd4d27e0ac7aef42ba7be5a9f313ee732e4b5cd047c399932"
+    },
+    {
+      "task_id": "05_sgrna_design_028_weight_zero_zero",
+      "file": "05_sgrna_design_028_weight_zero_zero.json",
+      "sha256": "f2987b058b65f654b733470c476d2a14c92d453bbc43edb07192ec7e63825e28"
+    },
+    {
+      "task_id": "05_sgrna_design_029_naive_max_length",
+      "file": "05_sgrna_design_029_naive_max_length.json",
+      "sha256": "da8c40ab000131908d6fcaf9ee705a1742e0cea801139c93f6f20406018ac53c"
+    },
+    {
+      "task_id": "05_sgrna_design_030_both_seed_sources",
+      "file": "05_sgrna_design_030_both_seed_sources.json",
+      "sha256": "f8966c5f2d8ecd7224aa2741e7c873cbeb3e31d08fc4a48a1a62ca46bcb926a0"
+    }
+  ]
+}

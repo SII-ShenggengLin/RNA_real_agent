@@ -1,0 +1,29 @@
+{
+  "task_id": "04_sirna_design_021_species_sars_cov_2",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA design with non-default species (SARS-CoV-2) and off-target scan enabled",
+  "input": {
+    "mode": "generic",
+    "target_sequence": "UGACAGGGUUUUGGGUGCCUCCCAGCUAUAAUCUUAGCACUUUGGGAGGCUAAGAGAGGAGGAUUGCUUGAGGCCAAGAGU",
+    "candidate_count": 4,
+    "off_target_scan": true,
+    "species": "sars_cov_2",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1,
+    "alignment_tool": "bowtie2"
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold",
+    "run_bowtie2_short_alignment"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 2,
+    "off_target_score_threshold": 0.5
+  },
+  "source": "Synthetic target with SARS-CoV-2 species reference",
+  "paper_reference": null
+}

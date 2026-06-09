@@ -1,0 +1,22 @@
+{
+  "task_id": "11_ires_prediction_004_mode0_high_thresh_empty",
+  "workflow": "ires_prediction",
+  "category": "edge",
+  "description": "IRES prediction mode 0 with probability_threshold=1.0 (boundary test). No fragments should pass, resulting in an empty candidate list.",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "iresfinder_mode": 0,
+    "probability_threshold": 1.0,
+    "top_n_candidates": 5,
+    "run_structural_validation": false
+  },
+  "expected_tool_chain": [
+    "predict_putative_ires_with_iresfinder"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 0,
+    "probability_threshold": 1.0
+  },
+  "source": "Boundary test: maximum threshold, expects empty candidate list",
+  "paper_reference": null
+}

@@ -1,0 +1,26 @@
+{
+  "task_id": "03_mrna_sequence_scoring_013_skip_both",
+  "workflow": "mrna_sequence_scoring",
+  "category": "edge",
+  "description": "Skip both GC and fold tools, run CAI only",
+  "input": {
+    "sequence": "AUGGCGAAUUCGCGAAUUCGCGAAUUCGCGAAUUCGCGAAUUCGC",
+    "gc_tool_name": "compute_rna_sequence_gc_content",
+    "fold_tool_name": "predict_rna_secondary_structure_with_linearfold",
+    "fold_service_url": "http://127.0.0.1:8015/fold",
+    "gc_service_url": "http://127.0.0.1:8020/gc-content",
+    "run_gc_tool": false,
+    "run_fold_tool": false
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence"
+  ],
+  "evaluation_rubric": {
+    "score_range": [
+      0.0,
+      100.0
+    ]
+  },
+  "source": "Synthetic parameter coverage test",
+  "paper_reference": null
+}

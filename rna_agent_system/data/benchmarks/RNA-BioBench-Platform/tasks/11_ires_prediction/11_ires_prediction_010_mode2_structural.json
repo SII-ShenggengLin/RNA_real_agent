@@ -1,0 +1,27 @@
+{
+  "task_id": "11_ires_prediction_010_mode2_structural",
+  "workflow": "ires_prediction",
+  "category": "full",
+  "description": "IRES prediction mode 2 with default sliding window and structural validation enabled. Tests the full pipeline with multiple candidate regions.",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr_long.fa",
+    "iresfinder_mode": 2,
+    "probability_threshold": 0.5,
+    "window_size": 174,
+    "step_size": 50,
+    "top_n_candidates": 5,
+    "run_structural_validation": true
+  },
+  "expected_tool_chain": [
+    "compute_dot_bracket_unpaired_fraction",
+    "predict_putative_ires_with_iresfinder",
+    "predict_rna_local_accessibility_profile_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "probability_threshold": 0.5
+  },
+  "source": "Sliding window + structural validation on long sequence (800 nt, balanced GC content)",
+  "paper_reference": null
+}

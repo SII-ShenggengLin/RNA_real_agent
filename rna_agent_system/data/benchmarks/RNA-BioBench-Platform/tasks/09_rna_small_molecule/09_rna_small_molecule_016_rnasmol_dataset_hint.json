@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_016_rnasmol_dataset_hint",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "RNAsmol with dataset hint for checkpoint auto-selection",
+  "input": {
+    "rna_sequence": "GGGAAACCCGGGAAACCC",
+    "smiles": "NC1C(N)C2OC(C(O)C2O)C1O",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "rnasmol"
+    ],
+    "dataset": "pdb",
+    "split_method": null
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_rnasmol"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Literature-known interaction",
+  "paper_reference": null
+}

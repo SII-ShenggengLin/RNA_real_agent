@@ -1,0 +1,22 @@
+{
+  "target_id": "Cytochrome_c",
+  "target_name": "Cytochrome c",
+  "target_type": "model",
+  "pdb_id": "1HRC",
+  "pdb_chain": "A",
+  "uniprot_accession": "P99999",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Lysine-rich surface patch",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1073/pnas.121546698"
+  ],
+  "notes": "Electron transport protein; surface patch model",
+  "protein_sequence": "MGDVEKGKKIFIMKCSQCHTVEKGGKHKTGPNLHGLFGRKTGQAPGYSYTAANKNKGIIWGEDTLMEYLENPKKYIPGTKMIFVGIKKKEERADLIAYLKKATNE",
+  "protein_length_aa": 105,
+  "sequence_checksum": "2BDFF12130AEC0C85A14A8E32F97D502",
+  "organism_scientific": "Homo sapiens",
+  "gene": [
+    "CYCS"
+  ]
+}

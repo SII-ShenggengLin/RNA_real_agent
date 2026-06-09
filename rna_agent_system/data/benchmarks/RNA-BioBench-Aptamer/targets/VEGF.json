@@ -1,0 +1,22 @@
+{
+  "target_id": "VEGF",
+  "target_name": "Vascular endothelial growth factor A",
+  "target_type": "therapeutic",
+  "pdb_id": "1VPF",
+  "pdb_chain": "A",
+  "uniprot_accession": "P15692",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Vascular endothelial growth factor; angiogenesis target",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1126/science.275.5298.965"
+  ],
+  "notes": "Anti-VEGF aptamer target (pegaptanib analog)",
+  "protein_sequence": "MTDRQTDTAPSPSYHLLPGRRRTVDAAASRGQGPEPAPGGGVEGVGARGVALKLFVQLLGCSRFGGAVVRAGEAEPSGAARSASSGREEPQPEEGEEEEEKEEERGPQWRLGARKPGSWTGEAAVCADSAPAARAPQALARASGRGGRVARRGAEESGPPHSPSRRGSASRAGPGRASETMNFLLSWVHWSLALLLYLHHAKWSQAAPMAEGGGQNHHEVVKFMDVYQRSYCHPIETLVDIFQEYPDEIEYIFKPSCVPLMRCGGCCNDEGLECVPTEESNITMQIMRIKPHQGQHIGEMSFLQHNKCECRPKKDRARQEKKSVRGKGKGQKRKRKKSRYKSWSVPCGPCSERRKHLFVQDPQTCKCSCKNTDSRCKARQLELNERTCRCDKPRR",
+  "protein_length_aa": 395,
+  "sequence_checksum": "224DDFB196839CAD461DB564A9814C09",
+  "organism_scientific": "Homo sapiens",
+  "gene": [
+    "VEGFA"
+  ]
+}

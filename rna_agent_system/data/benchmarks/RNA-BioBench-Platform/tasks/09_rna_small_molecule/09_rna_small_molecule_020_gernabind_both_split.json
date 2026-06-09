@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_020_gernabind_both_split",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "GerNA-Bind with both split method hint",
+  "input": {
+    "rna_sequence": "AUCGCAUAGCGAUCGCAUAGCG",
+    "smiles": "c1ccc2c(c1)ncn2C3C4CC5CC(C4)CC3C5",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": null,
+    "split_method": "both"
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Synthetic RNA + amantadine-like SMILES",
+  "paper_reference": null
+}

@@ -1,0 +1,20 @@
+{
+  "target_id": "Growth_hormone",
+  "target_name": "Somatotropin (Growth hormone)",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01241",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "E. coli",
+  "paper_references": [
+    "doi:10.1056/NEJM198510243131703"
+  ],
+  "notes": "Human growth hormone replacement therapy",
+  "protein_sequence": "MATGSRTSLLLAFGLLCLPWLQEGSAFPTIPLSRLFDNAMLRAHRLHQLAFDTYQEFEEAYIPKEQKYSFLQNPQTSLCFSESIPTPSNREETQQKSNLELLRISLLLIQSWLEPVQFLRSVFANSLVYGASDSNVYDLLKDLEEGIQTLMGRLEDGSPRTGQIFKQTYSKFDTNSHNDDALLKNYGLLYCFRKDMDKVETFLRIVQCRSVEGSCGF",
+  "protein_length_aa": 217,
+  "sequence_checksum": "3B425FC2678BC11F10E944034B19F70E",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "SOMA_HUMAN",
+  "expected_cds_length_nt": 651,
+  "uniprot_accession": "P01241"
+}

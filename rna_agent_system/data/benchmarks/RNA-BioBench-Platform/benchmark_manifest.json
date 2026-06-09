@@ -1,0 +1,70 @@
+{
+  "dataset_name": "RNA-BioBench-Platform",
+  "schema_version": "1.1.0",
+  "description": "Platform coverage benchmark: 11 workflows x variable canonical test cases",
+  "created_date": "2026-05-28",
+  "workflows": [
+    {
+      "id": "01_mrna_cds_design",
+      "name": "mRNA CDS Design",
+      "task_count": 19
+    },
+    {
+      "id": "02_full_length_mrna_design",
+      "name": "Full-Length mRNA Design",
+      "task_count": 22
+    },
+    {
+      "id": "03_mrna_sequence_scoring",
+      "name": "mRNA Sequence Scoring",
+      "task_count": 13
+    },
+    {
+      "id": "04_sirna_design",
+      "name": "siRNA Design",
+      "task_count": 22
+    },
+    {
+      "id": "05_sgrna_design",
+      "name": "sgRNA Design",
+      "task_count": 30
+    },
+    {
+      "id": "06_rna_secondary_structure",
+      "name": "RNA Secondary Structure Design",
+      "task_count": 25
+    },
+    {
+      "id": "07_rna_tertiary_structure",
+      "name": "RNA Tertiary Structure Design",
+      "task_count": 18
+    },
+    {
+      "id": "08_rna_aptamer_design",
+      "name": "RNA Aptamer Design",
+      "task_count": 18
+    },
+    {
+      "id": "09_rna_small_molecule",
+      "name": "RNA-Small Molecule Interaction",
+      "task_count": 15
+    },
+    {
+      "id": "10_aso_target_screening",
+      "name": "ASO Target Screening",
+      "task_count": 14
+    },
+    {
+      "id": "11_ires_prediction",
+      "name": "IRES Prediction",
+      "task_count": 12
+    }
+  ],
+  "total_tasks": 208,
+  "task_categories": {
+    "basic": "Canonical inputs for smoke testing",
+    "edge": "Mixed-modality or boundary-case inputs",
+    "full": "Real biological sequences/structures",
+    "full-length": "Multi-module tasks requiring BMC"
+  }
+}

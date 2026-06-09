@@ -5,7 +5,7 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-from agent_core.file_manager import PROJECT_ROOT
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 class WorkspaceManager:
@@ -56,6 +56,20 @@ class WorkspaceManager:
             else:
                 paths.append(str(p).replace("\\", "/"))
         return paths
+
+    def delete_session(self, session_id: str) -> bool:
+        """Recursively remove the workspace directory for *session_id*.
+
+        Returns
+        -------
+        bool
+            ``True`` if the directory existed and was removed, ``False`` otherwise.
+        """
+        session_dir = self.base_dir / "sessions" / session_id
+        if session_dir.exists():
+            shutil.rmtree(session_dir)
+            return True
+        return False
 
     def copy_to_session(self, session_id: str, source_path: str) -> str:
         """Alias for ``add_file``."""

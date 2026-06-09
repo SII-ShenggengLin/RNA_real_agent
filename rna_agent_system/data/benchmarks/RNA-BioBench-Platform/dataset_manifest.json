@@ -1,0 +1,63 @@
+{
+  "schema_version": "2.0.0",
+  "name": "RNA-BioBench-Platform",
+  "description": "Platform benchmark for RNA agent tool coverage (11 workflows, 177 tasks)",
+  "total_tasks": 177,
+  "workflows": [
+    {
+      "workflow_dir": "01_mrna_cds_design",
+      "task_count": 15,
+      "manifest": "01_mrna_cds_design/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "02_full_length_mrna_design",
+      "task_count": 17,
+      "manifest": "02_full_length_mrna_design/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "03_mrna_sequence_scoring",
+      "task_count": 13,
+      "manifest": "03_mrna_sequence_scoring/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "04_sirna_design",
+      "task_count": 20,
+      "manifest": "04_sirna_design/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "05_sgrna_design",
+      "task_count": 20,
+      "manifest": "05_sgrna_design/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "06_rna_secondary_structure",
+      "task_count": 18,
+      "manifest": "06_rna_secondary_structure/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "07_rna_tertiary_structure",
+      "task_count": 18,
+      "manifest": "07_rna_tertiary_structure/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "08_rna_aptamer_design",
+      "task_count": 20,
+      "manifest": "08_rna_aptamer_design/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "09_rna_small_molecule",
+      "task_count": 12,
+      "manifest": "09_rna_small_molecule/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "10_aso_target_screening",
+      "task_count": 14,
+      "manifest": "10_aso_target_screening/dataset_manifest.json"
+    },
+    {
+      "workflow_dir": "11_ires_prediction",
+      "task_count": 10,
+      "manifest": "11_ires_prediction/dataset_manifest.json"
+    }
+  ]
+}

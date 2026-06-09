@@ -1,0 +1,20 @@
+{
+  "target_id": "IFN_alpha_2a",
+  "target_name": "Interferon alpha-2",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01562",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "E. coli",
+  "paper_references": [
+    "doi:10.1016/0378-1119(85)90365-0"
+  ],
+  "notes": "Antiviral/antitumor cytokine",
+  "protein_sequence": "MALTFALLVALLVLSCKSSCSVGCDLPQTHSLGSRRTLMLLAQMRRISLFSCLKDRHDFGFPQEEFGNQFQKAETIPVLHEMIQQIFNLFSTKDSSAAWDETLLDKFYTELYQQLNDLEACVIQGVGVTETPLMKEDSILAVRKYFQRITLYLKEKKYSPCAWEVVRAEIMRSFSLSTNLQESLRSKE",
+  "protein_length_aa": 188,
+  "sequence_checksum": "CE4623305A7CA8D8738940CC084249E9",
+  "organism_scientific": "",
+  "entry_name": "IFNA1_HUMAN",
+  "expected_cds_length_nt": 564,
+  "uniprot_accession": "P01562"
+}

@@ -1,0 +1,22 @@
+{
+  "target_id": "Ferritin",
+  "target_name": "Ferritin light chain",
+  "target_type": "model",
+  "pdb_id": "1FHA",
+  "pdb_chain": "A",
+  "uniprot_accession": "P02792",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Ferroxidase center vicinity",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1016/0022-2836(91)80017-G"
+  ],
+  "notes": "Iron storage protein; shell assembly model",
+  "protein_sequence": "MSSQIRQNYSTDVEAAVNSLVNLYLQASYTYLSLGFYFDRDDVALEGVSHFFRELAEEKREGYERLLKMQNQRGGRALFQDIKKPAEDEWGKTPDAMKAAMALEKKLNQALLDLHALGSARTDPHLCDFLETHFLDEEVKLIKKMGDHLTNLHRLGGPEAGLGEYLFERLTLKHD",
+  "protein_length_aa": 175,
+  "sequence_checksum": "9597E7172639E4471C9E6DD510418BDE",
+  "organism_scientific": "Homo sapiens",
+  "gene": [
+    "FTL"
+  ]
+}

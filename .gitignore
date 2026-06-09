@@ -7,6 +7,7 @@
 **/*.pyc
 **/*.pyo
 *.egg-info/
+.pytest_cache/
 
 # IDE / editor
 .vscode/
@@ -31,6 +32,14 @@ rna_agent_system/external_repos/LinearDesign/bin/
 # Sequence files (runtime generated)
 *.fasta
 
+# Reference genomes / transcriptomes (auto-downloaded, do NOT commit)
+rna_agent_system/data/references/species/*/
+!rna_agent_system/data/references/species/.gitkeep
+rna_agent_system/data/references/**/*.fa
+rna_agent_system/data/references/**/*.fasta
+rna_agent_system/data/references/**/*.fa.gz
+rna_agent_system/data/references/**/*.fna.gz
+
 # Environment / secrets
 .env
 
@@ -44,3 +53,12 @@ venv/
 
 # Stray vendor scripts
 rna_agent_system/get-docker.sh
+
+# Build artifacts inside submodules
+**/build/
+**/dist/
+
+# RNA_agent_system internal caches
+rna_agent_system/**/__pycache__/
+rna_agent_system/**/*.pyc
+rna_agent_system/**/.pytest_cache/

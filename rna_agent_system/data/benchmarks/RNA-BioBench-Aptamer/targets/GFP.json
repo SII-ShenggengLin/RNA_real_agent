@@ -1,0 +1,22 @@
+{
+  "target_id": "GFP",
+  "target_name": "Green fluorescent protein (avGFP)",
+  "target_type": "reporter",
+  "pdb_id": "1GFL",
+  "pdb_chain": "A",
+  "uniprot_accession": "P42212",
+  "known_hotspot_residues": "",
+  "hotspot_source": "Beta-barrel surface (non-specific binding region)",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1126/science.8303295"
+  ],
+  "notes": "Reporter protein for aptamer binding validation; no known natural aptamer",
+  "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
+  "protein_length_aa": 238,
+  "sequence_checksum": "F4AB4243622DDCC76E0B9B6D249B172A",
+  "organism_scientific": "Aequorea victoria",
+  "gene": [
+    "GFP"
+  ]
+}

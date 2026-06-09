@@ -1,0 +1,20 @@
+{
+  "target_id": "EPO",
+  "target_name": "Erythropoietin",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01588",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "CHO",
+  "paper_references": [
+    "doi:10.1038/313806a0"
+  ],
+  "notes": "High-expression-demand therapeutic protein",
+  "uniprot_accession": "P01588",
+  "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+  "protein_length_aa": 193,
+  "sequence_checksum": "3462A824B3F6F5A28C343D6C3F5959B9",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "EPO_HUMAN",
+  "expected_cds_length_nt": 579
+}

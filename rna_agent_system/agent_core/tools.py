@@ -194,6 +194,41 @@ class BlastnSearchInput(BaseModel):
     )
 
 
+# Bowtie2 INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+# 关联文件清单见 agent_core/tool_specs.py 中 run_bowtie2_short_alignment 的
+# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
+
+
+class Bowtie2AlignInput(BaseModel):
+    """Input schema for Bowtie2 short-sequence alignment (microservice on port 8024)."""
+
+    filepath: str = Field(
+        ...,
+        description="Query nucleotide sequence file (workspace path or absolute on the server).",
+    )
+    subject_fasta_path: Optional[str] = Field(
+        default=None,
+        description="Subject multi-FASTA path (server-side). Indexed with bowtie2-build at runtime.",
+    )
+    subject_index: Optional[str] = Field(
+        default=None,
+        description="Existing bowtie2 index prefix path (server-side).",
+    )
+    mode: str = Field(
+        default="local",
+        description="local | end-to-end. 'local' allows soft-clipping and is preferred for short oligos.",
+    )
+    k: int = Field(default=50, ge=1, le=10000, description="Report up to <int> alignments per read.")
+    score_min: str = Field(
+        default="G,20,8",
+        description="bowtie2 --score-min function (default G,20,8).",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8024/align",
+        description="URL for the bowtie2_service POST /align endpoint.",
+    )
+
+
 # Evitar INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/tool_specs.py 中 design_sirna_with_evitar 的
 # INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
@@ -690,6 +725,90 @@ def run_blastn_similarity_search(
         "model": str(body.get("model", "ncbi-blastn")),
         "query_filepath": filepath,
         "tabular_tsv_filepath": summary_path,
+    }
+    return meta
+
+
+@tool(args_schema=Bowtie2AlignInput)
+def run_bowtie2_short_alignment(
+    filepath: str,
+    subject_fasta_path: Optional[str] = None,
+    subject_index: Optional[str] = None,
+    mode: str = "local",
+    k: int = 50,
+    score_min: str = "G,20,8",
+    service_url: str = "http://127.0.0.1:8024/align",
+) -> dict[str, Any]:
+    """Run Bowtie2 for fast short-sequence alignment against a subject FASTA or pre-built index.
+
+    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
+    canonical interface. Any addition/removal must be synchronized with:
+    - agent_core/tool_specs.py :: Bowtie2AlignOutput / run_bowtie2_short_alignment ToolSpec
+    - microservices/bowtie2_service/main.py :: Bowtie2AlignRequest / Bowtie2AlignResponse
+
+    Requires the ``bowtie2_service`` microservice (port 8024) and bowtie2 on the server PATH.
+    Provide exactly one of ``subject_fasta_path`` or ``subject_index``. The query is read from
+    ``filepath`` (plain sequence or FASTA); nucleotides are normalized to DNA for bowtie2.
+
+    Args:
+        filepath: Query sequence file (typically under ``workspace/``).
+        subject_fasta_path: Path to subject FASTA on the server (bowtie2-build run in the service).
+        subject_index: Prefix path of an existing bowtie2 index.
+        mode: ``local`` (allows soft-clipping, preferred for short oligos) or ``end-to-end``.
+        k: Maximum alignments to report per query.
+        score_min: bowtie2 ``--score-min`` function string.
+        service_url: POST endpoint for the bowtie2 microservice.
+
+    Returns:
+        Dict with hit counts, preview, paths to saved tabular output under ``workspace/``, and commands.
+
+    Raises:
+        ValueError: If arguments are inconsistent or the HTTP call fails.
+    """
+    if bool(subject_fasta_path) == bool(subject_index):
+        raise ValueError("Provide exactly one of subject_fasta_path or subject_index.")
+    read_sequence(filepath)  # validate readable before calling remote service
+    query_abs = _absolute_path_under_project(filepath)
+    payload: dict[str, Any] = {
+        "query_filepath": query_abs,
+        "mode": mode,
+        "k": int(k),
+        "score_min": score_min,
+    }
+    if subject_fasta_path:
+        payload["subject_fasta_path"] = (
+            subject_fasta_path
+            if Path(subject_fasta_path).is_absolute()
+            else str((Path(__file__).resolve().parents[1] / subject_fasta_path).resolve())
+        )
+    else:
+        assert subject_index is not None
+        payload["subject_index"] = (
+            subject_index
+            if Path(subject_index).is_absolute()
+            else str((Path(__file__).resolve().parents[1] / subject_index).resolve())
+        )
+    body = _post_json(service_url, payload, 310, "Bowtie2")
+
+    tabular = str(body.get("tabular_output", "") or "")
+    summary_path = ""
+    if tabular.strip():
+        summary_path = save_text_file(tabular, prefix="bowtie2_out", suffix=".sam")
+
+    meta = {
+        "hit_count": int(body.get("hit_count", 0)),
+        "hits_preview": str(body.get("hits_preview", "")),
+        "preview_truncated": bool(body.get("preview_truncated", False)),
+        "tabular_output_truncated": bool(body.get("tabular_output_truncated", False)),
+        "bowtie2_command": str(body.get("bowtie2_command", "")),
+        "bowtie2_build_command": body.get("bowtie2_build_command"),
+        "stderr": str(body.get("stderr", ""))[:4000],
+        "subject_mode": str(body.get("subject_mode", "")),
+        "resolved_query_path": str(body.get("resolved_query_path", query_abs)),
+        "resolved_subject": str(body.get("resolved_subject", "")),
+        "model": str(body.get("model", "bowtie2")),
+        "query_filepath": filepath,
+        "tabular_sam_filepath": summary_path,
     }
     return meta
 
@@ -6473,6 +6592,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     compute_rna_sequence_u_content,
     compute_dot_bracket_unpaired_fraction,
     run_blastn_similarity_search,
+    run_bowtie2_short_alignment,
     predict_rna_secondary_structure,
     predict_rna_secondary_structure_with_linearfold,
     evaluate_rna_structure_with_linearfold,

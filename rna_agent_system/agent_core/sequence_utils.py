@@ -62,9 +62,7 @@ def compute_gc_content(normalized_seq: str) -> dict[str, float | int]:
     }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
 # Synchronized files (must all be updated together):
 #   - microservices/rna_sequence_metrics_service/main.py
 #   - agent_core/tools.py
@@ -73,8 +71,7 @@ def compute_gc_content(normalized_seq: str) -> dict[str, float | int]:
 #   - agent_core/capabilities/writebacks.py
 #   - agent_core/sequence_utils.py  ← 本文件
 #   - tests/test_compute_rna_sequence_u_content.py
-#   - rna_agent_system/docs/DEVELOPMENT.md
-# ═══════════════════════════════════════════════════════════════════════════════
+#   - rna_agent_system/docs/CONTRIBUTING.md
 
 
 def compute_u_content(normalized_seq: str) -> dict[str, float | int]:
@@ -338,3 +335,128 @@ def compute_cai(cds_seq: str, codon_weights: dict[str, float]) -> dict[str, Any]
         "invalid_codons": invalid,
         "stop_codons_encountered": stops,
     }
+
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Dict value extraction helpers (used by workflows)
+# ───────────────────────────────────────────────────────────────────────────────
+
+
+def _pick_float(data: dict[str, Any], key: str) -> float | None:
+    """Safely extract a float from *data* by *key*."""
+    if key in data:
+        try:
+            return float(data[key])
+        except (TypeError, ValueError):
+            pass
+    return None
+
+
+def _pick_int(data: dict[str, Any], key: str) -> int | None:
+    """Safely extract an int from *data* by *key*."""
+    if key in data:
+        try:
+            return int(data[key])
+        except (TypeError, ValueError):
+            pass
+    return None
+
+
+# ───────────────────────────────────────────────────────────────────────────────
+# mRNA scoring helpers (moved from workflows/mrna_scoring.py)
+# ───────────────────────────────────────────────────────────────────────────────
+
+
+def gc_fraction_from_sequence(sequence: str) -> float:
+    """(G+C) / length for normalized AUCG string; empty → 0.0."""
+    if not sequence:
+        return 0.0
+    normalized = normalize_rna_sequence(sequence)
+    if not normalized:
+        return 0.0
+    result = compute_gc_content(normalized)
+    return float(result["gc_content"])
+
+
+def compute_mrna_metric_bundle(
+    *,
+    sequence: str,
+    gc_from_tools: float | None,
+    sequence_length_from_tools: int | None,
+    mfe_kcal_per_mol: float | None,
+    unpaired_fraction: float | None = None,
+    rnastop_overall_stability: float | None = None,
+    cai_score: float | None = None,
+    u_fraction: float | None = None,
+) -> dict[str, Any]:
+    """Collect canonical keys used by scoring and summaries."""
+    gc_local = gc_fraction_from_sequence(sequence)
+    gc_eff = gc_from_tools if gc_from_tools is not None else gc_local
+    length_eff = (
+        sequence_length_from_tools
+        if sequence_length_from_tools is not None
+        else len(sequence)
+    )
+    mfe_per_nt = None
+    if mfe_kcal_per_mol is not None and length_eff > 0:
+        try:
+            mfe_per_nt = float(mfe_kcal_per_mol) / length_eff
+        except (TypeError, ValueError):
+            mfe_per_nt = None
+    return {
+        "gc_content": float(gc_eff),
+        "gc_content_local": float(gc_local),
+        "sequence_length": int(length_eff),
+        "mfe_kcal_per_mol": mfe_kcal_per_mol,
+        "mfe_per_nt": mfe_per_nt,
+        "unpaired_fraction": unpaired_fraction,
+        "rnastop_overall_stability": rnastop_overall_stability,
+        "cai_score": cai_score,
+        "u_fraction": u_fraction,
+    }
+
+
+def score_mrna_candidate(
+    bundle: dict[str, Any],
+) -> dict[str, float]:
+    """Return ``total_score`` computed as ``-mfe + codon_count * log(CAI)``.
+
+    Raw metrics from *bundle* (gc_content, mfe_kcal_per_mol,
+    unpaired_fraction, cai_score) are preserved in the result for display
+    purposes but do **not** affect the ranking formula.
+    """
+    mfe_raw = bundle.get("mfe_kcal_per_mol")
+    cai_raw = bundle.get("cai_score")
+    length_nt = int(bundle.get("sequence_length", 0))
+
+    result: dict[str, float] = {}
+
+    mfe_per_nt = bundle.get("mfe_per_nt")
+    if mfe_per_nt is not None:
+        result["mfe_per_nt"] = float(mfe_per_nt)
+
+    if cai_raw is not None:
+        result["cai_score"] = float(cai_raw)
+
+    # total_score = -mfe + codon_count * log(CAI)
+    if mfe_raw is not None and cai_raw is not None:
+        try:
+            cai_val = float(cai_raw)
+            mfe_val = float(mfe_raw)
+            if (
+                cai_val > 0.0
+                and length_nt > 0
+                and math.isfinite(cai_val)
+                and math.isfinite(mfe_val)
+            ):
+                codon_count = length_nt // 3
+                combined_score = -mfe_val + codon_count * math.log(cai_val)
+                result["combined_score"] = float(combined_score)
+                result["total_score"] = float(combined_score)
+                return result
+        except (TypeError, ValueError):
+            pass
+
+    # Fallback when CAI or MFE is missing (should not happen in normal operation)
+    result["total_score"] = 0.0
+    return result

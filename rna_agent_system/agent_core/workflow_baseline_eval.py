@@ -14,7 +14,7 @@ from agent_core.file_manager import PROJECT_ROOT
 from agent_core.sequence_utils import compute_gc_content, normalize_rna_sequence
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
-from agent_core.workflows.mrna_workflow import MrnaWorkflowInput, run_mrna_workflow
+from agent_core.workflows.mrna_sequence_scoring import MrnaSequenceScoringInput, run_mrna_sequence_scoring
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,21 +86,18 @@ def load_baseline_samples(path: Optional[Path] = None) -> List[Dict[str, Any]]:
 
 def iter_sample_inputs(
     samples: List[Dict[str, Any]],
-    *,
-    persist_run: bool = False,
-) -> Iterator[Tuple[str, MrnaWorkflowInput]]:
+) -> Iterator[Tuple[str, MrnaSequenceScoringInput]]:
     for row in samples:
         sid = str(row.get("id", "sample"))
-        inp = MrnaWorkflowInput(
+        inp = MrnaSequenceScoringInput(
             sequence=str(row["sequence"]).strip(),
-            persist_run=persist_run,
         )
         yield sid, inp
 
 
 def evaluate_sample(
     sample_id: str,
-    inp: MrnaWorkflowInput,
+    inp: MrnaSequenceScoringInput,
     *,
     executor: Optional[ToolExecutor] = None,
     task_id: Optional[str] = None,
@@ -109,7 +106,7 @@ def evaluate_sample(
 
     ex = executor or make_stub_mrna_executor()
     tid = task_id or f"baseline_{sample_id}"
-    wf = run_mrna_workflow(inp, executor=ex, task_id=tid)
+    wf = run_mrna_sequence_scoring(inp, executor=ex, task_id=tid)
     best = wf.best_candidate
     score = float(best.scores["total_score"]) if best and "total_score" in best.scores else None
     return {
@@ -130,16 +127,12 @@ def evaluate_sample(
 def run_baseline_batch(
     *,
     samples_path: Optional[Path] = None,
-    persist_run: bool = False,
     executor: Optional[ToolExecutor] = None,
 ) -> List[Dict[str, Any]]:
     samples = load_baseline_samples(samples_path)
     rows: List[Dict[str, Any]] = []
     ex = executor or make_stub_mrna_executor()
-    for sid, inp in iter_sample_inputs(
-        samples,
-        persist_run=persist_run,
-    ):
+    for sid, inp in iter_sample_inputs(samples):
         rows.append(evaluate_sample(sid, inp, executor=ex))
     return rows
 

@@ -1,0 +1,32 @@
+{
+  "task_id": "01_mrna_cds_design_009",
+  "workflow": "mrna_cds_design",
+  "category": "full",
+  "description": "ALL tools (lineardesign + rnarl + gemorna) on vaccine target",
+  "input": {
+    "protein_sequence": "MRVKEKYQHLWRWGWRWGTMLLGMLMICSATEKLWVTVYYGVPVWKEATTTLFCASDAKAYDTEVHNVWATHACVPTDPNPQEVVLVNVTENFNMWKNDMVEQMHEDIISLWDQSLKPCVKLTPLCVSLKCTDLKNDTNTNSSSGRMIMEKGEIKNCSFNISTSIRGKVQKEYAFFYKLDIIPIDNDTTSYKLTSCNTSVITQACPKVSFEPIPIHYCAPAGFAILKCNNKTFNGTGPCTNVSTVQCTHGIRPVVSTQLLLNGSLAEEEVVIRSVNFTDNAKTIIVQLNTSVEINCTRPNNNTRKRIRIQRGPGRAFVTIGKIGNMRQAHCNISRAKWNNTLKQIASKLREQFGNNKTIIFKQSSGGDPEIVTHSFNCGGEFFYCNSTQLFNSTWFNSTWSTEGSNNTEGSDTITLPCRIKQIINMWQKVGKAMYAPPISGQIRCSSNITGLLLTRDGGNSNNESEIFRPGGGDMRDNWRSELYKYKVVKIEPLGVAPTKAKRRVVQREKRAVGIGALFLGFLGAAGSTMGAASMTLTVQARQLLSGIVQQQNNLLRAIEAQQHLLQLTVWGIKQLQARILAVERYLKDQQLLGIWGCSGKLICTTAVPWNASWSNKSLEQIWNHTTWMEWDREINNYTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWFNITNWLWYIKLFIMIVGGLVGLRIVFAVLSIVNRVRQGYSPLSFQTHLPTPRGPDRPEGIEEEGGERDRDRSIRLVNGSLALIWDDLRSLCLFSYHRLRDLLLIVTRIVELLGRRGWEALKYWWNLLQYWSQELKNSAVSLLNATAIAVAEGTDRVIEVVQGACRAIRHIPRRIRQGLERILL",
+    "design_tool": "all",
+    "lambda_value": 2.0,
+    "model_type": "Homo sapiens mRNA",
+    "cai_species": "Homo sapiens",
+    "run_fold": true,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_dot_bracket_unpaired_fraction",
+    "compute_rna_sequence_gc_content",
+    "design_mrna_cds_with_gemorna",
+    "design_mrna_cds_with_lineardesign",
+    "design_mrna_cds_with_rnarl",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cai_threshold": 0.8,
+    "mfe_threshold": -200.0
+  },
+  "source": "UniProt P04578 (HIV-1 gp120)",
+  "paper_reference": "doi:10.1126/science.1123279"
+}

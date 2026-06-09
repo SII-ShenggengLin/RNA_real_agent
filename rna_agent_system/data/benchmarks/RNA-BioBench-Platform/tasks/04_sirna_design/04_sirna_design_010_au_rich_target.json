@@ -1,0 +1,32 @@
+{
+  "task_id": "04_sirna_design_010_au_rich_target",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA design: AU-rich target with relaxed GC filter (valid RNA, 80nt)",
+  "input": {
+    "mode": "generic",
+    "target_sequence": "UAGUUUGAAUUUUAGAUAAACAACGAAUAAUUUCGUAGCAUAAAUAUGUCCCAAGCUUAGUUUGGGACAUACUUAUGCUA",
+    "candidate_count": 5,
+    "off_target_scan": false,
+    "species": "homo_sapiens",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1,
+    "mingc": 0.0,
+    "maxgc": 0.3
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 3,
+    "gc_range": [
+      0.0,
+      0.3
+    ]
+  },
+  "source": "AU-rich target",
+  "paper_reference": null
+}

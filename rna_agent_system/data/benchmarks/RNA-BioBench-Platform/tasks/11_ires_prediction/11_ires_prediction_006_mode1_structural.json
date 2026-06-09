@@ -1,0 +1,25 @@
+{
+  "task_id": "11_ires_prediction_006_mode1_structural",
+  "workflow": "ires_prediction",
+  "category": "full",
+  "description": "IRES prediction mode 1 with coordinate header and structural validation enabled.",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/mode1_coords.fa",
+    "iresfinder_mode": 1,
+    "probability_threshold": 0.1,
+    "top_n_candidates": 3,
+    "run_structural_validation": true
+  },
+  "expected_tool_chain": [
+    "compute_dot_bracket_unpaired_fraction",
+    "predict_putative_ires_with_iresfinder",
+    "predict_rna_local_accessibility_profile_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "probability_threshold": 0.1
+  },
+  "source": "Synthetic sequence with coordinate header + structural validation (800 nt)",
+  "paper_reference": null
+}

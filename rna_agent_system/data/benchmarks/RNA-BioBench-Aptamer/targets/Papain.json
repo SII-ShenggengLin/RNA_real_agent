@@ -1,0 +1,20 @@
+{
+  "target_id": "Papain",
+  "target_name": "Papain",
+  "target_type": "model",
+  "pdb_id": "9PAP",
+  "pdb_chain": "A",
+  "uniprot_accession": "P00784",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Active site cleft (Cys25/His159)",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1021/bi00244a022"
+  ],
+  "notes": "Cysteine protease from papaya",
+  "protein_sequence": "MAMIPSISKLLFVAICLFVYMGLSFGDFSIVGYSQNDLTSTERLIQLFESWMLKHNKIYKNIDEKIYRFEIFKDNLKYIDETNKKNNSYWLGLNVFADMSNDEFKEKYTGSIAGNYTTTELSYEEVLNDGDVNIPEYVDWRQKGAVTPVKNQGSCGSCWAFSAVVTIEGIIKIRTGNLNEYSEQELLDCDRRSYGCNGGYPWSALQLVAQYGIHYRNTYPYEGVQRYCRSREKGPYAAKTDGVRQVQPYNEGALLYSIANQPVSVVLEAAGKDFQLYRGGIFVGPCGNKVDHAVAAVGYGPNYILIKNSWGTGWGENGYIRIKRGTGNSYGVCGLYTSSFYPVKN",
+  "protein_length_aa": 345,
+  "sequence_checksum": "C799ADB28473BB4959C09F2C8D63AECF",
+  "organism_scientific": "Carica papaya",
+  "gene": []
+}

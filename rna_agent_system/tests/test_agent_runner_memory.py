@@ -2,16 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Any
 from unittest.mock import MagicMock, patch
 
-import pytest
 from langchain_core.messages import HumanMessage
 
 from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
 from agent_core.runner import AgentRunner
 from agent_core.session_memory import SessionMemory
-from agent_core.state import AgentState, default_state
+from agent_core.state import default_state
 from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
 
 
@@ -29,7 +27,7 @@ def test_runner_without_memory_starts_fresh_each_turn() -> None:
     with patch.object(
         ExecutionController, "execute", return_value=default_state("turn1")
     ) as mock_exec:
-        state1 = runner.run("turn1")
+        runner.run("turn1")
         passed_state = mock_exec.call_args[0][1]
         # default_state("") creates one empty HumanMessage, then run() appends
         # the real user_input plus the routing AIMessage.
@@ -37,7 +35,7 @@ def test_runner_without_memory_starts_fresh_each_turn() -> None:
         assert len(human_msgs) == 2  # empty placeholder + turn1
         assert human_msgs[-1].content == "turn1"
 
-        state2 = runner.run("turn2")
+        runner.run("turn2")
         passed_state2 = mock_exec.call_args[0][1]
         # Without memory, each run starts fresh from default_state("")
         human_msgs2 = [m for m in passed_state2["messages"] if isinstance(m, HumanMessage)]

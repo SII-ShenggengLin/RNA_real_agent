@@ -1,0 +1,61 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "10_aso_target_screening_001_basic",
+      "file": "10_aso_target_screening_001_basic.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_002_real_transcript",
+      "file": "10_aso_target_screening_002_real_transcript.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_003_cofold",
+      "file": "10_aso_target_screening_003_cofold.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_004_short_15mer",
+      "file": "10_aso_target_screening_004_short_15mer.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_005_long_25mer",
+      "file": "10_aso_target_screening_005_long_25mer.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_006_step_2",
+      "file": "10_aso_target_screening_006_step_2.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_007_step_5",
+      "file": "10_aso_target_screening_007_step_5.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_008_rnaup_eval",
+      "file": "10_aso_target_screening_008_rnaup_eval.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_009_rnacofold_eval",
+      "file": "10_aso_target_screening_009_rnacofold_eval.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_010_top_10",
+      "file": "10_aso_target_screening_010_top_10.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_011_min_length_10",
+      "file": "10_aso_target_screening_011_min_length_10.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_012_max_step_10",
+      "file": "10_aso_target_screening_012_max_step_10.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_013_min_top_1",
+      "file": "10_aso_target_screening_013_min_top_1.json"
+    },
+    {
+      "task_id": "10_aso_target_screening_014_large_top_50",
+      "file": "10_aso_target_screening_014_large_top_50.json"
+    }
+  ]
+}

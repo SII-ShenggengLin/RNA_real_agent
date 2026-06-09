@@ -1,0 +1,25 @@
+{
+  "task_id": "06_rna_secondary_structure_002_complex_structure",
+  "workflow": "rna_secondary_structure_design",
+  "category": "edge",
+  "description": "Complex multiloop structure",
+  "input": {
+    "target_structure": "..((((...))))..(((...)))..",
+    "start_sequence": null,
+    "repeats": 3,
+    "num_invocations": 10,
+    "temp_c": 37.0,
+    "function_mode": "m"
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "inverse_fold_rna_secondary_structure_vienna",
+    "predict_rna_secondary_structure"
+  ],
+  "evaluation_rubric": {
+    "structure_match": true,
+    "mfe_threshold": -10.0
+  },
+  "source": "Synthetic multiloop",
+  "paper_reference": null
+}

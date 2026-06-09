@@ -1,0 +1,28 @@
+{
+  "task_id": "05_sgrna_design_027_boundary_temp_100",
+  "workflow": "sgrna_design",
+  "category": "edge",
+  "description": "sgRNA design with MCMC at maximum allowed temperature",
+  "input": {
+    "seed_sequence": "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG",
+    "n_samples": 5,
+    "mutation_number": 3,
+    "sampling_mode": "mcmc",
+    "temperature": 100.0,
+    "max_overlap": 21,
+    "evaluate_crgpt_score": true,
+    "evaluate_crisot": false,
+    "weight_nn_score": 0.5,
+    "weight_crisot": 0.5
+  },
+  "expected_tool_chain": [
+    "design_sgrna_handle_with_crgpt",
+    "score_sgrna_handle_with_crgpt"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 3,
+    "max_overlap_violations": 0
+  },
+  "source": "Synthetic seed",
+  "paper_reference": null
+}

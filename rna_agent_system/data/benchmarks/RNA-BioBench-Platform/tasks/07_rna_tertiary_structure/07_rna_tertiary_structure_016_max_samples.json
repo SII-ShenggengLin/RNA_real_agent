@@ -1,0 +1,31 @@
+{
+  "task_id": "07_rna_tertiary_structure_016_max_samples",
+  "workflow": "rna_tertiary_structure_design",
+  "category": "edge",
+  "description": "Tertiary structure design with maximum samples per tool (n=20)",
+  "input": {
+    "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1f7u_clean.pdb",
+    "secondary_structure_filepath": null,
+    "design_tools": "rhodesign",
+    "n_samples_per_tool": 20,
+    "rhodesign_temperature": 0.15,
+    "rhodesign_temperature_range": 0.1,
+    "ribodiffusion_sampling_steps": 50,
+    "ribodiffusion_cond_scale": -1.0,
+    "ribodiffusion_checkpoint_name": "exp_inf",
+    "weight_rhofold": 0.5,
+    "weight_rmsd": 0.5
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "design_rna_sequence_with_rhodesign",
+    "predict_rna_secondary_structure",
+    "predict_rna_tertiary_structure_with_rhofold",
+    "score_structure_alignment"
+  ],
+  "evaluation_rubric": {
+    "mean_plddt_threshold": 65.0
+  },
+  "source": "Theophylline aptamer",
+  "paper_reference": "1F7U"
+}

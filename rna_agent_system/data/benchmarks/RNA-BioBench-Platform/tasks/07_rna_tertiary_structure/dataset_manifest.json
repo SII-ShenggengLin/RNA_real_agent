@@ -1,0 +1,105 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "07_rna_tertiary_structure_001_basic",
+      "file": "07_rna_tertiary_structure_001_basic.json",
+      "sha256": "03a4f0499aac7535a550f332b5ba136cacbef6fd8eb9e581625049cca3839d63"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_002_dual_tool",
+      "file": "07_rna_tertiary_structure_002_dual_tool.json",
+      "sha256": "0b1d0eb66bf45ee382518074138764573fb79245d5bc606bbe75a74610811f57"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_003_ribodiffusion_only",
+      "file": "07_rna_tertiary_structure_003_ribodiffusion_only.json",
+      "sha256": "6047f4950bf353d15697f8610a18325b55860fd812d0ba86e2c40eedaabf8efb"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_004_rhodesign_high_temp",
+      "file": "07_rna_tertiary_structure_004_rhodesign_high_temp.json",
+      "sha256": "cdc820c152f9c37eac2856367399671d2495f1f58e51395dfac23e9c39016b73"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_005_rhodesign_low_temp",
+      "file": "07_rna_tertiary_structure_005_rhodesign_low_temp.json",
+      "sha256": "55684ba224aa138c19d75b1130e1fec48a5e908b516d96f61994d8478d022fa2"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_006_dual_equal",
+      "file": "07_rna_tertiary_structure_006_dual_equal.json",
+      "sha256": "3bb93f027e711cae780ab98a82ba3f0adb9257e570333a80790a53c923597614"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_007_ribodiffusion_high_step",
+      "file": "07_rna_tertiary_structure_007_ribodiffusion_high_step.json",
+      "sha256": "bd39eff28051c068dbad30dafb7ccb1797d257fc8adec669b72f51d3af5ac68a"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_008_rhofold_heavy",
+      "file": "07_rna_tertiary_structure_008_rhofold_heavy.json",
+      "sha256": "ae33ed7173ab1d6e8802203571dc44944c7941768ceccbc7507aaf9c418ebe2a"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_009_rmsd_heavy",
+      "file": "07_rna_tertiary_structure_009_rmsd_heavy.json",
+      "sha256": "89ffb9cfa2a4dc5c1ca045b8e6d4d102b39168ff7a1fa3eba32a74c9c146c988"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_010_all_tools",
+      "file": "07_rna_tertiary_structure_010_all_tools.json",
+      "sha256": "825edf6978addf3e3129ba4796976b47cf12f515369d31766735ad1296e22d34"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_011_rhodesign_2d_assisted",
+      "file": "07_rna_tertiary_structure_011_rhodesign_2d_assisted.json",
+      "sha256": "b4f911c7b9b8db9d89d835080d7f26922d35fdda3fc8d4a0c04334c9e54e66f3"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_012_ribodiffusion_defaults",
+      "file": "07_rna_tertiary_structure_012_ribodiffusion_defaults.json",
+      "sha256": "283ee8aaf3129d41f560d24a5253978b26889022b4536394779e56211556a68e"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_013_ribodiffusion_large_ckpt",
+      "file": "07_rna_tertiary_structure_013_ribodiffusion_large_ckpt.json",
+      "sha256": "43de4a3347448d7329ceeb908bad62f2f785c4907976b7749dbf6cd76345d921"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_014_rhodesign_default_temp",
+      "file": "07_rna_tertiary_structure_014_rhodesign_default_temp.json",
+      "sha256": "b97e24e8069f0b538d9ba311edc7ff4e7a440e7479c5b54b38111428eb56d001"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_015_min_samples",
+      "file": "07_rna_tertiary_structure_015_min_samples.json",
+      "sha256": "5e6126f4e42bedc19a81e06661f8fa90f0506f1eb9cceb5af9141a03562c8e80"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_016_max_samples",
+      "file": "07_rna_tertiary_structure_016_max_samples.json",
+      "sha256": "140f3758507b245880b362aa75e4de1856fb943ba5cc91859f465fba2391bcd0"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_017_rhofold_only_weight",
+      "file": "07_rna_tertiary_structure_017_rhofold_only_weight.json",
+      "sha256": "40fb78666466149fe3dc3cce2d8c4b63aa5674ba4f5722cacec463d427c81cec"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_018_rmsd_only_weight",
+      "file": "07_rna_tertiary_structure_018_rmsd_only_weight.json",
+      "sha256": "3b6c7c3c0dd7315225646395eadf7fd832e43ecd6874527e69be49f38ef2f542"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_019_full_group_i_intron",
+      "file": "07_rna_tertiary_structure_019_full_group_i_intron.json",
+      "sha256": "2b1ff00e189546a35bc4b426586ea5b307b82e112d4edbc6e8c4bbe7fe11901f"
+    },
+    {
+      "task_id": "07_rna_tertiary_structure_020_full_p4_p6_domain",
+      "file": "07_rna_tertiary_structure_020_full_p4_p6_domain.json",
+      "sha256": "cf9a1216c89146eb4085549408cc9e0615ea5c92ad4598c29ad2e30ac0b6df28"
+    }
+  ]
+}

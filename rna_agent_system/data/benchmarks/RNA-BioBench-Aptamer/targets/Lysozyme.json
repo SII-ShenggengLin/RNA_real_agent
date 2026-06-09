@@ -1,0 +1,22 @@
+{
+  "target_id": "Lysozyme",
+  "target_name": "Lysozyme C",
+  "target_type": "model",
+  "pdb_id": "6LYZ",
+  "pdb_chain": "A",
+  "uniprot_accession": "P61626",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Cleft region near catalytic residues",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1073/pnas.121546698"
+  ],
+  "notes": "Model protein for aptamer binding studies",
+  "protein_sequence": "MKALIVLGLVLLSVTVQGKVFERCELARTLKRLGMDGYRGISLANWMCLAKWESGYNTRATNYNAGDRSTDYGIFQINSRYWCNDGKTPGAVNACHLSCSALLQDNIADAVACAKRVVRDPQGIRAWVAWRNRCQNRDVRQYVQGCGV",
+  "protein_length_aa": 148,
+  "sequence_checksum": "BAED7F39F1D852873AD490A51A495FBC",
+  "organism_scientific": "Homo sapiens",
+  "gene": [
+    "LYZ"
+  ]
+}

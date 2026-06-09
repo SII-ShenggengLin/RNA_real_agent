@@ -1,0 +1,33 @@
+{
+  "task_id": "07_rna_tertiary_structure_020_full_p4_p6_domain",
+  "workflow": "rna_tertiary_structure_design",
+  "category": "full",
+  "description": "Full-scale tertiary structure design for P4-P6 domain (large ribozyme domain, 315 nt) using both inverse-folding tools with balanced scoring weights",
+  "input": {
+    "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1hr2_clean.pdb",
+    "secondary_structure_filepath": null,
+    "design_tools": "all",
+    "n_samples_per_tool": 5,
+    "rhodesign_temperature": 0.1,
+    "rhodesign_temperature_range": 0.05,
+    "ribodiffusion_sampling_steps": 100,
+    "ribodiffusion_cond_scale": -1.0,
+    "ribodiffusion_checkpoint_name": "exp_inf",
+    "weight_rhofold": 0.5,
+    "weight_rmsd": 0.5
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "design_rna_inverse_fold_with_ribodiffusion",
+    "design_rna_sequence_with_rhodesign",
+    "predict_rna_secondary_structure",
+    "predict_rna_tertiary_structure_with_rhofold",
+    "score_structure_alignment"
+  ],
+  "evaluation_rubric": {
+    "mean_plddt_threshold": 65.0,
+    "rmsd_threshold": 3.0
+  },
+  "source": "P4-P6 domain (Tetrahymena thermophila)",
+  "paper_reference": "1HR2"
+}

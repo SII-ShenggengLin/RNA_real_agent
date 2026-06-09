@@ -1,0 +1,20 @@
+{
+  "target_id": "A1AT",
+  "target_name": "Alpha-1-antitrypsin",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01009",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "CHO",
+  "paper_references": [
+    "doi:10.1056/NEJM198702193160803"
+  ],
+  "notes": "Alpha-1 deficiency replacement therapy",
+  "protein_sequence": "MPSSVSWGILLLAGLCCLVPVSLAEDPQGDAAQKTDTSHHDQDHPTFNKITPNLAEFAFSLYRQLAHQSNSTNIFFSPVSIATAFAMLSLGTKADTHDEILEGLNFNLTEIPEAQIHEGFQELLRTLNQPDSQLQLTTGNGLFLSEGLKLVDKFLEDVKKLYHSEAFTVNFGDTEEAKKQINDYVEKGTQGKIVDLVKELDRDTVFALVNYIFFKGKWERPFEVKDTEEEDFHVDQVTTVKVPMMKRLGMFNIQHCKKLSSWVLLMKYLGNATAIFFLPDEGKLQHLENELTHDIITKFLENEDRRSASLHLPKLSITGTYDLKSVLGQLGITKVFSNGADLSGVTEEAPLKLSKAVHKAVLTIDEKGTEAAGAMFLEAIPMSIPPEVKFNKPFVFLMIEQNTKSPLFMGKVVNPTQK",
+  "protein_length_aa": 418,
+  "sequence_checksum": "2F600757C70CFCD2A1FA45463DF654CE",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "A1AT_HUMAN",
+  "expected_cds_length_nt": 1254,
+  "uniprot_accession": "P01009"
+}

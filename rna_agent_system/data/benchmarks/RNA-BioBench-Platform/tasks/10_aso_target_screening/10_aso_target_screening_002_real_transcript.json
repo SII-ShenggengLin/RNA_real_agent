@@ -1,0 +1,24 @@
+{
+  "task_id": "10_aso_target_screening_002_real_transcript",
+  "workflow": "aso_target_screening",
+  "category": "full",
+  "description": "ASO screening on human EPO transcript (20mer, step=1, top=10, RNAup)",
+  "input": {
+    "target_mrna_filepath": "workspace/epo_mrna.fa",
+    "aso_length": 20,
+    "window_step": 1,
+    "top_n_windows": 10,
+    "binding_evaluation_tool": "rnaup"
+  },
+  "expected_tool_chain": [
+    "compute_aso_target_accessibility_vienna",
+    "compute_rna_rna_interaction_vienna",
+    "predict_rna_local_accessibility_profile_vienna"
+  ],
+  "evaluation_rubric": {
+    "min_windows": 5,
+    "binding_score_threshold": -15.0
+  },
+  "source": "UniProt P01588",
+  "paper_reference": "doi:10.1038/313806a0"
+}

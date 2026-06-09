@@ -1,0 +1,20 @@
+{
+  "target_id": "Streptavidin",
+  "target_name": "Streptavidin",
+  "target_type": "model",
+  "pdb_id": "1STP",
+  "pdb_chain": "A",
+  "uniprot_accession": "P22629",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Biotin-binding pocket vicinity",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1073/pnas.93.7.2670"
+  ],
+  "notes": "Ultra-high affinity biotin binder; aptamer model",
+  "protein_sequence": "MRKIVVAAIAVSLTTVSITASASADPSKDSKAQVSAAEAGITGTWYNQLGSTFIVTAGADGALTGTYESAVGNAESRYVLTGRYDSAPATDGSGTALGWTVAWKNNYRNAHSATTWSGQYVGGAEARINTQWLLTSGTTEANAWKSTLVGHDTFTKVKPSAASIDAAKKAGVNNGNPLDAVQQ",
+  "protein_length_aa": 183,
+  "sequence_checksum": "EF22A87A2369D5D5777C74AD6BE5162E",
+  "organism_scientific": "Streptomyces avidinii",
+  "gene": []
+}

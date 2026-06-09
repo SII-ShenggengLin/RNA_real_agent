@@ -1,0 +1,27 @@
+{
+  "task_id": "05_sgrna_design_020_high_mutation_large_sample",
+  "workflow": "sgrna_design",
+  "category": "edge",
+  "description": "sgRNA design with high mutation budget and larger sample size",
+  "input": {
+    "seed_sequence": "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG",
+    "n_samples": 20,
+    "mutation_number": 15,
+    "sampling_mode": "mcmc",
+    "max_overlap": 10,
+    "evaluate_crgpt_score": true,
+    "evaluate_crisot": false,
+    "weight_nn_score": 0.5,
+    "weight_crisot": 0.5
+  },
+  "expected_tool_chain": [
+    "design_sgrna_handle_with_crgpt",
+    "score_sgrna_handle_with_crgpt"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 10,
+    "max_overlap_violations": 0
+  },
+  "source": "Synthetic seed",
+  "paper_reference": null
+}

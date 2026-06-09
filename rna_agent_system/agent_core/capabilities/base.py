@@ -1,15 +1,12 @@
-"""Layer 1 — Atomic Capabilities: single-tool invocation + auto-writeback."""
+"""Layer 1 — Atomic Capabilities: single-tool invocation, result returned to caller."""
 
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Optional
 
-from agent_core.capabilities.writebacks import STANDARD_WRITEBACKS, apply_writeback
 from agent_core.tool_executor import ToolExecutor
-from agent_core.tool_registry import ToolNotRegisteredError
-from agent_core.tool_runtime import ToolResult
 from agent_core.tool_specs import TOOL_SPECS
 
 
@@ -30,7 +27,8 @@ class Capability:
     Layer 1 responsibilities:
     1. Invoke the underlying tool via ``ToolExecutor``.
     2. Validate the raw result against ``ToolSpec.output_model`` (if present).
-    3. Write the result back to ``state["tool_results"][tool_name]`` automatically.
+    3. Return a normalized ``CapabilityResult`` — the caller decides where to
+       store it (typically ``state["tool_results"][tool_name]``).
     """
 
     def __init__(
@@ -38,13 +36,11 @@ class Capability:
         tool_name: str,
         executor: ToolExecutor,
         *,
-        state_writeback: bool = True,
-        extra_writeback: Optional[Callable[[dict[str, Any], dict[str, Any]], None]] = None,
+        state_writeback: bool = False,
     ):
         self.tool_name = tool_name
         self.executor = executor
         self.state_writeback = state_writeback
-        self._extra_writeback = extra_writeback
 
     @property
     def name(self) -> str:
@@ -55,7 +51,12 @@ class Capability:
         return [self.tool_name]
 
     def invoke(self, tool_args: dict[str, Any], state: Optional[dict[str, Any]] = None) -> CapabilityResult:
-        """Run the tool and optionally write the result back to *state*."""
+        """Run the tool and return a normalized ``CapabilityResult``.
+
+        When *state* is provided the raw output is stored under
+        ``state["tool_results"][tool_name]`` for backward compatibility.
+        Top-level state fields are **never** written by this method.
+        """
         result = self.executor.run_tool(self.tool_name, **tool_args)
 
         normalized: dict[str, Any]
@@ -84,22 +85,13 @@ class Capability:
             elapsed_time=result.elapsed_time,
         )
 
-        if state is not None and self.state_writeback:
-            self._writeback(state, cap_result)
+        # Minimal backward-compatible writeback: store raw output in the
+        # generic tool_results bucket.  Top-level state fields are never touched.
+        if state is not None:
+            state.setdefault("tool_results", {})
+            state["tool_results"][self.tool_name] = normalized
 
         return cap_result
-
-    def _writeback(self, state: dict[str, Any], cap_result: CapabilityResult) -> None:
-        """Store the capability result under ``state["tool_results"][tool_name]``."""
-        if "tool_results" not in state:
-            state["tool_results"] = {}
-        state["tool_results"][self.tool_name] = cap_result.output
-
-        # Declarative backward-compatible state field writeback
-        apply_writeback(state, self.tool_name, cap_result.output)
-
-        if self._extra_writeback is not None:
-            self._extra_writeback(state, cap_result.output)
 
 
 class CapabilityRegistry:
@@ -109,9 +101,9 @@ class CapabilityRegistry:
         self.executor = executor
         self._capabilities: dict[str, Capability] = {}
 
-    def register(self, tool_name: str, *, extra_writeback: Optional[Callable[[dict[str, Any], dict[str, Any]], None]] = None) -> Capability:
+    def register(self, tool_name: str) -> Capability:
         """Build a ``Capability`` for *tool_name* and keep it in the registry."""
-        cap = Capability(tool_name, self.executor, extra_writeback=extra_writeback)
+        cap = Capability(tool_name, self.executor)
         self._capabilities[tool_name] = cap
         return cap
 
@@ -135,11 +127,11 @@ class CapabilityRegistry:
 
 
 def build_default_capability_registry(executor: ToolExecutor) -> CapabilityRegistry:
-    """Register capabilities for all tools that have standard writeback rules.
+    """Register capabilities for all tools present in the executor registry.
 
     This is the Layer-1 entry point used by ``AgentRunner``.
     """
     registry = CapabilityRegistry(executor)
-    for tool_name in STANDARD_WRITEBACKS:
+    for tool_name in executor.registry.list_names():
         registry.register(tool_name)
     return registry

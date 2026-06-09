@@ -1,0 +1,65 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "11_ires_prediction_001_basic",
+      "file": "11_ires_prediction_001_basic.json",
+      "sha256": "eab61fa5149aec67f1e4b60928e8dea57c781353c00bfa3c8d0762a7818456fd"
+    },
+    {
+      "task_id": "11_ires_prediction_002_mode0_structural",
+      "file": "11_ires_prediction_002_mode0_structural.json",
+      "sha256": "c8fe192ae98add6b32bccab183251a141c946166695ded82f8acb34b9d7a2074"
+    },
+    {
+      "task_id": "11_ires_prediction_003_mode0_low_thresh",
+      "file": "11_ires_prediction_003_mode0_low_thresh.json",
+      "sha256": "7039432bbdd257e4ae3ec9414b02b926619f5687de51680ec96b2910c2723dbf"
+    },
+    {
+      "task_id": "11_ires_prediction_004_mode0_high_thresh_empty",
+      "file": "11_ires_prediction_004_mode0_high_thresh_empty.json",
+      "sha256": "8bac12bcebac5515b891e4b209611647a71ba75fb012fd210ea35fbe0aa4b8df"
+    },
+    {
+      "task_id": "11_ires_prediction_005_mode1_coords",
+      "file": "11_ires_prediction_005_mode1_coords.json",
+      "sha256": "763a6e52df336cd3adc387f243c8cfb615806acf5ceef581e9f619f7fe9b318e"
+    },
+    {
+      "task_id": "11_ires_prediction_006_mode1_structural",
+      "file": "11_ires_prediction_006_mode1_structural.json",
+      "sha256": "ab972a31556750d478064938c1451efd26ab831195b4d21324b2589002792e31"
+    },
+    {
+      "task_id": "11_ires_prediction_007_mode2_default_window",
+      "file": "11_ires_prediction_007_mode2_default_window.json",
+      "sha256": "043d67f3f67f80f85ea8775db3f3ae738ef4704db5a9ed1ac212b637c6dfbde5"
+    },
+    {
+      "task_id": "11_ires_prediction_008_mode2_small_window",
+      "file": "11_ires_prediction_008_mode2_small_window.json",
+      "sha256": "4c588bb17faee37c6e425c30469b28f12be617a2d7cc7b98f6e823fd09e60c4a"
+    },
+    {
+      "task_id": "11_ires_prediction_009_mode2_large_window",
+      "file": "11_ires_prediction_009_mode2_large_window.json",
+      "sha256": "13473896cc50cbee87f55d743cfc18731ebdf2d329e21c5d11452e1592728613"
+    },
+    {
+      "task_id": "11_ires_prediction_010_mode2_structural",
+      "file": "11_ires_prediction_010_mode2_structural.json",
+      "sha256": "24d2dea7ad078068c9b3546210fa02c3a2df8c4b0bd41aed3e6f7a933261c9d9"
+    },
+    {
+      "task_id": "11_ires_prediction_011_top_n_one",
+      "file": "11_ires_prediction_011_top_n_one.json",
+      "sha256": "ef291e1a745a0dad45d31558f0cb7c84ff46180deaecf6fa95eb21a3da243cb3"
+    },
+    {
+      "task_id": "11_ires_prediction_012_top_n_large",
+      "file": "11_ires_prediction_012_top_n_large.json",
+      "sha256": "5889e4fccb1aaa08ff9a6cbc63bc9b995afcc965c5f0e6c00fe1813f6a9ef1f8"
+    }
+  ]
+}

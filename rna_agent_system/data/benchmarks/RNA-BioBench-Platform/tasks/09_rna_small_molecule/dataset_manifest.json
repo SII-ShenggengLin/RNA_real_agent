@@ -1,0 +1,80 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "09_rna_small_molecule_001_basic",
+      "file": "09_rna_small_molecule_001_basic.json",
+      "sha256": "6edde0ba5237e54ba3da7481d4f67b90453c679b31589cdd55a0121a973ce80f"
+    },
+    {
+      "task_id": "09_rna_small_molecule_002_multi_tool",
+      "file": "09_rna_small_molecule_002_multi_tool.json",
+      "sha256": "6b2b8f073ba412193b23d1e8fc85848e7981806feb62494d3034410d975fd13e"
+    },
+    {
+      "task_id": "09_rna_small_molecule_003_riboswitch",
+      "file": "09_rna_small_molecule_003_riboswitch.json",
+      "sha256": "f0d8958b655d4ba981bfa0e5d3ddd8db73f4408e2320de0d7f45d025bd5f7381"
+    },
+    {
+      "task_id": "09_rna_small_molecule_004_theophylline",
+      "file": "09_rna_small_molecule_004_theophylline.json",
+      "sha256": "d99b85875f080f9d60f241971ed3666f7c8e5c04d156cf8c3f6a1dae4ee60312"
+    },
+    {
+      "task_id": "09_rna_small_molecule_010_spermine",
+      "file": "09_rna_small_molecule_010_spermine.json",
+      "sha256": "2624d7e77811a1b2fa34b9f4ba56c6eb974b7aa326e30c398cefff1ef6161823"
+    },
+    {
+      "task_id": "09_rna_small_molecule_011_rnasmol_only",
+      "file": "09_rna_small_molecule_011_rnasmol_only.json",
+      "sha256": "a7bd835cb55a210de1ac60e33d22bf3421b41b786801977054fd49728c5ea363"
+    },
+    {
+      "task_id": "09_rna_small_molecule_012_both_tools_default",
+      "file": "09_rna_small_molecule_012_both_tools_default.json",
+      "sha256": "9ee5f3682909f3060b94808c536977b1431b040b9e04b90dd93f2610b029e9e6"
+    },
+    {
+      "task_id": "09_rna_small_molecule_013_gernabind_dataset_split",
+      "file": "09_rna_small_molecule_013_gernabind_dataset_split.json",
+      "sha256": "41c61b9ec44cca539cb75747f3d5eccfe4abc006342e80b2ad60fe4a78f11331"
+    },
+    {
+      "task_id": "09_rna_small_molecule_014_gernabind_secondary_structure",
+      "file": "09_rna_small_molecule_014_gernabind_secondary_structure.json",
+      "sha256": "8a595fc4d54d0088d1ff899afaff4971bee31eade4e6b4378b71fc216a1307ca"
+    },
+    {
+      "task_id": "09_rna_small_molecule_015_gernabind_with_structure",
+      "file": "09_rna_small_molecule_015_gernabind_with_structure.json",
+      "sha256": "14bea92b726cb64bd2ec743933aee4d9e0ef45b2b8290c779ce7c54ea00b8f78"
+    },
+    {
+      "task_id": "09_rna_small_molecule_016_rnasmol_dataset_hint",
+      "file": "09_rna_small_molecule_016_rnasmol_dataset_hint.json",
+      "sha256": "df04cc8d4dedd1386c36662c1115f6eeb51feab14a152e91422e3cca3bbdfe44"
+    },
+    {
+      "task_id": "09_rna_small_molecule_017_full_params_combo",
+      "file": "09_rna_small_molecule_017_full_params_combo.json",
+      "sha256": "62b573828dbc7a76de44e13aea2f123ad6a200cbee5fe55f3941a4183db47c8e"
+    },
+    {
+      "task_id": "09_rna_small_molecule_018_gernabind_biosensor_rna",
+      "file": "09_rna_small_molecule_018_gernabind_biosensor_rna.json",
+      "sha256": "d9f7c50fc69b79f6f16c440c16f67f4cd182e26b568c52caa0516c15a64ae3ed"
+    },
+    {
+      "task_id": "09_rna_small_molecule_019_gernabind_mol_split",
+      "file": "09_rna_small_molecule_019_gernabind_mol_split.json",
+      "sha256": "b438de8ee7fb536528a43c9a8dc8e9008bf41a7660f2e371cd1b82381051b2e5"
+    },
+    {
+      "task_id": "09_rna_small_molecule_020_gernabind_both_split",
+      "file": "09_rna_small_molecule_020_gernabind_both_split.json",
+      "sha256": "1f15666c8e47b004b33b851ef6dcbc12fad60afaad9d23c106d597993ae25bd1"
+    }
+  ]
+}

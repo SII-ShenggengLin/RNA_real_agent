@@ -1,0 +1,20 @@
+{
+  "target_id": "Concanavalin_A",
+  "target_name": "Concanavalin-A",
+  "target_type": "model",
+  "pdb_id": "3CNA",
+  "pdb_chain": "A",
+  "uniprot_accession": "P02866",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Saccharide binding site",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1073/pnas.85.9.3015"
+  ],
+  "notes": "Lectin; carbohydrate-binding model",
+  "protein_sequence": "MAISKKSSLFLPIFTFITMFLMVVNKVSSSTHETNALHFMFNQFSKDQKDLILQGDATTGTDGNLELTRVSSNGSPQGSSVGRALFYAPVHIWESSAVVASFEATFTFLIKSPDSHPADGIAFFISNIDSSIPSGSTGRLLGLFPDANVIRNSTTIDFNAAYNADTIVAVELDTYPNTDIGDPSYPHIGIDIKSVRSKKTAKWNMQNGKVGTAHIIYNSVDKRLSAVVSYPNADSATVSYDVDLDNVLPEWVRVGLSASTGLYKETNTILSWSFTSKLKSNEIPDIATVV",
+  "protein_length_aa": 290,
+  "sequence_checksum": "C765CBA57CFE7CEE318E6E65E5E08F9D",
+  "organism_scientific": "Canavalia ensiformis",
+  "gene": []
+}

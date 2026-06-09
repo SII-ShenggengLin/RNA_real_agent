@@ -1,0 +1,29 @@
+{
+  "task_id": "04_sirna_design_003_with_offtarget",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA with off-target scanning enabled (valid RNA, 81nt)",
+  "input": {
+    "mode": "generic",
+    "target_sequence": "AUGCCCGGGUUUAAACCCGGGUUUAAACCCGGGUUUAAACCCGGGUUUAAACCCGGGUUUAAACCCGGGUUUAAACCCGGG",
+    "candidate_count": 4,
+    "off_target_scan": true,
+    "species": "homo_sapiens",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1,
+    "alignment_tool": "blast"
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold",
+    "run_blastn_similarity_search"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 2,
+    "off_target_score_threshold": 0.5
+  },
+  "source": "Synthetic target",
+  "paper_reference": null
+}

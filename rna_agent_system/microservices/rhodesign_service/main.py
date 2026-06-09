@@ -207,8 +207,6 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
         str(payload.device),
         "-temp",
         str(temperature),
-        "-ckpt",
-        str(checkpoint_path),
     ]
     if secondary_structure_path is not None:
         command.extend(["-ss", str(secondary_structure_path)])

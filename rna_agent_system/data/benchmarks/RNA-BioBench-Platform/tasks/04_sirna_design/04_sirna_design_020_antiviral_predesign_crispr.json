@@ -1,0 +1,31 @@
+{
+  "task_id": "04_sirna_design_020_antiviral_predesign_crispr",
+  "workflow": "sirna_design",
+  "category": "full",
+  "description": "Antiviral Cas13 gRNA design with Evitar predesign mode and CRISPR predictor",
+  "input": {
+    "mode": "antiviral",
+    "target_fasta_path": "data/references/species/sars_cov_2/virus_fragment_1k.fa",
+    "candidate_count": 5,
+    "off_target_scan": false,
+    "species": "homo_sapiens",
+    "evitar_mode": "predesign",
+    "evitar_predict": "CRISPR",
+    "ncores": 1
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "design_sirna_with_evitar",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 3,
+    "gc_range": [
+      0.3,
+      0.7
+    ]
+  },
+  "source": "PEDV fragment (1k nt)",
+  "paper_reference": null
+}

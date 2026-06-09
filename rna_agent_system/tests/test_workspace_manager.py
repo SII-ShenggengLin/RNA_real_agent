@@ -96,3 +96,23 @@ def test_sessions_are_isolated(temp_workspace: WorkspaceManager) -> None:
     wm.add_file(sid_a, source)
     assert len(wm.list_files(sid_a)) == 1
     assert len(wm.list_files(sid_b)) == 0
+
+
+def test_delete_session_removes_directory(temp_workspace: WorkspaceManager) -> None:
+    wm = temp_workspace
+    sid = "session-to-delete"
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+        f.write("data")
+        source = f.name
+
+    wm.add_file(sid, source)
+    session_dir = wm.get_session_dir(sid)
+    assert session_dir.exists()
+    assert wm.delete_session(sid) is True
+    assert not session_dir.exists()
+
+
+def test_delete_missing_session_returns_false(temp_workspace: WorkspaceManager) -> None:
+    wm = temp_workspace
+    assert wm.delete_session("no-such-session") is False

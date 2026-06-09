@@ -1,0 +1,28 @@
+{
+  "task_id": "01_mrna_cds_design_008",
+  "workflow": "mrna_cds_design",
+  "category": "full",
+  "description": "GEMORNA on therapeutic protein",
+  "input": {
+    "protein_sequence": "MRLAVGALLVCAVLGLCLAVPDKTVRWCAVSEHEATKCQSFRDHMKSVIPSDGPSVACVKKASYLDCIRAIAANEADAVTLDAGLVYDAYLAPNNLKPVVAEFYGSKEDPQTFYYAVAVVKKDSGFQMNQLRGKKSCHTGLGRSAGWNIPIGLLYCDLPEPRKPLEKAVANFFSGSCAPCADGTDFPQLCQLCPGCGCSTLNQYFGYSGAFKCLKDGAGDVAFVKHSTIFENLANKADRDQYELLCLDNTRKPVDEYKDCHLAQVPSHTVVARSMGGKEDLIWELLNQAQEHFGKDKSKEFQLFSSPHGKDLLFKDSAHGFLKVPPRMDAKMYLGYEYVTAIRNLREGTCPEAPTDECKPVKWCALSHHERLKCDEWSVNSVGKIECVSAETTEDCIAKIMNGEADAMSLDGGFVYIAGKCGLVPVLAENYNKSDNCEDTPEAGYFAIAVVKKSASDLTWDNLKGKKSCHTAVGRTAGWNIPMGLLYNKINHCRFDEFFSEGCAPGSKKDSSLCKLCMGSGLNLCEPNNKEGYYGYTGAFRCLVEKGDVAFVKHQTVPQNTGGKNPDPWAKNLNEKDYELLCLDGTRKPVEEYANCHLARAPNHAVVTRKDKEACVHKILRQQQHLFGSNVTDCSGNFCLFRSETKDLLFRDDTVCLAKLHDRNTYEKYLGEEYVKAVGNLRKCSTSSLLEACTFRRP",
+    "design_tool": "gemorna",
+    "cai_species": "Homo sapiens",
+    "run_fold": true,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_dot_bracket_unpaired_fraction",
+    "compute_rna_sequence_gc_content",
+    "design_mrna_cds_with_gemorna",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cai_threshold": 0.8,
+    "mfe_threshold": -150.0
+  },
+  "source": "UniProt P02787 (Transferrin)",
+  "paper_reference": "doi:10.1073/pnas.81.21.6755"
+}

@@ -30,7 +30,6 @@ class BlastnSearchOutput(_OutBase):
     - agent_core/tools.py :: run_blastn_similarity_search (wrapper return dict)
     - microservices/blast_service/main.py :: BlastnResponse
     - agent_core/state.py :: blast_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node blast branch
     """
 
     hit_count: int
@@ -46,6 +45,29 @@ class BlastnSearchOutput(_OutBase):
     model: str
     query_filepath: str
     tabular_tsv_filepath: str = ""
+
+
+class Bowtie2AlignOutput(_OutBase):
+    """Bowtie2 short-alignment output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: run_bowtie2_short_alignment (wrapper return dict)
+    - microservices/bowtie2_service/main.py :: Bowtie2AlignResponse
+    """
+
+    hit_count: int
+    hits_preview: str = ""
+    preview_truncated: bool = False
+    tabular_output_truncated: bool = False
+    bowtie2_command: str = ""
+    bowtie2_build_command: Optional[str] = None
+    stderr: str = ""
+    subject_mode: str
+    resolved_query_path: str = ""
+    resolved_subject: str = ""
+    model: str
+    query_filepath: str
+    tabular_sam_filepath: str = ""
 
 
 class EvitarDesignOutput(_OutBase):
@@ -95,6 +117,7 @@ class ViennaDuplexOutput(_OutBase):
     input_filepath: str
     sense: str
     antisense: str
+    cofold_sequence: str = ""
     structure: str
     mfe_kcal_per_mol: float
     backend: str = ""
@@ -166,7 +189,8 @@ class LinearFoldOutput(_OutBase):
 
 
 class LinearFoldEvalOutput(_OutBase):
-    filepath: str
+    sequence_filepath: str = ""
+    structure_filepath: str = ""
     sequence: str
     structure: str
     energy: float
@@ -184,18 +208,7 @@ class LinearFoldZukerSuboptOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/codonw_slim_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/graph_nodes.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class CodonwSlimOutput(_OutBase):
     """Full output schema for codonw-slim CDS metrics.
@@ -207,7 +220,6 @@ class CodonwSlimOutput(_OutBase):
     - agent_core/tools.py :: analyze_cds_codon_metrics_with_codonw_slim (wrapper return dict)
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeResponse
     - agent_core/state.py :: codonw_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node codonw branch
     """
 
     input_filepath: str
@@ -405,20 +417,7 @@ class Gemorna3UtrStabilityPredictionOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/lineardesign_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/graph_nodes.py
-#   - workflow_api/mrna_handler.py
-#   - workflow_api/mrna_schemas.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# 本次修改的基准日期：2026-04-24。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 
 class LinearDesignCdsOutput(_OutBase):
@@ -428,7 +427,6 @@ class LinearDesignCdsOutput(_OutBase):
     - agent_core/tools.py :: design_mrna_cds_with_lineardesign return dict
     - microservices/lineardesign_service/main.py :: LinearDesignResponse
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node LinearDesign branch
     """
 
     input_filepath: str
@@ -464,7 +462,6 @@ class LinearDesignCdsBatchOutput(_OutBase):
     - agent_core/tools.py :: design_mrna_cds_batch_with_lineardesign return dict
     - microservices/lineardesign_service/main.py :: LinearDesignBatchResponse
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node LinearDesign batch branch
     """
 
     input_filepath: str
@@ -506,7 +503,6 @@ class RhoFoldOutput(_OutBase):
 
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (wrapper return dict)
-    - agent_core/graph_nodes.py :: rhofold result ingestion
     - microservices/rhofold_service/main.py :: RhoFoldPredictResponse
     """
 
@@ -530,24 +526,14 @@ class RhoDesignOutput(_OutBase):
     """
 
     input_pdb_filepath: str
+    output_filepath: str = ""
     output_fasta_filepath: str
     predicted_sequence: str
     recovery_rate: float = 0.0
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/ribodiffusion_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/graph_nodes.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RiboDiffusionOutput(_OutBase):
     """RiboDiffusion tertiary inverse folding output schema.
@@ -555,7 +541,6 @@ class RiboDiffusionOutput(_OutBase):
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: design_rna_inverse_fold_with_ribodiffusion (wrapper return dict)
     - microservices/ribodiffusion_service/main.py :: RiboDiffusionResponse
-    - agent_core/graph_nodes.py :: tool_execution_node RiboDiffusion branch
     - agent_core/state.py :: ribodiffusion_* fields
     """
 
@@ -564,21 +549,19 @@ class RiboDiffusionOutput(_OutBase):
     predicted_sequence: str
     recovery_rate: float = 0.0
     checkpoint_path: str
+    generated_sequences: list[str] = []
+    output_fasta_filepaths: list[str] = []
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
 # 关联文件清单（修改时必须全部同步）：
 #   - microservices/rnasmol_service/main.py
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/graph_nodes.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RNAsmolScoreOutput(_OutBase):
     """RNAsmol scoring output schema.
@@ -640,7 +623,6 @@ class RNASTOPPredictionOutput(_OutBase):
     synchronized with:
     - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    - agent_core/graph_nodes.py :: tool_execution_node RNASTOP branch
     - agent_core/state.py :: rnastop_* fields
     """
 
@@ -663,19 +645,15 @@ class RNASTOPPredictionOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # IRESfinder 接口冻结声明 (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
 # 关联文件清单（修改时必须全部同步）：
 #   - microservices/iresfinder_service/main.py
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py  ← 本文件
 #   - agent_core/state.py
-#   - agent_core/graph_nodes.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 # 本次修改的基准日期：2026-04-23。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class IRESfinderPredictionOutput(_OutBase):
     """IRESfinder prediction output schema.
@@ -686,7 +664,6 @@ class IRESfinderPredictionOutput(_OutBase):
     - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
     - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
     - agent_core/state.py :: iresfinder_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node IRESfinder branch
     """
 
     input_filepath: str
@@ -841,21 +818,7 @@ class StructureAlignmentOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/rna_sequence_metrics_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/graph_nodes.py
-#   - agent_core/workflow_tools/rna_gc_content_workflow.py
-#   - agent_core/workflows/mrna_workflow.py
-#   - agent_core/workflows/mrna_scoring.py
-#   - agent_core/workflow_baseline_eval.py
-#   - tests/test_rna_gc_content_workflow.py
-#   - tests/test_compute_rna_sequence_gc_content.py
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RnaGcContentOutput(_OutBase):
     """GC content output schema.
@@ -864,7 +827,6 @@ class RnaGcContentOutput(_OutBase):
     - agent_core/tools.py :: compute_rna_sequence_gc_content (wrapper return dict)
     - microservices/rna_sequence_metrics_service/main.py :: GcContentResponse
     - agent_core/state.py :: sequence_gc_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node GC branch
     """
 
     input_filepath: str
@@ -884,7 +846,6 @@ class DotBracketUnpairedFractionOutput(_OutBase):
     - agent_core/tools.py :: compute_dot_bracket_unpaired_fraction (wrapper return dict)
     - microservices/rna_sequence_metrics_service/main.py :: UnpairedFractionResponse
     - agent_core/state.py :: dot_bracket_* fields
-    - agent_core/graph_nodes.py :: tool_execution_node unpaired fraction branch
     """
 
     input_filepath: str
@@ -895,19 +856,7 @@ class DotBracketUnpairedFractionOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/rna_sequence_metrics_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-#   - agent_core/sequence_utils.py
-#   - tests/test_compute_rna_sequence_u_content.py
-#   - rna_agent_system/docs/DEVELOPMENT.md
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class RnaUContentOutput(_OutBase):
     """U content output schema.
@@ -927,19 +876,7 @@ class RnaUContentOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
-#   - agent_core/sequence_utils.py
-#   - agent_core/data/codon_usage_kazusa.json
-#   - tests/test_compute_cai_for_cds_sequence.py
-#   - rna_agent_system/docs/DEVELOPMENT.md
-# ═══════════════════════════════════════════════════════════════════════════════
 
 class CaiForCdsOutput(_OutBase):
     """CAI output schema for CDS sequences.
@@ -961,17 +898,36 @@ class CaiForCdsOutput(_OutBase):
     model: str
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+class ShuffleCdsJunctionCodonsOutput(_OutBase):
+    """Junction codon shuffler output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
+    - agent_core/tools.py :: shuffle_cds_junction_codons (wrapper return dict)
+    - agent_core/state.py :: shuffle_cds_junction_* fields
+    - agent_core/capabilities/writebacks.py :: shuffle_cds_junction_codons writeback
+    """
+
+    original_sequence: str
+    junction_end: str
+    shuffled_region_start: int
+    shuffled_region_end: int
+    variants: list[dict[str, Any]]
+    model: str
+
+
+class WorkflowDemoEchoOutput(_OutBase):
+    """Workflow demo echo output schema.
+
+    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
+    - agent_core/tools.py :: workflow_demo_echo (wrapper return dict)
+    """
+
+    echo: str
+    length: int
+    model: str
+
+
 # ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/viennarna_fold/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-#   - agent_core/graph_nodes.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同步更新全部文件
-# 并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 
 TOOL_SPECS: Dict[str, ToolSpec] = {
     "compute_sirna_duplex_binding_vienna": ToolSpec(
@@ -1002,19 +958,15 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # Evitar 接口冻结声明 (v0.2.0) —— 禁止单方面变更
-    # ═══════════════════════════════════════════════════════════════════════════════
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/evitar_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/graph_nodes.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # 本次修改的基准日期：2026-04-24。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "design_sirna_with_evitar": ToolSpec(
         identity="design_sirna_with_evitar",
         display_name="Evitar siRNA/Cas13 design",
@@ -1048,18 +1000,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=EvitarDesignOutput,
         status=ToolStatus.partial,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # ═══════════════════════════════════════════════════════════════════════════════
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/blast_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/graph_nodes.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "run_blastn_similarity_search": ToolSpec(
         identity="run_blastn_similarity_search",
         display_name="BLAST+ blastn similarity search",
@@ -1083,6 +1031,29 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
+    "run_bowtie2_short_alignment": ToolSpec(
+        identity="run_bowtie2_short_alignment",
+        display_name="Bowtie2 short-sequence alignment",
+        version="0.1.0",
+        source="https://bowtie-bio.sourceforge.net/bowtie2/index.shtml",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8024/align",
+        capabilities=["Fast short-sequence alignment using bowtie2 --local."],
+        limitations=["Returns SAM-format alignments; identity filtering must be done post-hoc or via --score-min."],
+        task_tags=["short_read_alignment", "off_target_screening_support"],
+        requires=[ToolDependency(name="Bowtie2 microservice", detail="microservices/bowtie2_service (port 8024)")],
+        produces=["hit_count", "hits_preview", "tabular_sam_filepath", "subject_mode", "bowtie2_command", "bowtie2_build_command", "stderr"],
+        input_model=tool_wrappers.Bowtie2AlignInput,
+        output_model=Bowtie2AlignOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="bowtie2 local alignment against subject FASTA",
+                input={"filepath": "workspace/query.fa", "subject_fasta_path": "workspace/subject.fa", "mode": "local"},
+                output_excerpt={"hit_count": 5, "subject_mode": "fasta"},
+            )
+        ],
+    ),
     "predict_rna_secondary_structure": ToolSpec(
         identity="predict_rna_secondary_structure",
         display_name="ViennaRNA RNAfold (secondary structure)",
@@ -1094,7 +1065,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         limitations=["Returns thermodynamic MFE only; no experimental constraints unless implemented server-side."],
         task_tags=["rna_secondary_structure_prediction"],
         requires=[ToolDependency(name="ViennaRNA microservice", detail="microservices/viennarna_fold (port 8003)")],
-        produces=["structure", "mfe_kcal_per_mol"],
+        produces=["structure", "mfe_kcal_per_mol", "ensemble_free_energy", "centroid_structure", "centroid_distance", "mea_structure", "mea_score", "mea_gamma"],
         input_model=tool_wrappers.FoldViennaInput,
         output_model=ViennaFoldOutput,
         status=ToolStatus.available,
@@ -1171,17 +1142,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=ViennaInverseFoldOutput,
         status=ToolStatus.available,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/linearfold_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/graph_nodes.py
     #   - docs/tools/predict_rna_secondary_structure_with_linearfold.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "predict_rna_secondary_structure_with_linearfold": ToolSpec(
         identity="predict_rna_secondary_structure_with_linearfold",
         display_name="LinearFold secondary structure",
@@ -1233,20 +1201,17 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearFoldZukerSuboptOutput,
         status=ToolStatus.available,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/lineardesign_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/graph_nodes.py
     #   - workflow_api/mrna_handler.py
     #   - workflow_api/mrna_schemas.py
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # 本次修改的基准日期：2026-04-24。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "design_mrna_cds_with_lineardesign": ToolSpec(
         identity="design_mrna_cds_with_lineardesign",
         display_name="LinearDesign protein→CDS design",
@@ -1321,7 +1286,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "design_mrna_cds_with_gemorna": ToolSpec(
         identity="design_mrna_cds_with_gemorna",
         display_name="GEMORNA protein→CDS design",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/RainaBio/GEMORNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8004/generate/cds",
@@ -1340,7 +1305,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "design_5utr_with_gemorna": ToolSpec(
         identity="design_5utr_with_gemorna",
         display_name="GEMORNA 5'UTR design",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/RainaBio/GEMORNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8004/generate/5utr",
@@ -1359,7 +1324,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "design_3utr_with_gemorna": ToolSpec(
         identity="design_3utr_with_gemorna",
         display_name="GEMORNA 3'UTR design",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/RainaBio/GEMORNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8004/generate/3utr",
@@ -1414,7 +1379,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: RhoFoldInput / predict_rna_tertiary_structure_with_rhofold
     # - agent_core/tool_specs.py :: RhoFoldOutput
     # - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
-    # - agent_core/graph_nodes.py :: rhofold result ingestion
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
         identity="predict_rna_tertiary_structure_with_rhofold",
         display_name="RhoFold tertiary structure prediction",
@@ -1438,7 +1402,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "design_rna_sequence_with_rhodesign": ToolSpec(
         identity="design_rna_sequence_with_rhodesign",
         display_name="RhoDesign structure→sequence design",
-        version="0.1.0",
+        version="0.2.0",
         source="https://github.com/ml4bio/RhoDesign",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8006/design/from-structure",
@@ -1451,6 +1415,10 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RhoDesignOutput,
         status=ToolStatus.partial,
     ),
+    # INTERFACE LOCK (v0.2.0): RiboDiffusion tool spec. Locked contract. Modify only in sync with:
+    # - agent_core/tools.py :: RiboDiffusionInput / design_rna_inverse_fold_with_ribodiffusion
+    # - microservices/ribodiffusion_service/main.py :: RiboDiffusionRequest / RiboDiffusionResponse
+    # - agent_core/workflows/rna_tertiary_structure_design.py
     "design_rna_inverse_fold_with_ribodiffusion": ToolSpec(
         identity="design_rna_inverse_fold_with_ribodiffusion",
         display_name="RiboDiffusion tertiary inverse folding",
@@ -1482,6 +1450,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: RNAsmolScoreInput / score_rna_ligand_binding_with_rnasmol
     # - agent_core/tool_specs.py :: RNAsmolScoreOutput
     # - agent_core/state.py :: rnasmol_* fields
+    # - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(
         identity="score_rna_ligand_binding_with_rnasmol",
         display_name="RNAsmol RNA-ligand scoring",
@@ -1504,6 +1473,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: GerNABindScoreInput / score_rna_ligand_binding_with_gernabind
     # - agent_core/tool_specs.py :: GerNABindScoreOutput
     # - agent_core/state.py :: gernabind_* fields
+    # - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
     "score_rna_ligand_binding_with_gernabind": ToolSpec(
         identity="score_rna_ligand_binding_with_gernabind",
         display_name="GerNA-Bind RNA-ligand scoring",
@@ -1547,7 +1517,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # synchronized with:
     # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    # - agent_core/graph_nodes.py :: tool_execution_node RNASTOP branch
     # - agent_core/state.py :: rnastop_* fields
     "predict_mrna_stability_with_rnastop": ToolSpec(
         identity="predict_mrna_stability_with_rnastop",
@@ -1560,7 +1529,10 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             "Predict stability/degradation-related summary scores with RNASTOP.",
             "Accepts optional pre-computed secondary structure and loop-type annotation.",
         ],
-        limitations=["This repo wrapper exposes prediction only (not beam/MCTS optimization)."],
+        limitations=[
+            "This repo wrapper exposes prediction only (not beam/MCTS optimization).",
+            "Hard length limit: 512 nt (DNABERT encoder max). Longer sequences return exceeded_max_length=True without inference.",
+        ],
         task_tags=["mrna_stability_prediction"],
         requires=[ToolDependency(name="GPU", detail="RNASTOP inference"), ToolDependency(name="RNASTOP microservice", detail="microservices/rnastop_service (port 8009)")],
         produces=[
@@ -1571,6 +1543,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             "mean_deg_mg_ph10",
             "mean_deg_mg_50c",
             "overall_stability",
+            "exceeded_max_length",
         ],
         input_model=tool_wrappers.RNASTOPPredictionInput,
         output_model=RNASTOPPredictionOutput,
@@ -1581,7 +1554,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
     # - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest / IRESfinderPredictResponse
     # - agent_core/state.py :: iresfinder_* fields
-    # - agent_core/graph_nodes.py :: tool_execution_node IRESfinder branch
     "predict_putative_ires_with_iresfinder": ToolSpec(
         identity="predict_putative_ires_with_iresfinder",
         display_name="IRESfinder prediction",
@@ -1616,10 +1588,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=IRESfinderPredictionOutput,
         status=ToolStatus.available,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
     # 关联文件清单见本文件上方 CodonwSlimOutput 的 INTERFACE LOCK 注释。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "analyze_cds_codon_metrics_with_codonw_slim": ToolSpec(
         identity="analyze_cds_codon_metrics_with_codonw_slim",
         display_name="codonw-slim CDS metrics",
@@ -1651,20 +1621,16 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=CodonwSlimOutput,
         status=ToolStatus.available,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # ═══════════════════════════════════════════════════════════════════════════════
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/crisot_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/graph_nodes.py
-    #   - frontend/app.py
+    #   - cli/ entrypoints
     # 规则：任何字段增删、端点路径变更、输入/输出模型变动、返回值结构调整，
     #      必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # 本次修改的基准日期：2026-04-24。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "score_crispr_off_target_with_crisot": ToolSpec(
         identity="score_crispr_off_target_with_crisot",
         display_name="CRISOT score (single pair)",
@@ -1793,20 +1759,16 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=CrisotGenFpOutput,
         status=ToolStatus.partial,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
-    # ═══════════════════════════════════════════════════════════════════════════════
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/sgrna_design_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/graph_nodes.py
     #   - docs/tools/design_sgrna_handle_with_crgpt.md
     # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     # 本次修改的基准日期：2026-04-24。
-    # ═══════════════════════════════════════════════════════════════════════════════
     "design_sgrna_handle_with_crgpt": ToolSpec(
         identity="design_sgrna_handle_with_crgpt",
         display_name="CRGPT sgRNA handle design",
@@ -1961,6 +1923,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
+    # INTERFACE LOCK (predict_rna_protein_complex_with_proteinx v0.1.0)
+    # Do NOT modify output fields, types, or descriptions without updating tools.py, state.py, writebacks.py
     "predict_rna_protein_complex_with_proteinx": ToolSpec(
         identity="predict_rna_protein_complex_with_proteinx",
         display_name="ProteinX RNA-protein complex prediction",
@@ -1987,6 +1951,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
+    # INTERFACE LOCK (analyze_rna_protein_interface v0.1.0)
+    # Do NOT modify output fields, types, or descriptions without updating tools.py, state.py, writebacks.py
     "analyze_rna_protein_interface": ToolSpec(
         identity="analyze_rna_protein_interface",
         display_name="Analyze RNA-protein interface",
@@ -2083,21 +2049,18 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/rna_sequence_metrics_service/main.py
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/graph_nodes.py
     #   - agent_core/workflow_tools/rna_gc_content_workflow.py
-    #   - agent_core/workflows/mrna_workflow.py
-    #   - agent_core/workflows/mrna_scoring.py
+    #   - agent_core/workflows/mrna_sequence_scoring.py
+    #   - agent_core/sequence_utils.py
     #   - agent_core/workflow_baseline_eval.py
     #   - tests/test_rna_gc_content_workflow.py
     #   - tests/test_compute_rna_sequence_gc_content.py
-    # ═══════════════════════════════════════════════════════════════════════════════
     "compute_rna_sequence_gc_content": ToolSpec(
         identity="compute_rna_sequence_gc_content",
         display_name="RNA sequence GC content",
@@ -2137,7 +2100,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=DotBracketUnpairedFractionOutput,
         status=ToolStatus.available,
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/rna_sequence_metrics_service/main.py
@@ -2147,8 +2109,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/capabilities/writebacks.py
     #   - agent_core/sequence_utils.py
     #   - tests/test_compute_rna_sequence_u_content.py
-    #   - rna_agent_system/docs/DEVELOPMENT.md
-    # ═══════════════════════════════════════════════════════════════════════════════
+    #   - rna_agent_system/docs/CONTRIBUTING.md
     "compute_rna_sequence_u_content": ToolSpec(
         identity="compute_rna_sequence_u_content",
         display_name="RNA sequence U content",
@@ -2172,7 +2133,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # ═══════════════════════════════════════════════════════════════════════════════
     # CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - agent_core/tools.py
@@ -2182,8 +2142,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/sequence_utils.py
     #   - agent_core/data/codon_usage_kazusa.json
     #   - tests/test_compute_cai_for_cds_sequence.py
-    #   - rna_agent_system/docs/DEVELOPMENT.md
-    # ═══════════════════════════════════════════════════════════════════════════════
+    #   - rna_agent_system/docs/CONTRIBUTING.md
     "compute_cai_for_cds_sequence": ToolSpec(
         identity="compute_cai_for_cds_sequence",
         display_name="CAI for CDS (Kazusa tables)",
@@ -2214,5 +2173,70 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
+    # Shuffle CDS junction codons INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
+    # 关联文件清单（修改时必须全部同步）：
+    #   - agent_core/tools.py
+    #   - agent_core/tool_specs.py  ← 本文件
+    #   - agent_core/state.py
+    #   - agent_core/capabilities/writebacks.py
+    #   - tests/test_shuffle_cds_junction_codons.py
+    "shuffle_cds_junction_codons": ToolSpec(
+        identity="shuffle_cds_junction_codons",
+        display_name="Shuffle CDS junction codons",
+        version="0.1.0",
+        source="in-repo pure computation (no microservice)",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=[
+            "Generate synonymous-codon variants at the N- or C-terminus of a CDS.",
+            "Preserves amino-acid sequence; weights choices by species codon usage.",
+            "Used to alter local RNA structure at 5'UTR-CDS or CDS-3'UTR junctions.",
+        ],
+        limitations=[
+            "Input must be a valid CDS (length multiple of 3, AUGC only).",
+            "Only standard genetic code; no custom tables yet.",
+            "Variants are sampled stochastically; exact set depends on seed.",
+        ],
+        task_tags=["cds_design", "codon_optimization", "junction_engineering"],
+        requires=[],
+        produces=["original_sequence", "junction_end", "shuffled_region_start", "shuffled_region_end", "variants"],
+        input_model=tool_wrappers.ShuffleCdsJunctionCodonsInput,
+        output_model=ShuffleCdsJunctionCodonsOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Shuffle first 6 codons of a human CDS",
+                input={"filepath": "workspace/cds.fa", "junction_end": "n_terminus", "codon_count": 6, "num_variants": 4},
+                output_excerpt={"junction_end": "n_terminus", "variants": [{"cai_score": 0.82, "changed_codons": 3}]},
+            )
+        ],
+    ),
+    "workflow_demo_echo": ToolSpec(
+        identity="workflow_demo_echo",
+        display_name="Workflow Demo Echo",
+        version="0.1.0",
+        source="internal",
+        transport=ToolTransport.python_api,
+        endpoint="",
+        capabilities=[
+            "Minimal echo tool for registry/executor smoke tests.",
+        ],
+        limitations=[
+            "Not used by production routing by default.",
+            "Does not perform any real RNA computation.",
+        ],
+        task_tags=["demo", "workflow_test"],
+        requires=[],
+        produces=["echo", "length"],
+        input_model=tool_wrappers.WorkflowDemoEchoInput,
+        output_model=WorkflowDemoEchoOutput,
+        status=ToolStatus.available,
+        examples=[
+            ToolExample(
+                title="Echo a short string",
+                input={"text": "hello"},
+                output_excerpt={"echo": "hello", "length": 5},
+            )
+        ],
+    ),
 }
-

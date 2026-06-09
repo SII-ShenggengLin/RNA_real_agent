@@ -1,0 +1,87 @@
+{
+  "workflow": "full_length_mrna_design",
+  "total_tasks": 22,
+  "success_count": 22,
+  "failure_count": 0,
+  "success_rate": 1.0,
+  "by_category": {
+    "algae": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "archaea": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "basic": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "comparison": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "edgecase": {
+      "total": 3,
+      "success": 3,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "fungal": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "prokaryotic": {
+      "total": 2,
+      "success": 2,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "reporter": {
+      "total": 3,
+      "success": 3,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "therapeutic": {
+      "total": 8,
+      "success": 8,
+      "failure": 0,
+      "success_rate": 1.0
+    },
+    "vaccine": {
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "success_rate": 1.0
+    }
+  },
+  "error_distribution": {},
+  "elapsed_seconds_stats": {
+    "mean": 312.667,
+    "median": 143.9,
+    "max": 1674.8,
+    "min": 95.575
+  },
+  "runner_elapsed_seconds_stats": {
+    "mean": 314.086,
+    "median": 145.233,
+    "max": 1676.088,
+    "min": 96.893
+  },
+  "tool_correctness_rate": 1.0,
+  "trace_completeness_distribution": {
+    "complete": 22
+  },
+  "generated_at": "2026-06-05T11:48:00+00:00"
+}

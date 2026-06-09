@@ -1,0 +1,32 @@
+{
+  "task_id": "04_sirna_design_014_strict_gc_filter",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA design with strict GC filter (mingc=0.45, maxgc=0.55)",
+  "input": {
+    "mode": "generic",
+    "target_sequence": "CGUCAGCCUUUUCUUUGACCUCUUCUUUCUGUUCAUGUGUAUUUGCUGUCUCUUAGCCCAGACUUCCCGUGUCCUUUCCACCGGGCCUUUGAGAGGUCACAGGGUCUU",
+    "candidate_count": 5,
+    "off_target_scan": false,
+    "species": "homo_sapiens",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1,
+    "mingc": 0.45,
+    "maxgc": 0.55
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "gc_range": [
+      0.45,
+      0.55
+    ]
+  },
+  "source": "Synthetic human-like fragment",
+  "paper_reference": null
+}

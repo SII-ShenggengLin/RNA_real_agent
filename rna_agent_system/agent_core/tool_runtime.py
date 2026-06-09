@@ -332,4 +332,3 @@ class CommandLineTool(BaseExecutableTool):
             metrics={"return_code": output.return_code},
             elapsed_time=output.elapsed_time,
         )
-

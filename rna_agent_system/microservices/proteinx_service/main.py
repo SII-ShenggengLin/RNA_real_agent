@@ -8,13 +8,12 @@ INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synch
 from __future__ import annotations
 
 import json
-import os
 import re
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -360,7 +359,7 @@ async def predict_complex(request: ProteinXComplexRequest) -> ProteinXComplexRes
                     }
                 },
                 {
-                    "rnaChain": {
+                    "rnaSequence": {
                         "count": 1,
                         "sequence": rna_seq,
                     }

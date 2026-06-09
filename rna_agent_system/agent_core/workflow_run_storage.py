@@ -155,6 +155,9 @@ def dump_result_document(
     completed_at: datetime,
     audit_http_request: Optional[Dict[str, Any]],
     artifact_copies: List[str],
+    execution_log: Optional[List[Dict[str, Any]]] = None,
+    bmc_trace: Optional[List[Dict[str, Any]]] = None,
+    diagnosis_history: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Full serializable audit record (written to ``result.json``)."""
 
@@ -172,8 +175,9 @@ def dump_result_document(
         "summary": operational_summary,
         "fatal_errors": fatal,
         "tool_warnings": tool_warnings,
-        "workflow_input": workflow_input,
+        "workflow_input": workflow_input or getattr(wf, '_workflow_input', None) or {},
         "http_request_audit": audit_http_request,
+        "_execution_log": getattr(wf, '_execution_log', None),
         "best_candidate": wf.best_candidate.model_dump(mode="json") if wf.best_candidate else None,
         "candidates": [c.model_dump(mode="json") for c in wf.all_candidates],
         "tool_records": trace_json,
@@ -183,6 +187,11 @@ def dump_result_document(
             "ordered_candidate_ids": [c.id for c in wf.all_candidates],
         },
         "artifact_file_copies": artifact_copies,
+        "audit_trail": {
+            "execution_log": execution_log or [],
+            "bmc_trace": bmc_trace or [],
+            "diagnosis_history": diagnosis_history or [],
+        },
     }
 
 
@@ -190,7 +199,7 @@ def write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=True, default=str), encoding="utf-8")
 
 
-def persist_mrna_workflow_run(
+def persist_workflow_run(
     wf: WorkflowResult,
     inp_dict: Dict[str, Any],
     *,
@@ -200,6 +209,9 @@ def persist_mrna_workflow_run(
     artifact_runs_parent: Optional[str] = None,
     audit_http_request: Optional[Dict[str, Any]] = None,
     copy_artifacts: bool = True,
+    execution_log: Optional[List[Dict[str, Any]]] = None,
+    bmc_trace: Optional[List[Dict[str, Any]]] = None,
+    diagnosis_history: Optional[List[Dict[str, Any]]] = None,
 ) -> tuple[str, str, str]:
     """Write ``request.json``, ``result.json``, optional artifact copies.
 
@@ -231,6 +243,9 @@ def persist_mrna_workflow_run(
         completed_at=completed_at,
         audit_http_request=audit_http_request,
         artifact_copies=copies,
+        execution_log=execution_log,
+        bmc_trace=bmc_trace,
+        diagnosis_history=diagnosis_history,
     )
     write_json(result_path, body)
     rel_req = Path(rel_dir) / "request.json"
@@ -242,3 +257,49 @@ def persist_mrna_workflow_run(
         rel_res.as_posix(),
     )
     return rel_dir, rel_req.as_posix(), rel_res.as_posix()
+
+
+def maybe_persist_workflow_run(
+    wf: WorkflowResult,
+    inp_dict: Dict[str, Any],
+    *,
+    enabled: bool = True,
+    operational_summary: str = "",
+    started_at: Optional[datetime] = None,
+    completed_at: Optional[datetime] = None,
+    artifact_runs_parent: Optional[str] = None,
+    audit_http_request: Optional[Dict[str, Any]] = None,
+    copy_artifacts: bool = True,
+    execution_log: Optional[List[Dict[str, Any]]] = None,
+    bmc_trace: Optional[List[Dict[str, Any]]] = None,
+    diagnosis_history: Optional[List[Dict[str, Any]]] = None,
+) -> None:
+    """Persist *wf* to disk when *enabled* is True; otherwise no-op.
+
+    Side-effect: mutates *wf* in place, setting ``run_artifact_dir`` and
+    ``run_result_json_path`` when persistence succeeds.
+    """
+    if not enabled:
+        _LOGGER.debug("workflow_persist_skip task_id=%s", wf.task_id)
+        return
+    now = datetime.now(timezone.utc)
+    sa = started_at or now
+    ca = completed_at or wf.completed_at or now
+    try:
+        _, _, res_path = persist_workflow_run(
+            wf,
+            inp_dict,
+            operational_summary=operational_summary or wf.summary,
+            started_at=sa,
+            completed_at=ca,
+            artifact_runs_parent=artifact_runs_parent,
+            audit_http_request=audit_http_request,
+            copy_artifacts=copy_artifacts,
+            execution_log=execution_log,
+            bmc_trace=bmc_trace,
+            diagnosis_history=diagnosis_history,
+        )
+        wf.run_result_json_path = res_path
+        wf.run_artifact_dir = str(Path(res_path).parent.as_posix())
+    except OSError as exc:
+        _LOGGER.warning("workflow_persist_failed task_id=%s err=%s", wf.task_id, exc)

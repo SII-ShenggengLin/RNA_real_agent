@@ -1,0 +1,30 @@
+{
+  "task_id": "04_sirna_design_013_blast_identity_70",
+  "workflow": "sirna_design",
+  "category": "edge",
+  "description": "siRNA design with strict Bowtie2 score-min threshold (analogous to 70% BLAST identity) using Bowtie2 off-target scan",
+  "input": {
+    "mode": "generic",
+    "target_sequence": "GUUAACUUGCCGUCAGCCUUUUCUUUGACCUCUUCUUUCUGUUCAUGUGUAUUUGCUGUCUCUUAGCCCAGACUUCCCGUG",
+    "candidate_count": 4,
+    "off_target_scan": true,
+    "species": "homo_sapiens",
+    "evitar_mode": "existing",
+    "evitar_predict": "predsi",
+    "ncores": 1,
+    "bowtie2_score_min": "G,10,4",
+    "alignment_tool": "bowtie2"
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "compute_sirna_duplex_binding_vienna",
+    "predict_rna_secondary_structure_with_linearfold",
+    "run_bowtie2_short_alignment"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 2,
+    "off_target_score_threshold": 0.5
+  },
+  "source": "Synthetic target",
+  "paper_reference": null
+}

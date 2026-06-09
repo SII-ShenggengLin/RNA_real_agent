@@ -1,6 +1,7 @@
 # EGARPS+ RNA-Protein Complex Scoring
 
 > **Version**: v0.1.0  
+> **Last updated**: 2026-06-01  
 > **Upstream**: [hzau-liulab/EGARPS](https://github.com/hzau-liulab/EGARPS)  
 > **Microservice**: `microservices/egarps_service/` (Port 8023)  
 > **Conda Env**: `egarps_env`
@@ -130,5 +131,5 @@ python scripts/predict.py -non-academic /path/to/complex.pdb
 > - `agent_core/tools.py` :: `EGARPSInput` / `score_rna_protein_complex_with_egarps`
 > - `agent_core/tool_specs.py` :: `EGARPSOutput`
 > - `agent_core/state.py` :: `egarps_*` fields
-> - `agent_core/graph_nodes.py` :: `_FLOAT_FIELDS` / `_INT_FIELDS` / `_STR_FIELDS`
-> - `docs/TOOLS_AND_TASKS.md`
+> - `agent_core/runner.py` :: `_build_final_report()`
+> - `docs/TOOLS.md`

@@ -1,0 +1,22 @@
+{
+  "target_id": "Pepsin",
+  "target_name": "Pepsin A",
+  "target_type": "model",
+  "pdb_id": "5PEP",
+  "pdb_chain": "A",
+  "uniprot_accession": "P00791",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Active site flap region",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1021/bi00244a021"
+  ],
+  "notes": "Aspartic protease; digestive enzyme model",
+  "protein_sequence": "MKWLLLLSLVVLSECLVKVPLVRKKSLRQNLIKNGKLKDFLKTHKHNPASKYFPEAAALIGDEPLENYLDTEYFGTIGIGTPAQDFTVIFDTGSSNLWVPSVYCSSLACSDHNQFNPDDSSTFEATSQELSITYGTGSMTGILGYDTVQVGGISDTNQIFGLSETEPGSFLYYAPFDGILGLAYPSISASGATPVFDNLWDQGLVSQDLFSVYLSSNDDSGSVVLLGGIDSSYYTGSLNWVPVSVEGYWQITLDSITMDGETIACSGGCQAIVDTGTSLLTGPTSAIANIQSDIGASENSDGEMVISCSSIDSLPDIVFTINGVQYPLSPSAYILQDDDSCTSGFEGMDVPTSSGELWILGDVFIRQYYTVFDRANNKVGLAPVA",
+  "protein_length_aa": 385,
+  "sequence_checksum": "DA9C6A196CFB5B4A90EB093A0D9E29EF",
+  "organism_scientific": "Sus scrofa",
+  "gene": [
+    "PGA"
+  ]
+}

@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 
-import pytest
 
 from agent_core.session_memory import SessionMemory
-from agent_core.state import AgentState, default_state
+from agent_core.state import default_state
 
 
 def test_load_missing_session_returns_default() -> None:
@@ -93,3 +91,33 @@ def test_multi_turn_message_accumulation() -> None:
     state3 = mem.load(sid)
     assert state3["candidate_sequence"] == "SEQ2"
     assert len(state3["messages"]) == 2  # original + turn 2 user msg
+
+
+def test_delete_existing_session() -> None:
+    mem = SessionMemory()
+    sid = "to-delete"
+    mem.save(sid, default_state("hello"))
+    assert sid in mem.list_sessions()
+    assert mem.delete(sid) is True
+    assert sid not in mem.list_sessions()
+    assert mem.load(sid) == default_state("")
+
+
+def test_delete_missing_session_returns_false() -> None:
+    mem = SessionMemory()
+    assert mem.delete("no-such-session") is False
+
+
+def test_delete_empty_session_id_is_noop() -> None:
+    mem = SessionMemory()
+    assert mem.delete("") is False
+
+
+def test_list_sessions_returns_copy() -> None:
+    mem = SessionMemory()
+    mem.save("a", default_state("a"))
+    mem.save("b", default_state("b"))
+    sessions = mem.list_sessions()
+    assert set(sessions) == {"a", "b"}
+    sessions.clear()
+    assert len(mem.list_sessions()) == 2

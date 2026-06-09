@@ -8,7 +8,6 @@
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
 #   - docs/RNA_AGENT_SYSTEM_GUIDE.md
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -17,59 +16,34 @@
 
 from __future__ import annotations
 
-import re
+import hashlib
 import shutil
-import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 from pydantic import BaseModel, Field
 
-# rna_agent_system/microservices/blast_service/main.py -> parents[2] == rna_agent_system
+from microservices.service_kit import (
+    create_service_app,
+    fasta_from_sequence_text,
+    health_response,
+    require_binary,
+    resolve_host_path,
+    run_subprocess,
+)
+
+# In-memory cache for makeblastdb results: resolved subject path -> (mtime, db_prefix)
+_MAKEBLASTDB_CACHE: dict[str, tuple[float, str]] = {}
+
 RNA_AGENT_SYSTEM_ROOT = Path(__file__).resolve().parents[2]
 
-app = FastAPI(
+app = create_service_app(
     title="BLAST+ blastn service",
     description="Run blastn against a subject FASTA (indexed on the fly) or an existing nucleotide BLAST database.",
     version="0.1.0",
 )
-
-
-def _which(name: str) -> Optional[str]:
-    return shutil.which(name)
-
-
-def _resolve_host_path(raw: str) -> Path:
-    """Resolve repo-relative or absolute paths as seen from the Linux server."""
-    text = raw.strip().strip('"').strip("'")
-    p = Path(text).expanduser()
-    if p.is_absolute():
-        return p.resolve()
-    # Strip redundant repo-root prefix if present (e.g. "rna_agent_system/workspace/...")
-    root_name = RNA_AGENT_SYSTEM_ROOT.name
-    if text.startswith(f"{root_name}/"):
-        text = text[len(f"{root_name}/"):]
-    candidate = (RNA_AGENT_SYSTEM_ROOT / text).resolve()
-    # For files (FASTA) we can check .exists(); for BLAST DB prefixes the
-    # prefix itself does not exist as a single file, but the parent dir should.
-    if candidate.exists() or candidate.parent.exists():
-        return candidate
-    rel = Path(text).resolve()
-    return rel
-
-
-def _fasta_from_sequence_text(raw: str, default_id: str = "query") -> str:
-    """Build a one-entry FASTA from plain or FASTA-like text; normalize RNA U to DNA T for blastn."""
-    lines = [ln.strip() for ln in raw.splitlines() if ln.strip() and not ln.lstrip().startswith(">")]
-    seq = "".join(lines).upper().replace("U", "T")
-    seq = re.sub(r"[^ACGTN]", "", seq)
-    if not seq:
-        raise ValueError("No nucleotide letters found in query after normalization.")
-    header_lines = [ln for ln in raw.splitlines() if ln.strip().startswith(">")]
-    header = header_lines[0].lstrip(">").strip() if header_lines else default_id
-    return f">{header}\n{seq}\n"
 
 
 class BlastnRequest(BaseModel):
@@ -121,15 +95,15 @@ class BlastnResponse(BaseModel):
 
 @app.get("/health")
 def health() -> dict[str, Any]:
-    blastn = _which("blastn")
-    makeblastdb = _which("makeblastdb")
+    blastn = shutil.which("blastn")
+    makeblastdb = shutil.which("makeblastdb")
     ok = bool(blastn and makeblastdb)
-    return {
-        "status": "ok" if ok else "degraded",
-        "blastn": blastn or "",
-        "makeblastdb": makeblastdb or "",
-        "rna_agent_system_root": str(RNA_AGENT_SYSTEM_ROOT),
-    }
+    return health_response(
+        "ok" if ok else "degraded",
+        blastn=blastn or "",
+        makeblastdb=makeblastdb or "",
+        rna_agent_system_root=str(RNA_AGENT_SYSTEM_ROOT),
+    )
 
 
 @app.post("/blastn", response_model=BlastnResponse)
@@ -144,19 +118,18 @@ def run_blastn(payload: BlastnRequest) -> BlastnResponse:
             status_code=400,
             detail="Provide only one of subject_fasta_path or subject_db.",
         )
-    blastn_bin = _which("blastn")
-    makeblastdb_bin = _which("makeblastdb")
-    if not blastn_bin:
-        raise HTTPException(status_code=503, detail="blastn not found in PATH.")
+
+    blastn_bin = require_binary("blastn")
+    makeblastdb_bin = shutil.which("makeblastdb")
     if payload.subject_fasta_path and not makeblastdb_bin:
         raise HTTPException(status_code=503, detail="makeblastdb not found in PATH (required for subject FASTA).")
 
-    qpath = _resolve_host_path(payload.query_filepath)
+    qpath = resolve_host_path(payload.query_filepath, RNA_AGENT_SYSTEM_ROOT)
     if not qpath.is_file():
         raise HTTPException(status_code=400, detail=f"Query file not found: {qpath}")
 
     raw_query = qpath.read_text(encoding="utf-8", errors="replace")
-    query_fasta = _fasta_from_sequence_text(raw_query, default_id=qpath.stem)
+    query_fasta = fasta_from_sequence_text(raw_query, default_id=qpath.stem)
 
     strand = payload.strand.lower().strip()
     if strand not in {"both", "plus", "minus"}:
@@ -171,46 +144,58 @@ def run_blastn(payload: BlastnRequest) -> BlastnResponse:
         query_file.write_text(query_fasta, encoding="utf-8")
 
         if payload.subject_db:
-            db_path = _resolve_host_path(payload.subject_db)
+            db_path = resolve_host_path(payload.subject_db, RNA_AGENT_SYSTEM_ROOT)
             db_prefix = str(db_path)
         else:
             assert payload.subject_fasta_path is not None
-            subj_path = _resolve_host_path(payload.subject_fasta_path)
+            subj_path = resolve_host_path(payload.subject_fasta_path, RNA_AGENT_SYSTEM_ROOT)
             if not subj_path.is_file():
                 raise HTTPException(status_code=400, detail=f"Subject FASTA not found: {subj_path}")
-            db_prefix = str(tmp_path / "subject_db")
-            makeblastdb_cmd = " ".join(
-                [makeblastdb_bin, "-in", str(subj_path), "-dbtype", "nucl", "-out", db_prefix, "-title", "subject"]
-            )
-            mb = subprocess.run(
-                [makeblastdb_bin, "-in", str(subj_path), "-dbtype", "nucl", "-out", db_prefix, "-title", "subject"],
-                capture_output=True,
-                text=True,
-                timeout=3600,
-                check=False,
-            )
-            if mb.returncode != 0:
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"makeblastdb failed (exit {mb.returncode}): {mb.stderr or mb.stdout}",
+
+            # ── Cached makeblastdb ────────────────────────────────────────────
+            cache_key = str(subj_path.resolve())
+            current_mtime = subj_path.stat().st_mtime
+            cached = _MAKEBLASTDB_CACHE.get(cache_key)
+            if cached and cached[0] == current_mtime:
+                # Verify cached DB files still exist
+                if Path(cached[1] + ".nhr").exists():
+                    db_prefix = cached[1]
+                    makeblastdb_cmd = None
+                else:
+                    cached = None
+
+            if not cached or cached[0] != current_mtime:
+                cache_dir = Path(tempfile.gettempdir()) / "blastdb_cache"
+                cache_dir.mkdir(parents=True, exist_ok=True)
+                mtime_hash = hashlib.md5(f"{cache_key}:{current_mtime}".encode()).hexdigest()[:12]
+                db_prefix = str(cache_dir / f"{subj_path.stem}_{mtime_hash}" / "subject_db")
+                Path(db_prefix).parent.mkdir(parents=True, exist_ok=True)
+
+                makeblastdb_cmd = " ".join(
+                    [makeblastdb_bin, "-in", str(subj_path), "-dbtype", "nucl", "-out", db_prefix, "-title", "subject"]
                 )
+                _, stderr, rc = run_subprocess(
+                    [makeblastdb_bin, "-in", str(subj_path), "-dbtype", "nucl", "-out", db_prefix, "-title", "subject"],
+                    timeout=3600,
+                    check=False,
+                )
+                if rc != 0:
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"makeblastdb failed (exit {rc}): {stderr}",
+                    )
+                _MAKEBLASTDB_CACHE[cache_key] = (current_mtime, db_prefix)
+            # ── End cache ─────────────────────────────────────────────────────
 
         blast_args: list[str] = [
             blastn_bin,
-            "-query",
-            str(query_file),
-            "-db",
-            db_prefix,
-            "-task",
-            payload.task.strip(),
-            "-evalue",
-            str(payload.evalue),
-            "-max_target_seqs",
-            str(payload.max_target_seqs),
-            "-outfmt",
-            payload.outfmt.strip(),
-            "-strand",
-            strand,
+            "-query", str(query_file),
+            "-db", db_prefix,
+            "-task", payload.task.strip(),
+            "-evalue", str(payload.evalue),
+            "-max_target_seqs", str(payload.max_target_seqs),
+            "-outfmt", payload.outfmt.strip(),
+            "-strand", strand,
         ]
         if payload.word_size is not None:
             blast_args.extend(["-word_size", str(int(payload.word_size))])
@@ -218,20 +203,17 @@ def run_blastn(payload: BlastnRequest) -> BlastnResponse:
             blast_args.extend(["-perc_identity", str(float(payload.perc_identity))])
 
         blastn_command = " ".join(blast_args)
-        proc = subprocess.run(
+        stdout, stderr, rc = run_subprocess(
             blast_args,
-            capture_output=True,
-            text=True,
             timeout=int(payload.blastn_timeout_sec),
             check=False,
         )
-        if proc.returncode != 0:
+        if rc != 0:
             raise HTTPException(
                 status_code=500,
-                detail=f"blastn failed (exit {proc.returncode}): {proc.stderr or proc.stdout}",
+                detail=f"blastn failed (exit {rc}): {stderr}",
             )
 
-        stdout = proc.stdout or ""
         lines = [ln for ln in stdout.splitlines() if ln.strip()]
         hit_count = len(lines)
         preview_lines = lines[:30]
@@ -251,8 +233,10 @@ def run_blastn(payload: BlastnRequest) -> BlastnResponse:
         tabular_output_truncated=tab_trunc,
         blastn_command=blastn_command,
         makeblastdb_command=makeblastdb_cmd,
-        stderr=(proc.stderr or "")[:8000],
+        stderr=(stderr or "")[:8000],
         subject_mode="fasta" if payload.subject_fasta_path else "db",
         resolved_query_path=str(qpath),
-        resolved_subject=str(_resolve_host_path(payload.subject_fasta_path or payload.subject_db or "")),
+        resolved_subject=str(
+            resolve_host_path(payload.subject_fasta_path or payload.subject_db or "", RNA_AGENT_SYSTEM_ROOT)
+        ),
     )

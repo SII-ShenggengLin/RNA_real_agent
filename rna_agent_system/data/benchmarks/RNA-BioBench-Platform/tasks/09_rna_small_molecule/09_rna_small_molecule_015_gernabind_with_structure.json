@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_015_gernabind_with_structure",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "GerNA-Bind with precomputed 3D RNA structure path",
+  "input": {
+    "rna_sequence": "GGGAAACCC",
+    "smiles": "Nc1nc2[nH]cnc2c1=O",
+    "rna_structure_path": "data/benchmarks/RNA-BioBench-Platform/tasks/09_rna_small_molecule/test_structures/guanine_aptamer.pdb",
+    "secondary_structure": null,
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": null,
+    "split_method": null
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Synthetic RNA + guanine SMILES with structure placeholder",
+  "paper_reference": null
+}

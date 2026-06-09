@@ -1,0 +1,25 @@
+{
+  "task_id": "01_mrna_cds_design_010",
+  "workflow": "mrna_cds_design",
+  "category": "edge",
+  "description": "LinearDesign with run_fold=False and run_gc=False (evaluator switches off)",
+  "input": {
+    "protein_sequence": "MATGSRTSLLLAFGLLCLPWLQEGSAFPTIPLSRLFDNAMLRAHRLHQLAFDTYQEFEEAYIPKEQKYSFLQNPQTSLCFSESIPTPSNREETQQKSNLELLRISLLLIQSWLEPVQFLRSVFANSLVYGASDSNVYDLLKDLEEGIQTLMGRLEDGSPRTGQIFKQTYSKFDTNSHNDDALLKNYGLLYCFRKDMDKVETFLRIVQCRSVEGSCGF",
+    "design_tool": "lineardesign",
+    "lambda_value": 2.0,
+    "cai_species": "Homo sapiens",
+    "run_fold": false,
+    "run_gc": false
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "design_mrna_cds_with_lineardesign",
+    "predict_mrna_stability_with_rnastop",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cds_generated": true
+  },
+  "source": "UniProt P01241 (Growth hormone)",
+  "paper_reference": "doi:10.1056/NEJM198510243131703"
+}

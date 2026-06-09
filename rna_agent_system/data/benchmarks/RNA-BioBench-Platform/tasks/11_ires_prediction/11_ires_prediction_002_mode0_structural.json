@@ -1,0 +1,25 @@
+{
+  "task_id": "11_ires_prediction_002_mode0_structural",
+  "workflow": "ires_prediction",
+  "category": "full",
+  "description": "IRES prediction mode 0 with structural validation enabled (ViennaRNA fold + RNAplfold + dot-bracket analysis).",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "iresfinder_mode": 0,
+    "probability_threshold": 0.4,
+    "top_n_candidates": 5,
+    "run_structural_validation": true
+  },
+  "expected_tool_chain": [
+    "compute_dot_bracket_unpaired_fraction",
+    "predict_putative_ires_with_iresfinder",
+    "predict_rna_local_accessibility_profile_vienna",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "probability_threshold": 0.4
+  },
+  "source": "Synthetic 5'UTR (400 nt, balanced GC content)",
+  "paper_reference": null
+}

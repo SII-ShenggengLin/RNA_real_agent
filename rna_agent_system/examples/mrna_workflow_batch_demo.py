@@ -23,8 +23,7 @@ if str(APP_ROOT) not in sys.path:
 from agent_core.workflow_baseline_eval import (  # noqa: E402
     DEFAULT_SAMPLES_PATH,
     load_baseline_samples,
-    run_baseline_batch,
-)
+    run_baseline_batch)
 
 
 def main() -> int:
@@ -33,8 +32,7 @@ def main() -> int:
         "--samples",
         type=Path,
         default=DEFAULT_SAMPLES_PATH,
-        help="Path to mrna_baseline_samples.json",
-    )
+        help="Path to mrna_baseline_samples.json")
     p.add_argument("--json", action="store_true", help="Print full row objects as JSON array.")
     args = p.parse_args()
 
@@ -43,9 +41,7 @@ def main() -> int:
         return 2
 
     rows = run_baseline_batch(
-        samples_path=args.samples,
-        persist_run=False,
-    )
+        samples_path=args.samples)
     if args.json:
         print(json.dumps(rows, indent=2, ensure_ascii=True))
     else:

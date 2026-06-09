@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_004_theophylline",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "Synthetic short RNA with theophylline",
+  "input": {
+    "rna_sequence": "GGGAAACCC",
+    "smiles": "CN1C=NC2=C1C(=O)NC(=O)N2C",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": null,
+    "split_method": null
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Literature-known interaction",
+  "paper_reference": null
+}

@@ -1,0 +1,41 @@
+{
+  "dataset_name": "RNA-BioBench-FullLength-mRNA",
+  "schema_version": "1.1.0",
+  "description": "Benchmark dataset for full-length mRNA design (Type-I BMC) — expanded to 20 targets",
+  "created_date": "2026-05-28",
+  "targets": [
+    "A1AT",
+    "Albumin",
+    "Beta_galactosidase",
+    "EPO",
+    "Factor_VIII",
+    "GFP",
+    "Growth_hormone",
+    "HER2",
+    "HIV-1_Env_gp120",
+    "HPV16_L1",
+    "IFN_alpha_2a",
+    "IL-2",
+    "Influenza_HA_H1N1",
+    "Insulin",
+    "Luciferase",
+    "Ovalbumin",
+    "RSV_F_protein",
+    "SARS-CoV-2_Spike_WT",
+    "Transferrin",
+    "Zika_E_protein"
+  ],
+  "target_count": 20,
+  "fields": [
+    "target_id",
+    "target_name",
+    "target_type",
+    "accession",
+    "protein_sequence",
+    "protein_length_aa",
+    "species_for_codon_optimization",
+    "expression_system",
+    "expected_cds_length_nt",
+    "paper_references"
+  ]
+}

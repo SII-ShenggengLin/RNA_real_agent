@@ -1,0 +1,130 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "06_rna_secondary_structure_001_basic_hairpin",
+      "file": "06_rna_secondary_structure_001_basic_hairpin.json",
+      "sha256": "51768dd898b74c9258682e0300e9a520df70d2395e9fe8444350ad53ba62cddc"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_002_complex_structure",
+      "file": "06_rna_secondary_structure_002_complex_structure.json",
+      "sha256": "62a3f8352ed6a959fccf22019091b477895f03598f43231138676545d70bdf07"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_003_ires_mimic",
+      "file": "06_rna_secondary_structure_003_ires_mimic.json",
+      "sha256": "2fc435e7feec8b8f32205752bd0e2a8436f053c130939e47afff956b6c077c89"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_004_bulge",
+      "file": "06_rna_secondary_structure_004_bulge.json",
+      "sha256": "84cdd62f2392c23ea1a0dea224ec09cc867265e802ae99b3bd2998dbd4e9edb4"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_005_internal_loop",
+      "file": "06_rna_secondary_structure_005_internal_loop.json",
+      "sha256": "681b36ed4c1601f2252f49d0c21f2162213f21b44651931c0bdf06e065568c2c"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_006_tandem_hairpin",
+      "file": "06_rna_secondary_structure_006_tandem_hairpin.json",
+      "sha256": "f53fb89c8a704bb1a369c6e1dfbeae0b607597e961e3a42e106bf3037454cae8"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_007_long_hairpin",
+      "file": "06_rna_secondary_structure_007_long_hairpin.json",
+      "sha256": "a66c0779dd306e39a1de558bdb4be03ae49e2c25a4825ef96df4dcd86c393abf"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_008_cloverleaf",
+      "file": "06_rna_secondary_structure_008_cloverleaf.json",
+      "sha256": "98083560c041406fe6da808332a8e6eee99867373a824660d84d11d6f8a1fa3f"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_009_triple_stem",
+      "file": "06_rna_secondary_structure_009_triple_stem.json",
+      "sha256": "d9ebf4342338c41fc0e57d65696950c4600e3b4579ee005d2bcd347c19434c3e"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_010_asymmetric",
+      "file": "06_rna_secondary_structure_010_asymmetric.json",
+      "sha256": "9b83c27836cf1eef2055e3855fb9e7f9dadfdab0ba1b947b15d414d46645cc97"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_011_start_sequence_mixed",
+      "file": "06_rna_secondary_structure_011_start_sequence_mixed.json",
+      "sha256": "69d4525c309077a22371c3fd20394f083cba5a14713dcf8370da1372590eaadf"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_012_temp_low",
+      "file": "06_rna_secondary_structure_012_temp_low.json",
+      "sha256": "63f126de56bcffb7dd5ec0cc316a36cd5da7ec8a77208d7f1633a44408c120bf"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_013_temp_high",
+      "file": "06_rna_secondary_structure_013_temp_high.json",
+      "sha256": "70fcd4acbdf19510d75027a09f83a66aa4dce0c960bcd7996b7e3edb92efa526"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_014_function_mode_p",
+      "file": "06_rna_secondary_structure_014_function_mode_p.json",
+      "sha256": "f4d9c0e990ebb9c777728d3afe804fdcbcc47ac866874f97b2458d24051a1688"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_015_function_mode_mp",
+      "file": "06_rna_secondary_structure_015_function_mode_mp.json",
+      "sha256": "1452560425654da7363bfbcdc387ff977c5b99f57365bb7a506e13675ea24e96"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_016_repeats_boundary",
+      "file": "06_rna_secondary_structure_016_repeats_boundary.json",
+      "sha256": "4e342a1269346e33dba97cb4fd29b0533ca9a2ba27d51d8f9c0fd9be2357d2fa"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_017_invocations_boundary",
+      "file": "06_rna_secondary_structure_017_invocations_boundary.json",
+      "sha256": "59cf91dada397f5298e353a7f39432e38ff23ddd64209a8d85372a7c703fe8ab"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_018_combined_params",
+      "file": "06_rna_secondary_structure_018_combined_params.json",
+      "sha256": "dba2fd2eb50c83bbfdea2d2da2ec3ded79e55879a6d93c38de6e4f91011fb90e"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_019_repeats_max_boundary",
+      "file": "06_rna_secondary_structure_019_repeats_max_boundary.json",
+      "sha256": "12b71dc3da5489f8c5a910c34d587e549ced1994b29b9401ba874f18fd51617f"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_020_temp_extreme_low",
+      "file": "06_rna_secondary_structure_020_temp_extreme_low.json",
+      "sha256": "f150a97d8bbe9ba6b36a5fb7b2d3599cbe66f2e659ffec7b71385be14c456bdb"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_021_temp_extreme_high",
+      "file": "06_rna_secondary_structure_021_temp_extreme_high.json",
+      "sha256": "fc9f0a0000937f07958e8aae0d234f89a7c08f620236facc4781c70c69c1a7bd"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_022_start_sequence_fully_fixed",
+      "file": "06_rna_secondary_structure_022_start_sequence_fully_fixed.json",
+      "sha256": "3f118ee1f75fad11601f3c8e67e91b32d2b0052d7cd99876abaa573b9394687f"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_023_start_sequence_all_n",
+      "file": "06_rna_secondary_structure_023_start_sequence_all_n.json",
+      "sha256": "a9ba0591368d0f42f4a8270afa3de84c62c59ac81aa887d47909726881b3b7eb"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_024_long_sequence",
+      "file": "06_rna_secondary_structure_024_long_sequence.json",
+      "sha256": "6ed538cff7628ab411f6cb0e07833e5c08966beb41c08707a63ce9334055a9e9"
+    },
+    {
+      "task_id": "06_rna_secondary_structure_025_fixed_loop_constraint",
+      "file": "06_rna_secondary_structure_025_fixed_loop_constraint.json",
+      "sha256": "c024aef6054211cafbf67444acf229eaf7c859472fb92925a94258f543623d69"
+    }
+  ]
+}

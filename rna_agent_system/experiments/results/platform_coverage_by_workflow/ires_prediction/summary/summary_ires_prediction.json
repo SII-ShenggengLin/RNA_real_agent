@@ -1,0 +1,34 @@
+{
+  "workflow": "ires_prediction",
+  "generated_at": "2026-06-07T10:31:55.717981+00:00",
+  "total_tasks": 12,
+  "success_count": 12,
+  "success_rate": 1.0,
+  "tool_correctness_count": 12,
+  "tool_correctness_rate": 1.0,
+  "category_breakdown": {
+    "basic": {
+      "total": 3,
+      "success": 3,
+      "tool_correct": 3,
+      "success_rate": 1.0,
+      "tool_correct_rate": 1.0
+    },
+    "edge": {
+      "total": 6,
+      "success": 6,
+      "tool_correct": 6,
+      "success_rate": 1.0,
+      "tool_correct_rate": 1.0
+    },
+    "full": {
+      "total": 3,
+      "success": 3,
+      "tool_correct": 3,
+      "success_rate": 1.0,
+      "tool_correct_rate": 1.0
+    }
+  },
+  "raw_results_path": "experiments/results/platform_coverage_by_workflow/ires_prediction/raw/platform_coverage_ires_prediction.jsonl",
+  "log_path": "experiments/results/platform_coverage_by_workflow/ires_prediction/logs/run_ires_prediction_20260607_103043.log"
+}

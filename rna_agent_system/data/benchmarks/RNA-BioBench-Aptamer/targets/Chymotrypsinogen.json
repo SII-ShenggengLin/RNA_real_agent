@@ -1,0 +1,20 @@
+{
+  "target_id": "Chymotrypsinogen",
+  "target_name": "Chymotrypsinogen A",
+  "target_type": "model",
+  "pdb_id": "2CGA",
+  "pdb_chain": "A",
+  "uniprot_accession": "P00766",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Activation peptide region",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1021/bi00244a020"
+  ],
+  "notes": "Zymogen precursor; protease activation model",
+  "protein_sequence": "CGVPAIQPVLSGLSRIVNGEEAVPGSWPWQVSLQDKTGFHFCGGSLINENWVVTAAHCGVTTSDVVVAGEFDQGSSSEKIQKLKIAKVFKNSKYNSLTINNDITLLKLSTAASFSQTVSAVCLPSASDDFAAGTTCVTTGWGLTRYTNANTPDRLQQASLPLLSNTNCKKYWGTKIKDAMICAGASGVSSCMGDSGGPLVCKKNGAWTLVGIVSWGSSTCSTSTPGVYARVTALVNWVQQTLAAN",
+  "protein_length_aa": 245,
+  "sequence_checksum": "E5B5E75ED93951390EEF479D8C802AAD",
+  "organism_scientific": "Bos taurus",
+  "gene": []
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "05_sgrna_design_005_seed_002",
+  "workflow": "sgrna_design",
+  "category": "edge",
+  "description": "sgRNA design with seed seed_002",
+  "input": {
+    "seed_sequence": "TATGGTAGCTAGTCCTTATGAAATGAGATGCTAGTCCGTTATCAACTGAAAAAGTGATCGATC",
+    "n_samples": 5,
+    "mutation_number": 2,
+    "sampling_mode": "mcmc",
+    "max_overlap": 21,
+    "evaluate_crgpt_score": true,
+    "evaluate_crisot": false,
+    "weight_nn_score": 0.5,
+    "weight_crisot": 0.5
+  },
+  "expected_tool_chain": [
+    "design_sgrna_handle_with_crgpt",
+    "score_sgrna_handle_with_crgpt"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 3,
+    "max_overlap_violations": 0
+  },
+  "source": "Synthetic seed variation",
+  "paper_reference": null
+}

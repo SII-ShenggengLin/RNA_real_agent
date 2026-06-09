@@ -1,0 +1,100 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "01_mrna_cds_design_001",
+      "file": "01_mrna_cds_design_001.json",
+      "sha256": "3db0ecefd2bd14bb12f1b7b4d0f7495e4a3fc57003563839e8700cfce61b176e"
+    },
+    {
+      "task_id": "01_mrna_cds_design_002",
+      "file": "01_mrna_cds_design_002.json",
+      "sha256": "6175b4ba33fe3ae11dc4ffc78f3b4c64cb589cefcbf552b850ea65fd36a5716a"
+    },
+    {
+      "task_id": "01_mrna_cds_design_003",
+      "file": "01_mrna_cds_design_003.json",
+      "sha256": "cf18114c9f21bfe2f2cbba81ca68ec45cebe35257103e30b1dd7b6bbaaa1bc72"
+    },
+    {
+      "task_id": "01_mrna_cds_design_004",
+      "file": "01_mrna_cds_design_004.json",
+      "sha256": "12d1a3514391e1d2344da13e8e4192b147d6c01eb9d81e57e16d4ad687332370"
+    },
+    {
+      "task_id": "01_mrna_cds_design_005",
+      "file": "01_mrna_cds_design_005.json",
+      "sha256": "f8be473be8cb1320c5b4742f9d7dbf5f1a93be62742f39a43854d57b24812365"
+    },
+    {
+      "task_id": "01_mrna_cds_design_006",
+      "file": "01_mrna_cds_design_006.json",
+      "sha256": "e6ac22bcacf8d217029f4ccaffc7563b90029229a7d1dae2f2bd0819442153cb"
+    },
+    {
+      "task_id": "01_mrna_cds_design_007",
+      "file": "01_mrna_cds_design_007.json",
+      "sha256": "80775e7993da002eb10ef0a1c611e09f73fe320ccabc0b33559e59978a916930"
+    },
+    {
+      "task_id": "01_mrna_cds_design_008",
+      "file": "01_mrna_cds_design_008.json",
+      "sha256": "7f3d5484a06e6c28f05a10d121ecbaa2f9e3f1510dceae9c2b938a64a3a5c3ac"
+    },
+    {
+      "task_id": "01_mrna_cds_design_009",
+      "file": "01_mrna_cds_design_009.json",
+      "sha256": "5ec6aa11347d29e7f488d3388215b0cd750c007e5058f666b32feae343db8d66"
+    },
+    {
+      "task_id": "01_mrna_cds_design_010",
+      "file": "01_mrna_cds_design_010.json",
+      "sha256": "bacd89487ed895afca7c09eb226ed7f29d2004a190f8ab3a9f575bed39c9508f"
+    },
+    {
+      "task_id": "01_mrna_cds_design_011",
+      "file": "01_mrna_cds_design_011.json",
+      "sha256": "bd05e0a3e5812077cb847cb6c48a2e440e4066173257e0b4bd677fedce354d73"
+    },
+    {
+      "task_id": "01_mrna_cds_design_012",
+      "file": "01_mrna_cds_design_012.json",
+      "sha256": "8a17b29977c5ed06d6bce2f99dd1d5ede0a9b3fe77c37d73886e1738e1e45acd"
+    },
+    {
+      "task_id": "01_mrna_cds_design_013",
+      "file": "01_mrna_cds_design_013.json",
+      "sha256": "60681b2f86225886462ebcd068df9ff2d0b7c297fa68c78efdccee8a30c1b370"
+    },
+    {
+      "task_id": "01_mrna_cds_design_014",
+      "file": "01_mrna_cds_design_014.json",
+      "sha256": "ef176c4fdaa1ea33ffb97002ee4da33413c2e9a77738efb78783f7f6a17786d8"
+    },
+    {
+      "task_id": "01_mrna_cds_design_015",
+      "file": "01_mrna_cds_design_015.json",
+      "sha256": "e2852e270334e05a79adcdf2875dab47cdeb7c7b33fbd70d57915ca4aa1af1a0"
+    },
+    {
+      "task_id": "01_mrna_cds_design_016",
+      "file": "01_mrna_cds_design_016.json",
+      "sha256": "d65c44b339d08b0b0a3a1e6591f3651303dd6334d0a9af064685acfaae0d3244"
+    },
+    {
+      "task_id": "01_mrna_cds_design_017",
+      "file": "01_mrna_cds_design_017.json",
+      "sha256": "770908b3118883670be9741775ce3f51c06b008a9954aae9eb437e12b8b317c3"
+    },
+    {
+      "task_id": "01_mrna_cds_design_018",
+      "file": "01_mrna_cds_design_018.json",
+      "sha256": "565735196da10c5220926f23638d51e00c1630fc083ee23cb5d12875e633ba66"
+    },
+    {
+      "task_id": "01_mrna_cds_design_019",
+      "file": "01_mrna_cds_design_019.json",
+      "sha256": "99f5367d3c1e34173e9c1663d63243031e331a3bfebbb666d2452ff1b7a190f9"
+    }
+  ]
+}

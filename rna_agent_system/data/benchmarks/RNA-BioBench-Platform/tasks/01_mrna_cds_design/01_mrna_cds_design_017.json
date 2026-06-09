@@ -1,0 +1,27 @@
+{
+  "task_id": "01_mrna_cds_design_017",
+  "workflow": "mrna_cds_design",
+  "category": "edge",
+  "description": "LinearDesign with run_fold=False and run_gc=True (partial evaluation)",
+  "input": {
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
+    "design_tool": "lineardesign",
+    "lambda_value": 2.0,
+    "cai_species": "Homo sapiens",
+    "run_fold": false,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_rna_sequence_gc_content",
+    "design_mrna_cds_with_lineardesign",
+    "predict_mrna_stability_with_rnastop",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cai_threshold": 0.8,
+    "mfe_threshold": -50.0
+  },
+  "source": "UniProt P42212 (GFP)",
+  "paper_reference": "doi:10.1126/science.8303295"
+}

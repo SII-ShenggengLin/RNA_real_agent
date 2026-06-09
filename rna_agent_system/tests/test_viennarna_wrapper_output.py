@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from types import SimpleNamespace
 from unittest.mock import patch
 
 from agent_core.tools import predict_rna_secondary_structure

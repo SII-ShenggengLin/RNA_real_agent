@@ -1,0 +1,28 @@
+{
+  "task_id": "01_mrna_cds_design_016",
+  "workflow": "mrna_cds_design",
+  "category": "edge",
+  "description": "LinearDesign with run_fold=True and run_gc=False (partial evaluation)",
+  "input": {
+    "protein_sequence": "MKTLLILTVFGITMLLAVLAQG",
+    "design_tool": "lineardesign",
+    "lambda_value": 2.0,
+    "cai_species": "Homo sapiens",
+    "run_fold": true,
+    "run_gc": false
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_dot_bracket_unpaired_fraction",
+    "design_mrna_cds_with_lineardesign",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cai_threshold": 0.6,
+    "mfe_threshold": -30.0
+  },
+  "source": "Synthetic short peptide",
+  "paper_reference": null
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_013_gernabind_dataset_split",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "GerNA-Bind with dataset and split_method hints for checkpoint selection",
+  "input": {
+    "rna_sequence": "GGGCGCAUGCGCAUACGCAUGCGCAUACGCAUGCGCCC",
+    "smiles": "CN(C)C1C2CC3CC(C2)CC1C3",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": "Robin",
+    "split_method": "random"
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Literature-known interaction",
+  "paper_reference": null
+}

@@ -1,0 +1,26 @@
+{
+  "task_id": "03_mrna_sequence_scoring_001_basic",
+  "workflow": "mrna_sequence_scoring",
+  "category": "basic",
+  "description": "Single short sequence scoring",
+  "input": {
+    "sequence": "AUGGCCGAAUGGCCGAAUGGCCAA",
+    "gc_tool_name": "compute_rna_sequence_gc_content",
+    "fold_tool_name": "predict_rna_secondary_structure_with_linearfold",
+    "run_gc_tool": true,
+    "run_fold_tool": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_rna_sequence_gc_content",
+    "predict_rna_secondary_structure_with_linearfold"
+  ],
+  "evaluation_rubric": {
+    "score_range": [
+      0.0,
+      100.0
+    ]
+  },
+  "source": "Synthetic test sequence",
+  "paper_reference": null
+}

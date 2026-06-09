@@ -1,0 +1,22 @@
+{
+  "task_id": "11_ires_prediction_003_mode0_low_thresh",
+  "workflow": "ires_prediction",
+  "category": "edge",
+  "description": "IRES prediction mode 0 with probability_threshold=0.0 (boundary test). All fragments should be labeled IRES.",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "iresfinder_mode": 0,
+    "probability_threshold": 0.0,
+    "top_n_candidates": 5,
+    "run_structural_validation": false
+  },
+  "expected_tool_chain": [
+    "predict_putative_ires_with_iresfinder"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "probability_threshold": 0.0
+  },
+  "source": "Boundary test: zero threshold",
+  "paper_reference": null
+}

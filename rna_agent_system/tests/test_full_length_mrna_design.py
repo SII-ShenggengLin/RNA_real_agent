@@ -9,6 +9,8 @@ Covers:
 
 from __future__ import annotations
 
+from tests.helpers import make_mock_capability
+
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -17,8 +19,9 @@ import pytest
 from agent_core.capabilities.base import CapabilityResult
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.full_length_mrna_design import (
-    FullLengthMrnaCritic,
+    FULL_LENGTH_MRNA_CRITIC_CONFIG,
     FullLengthMrnaDesignInput,
+    FullLengthMrnaDesignLLMCritic,
     FullLengthMrnaDesignWorkflow,
     score_full_length_mrna_candidate,
 )
@@ -95,11 +98,10 @@ def test_score_full_length_pure_cds():
 def test_input_defaults():
     inp = FullLengthMrnaDesignInput(protein_sequence="MKT")
     assert inp.design_tool == "all"
-    assert inp.lambda_value == 0.0
+    assert inp.lambda_value is None
+    assert inp.cai_species == "Homo sapiens"
     assert inp.model_type == "Homo sapiens mRNA"
     assert inp.utr_mode == "all"
-    assert inp.run_fold is True
-    assert inp.run_gc is True
     assert inp.run_fold is True
     assert inp.run_gc is True
 
@@ -143,32 +145,22 @@ def test_input_dict_coercion():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def _make_mock_capability(output: dict[str, Any]) -> MagicMock:
-    cap = MagicMock()
-    cap.invoke.return_value = CapabilityResult(
-        success=True,
-        tool_name="mock",
-        output=output,
-    )
-    return cap
-
-
 def _make_registry_with_mocks() -> MagicMock:
     """Build a mock registry that returns deterministic sequences for every tool."""
     reg = MagicMock()
 
     # CDS tools
-    cap_ld = _make_mock_capability({"generated_sequence": "AUGCCCGGGUUU"})
-    cap_rnarl = _make_mock_capability({"generated_sequence": "AUGGGGCCCUUU"})
-    cap_gemorna_cds = _make_mock_capability({"generated_sequence": "AUGUUUGGGCCC"})
+    cap_ld = make_mock_capability({"generated_sequence": "AUGCCCGGGUUU"})
+    cap_rnarl = make_mock_capability({"generated_sequence": "AUGGGGCCCUUU"})
+    cap_gemorna_cds = make_mock_capability({"generated_sequence": "AUGUUUGGGCCC"})
 
     # UTR tools
-    cap_utr5_short = _make_mock_capability({"generated_sequence": "GGGAAA"})
-    cap_utr5_medium = _make_mock_capability({"generated_sequence": "GGGAAACCCUUU"})
-    cap_utr5_long = _make_mock_capability({"generated_sequence": "GGGAAACCCUUUGGGAAA"})
-    cap_utr3_short = _make_mock_capability({"generated_sequence": "AAAUUU"})
-    cap_utr3_medium = _make_mock_capability({"generated_sequence": "AAAUUUGGGCCC"})
-    cap_utr3_long = _make_mock_capability({"generated_sequence": "AAAUUUGGGCCCUUUAAA"})
+    cap_utr5_short = make_mock_capability({"generated_sequence": "GGGAAA"})
+    cap_utr5_medium = make_mock_capability({"generated_sequence": "GGGAAACCCUUU"})
+    cap_utr5_long = make_mock_capability({"generated_sequence": "GGGAAACCCUUUGGGAAA"})
+    cap_utr3_short = make_mock_capability({"generated_sequence": "AAAUUU"})
+    cap_utr3_medium = make_mock_capability({"generated_sequence": "AAAUUUGGGCCC"})
+    cap_utr3_long = make_mock_capability({"generated_sequence": "AAAUUUGGGCCCUUUAAA"})
 
     caps = {
         "design_mrna_cds_with_lineardesign": cap_ld,
@@ -253,7 +245,7 @@ def test_generate_candidates_dedup_full_sequence():
     reg = MagicMock()
 
     # All tools return identical sequences → after dedup we get 1 CDS × 9 UTR
-    cap = _make_mock_capability({"generated_sequence": "AUGCCC"})
+    cap = make_mock_capability({"generated_sequence": "AUGCCC"})
 
     utr_seqs = {
         "short": "SSS",
@@ -292,17 +284,17 @@ def test_generate_candidates_dedup_full_sequence():
 def test_generate_candidates_skips_cds_not_multiple_of_3():
     """CDS length must be a multiple of 3; non-conforming candidates are skipped."""
     reg = MagicMock()
-    cap = _make_mock_capability({"generated_sequence": "AUGCC"})  # 5 nt — bad
+    cap = make_mock_capability({"generated_sequence": "AUGCC"})  # 5 nt — bad
     caps = {
         "design_mrna_cds_with_lineardesign": cap,
-        "design_5utr_with_gemorna": _make_mock_capability({"generated_sequence": "UUU"}),
-        "design_3utr_with_gemorna": _make_mock_capability({"generated_sequence": "AAA"}),
+        "design_5utr_with_gemorna": make_mock_capability({"generated_sequence": "UUU"}),
+        "design_3utr_with_gemorna": make_mock_capability({"generated_sequence": "AAA"}),
     }
     reg.has = lambda name: name in caps
     reg.get = lambda name: caps[name]
 
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="lineardesign")
+    inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="lineardesign", lambda_value=0.0)
     candidates = wf.generate_candidates(inp)
     assert len(candidates) == 0
 
@@ -440,14 +432,14 @@ def test_evaluate_returns_expected_keys():
 
 
 def test_rank_aggregation_produces_total_rank():
-    """Rank aggregation (Borda count): each module sorted independently,
+    """Equal-weight 5-dimensional Borda count: each module sorted independently,
     ranks summed, candidates ordered by total_rank."""
     reg = _make_registry_for_eval()
     wf = FullLengthMrnaDesignWorkflow(reg)
     c1 = Candidate(
         sequence="GGGAAACCCUUUAUGCCCGGGUUUAAAUUU",
         metadata={
-            "utr5_sequence": "GGGAAACCCUUU",
+            "utr5_sequence": "GGGAAACCCUUU",   # len=12 → MRL evaluated
             "cds_sequence": "AUGCCCGGGUUU",
             "utr3_sequence": "AAAUUU",
         },
@@ -455,7 +447,7 @@ def test_rank_aggregation_produces_total_rank():
     c2 = Candidate(
         sequence="CCCUUUGGGAAAUUUGGGCCCAAACCC",
         metadata={
-            "utr5_sequence": "CCCUUU",
+            "utr5_sequence": "CCCUUU",         # len=6  → MRL skipped (0.0)
             "cds_sequence": "GGGAAAUUUGGGCCC",
             "utr3_sequence": "AAACCC",
         },
@@ -464,12 +456,12 @@ def test_rank_aggregation_produces_total_rank():
         metrics = wf.evaluate(c)
         c.scores = wf.score(metrics)
     result = wf.rank_and_format([c1, c2])
-    # With identical mock values, stable sort gives c1 rank=1 in each
-    # module, c2 rank=2 → total_rank c1=3, c2=6
     assert result.success is True
     assert result.best_candidate is c1
-    assert c1.scores["total_rank"] == 3
-    assert c2.scores["total_rank"] == 6
+    # Equal-weight Borda: c1 wins in cds, utr5_mrl, utr3, full_mfe; c2 wins in junction.
+    # c1 total_rank = 1+1+1+1+2 = 6, c2 total_rank = 2+2+2+2+1 = 9
+    assert c1.scores["total_rank"] == 6
+    assert c2.scores["total_rank"] == 9
     assert c1.scores["cds_rank"] == 1
     assert c2.scores["cds_rank"] == 2
 
@@ -503,97 +495,123 @@ def test_rank_and_format_empty_candidates():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 5. Critic tests
+# 5. LLM Critic tests
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def _make_candidates(good: int, bad: int, missing: int = 0) -> list[Candidate]:
-    """Helper to build candidate lists for critic tests.
-
-    good  → IRES potential = 0.3 (below threshold)
-    bad   → IRES potential = 0.8 (above threshold)
-    missing → no utr5_ires_potential key at all
-    """
-    cands: list[Candidate] = []
-    for i in range(good):
-        cands.append(Candidate(
-            sequence=f"GOOD{i}", scores={},
-            metadata={"metrics_bundle": {"utr5_ires_potential": 0.3}},
-        ))
-    for i in range(bad):
-        cands.append(Candidate(
-            sequence=f"BAD{i}", scores={},
-            metadata={"metrics_bundle": {"utr5_ires_potential": 0.8}},
-        ))
-    for i in range(missing):
-        cands.append(Candidate(
-            sequence=f"MISS{i}", scores={},
-            metadata={"metrics_bundle": {}},
-        ))
-    return cands
+def test_llm_critic_config():
+    """CriticConfig has correct workflow name and evaluation dimensions."""
+    cfg = FULL_LENGTH_MRNA_CRITIC_CONFIG
+    assert cfg.workflow_name == "full_length_mrna_design"
+    assert "UTR length mode" in cfg.evaluation_dimensions[0]
+    assert "IRES potential" in cfg.evaluation_dimensions[3]
+    assert "CDS quality" in cfg.evaluation_dimensions[6]
+    assert "utr_mode" in cfg.adjustable_params
+    assert "design_tool" in cfg.adjustable_params
+    assert "lambda_value" in cfg.adjustable_params
+    assert cfg.retry_strategy == "adjust_params"
+    assert cfg.max_retries == 2
 
 
-def test_critic_no_retry_when_remaining_sufficient():
-    """7 good + 3 bad → 7 remain ≥ 5 → no retry."""
-    critic = FullLengthMrnaCritic()
-    cands = _make_candidates(good=7, bad=3)
+def test_llm_critic_default_config():
+    """FullLengthMrnaDesignLLMCritic exposes the correct default config."""
+    critic = FullLengthMrnaDesignLLMCritic()
+    assert critic.config.workflow_name == "full_length_mrna_design"
+
+
+def test_llm_critic_build_context_stats():
+    """_build_context includes full-length specific statistics."""
+    cands = [
+        Candidate(
+            sequence="AUGCCC",
+            scores={"total_score": -1.0},
+            metadata={
+                "utr5_preset": "short",
+                "utr3_preset": "long",
+                "cds_source": "lineardesign",
+                "metrics_bundle": {
+                    "utr5_predicted_mrl": 5.5,
+                    "utr3_predicted_stability": 0.6,
+                    "utr5_ires_potential": 0.3,
+                    "full_length_mfe": -20.0,
+                    "total_length": 100,
+                },
+            },
+        ),
+        Candidate(
+            sequence="AUGGGG",
+            scores={"total_score": -2.0},
+            metadata={
+                "utr5_preset": "medium",
+                "utr3_preset": "short",
+                "cds_source": "rnarl",
+                "metrics_bundle": {
+                    "utr5_predicted_mrl": 6.5,
+                    "utr3_predicted_stability": 0.8,
+                    "utr5_ires_potential": 0.7,
+                    "full_length_mfe": -25.0,
+                    "total_length": 120,
+                },
+            },
+        ),
+    ]
     result = WorkflowResult(
-        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
+        success=True,
+        task_id="t1",
+        best_candidate=cands[0],
+        all_candidates=cands,
+    )
+    state: dict[str, Any] = {"user_text": "Design a stable mRNA with long 3'UTR"}
+
+    critic = FullLengthMrnaDesignLLMCritic()
+    ctx = critic._build_context(result, state)
+
+    stats = ctx.get("full_length_stats", {})
+    assert stats["utr5_preset_distribution"] == {"short": 1, "medium": 1}
+    assert stats["utr3_preset_distribution"] == {"long": 1, "short": 1}
+    assert stats["cds_source_distribution"] == {"lineardesign": 1, "rnarl": 1}
+
+    # Ranges
+    assert stats["utr5_mrl_range"]["count"] == 2
+    assert stats["utr5_mrl_range"]["min"] == 5.5
+    assert stats["utr5_mrl_range"]["max"] == 6.5
+    assert stats["utr3_stability_range"]["count"] == 2
+    assert stats["utr5_ires_range"]["count"] == 2
+    assert stats["full_length_mfe_range"]["count"] == 2
+
+    # Best candidate breakdown
+    best = ctx.get("best_candidate_breakdown", {})
+    assert best["source"] == cands[0].source
+    assert best["utr5_preset"] == "short"
+    assert best["utr3_preset"] == "long"
+    assert best["utr5_mrl"] == 5.5
+    assert best["utr5_ires"] == 0.3
+
+
+def test_llm_critic_build_context_empty_candidates():
+    """_build_context handles empty candidate list gracefully."""
+    result = WorkflowResult(
+        success=False,
+        task_id="t1",
+        best_candidate=None,
+        all_candidates=[],
     )
     state: dict[str, Any] = {}
-    assert critic.should_retry(result, state) is False
-    assert "next_constraints" not in state
+    critic = FullLengthMrnaDesignLLMCritic()
+    ctx = critic._build_context(result, state)
+    assert ctx["candidate_count"] == 0
+    stats = ctx.get("full_length_stats", {})
+    assert stats["utr5_preset_distribution"] == {}
 
 
-def test_critic_retry_when_remaining_below_threshold():
-    """3 good + 7 bad → 3 remain < 5 → retry."""
-    critic = FullLengthMrnaCritic()
-    cands = _make_candidates(good=3, bad=7)
+def test_llm_critic_disabled_by_state_flag():
+    """When _llm_critic_enabled is False, should_retry returns False immediately."""
     result = WorkflowResult(
-        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
+        success=True,
+        task_id="t1",
+        best_candidate=None,
+        all_candidates=[],
     )
-    state: dict[str, Any] = {}
-    assert critic.should_retry(result, state) is True
-    assert state["next_constraints"]["avoid_ires_in_5utr"] is True
-
-
-def test_critic_no_retry_when_remaining_equals_min():
-    """5 good + 5 bad → 5 remain == 5 → no retry."""
-    critic = FullLengthMrnaCritic()
-    cands = _make_candidates(good=5, bad=5)
-    result = WorkflowResult(
-        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
-    )
-    state: dict[str, Any] = {}
-    assert critic.should_retry(result, state) is False
-
-
-def test_critic_retry_when_all_ires_missing_and_total_below_min():
-    """4 candidates all missing IRES → 4 remain < 5 → retry."""
-    critic = FullLengthMrnaCritic()
-    cands = _make_candidates(good=0, bad=0, missing=4)
-    result = WorkflowResult(
-        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
-    )
-    state: dict[str, Any] = {}
-    assert critic.should_retry(result, state) is True
-    assert state["next_constraints"]["avoid_ires_in_5utr"] is True
-
-
-def test_critic_no_retry_when_all_ires_missing_but_total_sufficient():
-    """6 candidates all missing IRES → 6 remain ≥ 5 → no retry."""
-    critic = FullLengthMrnaCritic()
-    cands = _make_candidates(good=0, bad=0, missing=6)
-    result = WorkflowResult(
-        success=True, task_id="t1", best_candidate=cands[0], all_candidates=cands
-    )
-    state: dict[str, Any] = {}
-    assert critic.should_retry(result, state) is False
-
-
-def test_critic_no_best_candidate():
-    """Empty candidate list → no retry."""
-    critic = FullLengthMrnaCritic()
-    result = WorkflowResult(success=False, task_id="t1", best_candidate=None, all_candidates=[])
-    state: dict[str, Any] = {}
+    state: dict[str, Any] = {"_llm_critic_enabled": False}
+    critic = FullLengthMrnaDesignLLMCritic()
     assert critic.should_retry(result, state) is False

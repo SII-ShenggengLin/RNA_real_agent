@@ -1,7 +1,6 @@
 """Minimal LangChain-tool registry by name.
 
-The graph in ``nodes.py`` historically used ``TOOLS_BY_NAME`` built from the same tool list.
-This module provides an explicit registry API without replacing ``TOOL_SPECS``.
+Provides an explicit registry API for name-based tool lookup.
 """
 
 from __future__ import annotations
@@ -46,11 +45,6 @@ class ToolRegistry:
 
         for tool in tools:
             self.register(tool)
-
-    def unregister(self, name: str) -> None:
-        """Remove a registration."""
-
-        del self._tools[name]
 
     def get(self, name: str) -> Any:
         """Return tool by name or raise ``ToolNotRegisteredError``."""

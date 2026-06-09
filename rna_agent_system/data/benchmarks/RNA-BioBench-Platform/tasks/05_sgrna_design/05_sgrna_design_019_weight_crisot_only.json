@@ -1,0 +1,30 @@
+{
+  "task_id": "05_sgrna_design_019_weight_crisot_only",
+  "workflow": "sgrna_design",
+  "category": "edge",
+  "description": "sgRNA design prioritizing CRISOT off-target safety with full evaluation",
+  "input": {
+    "seed_sequence": "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTG",
+    "guide_sequence": "ATGCATGCATGCATGCATGCTGG",
+    "target_sequence": "ATGCATGCATGCATGCATGCTGG",
+    "n_samples": 5,
+    "mutation_number": 3,
+    "sampling_mode": "mcmc",
+    "max_overlap": 21,
+    "evaluate_crgpt_score": true,
+    "evaluate_crisot": true,
+    "weight_nn_score": 0.0,
+    "weight_crisot": 1.0
+  },
+  "expected_tool_chain": [
+    "design_sgrna_handle_with_crgpt",
+    "score_crispr_off_target_with_crisot",
+    "score_sgrna_handle_with_crgpt"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 3,
+    "crisot_score_threshold": 0.6
+  },
+  "source": "Synthetic seed",
+  "paper_reference": null
+}

@@ -1,0 +1,20 @@
+{
+  "target_id": "IL-2",
+  "target_name": "Interleukin-2",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P60568",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "E. coli",
+  "paper_references": [
+    "doi:10.1126/science.6980674"
+  ],
+  "notes": "Immunotherapy cytokine (aldesleukin)",
+  "protein_sequence": "MYRMQLLSCIALSLALVTNSAPTSSSTKKTQLQLEHLLLDLQMILNGINNYKNPKLTRMLTFKFYMPKKATELKHLQCLEEELKPLEEVLNLAQSKNFHLRPRDLISNINVIVLELKGSETTFMCEYADETATIVEFLNRWITFCQSIISTLT",
+  "protein_length_aa": 153,
+  "sequence_checksum": "BF1BB5889261195A99FED3BE77C9DA53",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "IL2_HUMAN",
+  "expected_cds_length_nt": 459,
+  "uniprot_accession": "P60568"
+}

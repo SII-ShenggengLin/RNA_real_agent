@@ -1,0 +1,20 @@
+{
+  "target_id": "Ovalbumin",
+  "target_name": "Ovalbumin",
+  "target_type": "vaccine",
+  "source_database": "UniProt",
+  "accession": "P01012",
+  "species_for_codon_optimization": "Gallus gallus",
+  "expression_system": "HEK293",
+  "paper_references": [
+    "doi:10.1016/0022-1759(86)90134-0"
+  ],
+  "notes": "Chicken egg allergen; model vaccine antigen",
+  "protein_sequence": "MGSIGAASMEFCFDVFKELKVHHANENIFYCPIAIMSALAMVYLGAKDSTRTQINKVVRFDKLPGFGDSIEAQCGTSVNVHSSLRDILNQITKPNDVYSFSLASRLYAEERYPILPEYLQCVKELYRGGLEPINFQTAADQARELINSWVESQTNGIIRNVLQPSSVDSQTAMVLVNAIVFKGLWEKAFKDEDTQAMPFRVTEQESKPVQMMYQIGLFRVASMASEKMKILELPFASGTMSMLVLLPDEVSGLEQLESIINFEKLTEWTSSNVMEERKIKVYLPRMKMEEKYNLTSVLMAMGITDVFSSSANLSGISSAESLKISQAVHAAHAEINEAGREVVGSAEAGVDAASVSEEFRADHPFLFCIKHIATNAVLFFGRCVSP",
+  "protein_length_aa": 386,
+  "sequence_checksum": "155582545DB562557E3E590BBA46A730",
+  "organism_scientific": "Gallus gallus",
+  "entry_name": "OVAL_CHICK",
+  "expected_cds_length_nt": 1158,
+  "uniprot_accession": "P01012"
+}

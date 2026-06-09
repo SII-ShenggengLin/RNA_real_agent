@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_014_gernabind_secondary_structure",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "GerNA-Bind with explicit secondary structure annotation",
+  "input": {
+    "rna_sequence": "GGCUUGAUGAGUCCGAAAGGACGAAACAGA",
+    "smiles": "CN1C=NC2=C1C(=O)NC(=O)N2C",
+    "rna_structure_path": null,
+    "secondary_structure": "...(((.(..((((....))))..).))).",
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": null,
+    "split_method": null
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Synthetic riboswitch fragment with annotated structure",
+  "paper_reference": null
+}

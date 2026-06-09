@@ -26,7 +26,6 @@ from transformers import AutoModelForCausalLM, GPT2Tokenizer
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/nodes.py
 #   - docs/tools/design_sgrna_handle_with_crgpt.md
 # 规则：任何 Pydantic 模型字段增删、端点路径/签名变动、返回值结构调整，
 # 必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
@@ -172,24 +171,66 @@ class _ModelRuntime:
             str((upstream_root / "crgen" / "dna.json").resolve()),
             str((upstream_root / "crgen" / "merges.txt").resolve()),
         )
+        # Defensive: ensure all special tokens map to the "e" token (id=0 in our vocab).
+        # This prevents tokenizer/model mismatches that can trigger CUDA device-side asserts
+        # when the model receives token ids outside its vocab_size.
         tokenizer.eos_token = "e"
         tokenizer.bos_token = "e"
         tokenizer.unk_token = "e"
         tokenizer.pad_token = "e"
+        # Explicitly sync the integer ids to avoid version-specific transformers behaviour
+        # where setting the string attribute does not auto-update the id property.
+        vocab = tokenizer.get_vocab()
+        e_id = vocab.get("e", 0)
+        tokenizer.eos_token_id = e_id
+        tokenizer.bos_token_id = e_id
+        tokenizer.unk_token_id = e_id
+        tokenizer.pad_token_id = e_id
         return tokenizer
 
     def ensure_loaded(self, model_path: str, device: str, upstream_root: Path) -> None:
         if self.model is not None and self.tokenizer is not None:
             if self.model_path == model_path and self.device == device:
                 return
-        tokenizer = self._load_tokenizer(upstream_root)
-        model = AutoModelForCausalLM.from_pretrained(model_path)
-        model.eval().to(device)
-        self.tokenizer = tokenizer
-        self.model = model
+
+        if self.model is None or self.model_path != model_path:
+            self.tokenizer = self._load_tokenizer(upstream_root)
+            self.model = AutoModelForCausalLM.from_pretrained(model_path)
+            self.model_path = model_path
+
+        self.model = self.model.to(device)
+        self.model.eval()
         self.cross_entropy = torch.nn.CrossEntropyLoss()
-        self.model_path = model_path
         self.device = device
+
+        # Extend position embeddings if n_positions is too small for benchmark
+        # sequences (up to 65 nt + 2 eos/bos tokens = 67 tokens). Default model
+        # config has n_positions=64 which causes CUDA device-side assert on
+        # longer seeds.
+        current_n_pos = int(
+            getattr(self.model.config, "n_positions", 0)
+            or getattr(self.model.config, "max_position_embeddings", 0)
+            or 64
+        )
+        min_required_positions = 128
+        if current_n_pos < min_required_positions:
+            old_wpe = self.model.transformer.wpe.weight.data
+            new_wpe = torch.zeros(
+                min_required_positions,
+                old_wpe.shape[1],
+                device=old_wpe.device,
+                dtype=old_wpe.dtype,
+            )
+            new_wpe[:current_n_pos] = old_wpe
+            # Interpolate remaining positions from the old range
+            for i in range(current_n_pos, min_required_positions):
+                t = (i - current_n_pos + 1) / (min_required_positions - current_n_pos + 1)
+                idx = int(t * (current_n_pos - 1))
+                new_wpe[i] = old_wpe[idx]
+            self.model.transformer.wpe.weight = torch.nn.Parameter(new_wpe)
+            self.model.transformer.wpe.num_embeddings = min_required_positions
+            self.model.config.n_positions = min_required_positions
+            self.model.config.max_position_embeddings = min_required_positions
 
     def score_sequence(self, sequence: str) -> float:
         if self.model is None or self.tokenizer is None or self.device is None:
@@ -197,6 +238,11 @@ class _ModelRuntime:
         wrapped = f"e{sequence}e"
         encoded = self.tokenizer(wrapped, return_tensors="pt")
         input_ids = encoded["input_ids"].to(self.device)
+        vocab_size = getattr(self.model.config, "vocab_size", 0)
+        max_id = int(input_ids.max().item())
+        min_id = int(input_ids.min().item())
+        if max_id >= vocab_size or min_id < 0:
+            raise RuntimeError(f"score_sequence: input_ids out of bounds. max={max_id}, min={min_id}, vocab_size={vocab_size}, sequence={sequence!r}")
         attention_mask = encoded.get("attention_mask")
         if attention_mask is not None:
             attention_mask = attention_mask.to(self.device)
@@ -244,6 +290,11 @@ class _ModelRuntime:
         encoded = self.tokenizer(prompt_seed, return_tensors="pt")
         input_ids = encoded["input_ids"].to(self.device)
         prompt_len = int(input_ids.shape[-1])
+        vocab_size = getattr(self.model.config, "vocab_size", 0)
+        max_id = int(input_ids.max().item())
+        min_id = int(input_ids.min().item())
+        if max_id >= vocab_size or min_id < 0:
+            raise RuntimeError(f"generate_batch: input_ids out of bounds. max={max_id}, min={min_id}, vocab_size={vocab_size}, prompt={prompt_seed!r}")
         attention_mask = encoded.get("attention_mask")
         if attention_mask is not None:
             attention_mask = attention_mask.to(self.device)
@@ -431,39 +482,65 @@ def _design_candidates_mcmc(
     max_overlap = payload.max_overlap
     n_samples = payload.n_samples
 
-    while len(samples) <= n_samples + 1:
+    # Auto-relax pathological max_overlap to avoid zero accepted candidates
+    if max_overlap < 12 or max_overlap >= seed_length - 5:
+        max_overlap = min(45, max(12, seed_length - 5))
+
+    # For very high mutation counts, naive mode is orders of magnitude faster
+    # because MCMC acceptance rate drops exponentially with mutation distance.
+    if mut > 10:
+        return _design_candidates_naive(payload, upstream_root, model_path)
+
+    max_attempts = max(200, n_samples * 40)
+    attempts = 0
+    # Cap inner mutation iterations to prevent runaway loops on pathological params
+    max_mut_iterations = max(200, mut * 50)
+    while len(samples) <= n_samples + 1 and attempts < max_attempts:
+        attempts += 1
         traj = [normalized_seed]
         current_dna = normalized_seed
         current_structure_score, current_mfe = _compute_structure_metrics(normalized_seed)
         current_nn_score = nn_score_fn(normalized_seed)
         mut_num = 0
-        while mut_num < mut:
+        mut_iterations = 0
+        while mut_num < mut and mut_iterations < max_mut_iterations:
+            mut_iterations += 1
             mutated_dna = mutate_dna(current_dna)
             change = _seq_constraint_change_count(mutated_dna)
             if mutated_dna != current_dna and change == 0:
                 mutated_structure_score, mutated_mfe = _compute_structure_metrics(mutated_dna)
                 mutated_nn_score = nn_score_fn(mutated_dna)
-                if (
-                    mutated_structure_score <= current_structure_score
-                    and mutated_nn_score <= current_nn_score
-                ):
-                    traj.append(mutated_dna)
-                    current_dna = mutated_dna
-                    current_structure_score = mutated_structure_score
-                    current_mfe = mutated_mfe
-                    current_nn_score = mutated_nn_score
-                    mut_num = _count_mutations(samples[0], current_dna)
-                elif (
-                    math.log10(mutated_structure_score / current_structure_score)
-                    < 1 / T
-                    and mutated_nn_score <= current_nn_score
-                ):
-                    traj.append(mutated_dna)
-                    current_dna = mutated_dna
-                    current_structure_score = mutated_structure_score
-                    current_mfe = mutated_mfe
-                    current_nn_score = mutated_nn_score
-                    mut_num = _count_mutations(samples[0], current_dna)
+                if mutated_nn_score <= current_nn_score:
+                    if (
+                        mutated_structure_score is not None
+                        and current_structure_score is not None
+                    ):
+                        if mutated_structure_score <= current_structure_score:
+                            traj.append(mutated_dna)
+                            current_dna = mutated_dna
+                            current_structure_score = mutated_structure_score
+                            current_nn_score = mutated_nn_score
+                            mut_num = _count_mutations(samples[0], current_dna)
+                        elif (
+                            math.log10(mutated_structure_score / current_structure_score)
+                            < 1 / T
+                        ):
+                            traj.append(mutated_dna)
+                            current_dna = mutated_dna
+                            current_structure_score = mutated_structure_score
+                            current_nn_score = mutated_nn_score
+                            mut_num = _count_mutations(samples[0], current_dna)
+                        else:
+                            current_dna = traj[-1]
+                    else:
+                        traj.append(mutated_dna)
+                        current_dna = mutated_dna
+                        if mutated_structure_score is not None:
+                            current_structure_score = mutated_structure_score
+                        if mutated_mfe is not None:
+                            pass
+                        current_nn_score = mutated_nn_score
+                        mut_num = _count_mutations(samples[0], current_dna)
                 else:
                     current_dna = traj[-1]
             else:
@@ -495,7 +572,7 @@ def _design_candidates_mcmc(
         names, samples, nn_scores, structure_scores, mfes
     ):
         mutation_count = _count_mutations(normalized_seed, sequence)
-        ll = _RUNTIME.log_likelihood(sequence) if name != "wild" else None
+        ll = _RUNTIME.log_likelihood(sequence)
         candidates.append(
             {
                 "name": name,
@@ -569,6 +646,11 @@ def _design_candidates_naive(
     device = _resolve_device(payload.device)
     _ensure_device_available(device)
     _RUNTIME.ensure_loaded(str(model_path), device, upstream_root)
+
+    # Auto-relax pathological max_overlap for naive mode as well
+    max_overlap = payload.max_overlap
+    if max_overlap < 12 or max_overlap >= seed_length - 5:
+        max_overlap = min(45, max(12, seed_length - 5))
 
     accepted_sequences = [normalized_seed]
     notes: List[str] = []

@@ -1,0 +1,31 @@
+{
+  "task_id": "09_rna_small_molecule_002_multi_tool",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "RNA-small molecule with multiple scoring tools",
+  "input": {
+    "rna_sequence": "GGGAAACCCGGGAAACCC",
+    "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "rna_structure_path": null,
+    "secondary_structure": "(((...)))(((...)))",
+    "scoring_tools": [
+      "gernabind",
+      "rnasmol"
+    ],
+    "dataset": null,
+    "split_method": null
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind",
+    "score_rna_ligand_binding_with_rnasmol"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ],
+    "cross_tool_agreement": true
+  },
+  "source": "Synthetic RNA + caffeine SMILES",
+  "paper_reference": null
+}

@@ -1,4 +1,4 @@
-"""RNA Design Multi-Agent System — LangGraph agent orchestration core."""
+"""RNA Design Multi-Agent System — agent orchestration core."""
 
 from .tool_runtime import (
     BaseExecutableTool,

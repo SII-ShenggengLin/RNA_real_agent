@@ -140,4 +140,3 @@ def sort_candidates_by_score(
     for idx, candidate in enumerate(ordered, start=1):
         candidate.rank = idx
     return ordered + without_score
-

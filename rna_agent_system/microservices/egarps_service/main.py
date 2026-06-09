@@ -11,9 +11,8 @@ from __future__ import annotations
 
 import os
 import subprocess
-import tempfile
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -33,6 +32,11 @@ app = FastAPI(
     description="Score RNA-protein complex structures with EGARPS+.",
     version="0.1.0",
 )
+
+
+@app.get("/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
 
 
 class EGARPSRequest(BaseModel):

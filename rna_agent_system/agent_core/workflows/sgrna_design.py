@@ -1,0 +1,546 @@
+"""sgRNA handle design workflow (Layer 2).
+
+Pipeline: CRGPT handle design → CRGPT re-score + optional CRISOT off-target
+score → scoring (nn_score + crisot_score) → ranking → WorkflowResult.
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  SgRnaDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更              ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  本文件为 sgrna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
+║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
+║                                                                               ║
+║    - agent_core/workflows/sgrna_design.py  ← 本文件                          ║
+║    - agent_core/workflows/base.py                                             ║
+║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/runner.py                                                     ║
+║    - agent_core/state.py                                                      ║
+║    - agent_core/capabilities/writebacks.py                                    ║
+║    - agent_core/capabilities/base.py                                          ║
+║    - agent_core/planning/base.py                                              ║
+║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/tool_specs.py                                                 ║
+║    - agent_core/tools.py                                                      ║
+║    - microservices/sgrna_design_service/main.py                               ║
+║    - microservices/crisot_service/main.py                                     ║
+║    - tests/test_sgrna_design_workflow.py                                      ║
+║    - tests/test_sgrna_design_e2e.py                                           ║
+║    - docs/INTERFACE_LOCKS.md                                                  ║
+║    - docs/WORKFLOWS.md                                                        ║
+║    - AGENTS.md                                                                ║
+║                                                                               ║
+║  规则：违反此规则的提交将被回退。                                             ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+from datetime import datetime, timezone
+from typing import Any, Callable, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from agent_core.capabilities.base import CapabilityRegistry
+from agent_core.file_manager import read_sequence, save_sequence
+from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
+from agent_core.workflow_run_storage import build_public_summary
+from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.evaluators import (
+    CRGPTEvaluator,
+    CRISOTEvaluator,
+    CompositeEvaluator,
+)
+
+_LOGGER = logging.getLogger("agent_core.workflows.sgrna_design")
+
+# Input model
+
+
+class SgRnaDesignInput(BaseModel):
+    """Input for the sgRNA handle design workflow.
+
+    IMPORTANT — default parameters are carefully tuned for general sgRNA handle
+    design. Only override them when you have a strong, domain-specific reason
+    (e.g. the user explicitly requests more candidates, a specific mutation
+    budget, or a different exploration strategy). In most cases, accepting the
+    defaults will yield good results.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    seed_sequence: Optional[str] = Field(
+        default=None,
+        description="Inline sgRNA handle seed sequence (DNA/RNA, 40–120 nt).",
+    )
+    seed_filepath: Optional[str] = Field(
+        default=None,
+        description="Filepath containing the seed sgRNA handle sequence.",
+    )
+    guide_sequence: Optional[str] = Field(
+        default=None,
+        description="Optional 23-nt guide sequence for CRISOT off-target scoring.",
+    )
+    target_sequence: Optional[str] = Field(
+        default=None,
+        description="Optional 23-nt target sequence for CRISOT off-target scoring.",
+    )
+    n_samples: int = Field(
+        default=10,
+        ge=1,
+        le=200,
+        description="Number of candidates to generate. Default 10 is sufficient for most cases. Only increase if the user explicitly asks for more exploration.",
+    )
+    mutation_number: int = Field(
+        default=22,
+        ge=1,
+        le=40,
+        description="Maximum mutation count relative to seed. Default 22 is well-balanced. Only change if the user has a specific structural constraint.",
+    )
+    temperature: Optional[float] = Field(
+        default=None,
+        gt=0.0,
+        le=100.0,
+        description="MCMC annealing temperature (mcmc mode, default 20.0) or transformer sampling temperature (naive mode, default 1.0). Defaults are tuned for good diversity/quality trade-off. Only override if the user explicitly requests hotter/colder sampling.",
+    )
+    sampling_mode: str = Field(
+        default="mcmc",
+        description="'mcmc' (recommended, better exploration) or 'naive' (faster, direct sampling). Stick with 'mcmc' unless the user specifically requests naive mode.",
+    )
+    max_overlap: int = Field(
+        default=21,
+        ge=1,
+        le=60,
+        description="Maximum longest-common-substring overlap among accepted candidates. Default 21 controls diversity well. Only change for specific diversity requirements.",
+    )
+    max_length: Optional[int] = Field(
+        default=None,
+        ge=1,
+        le=120,
+        description="Optional target sequence length for naive mode (overrides auto-computed max_new_tokens).",
+    )
+    evaluate_crgpt_score: bool = Field(
+        default=True,
+        description="Re-score each candidate with the CRGPT scoring endpoint. Should almost always stay True.",
+    )
+    evaluate_crisot: bool = Field(
+        default=True,
+        description="Score guide-target pair with CRISOT if guide_sequence and target_sequence are provided. Should stay True when guide/target are available.",
+    )
+    weight_nn_score: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Weight for CRGPT nn_score in composite scoring. Default 0.5 balances on-target activity and off-target safety. Only adjust if the user explicitly prioritizes one over the other.",
+    )
+    weight_crisot: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Weight for CRISOT score in composite scoring. Default 0.5 balances on-target activity and off-target safety. Only adjust if the user explicitly prioritizes one over the other.",
+    )
+
+
+# Scoring helper
+
+
+def score_sgrna_candidate(
+    metrics: dict[str, Any],
+    weights: dict[str, float],
+) -> dict[str, float]:
+    """Turn raw sgRNA metrics into normalized score components.
+
+    Components (each in [0, 1]):
+      - nn_component:      1 / nn_score  (perplexity lower is better)
+      - crisot_component:  crisot_score clamped to [0,1]
+
+    total_score is a weighted average of the two components.
+    """
+    nn_score = metrics.get("nn_score") or metrics.get("design_nn_score")
+    crisot_score = metrics.get("crisot_score")
+
+    scores: dict[str, float] = {}
+
+    if nn_score is not None:
+        # nn_score is perplexity (exp(cross_entropy_loss)), range ~[1, +inf).
+        # Lower perplexity = model is more familiar with the sequence = better.
+        # Map via reciprocal so higher component = better quality.
+        scores["nn_component"] = max(0.0, min(1.0, 1.0 / float(nn_score)))
+    else:
+        scores["nn_component"] = 0.0
+
+    if crisot_score is not None:
+        scores["crisot_component"] = max(0.0, min(1.0, float(crisot_score)))
+    else:
+        scores["crisot_component"] = 0.0
+
+    active_weights = 0.0
+    weighted_sum = 0.0
+    for key, weight in weights.items():
+        comp_key = f"{key}_component"
+        if comp_key in scores:
+            active_weights += weight
+            weighted_sum += weight * scores[comp_key]
+
+    if active_weights > 0:
+        scores["total_score"] = weighted_sum / active_weights
+    else:
+        scores["total_score"] = 0.0
+
+    return scores
+
+
+# Workflow
+
+
+class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
+    """sgRNA handle design using CRGPT.
+
+    Pipeline: generate candidates (CRGPT) → evaluate (CRGPT re-score +
+    optional CRISOT) → score (nn_score + crisot_score) → rank → WorkflowResult.
+    """
+
+    name = "sgrna_design"
+    description = (
+        "Design sgRNA handle candidates using CRGPT. Pipeline: generate → "
+        "evaluate (CRGPT re-score + optional CRISOT) → score → rank."
+    )
+    # NOTE: Listed capabilities are runtime-optional; the workflow checks
+    # ``capabilities.has()`` before each invocation and degrades gracefully.
+    required_capabilities = [
+        "design_sgrna_handle_with_crgpt",    # mandatory for candidate generation
+        "score_sgrna_handle_with_crgpt",     # optional re-scoring
+        "score_crispr_off_target_with_crisot",  # optional CRISOT off-target
+    ]
+
+    def __init__(self, capability_registry: CapabilityRegistry):
+        self.capabilities = capability_registry
+        self._workflow_state: dict[str, Any] = {}
+        self._trace_logs: list[ToolCallRecord] = []
+        self.evaluator = CompositeEvaluator([
+            CRGPTEvaluator(self.capabilities),
+            CRISOTEvaluator(self.capabilities),
+        ])
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # BaseDomainWorkflow interface
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def run(
+        self,
+        inp: Any,
+        *,
+        progress_callback: Optional[Callable[[dict[str, Any]], None]] = None,
+    ) -> WorkflowResult:
+        """Accept ``SgRnaDesignInput`` or a plain dict."""
+        if isinstance(inp, dict):
+            inp = SgRnaDesignInput(**inp)
+        self._workflow_state = {"_sgrna_input": inp}
+        self._trace_logs = []
+        result = super().run(inp, progress_callback=progress_callback)
+        result.trace = self._collect_trace(result.all_candidates)
+        result.completed_at = datetime.now(timezone.utc)
+        result.public_summary = build_public_summary(result)
+        merged_wb = dict(self._workflow_state)
+        merged_wb["_workflow_params"] = inp.model_dump()
+        result._state_writeback = merged_wb  # type: ignore[attr-defined]
+        return result
+
+    def generate_candidates(self, inp: SgRnaDesignInput) -> list[Candidate]:
+        """Generate sgRNA handle candidates via CRGPT design endpoint."""
+        if not self.capabilities.has("design_sgrna_handle_with_crgpt"):
+            _LOGGER.error("capability_missing design_sgrna_handle_with_crgpt")
+            return []
+
+        args: dict[str, Any] = {
+            "n_samples": inp.n_samples,
+            "mutation_number": inp.mutation_number,
+            "sampling_mode": inp.sampling_mode,
+            "max_overlap": inp.max_overlap,
+        }
+        if inp.seed_sequence:
+            args["seed_sequence"] = inp.seed_sequence
+        elif inp.seed_filepath:
+            args["filepath"] = inp.seed_filepath
+        else:
+            _LOGGER.error("sgrna_design_no_seed")
+            return []
+        if inp.temperature is not None:
+            args["temperature"] = inp.temperature
+        if inp.max_length is not None:
+            args["max_length"] = inp.max_length
+
+        try:
+            cap = self.capabilities.get("design_sgrna_handle_with_crgpt")
+            cap_result = cap.invoke(args, state=self._workflow_state)
+        except Exception as exc:
+            _LOGGER.error("sgrna_design_exception err=%s", exc)
+            return []
+
+        if not cap_result.success:
+            _LOGGER.error("sgrna_design_failed error=%s", cap_result.error)
+            return []
+
+        # Read summary JSON to obtain the full candidate list
+        summary_path = cap_result.output.get("summary_json_filepath", "")
+        candidates_data: list[dict[str, Any]] = []
+        if summary_path:
+            try:
+                raw = read_sequence(summary_path)
+                summary = json.loads(raw)
+                candidates_data = summary.get("candidates", [])
+            except Exception as exc:
+                _LOGGER.warning("sgrna_summary_read_failed path=%s err=%s", summary_path, exc)
+
+        if not candidates_data:
+            # Fallback to best_sequence only
+            best_seq = cap_result.output.get("best_sequence", "")
+            if best_seq:
+                candidates_data = [
+                    {
+                        "name": "best",
+                        "sequence": best_seq,
+                        "nn_score": cap_result.output.get("best_nn_score", 0.0),
+                        "mutation_count": cap_result.output.get("best_mutation_count", 0),
+                    }
+                ]
+            else:
+                _LOGGER.warning("sgrna_design_empty_results")
+                return []
+
+        # Record generation-phase tool invocation
+        gen_record = ToolCallRecord(
+            step_name="generate_candidates",
+            tool_name="design_sgrna_handle_with_crgpt",
+            input_summary=json.dumps(args, ensure_ascii=True, default=str),
+            output_summary=json.dumps(
+                cap_result.output if cap_result.success else {"error": cap_result.error},
+                ensure_ascii=True,
+                default=str,
+            )[:500],
+            success=cap_result.success,
+            error=cap_result.error,
+            elapsed_time=cap_result.elapsed_time,
+            artifacts={"output": cap_result.output} if cap_result.success else {},
+            metrics={"candidate_count": len(candidates_data)} if cap_result.success else {},
+        )
+        self._trace_logs.append(gen_record)
+
+        candidates: list[Candidate] = []
+        seen: set[str] = set()
+        wild_record: Optional[dict[str, Any]] = None
+        for record in candidates_data:
+            seq = str(record.get("sequence", "")).upper().replace("U", "T")
+            if not seq or seq in seen:
+                continue
+            if record.get("name") == "wild":
+                wild_record = record
+                continue
+            seen.add(seq)
+            candidates.append(
+                Candidate(
+                    sequence=seq,
+                    sequence_type="sgrna",
+                    source=f"crgpt:{record.get('name', 'unknown')}",
+                    metadata={
+                        "design_nn_score": float(record.get("nn_score", 0.0)),
+                        "design_mutation_count": int(record.get("mutation_count", 0)),
+                        "design_log_likelihood": record.get("log_likelihood"),
+                        "design_structure_distance": record.get("structure_distance"),
+                        "design_mfe": record.get("mfe"),
+                        "sampling_mode": inp.sampling_mode,
+                        "seed_sequence": cap_result.output.get("normalized_seed", ""),
+                        "evaluate_crgpt_score": inp.evaluate_crgpt_score,
+                    },
+                )
+            )
+
+        # Fallback: if no designed variants were accepted under strict
+        # constraints, keep the wild-type seed so the workflow does not
+        # return an empty candidate list (which would be marked as failure).
+        if not candidates and wild_record is not None:
+            seq = str(wild_record.get("sequence", "")).upper().replace("U", "T")
+            if seq:
+                candidates.append(
+                    Candidate(
+                        sequence=seq,
+                        sequence_type="sgrna",
+                        source="crgpt:wild",
+                        metadata={
+                            "design_nn_score": float(wild_record.get("nn_score", 0.0)),
+                            "design_mutation_count": int(wild_record.get("mutation_count", 0)),
+                            "design_log_likelihood": wild_record.get("log_likelihood"),
+                            "design_structure_distance": wild_record.get("structure_distance"),
+                            "design_mfe": wild_record.get("mfe"),
+                            "sampling_mode": inp.sampling_mode,
+                            "seed_sequence": cap_result.output.get("normalized_seed", ""),
+                            "evaluate_crgpt_score": inp.evaluate_crgpt_score,
+                        },
+                    )
+                )
+
+        _LOGGER.info(
+            "sgrna_candidates_generated total=%d unique=%d",
+            len(candidates_data),
+            len(candidates),
+        )
+        return candidates
+
+    def evaluate(self, candidate: Candidate) -> dict[str, Any]:
+        """Re-score candidate with CRGPT and optionally CRISOT off-target scoring."""
+        seq = candidate.sequence
+        filepath = save_sequence(seq, prefix="sgrna")
+        candidate.metadata["workspace_filepath"] = filepath
+
+        context: dict[str, Any] = {
+            "workflow_state": self._workflow_state,
+            "workflow_input": self._workflow_state.get("_sgrna_input"),
+        }
+        metrics = self.evaluator.evaluate(candidate, context)
+        metrics["sequence_length"] = len(seq)
+        metrics["design_nn_score"] = candidate.metadata.get("design_nn_score")
+        metrics["design_mutation_count"] = candidate.metadata.get("design_mutation_count")
+
+        candidate.metadata["metrics_bundle"] = metrics
+        return metrics
+
+    def score(self, metrics: dict[str, Any]) -> dict[str, float]:
+        """Compute weighted score from nn_score and crisot_score components."""
+        inp = self._workflow_state.get("_sgrna_input")
+        weights = {
+            "nn": float(getattr(inp, "weight_nn_score", 0.5)) if inp else 0.5,
+            "crisot": float(getattr(inp, "weight_crisot", 0.5)) if inp else 0.5,
+        }
+        return score_sgrna_candidate(metrics, weights)
+
+    def _collect_trace(self, candidates: list[Candidate]) -> list[ToolCallRecord]:
+        """Aggregate tool records from generation phase and every candidate."""
+        trace: list[ToolCallRecord] = list(self._trace_logs)
+        for c in candidates:
+            trace.extend(c.tool_records)
+        return trace
+
+    def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
+        if not candidates:
+            return self._empty_result("No sgRNA handle candidates produced.")
+
+        ranked = sort_candidates_by_score(candidates, score_key="total_score", descending=True)
+        best = ranked[0] if ranked else None
+
+        detail_lines: list[str] = []
+        for i, c in enumerate(ranked, start=1):
+            mb = c.metadata.get("metrics_bundle", {})
+            scores = c.scores
+            parts = [
+                f"#{i}",
+                f"source={c.source}",
+                f"len={len(c.sequence)}nt",
+                f"mut={mb.get('design_mutation_count', 'N/A')}",
+            ]
+            nn_val = mb.get("nn_score") or mb.get("design_nn_score")
+            if nn_val is not None:
+                parts.append(f"nn_score={float(nn_val):.4f}")
+            else:
+                parts.append("nn_score=N/A")
+            if mb.get("crisot_score") is not None:
+                parts.append(f"CRISOT={mb['crisot_score']:.4f}")
+            else:
+                parts.append("CRISOT=N/A")
+            parts.append(f"total_score={scores.get('total_score', 0.0):.4f}")
+            detail_lines.append(" | ".join(parts))
+
+        summary_parts = [
+            f"candidates={len(ranked)}",
+            f"best_total_score={best.scores.get('total_score') if best else None}",
+            "---",
+            *detail_lines,
+        ]
+        return WorkflowResult(
+            success=True,
+            task_id=f"sgrna_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
+            best_candidate=best,
+            all_candidates=ranked,
+            summary="\n".join(summary_parts),
+            errors=[],
+        )
+
+
+# LLM Critic Configuration
+
+from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
+
+SGRNA_CRITIC_CONFIG = CriticConfig(
+    workflow_name="sgrna_design",
+    workflow_description="Design sgRNA handle candidates using CRGPT with optional CRISOT off-target scoring",
+    evaluation_dimensions=[
+        "CRGPT nn_score is perplexity (lower is better, range ~[1, +inf)). Values close to 1.0 indicate excellent on-target activity; values above 3.0 suggest poor quality.",
+        "CRISOT score should indicate low off-target potential. Higher is generally better.",
+        "Sequence diversity among candidates is important — if all candidates are very similar, the search may be stuck in a local optimum.",
+        "Mutation count should be reasonable relative to the seed sequence — too many mutations may destabilize the structure.",
+        "MFE (Minimum Free Energy) from structure prediction should indicate a stable secondary structure.",
+    ],
+    adjustable_params={
+        "n_samples": {
+            "type": "int",
+            "min": 1,
+            "max": 200,
+            "hint": "Number of CRGPT samples to generate. Increase to explore more sequence space.",
+        },
+        "mutation_number": {
+            "type": "int",
+            "min": 1,
+            "max": 40,
+            "hint": "Number of positions to mutate. Higher values increase diversity but may reduce structural stability.",
+        },
+        "temperature": {
+            "type": "float",
+            "min": 0.0,
+            "max": 100.0,
+            "hint": "MCMC annealing temperature (mcmc mode) or transformer sampling temperature (naive mode). Higher = more diverse but potentially lower quality.",
+        },
+        "sampling_mode": {
+            "type": "enum",
+            "values": ["mcmc", "naive"],
+            "hint": "Sampling strategy. 'mcmc' uses Monte Carlo search for better exploration; 'naive' uses direct transformer sampling.",
+        },
+        "max_overlap": {
+            "type": "int",
+            "min": 1,
+            "max": 60,
+            "hint": "Maximum overlap between consecutive mutations. Lower = more independent mutations.",
+        },
+        "evaluate_crgpt_score": {
+            "type": "bool",
+            "hint": "Whether to re-score with CRGPT. Keep True for accurate scoring.",
+        },
+        "evaluate_crisot": {
+            "type": "bool",
+            "hint": "Whether to run CRISOT off-target scoring. Keep True if guide and target sequences are provided.",
+        },
+        "weight_nn_score": {
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "hint": "Weight for CRGPT nn_score in composite scoring. Increase to prioritize on-target activity.",
+        },
+        "weight_crisot": {
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "hint": "Weight for CRISOT score in composite scoring. Increase to prioritize off-target safety.",
+        },
+    },
+    retry_strategy="adjust_params",
+    max_retries=2,
+)
+
+
+class SgRnaDesignLLMCritic(BaseLLMCritic):
+    """LLM-driven Critic for sgRNA handle design workflow."""
+
+    def _default_config(self) -> CriticConfig:
+        return SGRNA_CRITIC_CONFIG
+
+
+# Backward-compatible alias used by tests and external callers
+SgRnaCritic = SgRnaDesignLLMCritic

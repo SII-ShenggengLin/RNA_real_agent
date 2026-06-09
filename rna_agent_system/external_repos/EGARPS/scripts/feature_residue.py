@@ -73,7 +73,7 @@ def position(fasta_pro,fasta_rna,savepath):
 STD_RESIDUE_SS=['H','E','C']
 RESIDUE_SS_MAP={'H':'H','G':'H','I':'H',
                 'E':'E','B':'E',
-                'T':'C','S':'C','L':'C','-':'C'}
+                'T':'C','S':'C','L':'C','-':'C','P':'C'}
 
 def get_ss_protein(protein):
     temp_dir=tempfile.mkdtemp()

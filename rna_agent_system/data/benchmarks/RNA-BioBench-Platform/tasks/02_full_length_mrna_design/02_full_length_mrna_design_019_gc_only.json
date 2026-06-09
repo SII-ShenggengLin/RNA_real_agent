@@ -1,0 +1,33 @@
+{
+  "task_id": "02_full_length_mrna_design_019_gc_only",
+  "workflow": "full_length_mrna_design",
+  "category": "edgecase",
+  "description": "GFP with run_fold=False, run_gc=True to test GC-only evaluation path",
+  "input": {
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
+    "design_tool": "lineardesign",
+    "lambda_value": 1.0,
+    "model_type": "Homo sapiens mRNA",
+    "cai_species": "Homo sapiens",
+    "utr_mode": "medium",
+    "run_fold": false,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_rna_sequence_gc_content",
+    "design_3utr_with_gemorna",
+    "design_5utr_with_gemorna",
+    "design_mrna_cds_with_lineardesign",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "shuffle_cds_junction_codons",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "junction_mfe_threshold": -15.0,
+    "cai_threshold": 0.8
+  },
+  "source": "Aequorea victoria GFP",
+  "paper_reference": null
+}

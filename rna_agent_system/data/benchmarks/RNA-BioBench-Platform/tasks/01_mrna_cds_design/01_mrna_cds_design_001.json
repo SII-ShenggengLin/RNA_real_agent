@@ -1,0 +1,29 @@
+{
+  "task_id": "01_mrna_cds_design_001",
+  "workflow": "mrna_cds_design",
+  "category": "basic",
+  "description": "LinearDesign λ=0 (pure MFE optimization) on short synthetic peptide",
+  "input": {
+    "protein_sequence": "MKTLLILTVFGITMLLAVLAQG",
+    "design_tool": "lineardesign",
+    "lambda_value": 0.0,
+    "cai_species": "Homo sapiens",
+    "run_fold": true,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_dot_bracket_unpaired_fraction",
+    "compute_rna_sequence_gc_content",
+    "design_mrna_cds_with_lineardesign",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cai_threshold": 0.6,
+    "mfe_threshold": -30.0
+  },
+  "source": "Synthetic short peptide",
+  "paper_reference": null
+}

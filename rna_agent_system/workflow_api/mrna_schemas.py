@@ -20,11 +20,17 @@ class MrnaWorkflowHttpRequest(BaseModel):
     sequences: Optional[List[str]] = Field(default=None, description="Multiple sequences (rank together).")
     protein: Optional[str] = Field(
         default=None,
-        description="Amino-acid sequence; CDS is produced via LinearDesign tool (needs service on port 8014).",
+        description=(
+            "Amino-acid sequence; CDS is produced via LinearDesign tool "
+            "(needs service on port 8014)."
+        ),
     )
 
     task_type: str = Field(default="mrna", description="Reserved for routing; default mrna.")
-    task_id: Optional[str] = Field(default=None, description="Optional stable id for tracing (maps to TaskState.task_id).")
+    task_id: Optional[str] = Field(
+        default=None,
+        description="Optional stable id for tracing (maps to TaskState.task_id).",
+    )
     constraints: Optional[Dict[str, Any]] = Field(
         default=None,
         description=(

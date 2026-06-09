@@ -1,0 +1,22 @@
+{
+  "target_id": "RNase_A",
+  "target_name": "Ribonuclease pancreatic",
+  "target_type": "model",
+  "pdb_id": "7RSA",
+  "pdb_chain": "A",
+  "uniprot_accession": "P61823",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Active site cleft",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1016/S0022-2836(05)80221-0"
+  ],
+  "notes": "Model enzyme for aptamer studies",
+  "protein_sequence": "MALKSLVLLSLLVLVLLLVRVQPSLGKETAAAKFERQHMDSSTSAASSSNYCNQMMKSRNLTKDRCKPVNTFVHESLADVQAVCSQKNVACKNGQTNCYQSYSTMSITDCRETGSSKYPNCAYKTTQANKHIIVACEGNPYVPVHFDASV",
+  "protein_length_aa": 150,
+  "sequence_checksum": "61D817D700589FE6C09D7F42BA981097",
+  "organism_scientific": "Bos taurus",
+  "gene": [
+    "RNASE1"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "target_id": "MBP",
+  "target_name": "Maltose-binding protein",
+  "target_type": "model",
+  "pdb_id": "1ANF",
+  "pdb_chain": "A",
+  "uniprot_accession": "P0AEX9",
+  "known_hotspot_residues": null,
+  "hotspot_source": "Maltose-binding cleft",
+  "known_aptamer_reference": null,
+  "paper_references": [
+    "doi:10.1073/pnas.87.16.6038"
+  ],
+  "notes": "Classic fusion tag; ligand-binding model",
+  "protein_sequence": "MKIKTGARILALSALTTMMFSASALAKIEEGKLVIWINGDKGYNGLAEVGKKFEKDTGIKVTVEHPDKLEEKFPQVAATGDGPDIIFWAHDRFGGYAQSGLLAEITPDKAFQDKLYPFTWDAVRYNGKLIAYPIAVEALSLIYNKDLLPNPPKTWEEIPALDKELKAKGKSALMFNLQEPYFTWPLIAADGGYAFKYENGKYDIKDVGVDNAGAKAGLTFLVDLIKNKHMNADTDYSIAEAAFNKGETAMTINGPWAWSNIDTSKVNYGVTVLPTFKGQPSKPFVGVLSAGINAASPNKELAKEFLENYLLTDEGLEAVNKDKPLGAVALKSYEEELAKDPRIAATMENAQKGEIMPNIPQMSAFWYAVRTAVINAASGRQTVDEALKDAQTRITK",
+  "protein_length_aa": 396,
+  "sequence_checksum": "CCE42A1BC3DBA537C63B008BBF8FB026",
+  "organism_scientific": "Escherichia coli (strain K12)",
+  "gene": [
+    "malE"
+  ]
+}

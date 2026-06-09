@@ -12,9 +12,6 @@ httpx>=0.24,<1.0
 # HTTP requests (tool layer → microservices)
 requests>=2.28,<3.0
 
-# Frontend
-streamlit>=1.30,<2.0
-
 # Config
 python-dotenv>=1.0,<2.0
 

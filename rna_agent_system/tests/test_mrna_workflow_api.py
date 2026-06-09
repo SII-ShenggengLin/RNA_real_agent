@@ -32,8 +32,7 @@ def test_execute_http_happy_path(stub_registry):
         task_id="manual-task-1",
         task_type="mrna",
         debug=True,
-        constraints={"persist_run": False},
-    )
+        constraints={})
     ex = ToolExecutor(stub_registry)
     out = execute_mrna_workflow_http(req, executor=ex)
     assert out.success is True
@@ -59,7 +58,7 @@ def test_execute_http_tool_failure_returns_warnings(stub_registry):
     reg.register(_Fail())
     reg.register(StubFoldTool())
 
-    req = MrnaWorkflowHttpRequest(sequence="AUGC", constraints={"persist_run": False})
+    req = MrnaWorkflowHttpRequest(sequence="AUGC", constraints={})
     out = execute_mrna_workflow_http(req, executor=ToolExecutor(reg))
     assert out.success is True
     assert len(out.warnings) >= 1
@@ -71,7 +70,7 @@ def test_execute_internal_error_no_debug_detail(stub_registry):
     from workflow_api.mrna_schemas import MrnaWorkflowHttpRequest
 
     req = MrnaWorkflowHttpRequest(sequence="AUG", debug=False)
-    with patch("workflow_api.mrna_handler.run_mrna_workflow", side_effect=RuntimeError("internal")):
+    with patch("workflow_api.mrna_handler.run_mrna_sequence_scoring", side_effect=RuntimeError("internal")):
         out = execute_mrna_workflow_http(req, executor=ToolExecutor(stub_registry))
     assert out.success is False
     assert out.debug_detail is None
@@ -83,7 +82,7 @@ def test_execute_internal_error_debug_detail(stub_registry):
     from workflow_api.mrna_schemas import MrnaWorkflowHttpRequest
 
     req = MrnaWorkflowHttpRequest(sequence="AUG", debug=True)
-    with patch("workflow_api.mrna_handler.run_mrna_workflow", side_effect=RuntimeError("internal")):
+    with patch("workflow_api.mrna_handler.run_mrna_sequence_scoring", side_effect=RuntimeError("internal")):
         out = execute_mrna_workflow_http(req, executor=ToolExecutor(stub_registry))
     assert out.success is False
     assert out.debug_detail is not None
@@ -91,35 +90,28 @@ def test_execute_internal_error_debug_detail(stub_registry):
 
 
 @pytest.mark.skipif(not _have_fastapi(), reason="fastapi not installed")
-def test_fastapi_422_when_both_sequence_and_protein():
+def test_fastapi_agent_run_with_sequence():
     from fastapi.testclient import TestClient
 
+    from agent_core.workflow_models import Candidate, WorkflowResult
     from workflow_api.app import app
 
-    client = TestClient(app)
-    r = client.post(
-        "/v1/workflows/mrna/run",
-        json={"sequence": "AUG", "protein": "MK"},
-    )
-    assert r.status_code == 422
-
-
-@pytest.mark.skipif(not _have_fastapi(), reason="fastapi not installed")
-def test_fastapi_mrna_ok_with_stub_registry(stub_registry):
-    from fastapi.testclient import TestClient
-
-    from workflow_api.app import app
-
-    with patch("workflow_api.mrna_handler.build_default_tool_registry", return_value=stub_registry):
+    mock_result = WorkflowResult(
+        success=True,
+        task_id="agent-run-test",
+        best_candidate=Candidate(sequence="AUGCAUGCAUGCAU", scores={"total_score": 1.0}),
+        all_candidates=[Candidate(sequence="AUGCAUGCAUGCAU", scores={"total_score": 1.0})],
+        summary="ok")
+    with patch("workflow_api.app._agent_runner.run", return_value={
+        "workflow_result": mock_result,
+        "task_id": "agent-run-test"}):
         client = TestClient(app)
         r = client.post(
-            "/v1/workflows/mrna/run",
+            "/v1/agent/run",
             json={
                 "sequence": "AUGCAUGCAUGCAU",
                 "debug": False,
-                "constraints": {"persist_run": False},
-            },
-        )
+                "constraints": {}})
         assert r.status_code == 200
         data = r.json()
         assert data["success"] is True

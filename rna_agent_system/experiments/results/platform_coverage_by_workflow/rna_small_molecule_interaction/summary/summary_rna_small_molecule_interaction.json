@@ -1,0 +1,42 @@
+{
+  "workflow": "rna_small_molecule_interaction",
+  "total_tasks": 15,
+  "success_count": 15,
+  "fail_count": 0,
+  "success_rate": 1.0,
+  "by_category": {
+    "basic": {
+      "total": 2,
+      "success": 2,
+      "fail": 0,
+      "success_rate": 1.0
+    },
+    "edge": {
+      "total": 10,
+      "success": 10,
+      "fail": 0,
+      "success_rate": 1.0
+    },
+    "full": {
+      "total": 3,
+      "success": 3,
+      "fail": 0,
+      "success_rate": 1.0
+    }
+  },
+  "error_distribution": {},
+  "timing_seconds": {
+    "average_seconds": 9.096,
+    "median_seconds": 11.119,
+    "max_seconds": 12.74,
+    "min_seconds": 0.026
+  },
+  "tool_correctness": {
+    "correct_count": 15,
+    "rate": 1.0
+  },
+  "trace_completeness_distribution": {
+    "complete": 15
+  },
+  "generated_at": "2026-06-06T04:43:32+00:00"
+}

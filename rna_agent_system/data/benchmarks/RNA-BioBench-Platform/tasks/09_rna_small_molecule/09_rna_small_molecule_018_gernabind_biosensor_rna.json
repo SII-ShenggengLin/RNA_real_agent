@@ -1,0 +1,28 @@
+{
+  "task_id": "09_rna_small_molecule_018_gernabind_biosensor_rna",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "edge",
+  "description": "GerNA-Bind with Biosensor dataset and RNA split method",
+  "input": {
+    "rna_sequence": "CGCGAUUCGCGAAUUCGCGAAUUCGCG",
+    "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "gernabind"
+    ],
+    "dataset": "Biosensor",
+    "split_method": "RNA"
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "source": "Synthetic RNA + caffeine SMILES",
+  "paper_reference": null
+}

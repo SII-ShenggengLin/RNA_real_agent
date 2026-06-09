@@ -1,0 +1,115 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "02_full_length_mrna_design_001_basic",
+      "file": "02_full_length_mrna_design_001_basic.json",
+      "sha256": "5ec1ea7ce765c1b71fcc56c3aa0fd69a2cffd23293dab93a453f2cbb66eae328"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_002_vaccine_spike",
+      "file": "02_full_length_mrna_design_002_vaccine_spike.json",
+      "sha256": "e205db438f8db3e9d5ca2456f244f0090b788b71690afd5f8b68ae5e7acfc7ae"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_003_therapeutic_epo",
+      "file": "02_full_length_mrna_design_003_therapeutic_epo.json",
+      "sha256": "70be5cc7fe42f2d4131dd424d59bc18516ced3e131119a748f9c3248bdc675a6"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_004_reporter_gfp",
+      "file": "02_full_length_mrna_design_004_reporter_gfp.json",
+      "sha256": "8d6f3193173773f0168f1556d9e4a7d366c900a07f8287f21156475b1b00ee67"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_005_a1at",
+      "file": "02_full_length_mrna_design_005_a1at.json",
+      "sha256": "124f951f346e00f81bfab62550de9c72b7263f3371979de204caeeb712c1673d"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_006_betagal",
+      "file": "02_full_length_mrna_design_006_betagal.json",
+      "sha256": "ae9b5827cc5de2b5b26ca3a47f06537543df0339492e8bc490d675d2cc8b8720"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_007_transferrin",
+      "file": "02_full_length_mrna_design_007_transferrin.json",
+      "sha256": "787d0bc7434335bad230b5eb868516124e232146d41c95abb6c5a1698b42d9e5"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_008_growth_hormone",
+      "file": "02_full_length_mrna_design_008_growth_hormone.json",
+      "sha256": "bee32bbbbebd5780862301032c3ebe66ad268c7fb5f9ca53a4fd05b7b606e0fd"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_009_ovalbumin",
+      "file": "02_full_length_mrna_design_009_ovalbumin.json",
+      "sha256": "cab571c2a4bacf60d43962e62fee28a50a819328a1bddf5dbed1e539c422d8b2"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_010_edgecase",
+      "file": "02_full_length_mrna_design_010_edgecase.json",
+      "sha256": "1001f7300cdfc1b296e1e381ad0315e72d45e8703eae94cff4466da2ff6ee91d"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_011_penicylium_model",
+      "file": "02_full_length_mrna_design_011_penicylium_model.json",
+      "sha256": "dd83730cdcdd831164211941eb64f3eab3748c1a2b3048c9c5a7cd5f019e4233"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_012_chlamydomonas_model",
+      "file": "02_full_length_mrna_design_012_chlamydomonas_model.json",
+      "sha256": "9cfbcf4a7a73d89ef4c5b58dcc53d0a2eaa38a68b9ec15c613b328d849dbf042"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_013_thermococcus_model",
+      "file": "02_full_length_mrna_design_013_thermococcus_model.json",
+      "sha256": "d795d5790ec2bf121db89c62e17ae74d5b4175b09b278ee35aea5a195c7c4a2f"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_014_bsubtilis_cai",
+      "file": "02_full_length_mrna_design_014_bsubtilis_cai.json",
+      "sha256": "598e4e7bd232765b1cfbb129fd4fc69594adfeec4e0574edae2d6db94f1cf40a"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_015_cho_cai",
+      "file": "02_full_length_mrna_design_015_cho_cai.json",
+      "sha256": "c2037616c60d1a1b99b4527b7883167c5edf16c87a6baa2898c0001fb8084712"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_016_worm_cai",
+      "file": "02_full_length_mrna_design_016_worm_cai.json",
+      "sha256": "360b1619433ad44a8fc01ca9697bd7ef340122d04abdd63fbe42cb90536827df"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_017_zebrafish_cai",
+      "file": "02_full_length_mrna_design_017_zebrafish_cai.json",
+      "sha256": "fc7a93ce00a308cd5682cd25f4982ad4eca82bc9638b148fadb9e2162a507272"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_018_fold_only",
+      "file": "02_full_length_mrna_design_018_fold_only.json",
+      "sha256": "97a54686622196ae956dae8a063e37f47860e0f6173cb0abcc5d843b7e6ea3bd"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_019_gc_only",
+      "file": "02_full_length_mrna_design_019_gc_only.json",
+      "sha256": "5a96ac8a45fbc2893d82df54835b191039d61e7476a86bb250aa76122cea6d1a"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_020_mouse_cai",
+      "file": "02_full_length_mrna_design_020_mouse_cai.json",
+      "sha256": "4fa8055a4219c5e8b84fa203eb3fc901cf0bb5a29c5801d06dc1184523c56174"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_021_rat_cai",
+      "file": "02_full_length_mrna_design_021_rat_cai.json",
+      "sha256": "c37e6640993e33f1894bba78e774fbb86aa2157dbb6d0536dd2fbb8c8fd96f8c"
+    },
+    {
+      "task_id": "02_full_length_mrna_design_022_fly_cai",
+      "file": "02_full_length_mrna_design_022_fly_cai.json",
+      "sha256": "5a53fb84855464c487f519d47a36d6df0c8cae6d137916ae0f3734bfb1f2f1f3"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "task_id": "11_ires_prediction_001_basic",
+  "workflow": "ires_prediction",
+  "category": "basic",
+  "description": "IRES prediction mode 0 (full sequence) with default parameters. window_size and step_size are omitted because they are only effective in mode 2.",
+  "input": {
+    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "iresfinder_mode": 0,
+    "probability_threshold": 0.5,
+    "top_n_candidates": 5,
+    "run_structural_validation": false
+  },
+  "expected_tool_chain": [
+    "predict_putative_ires_with_iresfinder"
+  ],
+  "evaluation_rubric": {
+    "min_candidates": 1,
+    "probability_threshold": 0.5
+  },
+  "source": "Synthetic 5'UTR (400 nt, balanced GC content)",
+  "paper_reference": null
+}

@@ -13,7 +13,6 @@ Uses Python RNAlib when available, otherwise falls back to ViennaRNA CLI binarie
 ║    - agent_core/tools.py                                                      ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/nodes.py                                                      ║
 ║    - docs/tools/viennarna_rna_tools.md                                        ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║

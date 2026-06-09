@@ -1,0 +1,115 @@
+{
+  "schema_version": "2.0.0",
+  "tasks": [
+    {
+      "task_id": "04_sirna_design_001_basic",
+      "file": "04_sirna_design_001_basic.json",
+      "sha256": "b1facdb61981fd4bbb102c26ce329f29d06038b431fddfa3b3f767a296306bdc"
+    },
+    {
+      "task_id": "04_sirna_design_002_human_gene",
+      "file": "04_sirna_design_002_human_gene.json",
+      "sha256": "612b697a58f2bf3cee880b94efd5ac3db26a6e9ce3d2a4163840a0b838e6e5e5"
+    },
+    {
+      "task_id": "04_sirna_design_003_with_offtarget",
+      "file": "04_sirna_design_003_with_offtarget.json",
+      "sha256": "fe2a54dc5c0b95840d5b385ec8253b6aded1514e1e2bb1e64037475c34878204"
+    },
+    {
+      "task_id": "04_sirna_design_004_covid_target",
+      "file": "04_sirna_design_004_covid_target.json",
+      "sha256": "7e74d6347c51c837f1b21bca90766d14348cb319bf2de1312d0d5896fc6badd9"
+    },
+    {
+      "task_id": "04_sirna_design_005_epo_fragment",
+      "file": "04_sirna_design_005_epo_fragment.json",
+      "sha256": "0c869f8b171422a8e5d98b9d3acf2adc44a4b5ef542313632dd7bad733d5ae28"
+    },
+    {
+      "task_id": "04_sirna_design_006_gfp_fragment",
+      "file": "04_sirna_design_006_gfp_fragment.json",
+      "sha256": "fddd0c68ae2554e374df8a848467edf97375a4a89e60ec31397d730467bc7338"
+    },
+    {
+      "task_id": "04_sirna_design_007_luciferase_fragment",
+      "file": "04_sirna_design_007_luciferase_fragment.json",
+      "sha256": "94bdefed9926c21fa7f39c319d44654106018691c0795b7f422054ba92acb337"
+    },
+    {
+      "task_id": "04_sirna_design_008_long_target",
+      "file": "04_sirna_design_008_long_target.json",
+      "sha256": "118959a64f9543fc9b8b81fae4ffc0e497b5cb096d3967242a10263e0de6debf"
+    },
+    {
+      "task_id": "04_sirna_design_009_gc_rich_target",
+      "file": "04_sirna_design_009_gc_rich_target.json",
+      "sha256": "4f557080fb1a2be7bc0d00477c66043bcf8e4f98ef8e15e1376fb2c442b44dcd"
+    },
+    {
+      "task_id": "04_sirna_design_010_au_rich_target",
+      "file": "04_sirna_design_010_au_rich_target.json",
+      "sha256": "76b0b04291969e201d815e4da2822bb23b16648f0009a535c5e3317525449d3a"
+    },
+    {
+      "task_id": "04_sirna_design_011_candidate_count_1",
+      "file": "04_sirna_design_011_candidate_count_1.json",
+      "sha256": "a56a3384f229e65119cc70d9814e9c2306c8f58cce8c1c31d93afa9bcd3cb70b"
+    },
+    {
+      "task_id": "04_sirna_design_012_candidate_count_100",
+      "file": "04_sirna_design_012_candidate_count_100.json",
+      "sha256": "52785925dca2f5debc1b484f91b5bff62767477bedff8230041dfce0572c18e3"
+    },
+    {
+      "task_id": "04_sirna_design_013_blast_identity_70",
+      "file": "04_sirna_design_013_blast_identity_70.json",
+      "sha256": "5f3eeba0b74045800cdd0e07d3b514de92e73b4054ce3027b74f178bc1be3677"
+    },
+    {
+      "task_id": "04_sirna_design_014_strict_gc_filter",
+      "file": "04_sirna_design_014_strict_gc_filter.json",
+      "sha256": "790379f590111d7acda3e0edf4afd1781af3292b432ef829fbb6ed08e12363c4"
+    },
+    {
+      "task_id": "04_sirna_design_015_fasta_input",
+      "file": "04_sirna_design_015_fasta_input.json",
+      "sha256": "b8179be60cc0e5074cb5b791d93f28a1827624129f8547c16c9a67ee52722ec5"
+    },
+    {
+      "task_id": "04_sirna_design_016_antiviral_existing_predsi",
+      "file": "04_sirna_design_016_antiviral_existing_predsi.json",
+      "sha256": "d249be8947d80b1eb53c80fd730d1a84bda12ba700602b73b5004bdf7aadbc90"
+    },
+    {
+      "task_id": "04_sirna_design_017_antiviral_existing_rnaxs",
+      "file": "04_sirna_design_017_antiviral_existing_rnaxs.json",
+      "sha256": "fff78ed865750506fb048331959b00c813b56f4d73986ca242f2b1a563e8fc83"
+    },
+    {
+      "task_id": "04_sirna_design_018_antiviral_predesign",
+      "file": "04_sirna_design_018_antiviral_predesign.json",
+      "sha256": "4e3bf28387212f32e7718717c6ddf2141a25b72ed7b6d166d739ab99be0c348a"
+    },
+    {
+      "task_id": "04_sirna_design_019_antiviral_predesign_multifapredsi",
+      "file": "04_sirna_design_019_antiviral_predesign_multifapredsi.json",
+      "sha256": "fdc0336c7a828d6e1f89c3496eb5c1566159c9a75af111c32c0b5ff67ace215c"
+    },
+    {
+      "task_id": "04_sirna_design_020_antiviral_predesign_crispr",
+      "file": "04_sirna_design_020_antiviral_predesign_crispr.json",
+      "sha256": "21e18bf680f6ddfe37205ece94da1cc6e5bb363a0808ff6fe12d0dd8ab148a88"
+    },
+    {
+      "task_id": "04_sirna_design_021_species_sars_cov_2",
+      "file": "04_sirna_design_021_species_sars_cov_2.json",
+      "sha256": "cff1ada744070abb35eabf167d30f1e75dea645eda106331ed5bb28455f2224c"
+    },
+    {
+      "task_id": "04_sirna_design_022_ncores_4",
+      "file": "04_sirna_design_022_ncores_4.json",
+      "sha256": "b2b2dabd5c5b0500fabd57de18b6d8d6257336be593b2cc8c63509daff888e6d"
+    }
+  ]
+}

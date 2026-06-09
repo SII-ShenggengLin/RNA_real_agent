@@ -1,0 +1,29 @@
+{
+  "task_id": "01_mrna_cds_design_007",
+  "workflow": "mrna_cds_design",
+  "category": "full",
+  "description": "RNARL with human mRNA model on therapeutic protein",
+  "input": {
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "design_tool": "rnarl",
+    "model_type": "Homo sapiens mRNA",
+    "cai_species": "Homo sapiens",
+    "run_fold": true,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_dot_bracket_unpaired_fraction",
+    "compute_rna_sequence_gc_content",
+    "design_mrna_cds_with_rnarl",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "cai_threshold": 0.85,
+    "mfe_threshold": -80.0
+  },
+  "source": "UniProt P01588 (EPO)",
+  "paper_reference": "doi:10.1038/313806a0"
+}

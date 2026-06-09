@@ -1,0 +1,25 @@
+{
+  "task_id": "06_rna_secondary_structure_024_long_sequence",
+  "workflow": "rna_secondary_structure_design",
+  "category": "full",
+  "description": "Long sequence with four tandem hairpins (>50 nt)",
+  "input": {
+    "target_structure": "..((((...))))..((((...))))..((((...))))..((((...))))..",
+    "start_sequence": null,
+    "repeats": 10,
+    "num_invocations": 3,
+    "temp_c": 37.0,
+    "function_mode": "m"
+  },
+  "expected_tool_chain": [
+    "compute_rna_sequence_gc_content",
+    "inverse_fold_rna_secondary_structure_vienna",
+    "predict_rna_secondary_structure"
+  ],
+  "evaluation_rubric": {
+    "structure_match": true,
+    "mfe_threshold": -25.0
+  },
+  "source": "Synthetic structure",
+  "paper_reference": null
+}

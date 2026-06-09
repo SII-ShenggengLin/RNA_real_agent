@@ -86,4 +86,3 @@ class ToolSpec(BaseModel):
 
     def output_json_schema(self) -> Optional[Dict[str, Any]]:
         return self.output_model.model_json_schema() if self.output_model else None
-

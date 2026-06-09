@@ -1,0 +1,34 @@
+{
+  "task_id": "02_full_length_mrna_design_012_chlamydomonas_model",
+  "workflow": "full_length_mrna_design",
+  "category": "algae",
+  "description": "Short peptide with RNARL (Chlamydomonas reinhardtii model), medium UTR, arabidopsis CAI (closest plant CAI)",
+  "input": {
+    "protein_sequence": "MKTLLILTVFGITMLLAVLAQG",
+    "design_tool": "rnarl",
+    "lambda_value": null,
+    "model_type": "Chlamydomonas reinhardtii mRNA",
+    "cai_species": "arabidopsis",
+    "utr_mode": "medium",
+    "run_fold": true,
+    "run_gc": true
+  },
+  "expected_tool_chain": [
+    "compute_cai_for_cds_sequence",
+    "compute_dot_bracket_unpaired_fraction",
+    "compute_rna_sequence_gc_content",
+    "design_3utr_with_gemorna",
+    "design_5utr_with_gemorna",
+    "design_mrna_cds_with_rnarl",
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold",
+    "shuffle_cds_junction_codons",
+    "compute_rna_sequence_u_content"
+  ],
+  "evaluation_rubric": {
+    "junction_mfe_threshold": -15.0,
+    "cai_threshold": 0.8
+  },
+  "source": "Synthetic algae expression test",
+  "paper_reference": null
+}

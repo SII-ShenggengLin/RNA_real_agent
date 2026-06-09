@@ -1,0 +1,31 @@
+{
+  "task_id": "09_rna_small_molecule_012_both_tools_default",
+  "workflow": "rna_small_molecule_interaction",
+  "category": "full",
+  "description": "Default both scoring tools without optional parameters",
+  "input": {
+    "rna_sequence": "AUGCGCAUGCGCAUGCGC",
+    "smiles": "CCO",
+    "rna_structure_path": null,
+    "secondary_structure": null,
+    "scoring_tools": [
+      "rnasmol",
+      "gernabind"
+    ],
+    "dataset": null,
+    "split_method": null
+  },
+  "expected_tool_chain": [
+    "score_rna_ligand_binding_with_gernabind",
+    "score_rna_ligand_binding_with_rnasmol"
+  ],
+  "evaluation_rubric": {
+    "binding_score_range": [
+      0.0,
+      1.0
+    ],
+    "cross_tool_agreement": true
+  },
+  "source": "Synthetic RNA + ethanol SMILES",
+  "paper_reference": null
+}

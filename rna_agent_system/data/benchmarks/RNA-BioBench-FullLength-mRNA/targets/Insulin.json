@@ -1,0 +1,20 @@
+{
+  "target_id": "Insulin",
+  "target_name": "Insulin",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01308",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "E. coli",
+  "paper_references": [
+    "doi:10.2337/diab.28.11.1031"
+  ],
+  "notes": "Diabetes therapeutic hormone",
+  "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+  "protein_length_aa": 110,
+  "sequence_checksum": "12E9C9E4E2835C302E8BA615115EDDA3",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "INS_HUMAN",
+  "expected_cds_length_nt": 330,
+  "uniprot_accession": "P01308"
+}

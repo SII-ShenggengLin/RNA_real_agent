@@ -52,6 +52,11 @@ TASK_TIMEOUT = 7200
 # Keep in sync with experiments/run_workflow_sequential.py :: SERVICE_HEALTH_URLS.
 SERVICE_HEALTH_URLS: Dict[str, List[str]] = {
     "sgrna_design": ["http://127.0.0.1:8017/health"],
+    "sirna_design": [
+        "http://127.0.0.1:8003/health",  # ViennaRNA
+        "http://127.0.0.1:8016/health",  # Evitar
+        "http://127.0.0.1:8019/health",  # BLAST
+    ],
     "full_length_mrna_design": [
         "http://127.0.0.1:8014/health",  # LinearDesign
         "http://127.0.0.1:8004/health",  # GEMORNA (UTR design)
@@ -63,7 +68,7 @@ SERVICE_HEALTH_URLS: Dict[str, List[str]] = {
         "http://127.0.0.1:8012/health",  # ODesign
         "http://127.0.0.1:8022/health",  # ProteinX
         "http://127.0.0.1:8005/health",  # RhoFold
-        "http://127.0.0.1:8010/health",  # EGARPS
+        "http://127.0.0.1:8023/health",  # EGARPS
     ],
 }
 

@@ -53,7 +53,7 @@ SERVICE_HEALTH_URLS: Dict[str, List[str]] = {
         "http://127.0.0.1:8012/health",  # ODesign
         "http://127.0.0.1:8022/health",  # ProteinX
         "http://127.0.0.1:8005/health",  # RhoFold
-        "http://127.0.0.1:8010/health",  # EGARPS
+        "http://127.0.0.1:8023/health",  # EGARPS
     ],
 }
 
