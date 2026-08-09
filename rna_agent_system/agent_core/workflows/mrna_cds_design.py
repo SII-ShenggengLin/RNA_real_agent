@@ -4,24 +4,25 @@ Protein sequence → CDS design (LinearDesign λ=[0,1,4,10] where λ∈[0,+∞),
 fold + GC + unpaired-fraction evaluation → scoring → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MrnaCdsDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更            ║
+║  MrnaCdsDesignWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更            ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 mrna_cds_design workflow 的权威实现。任何字段增删、函数签名变动、  ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
 ║                                                                               ║
 ║    - agent_core/workflows/mrna_cds_design.py  ← 本文件                       ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/capabilities/base.py                                          ║
 ║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/quality_profiles/mrna_cds_design.py                           ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - tests/test_mrna_cds_design_workflow.py                                   ║
-║    - tests/test_mrna_cds_design_comprehensive.py                              ║
 ║    - docs/INTERFACE_LOCKS.md                                                  ║
 ║    - docs/WORKFLOWS.md                                                        ║
 ║    - AGENTS.md                                                                ║
@@ -37,13 +38,21 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Callable, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
 from agent_core.sequence_utils import (
     _load_builtin_codon_tables,
     resolve_species_name,
+)
+from agent_core.constants.species import (
+    DEFAULT_CAI_SPECIES,
+    DEFAULT_RNARL_MODEL_TYPE,
+    RNARLModelType,
+    RNARL_MODEL_TYPES_LIST,
+    format_cai_species_aliases,
+    format_rnarl_model_types,
 )
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
@@ -71,31 +80,101 @@ _LOGGER = logging.getLogger("agent_core.workflows.mrna_cds_design")
 
 class MrnaCdsDesignInput(BaseModel):
     """Input for the mRNA CDS design golden path."""
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    lineardesign_filepath: Any = Field(default=None, description="[lineardesign] filepath: Workspace file path that contains the input protein sequence. The wrapper reads the sequence from this file and sends it to the LinearDesign microservice.")
+    lineardesign_service_url: Any = Field(default='http://127.0.0.1:8014/generate/cds', description="[lineardesign] service_url: REST endpoint of the LinearDesign microservice.")
+    lineardesign_lambda_value: float = Field(default=0.0, description="[lineardesign] lambda_value: LinearDesign hyperparameter that balances minimum free energy (MFE) against codon adaptation index (CAI). In the CLI/binary it is passed as the first positional argument; the C++ engine multiplies this value by 100 internally, while verbose output divides it back by 100 for display. A value of 0.0 optimizes MFE only; larger values increasingly weight CAI in the joint objective.")
+    lineardesign_codon_usage_path: Any = Field(default=None, description="[lineardesign] codon_usage_path: Optional path to a codon-usage frequency table in CSV format. When omitted, the service uses external_repos/LinearDesign/codon_usage_freq_table_human.csv.")
+    lineardesign_verbose: Any = Field(default=False, description="[lineardesign] verbose: Enables extra textual output from the LinearDesign binary (input protein echo, effective lambda, codon table path, runtime).")
+    rnarl_filepath: Any = Field(default=None, description="[rnarl] filepath: Workspace file path containing the input protein sequence. The wrapper extracts the first FASTA/plain-text sequence and sends it to the RNARL service.")
+    rnarl_service_url: Any = Field(default='http://127.0.0.1:8008/generate/cds', description="[rnarl] service_url: REST endpoint of the RNARL CDS generation microservice.")
+    rnarl_model_type: Any = Field(
+        default=DEFAULT_RNARL_MODEL_TYPE,
+        description=f"[rnarl] model_type: RNARL trained variant. Supported values: {format_rnarl_model_types()}.",
+    )
+    rnarl_checkpoint_path: Any = Field(default=None, description="[rnarl] checkpoint_path: Optional override for the RNARL actor checkpoint. When omitted, the service resolves checkpoints/RNARL/<model_type>.pt.")
+    rnarl_esm2_model_path: Any = Field(default=None, description="[rnarl] esm2_model_path: Optional override for the local ESM-2 model directory used to encode the protein. Default is external_repos/RNARL/esm2_model_t33_650M_UR50D.")
+    rnarl_device: Any = Field(default=None, description="[rnarl] device: Optional torch device string such as cuda:0 or cpu. The service defaults to CUDA if available, otherwise cpu.")
+    gemorna_filepath: Any = Field(default=None, description="[gemorna] filepath: Workspace file path containing the protein sequence. The service requires at least 10 canonical amino acids (CDS >= 30 nt).")
+    gemorna_service_url: Any = Field(default='http://127.0.0.1:8004/generate/cds', description="[gemorna] service_url: REST endpoint of the GEMORNA CDS microservice.")
+    vienna_fold_filepath: str = Field(default=None, description="[vienna_fold] filepath: Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.")
+    vienna_fold_temp_c: float = Field(default=37.0, description="[vienna_fold] temp_c: Folding temperature (Celsius).")
+    vienna_fold_dangles: int = Field(default=2, description="[vienna_fold] dangles: Dangling-end model.")
+    vienna_fold_no_lp: bool = Field(default=False, description="[vienna_fold] no_lp: Disallow lonely pairs.")
+    vienna_fold_no_gu: bool = Field(default=False, description="[vienna_fold] no_gu: Disallow GU pairs.")
+    vienna_fold_no_closing_gu: bool = Field(default=False, description="[vienna_fold] no_closing_gu: Disallow GU closing pairs.")
+    vienna_fold_salt: Optional[float] = Field(default=None, description="[vienna_fold] salt: Salt concentration (M).")
+    vienna_fold_no_tetra: bool = Field(default=False, description="[vienna_fold] no_tetra: Omit special hairpin loop energies.")
+    vienna_fold_energy_model: Optional[int] = Field(default=None, description="[vienna_fold] energy_model: Energy model index.")
+    vienna_fold_nsp: Optional[str] = Field(default=None, description="[vienna_fold] nsp: Non-standard pair specification.")
+    vienna_fold_param_file: Optional[str] = Field(default=None, description="[vienna_fold] param_file: Custom parameter file.")
+    vienna_fold_constraint: Optional[str] = Field(default=None, description="[vienna_fold] constraint: Hard constraint dot-bracket string.")
+    vienna_fold_shape_file: Optional[str] = Field(default=None, description="[vienna_fold] shape_file: Path to SHAPE reactivity data file.")
+    vienna_fold_shape_method: str = Field(default='D', description="[vienna_fold] shape_method: SHAPE method: D, Z, or W.")
+    vienna_fold_partfunc: bool = Field(default=False, description="[vienna_fold] partfunc: Compute partition function and centroid.")
+    vienna_fold_circ: bool = Field(default=False, description="[vienna_fold] circ: Assume circular RNA.")
+    vienna_fold_gquad: bool = Field(default=False, description="[vienna_fold] gquad: Include G-quadruplex formation.")
+    vienna_fold_service_url: str = Field(default='http://127.0.0.1:8003/fold', description="[vienna_fold] service_url: ViennaRNA fold endpoint.")
+    vienna_fold_noDP: bool = Field(default=False, description="[vienna_fold] --noDP: 上游 --noDP，禁止生成 dot-plot PostScript。")
+    vienna_fold_maxBPspan: int = Field(default=-1, description="[vienna_fold] --maxBPspan: 上游 --maxBPspan，默认 -1 无限制。")
+    vienna_fold_MEA: Any = Field(default=None, description="[vienna_fold] --MEA: 上游 --MEA[=gamma]，基于最大期望精度预测结构。")
+    vienna_fold_batch: bool = Field(default=False, description="[vienna_fold] --batch: 上游 --batch，批量使用约束。")
+    vienna_fold_canonicalBPonly: bool = Field(default=False, description="[vienna_fold] --canonicalBPonly: 上游 --canonicalBPonly，从约束中移除非规范碱基对。")
+    vienna_fold_enforceConstraint: bool = Field(default=False, description="[vienna_fold] --enforceConstraint: 上游 --enforceConstraint，强制约束中圆括号表示的碱基对必须形成。")
+    vienna_fold_shapeConversion: str = Field(default='O', description="[vienna_fold] --shapeConversion: 上游 --shapeConversion，SHAPE 到配对概率的转换方法。")
+    vienna_fold_verbose: bool = Field(default=False, description="[vienna_fold] --verbose: 上游 -v，输出详细日志。")
+    linearfold_filepath: str = Field(default=None, description="[linearfold] filepath: Path to a workspace file containing RNA sequence (plain or FASTA).")
+    linearfold_beam_size: int = Field(default=100, description="[linearfold] beam_size: Beam size for LinearFold (0 = infinite beam).")
+    linearfold_use_vienna: bool = Field(default=False, description="[linearfold] use_vienna: If true, request LinearFold-V (Vienna energy parameters).")
+    linearfold_dangles: int = Field(default=2, description="[linearfold] dangles: Dangling-end model: 0 or 2 (LinearFold --dangles).")
+    linearfold_sharpturn: bool = Field(default=False, description="[linearfold] sharpturn: Enable sharpturn in prediction.")
+    linearfold_constraints: Optional[str] = Field(default=None, description="[linearfold] constraints: Optional constraint string (? . ( ) ) for constrained prediction. If provided, length must match the sequence.")
+    linearfold_shape_file_path: Optional[str] = Field(default=None, description="[linearfold] shape_file_path: Optional path to SHAPE reactivity data file (mutually exclusive with constraints).")
+    linearfold_service_url: str = Field(default='http://127.0.0.1:8015/fold', description="[linearfold] service_url: REST endpoint for the LinearFold microservice.")
+    linearfold_fasta: bool = Field(default=False, description="[linearfold] --fasta: 上游 --fasta，声明输入为 FASTA 格式。")
+    linearfold_verbose: bool = Field(default=False, description="[linearfold] --verbose: 上游 -v/--verbose，输出每个 loop 的能量。")
+    gc_filepath: str = Field(default=None, description="[gc] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    gc_service_url: str = Field(default='http://127.0.0.1:8020/gc-content', description="[gc] service_url: POST endpoint for GC content microservice.")
+    gc_timeout_seconds: float = Field(default=120.0, description="[gc] timeout_seconds: HTTP request timeout in seconds.")
+    u_content_filepath: str = Field(default=None, description="[u_content] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    u_content_service_url: str = Field(default='http://127.0.0.1:8020/u-content', description="[u_content] service_url: POST endpoint for U content microservice.")
+    u_content_timeout_seconds: float = Field(default=120.0, description="[u_content] timeout_seconds: HTTP request timeout in seconds.")
+    unpaired_filepath: str = Field(default=None, description="[unpaired] filepath: Path to dot-bracket secondary structure (first structural line used; FASTA header skipped).")
+    unpaired_service_url: str = Field(default='http://127.0.0.1:8020/unpaired-fraction', description="[unpaired] service_url: POST endpoint for unpaired-fraction microservice.")
+    unpaired_timeout_seconds: float = Field(default=120.0, description="[unpaired] timeout_seconds: HTTP request timeout in seconds.")
+    rnastop_filepath: Any = Field(default=None, description="[rnastop] filepath: Workspace file path containing the RNA sequence. Non-ACGU characters are removed and T is converted to U.")
+    rnastop_service_url: Any = Field(default='http://127.0.0.1:8009/predict/stability', description="[rnastop] service_url: REST endpoint of the RNASTOP stability microservice.")
+    rnastop_structure: Any = Field(default=None, description="[rnastop] structure: Optional secondary structure in dot-bracket notation. Must be the same length as the normalized sequence. If omitted, the service folds the sequence with ViennaRNA.")
+    rnastop_loop_type: Any = Field(default=None, description="[rnastop] loop_type: Optional loop-type annotation string in the OpenVaccine alphabet (S/M/I/H/B/E). Must match sequence length. If omitted, it is derived from the structure with RNA.db_to_element_string or a fallback S/E string.")
+    rnastop_checkpoint_path: Any = Field(default=None, description="[rnastop] checkpoint_path: Optional override for the RNASTOP checkpoint. Default resolves to external_repos/RNASTOP/models/best_model_weights or best_model_weights_withoutDNABERT.")
+    rnastop_device: Any = Field(default=None, description="[rnastop] device: Optional torch device string such as cuda:0 or cpu. Default is CUDA if available, otherwise cpu.")
+    rnastop_rnafm_model_path: Any = Field(default=None, description="[rnastop] rnafm_model_path: Hidden service parameter not exposed by the wrapper. Default resolves to external_repos/RNASTOP/RNA-FM-main/pretrained/RNA-FM_pretrained.pth.")
+    rnastop_dnabert_model_path: Any = Field(default=None, description="[rnastop] dnabert_model_path: Hidden service parameter not exposed by the wrapper. Default resolves to external_repos/RNASTOP/DNABERT6 or scripts/DNABERT6.")
+    cai_filepath: str = Field(default=None, description="[cai] filepath: Path to CDS sequence file (workspace or absolute); FASTA or plain text. Must be in-frame (length multiple of 3).")
+    cai_custom_codon_table_path: Optional[str] = Field(default=None, description="[cai] custom_codon_table_path: Optional path to a custom codon usage JSON file. Format: {\"codon\": {\"aa\": \"X\", \"fraction\": 0.42}, ...}. When provided, ``species`` is used only for metadata/labeling.")
     protein_sequence: str = Field(..., description="Amino-acid string (uppercase, 1-letter codes).")
-    design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = "all"
+    truncate_n_terminal: Optional[int] = Field(
+        default=None,
+        description="If set, remove the first N amino acids of protein_sequence before design.",
+    )
+    truncate_c_terminal: Optional[int] = Field(
+        default=None,
+        description="If set, remove the last N amino acids of protein_sequence before design.",
+    )
+    design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = Field(default="all", description="CDS design engine(s) to run. 'lineardesign' uses LinearDesign; 'rnarl' uses RNARL; 'gemorna' uses GEMORNA; 'all' runs all three and merges candidates.")
     lambda_value: Optional[float] = Field(
         default=None,
         description="LinearDesign MFE/CAI balance (0-20). Required when design_tool='lineardesign'; ignored otherwise.",
     )
-    model_type: Literal[
-        "Homo sapiens mRNA",
-        "Homo sapiens circular RNA",
-        "Arabidopsis thaliana mRNA",
-        "Escherichia coli mRNA",
-        "Penicillium chrysogenum mRNA",
-        "Chlamydomonas reinhardtii mRNA",
-        "Thermococcus kodakarensis KOD1 mRNA",
-    ] = Field(default="Homo sapiens mRNA", description="RNARL model type.")
-    cai_species: str = Field(
-        default="Homo sapiens",
-        description="Species for CAI computation. Built-in: human, mouse, rat, fly, worm, zebrafish, arabidopsis, yeast, ecoli, bsubtilis, cho.",
+    model_type: RNARLModelType = Field(
+        default=DEFAULT_RNARL_MODEL_TYPE, description="RNARL model type."
     )
-    run_fold: bool = Field(default=True)
-    run_gc: bool = Field(default=True)
-
+    cai_species: str = Field(
+        default=DEFAULT_CAI_SPECIES,
+        description=f"Species for CAI computation. Built-in: {format_cai_species_aliases()}.",
+    )
+    run_fold: bool = Field(default=True, description="Whether to fold designed CDS sequences with ViennaRNA/LinearFold for secondary-structure evaluation.")
+    run_gc: bool = Field(default=True, description="Whether to compute GC-content of designed CDS sequences.")
     @field_validator("lambda_value")
     @classmethod
     def _require_lambda_for_lineardesign(
@@ -105,8 +184,72 @@ class MrnaCdsDesignInput(BaseModel):
         if design_tool == "lineardesign" and v is None:
             raise ValueError("lambda_value is required when design_tool='lineardesign'")
         return v
+    @field_validator("truncate_n_terminal", "truncate_c_terminal")
+    @classmethod
+    def _validate_terminal_truncation(
+        cls, v: Optional[int], info: Any
+    ) -> Optional[int]:
+        """Truncation length must be a positive integer and not exceed the protein length."""
+        if v is None:
+            return v
+        if not isinstance(v, int) or v <= 0:
+            raise ValueError("terminal truncation length must be a positive integer")
+        protein = info.data.get("protein_sequence")
+        if protein and v > len(protein):
+            raise ValueError(
+                "truncation length " + str(v) + " exceeds protein_sequence length " + str(len(protein))
+            )
+        return v
 
+    @model_validator(mode="after")
+    def _check_mutually_exclusive_truncation(self) -> "MrnaCdsDesignInput":
+        """Only one terminal truncation direction may be specified."""
+        if self.truncate_n_terminal is not None and self.truncate_c_terminal is not None:
+            raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
+        return self
 
+def _validate_terminal_truncation(
+    cls, v: Optional[int], info: Any
+) -> Optional[int]:
+    """Truncation length must be a positive integer and not exceed the protein length."""
+    if v is None:
+        return v
+    if not isinstance(v, int) or v <= 0:
+        raise ValueError("terminal truncation length must be a positive integer")
+    protein = info.data.get("protein_sequence")
+    if protein and v > len(protein):
+        raise ValueError(
+            "truncation length " + str(v) + " exceeds protein_sequence length " + str(len(protein))
+        )
+    return v
+
+@model_validator(mode="after")
+def _check_mutually_exclusive_truncation(self) -> "MrnaCdsDesignInput":
+    """Only one terminal truncation direction may be specified."""
+    if self.truncate_n_terminal is not None and self.truncate_c_terminal is not None:
+        raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
+    return self
+def _validate_terminal_truncation(
+    cls, v: Optional[int], info: Any
+) -> Optional[int]:
+    """Truncation length must be a positive integer and not exceed the protein length."""
+    if v is None:
+        return v
+    if not isinstance(v, int) or v <= 0:
+        raise ValueError("terminal truncation length must be a positive integer")
+    protein = info.data.get("protein_sequence")
+    if protein and v > len(protein):
+        raise ValueError(
+            "truncation length " + str(v) + " exceeds protein_sequence length " + str(len(protein))
+        )
+    return v
+
+@model_validator(mode="after")
+def _check_mutually_exclusive_truncation(self) -> "MrnaCdsDesignInput":
+    """Only one terminal truncation direction may be specified."""
+    if self.truncate_n_terminal is not None and self.truncate_c_terminal is not None:
+        raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
+    return self
 # ─────────────────────────────────────────────────────────────────────────────
 # Workflow — INTERFACE LOCKED (v1.0.0)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -186,6 +329,11 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         self._run_fold = inp.run_fold
         self._run_gc = inp.run_gc
 
+        # Service pre-flight: auto-start required microservices when enabled.
+        preflight = self._service_preflight_result()
+        if preflight is not None:
+            return preflight
+
         for i, candidate in enumerate(existing_candidates):
             metrics = self.evaluate(candidate)
             candidate.scores = self.score(metrics)
@@ -214,27 +362,36 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         - GEMORNA: 1 call → 1 candidate
         Total = 6 candidates (deduplicated).
         """
-        protein_fp = save_sequence(inp.protein_sequence, prefix="protein")
+        protein_sequence = inp.protein_sequence
+        if inp.truncate_n_terminal is not None:
+            protein_sequence = protein_sequence[: inp.truncate_n_terminal]
+        elif inp.truncate_c_terminal is not None:
+            protein_sequence = protein_sequence[-inp.truncate_c_terminal :]
+
+        protein_fp = save_sequence(protein_sequence, prefix="protein")
         _LOGGER.info(
-            "mrna_cds_design protein_saved filepath=%s len_aa=%d",
+            "mrna_cds_design protein_saved filepath=%s original_len_aa=%d used_len_aa=%d",
             protein_fp,
             len(inp.protein_sequence),
+            len(protein_sequence),
         )
 
         design_configs: list[tuple[str, dict[str, Any]]] = []
 
+        def _ld_args(lam: float) -> dict[str, Any]:
+            extra: dict[str, Any] = {"lambda_value": lam}
+            if inp.lineardesign_codon_usage_path:
+                extra["codon_usage_path"] = str(inp.lineardesign_codon_usage_path)
+            return extra
+
         if inp.design_tool in ("all", "lineardesign"):
             if inp.design_tool == "all":
                 for lam in (0.0, 1.0, 4.0, 10.0):
-                    design_configs.append(
-                        ("lineardesign", {"lambda_value": lam})
-                    )
+                    design_configs.append(("lineardesign", _ld_args(lam)))
             else:  # design_tool == "lineardesign"
                 # Validator ensures lambda_value is not None; guard anyway.
                 lam = inp.lambda_value if inp.lambda_value is not None else 0.0
-                design_configs.append(
-                    ("lineardesign", {"lambda_value": lam})
-                )
+                design_configs.append(("lineardesign", _ld_args(lam)))
 
         if inp.design_tool in ("all", "rnarl"):
             design_configs.append(
@@ -284,6 +441,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
                         "design_tool": tool_name,
                         "design_params": extra_args,
                         "protein_sequence": inp.protein_sequence,
+                        "protein_sequence_used": protein_sequence,
                         "protein_filepath": protein_fp,
                         "design_output": cap_result.output,
                         "cai_species": inp.cai_species,
@@ -347,7 +505,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         metrics = self.evaluator.evaluate(candidate, context)
 
         # Domain-specific: warn about missing species when CAI evaluation fails
-        cai_species = candidate.metadata.get("cai_species", "Homo sapiens")
+        cai_species = candidate.metadata.get("cai_species", DEFAULT_CAI_SPECIES)
         if (
             "cai_score" not in metrics
             and self.capabilities.has("compute_cai_for_cds_sequence")
@@ -446,73 +604,3 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         )
 
 
-# LLM Critic Configuration — INTERFACE LOCKED (v1.0.0)
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-
-MRNA_CDS_CRITIC_CONFIG = CriticConfig(
-    workflow_name="mrna_cds_design",
-    workflow_description="Design mRNA CDS from protein sequence using LinearDesign, RNARL, or GEMORNA",
-    evaluation_dimensions=[
-        "CAI (Codon Adaptation Index) measures translation efficiency. For human mRNA, CAI > 0.8 is good, < 0.4 is poor and suggests the codon usage is not optimized for the target organism.",
-        "MFE (Minimum Free Energy) measures RNA secondary structure stability. More negative = more stable. Too negative may indicate excessive structure that could impede translation.",
-        "GC content is reported for reference but does not directly enter the ranking score.",
-        "Unpaired fraction is reported for reference but does not directly enter the ranking score.",
-        "If RNASTOP overall_stability is available, values closer to 1.0 indicate higher predicted stability.",
-        "LinearDesign lambda parameter controls the MFE/CAI tradeoff: lambda=0 gives the best MFE (most stable structure, most negative) but lowest CAI. As lambda increases towards +∞ (practical range 0–10), CAI gradually improves while MFE gradually worsens (becomes less stable). Lambda cannot directly control GC content.",
-        "Diversity of design tools matters: if all candidates come from the same tool, consider switching tools for the retry.",
-    ],
-    adjustable_params={
-        "design_tool": {
-            "type": "enum",
-            "values": ["lineardesign", "rnarl", "gemorna", "all"],
-            "hint": "Which design tool to use. 'all' runs all tools. If one tool consistently underperforms, try a specific tool. GEMORNA and RNARL are both balanced; LinearDesign with high lambda favors stability.",
-        },
-        "lambda_value": {
-            "type": "float",
-            "min": 0.0,
-            "max": 20.0,
-            "hint": "LinearDesign MFE/CAI tradeoff parameter. Range is [0, +∞), typically set ≤10. lambda=0 gives the best MFE (most stable structure, most negative) but lowest CAI. As lambda increases, CAI gradually improves while MFE gradually worsens. Decrease lambda to improve poor MFE; increase lambda to improve poor CAI.",
-        },
-        "model_type": {
-            "type": "enum",
-            "values": [
-                "Homo sapiens mRNA",
-                "Homo sapiens circular RNA",
-                "Arabidopsis thaliana mRNA",
-                "Escherichia coli mRNA",
-                "Penicillium chrysogenum mRNA",
-                "Chlamydomonas reinhardtii mRNA",
-                "Thermococcus kodakarensis KOD1 mRNA",
-            ],
-            "hint": "RNARL model type. Only these 7 types are supported. If the user asks for a species not in this list, fall back to 'Homo sapiens mRNA' or switch to GEMORNA/LinearDesign.",
-        },
-        "cai_species": {
-            "type": "str",
-            "hint": "Species for CAI computation. Built-in: human, mouse, rat, fly, worm, zebrafish, arabidopsis, yeast, ecoli, bsubtilis, cho. For other species, provide a custom codon usage table JSON.",
-        },
-        "run_fold": {
-            "type": "bool",
-            "hint": "Whether to run secondary structure folding (ViennaRNA/LinearFold). Disabling skips the fold evaluator — a fast partial retry when fold results look suspicious.",
-        },
-        "run_gc": {
-            "type": "bool",
-            "hint": "Whether to run GC content evaluation. Disabling skips the GC evaluator.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-    evaluator_only_params={"run_fold", "run_gc"},
-    param_to_evaluators={
-        "run_fold": ["SecondaryStructureEvaluator", "UnpairedFractionEvaluator"],
-        "run_gc": ["GCContentEvaluator"],
-    },
-)
-
-
-class MrnaCdsDesignLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for mRNA CDS design workflow."""
-
-    def _default_config(self) -> CriticConfig:
-        return MRNA_CDS_CRITIC_CONFIG

@@ -12,6 +12,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from agent_core.constants.species import CAI_SPECIES_ALIASES
+
 # ───────────────────────────────────────────────────────────────────────────────
 # RNA sequence normalization
 # ───────────────────────────────────────────────────────────────────────────────
@@ -68,7 +70,6 @@ def compute_gc_content(normalized_seq: str) -> dict[str, float | int]:
 #   - agent_core/tools.py
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
 #   - agent_core/sequence_utils.py  ← 本文件
 #   - tests/test_compute_rna_sequence_u_content.py
 #   - rna_agent_system/docs/CONTRIBUTING.md
@@ -171,33 +172,7 @@ def compute_dot_bracket_unpaired_fraction(struct: str) -> dict[str, float | int]
 # ───────────────────────────────────────────────────────────────────────────────
 
 _BUILTIN_CODON_TABLES: dict[str, dict[str, Any]] | None = None
-_SPECIES_ALIASES: dict[str, str] = {
-    "human": "Homo sapiens",
-    "homo sapiens": "Homo sapiens",
-    "mouse": "Mus musculus",
-    "mus musculus": "Mus musculus",
-    "rat": "Rattus norvegicus",
-    "rattus norvegicus": "Rattus norvegicus",
-    "fly": "Drosophila melanogaster",
-    "drosophila melanogaster": "Drosophila melanogaster",
-    "worm": "Caenorhabditis elegans",
-    "caenorhabditis elegans": "Caenorhabditis elegans",
-    "zebrafish": "Danio rerio",
-    "danio rerio": "Danio rerio",
-    "arabidopsis": "Arabidopsis thaliana",
-    "arabidopsis thaliana": "Arabidopsis thaliana",
-    "yeast": "Saccharomyces cerevisiae",
-    "saccharomyces cerevisiae": "Saccharomyces cerevisiae",
-    "ecoli": "Escherichia coli K-12",
-    "e. coli": "Escherichia coli K-12",
-    "escherichia coli k-12": "Escherichia coli K-12",
-    "bsubtilis": "Bacillus subtilis",
-    "b. subtilis": "Bacillus subtilis",
-    "bacillus subtilis": "Bacillus subtilis",
-    "cho": "Cricetulus griseus",
-    "chinese hamster": "Cricetulus griseus",
-    "cricetulus griseus": "Cricetulus griseus",
-}
+_SPECIES_ALIASES: dict[str, str] = CAI_SPECIES_ALIASES
 
 _STOP_CODONS = {"UAA", "UAG", "UGA"}
 
@@ -286,6 +261,55 @@ def build_cai_weights(codon_fractions: dict[str, dict[str, Any]]) -> dict[str, f
             weights[codon] = frac / max_frac
 
     return weights
+
+
+def export_codon_usage_csv(species: str, out_path: Path | None = None) -> Path:
+    """Export a LinearDesign-format codon-usage CSV for a species.
+
+    LinearDesign's ``Utils/codon.h`` parser unconditionally skips the first
+    line (treated as header) and reads ``codon,aa,fraction`` rows, requiring
+    exactly 64 codons; stop codons are encoded as ``*``. The file therefore
+    starts with a header row ``#,,"``. Fractions are clamped to >= 1e-6 so
+    ``ln(fraction)`` stays finite for codons whose Kazusa fraction is 0.
+
+    Species-matched generation (B0, 2026-08-08): LD designs against the
+    species' own codon-usage table instead of the default human table, so
+    the output CAI measured by the E5 scoring table (same Kazusa source)
+    is no longer capped by a mismatched pair of tables (GFP: 0.70 -> 1.0).
+
+    Parameters
+    ----------
+    species
+        Species name or alias resolvable via ``resolve_species_name``.
+    out_path
+        Destination CSV path. Defaults to
+        ``<project>/experiments/results/codon_tables/<canonical>.csv``.
+
+    Returns
+    -------
+    Path
+        The written CSV path.
+
+    Raises
+    ------
+    KeyError
+        If no built-in Kazusa table exists for the resolved species.
+    """
+    canonical = resolve_species_name(species)
+    table = _load_builtin_codon_tables()[canonical]
+    if out_path is None:
+        results_dir = Path(__file__).resolve().parents[1] / "experiments" / "results"
+        out_path = results_dir / "codon_tables" / f"{canonical.replace(' ', '_')}.csv"
+    out_path = Path(out_path)
+    lines = ["#,,"]  # LD C++ parser skips the first line unconditionally
+    for codon in sorted(table):
+        info = table[codon]
+        aa = info["aa"] if info["aa"] not in ("*", "") else "*"
+        frac = max(float(info["fraction"]), 1e-6)
+        lines.append(f"{codon},{aa},{frac:.8f}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out_path
 
 
 def compute_cai(cds_seq: str, codon_weights: dict[str, float]) -> dict[str, Any]:
