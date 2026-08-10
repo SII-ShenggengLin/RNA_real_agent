@@ -1,0 +1,155 @@
+# Workflow 流程审查与 Critic 改造提示词
+
+## 角色设定
+你是一位熟悉 RNA 设计多智能体系统架构的资深工程师。你的任务是：
+1. 完整梳理指定 workflow 的执行流程
+2. 重点分析其 LLM Critic 的触发条件、诊断逻辑和重试机制
+3. 判断在多轮对话场景下，Critic 的“自动重试”行为是否合理
+4. 给出修改方案，将 Critic 从“自动修复器”改造为“诊断顾问” （具体是否需要改还要我来判断）
+
+## 任务输入
+本次审查的 workflow 为：**{full_length_mrna_design}**
+
+请重点阅读以下位置的代码：
+1. Workflow 实现：`agent_core/workflows/full_length_mrna_design.py`（或对应文件名）
+2. Critic 配置与实现：同文件内的 `{WorkflowName}LLMCritic` 类，或 `agent_core/planning/llm_critic.py` 中的基类逻辑
+3. 调用入口：`agent_core/runner.py` 中的 `_build_plan()` / `stream()`，`agent_core/planning/base.py` 中的 `ExecutionController.execute()`
+4. 测试用例：`tests/test_full_length_mrna_design_comprehensive.py` 或相关测试文件
+5. 文档：`rna_agent_system/docs/WORKFLOWS.md`、`rna_agent_system/docs/BMC_FRAMEWORK.md` 中相关章节 （文档可能会过时）
+
+## 需要输出的内容
+
+### 一、Workflow 整体流程图
+用 mermaid 或文字列表描述：
+1. 输入参数有哪些（required/optional）
+2. 执行分为哪些阶段（如：设计 → 评估 → 评分 → 汇总）
+3. 每个阶段调用了哪些工具/微服务
+4. 输出结果的数据结构（`WorkflowResult` 的字段、`all_candidates` 结构等）
+
+### 二、Critic 详细流程
+请回答以下问题：
+1. **触发点**：Critic 在哪个阶段被调用？调用方是谁？
+2. **输入数据**：Critic 接收哪些输入？（`WorkflowResult`、state、`_last_workflow_params`、candidate metrics 等）
+3. **诊断逻辑**：
+   - 使用什么模型/温度？
+   - Prompt 的核心判断标准是什么？
+   - 输出结构是什么？（`CriticDiagnosis` 的 `action`、`parameter_overrides`、`issues` 等）
+4. **决策分支**：
+   - 什么情况下返回 `action=retry`？
+   - 什么情况下返回 `action=abort`？
+   - 什么情况下返回 `action=accept` 或类似？
+5. **重试机制**：
+   - 重试时如何修改 plan？（`parameter_overrides` 还是 `replan_fn`？）
+   - 最大重试次数是多少？
+   - 重试会改变哪些参数？
+
+### 三、当前 Critic 的问题分析
+结合多轮对话场景，判断是否存在以下问题：
+- [ ] **过度重试**：是否在没有明确质量问题时仍触发重试？
+- [ ] **与用户意图冲突**：是否把用户本可以在下一轮明确表达的需求，擅自做了决策？
+- [ ] **成本过高**：每次重试是否都要重新跑耗时/昂贵的工具？
+- [ ] **诊断不透明**：Critic 的结论是否对用户不可见？
+- [ ] **无法收敛**：是否存在重试后仍不满足条件、无限循环的风险？
+- [ ] **参数越界**：Critic 推荐的参数是否可能超出合理范围？
+
+### 四、改造建议
+请给出**可落地**的修改方案，目标：
+
+> **Critic 默认只生成诊断建议，不自动触发工作流重试（这个要根据具体的workflow来判断）；只有在遇到明确的执行失败/硬性阈值不满足时，才允许自动重试。**
+
+具体说明：
+1. 哪些情况应保留自动重试？（如工具调用失败、返回空结果、序列长度异常等）
+2. 哪些情况应改为仅诊断并提示用户？（如指标略低于“理想值”但仍在合理范围）
+3. 诊断信息应如何写入 state，并在报告中展示给用户？
+4. 是否需要新增配置项（如 `critic_auto_retry`）？默认值应如何设置？
+
+### 五、具体代码修改清单
+请列出需要修改的文件、函数和关键代码行，格式如下：
+
+|
+ 文件 
+|
+ 函数/位置 
+|
+ 修改内容 
+|
+ 备注 
+|
+|
+------
+|
+----------
+|
+---------
+|
+------
+|
+|
+`agent_core/workflows/full_length_mrna_design.py`
+|
+`{CriticClass}.should_retry()`
+|
+ 添加 
+`auto_retry`
+ 开关判断 
+|
+ ... 
+|
+|
+`agent_core/planning/base.py`
+|
+`ExecutionController.execute()`
+|
+ 根据 diagnosis.action 决定是否重试 
+|
+ ... 
+|
+|
+`agent_core/runner.py`
+|
+`AgentRunner.__init__()`
+|
+ 新增 
+`critic_auto_retry`
+ 参数 
+|
+ ... 
+|
+|
+`cli/agent_chat.py`
+|
+`_generate_llm_report()`
+|
+ 在报告中展示 critic 诊断 
+|
+ ... 
+|
+
+### 六、改造后的流程图
+请用 mermaid 或文字列表给出改造后的关键流程：
+执行 workflow → 调用 Critic 诊断 ↓ 如果 action=retry 且 auto_retry=True / 属于硬性失败 → 执行重试 ↓ 如果 action=retry 但 auto_retry=False / 属于软性建议 → 不自动重试，将诊断写入 state ↓ 生成报告（包含原始结果 + Critic 诊断建议） ↓ 用户在下一轮基于报告提出新要求
+
+
+## 输出格式要求
+1. 使用中文撰写
+2. 使用 Markdown 表格和列表增强可读性
+3. 所有代码引用请标注准确文件路径和行号（如果已知）
+4. 避免泛泛而谈，所有结论都应基于实际代码分析
+5. 最终必须给出**明确的修改建议**：是“保留自动重试”、“改为诊断模式”还是“混合策略”？
+
+## 特别注意事项
+- 不要修改任何文件，只输出分析报告
+- 如果某个 workflow 没有 Critic，请明确说明
+- 如果 Critic 使用了 `BMC Coordinator` 而非 `BaseLLMCritic`，请单独说明其 deterministic 规则
+- 注意 INTERFACE LOCK：如果建议修改已锁定的接口（如 `AgentRunner` 签名、工具返回字典键名等），请说明需要同步更新的文件
+-还要看一下critic llm中的一些提示词是否应该加入到命令行入口处的LLM的提示词里。
+
+序号	Workflow	Critic Class	建议优先审查
+1	mrna_cds_design	MrnaCdsDesignLLMCritic---------
+2	sirna_design	SirnaDesignLLMCritic	-------------------
+3	sgrna_design	SgRnaDesignLLMCritic	--------------------
+4	rna_aptamer_design	RnaAptamerDesignLLMCritic	
+5	ires_prediction	IresPredictionLLMCritic	-------------
+6	rna_secondary_structure_design	RnaSecondaryStructureDesignLLMCritic	---
+7	rna_tertiary_structure_design	RnaTertiaryStructureDesignLLMCritic	
+8	full_length_mrna_design	FullLengthMrnaDesignLLMCritic ---

@@ -87,6 +87,14 @@ def DataGenerate(pre_graph):
     return
 
 def get_input_data(pdb, academic=True):
+    # WARNING (2026-07-27 RNADesignAgent campaign): the cache paths below are
+    # derived with `pdb.replace('.pdb', ...)`, which is a NO-OP when the input
+    # filename does not contain '.pdb' (e.g. a Protenix .cif). In that case
+    # `savepath` == the input file itself and the pickle caches are dumped
+    # OVER THE INPUT, destroying the caller's structure file (this happened
+    # to two ProteinX complex mmCIFs; downstream readers then fail with
+    # utf-8/parse errors on the pickle). Callers: pass a real `.pdb` file
+    # (or a converted copy), never a `.cif` path.
     pdb_represent=get_pdb_represent(pdb,pdb.replace('.pdb','_fix_pymol_4.5A.pkl'))
     get_graph_represent(pdb_represent,pdb.replace('.pdb','.pkl'))
     get_feature_represent(pdb, academic)

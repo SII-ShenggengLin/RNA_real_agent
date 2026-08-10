@@ -1,7 +1,7 @@
 你是一名资深的 RNA 多智能体系统测试工程师。现在需要对 RNA-BioBench-Platform benchmark 中的某个 workflow 进行完整、真实、可复现的实验运行。
 
-本次要运行的 workflow 是：【sirna_design】
-其实之前sirna_design这个workflow已经运行过了，但是我修改了，04_sirna_design_013_blast_identity_70，04_sirna_design_021_species_sars_cov_2，04_sirna_design_003_with_offtarget这三个数据的值，请你重新跑一下这三个数据，并覆盖之前的实验结果。
+本次要运行的 workflow 是：【full_length_mrna_design】
+其实之前full_length_mrna_design这个workflow已经运行过了，但是我修改了这个workflow的代码，请你重新跑一下这个workflow，并覆盖之前的实验结果。
 
 ### 一、项目背景与基本原则
 

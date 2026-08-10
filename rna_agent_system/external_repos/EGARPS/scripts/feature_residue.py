@@ -171,6 +171,14 @@ def get_protein_rna(pymol_pdb):
     return monomer_dict
 
 def get_ss_feat_for_dir(pymol_pdb, academic=True):
+    # WARNING (2026-07-27 RNADesignAgent campaign): chain typing here uses
+    # `re.search('protein', k)` where k = '<pdb basename>_rna_<chain>'. If the
+    # PDB basename itself contains the substring 'protein' (e.g.
+    # 'known_Thrombin_proteinx_complex.pdb'), RNA chains are hijacked into the
+    # protein DSSP path and get 3-wide ss rows instead of 7-wide, crashing
+    # `np.row_stack` in dataload._install_external_feat (size 10 vs 6).
+    # Callers: keep 'protein'/'rna' substrings out of the input basename
+    # (see experiments/run_known_aptamer_validation.py::_proteinx_cif_to_pdb).
     dir_feat_dict=dict()
     for x in pymol_pdb:
         print(x,end='\t')
@@ -315,6 +323,12 @@ def get_angle_rna(rna):
     return np.hstack((etalist,thetalist,eta1list,theta1list,eta2list,theta2list))
 
 def get_universal_feat_for_dir(pymol_pdb,protein_fuc,rna_fuc, academic=True):
+    # WARNING (2026-07-27): same `re.search('protein', k)` chain-typing trap as
+    # get_ss_feat_for_dir above — a PDB basename containing 'protein' routes
+    # RNA chains into protein_fuc (e.g. protein phi/psi torsion on RNA,
+    # producing the 'Warning! add zero for phi and psi' spam and wrong-width
+    # feature rows that crash dataload._install_external_feat). Keep
+    # 'protein'/'rna' substrings out of input basenames.
     dir_feat_dict=dict()
     for x in pymol_pdb:
         print(x,end='\t')

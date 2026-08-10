@@ -19,6 +19,12 @@
 # Workspace runtime outputs
 rna_agent_system/workspace/*
 !rna_agent_system/workspace/.gitkeep
+rna_agent_system/test_workspace_*/
+rna_agent_system/workspace_test_*/
+
+# Literature-search cache (regenerable; experiment verdicts/summaries under
+# experiments/results/ ARE committed as the paper's evidence base)
+rna_agent_system/experiments/lit_cache/
 
 # Compiled binaries in submodules (should be rebuilt on target host)
 rna_agent_system/external_repos/LinearDesign/bin/
@@ -31,6 +37,8 @@ rna_agent_system/external_repos/LinearDesign/bin/
 
 # Sequence files (runtime generated)
 *.fasta
+# ...but curated benchmark inputs are source data, not runtime output
+!rna_agent_system/data/benchmarks/**/*.fasta
 
 # Reference genomes / transcriptomes (auto-downloaded, do NOT commit)
 rna_agent_system/data/references/species/*/
