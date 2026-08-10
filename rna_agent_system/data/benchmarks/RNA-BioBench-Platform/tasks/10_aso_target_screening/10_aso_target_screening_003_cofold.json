@@ -4,7 +4,7 @@
   "category": "edge",
   "description": "ASO screening with RNAcofold for duplex evaluation (18mer, step=2, top=5)",
   "input": {
-    "target_mrna_filepath": "workspace/test_mrna.fa",
+    "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",
     "aso_length": 18,
     "window_step": 2,
     "top_n_windows": 5,

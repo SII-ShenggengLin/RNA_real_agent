@@ -1,0 +1,594 @@
+{
+ "analysis": "E1 oracle capability profiling EXTENSION go/no-go + robustness",
+ "date": "2026-08-04",
+ "preregistration": "run_e1_capability_profiling.py docstring, E1 EXTENSION PRE-REGISTRATION section",
+ "thresholds": {
+  "screening_auroc_pass": 0.8,
+  "ranking_rho_pass": 0.6,
+  "docking_top1_frac_pass": 0.6666666666666666
+ },
+ "sensitivity_grids": {
+  "auroc": [
+   0.6,
+   0.7,
+   0.8,
+   0.9
+  ],
+  "rho": [
+   0.4,
+   0.5,
+   0.6,
+   0.7
+  ]
+ },
+ "ef_params": {
+  "ef_top_k": 3,
+  "ef_frac": 0.25
+ },
+ "targets": [
+  "Thrombin",
+  "VEGF",
+  "PDGF-BB",
+  "IL-17A",
+  "Angiopoietin-2",
+  "SARS-CoV-2 N"
+ ],
+ "part_a_per_oracle_target": {
+  "egarps_native_probability | Thrombin": {
+   "n_binder": 7,
+   "n_negative": 3,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": 0.14285714285714288,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.2857142857142857,
+   "screening_auroc_ci95": [
+    0.0,
+    0.7142857142857143
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.9523809523809524,
+   "ef_25pct": 0.7142857142857143
+  },
+  "proteinx_ipTM | Thrombin": {
+   "n_binder": 7,
+   "n_negative": 3,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": 0.3142857142857143,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.38095238095238093,
+   "screening_auroc_ci95": [
+    0.0,
+    0.8571428571428571
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.9523809523809524,
+   "ef_25pct": 0.7142857142857143
+  },
+  "rhofold_mean_plddt | Thrombin": {
+   "n_binder": 7,
+   "n_negative": 3,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": -0.2,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.38095238095238093,
+   "screening_auroc_ci95": [
+    0.0,
+    0.7619047619047619
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.9523809523809524,
+   "ef_25pct": 1.4285714285714286
+  },
+  "egarps_native_probability | VEGF": {
+   "n_binder": 8,
+   "n_negative": 3,
+   "n_ranking_eligible": 8,
+   "ranking_spearman_rho": -0.023809523809523815,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.7083333333333334,
+   "screening_auroc_ci95": [
+    0.3333333333333333,
+    1.0
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": true,
+    "0.7": true,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.375,
+   "ef_25pct": 1.375
+  },
+  "proteinx_ipTM | VEGF": {
+   "n_binder": 8,
+   "n_negative": 3,
+   "n_ranking_eligible": 8,
+   "ranking_spearman_rho": 0.2380952380952381,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.25,
+   "screening_auroc_ci95": [
+    0.0,
+    0.6666666666666666
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.4583333333333333,
+   "ef_25pct": 0.4583333333333333
+  },
+  "rhofold_mean_plddt | VEGF": {
+   "n_binder": 8,
+   "n_negative": 3,
+   "n_ranking_eligible": 8,
+   "ranking_spearman_rho": 0.1666666666666667,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.5,
+   "screening_auroc_ci95": [
+    0.125,
+    0.875
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.375,
+   "ef_25pct": 1.375
+  },
+  "egarps_native_probability | PDGF-BB": {
+   "n_binder": 5,
+   "n_negative": 3,
+   "n_ranking_eligible": 5,
+   "ranking_spearman_rho": 0.41039134083406165,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": true,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.6,
+   "screening_auroc_ci95": [
+    0.2,
+    1.0
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.0666666666666667,
+   "ef_25pct": 1.6
+  },
+  "proteinx_ipTM | PDGF-BB": {
+   "n_binder": 5,
+   "n_negative": 3,
+   "n_ranking_eligible": 5,
+   "ranking_spearman_rho": -0.41039134083406165,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.6666666666666666,
+   "screening_auroc_ci95": [
+    0.2,
+    1.0
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": true,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.6,
+   "ef_25pct": 1.6
+  },
+  "rhofold_mean_plddt | PDGF-BB": {
+   "n_binder": 5,
+   "n_negative": 3,
+   "n_ranking_eligible": 5,
+   "ranking_spearman_rho": 0.5642880936468347,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": true,
+    "0.5": true,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.8,
+   "screening_auroc_ci95": [
+    0.3333333333333333,
+    1.0
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": true,
+    "0.7": true,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.0666666666666667,
+   "ef_25pct": 1.6
+  },
+  "egarps_native_probability | IL-17A": {
+   "n_binder": 7,
+   "n_negative": 4,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": -0.08571428571428573,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.6428571428571429,
+   "screening_auroc_ci95": [
+    0.2857142857142857,
+    0.9285714285714286
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": true,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.5714285714285714,
+   "ef_25pct": 1.5714285714285714
+  },
+  "proteinx_ipTM | IL-17A": {
+   "n_binder": 7,
+   "n_negative": 4,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": 0.028571428571428574,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.4642857142857143,
+   "screening_auroc_ci95": [
+    0.07142857142857142,
+    0.8214285714285714
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.0476190476190477,
+   "ef_25pct": 1.0476190476190477
+  },
+  "rhofold_mean_plddt | IL-17A": {
+   "n_binder": 7,
+   "n_negative": 4,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": -0.028571428571428574,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.42857142857142855,
+   "screening_auroc_ci95": [
+    0.0,
+    0.7857142857142857
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.0476190476190477,
+   "ef_25pct": 1.0476190476190477
+  },
+  "egarps_native_probability | Angiopoietin-2": {
+   "n_binder": 8,
+   "n_negative": 3,
+   "n_ranking_eligible": 3,
+   "ranking_spearman_rho": -0.5,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.625,
+   "screening_auroc_ci95": [
+    0.0,
+    1.0
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": true,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.9166666666666666,
+   "ef_25pct": 0.9166666666666666
+  },
+  "proteinx_ipTM | Angiopoietin-2": {
+   "n_binder": 8,
+   "n_negative": 3,
+   "n_ranking_eligible": 3,
+   "ranking_spearman_rho": 0.5,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": true,
+    "0.5": true,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.5833333333333334,
+   "screening_auroc_ci95": [
+    0.25,
+    0.875
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.375,
+   "ef_25pct": 1.375
+  },
+  "rhofold_mean_plddt | Angiopoietin-2": {
+   "n_binder": 8,
+   "n_negative": 3,
+   "n_ranking_eligible": 3,
+   "ranking_spearman_rho": 0.5,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": true,
+    "0.5": true,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.625,
+   "screening_auroc_ci95": [
+    0.2916666666666667,
+    0.9166666666666666
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": true,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.375,
+   "ef_25pct": 1.375
+  },
+  "egarps_native_probability | SARS-CoV-2 N": {
+   "n_binder": 12,
+   "n_negative": 3,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": -0.08571428571428573,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.19444444444444445,
+   "screening_auroc_ci95": [
+    0.0,
+    0.5833333333333334
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.41666666666666663,
+   "ef_25pct": 0.625
+  },
+  "proteinx_ipTM | SARS-CoV-2 N": {
+   "n_binder": 12,
+   "n_negative": 3,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": -0.3714285714285715,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.3333333333333333,
+   "screening_auroc_ci95": [
+    0.0,
+    0.6944444444444444
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 0.8333333333333333,
+   "ef_25pct": 0.9375
+  },
+  "rhofold_mean_plddt | SARS-CoV-2 N": {
+   "n_binder": 12,
+   "n_negative": 3,
+   "n_ranking_eligible": 6,
+   "ranking_spearman_rho": 0.08571428571428573,
+   "ranking_pass": false,
+   "ranking_pass_grid": {
+    "0.4": false,
+    "0.5": false,
+    "0.6": false,
+    "0.7": false
+   },
+   "screening_auroc": 0.5277777777777778,
+   "screening_auroc_ci95": [
+    0.19444444444444445,
+    0.8333333333333334
+   ],
+   "screening_ci_covers_chance": true,
+   "screening_pass": false,
+   "screening_pass_grid": {
+    "0.6": false,
+    "0.7": false,
+    "0.8": false,
+    "0.9": false
+   },
+   "ef_top3": 1.25,
+   "ef_25pct": 0.9375
+  }
+ },
+ "part_b_docking": {
+  "dtri177_fixa": {
+   "target": "Factor IXa",
+   "n_poses_scored": 21,
+   "native_rank": 10,
+   "native_np": 1.1080796e-05,
+   "median_decoy_np": 8.344795e-06,
+   "top1": false
+  },
+  "hd22_t27_thrombin": {
+   "target": "Thrombin",
+   "n_poses_scored": 18,
+   "native_rank": 4,
+   "native_np": 0.007336212,
+   "median_decoy_np": 0.0014265983,
+   "top1": false
+  },
+  "t1p1_hiv1rt": {
+   "target": "HIV-1 RT",
+   "n_poses_scored": 21,
+   "native_rank": 10,
+   "native_np": 0.0022624312,
+   "median_decoy_np": 0.0014381691499999998,
+   "top1": false
+  },
+  "tba_thrombin": {
+   "target": "Thrombin",
+   "n_poses_scored": 21,
+   "native_rank": 21,
+   "native_np": 0.0002605039,
+   "median_decoy_np": 0.16652593999999998,
+   "top1": false
+  },
+  "toggle25t_thrombin": {
+   "target": "Thrombin",
+   "n_poses_scored": 21,
+   "native_rank": 19,
+   "native_np": 2.0545922e-05,
+   "median_decoy_np": 4.7526394e-05,
+   "top1": false
+  }
+ },
+ "screening_unlocks": [],
+ "screening_unlocks_reliable": [],
+ "decision_bits": [
+  "no oracle-target passes screening (AUROC>0.8): 'no oracle shows reliable screening power for RNA-protein aptamers across targets' stands",
+  "threshold sensitivity: cells passing AUROC>0.6: 6; AUROC>0.9: 0 (of 18)",
+  "ranking pass cells (rho>=0.6, ranking-eligible subsets): none",
+  "docking power (EGARPS native top-1): 0/5 -> NO PASS; per target: {'Factor IXa': {'n': 1, 'top1': 0}, 'Thrombin': {'n': 3, 'top1': 0}, 'HIV-1 RT': {'n': 1, 'top1': 0}}"
+ ],
+ "n_part_a": 66,
+ "n_part_b": 102
+}

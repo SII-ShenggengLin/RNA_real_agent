@@ -1,0 +1,10 @@
+{"event_type": "gate_decision", "payload": {"action_id": "e6_select", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:28:24.883083+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "select", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:28:24.937312+00:00"}
+{"event_type": "gate_decision", "payload": {"action_id": "e6_repair", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:29:06.476163+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "repair", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:29:06.476450+00:00"}
+{"event_type": "repair_round", "payload": {"profile": "expression", "drop": "ld4_mx_81359_u5l_u3m", "add": "ld4_fr_30349_u5l_u3l"}, "timestamp": "2026-08-09T21:29:06.476608+00:00"}
+{"event_type": "gate_decision", "payload": {"action_id": "e6_repair", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:29:43.512877+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "repair", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:29:43.513140+00:00"}
+{"event_type": "repair_round", "payload": {"profile": "stability", "drop": "ld50_mx_46978_u5l_u3s", "add": "ld50_fr_42128_u5s_u3l"}, "timestamp": "2026-08-09T21:29:43.513293+00:00"}
+{"event_type": "gate_decision", "payload": {"action_id": "e6_finalize", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:30:33.308029+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "finalize", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T21:30:33.308310+00:00"}

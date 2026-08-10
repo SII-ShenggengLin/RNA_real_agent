@@ -4,7 +4,7 @@
   "category": "full",
   "description": "ASO screening on human EPO transcript (20mer, step=1, top=10, RNAup)",
   "input": {
-    "target_mrna_filepath": "workspace/epo_mrna.fa",
+    "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/epo_mrna.fa",
     "aso_length": 20,
     "window_step": 1,
     "top_n_windows": 10,

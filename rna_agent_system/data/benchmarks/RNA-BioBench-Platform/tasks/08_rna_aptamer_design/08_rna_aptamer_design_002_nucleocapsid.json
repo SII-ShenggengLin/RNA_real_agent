@@ -11,9 +11,7 @@
     "n_odesign_samples": 1,
     "odesign_seeds": [
       42
-    ],
-    "weight_egarps": 0.5,
-    "weight_rhofold": 0.5
+    ]
   },
   "expected_tool_chain": [
     "analyze_rna_protein_interface",

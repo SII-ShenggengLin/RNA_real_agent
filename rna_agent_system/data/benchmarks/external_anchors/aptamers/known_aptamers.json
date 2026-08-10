@@ -1,0 +1,18 @@
+{
+  "SARS-CoV-2_Nucleocapsid": {
+    "pdb_id": "6M3M",
+    "pdb_chain": "A",
+    "sequence": "AGGGGAGUGGAGGUUGGUUU",
+    "kd_nm": 15.2,
+    "reference": "doi:10.1101/2020.04.17.046920",
+    "known_hotspot_residues": "A/44,A/45,A/46,A/47,A/48"
+  },
+  "Thrombin": {
+    "pdb_id": "1HAO",
+    "pdb_chain": "H",
+    "sequence": "GGTTGGTGTGGTTGG",
+    "kd_nm": 25.0,
+    "reference": "pmid:8318863",
+    "known_hotspot_residues": "H/46,H/67,H/70,H/72,H/97"
+  }
+}

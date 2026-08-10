@@ -4,12 +4,12 @@
   "target_type": "reporter",
   "source_database": "UniProt",
   "accession": "P42212",
-  "species_for_codon_optimization": "Aequorea victoria",
+  "species_for_codon_optimization": "E. coli",
   "expression_system": "E. coli",
   "paper_references": [
     "doi:10.1126/science.8303295"
   ],
-  "notes": "Standard reporter/control for mRNA expression validation",
+  "notes": "Standard reporter/control for mRNA expression validation [2026-07-17 fix: cai_species 'Aequorea victoria' (no codon table) -> 'E. coli' to match expression host]",
   "uniprot_accession": "P42212",
   "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
   "protein_length_aa": 238,

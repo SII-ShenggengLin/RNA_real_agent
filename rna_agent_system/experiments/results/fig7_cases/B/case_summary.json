@@ -1,0 +1,117 @@
+{
+  "case": "B",
+  "title": "Anti-VEGF aptamer discovery",
+  "success": true,
+  "nodes": [
+    {
+      "node_id": "design",
+      "success": true,
+      "session_id": "fig7B_fig7B_design",
+      "resumed": true,
+      "elapsed_seconds": 2640.39,
+      "timestamp": "2026-07-30T08:05:33"
+    },
+    {
+      "node_id": "interface",
+      "success": true,
+      "elapsed_seconds": 0,
+      "note": "extraction-only re-render of the node1 top candidate"
+    },
+    {
+      "case": "B",
+      "node_id": "pegaptanib_anchor",
+      "workflow": "direct_capability_chain",
+      "params": {
+        "sequence": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+        "structure": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1vpf.pdb",
+        "chain_id": "A"
+      },
+      "success": true,
+      "elapsed_seconds": 155.13,
+      "timestamp": "2026-07-31T07:12:34",
+      "outputs": {
+        "sequence_rna": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+        "sequence_length": 27,
+        "protein_sequence": {
+          "source": "chain:A",
+          "length": 94,
+          "workflow_note": "The workflow extracts the FIRST chain of the structure file (_extract_protein_sequence_from_structure); for 1HAO the first chain is the DNA aptamer chain D, so workflow candidates get iptm_component=0. This record uses the target chain instead."
+        },
+        "components": {
+          "egarps_component": 5.0472704e-07,
+          "rhofold_component": 0.4195665505226491,
+          "iptm_component": 0.4239872694015503
+        },
+        "raw": {
+          "rhofold_mean_plddt": 41.95665505226491,
+          "proteinx_ipTM": 0.4239872694015503,
+          "proteinx_mean_plddt": 69.8001708984375,
+          "proteinx_ranking_confidence": 0.43689653277397156,
+          "egarps_native_probability": 5.0472704e-07
+        },
+        "interface": {
+          "protein_chain_id": "A",
+          "rna_chain_id": "B",
+          "interface_contacts": 46,
+          "hydrogen_bonds": 18,
+          "salt_bridges": 0,
+          "buried_sasa": 0.0
+        },
+        "artifacts": {
+          "rhofold_pdb": "workspace/rhofold_model_921e939bab.pdb",
+          "proteinx_pdb": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/proteinx_service_runs/proteinx_complex_run_28ialxbj/output/proteinx_complex/seed_101/predictions/proteinx_complex_sample_0.cif",
+          "proteinx_complex_pdb": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/fig4_known_aptamers/fig7b_pegaptanib_px_complex.pdb"
+        },
+        "steps": {
+          "rhofold": "ok",
+          "proteinx_complex": "ok",
+          "cif_to_pdb": "ok",
+          "egarps": "ok",
+          "interface_analysis": "ok"
+        },
+        "chain_note": "EGARPS scores the ProteinX complex PDB here; the workflow scores the ODesign-generated complex. rhofold/iptm components use the identical inputs as workflow candidates (aptamer sequence; protein sequence + aptamer sequence).",
+        "success": true,
+        "error": null,
+        "elapsed_seconds": 155.13
+      }
+    }
+  ],
+  "interface": {
+    "top_candidate": {
+      "id": "cand_43edb912979a",
+      "sequence": "GCGCUACCCCGUCCUCCGGACGAUAUGCGU",
+      "total_score": null,
+      "egarps_component": 0.7046922,
+      "rhofold_component": 0.8259289556962,
+      "iptm_component": 0.4880622327327728,
+      "egarps_native_probability": 0.7046922,
+      "rhofold_mean_plddt": 82.59289556962,
+      "proteinx_ipTM": 0.4880622327327728,
+      "interface_contacts": 20,
+      "buried_sasa": 0.0,
+      "hydrogen_bonds": 5,
+      "salt_bridges": 0,
+      "hotspot_residues": "A/41,A/42,A/43,A/44,A/45,A/46,A/47,A/48,A/49,A/50,A/51,A/52,A/53,A/54,A/55,A/75,A/76,A/77,A/78,A/79,A/80,A/81,A/82,A/83,A/84,A/85,A/86,A/87,A/88,A/89,A/90,A/91,A/92,A/93,A/94,A/95,A/96,A/97",
+      "proteinx_pdb_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/proteinx_service_runs/proteinx_complex_run_crzwpe2s/output/proteinx_complex/seed_101/predictions/proteinx_complex_sample_0.cif"
+    },
+    "candidate_count": 24,
+    "top5_total_scores": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "pegaptanib_anchor": {
+    "sequence": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+    "kd": "49 pM (Tucker et al. 1999, rhesus plasma assay; other assays report ~0.2-1 nM)",
+    "note": "unmodified parent sequence; 2'-F/2'-OMe/PEG of the drug product cannot be represented (see pegaptanib.json notes)",
+    "binding_site_residues": null,
+    "data_gaps": [
+      "pegaptanib binding_site_residues is null in the anchor file"
+    ]
+  },
+  "timeline_seconds": 2795.52,
+  "timestamp": "2026-07-31T07:12:34"
+}

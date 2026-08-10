@@ -1,0 +1,17 @@
+{
+  "name": "pegaptanib (Macugen, NX1838/EYE001)",
+  "sequence": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+  "length_nt": 27,
+  "length_note": "27 RNA residues shown; marketed pegaptanib is described as a 28-mer counting the 3'-3'-linked deoxythymidine exonuclease cap",
+  "target": "VEGF165 (vascular endothelial growth factor 165)",
+  "target_pdb_in_benchmark": "1VPF",
+  "kd": "49 pM (Tucker et al. 1999, rhesus plasma assay; other assays report ~0.2-1 nM)",
+  "binding_site_residues": null,
+  "binding_site_note": "TODO: take VEGF165 contact residues from the published pegaptanib-VEGF structural model (Ruckman et al. 1998, J Mol Biol 280:117) before the Fig 4d analysis",
+  "notes": "2'-fluoro pyrimidines, 2'-O-methyl purines, 5' 40 kDa PEG in the drug product; the unmodified base sequence is given for in-silico scoring",
+  "references": [
+    "Tucker CE et al. 1999, J Chromatogr B 732:203 (sequence: 5'-CGGAAUCAGUGAAUGCUUAUACAUCCG-3')",
+    "Ng EWM et al. 2006, Nat Rev Drug Discov 5:123 (pegaptanib review)",
+    "Ruckman J et al. 1998, J Mol Biol 280:117 (2'-F aptamer selection vs VEGF165)"
+  ]
+}

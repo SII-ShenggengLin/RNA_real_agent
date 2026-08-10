@@ -4,7 +4,7 @@
   "category": "boundary",
   "description": "ASO screening with minimum ASO length=10 (boundary test, 10mer, step=1, top=5, RNAup)",
   "input": {
-    "target_mrna_filepath": "workspace/test_mrna.fa",
+    "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",
     "aso_length": 10,
     "window_step": 1,
     "top_n_windows": 5,

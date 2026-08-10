@@ -1,0 +1,108 @@
+{
+ "analysis": "P2 junction-integrated LinearDesign optimizer go/no-go",
+ "date": "2026-08-04",
+ "preregistration": "junction_integrated_optimizer_eval.py docstring (P2, 2026-08-04); follows P1 v2 NO-GO mechanism (p1_v2_stability_sweep_summary.json)",
+ "criteria": {
+  "hard_repair_rate_min": 0.6666666666666666,
+  "stability_cost_max_per_nt": 0.010998055177727117,
+  "cai_drop_max": 0.02
+ },
+ "expected_hard_buried_at_baseline": 7,
+ "v1_median_stability_cost_per_nt": 0.021996110355454235,
+ "matrix": {
+  "targets": [
+   "HER2",
+   "Beta_galactosidase",
+   "Influenza_HA_H1N1",
+   "Insulin",
+   "EPO",
+   "Growth_hormone"
+  ],
+  "reps": [
+   0,
+   1,
+   2
+  ],
+  "w_juns": [
+   0.0,
+   0.5,
+   1.0,
+   2.0
+  ],
+  "lambda": "per-cell session params.json (all 2.0 at registration)"
+ },
+ "per_weight": {
+  "0": {
+   "n_cells": 18,
+   "n_failed": 0,
+   "hard_buried_at_baseline": 7,
+   "hard_repaired": 1,
+   "hard_repair_rate": 0.14285714285714285,
+   "median_stability_cost_per_nt": 0.015010846762108968,
+   "median_delta_cai": -0.061002745519378565,
+   "median_junction_window_pair_count": 43.0,
+   "go": false
+  },
+  "0.5": {
+   "n_cells": 18,
+   "n_failed": 0,
+   "hard_buried_at_baseline": 7,
+   "hard_repaired": 0,
+   "hard_repair_rate": 0.0,
+   "median_stability_cost_per_nt": 0.024918809612728493,
+   "median_delta_cai": -0.0670493196744254,
+   "median_junction_window_pair_count": 29.5,
+   "go": false
+  },
+  "1": {
+   "n_cells": 18,
+   "n_failed": 0,
+   "hard_buried_at_baseline": 7,
+   "hard_repaired": 2,
+   "hard_repair_rate": 0.2857142857142857,
+   "median_stability_cost_per_nt": 0.023432677120938675,
+   "median_delta_cai": -0.0665493196744254,
+   "median_junction_window_pair_count": 15.0,
+   "go": false
+  },
+  "2": {
+   "n_cells": 18,
+   "n_failed": 0,
+   "hard_buried_at_baseline": 7,
+   "hard_repaired": 1,
+   "hard_repair_rate": 0.14285714285714285,
+   "median_stability_cost_per_nt": 0.03126870772142584,
+   "median_delta_cai": -0.05866293193264832,
+   "median_junction_window_pair_count": 0.0,
+   "go": false
+  }
+ },
+ "go_weights": [],
+ "decision": "NO-GO",
+ "mechanism": {
+  "w_jun_responsive_group_fraction": 1.0,
+  "n_target_rep_groups": 18,
+  "probes": {
+   "cell": [
+    "Insulin",
+    0,
+    0.0
+   ],
+   "determinism_identical": true,
+   "legacy_matches_flanked_w0": false,
+   "note": "determinism_identical is the pre-registered degenerate assertion; legacy_matches_flanked_w0 is informational only (flanks still fold at w_jun=0 in the argc==8 path)."
+  }
+ },
+ "n_rows": 72,
+ "n_success": 72,
+ "runtime_hours": 2.483,
+ "mechanism_posthoc": {
+  "note": "post-hoc mechanism analysis (not pre-registered), 2026-08-04",
+  "finding_1": "optimizer responds to w_jun: 18/18 (target, rep) groups produce distinct CDSs across weights; median junction_window_pair_count in the GLOBAL fold falls 43 (w=0) -> 29.5 (w=0.5) -> 15 (w=1) -> 0 (w=2)",
+  "finding_2": "yet burial persists: at w=2, 6/9 hard cells have ZERO window pairs in the optimizer's global fold but 5 of them are still AUG/Kozak-buried by the JunctionEvaluator metric (isolated 40-nt fragment fold, utr5[-20:]+cds[:20])",
+  "finding_3": "root cause = metric/optimizer context mismatch: the C++ penalty suppresses window pairs in the full-construct CKY fold, while the accessibility metric folds the isolated 40-nt junction fragment, where the CDS-terminal 20 nt self-hairpins (j1 structures show intra-fragment pairs over the AUG region even when global window pairs = 0)",
+  "finding_4": "stability cost is NOT reduced vs P1 (median 0.015-0.031/nt across weights vs P1 v1 median 0.0220; threshold 0.011) \u2014 integrating the junction term at design time did not tame the global stability cost either",
+  "finding_5": "CAI criterion passes trivially (median delta_cai ~ -0.06, i.e. designed CAI IMPROVED ~0.06 over the RNARL-derived serial baselines at lambda=2.0)",
+  "conclusion": "repairing fragment-fold accessibility requires the penalty to act on the fragment-fold objective itself (or on intra-window self-structure), not on the global-construct fold; a larger w_jun cannot fix a metric the optimizer does not see"
+ }
+}

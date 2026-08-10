@@ -1,0 +1,160 @@
+{
+ "analysis": "E1 oracle capability profiling go/no-go",
+ "date": "2026-08-04",
+ "preregistration": "run_e1_capability_profiling.py docstring; REDESIGN §3 E1",
+ "thresholds": {
+  "screening_auroc_pass": 0.8,
+  "ranking_rho_pass": 0.6,
+  "docking_top1_frac_pass": 0.6666666666666666
+ },
+ "part_a_per_oracle_target": {
+  "egarps_native_probability | Thrombin": {
+   "n_binder_kd": 6,
+   "n_binder": 7,
+   "n_negative": 3,
+   "ranking_spearman_rho": 0.14285714285714288,
+   "ranking_pass": false,
+   "screening_auroc": 0.2857142857142857,
+   "screening_auroc_ci95": [
+    0.0,
+    0.7142857142857143
+   ],
+   "screening_pass": false
+  },
+  "proteinx_ipTM | Thrombin": {
+   "n_binder_kd": 6,
+   "n_binder": 7,
+   "n_negative": 3,
+   "ranking_spearman_rho": 0.3142857142857143,
+   "ranking_pass": false,
+   "screening_auroc": 0.38095238095238093,
+   "screening_auroc_ci95": [
+    0.0,
+    0.8571428571428571
+   ],
+   "screening_pass": false
+  },
+  "rhofold_mean_plddt | Thrombin": {
+   "n_binder_kd": 6,
+   "n_binder": 7,
+   "n_negative": 3,
+   "ranking_spearman_rho": -0.2,
+   "ranking_pass": false,
+   "screening_auroc": 0.38095238095238093,
+   "screening_auroc_ci95": [
+    0.0,
+    0.7619047619047619
+   ],
+   "screening_pass": false
+  },
+  "egarps_native_probability | VEGF": {
+   "n_binder_kd": 8,
+   "n_binder": 8,
+   "n_negative": 3,
+   "ranking_spearman_rho": -0.023809523809523815,
+   "ranking_pass": false,
+   "screening_auroc": 0.7083333333333334,
+   "screening_auroc_ci95": [
+    0.3333333333333333,
+    1.0
+   ],
+   "screening_pass": false
+  },
+  "proteinx_ipTM | VEGF": {
+   "n_binder_kd": 8,
+   "n_binder": 8,
+   "n_negative": 3,
+   "ranking_spearman_rho": 0.2380952380952381,
+   "ranking_pass": false,
+   "screening_auroc": 0.25,
+   "screening_auroc_ci95": [
+    0.0,
+    0.6666666666666666
+   ],
+   "screening_pass": false
+  },
+  "rhofold_mean_plddt | VEGF": {
+   "n_binder_kd": 8,
+   "n_binder": 8,
+   "n_negative": 3,
+   "ranking_spearman_rho": 0.1666666666666667,
+   "ranking_pass": false,
+   "screening_auroc": 0.5,
+   "screening_auroc_ci95": [
+    0.125,
+    0.875
+   ],
+   "screening_pass": false
+  },
+  "egarps_native_probability | PDGF-BB": {
+   "n_binder_kd": 5,
+   "n_binder": 5,
+   "n_negative": 3,
+   "ranking_spearman_rho": 0.41039134083406165,
+   "ranking_pass": false,
+   "screening_auroc": 0.6,
+   "screening_auroc_ci95": [
+    0.2,
+    1.0
+   ],
+   "screening_pass": false
+  },
+  "proteinx_ipTM | PDGF-BB": {
+   "n_binder_kd": 5,
+   "n_binder": 5,
+   "n_negative": 3,
+   "ranking_spearman_rho": -0.41039134083406165,
+   "ranking_pass": false,
+   "screening_auroc": 0.6666666666666666,
+   "screening_auroc_ci95": [
+    0.2,
+    1.0
+   ],
+   "screening_pass": false
+  },
+  "rhofold_mean_plddt | PDGF-BB": {
+   "n_binder_kd": 5,
+   "n_binder": 5,
+   "n_negative": 3,
+   "ranking_spearman_rho": 0.5642880936468347,
+   "ranking_pass": false,
+   "screening_auroc": 0.8,
+   "screening_auroc_ci95": [
+    0.3333333333333333,
+    1.0
+   ],
+   "screening_pass": false
+  }
+ },
+ "part_b_docking": {
+  "hd22_t27_thrombin": {
+   "n_poses_scored": 18,
+   "native_rank": 4,
+   "native_np": 0.007336212,
+   "median_decoy_np": 0.0014265983,
+   "top1": false
+  },
+  "tba_thrombin": {
+   "n_poses_scored": 21,
+   "native_rank": 21,
+   "native_np": 0.0002605039,
+   "median_decoy_np": 0.16652593999999998,
+   "top1": false
+  },
+  "toggle25t_thrombin": {
+   "n_poses_scored": 21,
+   "native_rank": 19,
+   "native_np": 2.0545922e-05,
+   "median_decoy_np": 4.7526394e-05,
+   "top1": false
+  }
+ },
+ "screening_unlocks": [],
+ "decision_bits": [
+  "no oracle-target passes screening (AUROC>0.8): 'deployed oracles lack screening power for RNA-protein aptamers' stands",
+  "ranking pass cells (rho>=0.6): none",
+  "docking power (EGARPS native top-1): 0/3 -> NO PASS"
+ ],
+ "n_part_a": 29,
+ "n_part_b": 60
+}

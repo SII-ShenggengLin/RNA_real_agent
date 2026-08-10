@@ -1,0 +1,5191 @@
+{
+  "preregistration": "experiments/run_e4_learning_curve.py docstring (E4 full matrix, 2026-08-05 amendment)",
+  "runs": [
+    "experiments/results/e4_full_shard_a.jsonl",
+    "experiments/results/e4_full_shard_b.jsonl"
+  ],
+  "matrix": {
+    "targets": [
+      "A1AT",
+      "Albumin",
+      "Beta_galactosidase",
+      "EPO",
+      "Factor_VIII",
+      "GFP",
+      "Growth_hormone",
+      "HER2",
+      "HIV-1_Env_gp120",
+      "HPV16_L1",
+      "IFN_alpha_2a",
+      "IL-2",
+      "Influenza_HA_H1N1",
+      "Insulin",
+      "Luciferase",
+      "Ovalbumin",
+      "RSV_F_protein",
+      "SARS-CoV-2_Spike_WT",
+      "Transferrin",
+      "Zika_E_protein"
+    ],
+    "arms": [
+      "nomem",
+      "memory"
+    ],
+    "seed_groups": {
+      "A": 0,
+      "B": 1,
+      "C": 2
+    },
+    "n_campaigns": 120
+  },
+  "pass_criteria": {
+    "c1_all_campaigns_completed": {
+      "pass": false,
+      "n_success": 115,
+      "n_acceptable_failure": 0,
+      "n_unexpected_failure": 5,
+      "n_missing": 0,
+      "expected_campaigns": 120
+    },
+    "c3_eval_reduction_zero_deviation": {
+      "pass": true,
+      "mismatches": []
+    },
+    "c4_cells_budget_matched": {
+      "pass": false,
+      "n_cells": 60,
+      "n_valid": 55,
+      "n_invalid_unexpected": 5
+    },
+    "c5_resume_idempotent": {
+      "pass": true,
+      "n_duplicate_done_keys": 0,
+      "unit_test": "tests/test_e4_pilot.py::TestResumeDoneKey"
+    },
+    "c6_verdict_fields_complete": {
+      "pass": true,
+      "missing_keys": [],
+      "required_keys": [
+        "preregistration",
+        "runs",
+        "matrix",
+        "pass_criteria",
+        "campaigns",
+        "cells",
+        "descriptive",
+        "endpoints",
+        "go_no_go"
+      ]
+    }
+  },
+  "campaigns": [
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 1,
+      "target_id": "Influenza_HA_H1N1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1757.38,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 2,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 806.44,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 3,
+      "target_id": "Albumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1766.35,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 4,
+      "target_id": "HIV-1_Env_gp120",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2926.64,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 5,
+      "target_id": "Ovalbumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1290.39,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 6,
+      "target_id": "Growth_hormone",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1043.4,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 4.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 7,
+      "target_id": "Zika_E_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 963.09,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 8,
+      "target_id": "Factor_VIII",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 4394.47,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 9,
+      "target_id": "HER2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 5918.18,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 10,
+      "target_id": "GFP",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1005.25,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 11,
+      "target_id": "HPV16_L1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1521.08,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 12,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 950.38,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 13,
+      "target_id": "Beta_galactosidase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 3789.05,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 14,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 861.76,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 15,
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 5267.93,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 16,
+      "target_id": "A1AT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1293.83,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 17,
+      "target_id": "Luciferase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1680.54,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 18,
+      "target_id": "RSV_F_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1849.29,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 19,
+      "target_id": "Transferrin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2111.44,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 20,
+      "target_id": "IFN_alpha_2a",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 927.58,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 1,
+      "target_id": "Influenza_HA_H1N1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1693.2,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 2,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 841.89,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 3,
+      "target_id": "Albumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 621.49,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_Influenza_HA_H1N1",
+        "e4_A_memory_c2_Insulin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 4,
+      "target_id": "HIV-1_Env_gp120",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1086.99,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c3_Albumin",
+        "e4_A_memory_c1_Influenza_HA_H1N1",
+        "e4_A_memory_c2_Insulin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 5,
+      "target_id": "Ovalbumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 419.52,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_Influenza_HA_H1N1",
+        "e4_A_memory_c3_Albumin",
+        "e4_A_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 6,
+      "target_id": "Growth_hormone",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 421.39,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c5_Ovalbumin",
+        "e4_A_memory_c2_Insulin",
+        "e4_A_memory_c1_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 7,
+      "target_id": "Zika_E_protein",
+      "status": "failed",
+      "error": "cli_failure",
+      "acceptable_failure": false,
+      "elapsed_seconds": 131.02,
+      "eval_count": null,
+      "bmc_rounds_executed": null,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c9_HER2",
+        "e4_A_memory_c13_Beta_galactosidase",
+        "e4_A_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 8,
+      "target_id": "Factor_VIII",
+      "status": "failed",
+      "error": "cli_failure",
+      "acceptable_failure": false,
+      "elapsed_seconds": 107.04,
+      "eval_count": null,
+      "bmc_rounds_executed": null,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c9_HER2",
+        "e4_A_memory_c13_Beta_galactosidase",
+        "e4_A_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 9,
+      "target_id": "HER2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2162.42,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": "short",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c4_HIV-1_Env_gp120",
+        "e4_A_memory_c3_Albumin",
+        "e4_A_memory_c1_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 10,
+      "target_id": "GFP",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 333.82,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c6_Growth_hormone",
+        "e4_A_memory_c5_Ovalbumin",
+        "e4_A_memory_c2_Insulin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 11,
+      "target_id": "HPV16_L1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 550.64,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": "medium",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_Influenza_HA_H1N1",
+        "e4_A_memory_c3_Albumin",
+        "e4_A_memory_c5_Ovalbumin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 12,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 402.18,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": "medium",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c6_Growth_hormone",
+        "e4_A_memory_c10_GFP",
+        "e4_A_memory_c2_Insulin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 13,
+      "target_id": "Beta_galactosidase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1375.03,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c4_HIV-1_Env_gp120",
+        "e4_A_memory_c9_HER2",
+        "e4_A_memory_c3_Albumin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 14,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 264.05,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": "medium",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c12_EPO",
+        "e4_A_memory_c2_Insulin",
+        "e4_A_memory_c6_Growth_hormone"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 15,
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1869.22,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": "short",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c9_HER2",
+        "e4_A_memory_c13_Beta_galactosidase",
+        "e4_A_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 16,
+      "target_id": "A1AT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 439.69,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c5_Ovalbumin",
+        "e4_A_memory_c11_HPV16_L1",
+        "e4_A_memory_c1_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 17,
+      "target_id": "Luciferase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 578.07,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": "short",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_Influenza_HA_H1N1",
+        "e4_A_memory_c11_HPV16_L1",
+        "e4_A_memory_c3_Albumin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 18,
+      "target_id": "RSV_F_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 745.5,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_Influenza_HA_H1N1",
+        "e4_A_memory_c17_Luciferase",
+        "e4_A_memory_c3_Albumin"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 19,
+      "target_id": "Transferrin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 758.8,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": "medium",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c3_Albumin",
+        "e4_A_memory_c18_RSV_F_protein",
+        "e4_A_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 20,
+      "target_id": "IFN_alpha_2a",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 123.26,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "medium",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c12_EPO",
+        "e4_A_memory_c6_Growth_hormone",
+        "e4_A_memory_c14_IL-2"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 1,
+      "target_id": "Factor_VIII",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 460.51,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 2,
+      "target_id": "Transferrin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2069.26,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 3,
+      "target_id": "Beta_galactosidase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 3682.24,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 4,
+      "target_id": "HIV-1_Env_gp120",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 3203.72,
+      "eval_count": 62,
+      "bmc_rounds_executed": 2,
+      "final_lambda": 0.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 5,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 954.88,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 6,
+      "target_id": "HER2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 5553.55,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 7,
+      "target_id": "Influenza_HA_H1N1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1640.43,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 8,
+      "target_id": "Luciferase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1595.13,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 9,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 940.87,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 10,
+      "target_id": "IFN_alpha_2a",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 936.91,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 11,
+      "target_id": "Growth_hormone",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1575.15,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 12,
+      "target_id": "Ovalbumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1535.3,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 13,
+      "target_id": "Albumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2097.89,
+      "eval_count": 62,
+      "bmc_rounds_executed": 2,
+      "final_lambda": 0.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 14,
+      "target_id": "RSV_F_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1814.54,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 15,
+      "target_id": "A1AT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1252.49,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 16,
+      "target_id": "HPV16_L1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1466.4,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 17,
+      "target_id": "Zika_E_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 473.58,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 18,
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 4969.66,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 19,
+      "target_id": "GFP",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 970.95,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 20,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 826.82,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 1,
+      "target_id": "Factor_VIII",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 386.66,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 2,
+      "target_id": "Transferrin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2033.06,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c1_Factor_VIII"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 3,
+      "target_id": "Beta_galactosidase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 3621.2,
+      "eval_count": 57,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c2_Transferrin",
+        "e4_B_memory_c1_Factor_VIII"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 4,
+      "target_id": "HIV-1_Env_gp120",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 995.34,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c3_Beta_galactosidase",
+        "e4_B_memory_c2_Transferrin",
+        "e4_B_memory_c1_Factor_VIII"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 5,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 271.11,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c2_Transferrin",
+        "e4_B_memory_c4_HIV-1_Env_gp120",
+        "e4_B_memory_c3_Beta_galactosidase"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 6,
+      "target_id": "HER2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2106.91,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c3_Beta_galactosidase",
+        "e4_B_memory_c4_HIV-1_Env_gp120",
+        "e4_B_memory_c2_Transferrin"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 7,
+      "target_id": "Influenza_HA_H1N1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 550.46,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c2_Transferrin",
+        "e4_B_memory_c4_HIV-1_Env_gp120",
+        "e4_B_memory_c3_Beta_galactosidase"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 8,
+      "target_id": "Luciferase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 398.37,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c7_Influenza_HA_H1N1",
+        "e4_B_memory_c2_Transferrin",
+        "e4_B_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 9,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 228.15,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c5_EPO",
+        "e4_B_memory_c8_Luciferase",
+        "e4_B_memory_c7_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 10,
+      "target_id": "IFN_alpha_2a",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 288.46,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c5_EPO",
+        "e4_B_memory_c9_Insulin",
+        "e4_B_memory_c8_Luciferase"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 11,
+      "target_id": "Growth_hormone",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 292.56,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c5_EPO",
+        "e4_B_memory_c10_IFN_alpha_2a",
+        "e4_B_memory_c9_Insulin"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 12,
+      "target_id": "Ovalbumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 422.45,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c8_Luciferase",
+        "e4_B_memory_c7_Influenza_HA_H1N1",
+        "e4_B_memory_c11_Growth_hormone"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 13,
+      "target_id": "Albumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 569.42,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c7_Influenza_HA_H1N1",
+        "e4_B_memory_c8_Luciferase",
+        "e4_B_memory_c2_Transferrin"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 14,
+      "target_id": "RSV_F_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 620.31,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.5,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c7_Influenza_HA_H1N1",
+        "e4_B_memory_c8_Luciferase",
+        "e4_B_memory_c13_Albumin"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 15,
+      "target_id": "A1AT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 388.62,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c12_Ovalbumin",
+        "e4_B_memory_c8_Luciferase",
+        "e4_B_memory_c7_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 16,
+      "target_id": "HPV16_L1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 353.31,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c8_Luciferase",
+        "e4_B_memory_c7_Influenza_HA_H1N1",
+        "e4_B_memory_c14_RSV_F_protein"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 17,
+      "target_id": "Zika_E_protein",
+      "status": "failed",
+      "error": "cli_failure",
+      "acceptable_failure": false,
+      "elapsed_seconds": 71.09,
+      "eval_count": null,
+      "bmc_rounds_executed": null,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c1_Factor_VIII",
+        "e4_B_memory_c6_HER2",
+        "e4_B_memory_c3_Beta_galactosidase"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 18,
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1859.48,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 1.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c6_HER2",
+        "e4_B_memory_c3_Beta_galactosidase",
+        "e4_B_memory_c4_HIV-1_Env_gp120"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 19,
+      "target_id": "GFP",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 286.18,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 5.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c11_Growth_hormone",
+        "e4_B_memory_c5_EPO",
+        "e4_B_memory_c10_IFN_alpha_2a"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 20,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 258.52,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 3.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c10_IFN_alpha_2a",
+        "e4_B_memory_c5_EPO",
+        "e4_B_memory_c9_Insulin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 1,
+      "target_id": "Albumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1827.04,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 2,
+      "target_id": "Beta_galactosidase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 3807.86,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 3,
+      "target_id": "Transferrin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2104.68,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 4,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 881.14,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 5,
+      "target_id": "GFP",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1011.07,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 6,
+      "target_id": "RSV_F_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2047.59,
+      "eval_count": 62,
+      "bmc_rounds_executed": 2,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 7,
+      "target_id": "Influenza_HA_H1N1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1652.5,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 8,
+      "target_id": "IFN_alpha_2a",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 916.82,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 9,
+      "target_id": "Factor_VIII",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1141.83,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 10,
+      "target_id": "Luciferase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1650.97,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 11,
+      "target_id": "HPV16_L1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1490.93,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 12,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1031.3,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 13,
+      "target_id": "A1AT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1261.79,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 14,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 899.27,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 15,
+      "target_id": "Ovalbumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1321.08,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 16,
+      "target_id": "Zika_E_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1132.08,
+      "eval_count": 9,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 17,
+      "target_id": "HIV-1_Env_gp120",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 2934.98,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "medium",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 18,
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 5165.52,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 19,
+      "target_id": "Growth_hormone",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 997.43,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "nomem",
+      "campaign_index": 20,
+      "target_id": "HER2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 5860.91,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 1,
+      "target_id": "Albumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1824.91,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 2,
+      "target_id": "Beta_galactosidase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 3902.26,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 6.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c1_Albumin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 3,
+      "target_id": "Transferrin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 293.94,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c1_Albumin",
+        "e4_C_memory_c2_Beta_galactosidase"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 4,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 97.98,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c1_Albumin",
+        "e4_C_memory_c3_Transferrin",
+        "e4_C_memory_c2_Beta_galactosidase"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 5,
+      "target_id": "GFP",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 373.84,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c4_IL-2",
+        "e4_C_memory_c1_Albumin",
+        "e4_C_memory_c3_Transferrin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 6,
+      "target_id": "RSV_F_protein",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 273.41,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c1_Albumin",
+        "e4_C_memory_c3_Transferrin",
+        "e4_C_memory_c2_Beta_galactosidase"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 7,
+      "target_id": "Influenza_HA_H1N1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 931.48,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c6_RSV_F_protein",
+        "e4_C_memory_c1_Albumin",
+        "e4_C_memory_c3_Transferrin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 8,
+      "target_id": "IFN_alpha_2a",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 158.81,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c4_IL-2",
+        "e4_C_memory_c5_GFP",
+        "e4_C_memory_c7_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 9,
+      "target_id": "Factor_VIII",
+      "status": "failed",
+      "error": "cli_failure",
+      "acceptable_failure": false,
+      "elapsed_seconds": 114.24,
+      "eval_count": null,
+      "bmc_rounds_executed": null,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c2_Beta_galactosidase",
+        "e4_C_memory_c3_Transferrin",
+        "e4_C_memory_c1_Albumin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 10,
+      "target_id": "Luciferase",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 249.0,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c7_Influenza_HA_H1N1",
+        "e4_C_memory_c6_RSV_F_protein",
+        "e4_C_memory_c1_Albumin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 11,
+      "target_id": "HPV16_L1",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 892.59,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c10_Luciferase",
+        "e4_C_memory_c7_Influenza_HA_H1N1",
+        "e4_C_memory_c6_RSV_F_protein"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 12,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 327.16,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c8_IFN_alpha_2a",
+        "e4_C_memory_c5_GFP",
+        "e4_C_memory_c4_IL-2"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 13,
+      "target_id": "A1AT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 665.18,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c15_Ovalbumin",
+        "e4_C_memory_c11_HPV16_L1",
+        "e4_C_memory_c10_Luciferase"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 14,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 263.16,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c4_IL-2",
+        "e4_C_memory_c8_IFN_alpha_2a",
+        "e4_C_memory_c12_EPO"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 15,
+      "target_id": "Ovalbumin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 139.68,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c11_HPV16_L1",
+        "e4_C_memory_c10_Luciferase",
+        "e4_C_memory_c7_Influenza_HA_H1N1"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 16,
+      "target_id": "Zika_E_protein",
+      "status": "failed",
+      "error": "cli_failure",
+      "acceptable_failure": false,
+      "elapsed_seconds": 37.82,
+      "eval_count": null,
+      "bmc_rounds_executed": null,
+      "final_lambda": null,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c2_Beta_galactosidase",
+        "e4_C_memory_c3_Transferrin",
+        "e4_C_memory_c1_Albumin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 17,
+      "target_id": "HIV-1_Env_gp120",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 482.08,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c2_Beta_galactosidase",
+        "e4_C_memory_c3_Transferrin",
+        "e4_C_memory_c1_Albumin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 18,
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 4234.94,
+      "eval_count": 7,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c2_Beta_galactosidase",
+        "e4_C_memory_c17_HIV-1_Env_gp120",
+        "e4_C_memory_c3_Transferrin"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 19,
+      "target_id": "Growth_hormone",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 148.64,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c5_GFP",
+        "e4_C_memory_c12_EPO",
+        "e4_C_memory_c8_IFN_alpha_2a"
+      ]
+    },
+    {
+      "seed_group": "C",
+      "arm": "memory",
+      "campaign_index": 20,
+      "target_id": "HER2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 1062.2,
+      "eval_count": 1,
+      "bmc_rounds_executed": 0,
+      "final_lambda": null,
+      "utr_family": "long",
+      "knobs_fired": [
+        "design_tool+lambda_value",
+        "utr_mode",
+        "bmc_max_rounds"
+      ],
+      "similar_campaign_ids": [
+        "e4_C_memory_c18_SARS-CoV-2_Spike_WT",
+        "e4_C_memory_c2_Beta_galactosidase",
+        "e4_C_memory_c17_HIV-1_Env_gp120"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "seed_group": "A",
+      "target_id": "Influenza_HA_H1N1",
+      "campaign_index": 1,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.0158469377331675,
+        "nomem": 0.07358564299761804
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8384684377057554,
+          "full_length_mfe": -544.47,
+          "junction_mfe_per_nt": -0.03475,
+          "utr5_predicted_mrl": 6.54
+        },
+        "nomem": {
+          "cds_cai": 0.8384684377057554,
+          "full_length_mfe": -547.5,
+          "junction_mfe_per_nt": -0.00625,
+          "utr5_predicted_mrl": 6.13
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Insulin",
+      "campaign_index": 2,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.06544410919540229,
+        "nomem": 0.07803894253371363
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7387240316538054,
+          "full_length_mfe": -163.35,
+          "junction_mfe_per_nt": 0.009000000000000001,
+          "utr5_predicted_mrl": 6.49
+        },
+        "nomem": {
+          "cds_cai": 0.8307904939123049,
+          "full_length_mfe": -140.67,
+          "junction_mfe_per_nt": -0.042125,
+          "utr5_predicted_mrl": 5.75
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Albumin",
+      "campaign_index": 3,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.1986589435545385,
+        "nomem": 0.08019621455860727
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8338616326658399,
+          "full_length_mfe": -589.99,
+          "junction_mfe_per_nt": -0.134,
+          "utr5_predicted_mrl": 5.84
+        },
+        "nomem": {
+          "cds_cai": 0.7505781678722906,
+          "full_length_mfe": -625.01,
+          "junction_mfe_per_nt": -0.0011250000000000001,
+          "utr5_predicted_mrl": 6.55
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "HIV-1_Env_gp120",
+      "campaign_index": 4,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.13372179000943243,
+        "nomem": 0.0878515242859806
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.843382830003795,
+          "full_length_mfe": -872.86,
+          "junction_mfe_per_nt": -0.002875,
+          "utr5_predicted_mrl": 6.42
+        },
+        "nomem": {
+          "cds_cai": 0.843382830003795,
+          "full_length_mfe": -876.76,
+          "junction_mfe_per_nt": -0.0395,
+          "utr5_predicted_mrl": 6.44
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Ovalbumin",
+      "campaign_index": 5,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.15130708641885043,
+        "nomem": 0.08785999741180776
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8365543440297669,
+          "full_length_mfe": -380.01,
+          "junction_mfe_per_nt": -0.033625,
+          "utr5_predicted_mrl": 6.24
+        },
+        "nomem": {
+          "cds_cai": 0.8365543440297669,
+          "full_length_mfe": -386.5,
+          "junction_mfe_per_nt": -0.040625,
+          "utr5_predicted_mrl": 5.48
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Growth_hormone",
+      "campaign_index": 6,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.02836691212973687,
+        "nomem": 0.015586287196012292
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8341108667388444,
+          "full_length_mfe": -221.33,
+          "junction_mfe_per_nt": -0.009000000000000001,
+          "utr5_predicted_mrl": 6.18
+        },
+        "nomem": {
+          "cds_cai": 0.7420055838397519,
+          "full_length_mfe": -245.3,
+          "junction_mfe_per_nt": -0.016249999999999997,
+          "utr5_predicted_mrl": 6.62
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Zika_E_protein",
+      "campaign_index": 7,
+      "valid": false,
+      "invalid_reason": "memory_arm_failed",
+      "eval_counts": {},
+      "truncated_counts": {},
+      "counts_equal_after_truncation": null,
+      "budget": null,
+      "best_asf_after_truncation": {},
+      "best_validated_after_truncation": {}
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Factor_VIII",
+      "campaign_index": 8,
+      "valid": false,
+      "invalid_reason": "memory_arm_failed",
+      "eval_counts": {},
+      "truncated_counts": {},
+      "counts_equal_after_truncation": null,
+      "budget": null,
+      "best_asf_after_truncation": {},
+      "best_validated_after_truncation": {}
+    },
+    {
+      "seed_group": "A",
+      "target_id": "HER2",
+      "campaign_index": 9,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.18869964074161907,
+        "nomem": 0.022982228015695015
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.830468495973555,
+          "full_length_mfe": -1515.66,
+          "junction_mfe_per_nt": -0.028875,
+          "utr5_predicted_mrl": 6.46
+        },
+        "nomem": {
+          "cds_cai": 0.745418649025644,
+          "full_length_mfe": -1591.35,
+          "junction_mfe_per_nt": -0.03975000000000001,
+          "utr5_predicted_mrl": 6.46
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "GFP",
+      "campaign_index": 10,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.1317759650421871,
+        "nomem": 0.13734897907402027
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.5775674972865315,
+          "full_length_mfe": -216.31,
+          "junction_mfe_per_nt": -0.041749999999999995,
+          "utr5_predicted_mrl": 6.31
+        },
+        "nomem": {
+          "cds_cai": 0.5971682852054365,
+          "full_length_mfe": -224.52,
+          "junction_mfe_per_nt": 0.00375,
+          "utr5_predicted_mrl": 4.09
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "HPV16_L1",
+      "campaign_index": 11,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.1243348612557222,
+        "nomem": 0.10556465797248575
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8248572014866321,
+          "full_length_mfe": -516.58,
+          "junction_mfe_per_nt": -0.030750000000000003,
+          "utr5_predicted_mrl": 6.42
+        },
+        "nomem": {
+          "cds_cai": 0.9506720270498146,
+          "full_length_mfe": -392.11,
+          "junction_mfe_per_nt": -0.054,
+          "utr5_predicted_mrl": 6.33
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "EPO",
+      "campaign_index": 12,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.0640598946906538,
+        "nomem": 0.04746780286860748
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8188836422223985,
+          "full_length_mfe": -254.89,
+          "junction_mfe_per_nt": -0.114,
+          "utr5_predicted_mrl": 6.4
+        },
+        "nomem": {
+          "cds_cai": 0.8188836422223985,
+          "full_length_mfe": -245.4,
+          "junction_mfe_per_nt": -0.096375,
+          "utr5_predicted_mrl": 6.1
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Beta_galactosidase",
+      "campaign_index": 13,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.1312946283892677,
+        "nomem": 0.1019108107413396
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.6194662267082105,
+          "full_length_mfe": -1161.14,
+          "junction_mfe_per_nt": -0.026375,
+          "utr5_predicted_mrl": 6.0
+        },
+        "nomem": {
+          "cds_cai": 0.6280428274179742,
+          "full_length_mfe": -909.53,
+          "junction_mfe_per_nt": -0.00475,
+          "utr5_predicted_mrl": 6.18
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "IL-2",
+      "campaign_index": 14,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.17698931779828578,
+        "nomem": 0.10333282885607219
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9163053759405211,
+          "full_length_mfe": -123.91,
+          "junction_mfe_per_nt": -0.007875,
+          "utr5_predicted_mrl": 6.39
+        },
+        "nomem": {
+          "cds_cai": 0.9486788267250609,
+          "full_length_mfe": -105.27,
+          "junction_mfe_per_nt": 0.002875,
+          "utr5_predicted_mrl": 5.66
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "campaign_index": 15,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.11385469616900629,
+        "nomem": 0.15732736193867095
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8358875670024927,
+          "full_length_mfe": -1269.45,
+          "junction_mfe_per_nt": -0.039,
+          "utr5_predicted_mrl": 5.45
+        },
+        "nomem": {
+          "cds_cai": 0.9459299998627659,
+          "full_length_mfe": -951.01,
+          "junction_mfe_per_nt": -0.019125000000000003,
+          "utr5_predicted_mrl": 6.42
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "A1AT",
+      "campaign_index": 16,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.1771225923235703,
+        "nomem": 0.07712921483898809
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8376574752077749,
+          "full_length_mfe": -393.24,
+          "junction_mfe_per_nt": -0.009,
+          "utr5_predicted_mrl": 4.45
+        },
+        "nomem": {
+          "cds_cai": 0.7585534310562501,
+          "full_length_mfe": -424.43,
+          "junction_mfe_per_nt": -0.051375000000000004,
+          "utr5_predicted_mrl": 5.79
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Luciferase",
+      "campaign_index": 17,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.20835034403669722,
+        "nomem": 0.054720236122293084
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8421329122567954,
+          "full_length_mfe": -541.9,
+          "junction_mfe_per_nt": 0.00525,
+          "utr5_predicted_mrl": 6.46
+        },
+        "nomem": {
+          "cds_cai": 0.8421329122567954,
+          "full_length_mfe": -542.31,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 5.61
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "RSV_F_protein",
+      "campaign_index": 18,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.06378410097263518,
+        "nomem": 0.06806559946405162
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8017367316740084,
+          "full_length_mfe": -564.6,
+          "junction_mfe_per_nt": -0.007125,
+          "utr5_predicted_mrl": 6.4
+        },
+        "nomem": {
+          "cds_cai": 0.7307780621165302,
+          "full_length_mfe": -572.84,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 6.09
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Transferrin",
+      "campaign_index": 19,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.15135641079598966,
+        "nomem": 0.0765108985763343
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8287187125269744,
+          "full_length_mfe": -728.82,
+          "junction_mfe_per_nt": -0.09675,
+          "utr5_predicted_mrl": 6.47
+        },
+        "nomem": {
+          "cds_cai": 0.8287187125269744,
+          "full_length_mfe": -726.67,
+          "junction_mfe_per_nt": -0.106875,
+          "utr5_predicted_mrl": 5.65
+        }
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "IFN_alpha_2a",
+      "campaign_index": 20,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.03193571478443008
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9482554879723694,
+          "full_length_mfe": -161.07,
+          "junction_mfe_per_nt": -0.024249999999999997,
+          "utr5_predicted_mrl": 3.6
+        },
+        "nomem": {
+          "cds_cai": 0.8376025471626152,
+          "full_length_mfe": -213.66,
+          "junction_mfe_per_nt": -0.023375,
+          "utr5_predicted_mrl": 6.4
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Influenza_HA_H1N1",
+      "campaign_index": 7,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.03433898118846697,
+        "nomem": 0.018683728309922456
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8384684377057554,
+          "full_length_mfe": -531.02,
+          "junction_mfe_per_nt": 0.002625,
+          "utr5_predicted_mrl": 6.3
+        },
+        "nomem": {
+          "cds_cai": 0.8384684377057554,
+          "full_length_mfe": -541.02,
+          "junction_mfe_per_nt": -0.03887500000000001,
+          "utr5_predicted_mrl": 6.55
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Insulin",
+      "campaign_index": 9,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.19592110857500897,
+        "nomem": 0.07085979914583646
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8307904939123049,
+          "full_length_mfe": -143.75,
+          "junction_mfe_per_nt": -0.06837499999999999,
+          "utr5_predicted_mrl": 6.4
+        },
+        "nomem": {
+          "cds_cai": 0.7387240316538054,
+          "full_length_mfe": -148.86,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 5.66
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Albumin",
+      "campaign_index": 13,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 62
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.1398316546260316,
+        "nomem": 0.16466888544444724
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8717990699585528,
+          "full_length_mfe": -547.98,
+          "junction_mfe_per_nt": -0.17325,
+          "utr5_predicted_mrl": 5.7
+        },
+        "nomem": {
+          "cds_cai": 0.7505781678722906,
+          "full_length_mfe": -625.29,
+          "junction_mfe_per_nt": -0.060625,
+          "utr5_predicted_mrl": 5.54
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "HIV-1_Env_gp120",
+      "campaign_index": 4,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 62
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.10924976614506005,
+        "nomem": 0.07373918340798515
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.843382830003795,
+          "full_length_mfe": -876.55,
+          "junction_mfe_per_nt": -0.024625,
+          "utr5_predicted_mrl": 6.42
+        },
+        "nomem": {
+          "cds_cai": 0.7602569247289045,
+          "full_length_mfe": -924.25,
+          "junction_mfe_per_nt": -0.1565,
+          "utr5_predicted_mrl": 5.66
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Ovalbumin",
+      "campaign_index": 12,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.10320869975787106,
+        "nomem": 0.034006587634747884
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8365543440297669,
+          "full_length_mfe": -381.02,
+          "junction_mfe_per_nt": -0.081875,
+          "utr5_predicted_mrl": 5.88
+        },
+        "nomem": {
+          "cds_cai": 0.8365543440297669,
+          "full_length_mfe": -392.15,
+          "junction_mfe_per_nt": -0.033625,
+          "utr5_predicted_mrl": 6.44
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Growth_hormone",
+      "campaign_index": 11,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.02326126988753747,
+        "nomem": 0.08472543749401668
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8341108667388444,
+          "full_length_mfe": -216.05,
+          "junction_mfe_per_nt": -0.0006249999999999997,
+          "utr5_predicted_mrl": 6.45
+        },
+        "nomem": {
+          "cds_cai": 0.7420055838397519,
+          "full_length_mfe": -248.43,
+          "junction_mfe_per_nt": -0.016625,
+          "utr5_predicted_mrl": 5.22
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Zika_E_protein",
+      "campaign_index": 17,
+      "valid": false,
+      "invalid_reason": "memory_arm_failed",
+      "eval_counts": {},
+      "truncated_counts": {},
+      "counts_equal_after_truncation": null,
+      "budget": null,
+      "best_asf_after_truncation": {},
+      "best_validated_after_truncation": {}
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Factor_VIII",
+      "campaign_index": 1,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 9,
+        "nomem": 9
+      },
+      "truncated_counts": {
+        "memory": 9,
+        "nomem": 9
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 9,
+      "best_asf_after_truncation": {
+        "memory": 0.19426640991292626,
+        "nomem": 0.09362024254727332
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8185201252917349,
+          "full_length_mfe": -529.97,
+          "junction_mfe_per_nt": -0.028625,
+          "utr5_predicted_mrl": 6.39
+        },
+        "nomem": {
+          "cds_cai": 0.8200985766984286,
+          "full_length_mfe": -554.18,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 5.18
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "HER2",
+      "campaign_index": 6,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.024613128432386448,
+        "nomem": 0.08702205081464212
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.830468495973555,
+          "full_length_mfe": -1515.94,
+          "junction_mfe_per_nt": -0.065375,
+          "utr5_predicted_mrl": 6.24
+        },
+        "nomem": {
+          "cds_cai": 0.9428672330234913,
+          "full_length_mfe": -1227.68,
+          "junction_mfe_per_nt": -0.059125,
+          "utr5_predicted_mrl": 6.46
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "GFP",
+      "campaign_index": 19,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.12039453551912564,
+        "nomem": 0.06548824954719262
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.6260291440802607,
+          "full_length_mfe": -201.01,
+          "junction_mfe_per_nt": -0.054875,
+          "utr5_predicted_mrl": 6.12
+        },
+        "nomem": {
+          "cds_cai": 0.6296109223792206,
+          "full_length_mfe": -199.86,
+          "junction_mfe_per_nt": -0.044500000000000005,
+          "utr5_predicted_mrl": 6.44
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "HPV16_L1",
+      "campaign_index": 16,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 9,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 9,
+        "nomem": 9
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 9,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.0622557716251643
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9331166547659409,
+          "full_length_mfe": -418.11,
+          "junction_mfe_per_nt": -0.026500000000000003,
+          "utr5_predicted_mrl": 6.22
+        },
+        "nomem": {
+          "cds_cai": 0.8248572014866321,
+          "full_length_mfe": -512.37,
+          "junction_mfe_per_nt": 0.001875,
+          "utr5_predicted_mrl": 5.85
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "EPO",
+      "campaign_index": 5,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.15544652203651937,
+        "nomem": 0.09565077044500436
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8188836422223985,
+          "full_length_mfe": -249.68,
+          "junction_mfe_per_nt": -0.1015,
+          "utr5_predicted_mrl": 6.36
+        },
+        "nomem": {
+          "cds_cai": 0.9379608399109438,
+          "full_length_mfe": -203.95,
+          "junction_mfe_per_nt": -0.140125,
+          "utr5_predicted_mrl": 6.06
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Beta_galactosidase",
+      "campaign_index": 3,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 57,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 57,
+        "nomem": 57
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 57,
+      "best_asf_after_truncation": {
+        "memory": 0.09876509181003676,
+        "nomem": 0.08296832527497927
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.6194662267082105,
+          "full_length_mfe": -1159.21,
+          "junction_mfe_per_nt": 0.00625,
+          "utr5_predicted_mrl": 6.31
+        },
+        "nomem": {
+          "cds_cai": 0.6194662267082105,
+          "full_length_mfe": -1169.13,
+          "junction_mfe_per_nt": -0.013749999999999998,
+          "utr5_predicted_mrl": 5.45
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "IL-2",
+      "campaign_index": 20,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.2200065710659451,
+        "nomem": 0.07476219247420493
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9163053759405211,
+          "full_length_mfe": -121.18,
+          "junction_mfe_per_nt": 0.002875,
+          "utr5_predicted_mrl": 6.46
+        },
+        "nomem": {
+          "cds_cai": 0.8115625986649907,
+          "full_length_mfe": -143.5,
+          "junction_mfe_per_nt": 0.002875,
+          "utr5_predicted_mrl": 6.38
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "campaign_index": 18,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.16711863114371048,
+        "nomem": 0.11156119290591163
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8358875670024927,
+          "full_length_mfe": -1271.34,
+          "junction_mfe_per_nt": 0.001,
+          "utr5_predicted_mrl": 6.67
+        },
+        "nomem": {
+          "cds_cai": 0.7307179198298056,
+          "full_length_mfe": -1406.67,
+          "junction_mfe_per_nt": -0.016875,
+          "utr5_predicted_mrl": 5.65
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "A1AT",
+      "campaign_index": 15,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.22609410058027074,
+        "nomem": 0.11564710776529077
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8716575172011144,
+          "full_length_mfe": -370.36,
+          "junction_mfe_per_nt": -0.040125,
+          "utr5_predicted_mrl": 4.74
+        },
+        "nomem": {
+          "cds_cai": 0.7585534310562501,
+          "full_length_mfe": -417.56,
+          "junction_mfe_per_nt": -0.045375,
+          "utr5_predicted_mrl": 4.62
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Luciferase",
+      "campaign_index": 8,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.002979166666666656,
+        "nomem": 0.057282264267383115
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8421329122567954,
+          "full_length_mfe": -548.73,
+          "junction_mfe_per_nt": -0.0065,
+          "utr5_predicted_mrl": 6.44
+        },
+        "nomem": {
+          "cds_cai": 0.7361022142542741,
+          "full_length_mfe": -584.6,
+          "junction_mfe_per_nt": -0.066,
+          "utr5_predicted_mrl": 5.83
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "RSV_F_protein",
+      "campaign_index": 14,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.08580527225748713,
+        "nomem": 0.1251563366294956
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8468475124676832,
+          "full_length_mfe": -506.45,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 6.62
+        },
+        "nomem": {
+          "cds_cai": 0.9614301562903734,
+          "full_length_mfe": -339.24,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 6.29
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Transferrin",
+      "campaign_index": 2,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.13913593707737806,
+        "nomem": 0.11280519296636293
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7717099781444623,
+          "full_length_mfe": -751.32,
+          "junction_mfe_per_nt": -0.081875,
+          "utr5_predicted_mrl": 4.89
+        },
+        "nomem": {
+          "cds_cai": 0.8287187125269744,
+          "full_length_mfe": -733.96,
+          "junction_mfe_per_nt": -0.083875,
+          "utr5_predicted_mrl": 6.58
+        }
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "IFN_alpha_2a",
+      "campaign_index": 10,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.20029461366095894,
+        "nomem": 0.02516802676583239
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9217030010776898,
+          "full_length_mfe": -174.24,
+          "junction_mfe_per_nt": -0.02675,
+          "utr5_predicted_mrl": 6.02
+        },
+        "nomem": {
+          "cds_cai": 0.8376025471626152,
+          "full_length_mfe": -197.51,
+          "junction_mfe_per_nt": -0.012499999999999997,
+          "utr5_predicted_mrl": 6.46
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Influenza_HA_H1N1",
+      "campaign_index": 7,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.11192679750097502,
+        "nomem": 0.12444152232402197
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.954694101830443,
+          "full_length_mfe": -379.44,
+          "junction_mfe_per_nt": -0.015125,
+          "utr5_predicted_mrl": 5.45
+        },
+        "nomem": {
+          "cds_cai": 0.7691354549704087,
+          "full_length_mfe": -568.88,
+          "junction_mfe_per_nt": -0.018625,
+          "utr5_predicted_mrl": 4.47
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Insulin",
+      "campaign_index": 14,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.20039873940512684,
+        "nomem": 0.052481372858194056
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.8307904939123049,
+          "full_length_mfe": -142.75,
+          "junction_mfe_per_nt": -0.050375,
+          "utr5_predicted_mrl": 4.34
+        },
+        "nomem": {
+          "cds_cai": 0.7387240316538054,
+          "full_length_mfe": -150.55,
+          "junction_mfe_per_nt": -0.013624999999999998,
+          "utr5_predicted_mrl": 5.88
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Albumin",
+      "campaign_index": 1,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.05042363083160112,
+        "nomem": 0.0631601121975863
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7505781678722906,
+          "full_length_mfe": -627.89,
+          "junction_mfe_per_nt": -0.005875,
+          "utr5_predicted_mrl": 5.85
+        },
+        "nomem": {
+          "cds_cai": 0.8338616326658399,
+          "full_length_mfe": -594.8,
+          "junction_mfe_per_nt": -0.14525,
+          "utr5_predicted_mrl": 6.42
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "HIV-1_Env_gp120",
+      "campaign_index": 17,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.026325432340746014
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9328434263885446,
+          "full_length_mfe": -751.61,
+          "junction_mfe_per_nt": -0.043500000000000004,
+          "utr5_predicted_mrl": 6.3
+        },
+        "nomem": {
+          "cds_cai": 0.843382830003795,
+          "full_length_mfe": -870.1,
+          "junction_mfe_per_nt": -0.0325,
+          "utr5_predicted_mrl": 6.18
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Ovalbumin",
+      "campaign_index": 15,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.09103797122767789
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7422332641341879,
+          "full_length_mfe": -441.57,
+          "junction_mfe_per_nt": -0.022375,
+          "utr5_predicted_mrl": 2.22
+        },
+        "nomem": {
+          "cds_cai": 0.7422332641341879,
+          "full_length_mfe": -433.48,
+          "junction_mfe_per_nt": -0.10275000000000001,
+          "utr5_predicted_mrl": 6.12
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Growth_hormone",
+      "campaign_index": 19,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.12194811649187653
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7420055838397519,
+          "full_length_mfe": -246.15,
+          "junction_mfe_per_nt": -0.02175,
+          "utr5_predicted_mrl": 5.79
+        },
+        "nomem": {
+          "cds_cai": 0.8341108667388444,
+          "full_length_mfe": -215.66,
+          "junction_mfe_per_nt": -0.01975,
+          "utr5_predicted_mrl": 5.28
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Zika_E_protein",
+      "campaign_index": 16,
+      "valid": false,
+      "invalid_reason": "memory_arm_failed",
+      "eval_counts": {},
+      "truncated_counts": {},
+      "counts_equal_after_truncation": null,
+      "budget": null,
+      "best_asf_after_truncation": {},
+      "best_validated_after_truncation": {}
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Factor_VIII",
+      "campaign_index": 9,
+      "valid": false,
+      "invalid_reason": "memory_arm_failed",
+      "eval_counts": {},
+      "truncated_counts": {},
+      "counts_equal_after_truncation": null,
+      "budget": null,
+      "best_asf_after_truncation": {},
+      "best_validated_after_truncation": {}
+    },
+    {
+      "seed_group": "C",
+      "target_id": "HER2",
+      "campaign_index": 20,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.04054531556877404
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9161357106442415,
+          "full_length_mfe": -1277.05,
+          "junction_mfe_per_nt": -0.09062500000000001,
+          "utr5_predicted_mrl": 4.56
+        },
+        "nomem": {
+          "cds_cai": 0.745418649025644,
+          "full_length_mfe": -1582.64,
+          "junction_mfe_per_nt": -0.06849999999999999,
+          "utr5_predicted_mrl": 5.88
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "GFP",
+      "campaign_index": 5,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.1793405113706809,
+        "nomem": 0.06222732261964844
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.6186536870106925,
+          "full_length_mfe": -89.21,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 4.62
+        },
+        "nomem": {
+          "cds_cai": 0.6296109223792206,
+          "full_length_mfe": -193.76,
+          "junction_mfe_per_nt": 0.007625,
+          "utr5_predicted_mrl": 6.67
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "HPV16_L1",
+      "campaign_index": 11,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.10353259247777827,
+        "nomem": 0.018944086410943365
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7457851059649595,
+          "full_length_mfe": -557.16,
+          "junction_mfe_per_nt": -0.04925,
+          "utr5_predicted_mrl": 4.92
+        },
+        "nomem": {
+          "cds_cai": 0.7457851059649595,
+          "full_length_mfe": -542.25,
+          "junction_mfe_per_nt": 0.005375,
+          "utr5_predicted_mrl": 6.46
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "EPO",
+      "campaign_index": 12,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.03123147183195488,
+        "nomem": 0.07014732227730629
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7145954860382963,
+          "full_length_mfe": -268.71,
+          "junction_mfe_per_nt": -0.018375,
+          "utr5_predicted_mrl": 6.52
+        },
+        "nomem": {
+          "cds_cai": 0.7145954860382963,
+          "full_length_mfe": -262.25,
+          "junction_mfe_per_nt": 0.00875,
+          "utr5_predicted_mrl": 5.86
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Beta_galactosidase",
+      "campaign_index": 2,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.013051789588290726,
+        "nomem": 0.0990521162374142
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.6026240878527036,
+          "full_length_mfe": -1224.66,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 6.57
+        },
+        "nomem": {
+          "cds_cai": 0.6194662267082105,
+          "full_length_mfe": -1158.02,
+          "junction_mfe_per_nt": -0.018875,
+          "utr5_predicted_mrl": 6.16
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "IL-2",
+      "campaign_index": 4,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.08157748804743795
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9163053759405211,
+          "full_length_mfe": -123.18,
+          "junction_mfe_per_nt": 0.002875,
+          "utr5_predicted_mrl": 3.6
+        },
+        "nomem": {
+          "cds_cai": 0.7454423010147634,
+          "full_length_mfe": -139.85,
+          "junction_mfe_per_nt": 0.002875,
+          "utr5_predicted_mrl": 6.66
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "SARS-CoV-2_Spike_WT",
+      "campaign_index": 18,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.17393190550613638,
+        "nomem": 0.03050203025647592
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9459299998627659,
+          "full_length_mfe": -966.69,
+          "junction_mfe_per_nt": -0.033875,
+          "utr5_predicted_mrl": 3.69
+        },
+        "nomem": {
+          "cds_cai": 0.8358875670024927,
+          "full_length_mfe": -1275.08,
+          "junction_mfe_per_nt": 0.0013749999999999995,
+          "utr5_predicted_mrl": 6.34
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "A1AT",
+      "campaign_index": 13,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 7,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 7,
+        "nomem": 7
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 7,
+      "best_asf_after_truncation": {
+        "memory": 0.04399060708358679,
+        "nomem": 0.08251667935619766
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7585534310562501,
+          "full_length_mfe": -427.91,
+          "junction_mfe_per_nt": -0.003375,
+          "utr5_predicted_mrl": 5.98
+        },
+        "nomem": {
+          "cds_cai": 0.8376574752077749,
+          "full_length_mfe": -396.58,
+          "junction_mfe_per_nt": -0.032875,
+          "utr5_predicted_mrl": 6.41
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Luciferase",
+      "campaign_index": 10,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.06682723370497613
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7361022142542741,
+          "full_length_mfe": -581.35,
+          "junction_mfe_per_nt": -0.010875,
+          "utr5_predicted_mrl": 6.53
+        },
+        "nomem": {
+          "cds_cai": 0.7361022142542741,
+          "full_length_mfe": -580.44,
+          "junction_mfe_per_nt": 0.00975,
+          "utr5_predicted_mrl": 5.83
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "RSV_F_protein",
+      "campaign_index": 6,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 62
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.12688795604997868
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9092185261271256,
+          "full_length_mfe": -432.24,
+          "junction_mfe_per_nt": -0.029500000000000002,
+          "utr5_predicted_mrl": 5.27
+        },
+        "nomem": {
+          "cds_cai": 0.9614301562903734,
+          "full_length_mfe": -339.89,
+          "junction_mfe_per_nt": -0.023125000000000003,
+          "utr5_predicted_mrl": 5.57
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "Transferrin",
+      "campaign_index": 3,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.08463749942931503
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.9310896909372142,
+          "full_length_mfe": -609.77,
+          "junction_mfe_per_nt": -0.08675000000000001,
+          "utr5_predicted_mrl": 6.44
+        },
+        "nomem": {
+          "cds_cai": 0.9536306105664868,
+          "full_length_mfe": -566.42,
+          "junction_mfe_per_nt": -0.07400000000000001,
+          "utr5_predicted_mrl": 6.39
+        }
+      }
+    },
+    {
+      "seed_group": "C",
+      "target_id": "IFN_alpha_2a",
+      "campaign_index": 8,
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 1,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 1,
+        "nomem": 1
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 1,
+      "best_asf_after_truncation": {
+        "memory": 0.0,
+        "nomem": 0.040004067472754055
+      },
+      "best_validated_after_truncation": {
+        "memory": {
+          "cds_cai": 0.7701640112697239,
+          "full_length_mfe": -203.01,
+          "junction_mfe_per_nt": -0.012499999999999997,
+          "utr5_predicted_mrl": 6.46
+        },
+        "nomem": {
+          "cds_cai": 0.7701640112697239,
+          "full_length_mfe": -198.62,
+          "junction_mfe_per_nt": -0.023375,
+          "utr5_predicted_mrl": 6.11
+        }
+      }
+    }
+  ],
+  "descriptive": {
+    "injection": {
+      "n_memory_campaigns_checked": 52,
+      "n_with_override": 52,
+      "detail": [
+        {
+          "task_id": "e4_A_memory_c2_Insulin",
+          "seed_group": "A",
+          "campaign_index": 2,
+          "knobs_fired": [
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c3_Albumin",
+          "seed_group": "A",
+          "campaign_index": 3,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c4_HIV-1_Env_gp120",
+          "seed_group": "A",
+          "campaign_index": 4,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c5_Ovalbumin",
+          "seed_group": "A",
+          "campaign_index": 5,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c6_Growth_hormone",
+          "seed_group": "A",
+          "campaign_index": 6,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c9_HER2",
+          "seed_group": "A",
+          "campaign_index": 9,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c10_GFP",
+          "seed_group": "A",
+          "campaign_index": 10,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c11_HPV16_L1",
+          "seed_group": "A",
+          "campaign_index": 11,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c12_EPO",
+          "seed_group": "A",
+          "campaign_index": 12,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c13_Beta_galactosidase",
+          "seed_group": "A",
+          "campaign_index": 13,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c14_IL-2",
+          "seed_group": "A",
+          "campaign_index": 14,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c15_SARS-CoV-2_Spike_WT",
+          "seed_group": "A",
+          "campaign_index": 15,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c16_A1AT",
+          "seed_group": "A",
+          "campaign_index": 16,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c17_Luciferase",
+          "seed_group": "A",
+          "campaign_index": 17,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c18_RSV_F_protein",
+          "seed_group": "A",
+          "campaign_index": 18,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c19_Transferrin",
+          "seed_group": "A",
+          "campaign_index": 19,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_A_memory_c20_IFN_alpha_2a",
+          "seed_group": "A",
+          "campaign_index": 20,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c2_Transferrin",
+          "seed_group": "B",
+          "campaign_index": 2,
+          "knobs_fired": [
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c3_Beta_galactosidase",
+          "seed_group": "B",
+          "campaign_index": 3,
+          "knobs_fired": [
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c4_HIV-1_Env_gp120",
+          "seed_group": "B",
+          "campaign_index": 4,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c5_EPO",
+          "seed_group": "B",
+          "campaign_index": 5,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c6_HER2",
+          "seed_group": "B",
+          "campaign_index": 6,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c7_Influenza_HA_H1N1",
+          "seed_group": "B",
+          "campaign_index": 7,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c8_Luciferase",
+          "seed_group": "B",
+          "campaign_index": 8,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c9_Insulin",
+          "seed_group": "B",
+          "campaign_index": 9,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c10_IFN_alpha_2a",
+          "seed_group": "B",
+          "campaign_index": 10,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c11_Growth_hormone",
+          "seed_group": "B",
+          "campaign_index": 11,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c12_Ovalbumin",
+          "seed_group": "B",
+          "campaign_index": 12,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c13_Albumin",
+          "seed_group": "B",
+          "campaign_index": 13,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c14_RSV_F_protein",
+          "seed_group": "B",
+          "campaign_index": 14,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c15_A1AT",
+          "seed_group": "B",
+          "campaign_index": 15,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c1_HPV16_L1",
+          "seed_group": "B",
+          "campaign_index": 16,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c18_SARS-CoV-2_Spike_WT",
+          "seed_group": "B",
+          "campaign_index": 18,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c19_GFP",
+          "seed_group": "B",
+          "campaign_index": 19,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c20_IL-2",
+          "seed_group": "B",
+          "campaign_index": 20,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c2_Beta_galactosidase",
+          "seed_group": "C",
+          "campaign_index": 2,
+          "knobs_fired": [
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c3_Transferrin",
+          "seed_group": "C",
+          "campaign_index": 3,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c4_IL-2",
+          "seed_group": "C",
+          "campaign_index": 4,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c5_GFP",
+          "seed_group": "C",
+          "campaign_index": 5,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c6_RSV_F_protein",
+          "seed_group": "C",
+          "campaign_index": 6,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c7_Influenza_HA_H1N1",
+          "seed_group": "C",
+          "campaign_index": 7,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c8_IFN_alpha_2a",
+          "seed_group": "C",
+          "campaign_index": 8,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c10_Luciferase",
+          "seed_group": "C",
+          "campaign_index": 10,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c11_HPV16_L1",
+          "seed_group": "C",
+          "campaign_index": 11,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c12_EPO",
+          "seed_group": "C",
+          "campaign_index": 12,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c13_A1AT",
+          "seed_group": "C",
+          "campaign_index": 13,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c14_Insulin",
+          "seed_group": "C",
+          "campaign_index": 14,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c15_Ovalbumin",
+          "seed_group": "C",
+          "campaign_index": 15,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c17_HIV-1_Env_gp120",
+          "seed_group": "C",
+          "campaign_index": 17,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c18_SARS-CoV-2_Spike_WT",
+          "seed_group": "C",
+          "campaign_index": 18,
+          "knobs_fired": [
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c19_Growth_hormone",
+          "seed_group": "C",
+          "campaign_index": 19,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_C_memory_c20_HER2",
+          "seed_group": "C",
+          "campaign_index": 20,
+          "knobs_fired": [
+            "design_tool+lambda_value",
+            "utr_mode",
+            "bmc_max_rounds"
+          ],
+          "injection_fired": true
+        }
+      ]
+    },
+    "per_campaign_eval_counts": {
+      "A/nomem/c1": 58,
+      "A/nomem/c2": 58,
+      "A/nomem/c3": 58,
+      "A/nomem/c4": 58,
+      "A/nomem/c5": 58,
+      "A/nomem/c6": 58,
+      "A/nomem/c7": 9,
+      "A/nomem/c8": 9,
+      "A/nomem/c9": 58,
+      "A/nomem/c10": 58,
+      "A/nomem/c11": 58,
+      "A/nomem/c12": 58,
+      "A/nomem/c13": 58,
+      "A/nomem/c14": 58,
+      "A/nomem/c15": 58,
+      "A/nomem/c16": 58,
+      "A/nomem/c17": 58,
+      "A/nomem/c18": 58,
+      "A/nomem/c19": 58,
+      "A/nomem/c20": 58,
+      "A/memory/c1": 58,
+      "A/memory/c2": 58,
+      "A/memory/c3": 13,
+      "A/memory/c4": 13,
+      "A/memory/c5": 13,
+      "A/memory/c6": 13,
+      "A/memory/c7": null,
+      "A/memory/c8": null,
+      "A/memory/c9": 13,
+      "A/memory/c10": 13,
+      "A/memory/c11": 13,
+      "A/memory/c12": 13,
+      "A/memory/c13": 13,
+      "A/memory/c14": 13,
+      "A/memory/c15": 13,
+      "A/memory/c16": 13,
+      "A/memory/c17": 13,
+      "A/memory/c18": 13,
+      "A/memory/c19": 13,
+      "A/memory/c20": 1,
+      "B/nomem/c1": 9,
+      "B/nomem/c2": 58,
+      "B/nomem/c3": 58,
+      "B/nomem/c4": 62,
+      "B/nomem/c5": 58,
+      "B/nomem/c6": 58,
+      "B/nomem/c7": 58,
+      "B/nomem/c8": 58,
+      "B/nomem/c9": 58,
+      "B/nomem/c10": 58,
+      "B/nomem/c11": 58,
+      "B/nomem/c12": 58,
+      "B/nomem/c13": 62,
+      "B/nomem/c14": 58,
+      "B/nomem/c15": 58,
+      "B/nomem/c16": 58,
+      "B/nomem/c17": 9,
+      "B/nomem/c18": 58,
+      "B/nomem/c19": 58,
+      "B/nomem/c20": 58,
+      "B/memory/c1": 9,
+      "B/memory/c2": 58,
+      "B/memory/c3": 57,
+      "B/memory/c4": 13,
+      "B/memory/c5": 13,
+      "B/memory/c6": 13,
+      "B/memory/c7": 13,
+      "B/memory/c8": 13,
+      "B/memory/c9": 13,
+      "B/memory/c10": 13,
+      "B/memory/c11": 13,
+      "B/memory/c12": 13,
+      "B/memory/c13": 13,
+      "B/memory/c14": 13,
+      "B/memory/c15": 13,
+      "B/memory/c16": 9,
+      "B/memory/c17": null,
+      "B/memory/c18": 13,
+      "B/memory/c19": 13,
+      "B/memory/c20": 13,
+      "C/nomem/c1": 58,
+      "C/nomem/c2": 58,
+      "C/nomem/c3": 58,
+      "C/nomem/c4": 58,
+      "C/nomem/c5": 58,
+      "C/nomem/c6": 62,
+      "C/nomem/c7": 58,
+      "C/nomem/c8": 58,
+      "C/nomem/c9": 9,
+      "C/nomem/c10": 58,
+      "C/nomem/c11": 58,
+      "C/nomem/c12": 58,
+      "C/nomem/c13": 58,
+      "C/nomem/c14": 58,
+      "C/nomem/c15": 58,
+      "C/nomem/c16": 9,
+      "C/nomem/c17": 58,
+      "C/nomem/c18": 58,
+      "C/nomem/c19": 58,
+      "C/nomem/c20": 58,
+      "C/memory/c1": 58,
+      "C/memory/c2": 58,
+      "C/memory/c3": 1,
+      "C/memory/c4": 1,
+      "C/memory/c5": 7,
+      "C/memory/c6": 1,
+      "C/memory/c7": 7,
+      "C/memory/c8": 1,
+      "C/memory/c9": null,
+      "C/memory/c10": 1,
+      "C/memory/c11": 7,
+      "C/memory/c12": 7,
+      "C/memory/c13": 7,
+      "C/memory/c14": 7,
+      "C/memory/c15": 1,
+      "C/memory/c16": null,
+      "C/memory/c17": 1,
+      "C/memory/c18": 7,
+      "C/memory/c19": 1,
+      "C/memory/c20": 1
+    },
+    "wall_clock_seconds_total": 166681.74,
+    "wall_clock_seconds_by_arm": {
+      "nomem": 119281.54000000001,
+      "memory": 47400.2
+    }
+  },
+  "endpoints": {
+    "efficiency": {
+      "slopes_by_group": {
+        "A": {
+          "nomem": {
+            "slope": -2.1379929694934885e-06,
+            "r2": 0.00032926404767930073,
+            "n": 18
+          },
+          "memory": {
+            "slope": 0.0001228414964033742,
+            "r2": 0.01950151401992639,
+            "n": 18
+          }
+        },
+        "B": {
+          "nomem": {
+            "slope": 7.378650188780544e-06,
+            "r2": 0.004598469817600703,
+            "n": 19
+          },
+          "memory": {
+            "slope": 2.3807340475790733e-05,
+            "r2": 0.0007550314150405191,
+            "n": 19
+          }
+        },
+        "C": {
+          "nomem": {
+            "slope": -3.1483843345056255e-05,
+            "r2": 0.08615505210865515,
+            "n": 18
+          },
+          "memory": {
+            "slope": 0.00024290850225024778,
+            "r2": 0.009770390536013362,
+            "n": 18
+          }
+        }
+      },
+      "memory_slopes": [
+        0.0001228414964033742,
+        2.3807340475790733e-05,
+        0.00024290850225024778
+      ],
+      "nomem_slopes": [
+        -2.1379929694934885e-06,
+        7.378650188780544e-06,
+        -3.1483843345056255e-05
+      ],
+      "slope_significantly_negative": false,
+      "memory_slope_t": {
+        "statistic": 2.049887746197648,
+        "p_one_sided_less": 0.9115596698872256,
+        "n_groups": 3
+      },
+      "paired_contrast_memory_minus_nomem": {
+        "differences": [
+          0.00012497948937286767,
+          1.642869028701019e-05,
+          0.00027439234559530404
+        ],
+        "statistic": 1.853477262776878,
+        "p_one_sided_less": 0.8975048138883959
+      },
+      "cumulative_budget_saving": {
+        "memory_total": 814.0,
+        "nomem_total": 3153.0,
+        "saving_fraction": 0.7418331747542024,
+        "n_paired_cells": 55,
+        "pass": true
+      },
+      "pass": false
+    },
+    "design_gain": {
+      "metrics": [
+        {
+          "key": "cds_cai",
+          "direction": "higher",
+          "label": "CDS CAI",
+          "n_pairs": 55,
+          "p": 0.09203080210085418,
+          "cliffs_delta": 0.1709090909090909,
+          "favourable_direction": false,
+          "q_bh": 0.3681232084034167,
+          "pass": false
+        },
+        {
+          "key": "full_length_mfe",
+          "direction": "lower",
+          "label": "full-length MFE",
+          "n_pairs": 55,
+          "p": 0.26155411110003735,
+          "cliffs_delta": 0.01487603305785124,
+          "favourable_direction": false,
+          "q_bh": 0.5231082222000747,
+          "pass": false
+        },
+        {
+          "key": "junction_mfe_per_nt",
+          "direction": "lower",
+          "label": "junction mfe/nt (mean of 5'UTR-CDS and CDS-3'UTR)",
+          "n_pairs": 55,
+          "p": 0.6752759382730503,
+          "cliffs_delta": -0.04,
+          "favourable_direction": false,
+          "q_bh": 0.9003679176974004,
+          "pass": false
+        },
+        {
+          "key": "utr5_predicted_mrl",
+          "direction": "higher",
+          "label": "5'UTR predicted MRL (GemORNA)",
+          "n_pairs": 55,
+          "p": 0.9142870471132108,
+          "cliffs_delta": 0.03834710743801653,
+          "favourable_direction": false,
+          "q_bh": 0.9142870471132108,
+          "pass": false
+        }
+      ],
+      "pass": false
+    }
+  },
+  "go_no_go": {
+    "efficiency_pass": false,
+    "design_gain_pass": false,
+    "go": false,
+    "rule": "ANY endpoint passing -> GO (REDESIGN §3 E4; HANDOFF 2026-08-05 §2.4)",
+    "thresholds": {
+      "slope_significant_negative": "one-sample t, one-sided less, p < 0.05",
+      "budget_saving": ">= 25% cumulative",
+      "wilcoxon": "q (BH-FDR across 4 metrics) < 0.05",
+      "cliffs_delta": "|delta| >= 0.3 in favourable direction"
+    }
+  },
+  "overall_pass": false
+}

@@ -1,0 +1,394 @@
+{
+  "generated_by": "experiments/analysis/summarize_fig5.py",
+  "input": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/fig5_ablations.jsonl",
+  "asf_method": "Fixed-reference ASF recomputation (panels b/c): per target, all `pool_objectives` points of BOTH arms are pooled; each objective dimension (egarps/rhofold/iptm_component; all maximized) is min-max normalized with bounds from that merged pool. The shared reference point is the per-dimension best over the merged pool ('utopian-of-pool'), normalized with the same bounds. ASF distances of every run's best candidate are recomputed against this fixed reference with uniform weights and rho=1e-3 via agent_core.workflows.multi_objective.achievement_scalarizing_function. The stored asf_distance uses a per-run utopian reference and is NOT comparable across arms, so it is never used for cross-arm tests.",
+  "e1_method": "Panel e_type1 is a NEGATIVE control (utr_mode=short removes the junction-coupling conflict the BMC is designed to resolve), so the expectation is 'no significant difference'. Raw best-candidate components (cds_component / utr5_mrl / utr3_stability / full_mfe_score) are compared per (target, rep) pair; the stored utopian asf_distance is shown descriptively only (per-run reference, see multi_objective.py ANALYSIS CAVEAT) — inference rests on the components.",
+  "boundary": {
+    "ferritin_panel_bc": [
+      "fig5b_Ferritin_pool_average_s0",
+      "fig5b_Ferritin_pool_average_s1",
+      "fig5b_Ferritin_pool_average_s2",
+      "fig5b_Ferritin_source_aware_s0",
+      "fig5b_Ferritin_source_aware_s1",
+      "fig5b_Ferritin_source_aware_s2"
+    ],
+    "nucleocapsid_e2": [
+      "fig5e2_SARS-CoV-2_Nucleocapsid_r0_s0",
+      "fig5e2_SARS-CoV-2_Nucleocapsid_r0_s1",
+      "fig5e2_SARS-CoV-2_Nucleocapsid_r0_s2",
+      "fig5e2_SARS-CoV-2_Nucleocapsid_r1_s0",
+      "fig5e2_SARS-CoV-2_Nucleocapsid_r1_s1",
+      "fig5e2_SARS-CoV-2_Nucleocapsid_r1_s2"
+    ],
+    "note": "Confirmed boundaries (deterministic, not retried; see driver NOTEs): (1) Ferritin (1FHA) panels b/c — ODesign produced zero sequences in all Fig-4 cells + 3 retries and in all six fig5b cells (`no_sequences_extracted_from_odesign_output`); (2) SARS-CoV-2_Nucleocapsid (6M3M) panel e_type2 — the explicit hotspot_residues A/44-48 are all missing from the chain-A structure (fig4kav hotspot_recovery: known_missing_in_structure), ODesign found no valid target region in all 6 cells."
+  },
+  "n_records_raw": 158,
+  "n_jobs_unique": 153,
+  "n_jobs_success": 141,
+  "unexpected_failures": [],
+  "panels": {
+    "b": {
+      "design": "9 targets x {source_aware, pool_average} x 3 seed sets, BMC x1",
+      "tests": {
+        "asf_fixed": {
+          "n": 27,
+          "median_pool_average": 0.23841390382961675,
+          "median_source_aware": 0.23959259072937703,
+          "median_delta_source_aware_minus_pool_average": -0.0002176853560336145,
+          "wilcoxon_p": 0.4996110200881958,
+          "cliffs_delta": 0.02606310013717421,
+          "q_bh": 0.712890625
+        },
+        "egarps_component": {
+          "n": 27,
+          "median_pool_average": 0.36027646,
+          "median_source_aware": 0.34427685,
+          "median_delta_source_aware_minus_pool_average": 0.0006154199999999915,
+          "wilcoxon_p": 0.4996110200881958,
+          "cliffs_delta": -0.0644718792866941,
+          "q_bh": 0.712890625
+        },
+        "rhofold_component": {
+          "n": 27,
+          "median_pool_average": 0.8536276827371665,
+          "median_source_aware": 0.8536276827371665,
+          "median_delta_source_aware_minus_pool_average": 0.0,
+          "wilcoxon_p": 0.4140400034242331,
+          "cliffs_delta": 0.05898491083676269,
+          "q_bh": 0.712890625
+        },
+        "iptm_component": {
+          "n": 27,
+          "median_pool_average": 0.40610042214393616,
+          "median_source_aware": 0.41169655323028564,
+          "median_delta_source_aware_minus_pool_average": -0.011229157447814941,
+          "wilcoxon_p": 0.5460176914930344,
+          "cliffs_delta": -0.02880658436213992,
+          "q_bh": 0.712890625
+        }
+      }
+    },
+    "c": {
+      "design": "9 targets x {utopian, fixed_reference} x 3 seed sets, BMC x1",
+      "tests": {
+        "asf_fixed": {
+          "n": 27,
+          "median_fixed_reference": 0.2817976097534397,
+          "median_utopian": 0.267790120349149,
+          "median_delta_utopian_minus_fixed_reference": -0.0015046923940574275,
+          "wilcoxon_p": 0.2583710700273514,
+          "cliffs_delta": -0.13580246913580246,
+          "q_bh": 0.712890625
+        },
+        "egarps_component": {
+          "n": 27,
+          "median_fixed_reference": 0.1696305,
+          "median_utopian": 0.45056054,
+          "median_delta_utopian_minus_fixed_reference": 0.06505827000000008,
+          "wilcoxon_p": 0.024539664387702942,
+          "cliffs_delta": 0.17146776406035666,
+          "q_bh": 0.36809496581554413
+        },
+        "rhofold_component": {
+          "n": 27,
+          "median_fixed_reference": 0.8328037209302367,
+          "median_utopian": 0.8355621495327091,
+          "median_delta_utopian_minus_fixed_reference": 0.0,
+          "wilcoxon_p": 0.5057014407169704,
+          "cliffs_delta": 0.0850480109739369,
+          "q_bh": 0.712890625
+        },
+        "iptm_component": {
+          "n": 27,
+          "median_fixed_reference": 0.45123082399368286,
+          "median_utopian": 0.379890114068985,
+          "median_delta_utopian_minus_fixed_reference": -0.040225476026535034,
+          "wilcoxon_p": 0.08148856461048126,
+          "cliffs_delta": -0.35802469135802467,
+          "q_bh": 0.48828125
+        }
+      }
+    },
+    "d": {
+      "design": "3 targets x lambda=18 extreme start x 3 reps, BMC x1",
+      "boundedness": {
+        "n_runs": 9,
+        "clamp_interval": [
+          0,
+          20
+        ],
+        "lambda_initial_unique": [
+          18.0
+        ],
+        "lambda_final_median": 14.0,
+        "lambda_final_range": [
+          14.0,
+          20.0
+        ],
+        "all_trajectories_within_clamp": true,
+        "runs": [
+          {
+            "task_id": "fig5d_EPO_r0",
+            "target_id": "EPO",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 941.63,
+            "best_asf_distance": 0.07219653516022505,
+            "best_cds_cai": 0.7145954860382963,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_EPO_r1",
+            "target_id": "EPO",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 970.14,
+            "best_asf_distance": 0.06870317895993565,
+            "best_cds_cai": 0.7145954860382963,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_EPO_r2",
+            "target_id": "EPO",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 941.79,
+            "best_asf_distance": 0.03164187369531106,
+            "best_cds_cai": 0.7145954860382963,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_Growth_hormone_r0",
+            "target_id": "Growth_hormone",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 2170.59,
+            "best_asf_distance": 0.051942886638056296,
+            "best_cds_cai": 0.8341108667388444,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_Growth_hormone_r1",
+            "target_id": "Growth_hormone",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 1083.57,
+            "best_asf_distance": 0.06620176296530218,
+            "best_cds_cai": 0.8341108667388444,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_Growth_hormone_r2",
+            "target_id": "Growth_hormone",
+            "lambda_trajectory": [
+              18.0,
+              20.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 901.37,
+            "best_asf_distance": 0.021787545571981207,
+            "best_cds_cai": 0.8341108667388444,
+            "lambda_initial": 18.0,
+            "lambda_final": 20.0,
+            "lambda_max_observed": 20.0
+          },
+          {
+            "task_id": "fig5d_Insulin_r0",
+            "target_id": "Insulin",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 926.74,
+            "best_asf_distance": 0.1015018556077617,
+            "best_cds_cai": 0.7387240316538054,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_Insulin_r1",
+            "target_id": "Insulin",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 841.65,
+            "best_asf_distance": 0.07942121936664799,
+            "best_cds_cai": 0.7409731965013966,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          },
+          {
+            "task_id": "fig5d_Insulin_r2",
+            "target_id": "Insulin",
+            "lambda_trajectory": [
+              18.0,
+              14.0
+            ],
+            "bmc_rounds_executed": 1,
+            "elapsed_seconds": 874.39,
+            "best_asf_distance": 0.07880617239063552,
+            "best_cds_cai": 0.8307904939123049,
+            "lambda_initial": 18.0,
+            "lambda_final": 14.0,
+            "lambda_max_observed": 18.0
+          }
+        ],
+        "note": "Extreme start lambda_value=18 (of the [0,20] clamp interval); trajectories reconstructed from `_bmc_trace` ParamAdjustments replayed through the workflow's clamp (driver-side _reconstruct_lambda_trajectory). Boundedness = adjustments never leave the clamp interval and pull the extreme start back toward the sane design region."
+      }
+    },
+    "e_type1": {
+      "design": "3 small proteins x {serial, bmc1} x 3 reps, utr_mode=short",
+      "tests": {
+        "asf_distance": {
+          "n": 9,
+          "median_serial": 0.06262461577168604,
+          "median_bmc1": 0.04327141102401949,
+          "median_delta_bmc1_minus_serial": -0.028245830355290824,
+          "wilcoxon_p": 0.09765625,
+          "cliffs_delta": -0.5308641975308642,
+          "q_bh": 0.48828125
+        },
+        "cds_component": {
+          "n": 9,
+          "median_serial": 0.324308360130054,
+          "median_bmc1": 0.3289953357429367,
+          "median_delta_bmc1_minus_serial": 0.0,
+          "wilcoxon_p": 0.203125,
+          "cliffs_delta": 0.19753086419753085,
+          "q_bh": 0.712890625
+        },
+        "utr5_mrl": {
+          "n": 9,
+          "median_serial": 5.9,
+          "median_bmc1": 6.11,
+          "median_delta_bmc1_minus_serial": 0.3700000000000001,
+          "wilcoxon_p": 0.4609375,
+          "cliffs_delta": 0.2962962962962963,
+          "q_bh": 0.712890625
+        },
+        "utr3_stability": {
+          "n": 9,
+          "median_serial": 3.02,
+          "median_bmc1": 3.08,
+          "median_delta_bmc1_minus_serial": 0.06000000000000005,
+          "wilcoxon_p": 0.7421875,
+          "cliffs_delta": 0.2716049382716049,
+          "q_bh": 0.8035714285714286
+        },
+        "full_mfe_score": {
+          "n": 9,
+          "median_serial": 158.03,
+          "median_bmc1": 234.07,
+          "median_delta_bmc1_minus_serial": -3.9699999999999704,
+          "wilcoxon_p": 0.5703125,
+          "cliffs_delta": -0.012345679012345678,
+          "q_bh": 0.712890625
+        }
+      }
+    },
+    "e_type2": {
+      "design": "explicit known hotspots x {serial, bmc1} x 3 seeds (Thrombin only; Nucleocapsid = boundary)",
+      "tests": {
+        "egarps_component": {
+          "n": 3,
+          "median_serial": 0.06085275,
+          "median_bmc1": 0.08770191,
+          "median_delta_bmc1_minus_serial": 0.0018213399999999907,
+          "wilcoxon_p": 0.75,
+          "cliffs_delta": 0.3333333333333333,
+          "q_bh": 0.8035714285714286
+        },
+        "rhofold_component": {
+          "n": 3,
+          "median_serial": 0.8581121118012424,
+          "median_bmc1": 0.8258943217665644,
+          "median_delta_bmc1_minus_serial": 0.0,
+          "wilcoxon_p": 1.0,
+          "cliffs_delta": 0.0,
+          "q_bh": 1.0
+        },
+        "iptm_component": {
+          "n": 3,
+          "median_serial": 0.0,
+          "median_bmc1": 0.0,
+          "median_delta_bmc1_minus_serial": 0.0,
+          "wilcoxon_p": NaN,
+          "cliffs_delta": 0.0,
+          "q_bh": NaN
+        }
+      }
+    }
+  },
+  "timing": {
+    "b": {
+      "n": 54,
+      "median_s": 1790.275,
+      "iqr_s": [
+        1712.06,
+        2494.365
+      ]
+    },
+    "c": {
+      "n": 54,
+      "median_s": 1690.365,
+      "iqr_s": [
+        1621.7475,
+        1738.67
+      ]
+    },
+    "d": {
+      "n": 9,
+      "median_s": 941.63,
+      "iqr_s": [
+        901.37,
+        970.14
+      ]
+    },
+    "e_type1": {
+      "n": 18,
+      "median_s": 261.68,
+      "iqr_s": [
+        238.78,
+        294.97749999999996
+      ]
+    },
+    "e_type2": {
+      "n": 6,
+      "median_s": 655.155,
+      "iqr_s": [
+        637.75,
+        987.4475
+      ]
+    }
+  }
+}

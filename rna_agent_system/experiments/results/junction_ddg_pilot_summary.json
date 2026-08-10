@@ -1,0 +1,330 @@
+{
+ "analysis": "junction ddG Phase 0 pilot (metric validity + Route C)",
+ "date": "2026-08-05",
+ "preregistration": "junction_ddg_pilot_eval.py docstring (2026-08-05)",
+ "matrix": {
+  "targets": [
+   "Insulin",
+   "EPO",
+   "Growth_hormone"
+  ],
+  "rep": 0,
+  "lambdas": [
+   0.0,
+   1.0,
+   4.0,
+   10.0
+  ],
+  "shuffle": {
+   "junction_end": "n_terminus",
+   "codon_count": 6,
+   "num_variants": 8,
+   "species": "Homo sapiens",
+   "seed": 20260805
+  }
+ },
+ "probe": {
+  "cell": "Insulin rep0 seed CDS",
+  "full_length": 493,
+  "w1": {
+   "start": 42,
+   "end": 57,
+   "nt": 15
+  },
+  "w2": {
+   "start": 0,
+   "end": 78,
+   "nt": 78
+  },
+  "mfe_unconstrained": -150.55,
+  "mfe_constrained_w1": -143.02,
+  "mfe_constrained_w2": -119.63,
+  "ddg_open_w1": 7.530000000000001,
+  "ddg_open_w2": 30.920000000000016,
+  "w1_pairs_unconstrained": 6,
+  "w2_pairs_unconstrained": 26,
+  "obedient_w1": true,
+  "obedient_w2": true,
+  "ddg_nonneg_w1": true,
+  "ddg_nonneg_w2": true,
+  "pass": true
+ },
+ "gate1_metric_validity": {
+  "constraint_obedience_rate": 1.0,
+  "n_obedience_checks": 216,
+  "ddg_nonneg_rate": 1.0,
+  "n_ddg_checks": 216,
+  "linearfold_vs_vienna_parent_pearson_r": 0.9449077954313464,
+  "n_parents_paired": 12,
+  "go": true
+ },
+ "gate2_route_c": {
+  "thresholds": {
+   "median_improvement_min_kcal_per_mol": 1.0,
+   "median_d_cai_min": -0.02,
+   "median_abs_d_mfe_per_nt_max": 0.01,
+   "targets_pass_min": 2,
+   "primary_window": "W1 (narrow, 15 nt AUG context)"
+  },
+  "per_target": {
+   "EPO": {
+    "cells": [
+     {
+      "lambda": 0.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 12.730000000000018,
+      "best_variant_index": 5,
+      "best_variant_ddg_open_w1": 5.25,
+      "improvement_w1": 7.480000000000018,
+      "best_variant_d_cai": 0.003482464611864189,
+      "best_variant_d_mfe_per_nt": 0.010313837375178325
+     },
+     {
+      "lambda": 4.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 7.319999999999993,
+      "best_variant_index": 3,
+      "best_variant_ddg_open_w1": 3.1299999999999955,
+      "improvement_w1": 4.189999999999998,
+      "best_variant_d_cai": -0.0016659646085116497,
+      "best_variant_d_mfe_per_nt": 0.005977175463623363
+     },
+     {
+      "lambda": 1.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 13.700000000000017,
+      "best_variant_index": 7,
+      "best_variant_ddg_open_w1": 5.590000000000003,
+      "improvement_w1": 8.110000000000014,
+      "best_variant_d_cai": -0.0007728367664864288,
+      "best_variant_d_mfe_per_nt": 0.018031383737517837
+     },
+     {
+      "lambda": 10.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 3.3600000000000136,
+      "best_variant_index": 5,
+      "best_variant_ddg_open_w1": 2.670000000000016,
+      "improvement_w1": 0.6899999999999977,
+      "best_variant_d_cai": -0.004889851411521318,
+      "best_variant_d_mfe_per_nt": 0.0009843081312410906
+     }
+    ],
+    "median_improvement_w1": 5.835000000000008,
+    "median_best_variant_d_cai": -0.0012194006874990393,
+    "median_best_variant_abs_d_mfe_per_nt": 0.008145506419400844,
+    "pass": true
+   },
+   "Growth_hormone": {
+    "cells": [
+     {
+      "lambda": 10.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 6.719999999999999,
+      "best_variant_index": 5,
+      "best_variant_ddg_open_w1": 1.6400000000000006,
+      "improvement_w1": 5.079999999999998,
+      "best_variant_d_cai": -0.00950904867173985,
+      "best_variant_d_mfe_per_nt": 0.008731527093596064
+     },
+     {
+      "lambda": 4.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 2.910000000000025,
+      "best_variant_index": 5,
+      "best_variant_ddg_open_w1": 1.329999999999984,
+      "improvement_w1": 1.580000000000041,
+      "best_variant_d_cai": -0.00900953846483521,
+      "best_variant_d_mfe_per_nt": 0.0008497536945813178
+     },
+     {
+      "lambda": 1.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 16.22,
+      "best_variant_index": 4,
+      "best_variant_ddg_open_w1": 2.0200000000000102,
+      "improvement_w1": 14.199999999999989,
+      "best_variant_d_cai": -0.004615050840866219,
+      "best_variant_d_mfe_per_nt": 0.0187315270935961
+     },
+     {
+      "lambda": 0.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 1.1299999999999955,
+      "best_variant_index": 1,
+      "best_variant_ddg_open_w1": 0.6599999999999966,
+      "improvement_w1": 0.46999999999999886,
+      "best_variant_d_cai": 0.007425350540326003,
+      "best_variant_d_mfe_per_nt": 0.015504926108374395
+     }
+    ],
+    "median_improvement_w1": 3.3300000000000196,
+    "median_best_variant_d_cai": -0.0068122946528507144,
+    "median_best_variant_abs_d_mfe_per_nt": 0.01211822660098523,
+    "pass": false
+   },
+   "Insulin": {
+    "cells": [
+     {
+      "lambda": 4.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 6.939999999999998,
+      "best_variant_index": 0,
+      "best_variant_ddg_open_w1": 2.259999999999991,
+      "improvement_w1": 4.680000000000007,
+      "best_variant_d_cai": 0.0004287451932024622,
+      "best_variant_d_mfe_per_nt": 0.0068154158215009975
+     },
+     {
+      "lambda": 10.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 7.430000000000007,
+      "best_variant_index": 2,
+      "best_variant_ddg_open_w1": 1.0700000000000074,
+      "improvement_w1": 6.359999999999999,
+      "best_variant_d_cai": -0.004517808766306586,
+      "best_variant_d_mfe_per_nt": 0.012961460446247464
+     },
+     {
+      "lambda": 0.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 7.530000000000001,
+      "best_variant_index": 6,
+      "best_variant_ddg_open_w1": 1.539999999999992,
+      "improvement_w1": 5.990000000000009,
+      "best_variant_d_cai": 0.0020633523646256258,
+      "best_variant_d_mfe_per_nt": 0.012008113590263714
+     },
+     {
+      "lambda": 1.0,
+      "n_variants": 8,
+      "parent_ddg_open_w1": 7.539999999999992,
+      "best_variant_index": 2,
+      "best_variant_ddg_open_w1": 1.240000000000009,
+      "improvement_w1": 6.299999999999983,
+      "best_variant_d_cai": 0.010876492376163505,
+      "best_variant_d_mfe_per_nt": 0.01456389452332657
+     }
+    ],
+    "median_improvement_w1": 6.144999999999996,
+    "median_best_variant_d_cai": 0.001246048778914044,
+    "median_best_variant_abs_d_mfe_per_nt": 0.012484787018255589,
+    "pass": false
+   }
+  },
+  "n_targets_pass": 1,
+  "go": false
+ },
+ "lambda_axis_descriptive": {
+  "0": {
+   "parent_ddg_open_w1": [
+    7.530000000000001,
+    12.730000000000018,
+    1.1299999999999955
+   ],
+   "parent_ddg_open_w2": [
+    30.920000000000016,
+    22.79000000000002,
+    41.0
+   ],
+   "parent_mfe_per_nt": [
+    -0.30537525354969575,
+    -0.37139800285306707,
+    -0.30860837438423644
+   ],
+   "parent_cai": [
+    0.7387240316538054,
+    0.7145954860382963,
+    0.7420055838397519
+   ],
+   "median_ddg_open_w1": 7.530000000000001,
+   "median_mfe_per_nt": -0.30860837438423644
+  },
+  "1": {
+   "parent_ddg_open_w1": [
+    7.539999999999992,
+    13.700000000000017,
+    16.22
+   ],
+   "parent_ddg_open_w2": [
+    27.61,
+    33.26000000000002,
+    37.860000000000014
+   ],
+   "parent_mfe_per_nt": [
+    -0.27174442190669373,
+    -0.3598288159771755,
+    -0.27496305418719214
+   ],
+   "parent_cai": [
+    0.8307904939123049,
+    0.8188836422223985,
+    0.8341108667388444
+   ],
+   "median_ddg_open_w1": 13.700000000000017,
+   "median_mfe_per_nt": -0.27496305418719214
+  },
+  "4": {
+   "parent_ddg_open_w1": [
+    6.939999999999998,
+    7.319999999999993,
+    2.910000000000025
+   ],
+   "parent_ddg_open_w2": [
+    10.97999999999999,
+    16.909999999999997,
+    16.30000000000001
+   ],
+   "parent_mfe_per_nt": [
+    -0.20665314401622717,
+    -0.29637660485021394,
+    -0.19502463054187194
+   ],
+   "parent_cai": [
+    0.9664143081695393,
+    0.9379608399109438,
+    0.9606503085095278
+   ],
+   "median_ddg_open_w1": 6.939999999999998,
+   "median_mfe_per_nt": -0.20665314401622717
+  },
+  "10": {
+   "parent_ddg_open_w1": [
+    7.430000000000007,
+    3.3600000000000136,
+    6.719999999999999
+   ],
+   "parent_ddg_open_w2": [
+    10.740000000000009,
+    11.180000000000007,
+    19.900000000000006
+   ],
+   "parent_mfe_per_nt": [
+    -0.19085192697768763,
+    -0.21690442225392298,
+    -0.15195812807881773
+   ],
+   "parent_cai": [
+    0.9871274877874865,
+    0.9874888456927627,
+    0.9903929680133148
+   ],
+   "median_ddg_open_w1": 6.719999999999999,
+   "median_mfe_per_nt": -0.19085192697768763
+  }
+ },
+ "old_vs_new_consistency": {
+  "n_j1_buried": 78,
+  "n_j1_unburied": 30,
+  "median_ddg_open_w1_buried": 4.559999999999981,
+  "median_ddg_open_w1_unburied": 5.700000000000003,
+  "note": "legacy metric = 40-nt fragment fold burial booleans; new metric = full-length constrained ddG. If the new metric is valid, buried candidates should show systematically higher ddG_open."
+ },
+ "decision": "NO-GO",
+ "n_rows": 108,
+ "n_success": 108,
+ "n_parents": 12,
+ "n_variants": 96,
+ "runtime_seconds": 93.8,
+ "mean_cell_seconds": 27.36
+}

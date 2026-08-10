@@ -1,0 +1,469 @@
+{
+  "preregistration": "experiments/run_e4_learning_curve.py docstring (E4 pilot)",
+  "runs": "experiments/results/e4_pilot_runs.jsonl",
+  "matrix": {
+    "targets": [
+      "EPO",
+      "IL-2",
+      "Insulin"
+    ],
+    "arms": [
+      "nomem",
+      "memory"
+    ],
+    "seed_groups": {
+      "A": 0,
+      "B": 1
+    },
+    "n_campaigns": 12
+  },
+  "pass_criteria": {
+    "c1_all_campaigns_completed": {
+      "pass": true,
+      "n_success": 12,
+      "n_acceptable_failure": 0,
+      "n_unexpected_failure": 0,
+      "n_missing": 0,
+      "expected_campaigns": 12
+    },
+    "c2_injection_fires": {
+      "pass": true,
+      "n_memory_campaigns_checked": 4,
+      "n_with_override": 2,
+      "required_min": 2,
+      "detail": [
+        {
+          "task_id": "e4_A_memory_c2_IL-2",
+          "seed_group": "A",
+          "campaign_index": 2,
+          "knobs_fired": [],
+          "injection_fired": false
+        },
+        {
+          "task_id": "e4_A_memory_c3_Insulin",
+          "seed_group": "A",
+          "campaign_index": 3,
+          "knobs_fired": [
+            "design_tool+lambda_value"
+          ],
+          "injection_fired": true
+        },
+        {
+          "task_id": "e4_B_memory_c2_IL-2",
+          "seed_group": "B",
+          "campaign_index": 2,
+          "knobs_fired": [],
+          "injection_fired": false
+        },
+        {
+          "task_id": "e4_B_memory_c3_EPO",
+          "seed_group": "B",
+          "campaign_index": 3,
+          "knobs_fired": [
+            "design_tool+lambda_value"
+          ],
+          "injection_fired": true
+        }
+      ]
+    },
+    "c3_eval_reduction_zero_deviation": {
+      "pass": true,
+      "mismatches": []
+    },
+    "c4_cells_budget_matched": {
+      "pass": true,
+      "n_cells": 6,
+      "n_valid": 6,
+      "n_invalid_unexpected": 0
+    },
+    "c5_resume_idempotent": {
+      "pass": true,
+      "n_duplicate_done_keys": 0,
+      "unit_test": "tests/test_e4_pilot.py::TestResumeDoneKey"
+    },
+    "c6_verdict_fields_complete": {
+      "pass": true,
+      "missing_keys": [],
+      "required_keys": [
+        "preregistration",
+        "runs",
+        "matrix",
+        "pass_criteria",
+        "campaigns",
+        "cells",
+        "descriptive",
+        "full_matrix_endpoints"
+      ]
+    }
+  },
+  "campaigns": [
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 1,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 973.81,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 2,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 847.22,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "long",
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "nomem",
+      "campaign_index": 3,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 784.34,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 1,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 913.6,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 2,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 832.32,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": [
+        "e4_A_memory_c1_EPO"
+      ]
+    },
+    {
+      "seed_group": "A",
+      "arm": "memory",
+      "campaign_index": 3,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 321.62,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 2.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value"
+      ],
+      "similar_campaign_ids": [
+        "e4_A_memory_c2_IL-2",
+        "e4_A_memory_c1_EPO"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 1,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 777.0,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 4.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 2,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 851.06,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "nomem",
+      "campaign_index": 3,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 920.23,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 1,
+      "target_id": "Insulin",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 788.63,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": null,
+      "knobs_fired": [],
+      "similar_campaign_ids": []
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 2,
+      "target_id": "IL-2",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 856.74,
+      "eval_count": 58,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 0.0,
+      "utr_family": "short",
+      "knobs_fired": [],
+      "similar_campaign_ids": [
+        "e4_B_memory_c1_Insulin"
+      ]
+    },
+    {
+      "seed_group": "B",
+      "arm": "memory",
+      "campaign_index": 3,
+      "target_id": "EPO",
+      "status": "success",
+      "error": null,
+      "acceptable_failure": false,
+      "elapsed_seconds": 330.09,
+      "eval_count": 13,
+      "bmc_rounds_executed": 1,
+      "final_lambda": 2.0,
+      "utr_family": null,
+      "knobs_fired": [
+        "design_tool+lambda_value"
+      ],
+      "similar_campaign_ids": [
+        "e4_B_memory_c2_IL-2",
+        "e4_B_memory_c1_Insulin"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "seed_group": "A",
+      "target_id": "EPO",
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.019370880217193364,
+        "nomem": 0.03096813390572038
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "IL-2",
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.06494043708677247,
+        "nomem": 0.08745345268320685
+      }
+    },
+    {
+      "seed_group": "A",
+      "target_id": "Insulin",
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.005255215577190587,
+        "nomem": 0.15543682289929667
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "EPO",
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 13,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 13,
+        "nomem": 13
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 13,
+      "best_asf_after_truncation": {
+        "memory": 0.2395175576748569,
+        "nomem": 0.053252478333919794
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "IL-2",
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.06672573158730247,
+        "nomem": 0.036894704881742686
+      }
+    },
+    {
+      "seed_group": "B",
+      "target_id": "Insulin",
+      "valid": true,
+      "invalid_reason": null,
+      "eval_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "truncated_counts": {
+        "memory": 58,
+        "nomem": 58
+      },
+      "counts_equal_after_truncation": true,
+      "budget": 58,
+      "best_asf_after_truncation": {
+        "memory": 0.06816575997167175,
+        "nomem": 0.015714626887340256
+      }
+    }
+  ],
+  "descriptive": {
+    "per_campaign_eval_counts": {
+      "A/nomem/c1": 58,
+      "A/nomem/c2": 58,
+      "A/nomem/c3": 58,
+      "A/memory/c1": 58,
+      "A/memory/c2": 58,
+      "A/memory/c3": 13,
+      "B/nomem/c1": 58,
+      "B/nomem/c2": 58,
+      "B/nomem/c3": 58,
+      "B/memory/c1": 58,
+      "B/memory/c2": 58,
+      "B/memory/c3": 13
+    },
+    "final_lambda_by_campaign": {
+      "A/nomem/c1": 0.0,
+      "A/nomem/c2": 0.0,
+      "A/nomem/c3": 0.0,
+      "A/memory/c1": 0.0,
+      "A/memory/c2": 0.0,
+      "A/memory/c3": 2.0,
+      "B/nomem/c1": 4.0,
+      "B/nomem/c2": 0.0,
+      "B/nomem/c3": 0.0,
+      "B/memory/c1": 0.0,
+      "B/memory/c2": 0.0,
+      "B/memory/c3": 2.0
+    },
+    "wall_clock_seconds_total": 9196.66,
+    "wall_clock_seconds_by_arm": {
+      "nomem": 5153.66,
+      "memory": 4043.0
+    }
+  },
+  "full_matrix_endpoints": {
+    "regression_slope": "declared, not implemented (pilot)",
+    "wilcoxon_quality": "declared, not implemented (pilot)"
+  },
+  "overall_pass": true
+}

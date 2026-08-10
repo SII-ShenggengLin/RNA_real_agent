@@ -1,0 +1,122 @@
+{
+  "pilot": "P0_budget_matched_control",
+  "date": "2026-08-03",
+  "metric": "egarps_component best-of-pool",
+  "comparison": "bmc_x1 vs serial_ext16 (budget-matched, 16 generated each)",
+  "n_cells": 12,
+  "missing_cells": [],
+  "cells": [
+    {
+      "target_id": "BSA",
+      "seed_idx": 0,
+      "bmc_x1_egarps_best": 0.032077987,
+      "serial_ext16_egarps_best": 0.014378348,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "BSA",
+      "seed_idx": 1,
+      "bmc_x1_egarps_best": 0.49310213,
+      "serial_ext16_egarps_best": 0.22421893,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "BSA",
+      "seed_idx": 2,
+      "bmc_x1_egarps_best": 1.0,
+      "serial_ext16_egarps_best": 0.2582144,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "Lysozyme",
+      "seed_idx": 0,
+      "bmc_x1_egarps_best": 0.6077134,
+      "serial_ext16_egarps_best": 0.8823486,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "Lysozyme",
+      "seed_idx": 1,
+      "bmc_x1_egarps_best": 0.6406947,
+      "serial_ext16_egarps_best": 0.16778699,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "Lysozyme",
+      "seed_idx": 2,
+      "bmc_x1_egarps_best": 0.5455771,
+      "serial_ext16_egarps_best": 0.68848103,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "Thrombin",
+      "seed_idx": 0,
+      "bmc_x1_egarps_best": 0.88464487,
+      "serial_ext16_egarps_best": 0.87780476,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "Thrombin",
+      "seed_idx": 1,
+      "bmc_x1_egarps_best": 0.9789534,
+      "serial_ext16_egarps_best": 0.96713245,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "Thrombin",
+      "seed_idx": 2,
+      "bmc_x1_egarps_best": 0.8908627,
+      "serial_ext16_egarps_best": 0.989754,
+      "bmc_x1_pool": 8,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "VEGF",
+      "seed_idx": 0,
+      "bmc_x1_egarps_best": 0.9340972,
+      "serial_ext16_egarps_best": 0.1152709,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "VEGF",
+      "seed_idx": 1,
+      "bmc_x1_egarps_best": 0.13138552,
+      "serial_ext16_egarps_best": 0.11696569,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    },
+    {
+      "target_id": "VEGF",
+      "seed_idx": 2,
+      "bmc_x1_egarps_best": 0.5685071,
+      "serial_ext16_egarps_best": 0.22512238,
+      "bmc_x1_pool": 16,
+      "serial_ext16_pool": 16
+    }
+  ],
+  "cliffs_delta": 0.2777777777777778,
+  "go_threshold": 0.3,
+  "wilcoxon_paired_p": 0.12939453125,
+  "bmc_x1_median_iqr": [
+    0.6242040499999999,
+    0.5324583575,
+    0.901671325
+  ],
+  "serial_ext16_median_iqr": [
+    0.24166839,
+    0.155081665,
+    0.87894072
+  ],
+  "bmc_x1_wins": 9,
+  "verdict": "NO-GO",
+  "verdict_meaning": "NO-GO: budget explains the Fig-4 Type-II main effect; pivot to adaptive budget allocation (P3)"
+}

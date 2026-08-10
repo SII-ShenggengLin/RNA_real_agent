@@ -1,6 +1,6 @@
 # Reference Genomes & Transcriptomes
 
-> **Last updated**: 2026-06-01
+> **Last updated**: 2026-07-04
 
 Pre-installed reference sequences for off-target screening in siRNA / ASO / CRISPR workflows.
 
@@ -35,6 +35,7 @@ python download_references.py --species homo_sapiens mus_musculus
 
 > **Note**: Only `homo_sapiens` and `sars_cov_2` are downloaded by default.
 > Add `--species mus_musculus danio_rerio rattus_norvegicus` to download others.
+> The canonical species IDs and display names are maintained in `agent_core/constants/species.py` (`REFERENCE_SPECIES_IDS`, `REFERENCE_SPECIES_DISPLAY_NAMES`).
 
 ---
 

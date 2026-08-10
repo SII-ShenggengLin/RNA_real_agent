@@ -4,7 +4,7 @@
   "category": "edge",
   "description": "ASO screening with RNAcofold binding evaluation (18mer, step=1, top=5, RNAcofold)",
   "input": {
-    "target_mrna_filepath": "workspace/test_mrna.fa",
+    "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",
     "aso_length": 18,
     "window_step": 1,
     "top_n_windows": 5,

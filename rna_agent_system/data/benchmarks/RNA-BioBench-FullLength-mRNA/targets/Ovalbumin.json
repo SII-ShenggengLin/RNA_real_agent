@@ -4,12 +4,12 @@
   "target_type": "vaccine",
   "source_database": "UniProt",
   "accession": "P01012",
-  "species_for_codon_optimization": "Gallus gallus",
+  "species_for_codon_optimization": "Homo sapiens",
   "expression_system": "HEK293",
   "paper_references": [
     "doi:10.1016/0022-1759(86)90134-0"
   ],
-  "notes": "Chicken egg allergen; model vaccine antigen",
+  "notes": "Chicken egg allergen; model vaccine antigen [2026-07-17 fix: cai_species 'Gallus gallus' (no codon table) -> 'Homo sapiens' to match expression host]",
   "protein_sequence": "MGSIGAASMEFCFDVFKELKVHHANENIFYCPIAIMSALAMVYLGAKDSTRTQINKVVRFDKLPGFGDSIEAQCGTSVNVHSSLRDILNQITKPNDVYSFSLASRLYAEERYPILPEYLQCVKELYRGGLEPINFQTAADQARELINSWVESQTNGIIRNVLQPSSVDSQTAMVLVNAIVFKGLWEKAFKDEDTQAMPFRVTEQESKPVQMMYQIGLFRVASMASEKMKILELPFASGTMSMLVLLPDEVSGLEQLESIINFEKLTEWTSSNVMEERKIKVYLPRMKMEEKYNLTSVLMAMGITDVFSSSANLSGISSAESLKISQAVHAAHAEINEAGREVVGSAEAGVDAASVSEEFRADHPFLFCIKHIATNAVLFFGRCVSP",
   "protein_length_aa": 386,
   "sequence_checksum": "155582545DB562557E3E590BBA46A730",

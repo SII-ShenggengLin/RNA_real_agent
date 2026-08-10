@@ -1,0 +1,7 @@
+{"event_type": "gate_decision", "payload": {"action_id": "e6_select", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T20:41:25.688517+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "select", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T20:41:25.690610+00:00"}
+{"event_type": "gate_decision", "payload": {"action_id": "e6_repair", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T20:42:13.232864+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "repair", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T20:42:13.233144+00:00"}
+{"event_type": "repair_round", "payload": {"profile": "expression", "drop": "ld2_mx_35907_u5m_u3l", "add": "ld1_fl_59854_u5m_u3l"}, "timestamp": "2026-08-09T20:42:13.233367+00:00"}
+{"event_type": "gate_decision", "payload": {"action_id": "e6_finalize", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T20:43:04.449547+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "finalize", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-09T20:43:04.449833+00:00"}

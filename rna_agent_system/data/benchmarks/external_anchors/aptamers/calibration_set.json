@@ -1,0 +1,277 @@
+{
+  "description": "Known-aptamer affinity calibration set for the EGARPS scoring chain (pilot P2). Primary analysis: within-target Spearman(native_probability, -log Kd) on role=binder entries with kd_nm; secondary: binder vs negative AUROC per target.",
+  "curated": "2026-08-03",
+  "convention": "DNA aptamers scored as RNA via T->U (same convention as known_aptamers.json/TBA).",
+  "n_entries": 15,
+  "entries": [
+    {
+      "id": "hd22_thrombin",
+      "name": "HD22 (HTDQ), exosite II DNA aptamer",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "AGTCCGTGGTAGGGCAGGTTGGGGTGACT",
+      "alphabet": "dna",
+      "length_nt": 29,
+      "kd_nm": 0.5,
+      "kd_method": "nitrocellulose filter binding (Tasset 1997); SPR re-measurement 0.3 nM (Kretz 2015)",
+      "role": "binder",
+      "reference": "Tasset DM, Kubik MF, Steiner W. J Mol Biol 1997, 272:688-698. doi:10.1006/jmbi.1997.1275; Kretz CA et al. JBC 2015",
+      "sequence_verification": "AGGGC variant consistent with RCSB 4I7Y chain D (27-mer truncate, fetched 2026-08-03); full 29-mer = truncate + 5'-A + 3'-T"
+    },
+    {
+      "id": "hd22_t27_thrombin",
+      "name": "HD22[27] truncate",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "GTCCGTGGTAGGGCAGGTTGGGGTGAC",
+      "alphabet": "dna",
+      "length_nt": 27,
+      "kd_nm": 0.7,
+      "kd_method": "SPR (Kretz 2015)",
+      "role": "binder",
+      "reference": "Kretz CA et al. JBC 2015; co-crystal PDB 4I7Y (Russo Krauss et al.)",
+      "sequence_verification": "exact match to RCSB 4I7Y chain D fetched 2026-08-03"
+    },
+    {
+      "id": "toggle25t_thrombin",
+      "name": "Toggle-25t (2'-F RNA), exosite II",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "GGGAACAAAGCUGAAGUACUUACCC",
+      "alphabet": "rna",
+      "length_nt": 25,
+      "kd_nm": 0.54,
+      "kd_method": "double-filter nitrocellulose filter binding, vs human thrombin (White 2001)",
+      "role": "binder",
+      "reference": "White R et al. Mol Ther 2001, 4:567-573. doi:10.1006/mthe.2001.0500",
+      "sequence_verification": "exact match to first 25 nt of RCSB 3DD2 chain B (26-mer incl. 3'-dT) fetched 2026-08-03"
+    },
+    {
+      "id": "tba_thrombin",
+      "name": "TBA / HD1 (15-mer), exosite I",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "GGTTGGTGTGGTTGG",
+      "alphabet": "dna",
+      "length_nt": 15,
+      "kd_nm": 25.0,
+      "kd_method": "filter binding (Bock 1992 / Paborsky 1993, pmid:8318863)",
+      "role": "binder",
+      "reference": "pmid:8318863 (value as curated in known_aptamers.json)",
+      "sequence_verification": "identical to known_aptamers.json entry"
+    },
+    {
+      "id": "nu172_thrombin",
+      "name": "NU172 (ARC2172), exosite I, Phase II",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "CGCCTAGGTTGGGTAGGGTGGTGGCG",
+      "alphabet": "dna",
+      "length_nt": 26,
+      "kd_nm": null,
+      "kd_method": "no primary-literature Kd (Archemix internal); functional IC50 5-10 ug/mL ecarin clotting (secondary: Keefe 2010 NRDD)",
+      "role": "binder_no_kd",
+      "reference": "Keefe AD, Pai S, Ellington A. Nat Rev Drug Discov 2010, 9:537-550 (secondary)",
+      "sequence_verification": "multi-source consistent 26-mer (HAL theses/IJMS review); AUROC use only"
+    },
+    {
+      "id": "pegaptanib_vegf",
+      "name": "pegaptanib (Macugen, NX1838), unmodified base sequence",
+      "target": "VEGF",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1VPF",
+        "chain": "A"
+      },
+      "sequence": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+      "alphabet": "rna",
+      "length_nt": 27,
+      "kd_nm": 0.049,
+      "kd_method": "Tucker 1999 rhesus plasma assay; FDA review estimate ~0.2 nM; Lee 2005 PNAS ~0.05 nM",
+      "role": "binder",
+      "reference": "identical to pegaptanib.json anchor (Tucker 1999; Ruckman 1998 JBC 273:20556)",
+      "sequence_verification": "identical to pegaptanib.json anchor"
+    },
+    {
+      "id": "pdgf36t_pdgfbb",
+      "name": "PDGF-B aptamer '36t' (40-mer + 3'-idT in literature)",
+      "target": "PDGF-BB",
+      "protein": {
+        "type": "uniprot_fasta",
+        "uniprot": "P01127",
+        "range": "82-190",
+        "fasta": "proteins/pdgfbb.fa"
+      },
+      "sequence": "CACAGGCTACGGCACGTAGAGCATCACCATGATCCTGTGT",
+      "alphabet": "dna",
+      "length_nt": 40,
+      "kd_nm": 0.094,
+      "kd_method": "filter binding (Green 1996)",
+      "role": "binder",
+      "reference": "Green LS et al. Biochemistry 1996, 35:14413-14424",
+      "sequence_verification": "Aptagen entry verbatim (40 nt); 3'-idT cap excluded"
+    },
+    {
+      "id": "pdgf41t_pdgfbb",
+      "name": "PDGF-B aptamer '41t' (45-mer, second clone family)",
+      "target": "PDGF-BB",
+      "protein": {
+        "type": "uniprot_fasta",
+        "uniprot": "P01127",
+        "range": "82-190",
+        "fasta": "proteins/pdgfbb.fa"
+      },
+      "sequence": "TACTCAGGGCACTGCAAGCAATTGTGGTCCCAATGGGCTGAGTAT",
+      "alphabet": "dna",
+      "length_nt": 45,
+      "kd_nm": 0.1,
+      "kd_method": "filter binding, same order of magnitude as 36t (Green 1996, via thesis citation — MEDIUM confidence)",
+      "role": "binder",
+      "confidence": "medium",
+      "reference": "Green LS et al. Biochemistry 1996, 35:14413-14424 (cited via Auburn thesis)",
+      "sequence_verification": "45 nt; secondary-source transcription — flagged medium confidence"
+    },
+    {
+      "id": "d17_4_ige",
+      "name": "D17.4 (anti-IgE, inhibits IgE-Fc-epsilon-RI)",
+      "target": "IgE",
+      "protein": {
+        "type": "uniprot_fasta",
+        "uniprot": "P01854",
+        "range": "full",
+        "fasta": "proteins/ige_fc.fa"
+      },
+      "sequence": "GGGGCACGTTTATCCGTCCCTCCTAGTGGCGTGCCCC",
+      "alphabet": "dna",
+      "length_nt": 37,
+      "kd_nm": 10.0,
+      "kd_method": "filter binding, PBS + 1 mM MgCl2 pH 7.4 (Wiegand 1996)",
+      "role": "binder",
+      "reference": "Wiegand TW et al. J Immunol 1996, 157:221-230",
+      "sequence_verification": "37-mer verbatim per Poongavanam 2016 BBA"
+    },
+    {
+      "id": "sarsn_aptamer",
+      "name": "SARS-CoV-2 N RNA aptamer",
+      "target": "SARS-CoV-2_Nucleocapsid",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "6M3M",
+        "chain": "A"
+      },
+      "sequence": "AGGGGAGUGGAGGUUGGUUU",
+      "alphabet": "rna",
+      "length_nt": 20,
+      "kd_nm": 15.2,
+      "kd_method": "as curated in known_aptamers.json (doi:10.1101/2020.04.17.046920)",
+      "role": "binder",
+      "reference": "identical to known_aptamers.json entry",
+      "sequence_verification": "identical to known_aptamers.json entry"
+    },
+    {
+      "id": "scrambled_tba",
+      "name": "scrambled TBA (fixed seed 0) — disrupts G-tracts",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "GGGGTTTGTGGGTTG",
+      "alphabet": "dna",
+      "length_nt": 15,
+      "kd_nm": null,
+      "kd_assigned_nm_for_sensitivity": 10000,
+      "kd_method": "literature: no detectable binding by SPR at uM detection limit (Bock 1992; HAL hal-01682623)",
+      "role": "negative",
+      "reference": "Bock LC et al. Nature 1992, 355:564-566; hal-01682623 (qualitative)"
+    },
+    {
+      "id": "random30_a",
+      "name": "random 30-mer (fixed seed 1)",
+      "target": "Thrombin",
+      "protein": {
+        "type": "benchmark_pdb",
+        "pdb_id": "1HAO",
+        "chain": "H"
+      },
+      "sequence": "CAGATTTTCATATTATGCAGAAAATCTACT",
+      "alphabet": "dna",
+      "length_nt": 30,
+      "kd_nm": null,
+      "kd_assigned_nm_for_sensitivity": 10000,
+      "role": "negative"
+    },
+    {
+      "id": "random30_b",
+      "name": "random 30-mer (fixed seed 2)",
+      "target": "PDGF-BB",
+      "protein": {
+        "type": "uniprot_fasta",
+        "uniprot": "P01127",
+        "range": "82-190",
+        "fasta": "proteins/pdgfbb.fa"
+      },
+      "sequence": "AAAGCGGCACTTGTGAAGTGTTCCCCACGC",
+      "alphabet": "dna",
+      "length_nt": 30,
+      "kd_nm": null,
+      "kd_assigned_nm_for_sensitivity": 10000,
+      "role": "negative"
+    },
+    {
+      "id": "random45_a",
+      "name": "random 45-mer (fixed seed 3, length-matched to pdgf41t)",
+      "target": "PDGF-BB",
+      "protein": {
+        "type": "uniprot_fasta",
+        "uniprot": "P01127",
+        "range": "82-190",
+        "fasta": "proteins/pdgfbb.fa"
+      },
+      "sequence": "CCGTAATGCCTTTCCCTAACAGAGTTTTTCGAACTCGTGTTGTCG",
+      "alphabet": "dna",
+      "length_nt": 45,
+      "kd_nm": null,
+      "kd_assigned_nm_for_sensitivity": 10000,
+      "role": "negative"
+    },
+    {
+      "id": "random37_a",
+      "name": "random 37-mer (fixed seed 4, length-matched to D17.4)",
+      "target": "IgE",
+      "protein": {
+        "type": "uniprot_fasta",
+        "uniprot": "P01854",
+        "range": "full",
+        "fasta": "proteins/ige_fc.fa"
+      },
+      "sequence": "CGATTCAAATGACGGCAGCAGGCCGGGAGTCCCTGAG",
+      "alphabet": "dna",
+      "length_nt": 37,
+      "kd_nm": null,
+      "kd_assigned_nm_for_sensitivity": 10000,
+      "role": "negative"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+[
+  {
+    "pair_id": "theo_aptamer_theophylline",
+    "rna_name": "theophylline aptamer (PDB 1O15)",
+    "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+    "smiles": "CN1C=NC2=C1C(=O)NC(=O)N2C",
+    "molecule_name": "theophylline",
+    "expected": "binder",
+    "reference": "Jenison et al. 1994 Science 263:1425; Kd ~0.32 uM; sequence from PDB 1O15"
+  },
+  {
+    "pair_id": "theo_aptamer_caffeine",
+    "rna_name": "theophylline aptamer (PDB 1O15)",
+    "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+    "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "molecule_name": "caffeine",
+    "expected": "non_binder",
+    "reference": "Jenison et al. 1994: ~10,000-fold discrimination vs caffeine (N7-methyl)"
+  },
+  {
+    "pair_id": "tar_neomycin",
+    "rna_name": "HIV-1 TAR RNA (PDB 1ANR)",
+    "rna_sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+    "smiles": "C1C(C(C(C(C1N)OC2C(C(C(C(O2)CN)O)O)N)OC3C(C(C(O3)CO)OC4C(C(C(C(O4)CN)O)O)N)O)O)N",
+    "molecule_name": "neomycin B",
+    "expected": "binder",
+    "reference": "Gallego & Varani 2001 Acc Chem Res 34:836; sequence from PDB 1ANR"
+  },
+  {
+    "pair_id": "tar_paromomycin",
+    "rna_name": "HIV-1 TAR RNA (PDB 1ANR)",
+    "rna_sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+    "smiles": "OC[C@H]1O[C@H]([C@@H]([C@@H]1O[C@H]1O[C@@H](CN)[C@H]([C@@H]([C@H]1N)O)O)O)O[C@@H]1[C@@H](O)[C@H](N)C[C@@H]([C@H]1O[C@H]1O[C@H](CO)[C@H]([C@@H]([C@H]1N)O)O)N",
+    "molecule_name": "paromomycin",
+    "expected": "binder",
+    "reference": "aminoglycoside-TAR binding, same family as neomycin B"
+  },
+  {
+    "pair_id": "tar_theophylline",
+    "rna_name": "HIV-1 TAR RNA (PDB 1ANR)",
+    "rna_sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+    "smiles": "CN1C=NC2=C1C(=O)NC(=O)N2C",
+    "molecule_name": "theophylline",
+    "expected": "non_binder",
+    "reference": "negative control: no reported TAR binding (non-aminoglycoside)"
+  },
+  {
+    "pair_id": "grna_aptamer_guanine",
+    "rna_name": "guanine riboswitch aptamer, xpt-pbuX (PDB 1Y27)",
+    "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+    "smiles": "Nc1nc2[nH]cnc2c1=O",
+    "molecule_name": "guanine",
+    "expected": "binder",
+    "reference": "Batey et al. 2004 Nature 432:411; Kd ~5 nM; sequence from PDB 1Y27"
+  },
+  {
+    "pair_id": "grna_aptamer_adenine",
+    "rna_name": "guanine riboswitch aptamer, xpt-pbuX (PDB 1Y27)",
+    "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+    "smiles": "Nc1ncnc2[nH]cnc12",
+    "molecule_name": "adenine",
+    "expected": "non_binder",
+    "reference": "Batey et al. 2004: >100-fold discrimination vs adenine"
+  },
+  {
+    "pair_id": "grna_aptamer_caffeine",
+    "rna_name": "guanine riboswitch aptamer, xpt-pbuX (PDB 1Y27)",
+    "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+    "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "molecule_name": "caffeine",
+    "expected": "non_binder",
+    "reference": "negative control: unrelated xanthine, no reported binding"
+  },
+  {
+    "pair_id": "theo_aspirin",
+    "rna_name": "theophylline aptamer (PDB 1O15)",
+    "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+    "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+    "molecule_name": "aspirin",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "theo_benzoic_acid",
+    "rna_name": "theophylline aptamer (PDB 1O15)",
+    "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+    "smiles": "c1ccc(cc1)C(=O)O",
+    "molecule_name": "benzoic acid",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "theo_ethanol",
+    "rna_name": "theophylline aptamer (PDB 1O15)",
+    "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+    "smiles": "CCO",
+    "molecule_name": "ethanol",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "tar_aspirin",
+    "rna_name": "HIV-1 TAR RNA (PDB 1ANR)",
+    "rna_sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+    "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+    "molecule_name": "aspirin",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "tar_benzoic_acid",
+    "rna_name": "HIV-1 TAR RNA (PDB 1ANR)",
+    "rna_sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+    "smiles": "c1ccc(cc1)C(=O)O",
+    "molecule_name": "benzoic acid",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "tar_ethanol",
+    "rna_name": "HIV-1 TAR RNA (PDB 1ANR)",
+    "rna_sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+    "smiles": "CCO",
+    "molecule_name": "ethanol",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "grna_aspirin",
+    "rna_name": "guanine riboswitch aptamer, xpt-pbuX (PDB 1Y27)",
+    "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+    "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+    "molecule_name": "aspirin",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "grna_benzoic_acid",
+    "rna_name": "guanine riboswitch aptamer, xpt-pbuX (PDB 1Y27)",
+    "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+    "smiles": "c1ccc(cc1)C(=O)O",
+    "molecule_name": "benzoic acid",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  },
+  {
+    "pair_id": "grna_ethanol",
+    "rna_name": "guanine riboswitch aptamer, xpt-pbuX (PDB 1Y27)",
+    "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+    "smiles": "CCO",
+    "molecule_name": "ethanol",
+    "expected": "non_binder",
+    "reference": "random-chemistry negative control: no reported binding to this RNA",
+    "negative_class": "random_chemistry"
+  }
+]

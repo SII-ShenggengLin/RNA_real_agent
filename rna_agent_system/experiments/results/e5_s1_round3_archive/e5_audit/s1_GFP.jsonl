@@ -1,0 +1,2 @@
+{"event_type": "gate_decision", "payload": {"action_id": "e5_finalize", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T09:01:26.327477+00:00"}
+{"event_type": "gate_decision", "payload": {"action": "finalize", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T09:01:26.328223+00:00"}

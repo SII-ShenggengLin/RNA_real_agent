@@ -1,30 +1,24 @@
-# RNA-BioBench: Benchmark Datasets for RosalindAgent
+# RNA-BioBench: Benchmark Datasets for RNADesignAgent
 
-> **Last updated**: 2026-06-01
+> **Last updated**: 2026-07-17
 
-This directory contains all benchmark datasets used in the RosalindAgent paper experiments.
+This directory contains all benchmark datasets used in the RNADesignAgent paper experiments.
+For the experiment plan that consumes these datasets, see [`../../docs/MANUSCRIPT.md`](../../docs/MANUSCRIPT.md).
 
 ## Datasets Overview
 
 | Dataset | Purpose | Size | Paper Section |
 |---------|---------|------|---------------|
-| `RNA-BioBench-FullLength-mRNA` | Type-I BMC core experiments (full-length mRNA design) | **20 targets** | §3.2 |
-| `RNA-BioBench-Aptamer` | Type-II BMC core experiments (RNA aptamer design) | **20 targets** | §3.3 |
-| `RNA-BioBench-Platform` | Platform coverage validation across 11 workflows | **120 tasks** | §3.1 |
-| `RNA-BioBench-ProcessAware` | Cross-LLM process-metric behavior analysis | 12 tasks × 6 LLMs | §3.4 |
+| `RNA-BioBench-FullLength-mRNA` | Type-I BMC core experiments (full-length mRNA design) | **20 targets** | Fig 3 |
+| `RNA-BioBench-Aptamer` | Type-II BMC core experiments (RNA aptamer design) | **20 targets** (2 with known aptamers: Thrombin/TBA, SARS-CoV-2 N) | Fig 4 |
+| `RNA-BioBench-Platform` | Biological output quality across 11 workflows | **210 tasks** | Fig 2 |
+| `RNA-BioBench-ProcessAware` | Cross-LLM process-metric behavior analysis | **26 tasks** (PA_001–PA_026) × 6 LLM backends | Fig 6 |
 
 ## Directory Structure
 
 ```
 benchmarks/
 ├── README.md                              # This file
-├── download_benchmark_data.py             # Script to download real sequences/structures
-├── build_platform_benchmark.py            # Script to generate Platform tasks
-├── build_process_aware_benchmark.py       # Script to generate ProcessAware task set
-├── expand_datasets.py                     # Script to expand datasets to required sizes
-├── expand_platform.py                     # Script to expand Platform to 120 tasks
-├── rna_biobench_loader.py                 # Unified Python API for loading all datasets
-│
 ├── RNA-BioBench-FullLength-mRNA/
 │   ├── dataset_manifest.json
 │   ├── targets/                           # 20 JSON files
@@ -76,22 +70,22 @@ benchmarks/
 │   └── structures/                         # 20 PDB files
 │
 ├── RNA-BioBench-Platform/
-│   ├── benchmark_manifest.json
+│   ├── dataset_manifest.json
 │   └── tasks/
-│       ├── 01_mrna_cds_design/            # 15 tasks
-│       ├── 02_full_length_mrna_design/    # 15 tasks
-│       ├── 03_mrna_sequence_scoring/      # 10 tasks
-│       ├── 04_sirna_design/               # 10 tasks
-│       ├── 05_sgrna_design/               # 10 tasks
-│       ├── 06_rna_secondary_structure/    # 10 tasks
-│       ├── 07_rna_tertiary_structure/     # 10 tasks
-│       ├── 08_rna_aptamer_design/         # 20 tasks
-│       ├── 09_rna_small_molecule/         # 10 tasks
+│       ├── 01_mrna_cds_design/            # 19 tasks
+│       ├── 02_full_length_mrna_design/    # 22 tasks
+│       ├── 03_mrna_sequence_scoring/      # 13 tasks
+│       ├── 04_sirna_design/               # 22 tasks
+│       ├── 05_sgrna_design/               # 30 tasks
+│       ├── 06_rna_secondary_structure/    # 25 tasks
+│       ├── 07_rna_tertiary_structure/     # 20 tasks
+│       ├── 08_rna_aptamer_design/         # 18 tasks
+│       ├── 09_rna_small_molecule/         # 15 tasks
 │       ├── 10_aso_target_screening/       # 14 tasks
-│       └── 11_ires_prediction/            # 10 tasks
+│       └── 11_ires_prediction/            # 12 tasks
 │
 └── RNA-BioBench-ProcessAware/
-    └── task_set_for_llm_comparison.json   # 12 tasks + 6 LLM configs
+    └── task_set_for_llm_comparison.json   # 26 tasks + 6 LLM configs
 ```
 
 ## Data Sources
@@ -141,42 +135,6 @@ All protein structures are downloaded from **RCSB PDB** (https://www.rcsb.org) v
 | Pepsin | P00791 | 5PEP | — |
 | Papain | P00784 | 9PAP | — |
 
-## Python API
-
-```python
-from data.benchmarks.rna_biobench_loader import (
-    load_full_length_mrna_targets,
-    load_aptamer_targets,
-    load_platform_tasks,
-    load_process_aware_task_set,
-    validate_all_datasets,
-)
-
-# Load all 20 full-length mRNA targets
-targets = load_full_length_mrna_targets()
-for t in targets:
-    print(t.target_id, t.protein_length_aa, t.sequence_fasta_path)
-
-# Load all 20 aptamer targets
-aptamers = load_aptamer_targets()
-for a in aptamers:
-    print(a.target_id, a.pdb_id, a.structure_pdb_path)
-
-# Load platform tasks (with optional filters)
-tasks = load_platform_tasks(workflow="mrna_cds_design", category="full")
-for task in tasks:
-    print(task.task_id, task.expected_tool_chain)
-
-# Load process-aware task set
-pa = load_process_aware_task_set()
-print(f"Tasks: {len(pa['tasks'])}, LLMs: {len(pa['llm_backends'])}")
-
-# Validate all datasets
-errors = validate_all_datasets()
-for name, msgs in errors.items():
-    print(f"{name}: {'OK' if not msgs else ', '.join(msgs)}")
-```
-
 ## Schema Versioning
 
 Each dataset includes a `schema_version` field in its manifest. Current versions:
@@ -185,16 +143,16 @@ Each dataset includes a `schema_version` field in its manifest. Current versions
 |---------|---------------|
 | RNA-BioBench-FullLength-mRNA | 1.1.0 |
 | RNA-BioBench-Aptamer | 1.1.0 |
-| RNA-BioBench-Platform | 1.1.0 |
-| RNA-BioBench-ProcessAware | 1.0.0 |
+| RNA-BioBench-Platform | 2.0.0 |
+| RNA-BioBench-ProcessAware | 1.20.0 |
 
 ## Citation
 
-If you use these datasets, please cite the RosalindAgent paper (in preparation):
+If you use these datasets, please cite the RNADesignAgent paper (in preparation):
 
-> RosalindAgent: A Tool-First Agent Platform for RNA Molecular Design with Bounded Multi-Module Coordination
+> RNADesignAgent: a tool-first agent platform for RNA design with bounded multi-module coordination
 
 ## License
 
-The benchmark datasets are released under the same license as the RosalindAgent project.
+The benchmark datasets are released under the same license as the RNADesignAgent project.
 Protein sequences are from UniProt (CC BY 4.0) and PDB structures are from RCSB PDB.

@@ -1,0 +1,1333 @@
+{
+ "description": "E1 oracle capability-profiling anchor set v2 (extension, 6 Part-A targets + 5 docking anchors). Pilot entries carried over verbatim; new targets IL-17A / Angiopoietin-2 / SARS-CoV-2 N. Adds ranking_eligible flags, docking anchor target fields, and registered rejected candidates.",
+ "curated": "2026-08-04",
+ "convention": "DNA aptamers scored as RNA via T->U (same convention as known_aptamers.json/TBA).",
+ "preregistration": "run_e1_capability_profiling.py docstring, E1 EXTENSION PRE-REGISTRATION (2026-08-04)",
+ "extends": "e1_anchor_set.json (pilot, carried over verbatim)",
+ "rejected_candidates": {
+  "SARS-CoV-2 spike RBD": "only 2 single-sequence kd-binders (PB6, PB6a); di/trimer are multivalent scaffold constructs (avidity confound)",
+  "HIV-1 RT (Part A)": "only 1 sequence-verified binder (T1.1 via 1HVU SEQRES + Kensch 2000); 12.01/12.01-S/M302/RT1t49 sequences figure-only. Docking-only (1HVU)",
+  "Factor IXa (Part A)": "single aptamer family (9.3 lineage); 9.3/9.3t sequences figure-only. Docking-only (8EPK)",
+  "Tenascin-C": "Hicke 2001 clone sequences + Kd all figure-only (Fig 5/10)",
+  "EGFR": "E03/E04/E07 individual Kd figure-only (text range 2-3 nM); only CL4sc literature negative",
+  "Ang2 Seq2_12_35": "Table 2 printout layout cannot be reconciled with Seq2 at constant length",
+  "Ang2 11-1 (full)": "variable region identical to the 11-1.41 truncate (Seq1) — not double-counted"
+ },
+ "n_entries": 66,
+ "docking_anchors": [
+  {
+   "aptamer_entry": "tba_thrombin",
+   "pdb_id": "4DII",
+   "aptamer_chain": "D",
+   "protein_chains": [
+    "H",
+    "L"
+   ],
+   "method": "X-ray 2.05 A (K+)",
+   "reference": "Russo Krauss et al. NAR 2012 gks512",
+   "notes": "PDB sequence == literature TBA15 exactly; preferred over 1HUT (2.9 A, high clashscore)",
+   "target": "Thrombin"
+  },
+  {
+   "aptamer_entry": "hd22_t27_thrombin",
+   "pdb_id": "4I7Y",
+   "aptamer_chain": "D",
+   "protein_chains": [
+    "H",
+    "L"
+   ],
+   "method": "X-ray 2.40 A",
+   "reference": "Russo Krauss et al. Acta Cryst D 2013, doi:10.1107/S0907444913022269",
+   "notes": "HD22-27mer truncate (29mer minus 5'-A/3'-T); exosite II; thrombin gamma-autolysis loop 146A-146H + res 247 missing — exclude from pose RMSD",
+   "target": "Thrombin"
+  },
+  {
+   "aptamer_entry": "toggle25t_thrombin",
+   "pdb_id": "3DD2",
+   "aptamer_chain": "B",
+   "protein_chains": [
+    "H",
+    "L"
+   ],
+   "method": "X-ray 1.90 A",
+   "reference": "Long, Long, White, Sullenger. RNA 2008, PMID 18971322",
+   "notes": "PDB adds a 3'-dT vs the 25-nt literature sequence; 10 pyrimidines are 2'-F (score as unmodified RNA per project convention)",
+   "target": "Thrombin"
+  },
+  {
+   "aptamer_entry": "t1p1_hiv1rt",
+   "target": "HIV-1 RT",
+   "pdb_id": "1HVU",
+   "aptamer_chain": "C",
+   "protein_chains": [
+    "A",
+    "B"
+   ],
+   "method": "X-ray 4.75 A",
+   "reference": "Jaeger, Restle, Steitz. EMBO J 1998, 17:4535 (PMC1170784)",
+   "notes": "LOW RESOLUTION (4.75 A) — registered caveat. 1HVU chain C SEQRES (30-mer) == Kensch 2000 printed T1.1 33-mer minus 5'-GGG (asserted in curation). First asymmetric-unit complex (chains A=p66, B=p51, C=RNA)."
+  },
+  {
+   "aptamer_entry": "dtri177_fixa",
+   "target": "Factor IXa",
+   "pdb_id": "8EPK",
+   "aptamer_chain": "E",
+   "protein_chains": [
+    "A",
+    "B"
+   ],
+   "method": "X-ray 2.65 A",
+   "reference": "Kolyadko et al. PNAS 2024, 121:e2401136121 (PMC11260126)",
+   "notes": "DTRI-177 == RB006/pegnivacogin RNA chain; SEQRES == WHO INN pegnivacogin (literature-verified). 2'-OMe/2'-F residues converted to standard RNA via NUC_MAP (A2M/ATD/CFZ/OMC/OMG/OMU/UFT; CM'/CM2 atoms dropped). C11/C12/U16 missing from density (Kolyadko Fig 3A) — scored as-is. Docking-only target: a single FIXa aptamer family exists (Part A N/A)."
+  }
+ ],
+ "docking_not_available": {
+  "VEGF": "no experimental aptamer-VEGF complex in RCSB (verified 2026-08-04); docking power N/A",
+  "PDGF-BB": "only SOMAmer SL5/SL4 complexes (4HQU/4HQX, 13/24 modified bases, different aptamer family) — not usable for the classic 36t/41t/M-SELEX entries; docking power N/A",
+  "IL-17A": "no experimental aptamer-IL-17A complex in RCSB (verified 2026-08-04); docking N/A",
+  "Angiopoietin-2": "no experimental aptamer-Ang2 complex in RCSB (verified 2026-08-04); docking N/A",
+  "SARS-CoV-2 N": "no experimental aptamer-N complex in RCSB (verified 2026-08-04); docking N/A"
+ },
+ "known_limitations": [
+  "PDGF-BB Kd gradient spans only 0.028-0.3 nM (1 order) — within-target ranking analysis is underpowered; Soontornworajit 2010 mutants (25/220 nM) excluded because sequences are figure-only (PIVOT §3.13 discipline).",
+  "Ahmad 2011 Kd values were measured on 100-mer constructs including primer arms; entries store the variable region only (PDGF-08 printed as 58 nt).",
+  "Thrombin series mixes Kd assay methods (filter binding / SPR / bead assay); within-target ranking treats Kd as ordinal only (Spearman), cross-method comparability caveat carried over from P2.",
+  "Docking power testable on Thrombin only (VEGF/PDGF-BB lack experimental complexes).",
+  "IL-17A: Apt21-2 Kd (48.5 pM SPR) is a transcribed citation (Nakamura 2012 review of paywalled Ishiguro 2011) and is excluded from ranking; the FP subset (n=6) is the ranking-eligible set. AptAF42/dope1 sequences are template-DERIVED (lengths asserted == text: 69/68 nt; the doped region prints as 31 nt vs '30' text). Parvez immobilization likely presented monomeric IL-17 (main-text caveat); target protein = UniProt Q16552 mature chain 24-155.",
+  "Ang2: same-assay SPR ranking subset spans only 101-139 nM (0.14 order) — ranking decorative, screening is the contribution. Cross-assay Kd spread is large (White filter 2.2-3.1 nM vs Cho array 20.5 nM vs Shakeran SPR ~100-200 nM) — itself an illustration of assay-dependence. Seq1 printed as 40 nt vs '41-nt' text registered.",
+  "SARS-CoV-2 N: negatives are ALL in silico (the Sc80 scrambled control sequence is not printed anywhere). Ranking-eligible subset = the 6 Ni-NTA-orientation BLI binders (span 3.02-22.2 nM, 0.87 order); streptavidin-orientation and full-length Kd are excluded from ranking (orientation uncertain). tNSP9/tNSP10 parent rows differ from their names (NSP7/NSP9) — paper-internal offset registered.",
+  "Docking anchors: 1HVU is 4.75 A (low resolution, registered); 8EPK is docking-only for FIXa (single aptamer family). Docking pass criterion applied over all 5 anchors with per-target breakdown (pre-registered)."
+ ],
+ "entries": [
+  {
+   "id": "hd22_thrombin",
+   "name": "HD22 (HTDQ), exosite II DNA aptamer",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "AGTCCGTGGTAGGGCAGGTTGGGGTGACT",
+   "alphabet": "dna",
+   "length_nt": 29,
+   "kd_nm": 0.5,
+   "kd_method": "nitrocellulose filter binding (Tasset 1997); SPR re-measurement 0.3 nM (Kretz 2015)",
+   "role": "binder",
+   "reference": "Tasset DM, Kubik MF, Steiner W. J Mol Biol 1997, 272:688-698. doi:10.1006/jmbi.1997.1275; Kretz CA et al. JBC 2015",
+   "sequence_verification": "AGGGC variant consistent with RCSB 4I7Y chain D (27-mer truncate, fetched 2026-08-03); full 29-mer = truncate + 5'-A + 3'-T"
+  },
+  {
+   "id": "hd22_t27_thrombin",
+   "name": "HD22[27] truncate",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "GTCCGTGGTAGGGCAGGTTGGGGTGAC",
+   "alphabet": "dna",
+   "length_nt": 27,
+   "kd_nm": 0.7,
+   "kd_method": "SPR (Kretz 2015)",
+   "role": "binder",
+   "reference": "Kretz CA et al. JBC 2015; co-crystal PDB 4I7Y (Russo Krauss et al.)",
+   "sequence_verification": "exact match to RCSB 4I7Y chain D fetched 2026-08-03"
+  },
+  {
+   "id": "toggle25t_thrombin",
+   "name": "Toggle-25t (2'-F RNA), exosite II",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "GGGAACAAAGCUGAAGUACUUACCC",
+   "alphabet": "rna",
+   "length_nt": 25,
+   "kd_nm": 0.54,
+   "kd_method": "double-filter nitrocellulose filter binding, vs human thrombin (White 2001)",
+   "role": "binder",
+   "reference": "White R et al. Mol Ther 2001, 4:567-573. doi:10.1006/mthe.2001.0500",
+   "sequence_verification": "exact match to first 25 nt of RCSB 3DD2 chain B (26-mer incl. 3'-dT) fetched 2026-08-03"
+  },
+  {
+   "id": "tba_thrombin",
+   "name": "TBA / HD1 (15-mer), exosite I",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "GGTTGGTGTGGTTGG",
+   "alphabet": "dna",
+   "length_nt": 15,
+   "kd_nm": 25.0,
+   "kd_method": "filter binding (Bock 1992 / Paborsky 1993, pmid:8318863)",
+   "role": "binder",
+   "reference": "pmid:8318863 (value as curated in known_aptamers.json)",
+   "sequence_verification": "identical to known_aptamers.json entry"
+  },
+  {
+   "id": "nu172_thrombin",
+   "name": "NU172 (ARC2172), exosite I, Phase II",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "CGCCTAGGTTGGGTAGGGTGGTGGCG",
+   "alphabet": "dna",
+   "length_nt": 26,
+   "kd_nm": null,
+   "kd_method": "no primary-literature Kd (Archemix internal); functional IC50 5-10 ug/mL ecarin clotting (secondary: Keefe 2010 NRDD)",
+   "role": "binder_no_kd",
+   "reference": "Keefe AD, Pai S, Ellington A. Nat Rev Drug Discov 2010, 9:537-550 (secondary)",
+   "sequence_verification": "multi-source consistent 26-mer (HAL theses/IJMS review); AUROC use only"
+  },
+  {
+   "id": "scrambled_tba",
+   "name": "scrambled TBA (fixed seed 0) — disrupts G-tracts",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "GGGGTTTGTGGGTTG",
+   "alphabet": "dna",
+   "length_nt": 15,
+   "kd_nm": null,
+   "kd_assigned_nm_for_sensitivity": 10000,
+   "kd_method": "literature: no detectable binding by SPR at uM detection limit (Bock 1992; HAL hal-01682623)",
+   "role": "negative",
+   "reference": "Bock LC et al. Nature 1992, 355:564-566; hal-01682623 (qualitative)"
+  },
+  {
+   "id": "random30_a",
+   "name": "random 30-mer (fixed seed 1)",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "CAGATTTTCATATTATGCAGAAAATCTACT",
+   "alphabet": "dna",
+   "length_nt": 30,
+   "kd_nm": null,
+   "kd_assigned_nm_for_sensitivity": 10000,
+   "role": "negative"
+  },
+  {
+   "id": "mselex_thr08_thrombin",
+   "name": "M-SELEX clone Thr-08 (60-nt variable region)",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "CAGCGCTAGGGCTTTTAGCGTAATGGGTAGGGTGGTGCGGTGCAGATATCGGAATTGGTG",
+   "alphabet": "dna",
+   "length_nt": 60,
+   "kd_nm": 0.33,
+   "role": "binder",
+   "reference": "Ahmad KM, Oh SS, Kim S, McClellen FM, Xiao Y, Soh HT. PLoS ONE 2011, 6(11):e27051. doi:10.1371/journal.pone.0027051 (M-SELEX, Table 1 60-nt variable region; Kd bead fluorescence assay on 100-mer with primer arms AGCAGCACAGAGGTCAGATG-[60N]-CCTATGCGTGCTACCGTGAA, PBS+1mM MgCl2+0.025% Tween-20)",
+   "kd_method": "bead fluorescence assay, Kd on 100-mer incl. primer arms (Ahmad 2011 Table 1)"
+  },
+  {
+   "id": "mselex_thr02_thrombin",
+   "name": "M-SELEX clone Thr-02 (60-nt variable region)",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "TTGAAGTAATTTTATAGGTCTTTTATTGGGTAGGGTGGTTTTAATTGGTGTGACAAATTG",
+   "alphabet": "dna",
+   "length_nt": 60,
+   "kd_nm": 0.65,
+   "role": "binder",
+   "reference": "Ahmad KM, Oh SS, Kim S, McClellen FM, Xiao Y, Soh HT. PLoS ONE 2011, 6(11):e27051. doi:10.1371/journal.pone.0027051 (M-SELEX, Table 1 60-nt variable region; Kd bead fluorescence assay on 100-mer with primer arms AGCAGCACAGAGGTCAGATG-[60N]-CCTATGCGTGCTACCGTGAA, PBS+1mM MgCl2+0.025% Tween-20)",
+   "kd_method": "bead fluorescence assay, Kd on 100-mer incl. primer arms (Ahmad 2011 Table 1)"
+  },
+  {
+   "id": "scrambled_hd22",
+   "name": "scrambled HD22 (fixed seed 10) — preserves base composition",
+   "target": "Thrombin",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1HAO",
+    "chain": "H"
+   },
+   "sequence": "TAATGGCTGGGGCGTGGCGGGCTATAGGT",
+   "alphabet": "dna",
+   "length_nt": 29,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 10); composition-matched scramble of hd22_thrombin"
+  },
+  {
+   "id": "pegaptanib_vegf",
+   "name": "pegaptanib (Macugen, NX1838), unmodified base sequence",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+   "alphabet": "rna",
+   "length_nt": 27,
+   "kd_nm": 0.049,
+   "kd_method": "Tucker 1999 rhesus plasma assay; FDA review estimate ~0.2 nM; Lee 2005 PNAS ~0.05 nM",
+   "role": "binder",
+   "reference": "identical to pegaptanib.json anchor (Tucker 1999; Ruckman 1998 JBC 273:20556)",
+   "sequence_verification": "identical to pegaptanib.json anchor"
+  },
+  {
+   "id": "sl2b_vegf",
+   "name": "SL(2)-B truncated VEGF165 aptamer",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "CAATTGGGCCCGTCCGTATGGTGGGT",
+   "alphabet": "dna",
+   "length_nt": 26,
+   "kd_nm": 0.5,
+   "role": "binder",
+   "reference": "Kaur G, Yung LYL. PLoS ONE 2012, 7(2):e31196. doi:10.1371/journal.pone.0031196 (Table 1; SPR BIAcore, VEGF165 on CM5, PBS+0.005% Tween-20, 1:1 Langmuir)",
+   "kd_method": "SPR 0.50±0.32 nM (Kaur 2012 Table 1)",
+   "sequence_verification": "nested truncate of VEa5 (positions 14-39); asserted below"
+  },
+  {
+   "id": "v7t1_vegf",
+   "name": "V7t1 VEGF aptamer (random region of Vap7)",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "TGTGGGGGTGGACGGGCCGGGTAGA",
+   "alphabet": "dna",
+   "length_nt": 25,
+   "kd_nm": 1.4,
+   "role": "binder",
+   "reference": "Nonaka Y, Sode K, Ikebukuro K. Molecules 2010, 15(1):215-225. doi:10.3390/molecules15010215 (Tables 1-3; SPR, TBSE+50mM KCl)",
+   "kd_method": "SPR 1.4 nM vs VEGF165, 1.1 nM vs VEGF121 (Nonaka 2010 Table 3)",
+   "sequence_verification": "printed in abstract + Table 2; core substring of Vap7 asserted below"
+  },
+  {
+   "id": "sl12_vegf",
+   "name": "SL12 truncated VEGF165 aptamer",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "ATACCAGTCTATTCAATTGGGCCCGTCCGTATGGTGGG",
+   "alphabet": "dna",
+   "length_nt": 38,
+   "kd_nm": 5.0,
+   "role": "binder",
+   "reference": "Kaur G, Yung LYL. PLoS ONE 2012, 7(2):e31196. doi:10.1371/journal.pone.0031196 (Table 1; SPR BIAcore, VEGF165 on CM5, PBS+0.005% Tween-20, 1:1 Langmuir)",
+   "kd_method": "SPR 5±0.45 nM (Kaur 2012 Table 1)",
+   "sequence_verification": "nested truncate of VEa5 (positions 1-38); asserted below"
+  },
+  {
+   "id": "sl2a_vegf",
+   "name": "SL(2)-A truncated VEGF165 aptamer",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "GCCCGTCCGTATGGTGGGT",
+   "alphabet": "dna",
+   "length_nt": 19,
+   "kd_nm": 10.0,
+   "role": "binder",
+   "reference": "Kaur G, Yung LYL. PLoS ONE 2012, 7(2):e31196. doi:10.1371/journal.pone.0031196 (Table 1; SPR BIAcore, VEGF165 on CM5, PBS+0.005% Tween-20, 1:1 Langmuir)",
+   "kd_method": "SPR 10±1.1 nM (Kaur 2012 Table 1)",
+   "sequence_verification": "nested truncate of VEa5 (positions 21-39); asserted below"
+  },
+  {
+   "id": "vap7_vegf",
+   "name": "Vap7 full-length VEGF aptamer (with primer arms)",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "ATACCAGTCTATTCAATTGCACTCTGTGGGGGTGGACGGGCCGGGTAGATAGTATGTGCAATC",
+   "alphabet": "dna",
+   "length_nt": 63,
+   "kd_nm": 20.0,
+   "role": "binder",
+   "reference": "Nonaka Y, Sode K, Ikebukuro K. Molecules 2010, 15(1):215-225. doi:10.3390/molecules15010215 (Tables 1-3; SPR, TBSE+50mM KCl)",
+   "kd_method": "SPR 20 nM vs VEGF165, 1.0 nM vs VEGF121 (Nonaka 2010 Table 3)",
+   "sequence_verification": "Kd measured on 63-mer incl. primer arms (Table 1/2)"
+  },
+  {
+   "id": "sl2_vegf",
+   "name": "SL(2) minimal VEGF165 aptamer",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "CCCGTCCGTATGGTGGG",
+   "alphabet": "dna",
+   "length_nt": 17,
+   "kd_nm": 49.0,
+   "role": "binder",
+   "reference": "Kaur G, Yung LYL. PLoS ONE 2012, 7(2):e31196. doi:10.1371/journal.pone.0031196 (Table 1; SPR BIAcore, VEGF165 on CM5, PBS+0.005% Tween-20, 1:1 Langmuir)",
+   "kd_method": "SPR 49±2.4 nM (Kaur 2012 Table 1)",
+   "sequence_verification": "nested truncate of VEa5 (positions 22-38); asserted below"
+  },
+  {
+   "id": "vea5_vegf",
+   "name": "VEa5 full-length VEGF165 aptamer (Hasegawa 2008 clone)",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "ATACCAGTCTATTCAATTGGGCCCGTCCGTATGGTGGGTGTGCTGGCCAGATAGTATGTGCAATCA",
+   "alphabet": "dna",
+   "length_nt": 66,
+   "kd_nm": 120.0,
+   "role": "binder",
+   "reference": "Kaur G, Yung LYL. PLoS ONE 2012, 7(2):e31196. doi:10.1371/journal.pone.0031196 (Table 1; SPR BIAcore, VEGF165 on CM5, PBS+0.005% Tween-20, 1:1 Langmuir); Hasegawa H et al. 2008 (original clone)",
+   "kd_method": "SPR 120±1.8 nM re-measurement (Kaur 2012 Table 1; original 130 nM Hasegawa 2008)",
+   "sequence_verification": "parent sequence of the SL12/SL2-B/SL2-A/SL2 nested truncates"
+  },
+  {
+   "id": "sl1_vegf_no_binding",
+   "name": "SL1 VEGF aptamer fragment — experimentally No Binding",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "ATACCAGTCTATTCAATTGG",
+   "alphabet": "dna",
+   "length_nt": 20,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "Kaur G, Yung LYL. PLoS ONE 2012, 7(2):e31196. doi:10.1371/journal.pone.0031196 (Table 1; SPR BIAcore, VEGF165 on CM5, PBS+0.005% Tween-20, 1:1 Langmuir)",
+   "kd_method": "SPR: 'No Binding' annotation in Kaur 2012 Table 1",
+   "sequence_verification": "literature-validated non-binder (not in silico)"
+  },
+  {
+   "id": "random26_vegf",
+   "name": "random 26-mer (fixed seed 11)",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "TTTCCTCATGCAATTCAAAACCATGT",
+   "alphabet": "dna",
+   "length_nt": 26,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 11)"
+  },
+  {
+   "id": "random38_vegf",
+   "name": "random 38-mer (fixed seed 12)",
+   "target": "VEGF",
+   "protein": {
+    "type": "benchmark_pdb",
+    "pdb_id": "1VPF",
+    "chain": "A"
+   },
+   "sequence": "TGGCTAGTGTCACTGCGCACAGTAAACATTATCGCACA",
+   "alphabet": "dna",
+   "length_nt": 38,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 12)"
+  },
+  {
+   "id": "pdgf36t_pdgfbb",
+   "name": "PDGF-B aptamer '36t' (40-mer + 3'-idT in literature)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "CACAGGCTACGGCACGTAGAGCATCACCATGATCCTGTGT",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": 0.094,
+   "kd_method": "filter binding (Green 1996)",
+   "role": "binder",
+   "reference": "Green LS et al. Biochemistry 1996, 35:14413-14424",
+   "sequence_verification": "Aptagen entry verbatim (40 nt); 3'-idT cap excluded"
+  },
+  {
+   "id": "pdgf41t_pdgfbb",
+   "name": "PDGF-B aptamer '41t' (45-mer, second clone family)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "TACTCAGGGCACTGCAAGCAATTGTGGTCCCAATGGGCTGAGTAT",
+   "alphabet": "dna",
+   "length_nt": 45,
+   "kd_nm": 0.1,
+   "kd_method": "filter binding, same order of magnitude as 36t (Green 1996, via thesis citation — MEDIUM confidence)",
+   "role": "binder",
+   "confidence": "medium",
+   "reference": "Green LS et al. Biochemistry 1996, 35:14413-14424 (cited via Auburn thesis)",
+   "sequence_verification": "45 nt; secondary-source transcription — flagged medium confidence"
+  },
+  {
+   "id": "random30_b",
+   "name": "random 30-mer (fixed seed 2)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "AAAGCGGCACTTGTGAAGTGTTCCCCACGC",
+   "alphabet": "dna",
+   "length_nt": 30,
+   "kd_nm": null,
+   "kd_assigned_nm_for_sensitivity": 10000,
+   "role": "negative"
+  },
+  {
+   "id": "random45_a",
+   "name": "random 45-mer (fixed seed 3, length-matched to pdgf41t)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "CCGTAATGCCTTTCCCTAACAGAGTTTTTCGAACTCGTGTTGTCG",
+   "alphabet": "dna",
+   "length_nt": 45,
+   "kd_nm": null,
+   "kd_assigned_nm_for_sensitivity": 10000,
+   "role": "negative"
+  },
+  {
+   "id": "mselex09_pdgfbb",
+   "name": "M-SELEX clone PDGF-09 (60-nt variable region)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "GAATCATGATCCCCCATGACCTGGGGGCGTTACTGGCGAGCATCATGAGAGATCGTGCGA",
+   "alphabet": "dna",
+   "length_nt": 60,
+   "kd_nm": 0.028,
+   "role": "binder",
+   "reference": "Ahmad KM, Oh SS, Kim S, McClellen FM, Xiao Y, Soh HT. PLoS ONE 2011, 6(11):e27051. doi:10.1371/journal.pone.0027051 (M-SELEX, Table 1 60-nt variable region; Kd bead fluorescence assay on 100-mer with primer arms AGCAGCACAGAGGTCAGATG-[60N]-CCTATGCGTGCTACCGTGAA, PBS+1mM MgCl2+0.025% Tween-20)",
+   "kd_method": "bead fluorescence assay, Kd on 100-mer incl. primer arms (Ahmad 2011 Table 1)"
+  },
+  {
+   "id": "mselex01_pdgfbb",
+   "name": "M-SELEX clone PDGF-01 (60-nt variable region)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "CACGCGTACAAGTTGGGTGGAAGCATAGGCAATGAGCTCTCATTGGGTTACCTTTAAGGT",
+   "alphabet": "dna",
+   "length_nt": 60,
+   "kd_nm": 0.1,
+   "role": "binder",
+   "reference": "Ahmad KM, Oh SS, Kim S, McClellen FM, Xiao Y, Soh HT. PLoS ONE 2011, 6(11):e27051. doi:10.1371/journal.pone.0027051 (M-SELEX, Table 1 60-nt variable region; Kd bead fluorescence assay on 100-mer with primer arms AGCAGCACAGAGGTCAGATG-[60N]-CCTATGCGTGCTACCGTGAA, PBS+1mM MgCl2+0.025% Tween-20)",
+   "kd_method": "bead fluorescence assay, Kd on 100-mer incl. primer arms (Ahmad 2011 Table 1)"
+  },
+  {
+   "id": "mselex08_pdgfbb",
+   "name": "M-SELEX clone PDGF-08 (58-nt printed variable region)",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "GTTGCATATTGAGCATCGTGTAATGATCCTGCAAAGGCATTATGCATCGGGTCTTCCT",
+   "alphabet": "dna",
+   "length_nt": 58,
+   "kd_nm": 0.3,
+   "role": "binder",
+   "reference": "Ahmad KM, Oh SS, Kim S, McClellen FM, Xiao Y, Soh HT. PLoS ONE 2011, 6(11):e27051. doi:10.1371/journal.pone.0027051 (M-SELEX, Table 1 60-nt variable region; Kd bead fluorescence assay on 100-mer with primer arms AGCAGCACAGAGGTCAGATG-[60N]-CCTATGCGTGCTACCGTGAA, PBS+1mM MgCl2+0.025% Tween-20)",
+   "kd_method": "bead fluorescence assay, Kd on 100-mer incl. primer arms (Ahmad 2011 Table 1; printed clone is 58 nt despite the '60-mer' table header)"
+  },
+  {
+   "id": "random60_pdgfbb",
+   "name": "random 60-mer (fixed seed 13) — matches M-SELEX variable-region length",
+   "target": "PDGF-BB",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P01127",
+    "range": "82-190",
+    "fasta": "proteins/pdgfbb.fa"
+   },
+   "sequence": "GGCCCCCCACGATCAGCAGTTCGGCTTGTGAGGTCTTCGCCGGGTGGTCTCCCGCATTTA",
+   "alphabet": "dna",
+   "length_nt": 60,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 13)"
+  },
+  {
+   "id": "il17_9cs2",
+   "name": "IL-17A aptamer 9CS2 (Parvez FP, full 100-mer incl. arms)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GAACTAGATCGCAGCCCAACCGGTGACGCACAGTTAGCAACGAATCCCCTAGCCTCGATATGACAGTCATACCCGTCGCATGTGGGGATCGAGGTAATCC",
+   "alphabet": "dna",
+   "length_nt": 100,
+   "kd_nm": 4.2,
+   "role": "binder",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "fluorescence polarization (Parvez 2026 SI Table S8)",
+   "sequence_verification": "sequence == SI Table S7 printout (arms GAACTAGATCGCAGC/GGATCGAGGTAATCC)",
+   "ranking_eligible": true
+  },
+  {
+   "id": "il17_9ct19",
+   "name": "IL-17A aptamer 9CT19 (Parvez FP, full 100-mer incl. arms)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GAACTAGATCGCAGCCCACCGACACACACCGTATATCCCCTAGCCCCACATGAGGCCATCTCGCAACTGGACGTTCGCTTCTGGGGGATCGAGGTAATCC",
+   "alphabet": "dna",
+   "length_nt": 100,
+   "kd_nm": 5.3,
+   "role": "binder",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "fluorescence polarization (Parvez 2026 SI Table S8)",
+   "sequence_verification": "sequence == SI Table S7 printout (arms GAACTAGATCGCAGC/GGATCGAGGTAATCC)",
+   "ranking_eligible": true
+  },
+  {
+   "id": "il17_9cs3",
+   "name": "IL-17A aptamer 9CS3 (Parvez FP, full 100-mer incl. arms)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GAACTAGATCGCAGCCTAATGCCCGTACATAGCCACGCATACTGTTTTTCTAATAAAGCTCCTTGAGGTGAACCGTCGCTGGGTGGGATCGAGGTAATCC",
+   "alphabet": "dna",
+   "length_nt": 100,
+   "kd_nm": 9.9,
+   "role": "binder",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "fluorescence polarization (Parvez 2026 SI Table S8)",
+   "sequence_verification": "sequence == SI Table S7 printout (arms GAACTAGATCGCAGC/GGATCGAGGTAATCC)",
+   "ranking_eligible": true
+  },
+  {
+   "id": "il17_9ct6",
+   "name": "IL-17A aptamer 9CT6 (Parvez FP, full 100-mer incl. arms)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GAACTAGATCGCAGCCCCAGGGACGAGTATGGCGACATGGGATGGCACTAGTCGGTTGTCCAAACACGTTGATTTGTCCCCGGTGGGATCGAGGTAATCC",
+   "alphabet": "dna",
+   "length_nt": 100,
+   "kd_nm": 12.5,
+   "role": "binder",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "fluorescence polarization (Parvez 2026 SI Table S8)",
+   "sequence_verification": "sequence == SI Table S7 printout (arms GAACTAGATCGCAGC/GGATCGAGGTAATCC)",
+   "ranking_eligible": true
+  },
+  {
+   "id": "il17_shobeiri_apt2",
+   "name": "Shobeiri Aptamer 2 full-length (80-mer, Parvez FP re-measurement)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GCTGTGTGACTCCTGCAATTAACTGTTTTCTTTTGTTTTTATGTTGTTGGCTTTTTCTTTTGCAGCTGTATCTTGTCTCC",
+   "alphabet": "dna",
+   "length_nt": 80,
+   "kd_nm": 3.1,
+   "role": "binder",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "fluorescence polarization re-measurement (Parvez 2026 SI Table S8)",
+   "sequence_verification": "sequence == SI Table S7; original: Shobeiri 2022 Int Immunopharmacol 110:108963",
+   "ranking_eligible": true
+  },
+  {
+   "id": "il17_shobeiri_apt2_trunc",
+   "name": "Shobeiri Truncated Aptamer 2 (30-mer, Parvez FP re-measurement)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "CGACTAACTGTTTTCTTTTGTTTTTAGTCG",
+   "alphabet": "dna",
+   "length_nt": 30,
+   "kd_nm": 2.5,
+   "role": "binder",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "fluorescence polarization re-measurement (Parvez 2026 SI Table S8)",
+   "sequence_verification": "shares core AACTGTTTTCTTTTGTTTTTA with the full-length (asserted); re-ended truncate",
+   "ranking_eligible": true
+  },
+  {
+   "id": "il17_apt21_2",
+   "name": "Apt21-2 anti-IL-17A 2'-F RNA aptamer (scored unmodified, 3'-invT cap removed)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GGUCUAGCCGGAGGAGUCAGUAAUCGGUAGACC",
+   "alphabet": "rna",
+   "length_nt": 33,
+   "kd_nm": 0.0485,
+   "role": "binder",
+   "reference": "Solovieva et al. 2026 Pharmaceuticals (PMC12943235) Table 1; Apt21-2 Kd 48.5 pM SPR transcribed via Nakamura 2012 Genes Cells (PMC3444689) review of Ishiguro 2011 (paywalled)",
+   "kd_method": "SPR 48.5 pM vs IL-17A/A homodimer (transcribed citation: Nakamura 2012 review of Ishiguro 2011)",
+   "sequence_verification": "decoded from Solovieva 2026 Table 1 2'-F notation (CF->C, UF->U)",
+   "ranking_eligible": false
+  },
+  {
+   "id": "il17_aptaf42",
+   "name": "AptAF42 — binds IL-17A/F but NOT IL-17A/A (KD 1.92 uM, 27x impaired)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GGGCUAGCUGAUCGUACCCAGUAGCGUGGCAUGGGGUGCCUAGUCGGGCGAUACUAACAGCUAACACCC",
+   "alphabet": "rna",
+   "length_nt": 69,
+   "kd_nm": 1920.0,
+   "role": "negative",
+   "reference": "Adachi/Nakamura et al. 2011 Biochimie (PMID 21524680): AptAF42 KD(IL-17A/F)=72.2 nM, KD(IL-17A/A)=1.92 uM, KD(IL-17F/F)=37.5 uM (text, Fig 2A)",
+   "kd_method": "SPR KD(IL-17A/A) = 1.92 uM vs KD(IL-17A/F) = 72.2 nM (Adachi 2011 text)",
+   "sequence_verification": "DERIVED from the printed doped-library template (parental = template); 69 nt == '69 nucleotide long' text; doped region printed as 31 nt vs '30' text"
+  },
+  {
+   "id": "il17_aptaf42dope1",
+   "name": "AptAF42dope1 (C19del/A31C/U37G/G47U) — still 2-4x weaker on IL-17A/A than A/F",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GGGCUAGCUGAUCGUACCAGUAGCGUGGCCUGGGGGGCCUAGUCGUGCGAUACUAACAGCUAACACCC",
+   "alphabet": "rna",
+   "length_nt": 68,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "Adachi/Nakamura et al. 2011 Biochimie (PMID 21524680): AptAF42 KD(IL-17A/F)=72.2 nM, KD(IL-17A/A)=1.92 uM, KD(IL-17F/F)=37.5 uM (text, Fig 2A)",
+   "kd_method": "SPR: 2-4x stronger than AptAF42 on IL-17A/A (text; no single value) — remains uM-range",
+   "sequence_verification": "DERIVED by applying C19del/A31C/U37G/G47U to the template-derived AptAF42 (asserted)"
+  },
+  {
+   "id": "il17_10cz1",
+   "name": "10CZ1 anti-IL-20 aptamer — does not interfere with IL-17 binding (functional)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "GAACTAGATCGCAGCGGCAGCACACGTCCAGTGTAGGCGTCATCCCTCTATCCAATCGTCGTTCACAGCATTATCATGGGTTGTGGGATCGAGGTAATCC",
+   "alphabet": "dna",
+   "length_nt": 100,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "Parvez R, Sully E, Baum DA. RSC Advances 2026. doi:10.1039/d6ra00178e (SI Table S7 sequences, Table S8 FP Kd; main text: 'Low nanomolar Kd values were found for six of our tested IL-17 aptamers')",
+   "kd_method": "TR-FRET: 'does not produce any decrease in FRET' (Parvez 2026 main text)",
+   "sequence_verification": "sequence == SI Table S7 printout"
+  },
+  {
+   "id": "il17_scr",
+   "name": "Scr scrambled control for Apt21-2 (functional non-inhibitor)",
+   "target": "IL-17A",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "Q16552",
+    "range": "24-155",
+    "fasta": "proteins/il17a.fa"
+   },
+   "sequence": "ACUGGUAUGUCGAGCCAACAAUCGAUACCAAGACUAAGA",
+   "alphabet": "rna",
+   "length_nt": 39,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "Solovieva et al. 2026 Pharmaceuticals (PMC12943235) Table 1; Apt21-2 Kd 48.5 pM SPR transcribed via Nakamura 2012 Genes Cells (PMC3444689) review of Ishiguro 2011 (paywalled)",
+   "kd_method": "cell assays: 'did not demonstrate any significant effect' (Solovieva 2026)",
+   "sequence_verification": "decoded from Solovieva 2026 Table 1 2'-F notation"
+  },
+  {
+   "id": "ang2_seq1_11_1_41",
+   "name": "Ang2 aptamer 11-1.41 truncate (= Shakeran Seq1)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "ACUAGCCUCAUCAGCUCAUGUGCCCCUCCGCCUGGAUCAC",
+   "alphabet": "rna",
+   "length_nt": 40,
+   "kd_nm": 138.7,
+   "role": "binder",
+   "reference": "Shakeran Z et al. 2015 PLoS ONE (PMC4383501): Table 1 sequences, Table 2 SPR constructs, Table 3 kinetics (Kd = kd/ka from printed ka, kd)",
+   "kd_method": "SPR (Shakeran 2015 Table 3; Kd = kd/ka from printed ka/kd): ka 10.02e3, kd 1.39e-3 -> Kd 138.7 nM; White 2003 filter binding 2.2 nM (cross-assay, registered)",
+   "sequence_verification": "Shakeran Table 1 == White 2003 Table 1 11-1 variable region; 40-nt printout vs '41-nt' text registered",
+   "ranking_eligible": true
+  },
+  {
+   "id": "ang2_seq15_12_35",
+   "name": "Ang2 aptamer Seq15 mutant (G12C, G35C; Shakeran SPR)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "GAGGACGAUGCCGACUAGCCUCAUCAGCUCAUGUCCCCCUC",
+   "alphabet": "rna",
+   "length_nt": 41,
+   "kd_nm": 101.2,
+   "role": "binder",
+   "reference": "Shakeran Z et al. 2015 PLoS ONE (PMC4383501): Table 1 sequences, Table 2 SPR constructs, Table 3 kinetics (Kd = kd/ka from printed ka, kd)",
+   "kd_method": "SPR (Shakeran 2015 Table 3; Kd = kd/ka from printed ka/kd): ka 6.03e3, kd 0.61e-3 -> Kd 101.2 nM",
+   "sequence_verification": "derived from Seq15 by name-encoded mutations; asserted == Table 2 printout (biotin-AAAAA stripped)",
+   "ranking_eligible": true
+  },
+  {
+   "id": "ang2_seq15_15_38",
+   "name": "Ang2 aptamer Seq15 mutant (C15U, C38G; Shakeran SPR)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "GAGGACGAUGCGGAUUAGCCUCAUCAGCUCAUGUGCCGCUC",
+   "alphabet": "rna",
+   "length_nt": 41,
+   "kd_nm": 118.0,
+   "role": "binder",
+   "reference": "Shakeran Z et al. 2015 PLoS ONE (PMC4383501): Table 1 sequences, Table 2 SPR constructs, Table 3 kinetics (Kd = kd/ka from printed ka, kd)",
+   "kd_method": "SPR (Shakeran 2015 Table 3; Kd = kd/ka from printed ka/kd): ka 8.22e3, kd 0.97e-3 -> Kd 118.0 nM",
+   "sequence_verification": "derived from Seq15 by name-encoded mutations; asserted == Table 2 printout (biotin-AAAAA stripped)",
+   "ranking_eligible": true
+  },
+  {
+   "id": "ang2_seq15",
+   "name": "Ang2 aptamer Seq15 (parent of the Shakeran mutants; literature-validated binder)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "GAGGACGAUGCGGACUAGCCUCAUCAGCUCAUGUGCCCCUC",
+   "alphabet": "rna",
+   "length_nt": 41,
+   "kd_nm": null,
+   "role": "binder_no_kd",
+   "reference": "Shakeran Z et al. 2015 PLoS ONE (PMC4383501): Table 1 sequences, Table 2 SPR constructs, Table 3 kinetics (Kd = kd/ka from printed ka, kd)",
+   "kd_method": "no individual Kd printed (mutant panel only); Tie2 phosphorylation inhibition (text)",
+   "sequence_verification": "Shakeran Table 1 printout"
+  },
+  {
+   "id": "ang2_aba1",
+   "name": "ABA1 anti-Ang2 DNA aptamer (Cho array)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "ACTTGTAGGGTTCGGCTGGTCAGGGTGTCCAAGTCTGTGG",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": 20.5,
+   "role": "binder",
+   "reference": "Cho M et al. 2014 Anal Chem (ac504076k) SI: Table S2 sequences; Fig S1 text 'Kd = 20.5 ± 7.3 nM'; Fig S5 text 'a scrambled aptamer sequence showed negligible Ang2 binding'",
+   "kd_method": "microarray equilibrium binding, Kd = 20.5 ± 7.3 nM (Cho SI Fig S1 text)",
+   "sequence_verification": "Cho SI Table S2 printout",
+   "ranking_eligible": false
+  },
+  {
+   "id": "ang2_aba65",
+   "name": "ABA65 anti-Ang2 DNA aptamer (pair screen)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "TTTGGGGTGGTTGGGGGTTGTTGTTTTGGGGGTGGAGGGT",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": null,
+   "role": "binder_no_kd",
+   "reference": "Cho M et al. 2014 Anal Chem (ac504076k) SI: Table S2 sequences; Fig S1 text 'Kd = 20.5 ± 7.3 nM'; Fig S5 text 'a scrambled aptamer sequence showed negligible Ang2 binding'",
+   "kd_method": "Kd range 37.6-57 nM printed (main text); individual values figure-only",
+   "sequence_verification": "Cho SI Table S2 printout"
+  },
+  {
+   "id": "ang2_aba92",
+   "name": "ABA92 anti-Ang2 DNA aptamer (pair screen)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "GGTGCCATTGGGGACTGCTCGGGATTGCGGACTTGGCATC",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": null,
+   "role": "binder_no_kd",
+   "reference": "Cho M et al. 2014 Anal Chem (ac504076k) SI: Table S2 sequences; Fig S1 text 'Kd = 20.5 ± 7.3 nM'; Fig S5 text 'a scrambled aptamer sequence showed negligible Ang2 binding'",
+   "kd_method": "Kd range 37.6-57 nM printed (main text); individual values figure-only",
+   "sequence_verification": "Cho SI Table S2 printout"
+  },
+  {
+   "id": "ang2_aba109",
+   "name": "ABA109 anti-Ang2 DNA aptamer (pair screen)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "GGGTGCCATTGGGGACTGCTCGGGATTGCGGACTTGGCAT",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": null,
+   "role": "binder_no_kd",
+   "reference": "Cho M et al. 2014 Anal Chem (ac504076k) SI: Table S2 sequences; Fig S1 text 'Kd = 20.5 ± 7.3 nM'; Fig S5 text 'a scrambled aptamer sequence showed negligible Ang2 binding'",
+   "kd_method": "Kd range 37.6-57 nM printed (main text); individual values figure-only",
+   "sequence_verification": "Cho SI Table S2 printout"
+  },
+  {
+   "id": "ang2_seq16_ang1",
+   "name": "Seq16 (Ang1-specific T40.14 truncate) — no specificity for Ang2",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "ACUCGAACAUUUCCACUAACCAACCAUACUAAAGCACCGC",
+   "alphabet": "rna",
+   "length_nt": 40,
+   "kd_nm": 3006.0,
+   "role": "negative",
+   "reference": "Shakeran Z et al. 2015 PLoS ONE (PMC4383501): Table 1 sequences, Table 2 SPR constructs, Table 3 kinetics (Kd = kd/ka from printed ka, kd)",
+   "kd_method": "SPR (Shakeran 2015 Table 3; Kd = kd/ka from printed ka/kd): ka 1.66e3, kd 4.99e-3 -> Kd ~3 uM; text 'Kd > 1 uM'",
+   "sequence_verification": "Shakeran Table 1 printout"
+  },
+  {
+   "id": "ang2_sc_cho",
+   "name": "SC scrambled aptamer — negligible Ang2 binding (Cho)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "GGGTTTGCGAAAGGGAAAGGGTTTGTGTTTTTTGGGTTTT",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "Cho M et al. 2014 Anal Chem (ac504076k) SI: Table S2 sequences; Fig S1 text 'Kd = 20.5 ± 7.3 nM'; Fig S5 text 'a scrambled aptamer sequence showed negligible Ang2 binding'",
+   "kd_method": "bead fluorescence assay: 'negligible Ang2 binding' (Cho SI Fig S5 text)",
+   "sequence_verification": "Cho SI Table S1 printout"
+  },
+  {
+   "id": "random40_ang2",
+   "name": "random 40-mer (fixed seed 21)",
+   "target": "Angiopoietin-2",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "O15123",
+    "range": "20-496",
+    "fasta": "proteins/ang2.fa"
+   },
+   "sequence": "CTTGTCTCCAAGTACCCATTTAGTAGACAAATCGTTCCAT",
+   "alphabet": "dna",
+   "length_nt": 40,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 21)"
+  },
+  {
+   "id": "n_tnsp1",
+   "name": "TNSP1 anti-N truncate (parent NSP1)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "TAACCACGGCGCAAGCCGGGGTGTACGTGTTATACGTGCGTGTATCGAG",
+   "alphabet": "dna",
+   "length_nt": 49,
+   "kd_nm": 4.83,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 4.83 nM, BLI streptavidin (aptamer immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP1 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": false
+  },
+  {
+   "id": "n_tnsp2",
+   "name": "TNSP2 anti-N truncate (parent NSP2)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CTGACTGTAACCACGTATTGCGTTCCAGTCCCTATGACCAACGTCACAATAAGTCGCATAGGTA",
+   "alphabet": "dna",
+   "length_nt": 64,
+   "kd_nm": 4.51,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 4.51 nM, BLI streptavidin (aptamer immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP2 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": false
+  },
+  {
+   "id": "n_tnsp3",
+   "name": "TNSP3 anti-N truncate (parent NSP3)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CAGCGTCACGTGTTGTTCCCCATTGTACTGATTCGTCGTGGCAT",
+   "alphabet": "dna",
+   "length_nt": 44,
+   "kd_nm": 2.91,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 2.91 nM, BLI streptavidin (aptamer immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP3 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": false
+  },
+  {
+   "id": "n_tnsp5",
+   "name": "TNSP5 anti-N truncate (parent NSP5)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "ATTCATGCGCCAATAGTGGTTTGGAAATGTCTCCCCATACGCATAG",
+   "alphabet": "dna",
+   "length_nt": 46,
+   "kd_nm": 12.6,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 12.6 nM, BLI Ni-NTA (N immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP5 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": true
+  },
+  {
+   "id": "n_tnsp9",
+   "name": "TNSP9 anti-N truncate (parent NSP7)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "TGTAACCACGTGCTAGATTACGTAACTGGTTGCTACGGGTTTCATCCTCGGCATAGGTA",
+   "alphabet": "dna",
+   "length_nt": 59,
+   "kd_nm": 22.2,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 22.2 nM, BLI Ni-NTA (N immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP7 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": true
+  },
+  {
+   "id": "n_tnsp10",
+   "name": "TNSP10 anti-N truncate (parent NSP9)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CTTATGCACCAGGGGCCCGGTTCGGGCAGGCGCAAACACGGCATAGG",
+   "alphabet": "dna",
+   "length_nt": 47,
+   "kd_nm": 8.6,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 8.6 nM, BLI Ni-NTA (N immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP9 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": true
+  },
+  {
+   "id": "n_tnsp12",
+   "name": "TNSP12 anti-N truncate (parent NSP12)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "TGTAACCACGTGGTTCGCCCAGTTCCGTTCAATACACTCAACCCTGCACGGCATAGGTA",
+   "alphabet": "dna",
+   "length_nt": 59,
+   "kd_nm": 6.05,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 6.05 nM, BLI Ni-NTA (N immobilized) (Poolsup 2023 Table 1 / SI Table S2)",
+   "sequence_verification": "substring of Table S1 NSP12 row (asserted); paper-internal naming offset registered",
+   "ranking_eligible": true
+  },
+  {
+   "id": "n_nsp1_full",
+   "name": "NSP1 full-length anti-N aptamer (80-mer incl. primer arms)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CTCCTCTGACTGTAACCACGGCGCAAGCCGGGGTGTACGTGTTATACGTGCGTGTATCGAGCATAGGTAGTCCAGAAGCC",
+   "alphabet": "dna",
+   "length_nt": 80,
+   "kd_nm": 7.86,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 7.86 nM (Poolsup 2023 main text; orientation as printed)",
+   "sequence_verification": "SI Table S1 printout",
+   "ranking_eligible": false
+  },
+  {
+   "id": "n_nsp2_full",
+   "name": "NSP2 full-length anti-N aptamer (80-mer incl. primer arms)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CTCCTCTGACTGTAACCACGTATTGCGTTCCAGTCCCTATGACCAACGTCACAATAAGTCGCATAGGTAGTCCAGAAGCC",
+   "alphabet": "dna",
+   "length_nt": 80,
+   "kd_nm": 4.38,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 4.38 nM (Poolsup 2023 main text; orientation as printed)",
+   "sequence_verification": "SI Table S1 printout",
+   "ranking_eligible": false
+  },
+  {
+   "id": "n_nsp3_full",
+   "name": "NSP3 full-length anti-N aptamer (80-mer incl. primer arms)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CTCCTCTGACTGTAACCACGCAGCGTCACGTGTTGTTCCCCATTGTACTGATTCGTCGTGGCATAGGTAGTCCAGAAGCC",
+   "alphabet": "dna",
+   "length_nt": 80,
+   "kd_nm": 8.6,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 8.6 nM (Poolsup 2023 main text; orientation as printed)",
+   "sequence_verification": "SI Table S1 printout",
+   "ranking_eligible": false
+  },
+  {
+   "id": "n_a48",
+   "name": "A48 anti-N aptamer (re-measured, Poolsup SI Table S2)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "GCTGGATGTCGCTTACGACAATATTCCTTAGGGGCACCGCTACATTGACACATCCAGC",
+   "alphabet": "dna",
+   "length_nt": 58,
+   "kd_nm": 6.46,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 6.46 nM, Ni-NTA orientation (Poolsup 2023 SI Table S2; originally Zhang et al., ref 30)",
+   "sequence_verification": "SI Table S2 printout",
+   "ranking_eligible": true
+  },
+  {
+   "id": "n_a58",
+   "name": "A58 anti-N aptamer (re-measured, Poolsup SI Table S2)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "GCTGGATGTCACCGGATTGTCGGACATCGGATTGTCTGAGTCATATGACACATCCAGC",
+   "alphabet": "dna",
+   "length_nt": 58,
+   "kd_nm": 3.02,
+   "role": "binder",
+   "reference": "Poolsup S et al. 2023 Mol Ther Nucleic Acids (PMC9927813): Table 1 (tNSP1/2/3, BLI streptavidin orientation), SI Table S1 (full-length NSP sequences), SI Table S2 (tNSP5/9/10/12 + A48/A58, BLI Ni-NTA orientation)",
+   "kd_method": "BLI Kd 3.02 nM, Ni-NTA orientation (Poolsup 2023 SI Table S2; originally Zhang et al., ref 30)",
+   "sequence_verification": "SI Table S2 printout",
+   "ranking_eligible": true
+  },
+  {
+   "id": "random49_sars2n",
+   "name": "random 49-mer (fixed seed 22)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "CCATCAGACGAGCTAAGGTCCAAGGGCTGCGGCTAGATGGTTCGGTAGT",
+   "alphabet": "dna",
+   "length_nt": 49,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 22)"
+  },
+  {
+   "id": "random58_sars2n",
+   "name": "random 58-mer (fixed seed 23)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "GAAGTTGCCGTACTAAATTATGACAGCCGGGGATCTTCCCGCAAATAGGGAGGGTCGC",
+   "alphabet": "dna",
+   "length_nt": 58,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 23)"
+  },
+  {
+   "id": "random80_sars2n",
+   "name": "random 80-mer (fixed seed 24)",
+   "target": "SARS-CoV-2 N",
+   "protein": {
+    "type": "uniprot_fasta",
+    "uniprot": "P0DTC9",
+    "range": "1-419",
+    "fasta": "proteins/sars2n.fa"
+   },
+   "sequence": "TCCCCCACGATTAACTTGTAGCGGAGACGGAGACCTGGGCATCCGTCCTGCCACGGCTCGTATGGGCTGCGAATGTTAAA",
+   "alphabet": "dna",
+   "length_nt": 80,
+   "kd_nm": null,
+   "role": "negative",
+   "reference": "generated in silico (seed 24)"
+  }
+ ]
+}

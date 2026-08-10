@@ -1,10 +1,11 @@
 {
   "workflow": "mrna_cds_design",
+  "generated_at": "2026-06-09T08:54:27.690636+00:00",
   "total_tasks": 19,
   "success_count": 19,
   "failure_count": 0,
   "success_rate": 1.0,
-  "by_category": {
+  "category_breakdown": {
     "basic": {
       "total": 2,
       "success": 2,
@@ -25,17 +26,16 @@
     }
   },
   "error_distribution": {},
-  "timing": {
-    "avg_elapsed_seconds": 154.925,
-    "median_elapsed_seconds": 8.817,
-    "max_elapsed_seconds": 1435.214,
-    "min_elapsed_seconds": 0.275,
-    "avg_runner_elapsed_seconds": 156.31,
-    "median_runner_elapsed_seconds": 10.151
+  "timing_seconds": {
+    "mean": 156.724,
+    "median": 13.761,
+    "max": 1444.661,
+    "min": 0.369
   },
   "tool_correctness_rate": 1.0,
   "trace_completeness_distribution": {
     "complete": 19
   },
-  "generated_at": "2026-06-05T08:12:28+00:00"
+  "raw_results_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/mrna_cds_design/raw/platform_coverage_mrna_cds_design.jsonl",
+  "log_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/mrna_cds_design/logs/run_mrna_cds_design_20260609_083019.log"
 }

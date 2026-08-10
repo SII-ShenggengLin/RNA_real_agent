@@ -1,10 +1,11 @@
 {
   "workflow": "full_length_mrna_design",
+  "generated_at": "2026-06-24T16:12:01.401202+00:00",
   "total_tasks": 22,
   "success_count": 22,
   "failure_count": 0,
   "success_rate": 1.0,
-  "by_category": {
+  "category_breakdown": {
     "algae": {
       "total": 1,
       "success": 1,
@@ -67,21 +68,16 @@
     }
   },
   "error_distribution": {},
-  "elapsed_seconds_stats": {
-    "mean": 312.667,
-    "median": 143.9,
-    "max": 1674.8,
-    "min": 95.575
-  },
-  "runner_elapsed_seconds_stats": {
-    "mean": 314.086,
-    "median": 145.233,
-    "max": 1676.088,
-    "min": 96.893
+  "timing_seconds": {
+    "mean": 310.299,
+    "median": 126.98,
+    "max": 1222.672,
+    "min": 79.367
   },
   "tool_correctness_rate": 1.0,
   "trace_completeness_distribution": {
     "complete": 22
   },
-  "generated_at": "2026-06-05T11:48:00+00:00"
+  "raw_results_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/full_length_mrna_design/raw/platform_coverage_full_length_mrna_design.jsonl",
+  "log_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/platform_coverage_by_workflow/full_length_mrna_design/logs/run_full_length_mrna_design_20260624_154543.log"
 }

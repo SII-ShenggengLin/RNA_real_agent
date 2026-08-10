@@ -1,0 +1,4141 @@
+{
+  "generated_by": "experiments/analysis/summarize_fig4.py",
+  "inputs": [
+    "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/fig4_type2_shard_a.jsonl",
+    "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/experiments/results/fig4_type2_shard_b.jsonl"
+  ],
+  "asf_method": "Fixed-reference ASF recomputation: per target, all `pool_objectives` points of every successful run (all conditions) are pooled; each objective dimension (egarps/rhofold/iptm_component; all maximized) is min-max normalized with bounds from that pool. The shared reference point is the per-dimension best over the target's Serial (bmc_max_rounds=0) pools ('utopian-of-Serial'), normalized with the same bounds. ASF distances of every run's best candidate are recomputed against this fixed reference with uniform weights and rho=1e-3 via agent_core.workflows.multi_objective.achievement_scalarizing_function. The stored asf_distance uses a per-run utopian reference and is NOT comparable across conditions (see multi_objective.py ANALYSIS CAVEAT), so it is never used for cross-condition tests. Targets whose runs all lack pool_objectives fall back to best-candidate vectors for bounds.",
+  "hv_method": "Exact hypervolume by recursive slicing along the first dimension (no third-party library). Per (target, seed_idx) cell the candidate pools (`pool_objectives`) of Serial and BMC x1/x2/x3 are compared; the reference point is the componentwise minimum of the merged pool across all conditions in that cell minus a 1e-6 margin. All objectives are maximized. Computed for the full 3-D objective vector and for three 2-D projections (egarps-rhofold, egarps-iptm, rhofold-iptm).",
+  "n_records_raw": 464,
+  "n_jobs_unique": 240,
+  "n_jobs_success": 228,
+  "conditions": {
+    "n_targets_with_records": 20,
+    "n_targets_with_success": 19,
+    "per_condition": {
+      "serial": {
+        "n_runs": 60,
+        "n_success": 57,
+        "n_targets_success": 19,
+        "targets_without_success": [
+          "Ferritin"
+        ],
+        "failed_jobs": [
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 0,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 1,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 2,
+            "error": "cli_failure"
+          }
+        ]
+      },
+      "bmc_x1": {
+        "n_runs": 60,
+        "n_success": 57,
+        "n_targets_success": 19,
+        "targets_without_success": [
+          "Ferritin"
+        ],
+        "failed_jobs": [
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 0,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 1,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 2,
+            "error": "cli_failure"
+          }
+        ]
+      },
+      "bmc_x2": {
+        "n_runs": 60,
+        "n_success": 57,
+        "n_targets_success": 19,
+        "targets_without_success": [
+          "Ferritin"
+        ],
+        "failed_jobs": [
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 0,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 1,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 2,
+            "error": "cli_failure"
+          }
+        ]
+      },
+      "bmc_x3": {
+        "n_runs": 60,
+        "n_success": 57,
+        "n_targets_success": 19,
+        "targets_without_success": [
+          "Ferritin"
+        ],
+        "failed_jobs": [
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 0,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 1,
+            "error": "cli_failure"
+          },
+          {
+            "target_id": "Ferritin",
+            "seed_idx": 2,
+            "error": "cli_failure"
+          }
+        ]
+      }
+    }
+  },
+  "asf_diagnostics": {
+    "targets_without_serial": [],
+    "runs_missing_dims": 0,
+    "targets_bounds_from_best": []
+  },
+  "per_target": {
+    "BSA": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.18399600518995243,
+          "sd": 0.09335905423369334
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.053695309258626665,
+          "sd": 0.09300226956901259
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7560419629230414,
+          "sd": 0.11637810113501038
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3867020805676778,
+          "sd": 0.08559530050945369
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.08186073015409057,
+          "sd": 0.026251019952475675
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5083933723333334,
+          "sd": 0.4841421510068769
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8308534049880251,
+          "sd": 0.01831914853828626
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4543878634770711,
+          "sd": 0.025258625528917077
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.11495490095591958,
+          "sd": 0.009718342219477219
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.8423812733333333,
+          "sd": 0.1840214248841113
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7613813061297937,
+          "sd": 0.017701660008857645
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.46674097577730816,
+          "sd": 0.037697585500302846
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.17445493038626073,
+          "sd": 0.07810390379876594
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.6973066266666667,
+          "sd": 0.438166308823046
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7804822874103515,
+          "sd": 0.09568175290828601
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.39608506361643475,
+          "sd": 0.0722113964606648
+        }
+      }
+    },
+    "Carbonic_anhydrase_II": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.32288151506994683,
+          "sd": 0.018526590914216386
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.02991388192,
+          "sd": 0.05056975507838144
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8426458722100402,
+          "sd": 0.03788680337806381
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.26491646468639374,
+          "sd": 0.079554324994229
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.21170217053296825,
+          "sd": 0.16779073625478533
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.3409471823333333,
+          "sd": 0.4712705040798367
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.821017255837473,
+          "sd": 0.05581932354195578
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.34533757468064624,
+          "sd": 0.1192281761739663
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2681750810867188,
+          "sd": 0.10927824364958341
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.2878119474233333,
+          "sd": 0.4859673224787181
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8551818214965778,
+          "sd": 0.01139988741742841
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.2569408019383748,
+          "sd": 0.057456287511739416
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2802183924988618,
+          "sd": 0.08055439173922471
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.2693409485,
+          "sd": 0.43252874193854524
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8458037999206569,
+          "sd": 0.03766409762861745
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.2810508906841278,
+          "sd": 0.03617108494385837
+        }
+      }
+    },
+    "Chymotrypsinogen": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2357666714351649,
+          "sd": 0.08086193836507519
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.48816467306666667,
+          "sd": 0.44877285146935975
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.862754456552834,
+          "sd": 0.03340361467182507
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3186156054337819,
+          "sd": 0.007545932406830807
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.23775702757527,
+          "sd": 0.06815424291871816
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.50145526,
+          "sd": 0.43021567880941336
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8719899917398413,
+          "sd": 0.021885631109684167
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3316839933395386,
+          "sd": 0.04707964310367284
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2311842349254198,
+          "sd": 0.08884722323184856
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.29018143966666665,
+          "sd": 0.2767818816308499
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.841777892388813,
+          "sd": 0.01938807018089612
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.36863043904304504,
+          "sd": 0.06622792865270925
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2290985553488176,
+          "sd": 0.08460231417227267
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.4895321143333333,
+          "sd": 0.4423796912809804
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8475199473743965,
+          "sd": 0.013833764060912992
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3391313354174296,
+          "sd": 0.031361390729372406
+        }
+      }
+    },
+    "Concanavalin_A": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.30011535078202345,
+          "sd": 0.034470151687972954
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.08144560823333334,
+          "sd": 0.08643229437034658
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8642336869517816,
+          "sd": 0.025702421759927985
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5629522303740183,
+          "sd": 0.09482590694184995
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.29723406690992643,
+          "sd": 0.04000288548448212
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.2681790517666667,
+          "sd": 0.40850301699388575
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8756380793617283,
+          "sd": 0.03307791039175444
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5473713874816895,
+          "sd": 0.10827850935320882
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.29372818361519754,
+          "sd": 0.042627731347996224
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.2714072106666667,
+          "sd": 0.4061410471347524
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8583484201171393,
+          "sd": 0.03236063971515421
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5192859172821045,
+          "sd": 0.10007119962945954
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.23363836499272314,
+          "sd": 0.10608403224204982
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.4570749464666667,
+          "sd": 0.4192181632922059
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8594425677701389,
+          "sd": 0.030165504108019558
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5441921949386597,
+          "sd": 0.10200496368154974
+        }
+      }
+    },
+    "Cytochrome_c": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.22542761313482584,
+          "sd": 0.030211914432800527
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.7103967466666666,
+          "sd": 0.4273421377607603
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8596918188739895,
+          "sd": 0.02985185729778287
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5227437416712443,
+          "sd": 0.17038581156700774
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.13231413017674903,
+          "sd": 0.04563328456141336
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.9462628966666666,
+          "sd": 0.04047034083902969
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8462236702539129,
+          "sd": 0.04171626562652752
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.6349837978680929,
+          "sd": 0.10028584515239884
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.23243133560070936,
+          "sd": 0.052185361354923764
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.48291817666666664,
+          "sd": 0.40345144433931035
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8577253642766801,
+          "sd": 0.017640944277325443
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5084109902381897,
+          "sd": 0.07251565039965915
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.20828242410470998,
+          "sd": 0.02565523122684123
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5364888466666666,
+          "sd": 0.3449321607151624
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8668182277618776,
+          "sd": 0.027113580591666544
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5223990380764008,
+          "sd": 0.05610763640025773
+        }
+      }
+    },
+    "GFP": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.23156048794132383,
+          "sd": 0.08404418028090639
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.41277942733333334,
+          "sd": 0.4216644687855918
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8662785892248681,
+          "sd": 0.018116297202475783
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4452315668265025,
+          "sd": 0.09545410894376753
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2139859046810462,
+          "sd": 0.08795811866271788
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.39653762833333334,
+          "sd": 0.30750707113576253
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8824068709079672,
+          "sd": 0.014522692968268464
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.421386460463206,
+          "sd": 0.031427332586009736
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.22256676837042105,
+          "sd": 0.04877437874621489
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.35589168,
+          "sd": 0.2002787545160487
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8808483068622585,
+          "sd": 0.030004272304088583
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4020051062107086,
+          "sd": 0.028586876375774038
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.24513930309763285,
+          "sd": 0.05888805050985937
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.25796925,
+          "sd": 0.17609565486973294
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8587916842500233,
+          "sd": 0.009408868168402813
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3931416968504588,
+          "sd": 0.05653576076431508
+        }
+      }
+    },
+    "Lysozyme": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.27120226355231125,
+          "sd": 0.06859633214687792
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.33780352566666666,
+          "sd": 0.46759477556948054
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8213332220194404,
+          "sd": 0.04610242192430913
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3038283884525299,
+          "sd": 0.02193668401945975
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.13379089080479054,
+          "sd": 0.009881294251735237
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5979950666666667,
+          "sd": 0.04829776350436248
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8302235648188071,
+          "sd": 0.020621715980225188
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3722352782885234,
+          "sd": 0.040969879183924765
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1951229442465258,
+          "sd": 0.07673882330252522
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.43588853333333333,
+          "sd": 0.2740033231470745
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8424532966814018,
+          "sd": 0.04398094723347924
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.36479105552037555,
+          "sd": 0.05024837694945102
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1945459912584628,
+          "sd": 0.10049034387509792
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5237043733333333,
+          "sd": 0.4044748262783354
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8127640325025242,
+          "sd": 0.013039893825723634
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.34150641163190204,
+          "sd": 0.06424609186741459
+        }
+      }
+    },
+    "MBP": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.13530656072140618,
+          "sd": 0.011679952381283318
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.002655941472338,
+          "sd": 0.004597496626892308
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8659415608846001,
+          "sd": 0.030370771135194267
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.29479776819547016,
+          "sd": 0.01571480777587929
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.13490200531684268,
+          "sd": 0.012348167731407688
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.012389300041766665,
+          "sd": 0.021447786110504137
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8459122418281474,
+          "sd": 0.03615463337665657
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.29548988739649457,
+          "sd": 0.0166195324916466
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.11376209931127446,
+          "sd": 0.02988245413158237
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.0023159417543666665,
+          "sd": 0.004000971965276991
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8859884863061276,
+          "sd": 0.007818811126268092
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.32380303740501404,
+          "sd": 0.0402834039834717
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1588948009438882,
+          "sd": 0.010944012670480778
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 7.787907756666666e-05,
+          "sd": 6.431161074517209e-05
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8349972405503833,
+          "sd": 0.024727912229013636
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.2630898356437683,
+          "sd": 0.014738863423704403
+        }
+      }
+    },
+    "Myoglobin": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.15596356859559865,
+          "sd": 0.03351227075702114
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.03844776411333333,
+          "sd": 0.0616194321280854
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8626272711033298,
+          "sd": 0.018550846120799498
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3731077015399933,
+          "sd": 0.057357949713572845
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.16503988227620586,
+          "sd": 0.13145990598555474
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.6569908068,
+          "sd": 0.5653320477164825
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8626059854181609,
+          "sd": 0.05583926671899644
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4039698739846547,
+          "sd": 0.11604863725246713
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1455079496668269,
+          "sd": 0.08028308260764397
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.04944161986666667,
+          "sd": 0.05685991860953091
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8721608065118622,
+          "sd": 0.016288806200225766
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4123926858107249,
+          "sd": 0.13456312089864514
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1639524679086346,
+          "sd": 0.10909560185000866
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.0962362016,
+          "sd": 0.08895612005759287
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8721608065118622,
+          "sd": 0.016288806200225766
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.38463325798511505,
+          "sd": 0.1601696443508336
+        }
+      }
+    },
+    "Papain": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1386570903789847,
+          "sd": 0.11202653791250126
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.6298340066666667,
+          "sd": 0.39288178067393775
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8538913937401874,
+          "sd": 0.010270920425491228
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3177991509437561,
+          "sd": 0.03839822080421696
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.12700442189073202,
+          "sd": 0.04878577941965753
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.6185345133333333,
+          "sd": 0.14600660761114387
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8163086041618,
+          "sd": 0.0076916598524127714
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3499753971894582,
+          "sd": 0.03954616040079229
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.10205249033301608,
+          "sd": 0.05978574983091261
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.75275594,
+          "sd": 0.24659900599685397
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8390115710095972,
+          "sd": 0.026576658678508617
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3665742874145508,
+          "sd": 0.060139776708233124
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1429235912775567,
+          "sd": 0.039117624506881964
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.57093818,
+          "sd": 0.11707470852960129
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8488835719608611,
+          "sd": 0.02795455374502086
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3469671805699666,
+          "sd": 0.07031713210604928
+        }
+      }
+    },
+    "Pepsin": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.12073939079922325,
+          "sd": 0.07106462816375148
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.08827378499666666,
+          "sd": 0.09282055184611056
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8063714439303244,
+          "sd": 0.043836108070025026
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.18937037388483682,
+          "sd": 0.05838015824227568
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.12069533115252506,
+          "sd": 0.07102522838608188
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.07227011248666666,
+          "sd": 0.06894223085620192
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.813759384534647,
+          "sd": 0.04587842969474582
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.20427935818831125,
+          "sd": 0.043586771793069724
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.10772348124310899,
+          "sd": 0.06294621925411917
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.08202437866666668,
+          "sd": 0.05208686139728277
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8215740144970489,
+          "sd": 0.043057022029786174
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.2117789884408315,
+          "sd": 0.027730190019500146
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.12212941677447335,
+          "sd": 0.006317834460411936
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.023598225226666665,
+          "sd": 0.0275765755834971
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8454332876635604,
+          "sd": 0.03705318638258449
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.21239837010701498,
+          "sd": 0.05549395847607607
+        }
+      }
+    },
+    "RNase_A": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.16682183727604485,
+          "sd": 0.06301157056958134
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.022844726566666668,
+          "sd": 0.03087164248956249
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7672162969187886,
+          "sd": 0.04233153055719834
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.49046122034390766,
+          "sd": 0.03081771767934343
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.17119502977695233,
+          "sd": 0.024818197953713216
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.25047262433333334,
+          "sd": 0.37557578989033846
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7660245770491079,
+          "sd": 0.019354866684479388
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.464606116215388,
+          "sd": 0.027858513203357655
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.15900613593346438,
+          "sd": 0.015703392356570076
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.24865979066666666,
+          "sd": 0.3541102514589252
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7738104244955446,
+          "sd": 0.012481828186615605
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.49662861227989197,
+          "sd": 0.05409353710750115
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.16866935349670467,
+          "sd": 0.028823308616151948
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.178839567,
+          "sd": 0.27366073684858677
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7660245770491079,
+          "sd": 0.019354866684479388
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4810759425163269,
+          "sd": 0.03205924358883313
+        }
+      }
+    },
+    "SARS-CoV-2_Nucleocapsid": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.17957764902563064,
+          "sd": 0.020770996361037446
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.32323726566666666,
+          "sd": 0.2516265313285131
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8277751270678486,
+          "sd": 0.03942843737338895
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.42864327629407245,
+          "sd": 0.03544610667398191
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.19293750383762606,
+          "sd": 0.03759935670357813
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.48522250666666666,
+          "sd": 0.26272234327607946
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8425753706306716,
+          "sd": 0.03014428577570781
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.392795463403066,
+          "sd": 0.041652293463829655
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.17992812283703943,
+          "sd": 0.029169852683270416
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.4640341333333333,
+          "sd": 0.2918053051706758
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8411077830903462,
+          "sd": 0.03222951821191976
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4072185158729553,
+          "sd": 0.03233042819483185
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.17694238504561038,
+          "sd": 0.03701498682249293
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.43935604666666667,
+          "sd": 0.1899768923143195
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8296241823293888,
+          "sd": 0.03948273248006715
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.42727622389793396,
+          "sd": 0.07000116271723694
+        }
+      }
+    },
+    "Streptavidin": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.14954629443740852,
+          "sd": 0.07666967722541752
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.13387730266666667,
+          "sd": 0.1290345094510098
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8411321926921929,
+          "sd": 0.03937210056341167
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4923297663529714,
+          "sd": 0.06226429699531246
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1270552678161813,
+          "sd": 0.012710953204508603
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.4038295037333333,
+          "sd": 0.4806019735605827
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8644839066064058,
+          "sd": 0.011772670422472294
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4292071958382924,
+          "sd": 0.04700337564034792
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1908705368126775,
+          "sd": 0.04364561789254935
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.17414933383333334,
+          "sd": 0.15586442412483664
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8178402635010555,
+          "sd": 0.018962516331456708
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.5266910791397095,
+          "sd": 0.030274346176484435
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1877287676926508,
+          "sd": 0.046505141934057415
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.18216201566666668,
+          "sd": 0.15267232358492652
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8192177685486637,
+          "sd": 0.02019124887528318
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.48631349205970764,
+          "sd": 0.043552839678950024
+        }
+      }
+    },
+    "Subtilisin": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.3315918139323997,
+          "sd": 0.003872474672839077
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.0066842686526666665,
+          "sd": 0.011484985913248914
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.84681854829373,
+          "sd": 0.004202888648167999
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3874606092770894,
+          "sd": 0.024395152785037903
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2499299439655234,
+          "sd": 0.0770830083100922
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.56979924326,
+          "sd": 0.5081746053932161
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8090175606817571,
+          "sd": 0.04606782909735341
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.35902740557988483,
+          "sd": 0.06867866775752333
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2877072344914976,
+          "sd": 0.07968938411854973
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.13782414344166669,
+          "sd": 0.2376342810575048
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7963051610110667,
+          "sd": 0.011567733678443763
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3630627691745758,
+          "sd": 0.02862275518865177
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2623465997507793,
+          "sd": 0.06081433158150562
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5120386853333333,
+          "sd": 0.43992524387255616
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8140738338818774,
+          "sd": 0.029387741443031863
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.2849963108698527,
+          "sd": 0.03233917535536245
+        }
+      }
+    },
+    "TNF_alpha": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.12320852500823311,
+          "sd": 0.022201962152655397
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.10096574466666668,
+          "sd": 0.024002692522626403
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8256003014781221,
+          "sd": 0.03198720286925383
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4510616759459178,
+          "sd": 0.06521969221714631
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.19723599212692514,
+          "sd": 0.034415601087912584
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.3209381376666667,
+          "sd": 0.47609510578241593
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7838748308173257,
+          "sd": 0.07839174928862151
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4046873350938161,
+          "sd": 0.08215101647828985
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.17749727263253645,
+          "sd": 0.016473394037416163
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.35327007373333336,
+          "sd": 0.34251424659798774
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8299430380213619,
+          "sd": 0.05523011502416765
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4100899895032247,
+          "sd": 0.11251054045063244
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.14392824360550066,
+          "sd": 0.04841107365687132
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.3050310083333333,
+          "sd": 0.4560325823097175
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7876553699792816,
+          "sd": 0.043676362028237
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4030226270357768,
+          "sd": 0.06547886278939102
+        }
+      }
+    },
+    "Thrombin": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.16028642330884602,
+          "sd": 0.10605706273033423
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5738304833333333,
+          "sd": 0.3822650220991725
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8248698817235676,
+          "sd": 0.0316334782144208
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.06843666882533653,
+          "sd": 0.03327199460536315
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.9181536566666667,
+          "sd": 0.0527458239534338
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8592847451491823,
+          "sd": 0.030373526584105803
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.05096518111844754,
+          "sd": 0.04291353425094658
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.9589108366666667,
+          "sd": 0.06436294489626956
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8623687668585154,
+          "sd": 0.026950428549780216
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.05277684909257613,
+          "sd": 0.010267145954171383
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.91045662,
+          "sd": 0.0747935508232174
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8680312755036199,
+          "sd": 0.022390745115164788
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      }
+    },
+    "Trypsin": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.09202938636831168,
+          "sd": 0.06456402231340772
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.0347537439,
+          "sd": 0.057374379353876556
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8569011313704801,
+          "sd": 0.023337723192937348
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.38398972153663635,
+          "sd": 0.07666681903146116
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.11527444613741727,
+          "sd": 0.06883336963402278
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.2741393218666667,
+          "sd": 0.3362470495594987
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8219701329485882,
+          "sd": 0.042797924870853245
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.36926523844401044,
+          "sd": 0.06740081344025445
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.15287199926854675,
+          "sd": 0.01894421066510752
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.6884380133333333,
+          "sd": 0.30479716242288696
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8141059280188075,
+          "sd": 0.06426486983576847
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.39491764704386395,
+          "sd": 0.05780507626045435
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.1133572338352812,
+          "sd": 0.07161200810175261
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.32754656466666665,
+          "sd": 0.30364864236183514
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8091809968064796,
+          "sd": 0.048048597829482925
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.42309483885765076,
+          "sd": 0.040244100709929086
+        }
+      }
+    },
+    "VEGF": {
+      "serial": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.23733651168265338,
+          "sd": 0.13307425355178407
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.37563783793333333,
+          "sd": 0.5439790350162176
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.7901561740312102,
+          "sd": 0.06423917112290388
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4141275882720947,
+          "sd": 0.002481741608448057
+        }
+      },
+      "bmc_x1": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.2337123516165592,
+          "sd": 0.04884534808248143
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.5446632733333333,
+          "sd": 0.4018866834751907
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.8007097485513712,
+          "sd": 0.021926356968957447
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.4100893934567769,
+          "sd": 0.027531587050506436
+        }
+      },
+      "bmc_x2": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.22630319779867564,
+          "sd": 0.06337862663077745
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.351961,
+          "sd": 0.22970893399754375
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.814248508465105,
+          "sd": 0.006390088459344644
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3772529363632202,
+          "sd": 0.02423739922108513
+        }
+      },
+      "bmc_x3": {
+        "asf_fixed": {
+          "n": 3,
+          "mean": 0.24768361103030756,
+          "sd": 0.0692157980657538
+        },
+        "egarps_component": {
+          "n": 3,
+          "mean": 0.30784245233333335,
+          "sd": 0.26590797748525247
+        },
+        "rhofold_component": {
+          "n": 3,
+          "mean": 0.813141558773974,
+          "sd": 0.04062975971182734
+        },
+        "iptm_component": {
+          "n": 3,
+          "mean": 0.3967551688353221,
+          "sd": 0.03980466858194331
+        }
+      }
+    }
+  },
+  "hypervolume": {
+    "per_cell": {
+      "BSA#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.3222890782514468e-07,
+          "hv2d_egarps_rhofold": 1.3055995902859628e-06,
+          "hv2d_egarps_iptm": 4.664973419449398e-07,
+          "hv2d_rhofold_iptm": 0.06210057618078049
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0019141596397028726,
+          "hv2d_egarps_rhofold": 0.00935339429374969,
+          "hv2d_egarps_iptm": 0.006568605890372066,
+          "hv2d_rhofold_iptm": 0.06505752420420644
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.03678288349055901,
+          "hv2d_egarps_rhofold": 0.21604382121534482,
+          "hv2d_egarps_iptm": 0.17622410889545326,
+          "hv2d_rhofold_iptm": 0.0689024395450915
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.05517608599875528,
+          "hv2d_egarps_rhofold": 0.33467772383500677,
+          "hv2d_egarps_iptm": 0.165085011269466,
+          "hv2d_rhofold_iptm": 0.08088961847790826
+        },
+        "reference_3d": [
+          -1e-06,
+          0.5371629109697938,
+          0.2789743079414368
+        ]
+      },
+      "BSA#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.1643687348653539e-08,
+          "hv2d_egarps_rhofold": 2.0258618362202835e-07,
+          "hv2d_egarps_iptm": 1.4259946003749025e-07,
+          "hv2d_rhofold_iptm": 0.011253041388618065
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.02489674748713628,
+          "hv2d_egarps_rhofold": 0.14421896640180923,
+          "hv2d_egarps_iptm": 0.08512524664187299,
+          "hv2d_rhofold_iptm": 0.05765561834817513
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.025635183514075444,
+          "hv2d_egarps_rhofold": 0.1691958809496481,
+          "hv2d_egarps_iptm": 0.09877772086984406,
+          "hv2d_rhofold_iptm": 0.08254977422138224
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.009419707329970401,
+          "hv2d_egarps_rhofold": 0.23986639210531724,
+          "hv2d_egarps_iptm": 0.03523178138054843,
+          "hv2d_rhofold_iptm": 0.06505107518756621
+        },
+        "reference_3d": [
+          -1e-06,
+          0.521216627677101,
+          0.2736082507839203
+        ]
+      },
+      "BSA#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.003873041254048793,
+          "hv2d_egarps_rhofold": 0.024349872950586663,
+          "hv2d_egarps_iptm": 0.025769726775694245,
+          "hv2d_rhofold_iptm": 0.055509269494357236
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.05265457755454938,
+          "hv2d_egarps_rhofold": 0.3185386169061086,
+          "hv2d_egarps_iptm": 0.1654450384830008,
+          "hv2d_rhofold_iptm": 0.061451911804629965
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.05185986785379067,
+          "hv2d_egarps_rhofold": 0.21960063846458217,
+          "hv2d_egarps_iptm": 0.22511635193333987,
+          "hv2d_rhofold_iptm": 0.07425197682913963
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.005617546140648968,
+          "hv2d_egarps_rhofold": 0.04073760637610528,
+          "hv2d_egarps_iptm": 0.03197086954121096,
+          "hv2d_rhofold_iptm": 0.058205452084817144
+        },
+        "reference_3d": [
+          -1e-06,
+          0.5316744573170731,
+          0.26899538772010806
+        ]
+      },
+      "Carbonic_anhydrase_II#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.2013475405224303,
+          "hv2d_egarps_rhofold": 0.7205255043150851,
+          "hv2d_egarps_iptm": 0.2535649492560273,
+          "hv2d_rhofold_iptm": 0.23990543134814243
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.22470905769676797,
+          "hv2d_egarps_rhofold": 0.7390539865426216,
+          "hv2d_egarps_iptm": 0.26754907735480304,
+          "hv2d_rhofold_iptm": 0.2623824666097591
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.10737468547536805,
+          "hv2d_egarps_rhofold": 0.7148061126907185,
+          "hv2d_egarps_iptm": 0.12751864387339842,
+          "hv2d_rhofold_iptm": 0.14253419005107615
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.20862075925791113,
+          "hv2d_egarps_rhofold": 0.7216668588172235,
+          "hv2d_egarps_iptm": 0.2623240405102745,
+          "hv2d_rhofold_iptm": 0.24742928584566098
+        },
+        "reference_3d": [
+          -1e-06,
+          -1e-06,
+          0.16957944469356537
+        ]
+      },
+      "Carbonic_anhydrase_II#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 5.4228824674853976e-06,
+          "hv2d_egarps_rhofold": 8.296009260463054e-05,
+          "hv2d_egarps_iptm": 3.7686737633840766e-05,
+          "hv2d_rhofold_iptm": 0.02599857912770657
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 3.7704049867647084e-05,
+          "hv2d_egarps_rhofold": 0.0003558664051470689,
+          "hv2d_egarps_iptm": 0.0009373188451123335,
+          "hv2d_rhofold_iptm": 0.02123882859044787
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 3.2176265782989086e-06,
+          "hv2d_egarps_rhofold": 0.00015085401336121105,
+          "hv2d_egarps_iptm": 2.342503382845199e-05,
+          "hv2d_rhofold_iptm": 0.03180151490022711
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 1.23120509299374e-05,
+          "hv2d_egarps_rhofold": 0.0001885088068368894,
+          "hv2d_egarps_iptm": 7.713225750856003e-05,
+          "hv2d_rhofold_iptm": 0.03276758436618168
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7204250252365957,
+          0.1817623956670761
+        ]
+      },
+      "Carbonic_anhydrase_II#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 2.006747158697628e-05,
+          "hv2d_egarps_rhofold": 0.0001435504015886118,
+          "hv2d_egarps_iptm": 0.00012052369159942223,
+          "hv2d_rhofold_iptm": 0.026703211651708768
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.000615565796041979,
+          "hv2d_egarps_rhofold": 0.02278929320066157,
+          "hv2d_egarps_iptm": 0.003689174845130431,
+          "hv2d_rhofold_iptm": 0.030622336435590484
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 8.087240776514449e-05,
+          "hv2d_egarps_rhofold": 0.0022953194616996287,
+          "hv2d_egarps_iptm": 0.0005102822901970753,
+          "hv2d_rhofold_iptm": 0.026146423943121336
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.005505850242797981,
+          "hv2d_egarps_rhofold": 0.08359429912177557,
+          "hv2d_egarps_iptm": 0.05083029215104474,
+          "hv2d_rhofold_iptm": 0.03332044931841376
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6978314574961344,
+          0.21221524314785004
+        ]
+      },
+      "Chymotrypsinogen#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 4.350854961130068e-06,
+          "hv2d_egarps_rhofold": 7.403256117907821e-05,
+          "hv2d_egarps_iptm": 0.0001650096850380856,
+          "hv2d_rhofold_iptm": 0.017247623711215052
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0002591803200456855,
+          "hv2d_egarps_rhofold": 0.0020834966612971236,
+          "hv2d_egarps_iptm": 0.004941486967016974,
+          "hv2d_rhofold_iptm": 0.012229924659729306
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 5.0481934707931647e-05,
+          "hv2d_egarps_rhofold": 0.0009197256780719962,
+          "hv2d_egarps_iptm": 0.0012845407731893578,
+          "hv2d_rhofold_iptm": 0.010418260857671315
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 9.248465906414803e-05,
+          "hv2d_egarps_rhofold": 0.0009969290000372234,
+          "hv2d_egarps_iptm": 0.002058269244067249,
+          "hv2d_rhofold_iptm": 0.012541726671652698
+        },
+        "reference_3d": [
+          -3.8032389999999997e-07,
+          0.8049073728278014,
+          0.26259474294090274
+        ]
+      },
+      "Chymotrypsinogen#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.005282857914246778,
+          "hv2d_egarps_rhofold": 0.06936937664379907,
+          "hv2d_egarps_iptm": 0.043878901534295245,
+          "hv2d_rhofold_iptm": 0.019211481166318854
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.003956362002284902,
+          "hv2d_egarps_rhofold": 0.0694597977236121,
+          "hv2d_egarps_iptm": 0.03273824966706407,
+          "hv2d_rhofold_iptm": 0.029763230196000644
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.008230939600062877,
+          "hv2d_egarps_rhofold": 0.06953705375217926,
+          "hv2d_egarps_iptm": 0.0688053903994421,
+          "hv2d_rhofold_iptm": 0.03425973903165141
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.005183794640610051,
+          "hv2d_egarps_rhofold": 0.0693507921709453,
+          "hv2d_egarps_iptm": 0.043394220561803226,
+          "hv2d_rhofold_iptm": 0.024342657416009127
+        },
+        "reference_3d": [
+          -7.598414399999999e-07,
+          0.7401043042121701,
+          0.23850904242897034
+        ]
+      },
+      "Chymotrypsinogen#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.009549105922206013,
+          "hv2d_egarps_rhofold": 0.12058977031563262,
+          "hv2d_egarps_iptm": 0.07020223384384594,
+          "hv2d_rhofold_iptm": 0.025368651064669893
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.012293586732115844,
+          "hv2d_egarps_rhofold": 0.12104647337606382,
+          "hv2d_egarps_iptm": 0.11172114568555211,
+          "hv2d_rhofold_iptm": 0.02913897863154886
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.013088946958382405,
+          "hv2d_egarps_rhofold": 0.12210820079766754,
+          "hv2d_egarps_iptm": 0.11281760637451613,
+          "hv2d_rhofold_iptm": 0.029215426688159577
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.013094438089913738,
+          "hv2d_egarps_rhofold": 0.12159096864485769,
+          "hv2d_egarps_iptm": 0.12292793252440895,
+          "hv2d_rhofold_iptm": 0.02542981636440104
+        },
+        "reference_3d": [
+          -9.342035099999999e-07,
+          0.7611954062500006,
+          0.2347024066915512
+        ]
+      },
+      "Concanavalin_A#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.002540258132374398,
+          "hv2d_egarps_rhofold": 0.028381250014056857,
+          "hv2d_egarps_iptm": 0.015720165846093603,
+          "hv2d_rhofold_iptm": 0.05145425342695457
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.00475649091472373,
+          "hv2d_egarps_rhofold": 0.01694476750706636,
+          "hv2d_egarps_iptm": 0.03331047051669482,
+          "hv2d_rhofold_iptm": 0.06026009799161064
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.00489474177268141,
+          "hv2d_egarps_rhofold": 0.030947884635555787,
+          "hv2d_egarps_iptm": 0.02569480650092897,
+          "hv2d_rhofold_iptm": 0.055640173297963676
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.021276051687806784,
+          "hv2d_egarps_rhofold": 0.08578436937050342,
+          "hv2d_egarps_iptm": 0.1318009097460648,
+          "hv2d_rhofold_iptm": 0.06543287953814289
+        },
+        "reference_3d": [
+          -9.219614e-07,
+          0.6859532242703495,
+          0.3701654507389069
+        ]
+      },
+      "Concanavalin_A#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.005184299248335713,
+          "hv2d_egarps_rhofold": 0.05669071769066324,
+          "hv2d_egarps_iptm": 0.07341033005894612,
+          "hv2d_rhofold_iptm": 0.033555791757334454
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.004182207664758101,
+          "hv2d_egarps_rhofold": 0.04996845699064324,
+          "hv2d_egarps_iptm": 0.060737827818472465,
+          "hv2d_rhofold_iptm": 0.03722623295814244
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.005633736961568546,
+          "hv2d_egarps_rhofold": 0.05128466216034637,
+          "hv2d_egarps_iptm": 0.07685130022383023,
+          "hv2d_rhofold_iptm": 0.034735703920678214
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.005923722629889439,
+          "hv2d_egarps_rhofold": 0.05650561879757948,
+          "hv2d_egarps_iptm": 0.0959054870033903,
+          "hv2d_rhofold_iptm": 0.037937652823416185
+        },
+        "reference_3d": [
+          -4.3212899999999854e-08,
+          0.7703138669796538,
+          0.3534805609455109
+        ]
+      },
+      "Concanavalin_A#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.00026096753063337776,
+          "hv2d_egarps_rhofold": 0.0011662649284377622,
+          "hv2d_egarps_iptm": 0.0012917947696614654,
+          "hv2d_rhofold_iptm": 0.06460764122599791
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.00026333296360829946,
+          "hv2d_egarps_rhofold": 0.0011737056410447962,
+          "hv2d_egarps_iptm": 0.0012993894998525836,
+          "hv2d_rhofold_iptm": 0.06632009208411443
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.00045906376432762333,
+          "hv2d_egarps_rhofold": 0.002534792022599924,
+          "hv2d_egarps_iptm": 0.0025845746808595264,
+          "hv2d_rhofold_iptm": 0.06616784387005159
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.000261555583959903,
+          "hv2d_egarps_rhofold": 0.0011574760496802297,
+          "hv2d_egarps_iptm": 0.0012905984730601386,
+          "hv2d_rhofold_iptm": 0.06605013785721599
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6910917580893691,
+          0.36107058660888675
+        ]
+      },
+      "Cytochrome_c#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.013233819580538745,
+          "hv2d_egarps_rhofold": 0.06819528909668866,
+          "hv2d_egarps_iptm": 0.18187735279338346,
+          "hv2d_rhofold_iptm": 0.06580447606051894
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.03213077261523995,
+          "hv2d_egarps_rhofold": 0.09680291660667659,
+          "hv2d_egarps_iptm": 0.3293295189896369,
+          "hv2d_rhofold_iptm": 0.052300987738125915
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.012620184827474441,
+          "hv2d_egarps_rhofold": 0.0705784880107758,
+          "hv2d_egarps_iptm": 0.17081364313323877,
+          "hv2d_rhofold_iptm": 0.056016363573689214
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.02593696203305864,
+          "hv2d_egarps_rhofold": 0.09106102651916029,
+          "hv2d_egarps_iptm": 0.2818784573406531,
+          "hv2d_rhofold_iptm": 0.05699997420104733
+        },
+        "reference_3d": [
+          -7.391399999999853e-09,
+          0.75914449689441,
+          0.25044850842857364
+        ]
+      },
+      "Cytochrome_c#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.02279807883732076,
+          "hv2d_egarps_rhofold": 0.129718360415701,
+          "hv2d_egarps_iptm": 0.16987774965181685,
+          "hv2d_rhofold_iptm": 0.05124668541504288
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.04052707293258263,
+          "hv2d_egarps_rhofold": 0.1300679291774378,
+          "hv2d_egarps_iptm": 0.43208524719210784,
+          "hv2d_rhofold_iptm": 0.06748292470141022
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.02343934415708012,
+          "hv2d_egarps_rhofold": 0.13137150090212052,
+          "hv2d_egarps_iptm": 0.17123600082548537,
+          "hv2d_rhofold_iptm": 0.061234184404541606
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.028680385849819724,
+          "hv2d_egarps_rhofold": 0.12961169411435575,
+          "hv2d_egarps_iptm": 0.2224972243901059,
+          "hv2d_rhofold_iptm": 0.06636972047851467
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7352642713178282,
+          0.277261955904007
+        ]
+      },
+      "Cytochrome_c#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.009870083289479678,
+          "hv2d_egarps_rhofold": 0.050851033237446094,
+          "hv2d_egarps_iptm": 0.18199075403266846,
+          "hv2d_rhofold_iptm": 0.024455658114547214
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.015583853614188117,
+          "hv2d_egarps_rhofold": 0.06036036136471058,
+          "hv2d_egarps_iptm": 0.24896529043316187,
+          "hv2d_rhofold_iptm": 0.022023850369378786
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.008835482237250789,
+          "hv2d_egarps_rhofold": 0.05374479894693773,
+          "hv2d_egarps_iptm": 0.22415281687782795,
+          "hv2d_rhofold_iptm": 0.015097552727012733
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.012309650780231338,
+          "hv2d_egarps_rhofold": 0.07088963577898698,
+          "hv2d_egarps_iptm": 0.2246738089524159,
+          "hv2d_rhofold_iptm": 0.014880008781503508
+        },
+        "reference_3d": [
+          -3.6029957e-07,
+          0.8216940769230748,
+          0.306716187166214
+        ]
+      },
+      "GFP#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0007892086226319085,
+          "hv2d_egarps_rhofold": 0.01156113135576186,
+          "hv2d_egarps_iptm": 0.02109340522061134,
+          "hv2d_rhofold_iptm": 0.016489922201068832
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0054674405207110685,
+          "hv2d_egarps_rhofold": 0.04438341813468669,
+          "hv2d_egarps_iptm": 0.08141310205503961,
+          "hv2d_rhofold_iptm": 0.01852293403087665
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0010462511333967164,
+          "hv2d_egarps_rhofold": 0.017195488881525244,
+          "hv2d_egarps_iptm": 0.02942954055708112,
+          "hv2d_rhofold_iptm": 0.017139615518977188
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0012231497430779533,
+          "hv2d_egarps_rhofold": 0.013139169837304914,
+          "hv2d_egarps_iptm": 0.025471184826764703,
+          "hv2d_rhofold_iptm": 0.01711590412711836
+        },
+        "reference_3d": [
+          -1e-06,
+          0.8178381912908228,
+          0.3222113980522156
+        ]
+      },
+      "GFP#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.005889845561541873,
+          "hv2d_egarps_rhofold": 0.04404495822093206,
+          "hv2d_egarps_iptm": 0.11510604701589637,
+          "hv2d_rhofold_iptm": 0.011648201018753473
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.003109329808853201,
+          "hv2d_egarps_rhofold": 0.02933125263621881,
+          "hv2d_egarps_iptm": 0.05108058517900897,
+          "hv2d_rhofold_iptm": 0.01392347630248122
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.004204439122253474,
+          "hv2d_egarps_rhofold": 0.02827889884561366,
+          "hv2d_egarps_iptm": 0.06617062919539919,
+          "hv2d_rhofold_iptm": 0.015567992591449075
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0012518379807007788,
+          "hv2d_egarps_rhofold": 0.011158792149560332,
+          "hv2d_egarps_iptm": 0.038075623549172835,
+          "hv2d_rhofold_iptm": 0.012516278260965226
+        },
+        "reference_3d": [
+          -1e-06,
+          0.8333983827160475,
+          0.27972961800003054
+        ]
+      },
+      "GFP#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0002452917867597475,
+          "hv2d_egarps_rhofold": 0.0014616691723392911,
+          "hv2d_egarps_iptm": 0.005929672813484298,
+          "hv2d_rhofold_iptm": 0.012029117522050005
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0005564362740864432,
+          "hv2d_egarps_rhofold": 0.004293818941095817,
+          "hv2d_egarps_iptm": 0.011352765899842805,
+          "hv2d_rhofold_iptm": 0.01439201765045753
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.001300388087800666,
+          "hv2d_egarps_rhofold": 0.009040061817448812,
+          "hv2d_egarps_iptm": 0.022216426423792526,
+          "hv2d_rhofold_iptm": 0.014943083608218579
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0007255020766194937,
+          "hv2d_egarps_rhofold": 0.004170615123775003,
+          "hv2d_egarps_iptm": 0.012639088340567267,
+          "hv2d_rhofold_iptm": 0.019192208940672847
+        },
+        "reference_3d": [
+          -1e-06,
+          0.8240443689167998,
+          0.29131178395652774
+        ]
+      },
+      "Lysozyme#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.006431895633938189,
+          "hv2d_egarps_rhofold": 0.040540613207244676,
+          "hv2d_egarps_iptm": 0.18286125343200715,
+          "hv2d_rhofold_iptm": 0.013271210067429925
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.009490464200529092,
+          "hv2d_egarps_rhofold": 0.08071496245545948,
+          "hv2d_egarps_iptm": 0.11206391034497366,
+          "hv2d_rhofold_iptm": 0.025676204526116495
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.009414847485323423,
+          "hv2d_egarps_rhofold": 0.09082940933428528,
+          "hv2d_egarps_iptm": 0.09226408020951074,
+          "hv2d_rhofold_iptm": 0.02958915222191976
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.014913128026348184,
+          "hv2d_egarps_rhofold": 0.06528662284807364,
+          "hv2d_egarps_iptm": 0.2885743365979842,
+          "hv2d_rhofold_iptm": 0.02764030831684309
+        },
+        "reference_3d": [
+          1.6592409e-06,
+          0.728506187500006,
+          0.23068085150623321
+        ]
+      },
+      "Lysozyme#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.003066134648669618,
+          "hv2d_egarps_rhofold": 0.02301446533273479,
+          "hv2d_egarps_iptm": 0.03108907243962307,
+          "hv2d_rhofold_iptm": 0.04430665580569919
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.01979066341794251,
+          "hv2d_egarps_rhofold": 0.08025946860093339,
+          "hv2d_egarps_iptm": 0.16430197602925944,
+          "hv2d_rhofold_iptm": 0.04836660572006033
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.007798373269376385,
+          "hv2d_egarps_rhofold": 0.04386206861657853,
+          "hv2d_egarps_iptm": 0.1200098624822988,
+          "hv2d_rhofold_iptm": 0.04302574274080811
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.006161315856756384,
+          "hv2d_egarps_rhofold": 0.037782692582571706,
+          "hv2d_egarps_iptm": 0.11941225405880078,
+          "hv2d_rhofold_iptm": 0.04180568316202418
+        },
+        "reference_3d": [
+          3.3601926e-06,
+          0.6869784992175275,
+          0.1904332770576477
+        ]
+      },
+      "Lysozyme#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0013886145488202258,
+          "hv2d_egarps_rhofold": 0.04773689931192505,
+          "hv2d_egarps_iptm": 0.017636379673535735,
+          "hv2d_rhofold_iptm": 0.01556627890405563
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.013615397312759094,
+          "hv2d_egarps_rhofold": 0.07949604663096016,
+          "hv2d_egarps_iptm": 0.13269624708256572,
+          "hv2d_rhofold_iptm": 0.02554653848832238
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.011341041821673715,
+          "hv2d_egarps_rhofold": 0.06353437291446123,
+          "hv2d_egarps_iptm": 0.13013145495017747,
+          "hv2d_rhofold_iptm": 0.02521201861730514
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.01402960919811005,
+          "hv2d_egarps_rhofold": 0.07476210985054293,
+          "hv2d_egarps_iptm": 0.16166618840642805,
+          "hv2d_rhofold_iptm": 0.025806319546697567
+        },
+        "reference_3d": [
+          -9.059589999999999e-07,
+          0.7281738822605969,
+          0.23426195816898346
+        ]
+      },
+      "MBP#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 6.564967598965232e-05,
+          "hv2d_egarps_rhofold": 0.0006559530046366712,
+          "hv2d_egarps_iptm": 0.0007973279640135825,
+          "hv2d_rhofold_iptm": 0.01801244189242154
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.000311427938008487,
+          "hv2d_egarps_rhofold": 0.0035441940286971996,
+          "hv2d_egarps_iptm": 0.0032649859455507186,
+          "hv2d_rhofold_iptm": 0.03719825333636594
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 5.782103044678979e-05,
+          "hv2d_egarps_rhofold": 0.000661725467936584,
+          "hv2d_egarps_iptm": 0.0006062413524956352,
+          "hv2d_rhofold_iptm": 0.03125237720995052
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 4.260771803770301e-07,
+          "hv2d_egarps_rhofold": 1.0178082999199913e-05,
+          "hv2d_egarps_iptm": 5.088935661788428e-06,
+          "hv2d_rhofold_iptm": 0.02392528628437519
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7822681823899358,
+          0.21034025983715057
+        ]
+      },
+      "MBP#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.2329065207769658e-07,
+          "hv2d_egarps_rhofold": 9.536067911232466e-07,
+          "hv2d_egarps_iptm": 5.288274605079091e-07,
+          "hv2d_rhofold_iptm": 0.06487195606943269
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 2.571444383189439e-07,
+          "hv2d_egarps_rhofold": 3.3360036212329512e-06,
+          "hv2d_egarps_iptm": 1.6480282347630279e-06,
+          "hv2d_rhofold_iptm": 0.054202864495391155
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 1.272927327525954e-07,
+          "hv2d_egarps_rhofold": 1.1463779653771054e-06,
+          "hv2d_egarps_iptm": 4.93107971884396e-07,
+          "hv2d_rhofold_iptm": 0.05281695648996799
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 1.0389019864882777e-07,
+          "hv2d_egarps_rhofold": 9.824799352944982e-07,
+          "hv2d_egarps_iptm": 4.627336325065692e-07,
+          "hv2d_rhofold_iptm": 0.06999283223168218
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6144142380952401,
+          0.21251356439495087
+        ]
+      },
+      "MBP#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 2.033751589054297e-08,
+          "hv2d_egarps_rhofold": 1.4459006344720194e-07,
+          "hv2d_egarps_iptm": 2.4189625807551425e-07,
+          "hv2d_rhofold_iptm": 0.019571546288802255
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 8.896231014623662e-08,
+          "hv2d_egarps_rhofold": 8.03598450578273e-07,
+          "hv2d_egarps_iptm": 1.1521704278835843e-06,
+          "hv2d_rhofold_iptm": 0.01645277950167103
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 1.6495510548646097e-07,
+          "hv2d_egarps_rhofold": 1.7690052862276865e-06,
+          "hv2d_egarps_iptm": 3.418926827701204e-06,
+          "hv2d_rhofold_iptm": 0.022641859845470024
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 6.173071142158843e-07,
+          "hv2d_egarps_rhofold": 8.025165573465686e-06,
+          "hv2d_egarps_iptm": 1.546523380933151e-05,
+          "hv2d_rhofold_iptm": 0.02458178323943199
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7781093715170261,
+          0.20671133534812927
+        ]
+      },
+      "Myoglobin#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.9220867109985634e-06,
+          "hv2d_egarps_rhofold": 1.6475743840908262e-05,
+          "hv2d_egarps_iptm": 3.0078521767211924e-05,
+          "hv2d_rhofold_iptm": 0.012276490781727508
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0011321025919617611,
+          "hv2d_egarps_rhofold": 0.01785704897460102,
+          "hv2d_egarps_iptm": 0.14705223306923185,
+          "hv2d_rhofold_iptm": 0.02847156329853944
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.00019508734791995596,
+          "hv2d_egarps_rhofold": 0.012722922346232785,
+          "hv2d_egarps_iptm": 0.004278450788026355,
+          "hv2d_rhofold_iptm": 0.03689873624578577
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 1.9387576270094932e-05,
+          "hv2d_egarps_rhofold": 0.012716103118730811,
+          "hv2d_egarps_iptm": 0.00042750903580182924,
+          "hv2d_rhofold_iptm": 0.03161587324753927
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7905985377503868,
+          0.1901862307062149
+        ]
+      },
+      "Myoglobin#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.00012589558004029994,
+          "hv2d_egarps_rhofold": 0.0005372605176962587,
+          "hv2d_egarps_iptm": 0.0013046956467000048,
+          "hv2d_rhofold_iptm": 0.036297262459138696
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 9.994566655526886e-05,
+          "hv2d_egarps_rhofold": 0.0005320636793408552,
+          "hv2d_egarps_iptm": 0.0009724094150972852,
+          "hv2d_rhofold_iptm": 0.031582365103295325
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0012281070000593121,
+          "hv2d_egarps_rhofold": 0.00337509282787332,
+          "hv2d_egarps_iptm": 0.012671238141243397,
+          "hv2d_rhofold_iptm": 0.03818018570043264
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.005868292655535797,
+          "hv2d_egarps_rhofold": 0.017258275975324266,
+          "hv2d_egarps_iptm": 0.06051697907450792,
+          "hv2d_rhofold_iptm": 0.037398432374979126
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7873531213063768,
+          0.17490316765213013
+        ]
+      },
+      "Myoglobin#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0017018074282971504,
+          "hv2d_egarps_rhofold": 0.007721955598150152,
+          "hv2d_egarps_iptm": 0.024024314630768335,
+          "hv2d_rhofold_iptm": 0.03416780894534349
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.03745725302803401,
+          "hv2d_egarps_rhofold": 0.11304620839806215,
+          "hv2d_egarps_iptm": 0.3292971265825039,
+          "hv2d_rhofold_iptm": 0.03987822797936664
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.001818146922008174,
+          "hv2d_egarps_rhofold": 0.0079941620457221,
+          "hv2d_egarps_iptm": 0.025930082882981653,
+          "hv2d_rhofold_iptm": 0.03842365265843728
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0017931517499275918,
+          "hv2d_egarps_rhofold": 0.007723735158478836,
+          "hv2d_egarps_iptm": 0.025382887812688836,
+          "hv2d_rhofold_iptm": 0.03759926525523553
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7842101811023565,
+          0.20660909848117828
+        ]
+      },
+      "Papain#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.008507818856813216,
+          "hv2d_egarps_rhofold": 0.06570883117513007,
+          "hv2d_egarps_iptm": 0.0982373562097151,
+          "hv2d_rhofold_iptm": 0.012667128925874422
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.007293807407571486,
+          "hv2d_egarps_rhofold": 0.04888998439251953,
+          "hv2d_egarps_iptm": 0.1251452951369187,
+          "hv2d_rhofold_iptm": 0.019504214728511892
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.01141167910905085,
+          "hv2d_egarps_rhofold": 0.08047583351171711,
+          "hv2d_egarps_iptm": 0.12665753586024397,
+          "hv2d_rhofold_iptm": 0.026375571436277733
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0069704659118611755,
+          "hv2d_egarps_rhofold": 0.06963065577713334,
+          "hv2d_egarps_iptm": 0.11603569327713817,
+          "hv2d_rhofold_iptm": 0.020198994558904622
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7775854992150714,
+          0.20268791751766205
+        ]
+      },
+      "Papain#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.12277001796981109,
+          "hv2d_egarps_rhofold": 0.8626180549996401,
+          "hv2d_egarps_iptm": 0.14301262618058364,
+          "hv2d_rhofold_iptm": 0.13954788837342727
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.09067402449304961,
+          "hv2d_egarps_rhofold": 0.8593366350309897,
+          "hv2d_egarps_iptm": 0.11109516915447766,
+          "hv2d_rhofold_iptm": 0.23165682270927923
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.09576449098388384,
+          "hv2d_egarps_rhofold": 0.826925833432741,
+          "hv2d_egarps_iptm": 0.11349246199090693,
+          "hv2d_rhofold_iptm": 0.1758096831076555
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.08178932034389325,
+          "hv2d_egarps_rhofold": 0.8466355973003659,
+          "hv2d_egarps_iptm": 0.09466450462547618,
+          "hv2d_rhofold_iptm": 0.1941318303152455
+        },
+        "reference_3d": [
+          -1e-06,
+          -1e-06,
+          0.20414690511131287
+        ]
+      },
+      "Papain#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.009135586849915696,
+          "hv2d_egarps_rhofold": 0.17306864691348714,
+          "hv2d_egarps_iptm": 0.010782024054471687,
+          "hv2d_rhofold_iptm": 0.15266781070359714
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.07798562572317502,
+          "hv2d_egarps_rhofold": 0.45760133910276074,
+          "hv2d_egarps_iptm": 0.094338754825807,
+          "hv2d_rhofold_iptm": 0.19489739581052923
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0846742981557042,
+          "hv2d_egarps_rhofold": 0.40236658944178844,
+          "hv2d_egarps_iptm": 0.10243671918693253,
+          "hv2d_rhofold_iptm": 0.18644688691164502
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.09158762421367174,
+          "hv2d_egarps_rhofold": 0.4569323251863342,
+          "hv2d_egarps_iptm": 0.11114136807722276,
+          "hv2d_rhofold_iptm": 0.18006508046325054
+        },
+        "reference_3d": [
+          -1e-06,
+          -1e-06,
+          0.22416426079177856
+        ]
+      },
+      "Pepsin#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.001374530826848193,
+          "hv2d_egarps_rhofold": 0.01141181108732432,
+          "hv2d_egarps_iptm": 0.022292181263922347,
+          "hv2d_rhofold_iptm": 0.008378738945324303
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0008409812224305904,
+          "hv2d_egarps_rhofold": 0.00916398601664073,
+          "hv2d_egarps_iptm": 0.013596318209066077,
+          "hv2d_rhofold_iptm": 0.00950347701758587
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0009186586861798115,
+          "hv2d_egarps_rhofold": 0.012186311458829247,
+          "hv2d_egarps_iptm": 0.014758755344765546,
+          "hv2d_rhofold_iptm": 0.007945173174863185
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.00019961428323473209,
+          "hv2d_egarps_rhofold": 0.009121406741051722,
+          "hv2d_egarps_iptm": 0.003823642122051268,
+          "hv2d_rhofold_iptm": 0.010796516568836274
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7881017906976776,
+          0.13630056219005585
+        ]
+      },
+      "Pepsin#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 3.369052796391203e-08,
+          "hv2d_egarps_rhofold": 1.4381033410059174e-06,
+          "hv2d_egarps_iptm": 6.442246920763654e-07,
+          "hv2d_rhofold_iptm": 0.006962033071936909
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 1.5407200835968792e-06,
+          "hv2d_egarps_rhofold": 3.3311886590103165e-05,
+          "hv2d_egarps_iptm": 1.8658206190272298e-05,
+          "hv2d_rhofold_iptm": 0.012489367747040328
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.00015010575369107698,
+          "hv2d_egarps_rhofold": 0.00279339564211683,
+          "hv2d_egarps_iptm": 0.0017925049573712052,
+          "hv2d_rhofold_iptm": 0.011433703652427818
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 2.6639055519090658e-06,
+          "hv2d_egarps_rhofold": 2.909732333664335e-05,
+          "hv2d_egarps_iptm": 3.2089338300468074e-05,
+          "hv2d_rhofold_iptm": 0.015514017108718876
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7620309018404945,
+          0.13705430762672424
+        ]
+      },
+      "Pepsin#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0001557237598806483,
+          "hv2d_egarps_rhofold": 0.005392739943707222,
+          "hv2d_egarps_iptm": 0.0022797192429666003,
+          "hv2d_rhofold_iptm": 0.012212307935783921
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0003424061584900452,
+          "hv2d_egarps_rhofold": 0.012649340052657308,
+          "hv2d_egarps_iptm": 0.002240930552247314,
+          "hv2d_rhofold_iptm": 0.02194182231926454
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0009247843223182809,
+          "hv2d_egarps_rhofold": 0.015168733113625495,
+          "hv2d_egarps_iptm": 0.031230765603372953,
+          "hv2d_rhofold_iptm": 0.021149504710977936
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0003056070852200564,
+          "hv2d_egarps_rhofold": 0.012034753739740105,
+          "hv2d_egarps_iptm": 0.0019587538658402174,
+          "hv2d_rhofold_iptm": 0.03208563288517509
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6947737286821726,
+          0.12574316399002075
+        ]
+      },
+      "RNase_A#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 6.340691519556353e-05,
+          "hv2d_egarps_rhofold": 0.0017053961834838892,
+          "hv2d_egarps_iptm": 0.00045845821450146414,
+          "hv2d_rhofold_iptm": 0.03285753343499114
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0005364548527422652,
+          "hv2d_egarps_rhofold": 0.0044248372270369075,
+          "hv2d_egarps_iptm": 0.0041701776538697055,
+          "hv2d_rhofold_iptm": 0.0709029678911108
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.000305911993170751,
+          "hv2d_egarps_rhofold": 0.0025776396499914457,
+          "hv2d_egarps_iptm": 0.002860030862592742,
+          "hv2d_rhofold_iptm": 0.04350684623741653
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.0005731835088154905,
+          "hv2d_egarps_rhofold": 0.004411070471804423,
+          "hv2d_egarps_iptm": 0.004350085594210502,
+          "hv2d_rhofold_iptm": 0.03821410967050473
+        },
+        "reference_3d": [
+          2.337802e-05,
+          0.6550871064162754,
+          0.3151207103004456
+        ]
+      },
+      "RNase_A#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.00017342638798860459,
+          "hv2d_egarps_rhofold": 0.0009117181994698661,
+          "hv2d_egarps_iptm": 0.0017120967483887021,
+          "hv2d_rhofold_iptm": 0.03661475978902896
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.001223318853026957,
+          "hv2d_egarps_rhofold": 0.008783607283512317,
+          "hv2d_egarps_iptm": 0.012453412423238832,
+          "hv2d_rhofold_iptm": 0.036903472961894064
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.002000290715991804,
+          "hv2d_egarps_rhofold": 0.007461837272034747,
+          "hv2d_egarps_iptm": 0.02318879072888027,
+          "hv2d_rhofold_iptm": 0.04351580095845677
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.0009710117155698392,
+          "hv2d_egarps_rhofold": 0.007336072900380113,
+          "hv2d_egarps_iptm": 0.011252284104426136,
+          "hv2d_rhofold_iptm": 0.038679198961279394
+        },
+        "reference_3d": [
+          4.0735707e-06,
+          0.675040548183257,
+          0.2799647285213471
+        ]
+      },
+      "RNase_A#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.00036459426290056914,
+          "hv2d_egarps_rhofold": 0.002583847707011335,
+          "hv2d_egarps_iptm": 0.009934887693404112,
+          "hv2d_rhofold_iptm": 0.038691001290483355
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0064334242650822835,
+          "hv2d_egarps_rhofold": 0.05060716453985167,
+          "hv2d_egarps_iptm": 0.08739421737788118,
+          "hv2d_rhofold_iptm": 0.028566881085476874
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.00813857897955681,
+          "hv2d_egarps_rhofold": 0.04863050595422909,
+          "hv2d_egarps_iptm": 0.11140421606835146,
+          "hv2d_rhofold_iptm": 0.04018250200022824
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.006997614288827944,
+          "hv2d_egarps_rhofold": 0.04475243323959325,
+          "hv2d_egarps_iptm": 0.0940025786123595,
+          "hv2d_rhofold_iptm": 0.04447360409998288
+        },
+        "reference_3d": [
+          3.221138e-06,
+          0.6896547993730361,
+          0.3436950875988007
+        ]
+      },
+      "SARS-CoV-2_Nucleocapsid#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0020955286842953345,
+          "hv2d_egarps_rhofold": 0.013213910951041468,
+          "hv2d_egarps_iptm": 0.08502025828314466,
+          "hv2d_rhofold_iptm": 0.017724534445213293
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.009083901047290635,
+          "hv2d_egarps_rhofold": 0.057373663248062895,
+          "hv2d_egarps_iptm": 0.1387991612331883,
+          "hv2d_rhofold_iptm": 0.017749642631521817
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.010618992689629007,
+          "hv2d_egarps_rhofold": 0.05878034681464249,
+          "hv2d_egarps_iptm": 0.1689463901979126,
+          "hv2d_rhofold_iptm": 0.020303714155117957
+        },
+        "bmc_x3": {
+          "n_pool": 24,
+          "hv3d": 0.0083972771087058,
+          "hv2d_egarps_rhofold": 0.057787657260708,
+          "hv2d_egarps_iptm": 0.16486218927008636,
+          "hv2d_rhofold_iptm": 0.015038983392399365
+        },
+        "reference_3d": [
+          5.8703703e-06,
+          0.806427971962619,
+          0.25058488385581973
+        ]
+      },
+      "SARS-CoV-2_Nucleocapsid#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.00801001043210656,
+          "hv2d_egarps_rhofold": 0.03928407670070646,
+          "hv2d_egarps_iptm": 0.07906926140055262,
+          "hv2d_rhofold_iptm": 0.030943208237514012
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.008141726274473614,
+          "hv2d_egarps_rhofold": 0.050373731631460424,
+          "hv2d_egarps_iptm": 0.08227971905618733,
+          "hv2d_rhofold_iptm": 0.03810755249360424
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.006379059488808436,
+          "hv2d_egarps_rhofold": 0.04710958296237405,
+          "hv2d_egarps_iptm": 0.06964408414721407,
+          "hv2d_rhofold_iptm": 0.04174619107200708
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.006752414100085616,
+          "hv2d_egarps_rhofold": 0.0500884582792261,
+          "hv2d_egarps_iptm": 0.05698725213865817,
+          "hv2d_rhofold_iptm": 0.03929735459477144
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6967867934272262,
+          0.24636269943618774
+        ]
+      },
+      "SARS-CoV-2_Nucleocapsid#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0009117397747475816,
+          "hv2d_egarps_rhofold": 0.007235975675797534,
+          "hv2d_egarps_iptm": 0.008684095912108447,
+          "hv2d_rhofold_iptm": 0.019279751679057242
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.003976318858709505,
+          "hv2d_egarps_rhofold": 0.04198961235238714,
+          "hv2d_egarps_iptm": 0.0484352560953128,
+          "hv2d_rhofold_iptm": 0.023380405885643895
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.004472552788098715,
+          "hv2d_egarps_rhofold": 0.08972591909334607,
+          "hv2d_egarps_iptm": 0.051932645943931086,
+          "hv2d_rhofold_iptm": 0.03760510261506293
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.004604424210963335,
+          "hv2d_egarps_rhofold": 0.08730203075998168,
+          "hv2d_egarps_iptm": 0.07567923314681257,
+          "hv2d_rhofold_iptm": 0.029367504989691016
+        },
+        "reference_3d": [
+          9.960781999999999e-06,
+          0.7603005552099542,
+          0.27192942635917666
+        ]
+      },
+      "Streptavidin#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0004295508868057873,
+          "hv2d_egarps_rhofold": 0.0022545877979523047,
+          "hv2d_egarps_iptm": 0.037461533489885034,
+          "hv2d_rhofold_iptm": 0.016551738044622205
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0079780031461778,
+          "hv2d_egarps_rhofold": 0.07561579709605915,
+          "hv2d_egarps_iptm": 0.09988402347456977,
+          "hv2d_rhofold_iptm": 0.017673642651754615
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0005454948798271144,
+          "hv2d_egarps_rhofold": 0.0024532983923360946,
+          "hv2d_egarps_iptm": 0.04968391515761651,
+          "hv2d_rhofold_iptm": 0.01981511339930758
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.00035582251555528493,
+          "hv2d_egarps_rhofold": 0.0024088539713007268,
+          "hv2d_egarps_iptm": 0.0316561683516951,
+          "hv2d_rhofold_iptm": 0.02069023282101729
+        },
+        "reference_3d": [
+          -9.63849753e-07,
+          0.7856000769230767,
+          0.29876358644866946
+        ]
+      },
+      "Streptavidin#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0004771130245184377,
+          "hv2d_egarps_rhofold": 0.0036280888276981438,
+          "hv2d_egarps_iptm": 0.004032462643267731,
+          "hv2d_rhofold_iptm": 0.030996005337542022
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 2.371061111633373e-05,
+          "hv2d_egarps_rhofold": 0.0002805460753534394,
+          "hv2d_egarps_iptm": 0.00020135679569097052,
+          "hv2d_rhofold_iptm": 0.030129990503269533
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 8.933602175243122e-05,
+          "hv2d_egarps_rhofold": 0.00046453503197542217,
+          "hv2d_egarps_iptm": 0.0011430722989475494,
+          "hv2d_rhofold_iptm": 0.047527781076414005
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.00042562416519809857,
+          "hv2d_egarps_rhofold": 0.0016373387754017358,
+          "hv2d_egarps_iptm": 0.005136866960362446,
+          "hv2d_rhofold_iptm": 0.05246891619621529
+        },
+        "reference_3d": [
+          -9.73872004e-07,
+          0.7557969750778761,
+          0.31787703769111636
+        ]
+      },
+      "Streptavidin#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0037384935682862152,
+          "hv2d_egarps_rhofold": 0.022599813926239855,
+          "hv2d_egarps_iptm": 0.046075868380591516,
+          "hv2d_rhofold_iptm": 0.0231801666366769
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.004097287367567396,
+          "hv2d_egarps_rhofold": 0.02213407620288094,
+          "hv2d_egarps_iptm": 0.05049611742393806,
+          "hv2d_rhofold_iptm": 0.026331208784159878
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.003556907151039013,
+          "hv2d_egarps_rhofold": 0.018363481019632037,
+          "hv2d_egarps_iptm": 0.060384571599978086,
+          "hv2d_rhofold_iptm": 0.030222910015257377
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0033672578538959524,
+          "hv2d_egarps_rhofold": 0.019968468452357217,
+          "hv2d_egarps_iptm": 0.0546732379282628,
+          "hv2d_rhofold_iptm": 0.027275763608229895
+        },
+        "reference_3d": [
+          -9.160108149999999e-07,
+          0.770751896341461,
+          0.2983271016349793
+        ]
+      },
+      "Subtilisin#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.815257522922386e-06,
+          "hv2d_egarps_rhofold": 1.134988999593648e-05,
+          "hv2d_egarps_iptm": 1.4045108663406925e-05,
+          "hv2d_rhofold_iptm": 0.0372250559930728
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.003081678516849305,
+          "hv2d_egarps_rhofold": 0.047257838051127335,
+          "hv2d_egarps_iptm": 0.04787561624732518,
+          "hv2d_rhofold_iptm": 0.050934561961044934
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 3.753235982576002e-07,
+          "hv2d_egarps_rhofold": 2.481895634875595e-06,
+          "hv2d_egarps_iptm": 4.377094527336485e-06,
+          "hv2d_rhofold_iptm": 0.02820102766387219
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.004831704263430078,
+          "hv2d_egarps_rhofold": 0.05436817476094792,
+          "hv2d_egarps_iptm": 0.0748378218804321,
+          "hv2d_rhofold_iptm": 0.04550502825776192
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7219891273885383,
+          0.2304396762123108
+        ]
+      },
+      "Subtilisin#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0054849019941514724,
+          "hv2d_egarps_rhofold": 0.0649203261067043,
+          "hv2d_egarps_iptm": 0.07973204715520205,
+          "hv2d_rhofold_iptm": 0.03804177837131173
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 1.2945599753418016e-05,
+          "hv2d_egarps_rhofold": 5.7134652885701786e-05,
+          "hv2d_egarps_iptm": 6.882457861020325e-05,
+          "hv2d_rhofold_iptm": 0.049312591047474034
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.007870743364776753,
+          "hv2d_egarps_rhofold": 0.04509801188023056,
+          "hv2d_egarps_iptm": 0.07193046655713185,
+          "hv2d_rhofold_iptm": 0.05161329007537815
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0001207365968669164,
+          "hv2d_egarps_rhofold": 0.09136029807771957,
+          "hv2d_egarps_iptm": 0.0007009258745266274,
+          "hv2d_rhofold_iptm": 0.053546389516172584
+        },
+        "reference_3d": [
+          -1e-06,
+          0.673775212832551,
+          0.20421263413333893
+        ]
+      },
+      "Subtilisin#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 6.037223111068892e-07,
+          "hv2d_egarps_rhofold": 3.979724043350278e-06,
+          "hv2d_egarps_iptm": 4.173378325672007e-06,
+          "hv2d_rhofold_iptm": 0.03757294185405817
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.011131100324161423,
+          "hv2d_egarps_rhofold": 0.07884539657701164,
+          "hv2d_egarps_iptm": 0.13793335891536074,
+          "hv2d_rhofold_iptm": 0.05312005916496973
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 1.979020301220861e-05,
+          "hv2d_egarps_rhofold": 0.0003240484518548068,
+          "hv2d_egarps_iptm": 0.00018332885015699853,
+          "hv2d_rhofold_iptm": 0.05146990133455291
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0053188502731899975,
+          "hv2d_egarps_rhofold": 0.07689310715520126,
+          "hv2d_egarps_iptm": 0.04712853813793089,
+          "hv2d_rhofold_iptm": 0.048995162879512194
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6978104021571622,
+          0.21146608726882934
+        ]
+      },
+      "TNF_alpha#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0019216167022118413,
+          "hv2d_egarps_rhofold": 0.00802985245090334,
+          "hv2d_egarps_iptm": 0.02392847536143218,
+          "hv2d_rhofold_iptm": 0.031253513711995466
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.00013508586217565496,
+          "hv2d_egarps_rhofold": 0.0014183520604630273,
+          "hv2d_egarps_iptm": 0.001026963400851195,
+          "hv2d_rhofold_iptm": 0.03870243192257336
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.00012258487494721054,
+          "hv2d_egarps_rhofold": 0.0013993850026628447,
+          "hv2d_egarps_iptm": 0.0009526046107244793,
+          "hv2d_rhofold_iptm": 0.0356273255121706
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 5.309227485939052e-05,
+          "hv2d_egarps_rhofold": 0.0013902750160371302,
+          "hv2d_egarps_iptm": 0.0004205981324722365,
+          "hv2d_rhofold_iptm": 0.030573834984143598
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7304096084243372,
+          0.2706700994243622
+        ]
+      },
+      "TNF_alpha#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0032672919891126293,
+          "hv2d_egarps_rhofold": 0.01879531577056136,
+          "hv2d_egarps_iptm": 0.022594288926814962,
+          "hv2d_rhofold_iptm": 0.046614977790580596
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0013905460658621576,
+          "hv2d_egarps_rhofold": 0.006523697130220969,
+          "hv2d_egarps_iptm": 0.02180070557836187,
+          "hv2d_rhofold_iptm": 0.05728359043369938
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.011603351116370033,
+          "hv2d_egarps_rhofold": 0.038699349438149414,
+          "hv2d_egarps_iptm": 0.11086998447871368,
+          "hv2d_rhofold_iptm": 0.06811865325945618
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0007312183520116468,
+          "hv2d_egarps_rhofold": 0.007012504762524567,
+          "hv2d_egarps_iptm": 0.0082269607378414,
+          "hv2d_rhofold_iptm": 0.051520924676651744
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6619473516483579,
+          0.2389794869890213
+        ]
+      },
+      "TNF_alpha#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0013129327548484465,
+          "hv2d_egarps_rhofold": 0.013914346684923357,
+          "hv2d_egarps_iptm": 0.007993223420571413,
+          "hv2d_rhofold_iptm": 0.031015927656327477
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0029488038674209426,
+          "hv2d_egarps_rhofold": 0.06998552693539396,
+          "hv2d_egarps_iptm": 0.0364151198952874,
+          "hv2d_rhofold_iptm": 0.03670760011428743
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0018796038463215,
+          "hv2d_egarps_rhofold": 0.11706543270474604,
+          "hv2d_egarps_iptm": 0.011120038353968013,
+          "hv2d_rhofold_iptm": 0.043534402084775145
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.009804465874676946,
+          "hv2d_egarps_rhofold": 0.09092606606372866,
+          "hv2d_egarps_iptm": 0.08958861473528823,
+          "hv2d_rhofold_iptm": 0.03798336345310324
+        },
+        "reference_3d": [
+          -1e-06,
+          0.6917074112149525,
+          0.32115553157234195
+        ]
+      },
+      "Thrombin#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 3.432596268360409e-08,
+          "hv2d_egarps_rhofold": 0.03432596268360409,
+          "hv2d_egarps_iptm": 9.999915441537068e-07,
+          "hv2d_rhofold_iptm": 6.702180063169948e-08
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 4.9053549749833795e-08,
+          "hv2d_egarps_rhofold": 0.0490535497498338,
+          "hv2d_egarps_iptm": 8.846458141537071e-07,
+          "hv2d_rhofold_iptm": 7.93901798708918e-08
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 4.738702289681389e-08,
+          "hv2d_egarps_rhofold": 0.04738702289681388,
+          "hv2d_egarps_iptm": 8.84708514153707e-07,
+          "hv2d_rhofold_iptm": 8.703204363207105e-08
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 4.991716887640621e-08,
+          "hv2d_egarps_rhofold": 0.049917168876406216,
+          "hv2d_egarps_iptm": 8.590539441537069e-07,
+          "hv2d_rhofold_iptm": 6.702180063169947e-08
+        },
+        "reference_3d": [
+          -9.44153707e-07,
+          0.798484937499999,
+          -1e-06
+        ]
+      },
+      "Thrombin#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 4.0829543557342166e-08,
+          "hv2d_egarps_rhofold": 0.04082954355734216,
+          "hv2d_egarps_iptm": 9.075838999999999e-07,
+          "hv2d_rhofold_iptm": 8.598123564683801e-08
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 3.572333993926654e-08,
+          "hv2d_egarps_rhofold": 0.03572333993926654,
+          "hv2d_egarps_iptm": 9.789543999999998e-07,
+          "hv2d_rhofold_iptm": 1.1555427639918602e-07
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 9.49215047218209e-08,
+          "hv2d_egarps_rhofold": 0.09492150472182093,
+          "hv2d_egarps_iptm": 9.985686999999998e-07,
+          "hv2d_rhofold_iptm": 1.1555427639918603e-07
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 5.6489090971515794e-08,
+          "hv2d_egarps_rhofold": 0.0564890909715158,
+          "hv2d_egarps_iptm": 9.9626206e-07,
+          "hv2d_rhofold_iptm": 1.1555427639918602e-07
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7975215856697793,
+          -1e-06
+        ]
+      },
+      "Thrombin#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.415070957581122e-08,
+          "hv2d_egarps_rhofold": 0.014150709575811219,
+          "hv2d_egarps_iptm": 9.645973299999999e-07,
+          "hv2d_rhofold_iptm": 1.1873891946390212e-07
+        },
+        "bmc_x1": {
+          "n_pool": 8,
+          "hv3d": 1.2623068164898785e-07,
+          "hv2d_egarps_rhofold": 0.12623068164898787,
+          "hv2d_egarps_iptm": 8.908636999999999e-07,
+          "hv2d_rhofold_iptm": 1.416947190114356e-07
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 9.437846921814682e-08,
+          "hv2d_egarps_rhofold": 0.09437846921814683,
+          "hv2d_egarps_iptm": 9.9961834e-07,
+          "hv2d_rhofold_iptm": 1.386316138171477e-07
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 1.3634070610338416e-07,
+          "hv2d_egarps_rhofold": 0.1363407061033842,
+          "hv2d_egarps_iptm": 9.996176e-07,
+          "hv2d_rhofold_iptm": 1.427291276135858e-07
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7511078923556922,
+          -1e-06
+        ]
+      },
+      "Trypsin#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 1.548675139715049e-05,
+          "hv2d_egarps_rhofold": 0.00016746684755315392,
+          "hv2d_egarps_iptm": 0.0001519479013627403,
+          "hv2d_rhofold_iptm": 0.01783817862712963
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0035790891320509623,
+          "hv2d_egarps_rhofold": 0.04125106637637914,
+          "hv2d_egarps_iptm": 0.10683721270939413,
+          "hv2d_rhofold_iptm": 0.03956523111008215
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.007575641619032634,
+          "hv2d_egarps_rhofold": 0.04036224775489936,
+          "hv2d_egarps_iptm": 0.19153034524591983,
+          "hv2d_rhofold_iptm": 0.02494924021413276
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.008596869254491383,
+          "hv2d_egarps_rhofold": 0.04806842111786424,
+          "hv2d_egarps_iptm": 0.15025936174678362,
+          "hv2d_rhofold_iptm": 0.04687189157890601
+        },
+        "reference_3d": [
+          -1e-06,
+          0.7318042631578945,
+          0.20980964438819885
+        ]
+      },
+      "Trypsin#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0018627994300895,
+          "hv2d_egarps_rhofold": 0.007208165124054099,
+          "hv2d_egarps_iptm": 0.0261024685433479,
+          "hv2d_rhofold_iptm": 0.018442783309119144
+        },
+        "bmc_x1": {
+          "n_pool": 8,
+          "hv3d": 8.575654693100066e-05,
+          "hv2d_egarps_rhofold": 0.0003423295170744245,
+          "hv2d_egarps_iptm": 0.001201663223912316,
+          "hv2d_rhofold_iptm": 0.01787752744070071
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.01164986078126579,
+          "hv2d_egarps_rhofold": 0.08327705685969974,
+          "hv2d_egarps_iptm": 0.16224147835172187,
+          "hv2d_rhofold_iptm": 0.024108217478391005
+        },
+        "bmc_x3": {
+          "n_pool": 8,
+          "hv3d": 9.417524383417667e-05,
+          "hv2d_egarps_rhofold": 0.00034387944799666944,
+          "hv2d_egarps_iptm": 0.0013196301759859663,
+          "hv2d_rhofold_iptm": 0.019544071722601544
+        },
+        "reference_3d": [
+          -2.852013399999999e-07,
+          0.7894903178294548,
+          0.19548187987709045
+        ]
+      },
+      "Trypsin#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 5.6049526888679406e-05,
+          "hv2d_egarps_rhofold": 0.0003336491652601545,
+          "hv2d_egarps_iptm": 0.0002723617828902802,
+          "hv2d_rhofold_iptm": 0.05100190372071295
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.010209170525347738,
+          "hv2d_egarps_rhofold": 0.0998802659259935,
+          "hv2d_egarps_iptm": 0.09070193158096605,
+          "hv2d_rhofold_iptm": 0.05404557977938971
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.012252590847307603,
+          "hv2d_egarps_rhofold": 0.10599304088776168,
+          "hv2d_egarps_iptm": 0.1062871415569644,
+          "hv2d_rhofold_iptm": 0.05116364360164923
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.009129742132248876,
+          "hv2d_egarps_rhofold": 0.08667751139411742,
+          "hv2d_egarps_iptm": 0.09258651324947788,
+          "hv2d_rhofold_iptm": 0.052834049524289425
+        },
+        "reference_3d": [
+          -1.347109e-07,
+          0.6721620841121473,
+          0.22985309200191498
+        ]
+      },
+      "VEGF#seed0": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.0007328074505704766,
+          "hv2d_egarps_rhofold": 0.0035373538693170164,
+          "hv2d_egarps_iptm": 0.025375915810197883,
+          "hv2d_rhofold_iptm": 0.030555709472788788
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.015847299409765973,
+          "hv2d_egarps_rhofold": 0.08687627264601301,
+          "hv2d_egarps_iptm": 0.1757078764911208,
+          "hv2d_rhofold_iptm": 0.038127960769490564
+        },
+        "bmc_x2": {
+          "n_pool": 24,
+          "hv3d": 0.012942452959585033,
+          "hv2d_egarps_rhofold": 0.07643621262644897,
+          "hv2d_egarps_iptm": 0.11586711344637009,
+          "hv2d_rhofold_iptm": 0.04977736528774617
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.007176660937086181,
+          "hv2d_egarps_rhofold": 0.0426506228178193,
+          "hv2d_egarps_iptm": 0.09187564709569838,
+          "hv2d_rhofold_iptm": 0.03911234872244431
+        },
+        "reference_3d": [
+          1.0407385000000002e-06,
+          0.7129454174454812,
+          0.2111702098121643
+        ]
+      },
+      "VEGF#seed1": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 8.10750557722652e-05,
+          "hv2d_egarps_rhofold": 0.0005759731085883148,
+          "hv2d_egarps_iptm": 0.004478447192825162,
+          "hv2d_rhofold_iptm": 0.021424798124524604
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.0017460968734977333,
+          "hv2d_egarps_rhofold": 0.01098434321331875,
+          "hv2d_egarps_iptm": 0.0213640525968529,
+          "hv2d_rhofold_iptm": 0.0292016827211616
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.0032032473887158405,
+          "hv2d_egarps_rhofold": 0.01989910431075856,
+          "hv2d_egarps_iptm": 0.10673713272446918,
+          "hv2d_rhofold_iptm": 0.029939268347226933
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.0003307472898627358,
+          "hv2d_egarps_rhofold": 0.002954108729510328,
+          "hv2d_egarps_iptm": 0.00319720487777284,
+          "hv2d_rhofold_iptm": 0.019082599210638335
+        },
+        "reference_3d": [
+          7.108972e-06,
+          0.7490930063091445,
+          0.2345222218503952
+        ]
+      },
+      "VEGF#seed2": {
+        "serial": {
+          "n_pool": 8,
+          "hv3d": 0.02387257154015291,
+          "hv2d_egarps_rhofold": 0.12029553023528337,
+          "hv2d_egarps_iptm": 0.2012006310993777,
+          "hv2d_rhofold_iptm": 0.04749692084477772
+        },
+        "bmc_x1": {
+          "n_pool": 16,
+          "hv3d": 0.009933039617281206,
+          "hv2d_egarps_rhofold": 0.0501573151869477,
+          "hv2d_egarps_iptm": 0.17502011753109278,
+          "hv2d_rhofold_iptm": 0.051441071528266304
+        },
+        "bmc_x2": {
+          "n_pool": 16,
+          "hv3d": 0.006898783015754394,
+          "hv2d_egarps_rhofold": 0.0327227420899526,
+          "hv2d_egarps_iptm": 0.07472126094157491,
+          "hv2d_rhofold_iptm": 0.05237661995362341
+        },
+        "bmc_x3": {
+          "n_pool": 16,
+          "hv3d": 0.006353424862825727,
+          "hv2d_egarps_rhofold": 0.028774253167245765,
+          "hv2d_egarps_iptm": 0.11899435078828202,
+          "hv2d_rhofold_iptm": 0.05121890670904676
+        },
+        "reference_3d": [
+          2.5906448e-06,
+          0.7419848475894267,
+          0.2212345136871338
+        ]
+      }
+    }
+  },
+  "paired_tests": {
+    "metrics": {
+      "asf_fixed": {
+        "bmc1_vs_serial": {
+          "n": 19,
+          "median_serial": 0.17957764902563064,
+          "median_bmc": 0.16503988227620586,
+          "median_delta_bmc_minus_serial": -0.003624160066094173,
+          "wilcoxon_p": 0.07283401489257812,
+          "cliffs_delta": -0.2409972299168975,
+          "q_bh": 0.10282449161305147
+        },
+        "bmc2_vs_serial": {
+          "n": 19,
+          "median_serial": 0.17957764902563064,
+          "median_bmc": 0.17992812283703943,
+          "median_delta_bmc_minus_serial": -0.010455618928771754,
+          "wilcoxon_p": 0.05457305908203125,
+          "cliffs_delta": -0.12465373961218837,
+          "q_bh": 0.08185958862304688
+        },
+        "bmc3_vs_serial": {
+          "n": 19,
+          "median_serial": 0.17957764902563064,
+          "median_bmc": 0.17694238504561038,
+          "median_delta_bmc_minus_serial": 0.001390025975250106,
+          "wilcoxon_p": 0.5677604675292969,
+          "cliffs_delta": -0.036011080332409975,
+          "q_bh": 0.6488691057477678
+        }
+      },
+      "egarps_component": {
+        "bmc1_vs_serial": {
+          "n": 19,
+          "median_serial": 0.10096574466666668,
+          "median_bmc": 0.48522250666666666,
+          "median_delta_bmc_minus_serial": 0.22762789776666667,
+          "wilcoxon_p": 0.000209808349609375,
+          "cliffs_delta": 0.45706371191135736,
+          "q_bh": 0.0006713113161626241
+        },
+        "bmc2_vs_serial": {
+          "n": 19,
+          "median_serial": 0.10096574466666668,
+          "median_bmc": 0.351961,
+          "median_delta_bmc_minus_serial": 0.12292193333333334,
+          "wilcoxon_p": 0.02298736572265625,
+          "cliffs_delta": 0.32409972299168976,
+          "q_bh": 0.03940691266741071
+        },
+        "bmc3_vs_serial": {
+          "n": 19,
+          "median_serial": 0.10096574466666668,
+          "median_bmc": 0.32754656466666665,
+          "median_delta_bmc_minus_serial": 0.116118781,
+          "wilcoxon_p": 0.025821685791015625,
+          "cliffs_delta": 0.31301939058171746,
+          "q_bh": 0.041314697265625006
+        }
+      },
+      "rhofold_component": {
+        "bmc1_vs_serial": {
+          "n": 19,
+          "median_serial": 0.8426458722100402,
+          "median_bmc": 0.8308534049880251,
+          "median_delta_bmc_minus_serial": 0.007387940604322574,
+          "wilcoxon_p": 0.8595733642578125,
+          "cliffs_delta": -0.04155124653739612,
+          "q_bh": 0.8595733642578125
+        },
+        "bmc2_vs_serial": {
+          "n": 19,
+          "median_serial": 0.8426458722100402,
+          "median_bmc": 0.8411077830903462,
+          "median_delta_bmc_minus_serial": 0.006594127576756037,
+          "wilcoxon_p": 0.5677604675292969,
+          "cliffs_delta": -0.036011080332409975,
+          "q_bh": 0.6488691057477678
+        },
+        "bmc3_vs_serial": {
+          "n": 19,
+          "median_serial": 0.8426458722100402,
+          "median_bmc": 0.8349972405503833,
+          "median_delta_bmc_minus_serial": -0.004791119181642656,
+          "wilcoxon_p": 0.5677604675292969,
+          "cliffs_delta": -0.08033240997229917,
+          "q_bh": 0.6488691057477678
+        }
+      },
+      "iptm_component": {
+        "bmc1_vs_serial": {
+          "n": 19,
+          "median_serial": 0.3867020805676778,
+          "median_bmc": 0.392795463403066,
+          "median_delta_bmc_minus_serial": 0.0,
+          "wilcoxon_p": 0.6474707129373445,
+          "cliffs_delta": 0.0221606648199446,
+          "q_bh": 0.7063316868407394
+        },
+        "bmc2_vs_serial": {
+          "n": 19,
+          "median_serial": 0.3867020805676778,
+          "median_bmc": 0.39491764704386395,
+          "median_delta_bmc_minus_serial": 0.006167391935984312,
+          "wilcoxon_p": 0.4204264735837405,
+          "cliffs_delta": 0.0332409972299169,
+          "q_bh": 0.5605686314449874
+        },
+        "bmc3_vs_serial": {
+          "n": 19,
+          "median_serial": 0.3867020805676778,
+          "median_bmc": 0.3931416968504588,
+          "median_delta_bmc_minus_serial": -0.00034470359484350954,
+          "wilcoxon_p": 0.7771175732880233,
+          "cliffs_delta": -0.038781163434903045,
+          "q_bh": 0.8109052938657635
+        }
+      }
+    },
+    "hypervolume": {
+      "hv3d": {
+        "bmc1_vs_serial": {
+          "n": 57,
+          "median_serial": 0.0007892086226319085,
+          "median_bmc": 0.0035790891320509623,
+          "median_delta_bmc_minus_serial": 0.0005954983244550027,
+          "wilcoxon_p": 0.00026140122552847835,
+          "cliffs_delta": 0.27362265312403816,
+          "q_bh": 0.0006970699347426089
+        },
+        "bmc2_vs_serial": {
+          "n": 57,
+          "median_serial": 0.0007892086226319085,
+          "median_bmc": 0.004204439122253474,
+          "median_delta_bmc_minus_serial": 0.0002570425107648079,
+          "wilcoxon_p": 0.00042556612966027503,
+          "cliffs_delta": 0.26685133887349954,
+          "q_bh": 0.001015626108200151
+        },
+        "bmc3_vs_serial": {
+          "n": 57,
+          "median_serial": 0.0007892086226319085,
+          "median_bmc": 0.004831704263430078,
+          "median_delta_bmc_minus_serial": 0.0004339411204460448,
+          "wilcoxon_p": 0.0010185809388599618,
+          "cliffs_delta": 0.23976608187134502,
+          "q_bh": 0.0018804571178953143
+        }
+      },
+      "hv2d_egarps_rhofold": {
+        "bmc1_vs_serial": {
+          "n": 57,
+          "median_serial": 0.00802985245090334,
+          "median_bmc": 0.04438341813468669,
+          "median_delta_bmc_minus_serial": 0.00787188908404245,
+          "wilcoxon_p": 0.0001531584000182311,
+          "cliffs_delta": 0.3087103724222838,
+          "q_bh": 0.0006126336000729244
+        },
+        "bmc2_vs_serial": {
+          "n": 57,
+          "median_serial": 0.00802985245090334,
+          "median_bmc": 0.04036224775489936,
+          "median_delta_bmc_minus_serial": 0.0028378323101770613,
+          "wilcoxon_p": 2.169288470066577e-05,
+          "cliffs_delta": 0.30009233610341646,
+          "q_bh": 0.00011577709960042627
+        },
+        "bmc3_vs_serial": {
+          "n": 57,
+          "median_serial": 0.00802985245090334,
+          "median_bmc": 0.04475243323959325,
+          "median_delta_bmc_minus_serial": 0.006424354700910247,
+          "wilcoxon_p": 2.412022908342214e-05,
+          "cliffs_delta": 0.3136349646044937,
+          "q_bh": 0.00011577709960042627
+        }
+      },
+      "hv2d_egarps_iptm": {
+        "bmc1_vs_serial": {
+          "n": 57,
+          "median_serial": 0.010782024054471687,
+          "median_bmc": 0.0484352560953128,
+          "median_delta_bmc_minus_serial": 0.0054230930863585075,
+          "wilcoxon_p": 0.0002237704387208747,
+          "cliffs_delta": 0.2656201908279471,
+          "q_bh": 0.0006713113161626241
+        },
+        "bmc2_vs_serial": {
+          "n": 57,
+          "median_serial": 0.010782024054471687,
+          "median_bmc": 0.060384571599978086,
+          "median_delta_bmc_minus_serial": 0.003440970164884108,
+          "wilcoxon_p": 0.0006252634258751026,
+          "cliffs_delta": 0.26438904278239456,
+          "q_bh": 0.0012505268517502052
+        },
+        "bmc3_vs_serial": {
+          "n": 57,
+          "median_serial": 0.010782024054471687,
+          "median_bmc": 0.043394220561803226,
+          "median_delta_bmc_minus_serial": 0.006201142765516712,
+          "wilcoxon_p": 0.00046549529959173593,
+          "cliffs_delta": 0.24469067405355494,
+          "q_bh": 0.001015626108200151
+        }
+      },
+      "hv2d_rhofold_iptm": {
+        "bmc1_vs_serial": {
+          "n": 57,
+          "median_serial": 0.026703211651708768,
+          "median_bmc": 0.031582365103295325,
+          "median_delta_bmc_minus_serial": 0.0040599499143611426,
+          "wilcoxon_p": 4.820145694079189e-06,
+          "cliffs_delta": 0.17697753154816867,
+          "q_bh": 3.856116555263351e-05
+        },
+        "bmc2_vs_serial": {
+          "n": 57,
+          "median_serial": 0.026703211651708768,
+          "median_bmc": 0.0356273255121706,
+          "median_delta_bmc_minus_serial": 0.004879699108845691,
+          "wilcoxon_p": 4.139587572947539e-06,
+          "cliffs_delta": 0.21083410280086182,
+          "q_bh": 3.856116555263351e-05
+        },
+        "bmc3_vs_serial": {
+          "n": 57,
+          "median_serial": 0.026703211651708768,
+          "median_bmc": 0.037398432374979126,
+          "median_delta_bmc_minus_serial": 0.005131176249690273,
+          "wilcoxon_p": 1.041576248356461e-07,
+          "cliffs_delta": 0.2077562326869806,
+          "q_bh": 2.4997829960555064e-06
+        }
+      }
+    }
+  },
+  "paired_tests_note": "ASF/component tests pair per target (mean over successful seed sets); hypervolume tests pair per (target, seed_idx) cell. BH-FDR computed over one family of up to 24 tests (4 metrics + 4 hypervolumes, x 3 comparisons each; entries with n=0 carry no p-value).",
+  "rounds_execution": {
+    "rounds_execution": {
+      "bmc_x1": {
+        "n_runs": 57,
+        "n_completed_all": 42,
+        "n_zero": 15,
+        "mean_rate": 0.7368421052631579,
+        "median_rate": 1.0
+      },
+      "bmc_x2": {
+        "n_runs": 57,
+        "n_completed_all": 14,
+        "n_zero": 7,
+        "mean_rate": 0.5614035087719298,
+        "median_rate": 0.5
+      },
+      "bmc_x3": {
+        "n_runs": 57,
+        "n_completed_all": 0,
+        "n_zero": 9,
+        "mean_rate": 0.32748538011695905,
+        "median_rate": 0.3333333333333333
+      }
+    },
+    "elapsed_seconds": {
+      "serial": {
+        "n": 57,
+        "mean": 1357.0877192982457,
+        "median": 1324.47,
+        "iqr": [
+          1270.49,
+          1390.06
+        ]
+      },
+      "bmc_x1": {
+        "n": 57,
+        "mean": 2608.4008771929825,
+        "median": 2629.76,
+        "iqr": [
+          2473.82,
+          2706.02
+        ]
+      },
+      "bmc_x2": {
+        "n": 57,
+        "mean": 2863.4501754385965,
+        "median": 2681.28,
+        "iqr": [
+          2510.99,
+          2995.05
+        ]
+      },
+      "bmc_x3": {
+        "n": 57,
+        "mean": 2725.327894736842,
+        "median": 2612.32,
+        "iqr": [
+          2450.76,
+          2733.96
+        ]
+      }
+    },
+    "per_round": {
+      "n_rounds_observed": 0,
+      "n_runs_with_trace": 140,
+      "note": "no bmc_trace with per-round elapsed_ms in current records"
+    }
+  }
+}
