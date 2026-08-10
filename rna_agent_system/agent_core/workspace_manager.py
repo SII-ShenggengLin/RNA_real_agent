@@ -1,4 +1,4 @@
-"""Layer 4 — WorkspaceManager: per-session file isolation."""
+"""Layer 5 — WorkspaceManager: per-session file isolation."""
 
 from __future__ import annotations
 

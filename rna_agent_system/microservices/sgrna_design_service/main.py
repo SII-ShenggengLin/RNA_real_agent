@@ -491,11 +491,11 @@ def _design_candidates_mcmc(
     if mut > 10:
         return _design_candidates_naive(payload, upstream_root, model_path)
 
-    max_attempts = max(200, n_samples * 40)
+    max_attempts = max(500, n_samples * 80)
     attempts = 0
     # Cap inner mutation iterations to prevent runaway loops on pathological params
     max_mut_iterations = max(200, mut * 50)
-    while len(samples) <= n_samples + 1 and attempts < max_attempts:
+    while len(samples) <= n_samples and attempts < max_attempts:
         attempts += 1
         traj = [normalized_seed]
         current_dna = normalized_seed
@@ -555,6 +555,35 @@ def _design_candidates_mcmc(
             # Re-score the accepted final sequence to ensure consistent metrics
             final_structure_score, final_mfe = _compute_structure_metrics(traj[-1])
             final_nn_score = nn_score_fn(traj[-1])
+            structure_scores.append(final_structure_score)
+            nn_scores.append(final_nn_score)
+            mfes.append(final_mfe)
+            names.append(f"gen_{len(samples) - 1}")
+
+    # Fallback: if MCMC annealing did not fill the requested quota under the
+    # strict overlap/structure constraints, use random constrained mutations to
+    # reach n_samples. This preserves the interface contract and avoids silently
+    # returning fewer candidates than requested.
+    fallback_attempts = 0
+    max_fallback_attempts = max(200, n_samples * 40)
+    while len(samples) < n_samples + 1 and fallback_attempts < max_fallback_attempts:
+        fallback_attempts += 1
+        candidate = _random_mutation_candidate(normalized_seed, mut)
+        if candidate in samples:
+            continue
+        if _seq_constraint_change_count(candidate) != 0:
+            continue
+        if _count_mutations(normalized_seed, candidate) > mut:
+            continue
+        l_max = 0
+        for s in samples:
+            l = _longest_common_substring(s, candidate)
+            if l > l_max:
+                l_max = l
+        if l_max < max_overlap:
+            final_structure_score, final_mfe = _compute_structure_metrics(candidate)
+            final_nn_score = nn_score_fn(candidate)
+            samples.append(candidate)
             structure_scores.append(final_structure_score)
             nn_scores.append(final_nn_score)
             mfes.append(final_mfe)

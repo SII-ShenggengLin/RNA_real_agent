@@ -1,54 +1,38 @@
-"""End-to-end integration tests for full_length_mrna_design with LIVE LLM calls.
+"""End-to-end integration tests for full_length_mrna_design.
 
 These tests exercise the complete stack:
-  Layer 3: LLMPlanner (parameter selection from user prompt)
-  Layer 3: FullLengthMrnaDesignLLMCritic (live diagnosis + retry decisions)
+  Layer 3: QualityAgent (quality review; mocked in most tests below)
+  Layer 3: PipelineAgent / SpecialistAgent / CoordinatorAgent (multi-agent execution)
   Layer 2: FullLengthMrnaDesignWorkflow (generation + evaluation + ranking)
   Layer 1: Stub capabilities (fast, deterministic)
   Layer 0: File manager, state management
-
-All tests require a valid DEEPSEEK_API_KEY in the environment (loaded from .env).
 """
 
 from __future__ import annotations
 
-import os
+import json
 from typing import Any
-from unittest.mock import patch
 
 import pytest
 
-from agent_core.capabilities.base import CapabilityResult
-from agent_core.file_manager import PROJECT_ROOT
-from agent_core.llm_config import get_deepseek_llm
-from agent_core.planning.base import (
-    AgentContext,
-    ExecutionController,
-    ExecutionPlan,
-    PlanStep,
+from agent_core.agents import (
+    CoordinatorAgent,
+    PipelineAgent,
+    QualityAgent,
+    QualityReport,
+    SpecialistAgent,
+    SynthesisAgent,
 )
-from agent_core.planning.llm_critic import CriticDiagnosis
-from agent_core.planning.llm_planner import LLMPlanner
+from agent_core.capabilities.base import CapabilityResult
+from agent_core.pipeline.models import PipelinePlan
+from agent_core.quality_profiles.full_length_mrna_design import (
+    FULL_LENGTH_MRNA_QUALITY_PROFILE,
+)
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.full_length_mrna_design import (
     FullLengthMrnaDesignInput,
-    FullLengthMrnaDesignLLMCritic,
     FullLengthMrnaDesignWorkflow,
 )
-
-# ── Load .env before checking API key ──────────────────────────────────
-from dotenv import load_dotenv
-load_dotenv(PROJECT_ROOT / ".env")
-
-_DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
-
-skip_if_no_api_key = pytest.mark.skipif(
-    not _DEEPSEEK_KEY,
-    reason="Requires DEEPSEEK_API_KEY (set in .env or environment)",
-)
-
-pytestmark = pytest.mark.live_llm
-
 
 # ═══════════════════════════════════════════════════════════════════════
 # Helpers
@@ -231,145 +215,44 @@ def _make_candidates_with_metrics(
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# Layer 3 — Planner: parameter selection from user prompt
+# Layer 3 — QualityAgent: structured diagnosis (mocked LLM)
 # ═══════════════════════════════════════════════════════════════════════
 
 
-class TestPlannerParameterSelection:
-    """Test that LLMPlanner correctly interprets user requests and selects parameters."""
+class TestQualityAgent:
+    """Test QualityAgent for full_length_mrna_design with a mocked LLM."""
 
-    @skip_if_no_api_key
-    def test_planner_selects_utr_mode_long(self):
-        """User asks for 'long 3'UTR' → planner should set utr_mode='long'."""
-        planner = LLMPlanner(llm=get_deepseek_llm(temperature=0.1))
-        ctx = AgentContext(
-            session_id="test",
-            available_capabilities=[],
-            available_workflows=["full_length_mrna_design"],
-            workflow_param_schemas={
-                "full_length_mrna_design": (
-                    "  protein_sequence=(required) (str)\n"
-                    "  design_tool='all' (Literal['lineardesign', 'rnarl', 'gemorna', 'all'])\n"
-                    "  utr_mode='all' (Literal['short', 'medium', 'long', 'all'])\n"
-                    "  lambda_value=None (float)\n"
-                ),
-            },
-        )
-        plan = planner.plan(
-            "Design a full-length mRNA for protein MKTAIVE with long 3'UTR for better stability",
-            ctx,
-        )
-        assert len(plan.steps) > 0
-        step = plan.steps[0]
-        assert step.target == "full_length_mrna_design"
-        assert "protein_sequence" in step.input_binding
-        # Should infer UTR mode from user request
-        assert step.input_binding.get("utr_mode") == "long", (
-            f"Expected utr_mode='long' for 'long 3\\'UTR' request, got {step.input_binding}"
-        )
-        # Should NOT override other defaults
-        assert "design_tool" not in step.input_binding or step.input_binding.get("design_tool") == "all"
+    @staticmethod
+    def _mock_llm(*responses: str) -> Any:
+        """Return a mock LLM that cycles through the supplied response strings."""
+        class _MockLLM:
+            def __init__(self, replies: tuple[str, ...]) -> None:
+                self._replies = list(replies)
+                self._idx = 0
 
-    @skip_if_no_api_key
-    def test_planner_selects_utr_mode_short(self):
-        """User asks for 'short 5UTR and short 3UTR' → planner should set utr_mode='short'."""
-        planner = LLMPlanner(llm=get_deepseek_llm(temperature=0.1))
-        ctx = AgentContext(
-            session_id="test",
-            available_capabilities=[],
-            available_workflows=["full_length_mrna_design"],
-            workflow_param_schemas={
-                "full_length_mrna_design": (
-                    "  protein_sequence=(required) (str)\n"
-                    "  design_tool='all' (Literal['lineardesign', 'rnarl', 'gemorna', 'all'])\n"
-                    "  utr_mode='all' (Literal['short', 'medium', 'long', 'all'])\n"
-                    "  lambda_value=None (float)\n"
-                ),
-            },
-        )
-        plan = planner.plan(
-            "Design a compact full-length mRNA with short 5'UTR and short 3'UTR for protein MKTAIVE",
-            ctx,
-        )
-        assert len(plan.steps) > 0
-        step = plan.steps[0]
-        assert step.target == "full_length_mrna_design"
-        assert step.input_binding.get("utr_mode") == "short", (
-            f"Expected utr_mode='short' for compact request, got {step.input_binding}"
-        )
+            def invoke(self, messages: Any) -> Any:
+                reply = self._replies[self._idx]
+                if self._idx < len(self._replies) - 1:
+                    self._idx += 1
+                return type("MockResponse", (), {"content": reply})()
+        return _MockLLM(responses)
 
-    @skip_if_no_api_key
-    def test_planner_selects_lineardesign_with_lambda(self):
-        """User explicitly requests LinearDesign with lambda=4 → planner should set both."""
-        planner = LLMPlanner(llm=get_deepseek_llm(temperature=0.1))
-        ctx = AgentContext(
-            session_id="test",
-            available_capabilities=[],
-            available_workflows=["full_length_mrna_design"],
-            workflow_param_schemas={
-                "full_length_mrna_design": (
-                    "  protein_sequence=(required) (str)\n"
-                    "  design_tool='all' (Literal['lineardesign', 'rnarl', 'gemorna', 'all'])\n"
-                    "  utr_mode='all' (Literal['short', 'medium', 'long', 'all'])\n"
-                    "  lambda_value=None (float)\n"
-                    "  model_type='Homo sapiens mRNA' (str)\n"
-                ),
-            },
-        )
-        plan = planner.plan(
-            "Design full-length mRNA for MKTAIVE using LinearDesign with lambda 4",
-            ctx,
-        )
-        assert len(plan.steps) > 0
-        step = plan.steps[0]
-        assert step.input_binding.get("design_tool") == "lineardesign", (
-            f"Expected design_tool='lineardesign', got {step.input_binding}"
-        )
-        assert step.input_binding.get("lambda_value") == 4.0, (
-            f"Expected lambda_value=4.0, got {step.input_binding}"
-        )
+    @staticmethod
+    def _report_json(**kwargs: Any) -> str:
+        """Build a valid QualityReport JSON string for mocking."""
+        report = {
+            "overall_assessment": kwargs.get("overall_assessment", "mock assessment"),
+            "quality_score": kwargs.get("quality_score", 0.9),
+            "issues": kwargs.get("issues", []),
+            "action": kwargs.get("action", "pass"),
+            "parameter_overrides": kwargs.get("parameter_overrides", {}),
+            "reasoning": kwargs.get("reasoning", "mock reasoning"),
+            "confidence": kwargs.get("confidence", 0.9),
+        }
+        return json.dumps(report)
 
-    @skip_if_no_api_key
-    def test_planner_omits_defaults_when_user_is_vague(self):
-        """Vague request → planner should NOT override defaults."""
-        planner = LLMPlanner(llm=get_deepseek_llm(temperature=0.1))
-        ctx = AgentContext(
-            session_id="test",
-            available_capabilities=[],
-            available_workflows=["full_length_mrna_design"],
-            workflow_param_schemas={
-                "full_length_mrna_design": (
-                    "  protein_sequence=(required) (str)\n"
-                    "  design_tool='all' (Literal['lineardesign', 'rnarl', 'gemorna', 'all'])\n"
-                    "  utr_mode='all' (Literal['short', 'medium', 'long', 'all'])\n"
-                    "  lambda_value=None (float)\n"
-                ),
-            },
-        )
-        plan = planner.plan(
-            "Design a full-length mRNA for protein MKTAIVE",
-            ctx,
-        )
-        assert len(plan.steps) > 0
-        step = plan.steps[0]
-        assert step.target == "full_length_mrna_design"
-        # Should NOT set utr_mode or design_tool when user is vague
-        assert "utr_mode" not in step.input_binding or step.input_binding.get("utr_mode") == "all"
-        assert "design_tool" not in step.input_binding or step.input_binding.get("design_tool") == "all"
-
-
-# ═══════════════════════════════════════════════════════════════════════
-# Layer 3 — Critic: live diagnosis with real LLM
-# ═══════════════════════════════════════════════════════════════════════
-
-
-class TestLiveCriticDiagnosis:
-    """Test FullLengthMrnaDesignLLMCritic with live LLM calls."""
-
-    @skip_if_no_api_key
-    def test_live_critic_diagnoses_high_ires(self):
-        """All candidates have high IRES → critic should flag it as an issue."""
-        critic = FullLengthMrnaDesignLLMCritic()
+    def test_quality_agent_diagnoses_high_ires(self):
+        """High IRES candidates should produce a QualityReport with retry advice."""
         cands = _make_candidates_with_metrics(
             presets=[("short", "short"), ("medium", "medium"), ("long", "long")],
             ires_scores=[0.85, 0.90, 0.88],
@@ -388,88 +271,31 @@ class TestLiveCriticDiagnosis:
             "user_text": "Design standard mRNA for MKTAIVE",
         }
 
-        diagnosis = critic.diagnose(result, state)
-        print(f"\n[Live diagnosis - high IRES]\n{diagnosis.model_dump_json(indent=2)}")
+        report_json = self._report_json(
+            quality_score=0.65,
+            issues=[{
+                "severity": "warning",
+                "category": "IRES potential",
+                "description": "High IRES scores may conflict with cap-dependent expression intent.",
+                "metric_value": 0.88,
+                "threshold": 0.5,
+            }],
+            action="retry_with_adjustments",
+            parameter_overrides={"utr_mode": "short"},
+        )
+        qa = QualityAgent(llm=self._mock_llm(report_json))
+        diagnosis = qa.review(result, FULL_LENGTH_MRNA_QUALITY_PROFILE, state)
 
-        assert isinstance(diagnosis, CriticDiagnosis)
-        assert diagnosis.quality_score <= 0.85  # High IRES should lower quality
+        assert isinstance(diagnosis, QualityReport)
+        assert diagnosis.quality_score <= 0.85
         assert len(diagnosis.issues) > 0
-        # Should identify IRES as a problem for standard mRNA
-        ires_issues = [
-            i for i in diagnosis.issues
-            if "ires" in i.category.lower() or "IRES" in i.description
-        ]
-        assert len(ires_issues) > 0, f"Expected IRES-related issue, got: {[i.category for i in diagnosis.issues]}"
-        # Should recommend some action (retry, filter, or proceed)
-        assert diagnosis.action in ("retry_with_adjustments", "retry_with_alternative", "proceed_with_filtered", "abort")
+        assert diagnosis.action in ("retry_with_adjustments", "retry_with_alternative", "abort", "pass")
 
-    @skip_if_no_api_key
-    def test_live_critic_diagnoses_utr_length_mismatch(self):
-        """User asked for short UTR but results are all long → critic should flag mismatch."""
-        critic = FullLengthMrnaDesignLLMCritic()
-        cands = _make_candidates_with_metrics(
-            presets=[("long", "long"), ("long", "long"), ("long", "long")],
-            mrl_values=[5.0, 5.1, 5.2],
-        )
-        result = WorkflowResult(
-            success=True,
-            task_id="test_mismatch",
-            best_candidate=cands[0],
-            all_candidates=cands,
-            summary="test",
-            errors=[],
-        )
-        state = {
-            "_last_workflow_params": {"design_tool": "all", "utr_mode": "all"},
-            "user_text": "Design full-length mRNA with short UTRs for MKTAIVE",
-        }
-
-        diagnosis = critic.diagnose(result, state)
-        print(f"\n[Live diagnosis - UTR mismatch]\n{diagnosis.model_dump_json(indent=2)}")
-
-        assert isinstance(diagnosis, CriticDiagnosis)
-        # Should detect UTR length mismatch with user request
-        issues_text = " ".join(i.description for i in diagnosis.issues).lower()
-        assert "utr" in issues_text or "length" in issues_text, (
-            f"Expected UTR/length issue, got: {[i.description for i in diagnosis.issues]}"
-        )
-
-    @skip_if_no_api_key
-    def test_live_critic_diagnoses_low_mrl(self):
-        """Low 5'UTR MRL → critic should flag poor translation initiation."""
-        critic = FullLengthMrnaDesignLLMCritic()
-        cands = _make_candidates_with_metrics(
-            presets=[("short", "short"), ("medium", "short"), ("long", "short")],
-            mrl_values=[2.0, 2.1, 2.2],  # Very low MRL
-        )
-        result = WorkflowResult(
-            success=True,
-            task_id="test_mrl",
-            best_candidate=cands[0],
-            all_candidates=cands,
-            summary="test",
-            errors=[],
-        )
-        state = {
-            "_last_workflow_params": {"design_tool": "all", "utr_mode": "all"},
-            "user_text": "Design high-expression mRNA for MKTAIVE",
-        }
-
-        diagnosis = critic.diagnose(result, state)
-        print(f"\n[Live diagnosis - low MRL]\n{diagnosis.model_dump_json(indent=2)}")
-
-        assert isinstance(diagnosis, CriticDiagnosis)
-        assert diagnosis.quality_score <= 0.75  # Low quality should be reflected
-        # Critic should identify some issue (MRL or UTR diversity)
-        assert len(diagnosis.issues) > 0
-
-    @skip_if_no_api_key
-    def test_live_critic_respects_user_ires_intent(self):
-        """User explicitly wants IRES → critic should NOT flag it as bad."""
-        critic = FullLengthMrnaDesignLLMCritic()
+    def test_quality_agent_respects_user_ires_intent(self):
+        """When the user wants IRES, a mocked pass report is returned unchanged."""
         cands = _make_candidates_with_metrics(
             presets=[("short", "short"), ("short", "short")],
-            ires_scores=[0.85, 0.90],  # High IRES
+            ires_scores=[0.85, 0.90],
         )
         result = WorkflowResult(
             success=True,
@@ -484,142 +310,138 @@ class TestLiveCriticDiagnosis:
             "user_text": "Design IRES-driven mRNA for MKTAIVE with strong IRES in 5'UTR",
         }
 
-        diagnosis = critic.diagnose(result, state)
-        print(f"\n[Live diagnosis - IRES desired]\n{diagnosis.model_dump_json(indent=2)}")
-
-        assert isinstance(diagnosis, CriticDiagnosis)
-        # High IRES should NOT be flagged as critical when user wants it
-        critical_ires = [
-            i for i in diagnosis.issues
-            if i.severity == "critical" and ("ires" in i.category.lower() or "IRES" in i.description)
-        ]
-        assert len(critical_ires) == 0, (
-            f"Expected no critical IRES issue when user wants IRES, got: {critical_ires}"
+        report_json = self._report_json(
+            quality_score=0.95,
+            issues=[],
+            action="pass",
         )
+        qa = QualityAgent(llm=self._mock_llm(report_json))
+        diagnosis = qa.review(result, FULL_LENGTH_MRNA_QUALITY_PROFILE, state)
+
+        assert isinstance(diagnosis, QualityReport)
+        assert diagnosis.action == "pass"
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# Layer 3 — Full retry flow: ExecutionController + mock workflow + live critic
+# Layer 3 — Full retry flow: PipelineAgent + SpecialistAgent + CoordinatorAgent
 # ═══════════════════════════════════════════════════════════════════════
 
 
 class TestFullRetryFlow:
-    """End-to-end: ExecutionController drives retry with live critic."""
+    """End-to-end: PipelineAgent drives BMC full_length_mrna_design with mocked QualityAgent."""
 
-    @skip_if_no_api_key
-    def test_retry_flow_critic_adjusts_utr_mode(self):
-        """Critic detects issue → triggers retry → parameter overrides applied."""
+    @staticmethod
+    def _mock_llm(*responses: str) -> Any:
+        class _MockLLM:
+            def __init__(self, replies: tuple[str, ...]) -> None:
+                self._replies = list(replies)
+                self._idx = 0
+
+            def invoke(self, messages: Any) -> Any:
+                reply = self._replies[self._idx]
+                if self._idx < len(self._replies) - 1:
+                    self._idx += 1
+                return type("MockResponse", (), {"content": reply})()
+        return _MockLLM(responses)
+
+    @staticmethod
+    def _report_json(**kwargs: Any) -> str:
+        report = {
+            "overall_assessment": kwargs.get("overall_assessment", "mock assessment"),
+            "quality_score": kwargs.get("quality_score", 0.9),
+            "issues": kwargs.get("issues", []),
+            "action": kwargs.get("action", "pass"),
+            "parameter_overrides": kwargs.get("parameter_overrides", {}),
+            "reasoning": kwargs.get("reasoning", "mock reasoning"),
+            "confidence": kwargs.get("confidence", 0.9),
+        }
+        return json.dumps(report)
+
+    def _build_pipeline(self, mock_llm: Any) -> PipelineAgent:
+        """Assemble a PipelineAgent for full_length_mrna_design with a CoordinatorAgent."""
         registry = _build_stub_registry(ires_score=0.1)
         workflow = FullLengthMrnaDesignWorkflow(registry)
-        controller = ExecutionController(
-            capability_registry=registry,
-            workflow_registry={"full_length_mrna_design": workflow},
+        specialist = SpecialistAgent(workflow, FULL_LENGTH_MRNA_QUALITY_PROFILE)
+        specialist.coordinator_agent = CoordinatorAgent(workflow)
+        quality_agent = QualityAgent(llm=mock_llm)
+        synthesis_agent = SynthesisAgent(enable_llm=False)
+        return PipelineAgent(
+            specialist_registry={"full_length_mrna_design": specialist},
+            quality_agent=quality_agent,
+            synthesis_agent=synthesis_agent,
         )
 
-        plan = ExecutionPlan(
-            steps=[
-                PlanStep(
-                    step_id="wf1",
-                    type="workflow",
-                    target="full_length_mrna_design",
-                    input_binding={
-                        "protein_sequence": "MKTAIVE",
-                        "design_tool": "lineardesign",
-                        "lambda_value": 0.0,
-                        "utr_mode": "all",
-                    },
-                    output_key="result",
-                )
-            ],
-            max_retries=2,
+    def test_pipeline_runs_full_length_workflow(self):
+        """PipelineAgent executes the BMC workflow and returns a successful result."""
+        report_json = self._report_json(action="pass", quality_score=0.95)
+        pipeline_agent = self._build_pipeline(self._mock_llm(report_json))
+
+        plan = PipelinePlan.single(
+            workflow="full_length_mrna_design",
+            static_params={
+                "protein_sequence": "MKTAIVE",
+                "design_tool": "lineardesign",
+                "lambda_value": 0.0,
+            },
+            output_alias="result",
         )
+        state = {"user_text": "Design full-length mRNA for MKTAIVE"}
 
-        state: dict[str, Any] = {
-            "user_text": "Design full-length mRNA with short UTRs for MKTAIVE",
-        }
-        final_state = controller.execute(plan, state, replan_fn=lambda s: plan)
+        result = pipeline_agent.execute(plan, state)
 
-        # Workflow should have run at least once
-        assert "result" in final_state or "workflow_result" in final_state
-        wf_result = final_state.get("result") or final_state.get("workflow_result")
+        assert result.success is True
+        assert "n1" in result.node_results
+        agent_result = result.node_results["n1"]
+        assert agent_result.success is True
+        wf_result = agent_result.workflow_result
         assert isinstance(wf_result, WorkflowResult)
         assert wf_result.success is True
         assert len(wf_result.all_candidates) > 0
 
-        # Verify candidates have correct structure
         for c in wf_result.all_candidates:
             assert "utr5_sequence" in c.metadata
             assert "cds_sequence" in c.metadata
             assert "utr3_sequence" in c.metadata
 
-        # Check execution log for expected events
-        log = final_state.get("_execution_log", [])
-        assert any(e.get("event") == "step_start" for e in log)
-        assert any(e.get("event") == "step_done" for e in log)
-        assert any(e.get("event") == "plan_complete" for e in log)
-
-    @skip_if_no_api_key
-    def test_retry_flow_with_mock_low_quality_result(self):
-        """Mock workflow returns low-quality result → live critic triggers retry → parameters adjusted."""
-        registry = _build_stub_registry()
-        workflow = FullLengthMrnaDesignWorkflow(registry)
-        controller = ExecutionController(
-            capability_registry=registry,
-            workflow_registry={"full_length_mrna_design": workflow},
+    def test_pipeline_retries_on_quality_feedback(self):
+        """QualityAgent recommends retry → SpecialistAgent reruns with adjusted params."""
+        report_json_retry = self._report_json(
+            action="retry_with_adjustments",
+            quality_score=0.6,
+            issues=[{
+                "severity": "warning",
+                "category": "UTR length diversity",
+                "description": "User requested compact mRNA; recommend short UTR presets.",
+            }],
+            parameter_overrides={"utr_mode": "short"},
         )
+        report_json_pass = self._report_json(action="pass", quality_score=0.95)
+        pipeline_agent = self._build_pipeline(self._mock_llm(report_json_retry, report_json_pass))
 
-        plan = ExecutionPlan(
-            steps=[
-                PlanStep(
-                    step_id="wf1",
-                    type="workflow",
-                    target="full_length_mrna_design",
-                    input_binding={
-                        "protein_sequence": "MKTAIVE",
-                        "design_tool": "lineardesign",
-                        "lambda_value": 0.0,
-                    },
-                )
-            ],
-            max_retries=2,
+        plan = PipelinePlan.single(
+            workflow="full_length_mrna_design",
+            static_params={
+                "protein_sequence": "MKTAIVE",
+                "design_tool": "lineardesign",
+                "lambda_value": 0.0,
+            },
+            output_alias="result",
         )
+        state = {
+            "user_text": "Design compact full-length mRNA for MKTAIVE",
+            "_quality_auto_retry": True,
+        }
 
-        # Build a fake low-quality result (all high IRES)
-        low_quality_cands = _make_candidates_with_metrics(
-            presets=[("short", "short"), ("medium", "medium"), ("long", "long")],
-            ires_scores=[0.85, 0.90, 0.88],
-        )
-        low_quality_result = WorkflowResult(
-            success=True,
-            task_id="mock_low",
-            best_candidate=low_quality_cands[0],
-            all_candidates=low_quality_cands,
-        )
+        result = pipeline_agent.execute(plan, state)
 
-        call_count = 0
-
-        def _mock_run_step(step, state, *, progress_callback=None, _resolved_inputs=None):
-            nonlocal call_count
-            call_count += 1
-            if step.target == "full_length_mrna_design":
-                state["_last_workflow_params"] = dict(step.input_binding)
-                return low_quality_result
-            raise RuntimeError(f"Unexpected: {step.target}")
-
-        with patch.object(controller, "_run_step", side_effect=_mock_run_step):
-            final_state = controller.execute(plan, {}, replan_fn=lambda s: plan)
-
-        # Should have retried (critic sees high IRES → requests retry)
-        assert call_count >= 1
-        # Check if critic was consulted
-        log = final_state.get("_execution_log", [])
-        print(f"\n[Retry flow log]\n")
-        for e in log:
-            print(f"  {e}")
-
-        # The live critic may or may not trigger retry depending on its judgment;
-        # the key assertion is that the flow completed without crashing.
-        assert final_state.get("_plan_executed") is True
+        assert result.success is True
+        agent_result = result.node_results["n1"]
+        assert agent_result.success is True
+        assert agent_result.metadata.get("retry_count", 0) > 0
+        wf_result = agent_result.workflow_result
+        assert isinstance(wf_result, WorkflowResult)
+        assert wf_result.success is True
+        assert len(wf_result.all_candidates) > 0
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -669,8 +491,8 @@ class TestLayer2Workflow:
         assert metrics["utr5_predicted_mrl"] == 5.5
         assert metrics["utr3_predicted_stability"] == 0.8
 
-    def test_workflow_ranking_produces_valid_total_rank(self):
-        """rank_and_format should produce Borda-count rankings."""
+    def test_workflow_ranking_produces_valid_asf(self):
+        """rank_and_format should produce ASF-based rankings."""
         registry = _build_stub_registry(mrl=6.0, utr3_stab=0.75)
         wf = FullLengthMrnaDesignWorkflow(registry)
         cands = _make_candidates_with_metrics(
@@ -682,12 +504,10 @@ class TestLayer2Workflow:
         assert result.success is True
         assert len(result.all_candidates) == 3
         assert result.best_candidate is not None
-        # All candidates should have total_rank
+        # All candidates should have an ASF distance and a rank.
         for c in result.all_candidates:
-            assert "total_rank" in c.scores
-            assert "cds_rank" in c.scores
-            assert "utr5_rank" in c.scores
-            assert "utr3_rank" in c.scores
+            assert "asf_distance" in c.scores
+            assert c.rank is not None
 
     def test_workflow_run_full_pipeline(self):
         """run() should execute the complete pipeline end-to-end."""

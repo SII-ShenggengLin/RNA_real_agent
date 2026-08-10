@@ -4,23 +4,19 @@ Coverage:
 - Layer 0: Individual tool invocations (CPU real + GPU mocked)
 - Layer 1: Capabilities via CapabilityRegistry
 - Layer 2: RnaAptamerDesignWorkflow end-to-end
-- Layer 3: ExecutionController + LLM Critic retry flow
-- DeepSeek API: Live LLM connectivity and critic diagnosis
+- Layer 3: PipelineAgent orchestrates workflow execution
 
 Run:
   cd rna_agent_system && python -m pytest tests/test_rna_aptamer_design.py -v
 
-Run with live LLM tests:
-  cd rna_agent_system && python -m pytest tests/test_rna_aptamer_design.py -v --live-llm
-
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaAptamerDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更         ║
+║  RnaAptamerDesignWorkflow INTERFACE LOCK (v1.4.0) —— 禁止单方面变更         ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_aptamer_design 的端到端测试。任何测试增删、断言变更、         ║
 ║  mock 数据结构调整，必须同步更新以下文件并重新跑通全部测试：                  ║
 ║                                                                               ║
 ║    - agent_core/workflows/rna_aptamer_design.py  ← 权威实现                   ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - tests/test_rna_aptamer_design.py  ← 本文件                             ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
@@ -42,9 +38,7 @@ from agent_core.tool_registry import ToolRegistry
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.coordinator import AptamerCoordinator, Issue
 from agent_core.workflows.rna_aptamer_design import (
-    LLMAptamerCoordinator,
     RnaAptamerDesignInput,
-    RnaAptamerDesignLLMCritic,
     RnaAptamerDesignWorkflow,
     score_aptamer_candidate,
 )
@@ -70,6 +64,14 @@ def test_complex_pdb() -> str:
 def test_rna_cif() -> str:
     """Path to a test RNA CIF file."""
     return "/tmp/test_rna.cif"
+
+
+@pytest.fixture(autouse=True)
+def patch_aptamer_service_autostart(monkeypatch):
+    """Disable microservice auto-start for all unit tests."""
+    monkeypatch.setattr(
+        RnaAptamerDesignWorkflow, "_ensure_services_running", lambda self: None
+    )
 
 
 @pytest.fixture
@@ -400,27 +402,83 @@ class TestScoringFunction:
         assert scores["rhofold_component"] == pytest.approx(0.95, abs=1e-6)
         assert scores["iptm_component"] == pytest.approx(0.85, abs=1e-6)
 
-    def test_missing_metrics_renormalize(self):
-        """Missing metrics should be omitted and weights re-normalized."""
+    def test_missing_metrics_return_components(self):
+        """Missing metrics should return available components without total_score."""
         metrics = {"rhofold_mean_plddt": 50.0}
         scores = score_aptamer_candidate(metrics)
         assert scores["rhofold_component"] == pytest.approx(0.50, abs=1e-6)
-        assert scores["total_score"] == pytest.approx(0.50, abs=1e-6)
+        assert "total_score" not in scores
 
     def test_only_egarps(self):
         metrics = {"egarps_native_probability": 0.60}
         scores = score_aptamer_candidate(metrics)
-        assert scores["total_score"] == pytest.approx(0.60, abs=1e-6)
+        assert scores["egarps_component"] == pytest.approx(0.60, abs=1e-6)
+        assert "total_score" not in scores
 
-    def test_custom_weights(self):
+    def test_no_weighted_sum(self):
+        """score_aptamer_candidate no longer computes a weighted total_score."""
         metrics = {
             "rhofold_mean_plddt": 100.0,
             "egarps_native_probability": 0.50,
             "proteinx_ipTM": 0.50,
         }
-        scores = score_aptamer_candidate(metrics, weight_egarps=0.33, weight_rhofold=0.33)
-        expected = (0.33 * 0.50 + 0.33 * 1.0 + 0.34 * 0.50) / 1.0
-        assert scores["total_score"] == pytest.approx(expected, abs=1e-6)
+        scores = score_aptamer_candidate(metrics)
+        assert scores["egarps_component"] == pytest.approx(0.50, abs=1e-6)
+        assert scores["rhofold_component"] == pytest.approx(1.0, abs=1e-6)
+        assert scores["iptm_component"] == pytest.approx(0.50, abs=1e-6)
+        assert "total_score" not in scores
+
+
+def test_rank_and_format_reference_point():
+    """Reference point should select the candidate closest to it."""
+    wf = RnaAptamerDesignWorkflow(MagicMock())
+    c1 = Candidate(sequence="ACGUACGU", scores={
+        "egarps_component": 0.9,
+        "rhofold_component": 0.5,
+        "iptm_component": 0.5,
+    })
+    c2 = Candidate(sequence="UGCAUGCA", scores={
+        "egarps_component": 0.5,
+        "rhofold_component": 0.9,
+        "iptm_component": 0.5,
+    })
+    wf._workflow_state["_aptamer_input"] = RnaAptamerDesignInput(
+        protein_structure_path="test.pdb",
+        reference_point={"rhofold_component": 1.0},
+    )
+    result = wf.rank_and_format([c1, c2])
+    assert result.success is True
+    assert result.best_candidate is c2
+    assert getattr(result, "best_candidate_source", None) == "reference_point_optimization"
+
+
+def test_rank_and_format_pareto_frontier():
+    """Pareto frontier is always returned."""
+    wf = RnaAptamerDesignWorkflow(MagicMock())
+    c1 = Candidate(sequence="ACGUACGU", scores={
+        "egarps_component": 0.9,
+        "rhofold_component": 0.5,
+        "iptm_component": 0.5,
+    })
+    c2 = Candidate(sequence="UGCAUGCA", scores={
+        "egarps_component": 0.5,
+        "rhofold_component": 0.9,
+        "iptm_component": 0.5,
+    })
+    c3 = Candidate(sequence="AAAACCCCUUUU", scores={
+        "egarps_component": 0.4,
+        "rhofold_component": 0.4,
+        "iptm_component": 0.4,
+    })
+    wf._workflow_state["_aptamer_input"] = RnaAptamerDesignInput(
+        protein_structure_path="test.pdb",
+    )
+    result = wf.rank_and_format([c1, c2, c3])
+    assert result.success is True
+    frontier = getattr(result, "pareto_frontier", None)
+    assert frontier is not None
+    assert c3 not in frontier
+    assert len(frontier) == 2
 
 
 class TestInputValidation:
@@ -430,8 +488,8 @@ class TestInputValidation:
         inp = RnaAptamerDesignInput(protein_structure_path="test.pdb")
         assert inp.chain_id == "A"
         assert inp.aptamer_length == 30
-        assert inp.n_odesign_samples == 5
-        assert inp.odesign_seeds == [42]
+        assert inp.n_odesign_samples == 8
+        assert inp.odesign_seeds == [42, 123]
 
     def test_dict_coercion(self):
         raw = {
@@ -466,6 +524,21 @@ class TestInputValidation:
                 hotspot_residues="invalid_format",
             )
 
+    def test_reference_point_validation(self):
+        """Unknown objective keys in reference_point raise ValueError."""
+        with pytest.raises(ValueError, match="unknown objectives"):
+            RnaAptamerDesignInput(
+                protein_structure_path="test.pdb",
+                reference_point={"invalid_dim": 1.0},
+            )
+
+    def test_reference_point_valid(self):
+        """Valid reference_point keys are accepted."""
+        inp = RnaAptamerDesignInput(
+            protein_structure_path="test.pdb",
+            reference_point={"egarps_component": 0.8, "rhofold_component": 0.9},
+        )
+        assert inp.reference_point == {"egarps_component": 0.8, "rhofold_component": 0.9}
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Section 3: Layer 1 — Capabilities via CapabilityRegistry
@@ -675,6 +748,86 @@ class TestLayer2WorkflowEvaluation:
         # But GC and RhoFold should still work
         assert metrics["gc_content"] == pytest.approx(0.48, abs=1e-6)
 
+    def test_evaluate_skips_egarps_when_rhofold_low(self):
+        """EGARPS should be skipped when RhoFold pLDDT < 65.0."""
+        reg = MagicMock()
+        egarps_invoke = MagicMock(return_value=CapabilityResult(
+            success=True, tool_name="egarps", output={"native_probability": 0.99}
+        ))
+        egarps_cap = MagicMock()
+        egarps_cap.invoke = egarps_invoke
+        caps = {
+            "compute_rna_sequence_gc_content": MagicMock(),
+            "predict_rna_tertiary_structure_with_rhofold": MagicMock(),
+            "score_rna_protein_complex_with_egarps": egarps_cap,
+            "predict_rna_protein_complex_with_proteinx": MagicMock(),
+            "analyze_rna_protein_interface": MagicMock(),
+        }
+        caps["compute_rna_sequence_gc_content"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="gc", output={"gc_content": 0.5}
+        )
+        # RhoFold pLDDT below the 65.0 EGARPS gate
+        caps["predict_rna_tertiary_structure_with_rhofold"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="rho", output={"mean_plddt": 60.0, "pdb_filepath": "workspace/rho.pdb"}
+        )
+        caps["predict_rna_protein_complex_with_proteinx"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="proteinx", output={"ipTM": 0.7, "mean_plddt": 80.0}
+        )
+        caps["analyze_rna_protein_interface"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="iface", output={"interface_contacts": 20}
+        )
+        reg.has = lambda name: name in caps
+        reg.get = lambda name: caps[name]
+
+        wf = RnaAptamerDesignWorkflow(reg)
+        candidate = Candidate(
+            sequence="AUGCGCAUGCGCAUGCGCAUGCGCAUGCGC",
+            metadata={"odesign_prediction_path": "workspace/test.pdb"},
+        )
+        metrics = wf.evaluate(candidate)
+        assert metrics["egarps_native_probability"] is None
+        egarps_invoke.assert_not_called()
+
+    @pytest.mark.parametrize("gc_value", [0.20, 0.90])
+    def test_evaluate_skips_egarps_when_gc_extreme(self, gc_value):
+        """EGARPS should be skipped when GC content is outside [0.25, 0.85]."""
+        reg = MagicMock()
+        egarps_invoke = MagicMock(return_value=CapabilityResult(
+            success=True, tool_name="egarps", output={"native_probability": 0.99}
+        ))
+        egarps_cap = MagicMock()
+        egarps_cap.invoke = egarps_invoke
+        caps = {
+            "compute_rna_sequence_gc_content": MagicMock(),
+            "predict_rna_tertiary_structure_with_rhofold": MagicMock(),
+            "score_rna_protein_complex_with_egarps": egarps_cap,
+            "predict_rna_protein_complex_with_proteinx": MagicMock(),
+            "analyze_rna_protein_interface": MagicMock(),
+        }
+        caps["compute_rna_sequence_gc_content"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="gc", output={"gc_content": gc_value}
+        )
+        caps["predict_rna_tertiary_structure_with_rhofold"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="rho", output={"mean_plddt": 85.0, "pdb_filepath": "workspace/rho.pdb"}
+        )
+        caps["predict_rna_protein_complex_with_proteinx"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="proteinx", output={"ipTM": 0.7, "mean_plddt": 80.0}
+        )
+        caps["analyze_rna_protein_interface"].invoke = lambda args, state=None: CapabilityResult(
+            success=True, tool_name="iface", output={"interface_contacts": 20}
+        )
+        reg.has = lambda name: name in caps
+        reg.get = lambda name: caps[name]
+
+        wf = RnaAptamerDesignWorkflow(reg)
+        candidate = Candidate(
+            sequence="AUGCGCAUGCGCAUGCGCAUGCGCAUGCGC",
+            metadata={"odesign_prediction_path": "workspace/test.pdb"},
+        )
+        metrics = wf.evaluate(candidate)
+        assert metrics["egarps_native_probability"] is None
+        egarps_invoke.assert_not_called()
+
 
 class TestLayer2WorkflowFullPipeline:
     """Layer 2 end-to-end workflow tests."""
@@ -740,8 +893,8 @@ class TestLayer2WorkflowFullPipeline:
         assert result.success is True
         assert result.best_candidate is not None
         assert len(result.all_candidates) == 1
-        assert result.best_candidate.scores["total_score"] > 0.0
-        assert "RhoFold=" in result.summary or "EGARPS=" in result.summary
+        assert "asf=" in result.summary or "RhoFold=" in result.summary
+        assert result.best_candidate.scores.get("asf_distance") is not None
 
     def test_rank_and_format_empty_candidates(self):
         wf = RnaAptamerDesignWorkflow(MagicMock())
@@ -749,18 +902,73 @@ class TestLayer2WorkflowFullPipeline:
         assert result.success is False
         assert "empty_candidate_list" in result.errors
 
+    def test_required_services_maps_rhofold_to_correct_port(self):
+        """RhoFold capability must point to port 8005 and the rhofold service start script."""
+        from agent_core.services.service_manager import CAPABILITY_SERVICE_MAP
+
+        rhofold = CAPABILITY_SERVICE_MAP["predict_rna_tertiary_structure_with_rhofold"]
+        assert rhofold.port == 8005
+        assert rhofold.health_path == "/health"
+        assert "microservices/rhofold_service/start.sh" in rhofold.start_script
+
+        odesign = CAPABILITY_SERVICE_MAP["run_odesign_inference"]
+        assert odesign.port == 8012
+        assert "microservices/odesign_service/start.sh" in odesign.start_script
+
+    def test_resolve_protein_structure_falls_back_to_sequence_prediction(self, tmp_path):
+        """When only protein_sequence is provided, predict structure with ProteinX."""
+        predicted_pdb = tmp_path / "predicted_protein.pdb"
+        predicted_pdb.write_text("MODEL 1\nENDMDL\n")
+
+        reg = MagicMock()
+        structure_cap = MagicMock()
+        structure_cap.invoke = MagicMock(return_value=CapabilityResult(
+            success=True,
+            tool_name="predict_protein_structure_with_proteinx",
+            output={"pdb_filepath": str(predicted_pdb)},
+        ))
+        caps = {"predict_protein_structure_with_proteinx": structure_cap}
+        reg.has = lambda name: name in caps
+        reg.get = lambda name: caps[name]
+
+        wf = RnaAptamerDesignWorkflow(reg)
+        inp = RnaAptamerDesignInput(protein_sequence="MKTAYIAKQRQISFVKSHFSRQ")
+        path = wf._resolve_protein_structure(inp)
+        assert path == str(predicted_pdb)
+        structure_cap.invoke.assert_called_once()
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Section 5: Layer 3 — ExecutionController + Critic + Retry
+# Section 5: Layer 3 — PipelineAgent orchestration
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-class TestLayer3ExecutionController:
-    """Layer 3 tests: ExecutionController orchestrates workflow execution."""
+class TestLayer4PipelineAgent:
+    """Layer 4 tests: PipelineAgent orchestrates workflow execution."""
 
-    def test_execution_controller_runs_workflow(self):
-        """ExecutionController should execute rna_aptamer_design as a workflow step."""
-        from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+    def _make_quality_agent(self) -> "QualityAgent":
+        from agent_core.agents.quality_agent import QualityAgent, QualityReport
+
+        report = QualityReport(
+            overall_assessment="ok",
+            quality_score=1.0,
+            action="pass",
+            reasoning="fine",
+        )
+        llm = MagicMock()
+        llm.invoke.return_value = MagicMock(content=report.model_dump_json())
+        return QualityAgent(llm=llm)
+
+    def test_pipeline_agent_runs_workflow(self):
+        """PipelineAgent should execute rna_aptamer_design and invoke progress callback."""
+        from agent_core.agents.pipeline_agent import PipelineAgent
+        from agent_core.agents.quality_agent import QualityReport
+        from agent_core.agents.specialist_agent import SpecialistAgent
+        from agent_core.agents.synthesis_agent import SynthesisAgent
+        from agent_core.pipeline.models import PipelinePlan
+        from agent_core.quality_profiles.rna_aptamer_design import (
+            RNA_APTAMER_QUALITY_PROFILE,
+        )
 
         reg = MagicMock()
         gen_caps = {
@@ -806,120 +1014,281 @@ class TestLayer3ExecutionController:
         reg.get = lambda name: gen_caps[name]
 
         wf = RnaAptamerDesignWorkflow(reg)
-        workflow_registry = {"rna_aptamer_design": wf}
-
-        controller = ExecutionController(
-            capability_registry=reg,
-            workflow_registry=workflow_registry,
+        specialist = SpecialistAgent(wf, RNA_APTAMER_QUALITY_PROFILE)
+        pipeline_agent = PipelineAgent(
+            specialist_registry={"rna_aptamer_design": specialist},
+            quality_agent=self._make_quality_agent(),
+            synthesis_agent=SynthesisAgent(enable_llm=False),
         )
 
-        plan = ExecutionPlan(steps=[
-            PlanStep(
-                step_id="s1",
-                type="workflow",
-                target="rna_aptamer_design",
-                input_binding={
-                    "protein_structure_path": "/tmp/test_protein_for_aptamer.pdb",
-                    "aptamer_length": 30,
-                },
-                output_key="aptamer_result",
-                description="Design aptamer",
-            ),
+        plan = PipelinePlan.single(
+            workflow="rna_aptamer_design",
+            static_params={
+                "protein_structure_path": "/tmp/test_protein_for_aptamer.pdb",
+                "aptamer_length": 30,
+            },
+            plan_id="aptamer_pipeline",
+            output_alias="aptamer_result",
+        )
+
+        progress_calls: list[Any] = []
+
+        def _progress(payload: Any) -> None:
+            progress_calls.append(payload)
+
+        result = pipeline_agent.execute(plan, progress_callback=_progress)
+
+        assert result.success is True
+        assert "n1" in result.node_results
+        node_result = result.node_results["n1"]
+        assert node_result.workflow == "rna_aptamer_design"
+        assert node_result.workflow_result is not None
+        assert node_result.workflow_result.success is True
+        assert node_result.workflow_result.best_candidate is not None
+        assert len(progress_calls) > 0
+        assert all("event" in call for call in progress_calls)
+
+
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Section 5.5: BMC Diagnosis Set
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestBmcDiagnosisSet:
+    """Tests for representative BMC diagnosis set and source-metric tracking."""
+
+    def test_select_diagnosis_candidates_includes_best_and_leaders(self):
+        """Diagnosis set should include ASF best and per-objective leaders."""
+        reg = MagicMock()
+        wf = RnaAptamerDesignWorkflow(reg)
+
+        best = _make_aptamer_candidate(
+            "AUGC" * 8,
+            gc=0.48,
+            egarps=0.60,
+            rhofold=75.0,
+            iptm=0.70,
+        )
+        fold_leader = _make_aptamer_candidate(
+            "AUGU" * 8,
+            gc=0.48,
+            egarps=0.20,
+            rhofold=95.0,
+            iptm=0.50,
+        )
+        binding_leader = _make_aptamer_candidate(
+            "ACGU" * 8,
+            gc=0.48,
+            egarps=0.90,
+            rhofold=55.0,
+            iptm=0.50,
+        )
+        iptm_leader = _make_aptamer_candidate(
+            "UACG" * 8,
+            gc=0.48,
+            egarps=0.20,
+            rhofold=55.0,
+            iptm=0.95,
+        )
+
+        candidates = [best, fold_leader, binding_leader, iptm_leader]
+        selected = wf._select_diagnosis_candidates(
+            candidates,
+            AptamerCoordinator.USER_FACING_OBJECTIVES,
+            best,
+        )
+        selected_ids = {c.id for c in selected}
+
+        assert best.id in selected_ids
+        assert fold_leader.id in selected_ids
+        assert binding_leader.id in selected_ids
+        assert iptm_leader.id in selected_ids
+        assert len(selected) == 4
+
+    def test_select_diagnosis_candidates_skips_missing_objectives(self):
+        """Candidates missing an objective should not block leader selection."""
+        reg = MagicMock()
+        wf = RnaAptamerDesignWorkflow(reg)
+
+        best = _make_aptamer_candidate(
+            "AUGC" * 8,
+            gc=0.48,
+            egarps=0.60,
+            rhofold=75.0,
+        )
+        fold_leader = _make_aptamer_candidate(
+            "AUGU" * 8,
+            gc=0.48,
+            egarps=0.20,
+            rhofold=95.0,
+        )
+
+        selected = wf._select_diagnosis_candidates(
+            [best, fold_leader],
+            AptamerCoordinator.USER_FACING_OBJECTIVES,
+            best,
+        )
+        selected_ids = {c.id for c in selected}
+        assert best.id in selected_ids
+        assert fold_leader.id in selected_ids
+
+    def test_merge_issues_with_sources_keeps_worst_violation(self):
+        """Same issue type from multiple candidates should keep the largest violation."""
+        reg = MagicMock()
+        wf = RnaAptamerDesignWorkflow(reg)
+
+        metrics_low = {"egarps_native_probability": 0.10}
+        metrics_lower = {"egarps_native_probability": 0.05}
+
+        issue_low = Issue(
+            issue_type="EGARPS_COMPONENT_BELOW_REFERENCE",
+            value=0.10,
+            target=0.50,
+            violation=0.40,
+            affected_modules=("Target", "Aptamer"),
+            evidence="low",
+        )
+        issue_lower = Issue(
+            issue_type="EGARPS_COMPONENT_BELOW_REFERENCE",
+            value=0.05,
+            target=0.50,
+            violation=0.45,
+            affected_modules=("Target", "Aptamer"),
+            evidence="lower",
+        )
+
+        issues, source_metrics = wf._merge_issues_with_sources([
+            (issue_low, metrics_low),
+            (issue_lower, metrics_lower),
         ])
 
-        # Disable critic for this test (avoid live LLM call)
-        with patch.object(controller, "_resolve_critic", return_value=None):
-            state: dict[str, Any] = {}
-            result_state = controller.execute(plan, state)
+        assert len(issues) == 1
+        assert issues[0].violation == 0.45
+        assert source_metrics["EGARPS_COMPONENT_BELOW_REFERENCE"] is metrics_lower
 
-        assert result_state["aptamer_result"].success is True
-        assert "workflow_result" in result_state
-        assert result_state["workflow_result"].success is True
-        assert "_execution_log" in result_state
-        assert any(entry["event"] == "plan_complete" for entry in result_state["_execution_log"])
+    def test_broadcast_feedback_uses_source_metrics_for_severe_foldability(self):
+        """Severe foldability issues should trigger a larger aptamer_length_delta."""
+        coord = AptamerCoordinator()
 
+        # Mild foldability issue: pLDDT just below reference
+        mild_issue = Issue(
+            issue_type="RHOFOLD_COMPONENT_BELOW_REFERENCE",
+            value=0.68,
+            target=0.80,
+            violation=0.12,
+            affected_modules=("Aptamer",),
+            evidence="mild",
+        )
+        mild_metrics = {"rhofold_mean_plddt": 68.0}
+        mild_feedback = coord.broadcast_feedback([mild_issue], mild_metrics)
+        mild_delta = [
+            a.delta for a in mild_feedback["Aptamer"].adjustments
+            if a.param == "aptamer_length_delta"
+        ]
+        assert mild_delta == [5.0]
 
-class TestLayer3CriticRetry:
-    """Layer 3 retry tests: critic triggers retry with parameter overrides."""
+        # Severe foldability issue: pLDDT far below reference
+        severe_issue = Issue(
+            issue_type="RHOFOLD_COMPONENT_BELOW_REFERENCE",
+            value=0.45,
+            target=0.80,
+            violation=0.35,
+            affected_modules=("Aptamer",),
+            evidence="severe",
+        )
+        severe_metrics = {"rhofold_mean_plddt": 45.0}
+        severe_feedback = coord.broadcast_feedback([severe_issue], severe_metrics)
+        severe_delta = [
+            a.delta for a in severe_feedback["Aptamer"].adjustments
+            if a.param == "aptamer_length_delta"
+        ]
+        assert severe_delta == [10.0]
 
-    def test_critic_retry_with_parameter_override(self):
-        """Mock LLM critic recommends parameter adjustments → retry triggered."""
-        from agent_core.planning.llm_critic import CriticDiagnosis, CriticIssue
+    def test_broadcast_feedback_pool_average_mode(self):
+        """APTAMER_FEEDBACK_MODE=pool_average uses pool-mean metrics (Fig 5b)."""
+        coord = AptamerCoordinator()
+        issue = Issue(
+            issue_type="RHOFOLD_COMPONENT_BELOW_REFERENCE",
+            value=0.45,
+            target=0.80,
+            violation=0.35,
+            affected_modules=("Aptamer",),
+            evidence="severe",
+        )
+        # Worst-violation candidate has very low pLDDT; the pool mean is high.
+        source_metrics = {"rhofold_mean_plddt": 45.0}
+        pool_metrics = {"rhofold_mean_plddt": 80.0}
 
-        critic = RnaAptamerDesignLLMCritic()
+        with patch("agent_core.workflows.coordinator._APTAMER_FEEDBACK_MODE", "pool_average"):
+            feedback = coord.broadcast_feedback(
+                [issue], source_metrics, pool_metrics=pool_metrics
+            )
+        deltas = [
+            a.delta for a in feedback["Aptamer"].adjustments
+            if a.param == "aptamer_length_delta"
+        ]
+        # Pool mean pLDDT (80) is not severe -> moderate +5 nt adjustment.
+        assert deltas == [5.0]
 
-        result = WorkflowResult(
-            success=True,
-            task_id="test",
-            summary="test",
-            errors=[],
-            all_candidates=[
-                _make_aptamer_candidate("AUGC" * 8, gc=0.15, egarps=0.20, rhofold=30.0),
-            ],
+        # Default source-aware mode ignores pool_metrics entirely.
+        with patch("agent_core.workflows.coordinator._APTAMER_FEEDBACK_MODE", "source_aware"):
+            feedback = coord.broadcast_feedback(
+                [issue], source_metrics, pool_metrics=pool_metrics
+            )
+        deltas = [
+            a.delta for a in feedback["Aptamer"].adjustments
+            if a.param == "aptamer_length_delta"
+        ]
+        assert deltas == [10.0]
+
+    def test_pool_mean_metrics_averages_numeric_bundle_entries(self):
+        """_pool_mean_metrics averages numeric metrics_bundle entries (Fig 5b)."""
+        c1 = _make_aptamer_candidate("AUGC" * 8)
+        c2 = _make_aptamer_candidate("AUGU" * 8)
+        c1.metadata["metrics_bundle"] = {
+            "rhofold_mean_plddt": 40.0,
+            "gc_content": 0.5,
+            "buried_flag": True,
+            "label": "x",
+        }
+        c2.metadata["metrics_bundle"] = {
+            "rhofold_mean_plddt": 80.0,
+            "gc_content": 0.7,
+        }
+        pool = RnaAptamerDesignWorkflow._pool_mean_metrics([c1, c2])
+        assert pool["rhofold_mean_plddt"] == pytest.approx(60.0)
+        assert pool["gc_content"] == pytest.approx(0.6)
+        assert "buried_flag" not in pool
+        assert "label" not in pool
+
+    def test_bmc_diagnoses_multiple_candidates(self):
+        """BMC loop should call diagnose on multiple candidates when leaders exist."""
+        reg = self._make_ablation_registry_for_diagnosis()
+        wf = RnaAptamerDesignWorkflow(reg)
+        inp = RnaAptamerDesignInput(
+            protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
+            aptamer_length=30,
         )
 
-        mock_diagnosis = CriticDiagnosis(
-            overall_assessment="GC too low and binding affinity poor",
-            quality_score=0.2,
-            issues=[
-                CriticIssue(
-                    severity="critical",
-                    category="binding_affinity",
-                    description="EGARPS native_probability too low",
-                    metric_value=0.20,
-                    affected_candidate_count=1,
-                )
-            ],
-            action="retry_with_adjustments",
-            parameter_overrides={"weight_egarps": 0.70, "weight_rhofold": 0.30},
-            reasoning="Prioritize binding affinity over foldability",
-            confidence=0.9,
-        )
+        diagnose_calls: list[tuple[dict[str, Any], dict[str, float]]] = []
 
-        with patch.object(critic, "diagnose", return_value=mock_diagnosis):
-            state = {"_last_workflow_params": {"weight_egarps": 0.50, "weight_rhofold": 0.50}}
-            should_retry = critic.should_retry(result, state)
+        def _capture_diagnose(self, norm_vec, reference_point):
+            diagnose_calls.append((norm_vec, reference_point))
+            return []
 
-        assert should_retry is True
-        assert state.get("_parameter_overrides") == {"weight_egarps": 0.70, "weight_rhofold": 0.30}
+        with patch.object(AptamerCoordinator, "diagnose", _capture_diagnose):
+            result = wf.run(inp)
 
-    def test_critic_no_retry_when_quality_good(self):
-        """Mock LLM critic returns proceed → no retry."""
-        from agent_core.planning.llm_critic import CriticDiagnosis
+        assert result.success is True
+        # At least the best candidate is diagnosed; with per-objective leaders
+        # we expect more than one diagnose call when trade-offs exist.
+        assert len(diagnose_calls) >= 1
 
-        critic = RnaAptamerDesignLLMCritic()
-
-        result = WorkflowResult(
-            success=True,
-            task_id="test",
-            summary="test",
-            errors=[],
-            all_candidates=[
-                _make_aptamer_candidate("AUGC" * 8, gc=0.50, egarps=0.80, rhofold=85.0),
-            ],
-        )
-
-        mock_diagnosis = CriticDiagnosis(
-            overall_assessment="Good quality candidates",
-            quality_score=0.85,
-            issues=[],
-            action="proceed_with_filtered",
-            parameter_overrides={},
-            reasoning="All metrics acceptable",
-            confidence=0.95,
-        )
-
-        with patch.object(critic, "diagnose", return_value=mock_diagnosis):
-            state = {"_last_workflow_params": {"aptamer_length": 30}}
-            should_retry = critic.should_retry(result, state)
-
-        assert should_retry is False
-
-    def test_execution_controller_triggers_retry_and_applies_overrides(self):
-        """ExecutionController executes workflow, critic triggers retry, overrides applied."""
-        from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
-        from agent_core.planning.llm_critic import CriticDiagnosis, CriticIssue
-
+    def _make_ablation_registry_for_diagnosis(self):
+        """Return a mock registry that produces diverse candidates for diagnosis tests."""
         reg = MagicMock()
         gen_caps = {
             "identify_protein_binding_hotspots": make_mock_capability({
@@ -930,284 +1299,90 @@ class TestLayer3CriticRetry:
                 "input_json_filepath": "workspace/odesign_input.json",
             }),
             "run_odesign_inference": make_mock_capability({
-                "prediction_filepaths": ["workspace/pred_0.cif"],
+                "prediction_filepaths": [
+                    "workspace/pred_0.cif",
+                    "workspace/pred_1.cif",
+                    "workspace/pred_2.cif",
+                ],
             }),
             "extract_rna_sequence_from_cif": make_mock_capability({
                 "sequence": "AUGCGCAUGCGCAUGCGCAUGCGCAUGCGC",
             }),
+        }
+        # Evaluation returns different scores for each candidate so that
+        # per-objective leaders are distinct from the ASF best.
+        call_count = {"gc": 0, "rhofold": 0, "egarps": 0, "proteinx": 0, "interface": 0}
+
+        def _gc_invoke(args, state=None):
+            call_count["gc"] += 1
+            return CapabilityResult(
+                success=True,
+                tool_name="compute_rna_sequence_gc_content",
+                output={"gc_content": 0.48},
+            )
+
+        def _rhofold_invoke(args, state=None):
+            call_count["rhofold"] += 1
+            idx = call_count["rhofold"] - 1
+            plddt_values = [75.0, 95.0, 60.0]
+            return CapabilityResult(
+                success=True,
+                tool_name="predict_rna_tertiary_structure_with_rhofold",
+                output={
+                    "mean_plddt": plddt_values[idx % len(plddt_values)],
+                    "pdb_filepath": f"workspace/rho_{idx}.pdb",
+                },
+            )
+
+        def _egarps_invoke(args, state=None):
+            call_count["egarps"] += 1
+            idx = call_count["egarps"] - 1
+            probs = [0.65, 0.20, 0.90]
+            return CapabilityResult(
+                success=True,
+                tool_name="score_rna_protein_complex_with_egarps",
+                output={"native_probability": probs[idx % len(probs)]},
+            )
+
+        def _proteinx_invoke(args, state=None):
+            call_count["proteinx"] += 1
+            idx = call_count["proteinx"] - 1
+            iptms = [0.70, 0.50, 0.60]
+            return CapabilityResult(
+                success=True,
+                tool_name="predict_rna_protein_complex_with_proteinx",
+                output={
+                    "ipTM": iptms[idx % len(iptms)],
+                    "mean_plddt": 80.0,
+                    "pdb_filepath": f"workspace/px_{idx}.pdb",
+                },
+            )
+
+        def _interface_invoke(args, state=None):
+            call_count["interface"] += 1
+            return CapabilityResult(
+                success=True,
+                tool_name="analyze_rna_protein_interface",
+                output={"interface_contacts": 20, "buried_sasa": 1000.0},
+            )
+
+        eval_caps = {
             "compute_rna_sequence_gc_content": MagicMock(),
             "predict_rna_tertiary_structure_with_rhofold": MagicMock(),
             "score_rna_protein_complex_with_egarps": MagicMock(),
             "predict_rna_protein_complex_with_proteinx": MagicMock(),
             "analyze_rna_protein_interface": MagicMock(),
         }
+        eval_caps["compute_rna_sequence_gc_content"].invoke = _gc_invoke
+        eval_caps["predict_rna_tertiary_structure_with_rhofold"].invoke = _rhofold_invoke
+        eval_caps["score_rna_protein_complex_with_egarps"].invoke = _egarps_invoke
+        eval_caps["predict_rna_protein_complex_with_proteinx"].invoke = _proteinx_invoke
+        eval_caps["analyze_rna_protein_interface"].invoke = _interface_invoke
 
-        def _gc_invoke(args, state=None):
-            return CapabilityResult(success=True, tool_name="gc", output={"gc_content": 0.48})
-
-        def _rhofold_invoke(args, state=None):
-            return CapabilityResult(success=True, tool_name="rho", output={"mean_plddt": 85.0, "pdb_filepath": "workspace/rho.pdb"})
-
-        gen_caps["compute_rna_sequence_gc_content"].invoke = _gc_invoke
-        gen_caps["predict_rna_tertiary_structure_with_rhofold"].invoke = _rhofold_invoke
-        gen_caps["score_rna_protein_complex_with_egarps"].invoke = lambda args, state=None: CapabilityResult(
-            success=True, tool_name="egarps", output={"native_probability": 0.65}
-        )
-        gen_caps["predict_rna_protein_complex_with_proteinx"].invoke = lambda args, state=None: CapabilityResult(
-            success=True, tool_name="proteinx", output={"ipTM": 0.70}
-        )
-        gen_caps["analyze_rna_protein_interface"].invoke = lambda args, state=None: CapabilityResult(
-            success=True, tool_name="iface", output={"interface_contacts": 20}
-        )
-
-        reg.has = lambda name: name in gen_caps
-        reg.get = lambda name: gen_caps[name]
-
-        wf = RnaAptamerDesignWorkflow(reg)
-        controller = ExecutionController(
-            capability_registry=reg,
-            workflow_registry={"rna_aptamer_design": wf},
-        )
-
-        # Create a critic that will trigger retry once
-        critic = RnaAptamerDesignLLMCritic()
-        mock_diagnosis = CriticDiagnosis(
-            overall_assessment="Low quality, needs retry",
-            quality_score=0.2,
-            issues=[CriticIssue(severity="critical", category="binding", description="Poor binding")],
-            action="retry_with_adjustments",
-            parameter_overrides={"weight_egarps": 0.80, "weight_rhofold": 0.20},
-            reasoning="Prioritize binding affinity",
-            confidence=0.9,
-        )
-
-        # Patch _resolve_critic to return our patched critic (bypass registry lookup)
-        def _mock_resolve_critic(step, get_critic_fn):
-            return critic
-
-        with patch.object(critic, "diagnose", return_value=mock_diagnosis):
-            with patch.object(controller, "_resolve_critic", _mock_resolve_critic):
-                plan = ExecutionPlan(
-                    steps=[
-                        PlanStep(
-                            step_id="s1",
-                            type="workflow",
-                            target="rna_aptamer_design",
-                            input_binding={"protein_structure_path": "/tmp/test_protein_for_aptamer.pdb", "weight_egarps": 0.50},
-                            output_key="aptamer_result",
-                            description="Design aptamer",
-                        ),
-                    ],
-                    max_retries=1,
-                )
-
-                state: dict[str, Any] = {}
-                result_state = controller.execute(plan, state)
-
-        # Should have retried once
-        assert result_state.get("retry_count") == 1
-        assert result_state["aptamer_result"].success is True
-
-        # Check that parameter override was applied
-        assert plan.steps[0].input_binding["weight_egarps"] == 0.80
-
-        # Check execution log has retry event
-        retry_events = [e for e in result_state["_execution_log"] if e["event"] == "critic_retry"]
-        assert len(retry_events) >= 1
-
-    def test_execution_controller_retry_exhausts_max_retries(self):
-        """When critic always wants retry, controller stops after max_retries."""
-        from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
-        from agent_core.planning.llm_critic import CriticDiagnosis, CriticIssue
-
-        reg = MagicMock()
-        gen_caps = {
-            "identify_protein_binding_hotspots": make_mock_capability({
-                "hotspot_residues": "A/2,A/3",
-                "hotspot_patch_size": 2,
-            }),
-            "build_odesign_aptamer_input_json": make_mock_capability({
-                "input_json_filepath": "workspace/odesign_input.json",
-            }),
-            "run_odesign_inference": make_mock_capability({
-                "prediction_filepaths": ["workspace/pred_0.cif"],
-            }),
-            "extract_rna_sequence_from_cif": make_mock_capability({
-                "sequence": "AUGCGCAUGCGCAUGCGCAUGCGCAUGCGC",
-            }),
-            "compute_rna_sequence_gc_content": MagicMock(),
-            "predict_rna_tertiary_structure_with_rhofold": MagicMock(),
-            "score_rna_protein_complex_with_egarps": MagicMock(),
-            "predict_rna_protein_complex_with_proteinx": MagicMock(),
-            "analyze_rna_protein_interface": MagicMock(),
-        }
-
-        def _gc_invoke(args, state=None):
-            return CapabilityResult(success=True, tool_name="gc", output={"gc_content": 0.48})
-        def _rhofold_invoke(args, state=None):
-            return CapabilityResult(success=True, tool_name="rho", output={"mean_plddt": 30.0})
-
-        gen_caps["compute_rna_sequence_gc_content"].invoke = _gc_invoke
-        gen_caps["predict_rna_tertiary_structure_with_rhofold"].invoke = _rhofold_invoke
-        gen_caps["score_rna_protein_complex_with_egarps"].invoke = lambda args, state=None: CapabilityResult(
-            success=True, tool_name="egarps", output={"native_probability": 0.10}
-        )
-        gen_caps["predict_rna_protein_complex_with_proteinx"].invoke = lambda args, state=None: CapabilityResult(
-            success=True, tool_name="proteinx", output={"ipTM": 0.10}
-        )
-        gen_caps["analyze_rna_protein_interface"].invoke = lambda args, state=None: CapabilityResult(
-            success=True, tool_name="iface", output={"interface_contacts": 1}
-        )
-
-        reg.has = lambda name: name in gen_caps
-        reg.get = lambda name: gen_caps[name]
-
-        wf = RnaAptamerDesignWorkflow(reg)
-        controller = ExecutionController(
-            capability_registry=reg,
-            workflow_registry={"rna_aptamer_design": wf},
-        )
-
-        # Critic always returns retry
-        critic = RnaAptamerDesignLLMCritic()
-        mock_diagnosis = CriticDiagnosis(
-            overall_assessment="Always retry",
-            quality_score=0.1,
-            issues=[CriticIssue(severity="critical", category="all", description="bad")],
-            action="retry_with_adjustments",
-            parameter_overrides={"weight_egarps": 0.90, "weight_rhofold": 0.10},
-            reasoning="retry",
-            confidence=0.9,
-        )
-
-        def _mock_resolve_critic(step, get_critic_fn):
-            return critic
-
-        with patch.object(critic, "diagnose", return_value=mock_diagnosis):
-            with patch.object(controller, "_resolve_critic", _mock_resolve_critic):
-                plan = ExecutionPlan(
-                    steps=[
-                        PlanStep(
-                            step_id="s1",
-                            type="workflow",
-                            target="rna_aptamer_design",
-                            input_binding={"protein_structure_path": "/tmp/test_protein_for_aptamer.pdb", "weight_egarps": 0.50},
-                            output_key="aptamer_result",
-                        ),
-                    ],
-                    max_retries=2,
-                )
-
-                state: dict[str, Any] = {}
-                result_state = controller.execute(plan, state)
-
-        # With max_retries=2, should execute 3 times (initial + 2 retries)
-        assert result_state.get("retry_count") == 2
-        assert result_state["_plan_executed"] is True
-
-        # Should have exhausted retries
-        log_events = [e["event"] for e in result_state["_execution_log"]]
-        assert "plan_complete" in log_events
-
-    def test_critic_disabled_by_state_flag(self):
-        """When _llm_critic_enabled=False, should_retry returns False."""
-        from unittest.mock import patch
-
-        critic = RnaAptamerDesignLLMCritic()
-        result = WorkflowResult(
-            success=True, task_id="t", summary="s", errors=[], all_candidates=[]
-        )
-        state = {"_llm_critic_enabled": False}
-
-        with patch.object(critic, "diagnose") as mock_diag:
-            retry = critic.should_retry(result, state)
-            mock_diag.assert_not_called()
-
-        assert retry is False
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Section 6: DeepSeek API integration tests
-# ═══════════════════════════════════════════════════════════════════════════════
-
-
-class TestDeepSeekApiIntegration:
-    """Live DeepSeek API tests (skipped without --live-llm flag)."""
-
-    @pytest.mark.live_llm
-    def test_live_critic_diagnose_with_deepseek(self):
-        """Real LLM critic diagnoses aptamer workflow results."""
-        from agent_core.planning.llm_critic import CriticDiagnosis
-
-        critic = RnaAptamerDesignLLMCritic()
-
-        # Create a result with poor quality candidates
-        result = WorkflowResult(
-            success=True,
-            task_id="live_test",
-            summary="test",
-            errors=[],
-            all_candidates=[
-                _make_aptamer_candidate("AUGC" * 10, gc=0.15, egarps=0.10, rhofold=25.0, iptm=0.10),
-                _make_aptamer_candidate("AUGC" * 10, gc=0.20, egarps=0.15, rhofold=30.0, iptm=0.12),
-            ],
-        )
-        state = {"_last_workflow_params": {"aptamer_length": 30, "n_odesign_samples": 5}}
-
-        diagnosis = critic.diagnose(result, state)
-
-        assert isinstance(diagnosis, CriticDiagnosis)
-        assert 0.0 <= diagnosis.quality_score <= 1.0
-        assert diagnosis.action in ("retry_with_adjustments", "retry_with_alternative", "proceed_with_filtered", "abort")
-        assert diagnosis.confidence >= 0.0
-        # Should identify issues with poor quality candidates
-        assert len(diagnosis.issues) > 0
-
-    @pytest.mark.live_llm
-    def test_live_critic_should_retry_with_deepseek(self):
-        """Real LLM critic decides whether to retry on poor results."""
-        critic = RnaAptamerDesignLLMCritic()
-
-        # Poor quality candidates should trigger retry
-        result = WorkflowResult(
-            success=True,
-            task_id="live_test",
-            summary="test",
-            errors=[],
-            all_candidates=[
-                _make_aptamer_candidate("AUGC" * 10, gc=0.15, egarps=0.10, rhofold=25.0, iptm=0.10),
-            ],
-        )
-        state = {"_last_workflow_params": {"aptamer_length": 30, "n_odesign_samples": 5}}
-
-        should_retry = critic.should_retry(result, state)
-
-        # On very poor results, the LLM should recommend retry
-        assert isinstance(should_retry, bool)
-        # Also check that diagnosis was recorded
-        assert "_last_diagnosis" in state
-
-    @pytest.mark.live_llm
-    def test_live_critic_no_retry_on_good_results(self):
-        """Real LLM critic should not retry when quality is good."""
-        critic = RnaAptamerDesignLLMCritic()
-
-        # High quality candidates should not trigger retry
-        result = WorkflowResult(
-            success=True,
-            task_id="live_test",
-            summary="test",
-            errors=[],
-            all_candidates=[
-                _make_aptamer_candidate("AUGC" * 10, gc=0.50, egarps=0.85, rhofold=90.0, iptm=0.80),
-            ],
-        )
-        state = {"_last_workflow_params": {"aptamer_length": 30, "n_odesign_samples": 5}}
-
-        should_retry = critic.should_retry(result, state)
-
-        # Good results typically should not retry
-        assert isinstance(should_retry, bool)
+        all_caps = {**gen_caps, **eval_caps}
+        reg.has = lambda name: name in all_caps
+        reg.get = lambda name: all_caps[name]
+        return reg
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1215,11 +1390,11 @@ class TestDeepSeekApiIntegration:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-class TestAblationStudies:
-    """Tests for BMC ablation modes: 1round, no_target, no_bounds, llm_coord."""
+class TestBMCReferencePoint:
+    """Tests for reference-point driven BMC iteration."""
 
-    def _make_ablation_registry(self):
-        """Return a mock registry suitable for ablation tests."""
+    def _make_bmc_registry(self):
+        """Return a mock registry suitable for BMC tests."""
         reg = MagicMock()
         gen_caps = {
             "identify_protein_binding_hotspots": make_mock_capability({
@@ -1256,34 +1431,34 @@ class TestAblationStudies:
         reg.get = lambda name: all_caps[name]
         return reg
 
-    def test_bmc_mode_1round_skips_phase3(self):
-        """1round mode should skip Phase 3 iterative refinement."""
-        reg = self._make_ablation_registry()
+    def test_bmc_max_rounds_zero_skips_phase3(self):
+        """bmc_max_rounds=0 should skip Phase 3 iterative refinement."""
+        reg = self._make_bmc_registry()
         wf = RnaAptamerDesignWorkflow(reg)
         inp = RnaAptamerDesignInput(
             protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
             aptamer_length=30,
-            bmc_mode="1round",
+            bmc_max_rounds=0,
         )
         result = wf.run(inp)
         assert result.success is True
         assert result._state_writeback.get("_bmc_trace", []) == []
 
-    def test_bmc_mode_no_target_ignores_hotspot_expansion(self):
-        """no_target mode should ignore Target-module feedback (hotspot expansion)."""
-        reg = self._make_ablation_registry()
+    def test_bmc_expands_hotspot_when_reference_gap_found(self):
+        """Reference-point gap on EGARPS/ipTM should trigger hotspot expansion."""
+        reg = self._make_bmc_registry()
         wf = RnaAptamerDesignWorkflow(reg)
         inp = RnaAptamerDesignInput(
             protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
             aptamer_length=30,
-            bmc_mode="no_target",
         )
         mock_issue = Issue(
-            issue_type="BINDING_AFFINITY_LOW",
+            issue_type="EGARPS_COMPONENT_BELOW_REFERENCE",
             value=0.10,
-            target=0.30,
+            target=0.50,
+            violation=0.40,
             affected_modules=("Target", "Aptamer"),
-            evidence="Mock: EGARPS too low",
+            evidence="Mock: EGARPS below reference",
         )
         with patch.object(AptamerCoordinator, "diagnose", return_value=[mock_issue]):
             with patch.object(
@@ -1291,114 +1466,90 @@ class TestAblationStudies:
                 "_expand_hotspot_residues",
                 return_value="A/1,A/2,A/3,A/4,A/5",
             ) as mock_expand:
-                result = wf.run(inp)
-                assert not mock_expand.called, "no_target mode should not expand hotspot"
+                wf.run(inp)
+                assert mock_expand.called, "EGARPS gap should expand hotspot"
 
-    def test_bmc_mode_full_expands_hotspot_when_issue_found(self):
-        """full mode should process Target-module feedback and expand hotspot."""
-        reg = self._make_ablation_registry()
+    def test_bmc_default_uses_single_round(self):
+        """Default bmc_max_rounds should be 1."""
+        reg = self._make_bmc_registry()
         wf = RnaAptamerDesignWorkflow(reg)
         inp = RnaAptamerDesignInput(
             protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
             aptamer_length=30,
-            bmc_mode="full",
-        )
-        mock_issue = Issue(
-            issue_type="BINDING_AFFINITY_LOW",
-            value=0.10,
-            target=0.30,
-            affected_modules=("Target", "Aptamer"),
-            evidence="Mock: EGARPS too low",
-        )
-        with patch.object(AptamerCoordinator, "diagnose", return_value=[mock_issue]):
-            with patch.object(
-                RnaAptamerDesignWorkflow,
-                "_expand_hotspot_residues",
-                return_value="A/1,A/2,A/3,A/4,A/5",
-            ) as mock_expand:
-                result = wf.run(inp)
-                assert mock_expand.called, "full mode should expand hotspot when issue found"
-
-    def test_bmc_mode_no_bounds_uses_large_max_rounds(self):
-        """no_bounds mode should set max_rounds=100 and improvement_threshold=0.0."""
-        reg = self._make_ablation_registry()
-        wf = RnaAptamerDesignWorkflow(reg)
-        inp = RnaAptamerDesignInput(
-            protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
-            aptamer_length=30,
-            bmc_mode="no_bounds",
         )
         result = wf.run(inp)
         assert result.success is True
-        assert result._state_writeback.get("_bmc_max_rounds") == 100
-        assert result._state_writeback.get("_bmc_improvement_threshold") == 0.0
+        assert result._state_writeback.get("_bmc_max_rounds") == 1
+        assert result._state_writeback.get("_bmc_improvement_threshold") == 0.05
 
-    def test_llm_coord_diagnose_with_mock_llm(self):
-        """LLMAptamerCoordinator should call the LLM and parse JSON response."""
-        mock_llm = MagicMock()
-        mock_llm.invoke.return_value = MagicMock(content="[]")
-
-        with patch(
-            "agent_core.workflows.rna_aptamer_design.get_llm_for_provider",
-            return_value=mock_llm,
-        ):
-            coord = LLMAptamerCoordinator()
-            assert coord._llm is not None
-            issues = coord.diagnose({
-                "egarps_native_probability": 0.65,
-                "rhofold_mean_plddt": 85.0,
-                "proteinx_ipTM": 0.70,
-                "interface_contacts": 20,
-                "buried_sasa": 1000.0,
-                "gc_content": 0.48,
-            })
-            mock_llm.invoke.assert_called_once()
-            assert issues == []
-
-    def test_llm_coord_diagnose_parses_json_response(self):
-        """LLMAptamerCoordinator should parse LLM JSON into Issue objects."""
-        mock_llm = MagicMock()
-        mock_llm.invoke.return_value = MagicMock(
-            content='[{"issue_type":"BINDING_AFFINITY_LOW","value":0.10,"target":0.30,"affected_modules":["Target","Aptamer"],"evidence":"EGARPS too low"}]'
+    def test_user_reference_point_fixed_across_bmc_rounds(self):
+        """User-provided reference points are normalized once and fixed across BMC rounds."""
+        reg = self._make_bmc_registry()
+        wf = RnaAptamerDesignWorkflow(reg)
+        inp = RnaAptamerDesignInput(
+            protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
+            aptamer_length=30,
+            bmc_max_rounds=2,
+            reference_point={
+                "egarps_component": 0.9,
+                "rhofold_component": 0.9,
+                "iptm_component": 0.9,
+            },
         )
+        call_count = {"diagnose": 0}
 
-        with patch(
-            "agent_core.workflows.rna_aptamer_design.get_llm_for_provider",
-            return_value=mock_llm,
-        ):
-            coord = LLMAptamerCoordinator()
-            issues = coord.diagnose({"egarps_native_probability": 0.10})
-            assert len(issues) == 1
-            assert issues[0].issue_type == "BINDING_AFFINITY_LOW"
-            assert issues[0].affected_modules == ("Target", "Aptamer")
-            assert issues[0].evidence == "EGARPS too low"
+        def _diagnose(self, norm_vec, reference_point):
+            call_count["diagnose"] += 1
+            if call_count["diagnose"] == 1:
+                return [Issue(
+                    issue_type="EGARPS_COMPONENT_BELOW_REFERENCE",
+                    value=0.2,
+                    target=0.9,
+                    violation=0.7,
+                    affected_modules=("Target", "Aptamer"),
+                    evidence="Mock: EGARPS below user reference",
+                )]
+            return []
 
-    def test_llm_coord_fallback_on_invalid_json(self):
-        """LLMAptamerCoordinator should fallback to deterministic rules on invalid LLM output."""
-        mock_llm = MagicMock()
-        mock_llm.invoke.return_value = MagicMock(content="not valid json")
+        with patch.object(AptamerCoordinator, "diagnose", _diagnose):
+            result = wf.run(inp)
 
-        with patch(
-            "agent_core.workflows.rna_aptamer_design.get_llm_for_provider",
-            return_value=mock_llm,
-        ):
-            coord = LLMAptamerCoordinator()
-            # Low EGARPS should be flagged by deterministic fallback
-            issues = coord.diagnose({"egarps_native_probability": 0.10})
-            assert len(issues) == 1
-            assert issues[0].issue_type == "BINDING_AFFINITY_LOW"
+        assert result.success is True
+        assert wf._reference_point_mode == "user"
+        assert wf._fixed_norm_ref_point is not None
+        assert len(wf._bmc_trace) == 1
+        assert wf._bmc_trace[0].reference_point == wf._fixed_norm_ref_point
 
-    def test_llm_coord_fallback_when_no_api_key(self):
-        """LLMAptamerCoordinator should fallback to deterministic rules when LLM init fails."""
-        with patch(
-            "agent_core.workflows.rna_aptamer_design.get_llm_for_provider",
-            side_effect=RuntimeError("No API key"),
-        ):
-            coord = LLMAptamerCoordinator()
-            assert coord._llm is None
-            issues = coord.diagnose({"egarps_native_probability": 0.10})
-            assert len(issues) == 1
-            assert issues[0].issue_type == "BINDING_AFFINITY_LOW"
+    def test_utopian_reference_point_mode_when_not_supplied(self):
+        """When no reference point is supplied, the workflow uses utopian mode."""
+        reg = self._make_bmc_registry()
+        wf = RnaAptamerDesignWorkflow(reg)
+        inp = RnaAptamerDesignInput(
+            protein_structure_path="/tmp/test_protein_for_aptamer.pdb",
+            aptamer_length=30,
+            bmc_max_rounds=2,
+        )
+        call_count = {"diagnose": 0}
+
+        def _diagnose(self, norm_vec, reference_point):
+            call_count["diagnose"] += 1
+            if call_count["diagnose"] == 1:
+                return [Issue(
+                    issue_type="EGARPS_COMPONENT_BELOW_REFERENCE",
+                    value=0.2,
+                    target=0.9,
+                    violation=0.7,
+                    affected_modules=("Target", "Aptamer"),
+                    evidence="Mock: EGARPS below utopian reference",
+                )]
+            return []
+
+        with patch.object(AptamerCoordinator, "diagnose", _diagnose):
+            result = wf.run(inp)
+
+        assert result.success is True
+        assert wf._reference_point_mode == "utopian"
+        assert wf._fixed_norm_ref_point is None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -4,23 +4,20 @@ Given an RNA sequence and a ligand SMILES, predict binding propensity
 using RNAsmol and/or GerNA-Bind, evaluate, score, and rank.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaSmallMoleculeInteractionWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更 ║
+║  RnaSmallMoleculeInteractionWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更 ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_small_molecule_interaction workflow 的权威实现。任何字段增删、   ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：  ║
 ║                                                                               ║
 ║    - agent_core/workflows/rna_small_molecule_interaction.py  ← 本文件         ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/workflows/__init__.py                                         ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
-║    - agent_core/planning/base.py                                              ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - tests/test_rna_small_molecule_interaction.py                             ║
-║    - tests/test_rna_small_molecule_interaction_comprehensive.py               ║
 ║    - docs/INTERFACE_LOCKS.md                                                  ║
 ║    - docs/WORKFLOWS.md                                                        ║
 ║                                                                               ║
@@ -48,9 +45,25 @@ _LOGGER = logging.getLogger("agent_core.workflows.rna_small_molecule_interaction
 
 class RnaSmallMoleculeInteractionInput(BaseModel):
     """Input for RNA-small molecule interaction prediction."""
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    rnasmol_filepath: str = Field(default=None, description="[rnasmol] filepath: Path to a file containing the RNA sequence (plain text or FASTA). The wrapper reads the sequence text.")
+    rnasmol_smiles: str = Field(default=None, description="[rnasmol] smiles: Ligand SMILES string.")
+    rnasmol_service_url: str = Field(default='http://127.0.0.1:8007/score', description="[rnasmol] service_url: HTTP endpoint of the RNAsmol microservice.")
+    rnasmol_checkpoint_path: str = Field(default=None, description="[rnasmol] checkpoint_path: Explicit path to a trained RNAsmol .pt checkpoint. Overrides auto-discovery.")
+    rnasmol_dataset: str = Field(default=None, description="[rnasmol] dataset: Training dataset source hint for checkpoint auto-selection (e.g. 'pdb', 'robin').")
+    rnasmol_perturbation_type: str = Field(default=None, description="[rnasmol] perturbation_type: Data-perturbation strategy hint for checkpoint auto-selection (e.g. 'molperturbation', 'netperturbation', 'rnaperturbation').")
+    rnasmol_device: str = Field(default=None, description="[rnasmol] device: PyTorch device string such as 'cuda:0' or 'cpu'. Falls back to RNASMOL_DEVICE env var or cuda:0.")
+    rnasmol_target_len: int = Field(default=500, description="[rnasmol] target_len (internal padding length): Fixed length to which the RNA sequence is padded or truncated in the microservice preprocessing. Not user exposed.")
+    gernabind_filepath: str = Field(default=None, description="[gernabind] filepath: Path to a file containing the RNA sequence (plain text or FASTA).")
+    gernabind_smiles: str = Field(default=None, description="[gernabind] smiles: Ligand SMILES string.")
+    gernabind_service_url: str = Field(default='http://127.0.0.1:8010/score', description="[gernabind] service_url: HTTP endpoint of the GerNA-Bind microservice.")
+    gernabind_checkpoint_path: str = Field(default=None, description="[gernabind] checkpoint_path: Explicit path to a GerNA-Bind affinity checkpoint.")
+    gernabind_pdb_path: str = Field(default=None, description="[gernabind] pdb_path: Optional precomputed RNA PDB structure. If omitted, the service calls the RhoFold microservice to generate one.")
+    gernabind_secondary_structure: str = Field(default=None, description="[gernabind] secondary_structure: Optional dot-bracket RNA secondary structure. If omitted, the service runs RNAfold.")
+    gernabind_device: str = Field(default=None, description="[gernabind] device: Torch device such as 'cuda:0' or 'cpu'. Falls back to GERNABIND_DEVICE env var.")
+    gernabind_dataset: str = Field(default=None, description="[gernabind] dataset: Dataset hint for selecting the default affinity checkpoint. Supported: 'Robin', 'Biosensor'.")
+    gernabind_split_method: str = Field(default=None, description="[gernabind] split_method: Split-method hint for checkpoint selection. Supported: 'random', 'RNA', 'mol', 'both'.")
+    gernabind_rhofold_service_url: str = Field(default=None, description="[gernabind] rhofold_service_url: Microservice-only override for the RhoFold endpoint used when pdb_path is omitted.")
     rna_sequence: str = Field(..., description="RNA sequence (A, U, G, C).")
     smiles: str = Field(..., description="Ligand SMILES string.")
     rna_structure_path: Optional[str] = Field(
@@ -86,7 +99,6 @@ class RnaSmallMoleculeInteractionInput(BaseModel):
             "Only override if the user explicitly requests a different split."
         ),
     )
-
     @field_validator("rna_sequence")
     @classmethod
     def _validate_rna_sequence(cls, v: str) -> str:
@@ -98,7 +110,6 @@ class RnaSmallMoleculeInteractionInput(BaseModel):
                 "Only A, U, G, C (and T) are allowed."
             )
         return v
-
     @field_validator("smiles")
     @classmethod
     def _validate_smiles(cls, v: str) -> str:
@@ -110,16 +121,17 @@ class RnaSmallMoleculeInteractionInput(BaseModel):
             raise ValueError("SMILES does not appear to contain valid atom symbols")
         return stripped
 
-
 class RnaSmallMoleculeInteractionWorkflow(
     BaseDomainWorkflow[RnaSmallMoleculeInteractionInput, WorkflowResult]
 ):
+    input_model = RnaSmallMoleculeInteractionInput
+
     """Predict RNA-ligand binding using RNAsmol and/or GerNA-Bind.
 
-    Critic / retry policy
-    ---------------------
-    This workflow intentionally does NOT implement a Critic and is NOT
-    registered in ``workflows/registry.py``.
+    Quality review / retry policy
+    -----------------------------
+    This workflow intentionally does NOT use an LLM quality review and has no
+    ``QualityProfile`` beyond the deterministic placeholder.
 
     Reason: this is a **prediction/scoring** task, not a generative design task.
     The inputs (RNA sequence + SMILES) are fixed; re-running the same
@@ -138,6 +150,9 @@ class RnaSmallMoleculeInteractionWorkflow(
     required_capabilities = [
         "score_rna_ligand_binding_with_rnasmol",
         "score_rna_ligand_binding_with_gernabind",
+        # GerNA-Bind folds the RNA with RhoFold at runtime when no PDB is
+        # supplied, so the RhoFold service is a hard runtime dependency.
+        "predict_rna_tertiary_structure_with_rhofold",
     ]
 
     def __init__(self, capability_registry: CapabilityRegistry):

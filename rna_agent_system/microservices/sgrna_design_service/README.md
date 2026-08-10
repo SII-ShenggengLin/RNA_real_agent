@@ -1,8 +1,8 @@
 # sgrna_design_service
 
-FastAPI wrapper for `external_repos/sgrna_design` that exposes a stable REST API for sgRNA handle design.
+FastAPI wrapper for `external_repos/sgrna_design` exposing a REST API for sgRNA handle design.
 
-Supports both the original **MCMC annealing** (`sample.py`) and **naive direct generation** (`naive_sample.py`) modes.
+Supports **MCMC annealing** and **naive direct generation** modes.
 
 ## Endpoints
 

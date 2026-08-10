@@ -271,6 +271,12 @@ def fold(payload: FoldRequest) -> FoldResponse:
     structure, mfe, out_seq = _parse_fold_stdout(stdout)
 
     backend = "LinearFold-V" if payload.use_vienna else "LinearFold-C"
+    # LinearFold-C prints the raw CONTRAfold Viterbi score (higher = more
+    # stable), opposite to the "negative MFE = stable" convention used by
+    # LinearFold-V / ViennaRNA and every downstream consumer. Negate it so
+    # the `mfe` field always means "more negative = more stable".
+    if not payload.use_vienna:
+        mfe = -mfe
     return FoldResponse(
         sequence=out_seq or sequence,
         structure=structure,
@@ -331,6 +337,10 @@ def zuker_subopt(payload: ZukerSuboptRequest) -> ZukerSuboptResponse:
     structures, out_seq = _parse_zuker_stdout(stdout)
 
     backend = "LinearFold-V" if payload.use_vienna else "LinearFold-C"
+    # Same sign normalization as /fold: CONTRAfold scores are "higher =
+    # better"; return "more negative = more stable" energies instead.
+    if not payload.use_vienna:
+        structures = [(s, -e) for s, e in structures]
     mfe = structures[0][1] if structures else 0.0
     return ZukerSuboptResponse(
         sequence=out_seq or sequence,

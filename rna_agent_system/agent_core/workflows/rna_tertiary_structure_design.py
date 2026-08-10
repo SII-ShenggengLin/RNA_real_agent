@@ -12,12 +12,13 @@ scoring → ranking → WorkflowResult.
 ║                                                                               ║
 ║    - agent_core/workflows/rna_tertiary_structure_design.py  ← 本文件         ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/quality_profiles/rna_tertiary_structure_design.py             ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - agent_core/llm_config.py                                                 ║
@@ -28,7 +29,6 @@ scoring → ranking → WorkflowResult.
 ║    - microservices/viennarna_service/main.py                                  ║
 ║    - tests/test_rna_tertiary_structure_design.py                              ║
 ║    - tests/test_rna_tertiary_structure_design_layer3.py                       ║
-║    - tests/test_rna_tertiary_structure_design_comprehensive.py                ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -68,9 +68,64 @@ _LOGGER = logging.getLogger("agent_core.workflows.rna_tertiary_structure_design"
 
 class RnaTertiaryStructureDesignInput(BaseModel):
     """Input for the RNA tertiary-structure-guided sequence design workflow."""
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    rhodesign_pdb_filepath: str = Field(default=None, description="[rhodesign] pdb_filepath: Path to the input PDB or CIF structure file used as the structural template.")
+    rhodesign_secondary_structure_filepath: str = Field(default=None, description="[rhodesign] secondary_structure_filepath: Path to a secondary-structure contact-map .npy file. If provided, the service switches to the with-2D RhoDesign mode.")
+    rhodesign_service_url: str = Field(default='http://127.0.0.1:8006/design/from-structure', description="[rhodesign] service_url: HTTP endpoint of the RhoDesign microservice.")
+    rhodesign_seed: int = Field(default=None, description="[rhodesign] seed: Random seed for reproducible sampling. If omitted, the microservice generates a per-call random seed.")
+    rhodesign_device: int = Field(default=0, description="[rhodesign] device: CUDA device index passed to the upstream RhoDesign script.")
+    rhodesign_timeout_seconds: int = Field(default=3600, description="[rhodesign] timeout_seconds: Subprocess timeout for one RhoDesign generation run.")
+    rhodesign_checkpoint_path: str = Field(default='external_repos/RhoDesign/checkpoint/ss_apexp_best.pth or no_ss_apexp_best.pth', description="[rhodesign] checkpoint_path (internal): Hardcoded upstream model path selected automatically based on whether a secondary structure file is provided. Not exposed as a user parameter.")
+    ribodiffusion_pdb_filepath: str = Field(default=None, description="[ribodiffusion] pdb_filepath: Path to an RNA structure PDB file used as the conditioning structure.")
+    ribodiffusion_service_url: str = Field(default='http://127.0.0.1:8021/design/from-pdb', description="[ribodiffusion] service_url: HTTP endpoint of the RiboDiffusion microservice.")
+    ribodiffusion_n_samples: int = Field(default=1, description="[ribodiffusion] n_samples: Number of sequences to sample for the input structure.")
+    ribodiffusion_dynamic_threshold: bool = Field(default=False, description="[ribodiffusion] dynamic_threshold: If True, clip predicted values adaptively during sampling based on a percentile of absolute predictions.")
+    ribodiffusion_deterministic: bool = Field(default=True, description="[ribodiffusion] deterministic: If True, the upstream script sets a fixed random seed for reproducibility.")
+    ribodiffusion_device: int = Field(default=0, description="[ribodiffusion] device: Logical CUDA device index (sets CUDA_VISIBLE_DEVICES for the subprocess).")
+    ribodiffusion_timeout_seconds: int = Field(default=7200, description="[ribodiffusion] timeout_seconds: Subprocess timeout (microservice only).")
+    ribodiffusion_config_eval_dynamic_thresholding_percentile: float = Field(default=0.95, description="[ribodiffusion] config.eval.dynamic_thresholding_percentile: Upstream config parameter controlling the percentile used when dynamic_threshold is enabled.")
+    gc_filepath: str = Field(default=None, description="[gc] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    gc_service_url: str = Field(default='http://127.0.0.1:8020/gc-content', description="[gc] service_url: POST endpoint for GC content microservice.")
+    gc_timeout_seconds: float = Field(default=120.0, description="[gc] timeout_seconds: HTTP request timeout in seconds.")
+    vienna_fold_filepath: str = Field(default=None, description="[vienna_fold] filepath: Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.")
+    vienna_fold_temp_c: float = Field(default=37.0, description="[vienna_fold] temp_c: Folding temperature (Celsius).")
+    vienna_fold_dangles: int = Field(default=2, description="[vienna_fold] dangles: Dangling-end model.")
+    vienna_fold_no_lp: bool = Field(default=False, description="[vienna_fold] no_lp: Disallow lonely pairs.")
+    vienna_fold_no_gu: bool = Field(default=False, description="[vienna_fold] no_gu: Disallow GU pairs.")
+    vienna_fold_no_closing_gu: bool = Field(default=False, description="[vienna_fold] no_closing_gu: Disallow GU closing pairs.")
+    vienna_fold_salt: Optional[float] = Field(default=None, description="[vienna_fold] salt: Salt concentration (M).")
+    vienna_fold_no_tetra: bool = Field(default=False, description="[vienna_fold] no_tetra: Omit special hairpin loop energies.")
+    vienna_fold_energy_model: Optional[int] = Field(default=None, description="[vienna_fold] energy_model: Energy model index.")
+    vienna_fold_nsp: Optional[str] = Field(default=None, description="[vienna_fold] nsp: Non-standard pair specification.")
+    vienna_fold_param_file: Optional[str] = Field(default=None, description="[vienna_fold] param_file: Custom parameter file.")
+    vienna_fold_constraint: Optional[str] = Field(default=None, description="[vienna_fold] constraint: Hard constraint dot-bracket string.")
+    vienna_fold_shape_file: Optional[str] = Field(default=None, description="[vienna_fold] shape_file: Path to SHAPE reactivity data file.")
+    vienna_fold_shape_method: str = Field(default='D', description="[vienna_fold] shape_method: SHAPE method: D, Z, or W.")
+    vienna_fold_partfunc: bool = Field(default=False, description="[vienna_fold] partfunc: Compute partition function and centroid.")
+    vienna_fold_circ: bool = Field(default=False, description="[vienna_fold] circ: Assume circular RNA.")
+    vienna_fold_gquad: bool = Field(default=False, description="[vienna_fold] gquad: Include G-quadruplex formation.")
+    vienna_fold_service_url: str = Field(default='http://127.0.0.1:8003/fold', description="[vienna_fold] service_url: ViennaRNA fold endpoint.")
+    vienna_fold_noDP: bool = Field(default=False, description="[vienna_fold] --noDP: 上游 --noDP，禁止生成 dot-plot PostScript。")
+    vienna_fold_maxBPspan: int = Field(default=-1, description="[vienna_fold] --maxBPspan: 上游 --maxBPspan，默认 -1 无限制。")
+    vienna_fold_MEA: Any = Field(default=None, description="[vienna_fold] --MEA: 上游 --MEA[=gamma]，基于最大期望精度预测结构。")
+    vienna_fold_batch: bool = Field(default=False, description="[vienna_fold] --batch: 上游 --batch，批量使用约束。")
+    vienna_fold_canonicalBPonly: bool = Field(default=False, description="[vienna_fold] --canonicalBPonly: 上游 --canonicalBPonly，从约束中移除非规范碱基对。")
+    vienna_fold_enforceConstraint: bool = Field(default=False, description="[vienna_fold] --enforceConstraint: 上游 --enforceConstraint，强制约束中圆括号表示的碱基对必须形成。")
+    vienna_fold_shapeConversion: str = Field(default='O', description="[vienna_fold] --shapeConversion: 上游 --shapeConversion，SHAPE 到配对概率的转换方法。")
+    vienna_fold_verbose: bool = Field(default=False, description="[vienna_fold] --verbose: 上游 -v，输出详细日志。")
+    rhofold_filepath: str = Field(default=None, description="[rhofold] filepath: Path to a file containing the RNA sequence (plain text or FASTA). The wrapper reads the sequence and sends it to the microservice.")
+    rhofold_service_url: str = Field(default='http://127.0.0.1:8005/predict', description="[rhofold] service_url: HTTP endpoint of the RhoFold microservice.")
+    rhofold_relax_steps: int = Field(default=0, description="[rhofold] relax_steps: Number of Amber relaxation iterations applied to the unrelaxed structure. 0 skips relaxation.")
+    rhofold_checkpoint_path: str = Field(default=None, description="[rhofold] checkpoint_path: Path to a custom RhoFold checkpoint. If omitted, the service searches standard pretrained paths.")
+    rhofold_device: str = Field(default=None, description="[rhofold] device: Torch device string passed to upstream inference.py, e.g. 'cpu', 'cuda', 'cuda:0'.")
+    rhofold_single_seq_pred: bool = Field(default=True, description="[rhofold] single_seq_pred: Microservice-only flag. If True, RhoFold uses only the input sequence (input_fas) as the MSA. If False, an A3M file is generated or supplied.")
+    rhofold_input_a3m_path: str = Field(default=None, description="[rhofold] input_a3m_path: Microservice-only path to a precomputed A3M MSA file. Used only when single_seq_pred is False.")
+    rhofold_timeout_seconds: int = Field(default=7200, description="[rhofold] timeout_seconds: Subprocess timeout for one RhoFold run (microservice level).")
+    rhofold_database_dpath_binary_dpath: str = Field(default='./database and ./rhofold/data/bin', description="[rhofold] database_dpath / binary_dpath: Upstream-only paths to BLAST databases and BLAST binaries for MSA generation. Not exposed by the microservice.")
+    struct_align_reference_pdb_filepath: str = Field(default=None, description="[struct_align] reference_pdb_filepath: Path to reference PDB file.")
+    struct_align_predicted_pdb_filepath: str = Field(default=None, description="[struct_align] predicted_pdb_filepath: Path to predicted PDB file.")
+    struct_align_chain_id: Optional[str] = Field(default=None, description="[struct_align] chain_id: Chain ID to align; auto-detect if omitted.")
+    struct_align_atom_type: str = Field(default="C1'", description="[struct_align] atom_type: Atom type to align, e.g. 'C1'' for RNA or 'CA' for protein.")
     structure_filepath: str = Field(
         ...,
         description="Path to the input RNA tertiary structure file (PDB or CIF).",
@@ -87,7 +142,7 @@ class RnaTertiaryStructureDesignInput(BaseModel):
         default=3, ge=1, le=20, description="Number of sequences to generate per tool."
     )
     rhodesign_temperature: float = Field(
-        default=1e-5, ge=0.0, description="Base sampling temperature for RhoDesign."
+        default=0.1, gt=0.0, description="Base sampling temperature for RhoDesign."
     )
     rhodesign_temperature_range: float = Field(
         default=0.05,
@@ -105,17 +160,13 @@ class RnaTertiaryStructureDesignInput(BaseModel):
     ribodiffusion_checkpoint_name: str = Field(
         default="exp_inf", description="RiboDiffusion checkpoint basename."
     )
-    # Scoring weights
     weight_rhofold: float = Field(default=0.50, description="Weight for RhoFold pLDDT component.")
     weight_rmsd: float = Field(default=0.50, description="Weight for RMSD component.")
-
-
-# Workflow implementation
-
 
 class RnaTertiaryStructureDesignWorkflow(
     BaseDomainWorkflow[RnaTertiaryStructureDesignInput, WorkflowResult]
 ):
+    input_model = RnaTertiaryStructureDesignInput
     """Structure-driven RNA sequence design: 3D structure → inverse folding → evaluate → rank."""
 
     name = "rna_tertiary_structure_design"
@@ -195,8 +246,8 @@ class RnaTertiaryStructureDesignWorkflow(
                         inp.rhodesign_temperature - half + (2 * half * i / max(1, n - 1))
                         for i in range(n)
                     ]
-                    # Clamp to non-negative
-                    temps = [max(0.0, t) for t in temps]
+                    # Clamp to a small positive value; RhoDesign requires temperature > 0.
+                    temps = [max(1e-4, t) for t in temps]
 
                 for tidx, temp in enumerate(temps, start=1):
                     try:
@@ -686,154 +737,3 @@ def score_tertiary_structure_design_candidate(
     scores["total_score"] = total
     return scores
 
-
-# LLM Critic Configuration
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-RNA_TERTIARY_STRUCTURE_CRITIC_CONFIG = CriticConfig(
-    workflow_name="rna_tertiary_structure_design",
-    workflow_description="Design RNA sequences from a tertiary structure using inverse-folding tools (RhoDesign / RiboDiffusion). Pipeline: inverse folding generation → GC + ViennaRNA fold + RhoFold + structure alignment evaluation → scoring → ranking.",
-    evaluation_dimensions=[
-        "RhoFold pLDDT reflects the predicted foldability of the designed RNA sequence. Higher values generally indicate more confident tertiary structure prediction, but the appropriate level depends on sequence length, structural complexity, and the user's specific application.",
-        "TM-score measures the structural similarity between the RhoFold-predicted structure and the input reference structure. Higher values suggest the designed sequence can recapitulate the target fold, but interpret relative to the target system and other candidates rather than enforcing a fixed cutoff.",
-        "RMSD measures the spatial deviation between predicted and reference structures. Lower values generally indicate better structural alignment, but acceptable RMSD depends on target size, flexibility, and the user's tolerance.",
-        "GC content affects RNA stability, synthesis, and secondary structure propensity. Extremely high GC can impede synthesis and promote misfolding; extremely low GC reduces thermal stability. Evaluate in context of the specific application rather than enforcing a rigid range.",
-        "ViennaRNA MFE (Minimum Free Energy) reflects thermodynamic stability of the designed sequence's secondary structure. More negative values indicate more stable structures. Consider whether the user's application requires high or low stability.",
-        "Recovery rate from the design tool indicates how well the designed sequence matches the original structure's sequence profile. Higher recovery generally suggests better compatibility with the target backbone.",
-        "Diversity of design tools matters: if all candidates come from the same tool, consider switching tools for retry to explore different sequence spaces.",
-        "CRITICAL: Base your quality assessment on the user's original intent and any explicit constraints they stated. If the user specified thresholds (e.g., 'pLDDT must be > 70', 'TM-score > 0.5', 'RMSD < 3.0'), evaluate whether the results meet those constraints. Failure to meet user constraints is a CRITICAL issue. Do not apply universal thresholds that may be inappropriate for this specific design task.",
-        "CRITICAL: Default parameters for this workflow have been carefully tuned (n_samples_per_tool=3, rhodesign_temperature=1e-5, temperature_range=0.05, ribodiffusion_sampling_steps=50, scoring weights=0.5/0.5). These defaults work well for most RNA tertiary structure design tasks. Only recommend parameter overrides when you have strong evidence that the current settings are causing systematic problems. Do not tweak parameters lightly.",
-    ],
-    adjustable_params={
-        "design_tools": {
-            "type": "enum",
-            "values": ["all", "rhodesign", "ribodiffusion"],
-            "hint": "Which inverse-folding tool(s) to use. 'all' runs both. If one tool consistently underperforms, try the other. Default is 'all' and is well-tuned; only change when there is clear evidence that a specific tool performs better for the target structure.",
-        },
-        "n_samples_per_tool": {
-            "type": "int",
-            "min": 1,
-            "max": 20,
-            "hint": "Number of sequences to generate per tool. Increase for more candidate diversity. Default (3) is generally sufficient; only increase if candidate diversity is clearly lacking and the user explicitly asks for more.",
-        },
-        "rhodesign_temperature": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Base sampling temperature for RhoDesign. Higher values increase diversity but may reduce quality. Default (1e-5) is well-tuned for structure fidelity; only adjust when there is strong evidence that the current temperature is causing systematic issues.",
-        },
-        "rhodesign_temperature_range": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Temperature sweep range for multi-sample RhoDesign calls. Default (0.05) provides good diversity without sacrificing quality; only increase if the current range produces overly homogeneous candidates.",
-        },
-        "ribodiffusion_sampling_steps": {
-            "type": "int",
-            "min": 1,
-            "max": 500,
-            "hint": "Diffusion sampling steps for RiboDiffusion. Default (50) offers a good quality/runtime tradeoff; only increase when the user explicitly requests higher quality and runtime is not a concern.",
-        },
-        "weight_rhofold": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Weight for RhoFold pLDDT in composite scoring. Default (0.5) balances foldability and structural fidelity; only adjust when the user explicitly prioritizes one over the other.",
-        },
-        "weight_rmsd": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Weight for RMSD in composite scoring. Default (0.5) balances foldability and structural fidelity; only adjust when the user explicitly prioritizes one over the other.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-)
-
-
-class RnaTertiaryStructureDesignLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for RNA tertiary structure design workflow.
-
-    Focuses on whether candidate sequences satisfy constraints from the user's
-    original prompt rather than applying hard-coded thresholds.
-    """
-
-    def _default_config(self) -> CriticConfig:
-        return RNA_TERTIARY_STRUCTURE_CRITIC_CONFIG
-
-    def _build_context(self, result: WorkflowResult, state: dict[str, Any]) -> dict[str, Any]:
-        """Extend base context with tertiary structure design specific statistics."""
-        ctx = super()._build_context(result, state)
-
-        candidates = result.all_candidates
-        if not candidates:
-            ctx["tertiary_structure_stats"] = {
-                "design_tool_distribution": {},
-                "plddt_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "rmsd_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "tm_score_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "gc_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "mfe_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "recovery_rate_range": {"min": None, "max": None, "mean": None, "count": 0},
-            }
-            return ctx
-
-        # Tool distribution
-        tool_dist: dict[str, int] = {}
-        plddt_values: list[float] = []
-        rmsd_values: list[float] = []
-        tm_values: list[float] = []
-        gc_values: list[float] = []
-        mfe_values: list[float] = []
-        recovery_values: list[float] = []
-
-        for c in candidates:
-            meta = c.metadata or {}
-            mb = meta.get("metrics_bundle", {})
-
-            # Design tool source
-            tool = meta.get("design_tool", "unknown")
-            tool_dist[tool] = tool_dist.get(tool, 0) + 1
-
-            # Metrics
-            plddt = mb.get("rhofold_mean_plddt")
-            if plddt is not None:
-                plddt_values.append(float(plddt))
-            rmsd = mb.get("alignment_rmsd")
-            if rmsd is not None:
-                rmsd_values.append(float(rmsd))
-            tm = mb.get("alignment_tm_score")
-            if tm is not None:
-                tm_values.append(float(tm))
-            gc = mb.get("gc_content")
-            if gc is not None:
-                gc_values.append(float(gc))
-            mfe = mb.get("vienna_mfe")
-            if mfe is not None:
-                mfe_values.append(float(mfe))
-            rec = mb.get("recovery_rate")
-            if rec is not None:
-                recovery_values.append(float(rec))
-
-        def _stats(vals: list[float]) -> dict[str, Any]:
-            if not vals:
-                return {"min": None, "max": None, "mean": None, "count": 0}
-            return {
-                "min": round(min(vals), 3),
-                "max": round(max(vals), 3),
-                "mean": round(sum(vals) / len(vals), 3),
-                "count": len(vals),
-            }
-
-        ctx["tertiary_structure_stats"] = {
-            "design_tool_distribution": tool_dist,
-            "plddt_range": _stats(plddt_values),
-            "rmsd_range": _stats(rmsd_values),
-            "tm_score_range": _stats(tm_values),
-            "gc_range": _stats(gc_values),
-            "mfe_range": _stats(mfe_values),
-            "recovery_rate_range": _stats(recovery_values),
-        }
-        return ctx

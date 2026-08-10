@@ -15,7 +15,6 @@ fold + GC + unpaired-fraction evaluation → scoring → ranking → WorkflowRes
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/planning/base.py                                              ║
 ║    - agent_core/agents/quality_agent.py                                       ║
 ║    - agent_core/agents/specialist_agent.py                                    ║
 ║    - agent_core/agents/pipeline_agent.py                                      ║
@@ -155,11 +154,11 @@ class MrnaCdsDesignInput(BaseModel):
     protein_sequence: str = Field(..., description="Amino-acid string (uppercase, 1-letter codes).")
     truncate_n_terminal: Optional[int] = Field(
         default=None,
-        description="If set, remove the first N amino acids of protein_sequence before design.",
+        description="If set, keep only the first N amino acids of protein_sequence before design.",
     )
     truncate_c_terminal: Optional[int] = Field(
         default=None,
-        description="If set, remove the last N amino acids of protein_sequence before design.",
+        description="If set, keep only the last N amino acids of protein_sequence before design.",
     )
     design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = Field(default="all", description="CDS design engine(s) to run. 'lineardesign' uses LinearDesign; 'rnarl' uses RNARL; 'gemorna' uses GEMORNA; 'all' runs all three and merges candidates.")
     lambda_value: Optional[float] = Field(
@@ -208,48 +207,6 @@ class MrnaCdsDesignInput(BaseModel):
             raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
         return self
 
-def _validate_terminal_truncation(
-    cls, v: Optional[int], info: Any
-) -> Optional[int]:
-    """Truncation length must be a positive integer and not exceed the protein length."""
-    if v is None:
-        return v
-    if not isinstance(v, int) or v <= 0:
-        raise ValueError("terminal truncation length must be a positive integer")
-    protein = info.data.get("protein_sequence")
-    if protein and v > len(protein):
-        raise ValueError(
-            "truncation length " + str(v) + " exceeds protein_sequence length " + str(len(protein))
-        )
-    return v
-
-@model_validator(mode="after")
-def _check_mutually_exclusive_truncation(self) -> "MrnaCdsDesignInput":
-    """Only one terminal truncation direction may be specified."""
-    if self.truncate_n_terminal is not None and self.truncate_c_terminal is not None:
-        raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
-    return self
-def _validate_terminal_truncation(
-    cls, v: Optional[int], info: Any
-) -> Optional[int]:
-    """Truncation length must be a positive integer and not exceed the protein length."""
-    if v is None:
-        return v
-    if not isinstance(v, int) or v <= 0:
-        raise ValueError("terminal truncation length must be a positive integer")
-    protein = info.data.get("protein_sequence")
-    if protein and v > len(protein):
-        raise ValueError(
-            "truncation length " + str(v) + " exceeds protein_sequence length " + str(len(protein))
-        )
-    return v
-
-@model_validator(mode="after")
-def _check_mutually_exclusive_truncation(self) -> "MrnaCdsDesignInput":
-    """Only one terminal truncation direction may be specified."""
-    if self.truncate_n_terminal is not None and self.truncate_c_terminal is not None:
-        raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
-    return self
 # ─────────────────────────────────────────────────────────────────────────────
 # Workflow — INTERFACE LOCKED (v1.0.0)
 # ─────────────────────────────────────────────────────────────────────────────

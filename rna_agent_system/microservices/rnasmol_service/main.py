@@ -460,6 +460,21 @@ def _load_model(checkpoint_path: str, device_name: str) -> MCNN_GCN:
     return model
 
 
+@app.on_event("startup")
+def _warm_default_model() -> None:
+    """Preload the default checkpoint so the first /score is not a cold start.
+
+    Health checks pass as soon as uvicorn serves; without warmup the first
+    real request pays the full torch.load + CUDA init cost and can exceed
+    client timeouts when other GPU services are starting concurrently.
+    """
+    try:
+        checkpoint = _resolve_checkpoint_path()
+    except HTTPException:
+        return  # health endpoint reports the missing checkpoint as degraded
+    _load_model(str(checkpoint), _default_device_name())
+
+
 @app.get("/health")
 def health() -> Dict[str, object]:
     checkpoint_ready = False

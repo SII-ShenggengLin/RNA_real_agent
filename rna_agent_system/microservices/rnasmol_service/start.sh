@@ -19,4 +19,9 @@ set -e
 
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate rnasmol_service_env
+# The bundled env ships PyTorch 1.7.1 (max sm_75), which cannot run kernels
+# on RTX 4090 (sm_89); first CUDA use triggers minutes-long PTX JIT and can
+# hang client requests.  CPU inference is milliseconds-fast for this model,
+# so pin CPU unless the operator overrides RNASMOL_DEVICE explicitly.
+export RNASMOL_DEVICE="${RNASMOL_DEVICE:-cpu}"
 python -m uvicorn main:app --host 0.0.0.0 --port 8007

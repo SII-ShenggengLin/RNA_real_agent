@@ -6,7 +6,6 @@ subprocess-running, and FastAPI boilerplate across service modules.
 
 from __future__ import annotations
 
-import os
 import re
 import shutil
 import subprocess
@@ -14,9 +13,6 @@ from pathlib import Path
 from typing import Any, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-
-from microservices.common_utils import PathResolver, parse_recovery_rate  # noqa: F401
 
 
 def get_rna_agent_system_root(caller_file: str = __file__, depth: int = 2) -> Path:
@@ -69,17 +65,6 @@ def normalize_rna_sequence(raw: str) -> str:
     ]
     merged = "".join(lines).upper().replace("T", "U")
     return re.sub(r"[^AUGC]", "", merged)
-
-
-def normalize_dna_sequence(raw: str) -> str:
-    """Extract sequence from plain or FASTA text; normalize to DNA uppercase."""
-    lines = [
-        ln.strip()
-        for ln in raw.splitlines()
-        if ln.strip() and not ln.lstrip().startswith(">")
-    ]
-    merged = "".join(lines).upper().replace("U", "T")
-    return re.sub(r"[^ACGT]", "", merged)
 
 
 def fasta_from_sequence_text(raw: str, default_id: str = "query", rna_mode: bool = False) -> str:
@@ -231,12 +216,4 @@ def endpoint_errors(
     return decorator
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Reusable Pydantic mixins
-# ──────────────────────────────────────────────────────────────────────────────
 
-
-class ServiceResponseBase(BaseModel):
-    """Mixin that adds the ``model`` discriminator used by most services."""
-
-    model: str = ""

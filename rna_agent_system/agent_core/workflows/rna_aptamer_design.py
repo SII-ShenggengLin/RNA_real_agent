@@ -16,19 +16,22 @@ Key design principles
    metrics rather than failing entirely.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaAptamerDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更         ║
+║  RnaAptamerDesignWorkflow INTERFACE LOCK (v1.4.2) —— 禁止单方面变更         ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_aptamer_design workflow 的权威实现。任何字段增删、            ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：║
 ║                                                                               ║
 ║    - agent_core/workflows/rna_aptamer_design.py  ← 本文件                   ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/workflows/__init__.py                                         ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/agents/coordinator_agent.py                                   ║
+║    - agent_core/quality_profiles/rna_aptamer_design.py                        ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - tests/test_rna_aptamer_design.py                                         ║
@@ -43,6 +46,7 @@ import json
 import logging
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
 from datetime import datetime, timezone
@@ -52,7 +56,6 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from agent_core.capabilities.base import CapabilityRegistry, CapabilityResult
-from agent_core.llm_config import get_llm_for_provider
 from agent_core.file_manager import (
     read_sequence,
     resolve_project_path,
@@ -68,6 +71,16 @@ from agent_core.workflows.coordinator import (
     Issue,
     ModuleFeedback,
 )
+from agent_core.workflows.multi_objective import (
+    achievement_scalarizing_function,
+    assign_pareto_tags,
+    build_normalized_reference_point,
+    cap_pareto_frontier,
+    compute_pareto_frontier,
+    compute_utopian_reference_point,
+    extract_objective_vector,
+    normalize_to_unit_range,
+)
 
 _LOGGER = logging.getLogger("agent_core.workflows.rna_aptamer_design")
 
@@ -76,9 +89,66 @@ _LOGGER = logging.getLogger("agent_core.workflows.rna_aptamer_design")
 
 class RnaAptamerDesignInput(BaseModel):
     """Input for the RNA aptamer design workflow."""
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    hotspots_protein_structure_path: str = Field(default=None, description="[hotspots] protein_structure_path: Path to protein PDB or CIF file.")
+    hotspots_chain_id: str = Field(default='', description="[hotspots] chain_id: Protein chain ID to analyze.")
+    odesign_input_protein_structure_path: str = Field(default=None, description="[odesign_input] protein_structure_path: Path to protein PDB or CIF file.")
+    odesign_input_protein_chain_id: str = Field(default=None, description="[odesign_input] protein_chain_id: Protein chain ID, e.g. 'C'.")
+    odesign_input_protein_sequence_length: int = Field(default=None, description="[odesign_input] protein_sequence_length: Protein sequence length.")
+    odesign_input_hotspot_residues: str = Field(default=None, description="[odesign_input] hotspot_residues: Hotspot residues, format like 'C/18,C/90,C/79,C/49'.")
+    odesign_input_aptamer_length: int = Field(default=None, description="[odesign_input] aptamer_length: Desired RNA aptamer length in nucleotides.")
+    odesign_input_output_prefix: Optional[str] = Field(default=None, description="[odesign_input] output_prefix: Output filename prefix.")
+    odesign_input_json_filepath: str = Field(default=None, description="[odesign] input_json_filepath: Path to an ODesign input JSON file following the upstream format (target structure, hotspot residues/atoms, chain_type, etc.).")
+    odesign_service_url: str = Field(default='http://127.0.0.1:8012/design/from-json', description="[odesign] service_url: HTTP endpoint of the ODesign microservice.")
+    odesign_infer_model_name: str = Field(default='odesign_base_na_rigid', description="[odesign] infer_model_name: Upstream ODesign model checkpoint name (without .pt). Examples: odesign_base_na_rigid, odesign_base_prot_flex, odesign_base_prot_rigid, odesign_base_ligand_rigid.")
+    odesign_design_modality: str = Field(default='rna', description="[odesign] design_modality: Design modality passed to ODesign. Must be one of: protein, ligand, dna, rna.")
+    odesign_exp_name: str = Field(default=None, description="[odesign] exp_name: Custom experiment name for the output directory. If omitted, a unique name is auto-generated.")
+    odesign_seeds_json: str = Field(default='[42]', description="[odesign] seeds_json: JSON list string of integer random seeds (e.g. '[42]' or '[42, 123]').")
+    odesign_n_sample: int = Field(default=1, description="[odesign] n_sample: Number of generated samples per seed.")
+    odesign_use_msa: bool = Field(default=False, description="[odesign] use_msa: Whether the input JSON provides MSA features for ODesign inference.")
+    odesign_num_workers: int = Field(default=2, description="[odesign] num_workers: Number of dataloader workers.")
+    odesign_cuda_visible_devices: str = Field(default=None, description="[odesign] cuda_visible_devices: Override for CUDA_VISIBLE_DEVICES (e.g. '0' or '0,1').")
+    odesign_enable_partial_diff: bool = Field(default=False, description="[odesign] enable_partial_diff: Enable ODesign partial diffusion mode, which redesigns only specified regions of an existing molecule.")
+    odesign_snr: float = Field(default=0.1, description="[odesign] snr: Signal-to-noise ratio for partial diffusion.")
+    odesign_ckpt_root_dir: str = Field(default=None, description="[odesign] ckpt_root_dir: Optional checkpoint root directory override.")
+    odesign_data_root_dir: str = Field(default=None, description="[odesign] data_root_dir: Optional data root directory override (must contain components.cif and rdkit pickle).")
+    odesign_invfold_topk: int = Field(default=1, description="[odesign] invfold_topk: Number of designed sequences per backbone structure from the inverse-folding head.")
+    odesign_invfold_temp: float = Field(default=1.0, description="[odesign] invfold_temp: Inverse-folding sampling temperature.")
+    odesign_invfold_use_beam: bool = Field(default=True, description="[odesign] invfold_use_beam: Whether to use beam search in inverse folding.")
+    odesign_timeout_seconds: int = Field(default=14400, description="[odesign] timeout_seconds: Subprocess timeout for one ODesign inference request.")
+    odesign_config_architecture_hyperparameters: Any = Field(default='See external_repos/ODesign/configs/model/_base.yaml', description="[odesign] config architecture hyperparameters (upstream only): Many architecture and diffusion hyperparameters (hidden dims, number of layers, noise schedule, etc.) live in the Hydra configs and are not exposed by the wrapper.")
+    gc_filepath: str = Field(default=None, description="[gc] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    gc_service_url: str = Field(default='http://127.0.0.1:8020/gc-content', description="[gc] service_url: POST endpoint for GC content microservice.")
+    gc_timeout_seconds: float = Field(default=120.0, description="[gc] timeout_seconds: HTTP request timeout in seconds.")
+    rhofold_filepath: str = Field(default=None, description="[rhofold] filepath: Path to a file containing the RNA sequence (plain text or FASTA). The wrapper reads the sequence and sends it to the microservice.")
+    rhofold_service_url: str = Field(default='http://127.0.0.1:8005/predict', description="[rhofold] service_url: HTTP endpoint of the RhoFold microservice.")
+    rhofold_relax_steps: int = Field(default=0, description="[rhofold] relax_steps: Number of Amber relaxation iterations applied to the unrelaxed structure. 0 skips relaxation.")
+    rhofold_checkpoint_path: str = Field(default=None, description="[rhofold] checkpoint_path: Path to a custom RhoFold checkpoint. If omitted, the service searches standard pretrained paths.")
+    rhofold_device: str = Field(default=None, description="[rhofold] device: Torch device string passed to upstream inference.py, e.g. 'cpu', 'cuda', 'cuda:0'.")
+    rhofold_single_seq_pred: bool = Field(default=True, description="[rhofold] single_seq_pred: Microservice-only flag. If True, RhoFold uses only the input sequence (input_fas) as the MSA. If False, an A3M file is generated or supplied.")
+    rhofold_input_a3m_path: str = Field(default=None, description="[rhofold] input_a3m_path: Microservice-only path to a precomputed A3M MSA file. Used only when single_seq_pred is False.")
+    rhofold_timeout_seconds: int = Field(default=7200, description="[rhofold] timeout_seconds: Subprocess timeout for one RhoFold run (microservice level).")
+    rhofold_database_dpath_binary_dpath: str = Field(default='./database and ./rhofold/data/bin', description="[rhofold] database_dpath / binary_dpath: Upstream-only paths to BLAST databases and BLAST binaries for MSA generation. Not exposed by the microservice.")
+    egarps_filepath: str = Field(default=None, description="[egarps] filepath: Path to a PDB file containing the RNA-protein complex structure to score.")
+    egarps_academic: bool = Field(default=False, description="[egarps] academic: If True, use full academic mode with DSSR and NACCESS features. If False, use the reduced non-academic mode.")
+    egarps_service_url: str = Field(default='http://127.0.0.1:8023/score', description="[egarps] service_url: HTTP endpoint of the EGARPS+ microservice.")
+    egarps_mini: bool = Field(default=False, description="[egarps] -mini (upstream-only flag): Upstream predict.py supports a '-mini' flag that uses a single lightweight model in academic mode. Not exposed by the microservice.")
+    extract_rna_cif_filepath: str = Field(default=None, description="[extract_rna] cif_filepath: Path to CIF/MMCIF file (workspace or absolute).")
+    extract_rna_chain_id: Optional[str] = Field(default=None, description="[extract_rna] chain_id: Chain ID to extract; auto-detect first RNA chain if omitted.")
+    proteinx_protein_filepath: str = Field(default=None, description="[proteinx] protein_filepath: Path to a FASTA file containing the protein sequence.")
+    proteinx_rna_filepath: str = Field(default=None, description="[proteinx] rna_filepath: Path to a FASTA file containing the RNA sequence.")
+    proteinx_num_models: int = Field(default=1, description="[proteinx] num_models: Number of inference samples to generate.")
+    proteinx_num_recycles: int = Field(default=10, description="[proteinx] num_recycles: Number of Pairformer cycles. Ignored when use_default_params is True.")
+    proteinx_msa_mode: str = Field(default='none', description="[proteinx] msa_mode: MSA generation mode. 'none' disables MSA; 'protenix' enables the Protenix MSA server.")
+    proteinx_service_url: str = Field(default='http://127.0.0.1:8022/predict/complex', description="[proteinx] service_url: HTTP endpoint of the ProteinX complex microservice.")
+    proteinx_timeout_seconds: int = Field(default=7200, description="[proteinx] timeout_seconds: Wrapper-level request timeout.")
+    proteinx_model_name: str = Field(default='protenix_base_default_v1.0.0', description="[proteinx] model_name: Protenix model checkpoint name. Microservice-only; wrapper does not expose it.")
+    proteinx_use_default_params: bool = Field(default=True, description="[proteinx] use_default_params: Use recommended default parameters for the selected model. Microservice-only.")
+    proteinx_step_dtype_use_template_use_rna_msa: Any = Field(default='step=200, dtype=bf16, use_template=False, use_rna_msa=False', description="[proteinx] step / dtype / use_template / use_rna_msa (upstream CLI): Additional Protenix CLI flags not exposed by the wrapper. They control diffusion steps, precision, templates, and RNA MSA.")
+    interface_complex_pdb_filepath: str = Field(default=None, description="[interface] complex_pdb_filepath: Path to RNA-protein complex PDB or CIF file.")
+    interface_protein_chain_id: str = Field(default='A', description="[interface] protein_chain_id: Protein chain ID.")
+    interface_rna_chain_id: str = Field(default='B', description="[interface] rna_chain_id: RNA chain ID.")
+    interface_contact_cutoff: float = Field(default=5.0, description="[interface] contact_cutoff: Distance cutoff (\u00c5) for interface contacts.")
     protein_sequence: Optional[str] = Field(
         default=None,
         description="Amino-acid string (uppercase, 1-letter codes). "
@@ -99,32 +169,39 @@ class RnaAptamerDesignInput(BaseModel):
                     "If omitted, automatic identification is performed.",
     )
     n_odesign_samples: int = Field(
-        default=5, ge=1, le=20, description="Number of ODesign samples to generate."
+        default=8, ge=1, le=20, description="Number of ODesign samples to generate."
     )
     odesign_seeds: list[int] = Field(
-        default_factory=lambda: [42],
+        default_factory=lambda: [42, 123],
         description="Random seeds for ODesign inference.",
     )
-    # Scoring weights (can be overridden for domain-specific tuning)
-    weight_egarps: float = Field(default=0.5, ge=0.0, le=1.0, description="Weight for EGARPS native probability.")
-    weight_rhofold: float = Field(default=0.5, ge=0.0, le=1.0, description="Weight for RhoFold pLDDT.")
-    bmc_mode: Literal["full", "1round", "no_target", "no_bounds", "llm_coord"] = Field(
-        default="full",
+    bmc_max_rounds: int = Field(
+        default=1,
+        ge=0,
         description=(
-            "BMC ablation mode. 'full'=normal BMC, '1round'=Phase 1+2 only, "
-            "'no_target'=disable hotspot adjustment, 'no_bounds'=remove hard round limit, "
-            "'llm_coord'=use LLM-based coordinator instead of deterministic rules."
+            "Maximum number of BMC coordination rounds. 0 disables iterative refinement. "
+            "Higher values allow the workflow to progressively improve the candidate pool "
+            "toward the reference point, at the cost of additional microservice calls."
         ),
     )
-
-    @model_validator(mode="after")
-    def _check_weight_sum(self) -> "RnaAptamerDesignInput":
-        total = self.weight_egarps + self.weight_rhofold
-        if total > 1.0:
-            raise ValueError(
-                f"weight_egarps + weight_rhofold must be <= 1.0, got {total:.2f}"
-            )
-        return self
+    bmc_improvement_threshold: float = Field(
+        default=0.05,
+        ge=0.0,
+        description=(
+            "Minimum normalized ASF improvement required to continue BMC iterations. "
+            "If the best candidate's ASF distance to the reference point does not improve "
+            "by at least this amount in a round, iteration stops early."
+        ),
+    )
+    reference_point: Optional[dict[str, float]] = Field(
+        default=None,
+        description=(
+            "Optional per-objective reference point for Achievement Scalarizing Function "
+            "selection and BMC coordination. Keys must be one of: egarps_component, "
+            "rhofold_component, iptm_component. If omitted, a utopian point is derived "
+            "from the candidate pool."
+        ),
+    )
 
     @field_validator("protein_sequence")
     @classmethod
@@ -139,7 +216,6 @@ class RnaAptamerDesignInput(BaseModel):
                 "Only standard 1-letter codes are allowed."
             )
         return seq
-
     @field_validator("hotspot_residues")
     @classmethod
     def _validate_hotspot_residues(cls, v: Optional[str]) -> Optional[str]:
@@ -153,11 +229,22 @@ class RnaAptamerDesignInput(BaseModel):
             )
         return v.strip()
 
-
-# Workflow implementation
-
+    @model_validator(mode="after")
+    def _validate_reference_point(self) -> "RnaAptamerDesignInput":
+        """Validate reference_point keys if provided."""
+        if self.reference_point is None:
+            return self
+        allowed = {"egarps_component", "rhofold_component", "iptm_component"}
+        unknown = set(self.reference_point.keys()) - allowed
+        if unknown:
+            raise ValueError(
+                f"reference_point contains unknown objectives: {unknown}. "
+                f"Allowed: {allowed}"
+            )
+        return self
 
 class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, WorkflowResult]):
+    input_model = RnaAptamerDesignInput
     """Structure-driven RNA aptamer design: protein target → ODesign → evaluate → rank."""
 
     name = "rna_aptamer_design"
@@ -175,86 +262,31 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         "extract_rna_sequence_from_cif",
         "predict_rna_protein_complex_with_proteinx",
         "analyze_rna_protein_interface",
+        "predict_protein_structure_with_proteinx",
     ]
-
-    # Mapping of capability → (host, port, health_path, start_script_relative_path)
-    _REQUIRED_SERVICES: dict[str, tuple[str, int, str, str]] = {
-        "predict_rna_tertiary_structure_with_rhofold": ("127.0.0.1", 8006, "/health", "microservices/rhodesign_service/start.sh"),
-        "run_odesign_inference": ("127.0.0.1", 8012, "/health", "microservices/odesign_service/start.sh"),
-        "predict_rna_protein_complex_with_proteinx": ("127.0.0.1", 8022, "/health", "microservices/proteinx_service/start.sh"),
-        "score_rna_protein_complex_with_egarps": ("127.0.0.1", 8023, "/score", "microservices/egarps_service/start.sh"),
-    }
 
     def __init__(self, capability_registry: CapabilityRegistry):
         self.capabilities = capability_registry
         self._workflow_state: dict[str, Any] = {}
-        self._bmc_trace: list[Any] = []
+        self._bmc_trace: list[AptamerCoordinationRound] = []
         self._workflow_trace: list[ToolCallRecord] = []
+        # Reference-point stability across BMC rounds.
+        self._fixed_norm_ref_point: Optional[dict[str, float]] = None
+        self._fixed_dim_bounds: Optional[dict[str, dict[str, float]]] = None
+        self._reference_point_mode: Literal["user", "utopian"] = "utopian"
 
-    def _ensure_services_running(self) -> None:
-        """Check required microservices and auto-start any that are down."""
-        import subprocess
-        import socket
-        import time
-        import urllib.request
+    def _ensure_services_running(self) -> Optional[WorkflowResult]:
+        """Check required microservices and auto-start any that are down.
 
-        project_root = Path(__file__).resolve().parents[2]
+        This is the RNA-aptamer-specific entry point kept for backward
+        compatibility; the actual logic is delegated to the base-class service
+        pre-flight.  Tests may still patch this method to a no-op (returning
+        ``None`` implicitly means success).
 
-        for cap_name, (host, port, path, start_script) in self._REQUIRED_SERVICES.items():
-            if not self.capabilities.has(cap_name):
-                continue  # capability not registered, skip
-
-            # Check if service is reachable
-            reachable = False
-            try:
-                with socket.create_connection((host, port), timeout=2):
-                    # For EGARPS, a TCP connection is enough; for others try HTTP health
-                    if path == "/score":
-                        reachable = True
-                    else:
-                        req = urllib.request.Request(f"http://{host}:{port}{path}", method="GET")
-                        with urllib.request.urlopen(req, timeout=3) as resp:
-                            reachable = resp.status < 500
-            except Exception:
-                reachable = False
-
-            if reachable:
-                _LOGGER.debug("service_ready cap=%s host=%s port=%d", cap_name, host, port)
-                continue
-
-            _LOGGER.warning("service_down_auto_starting cap=%s host=%s port=%d script=%s", cap_name, host, port, start_script)
-            script_path = project_root / start_script
-            if not script_path.exists():
-                raise RuntimeError(
-                    f"Required microservice '{cap_name}' is not running on {host}:{port} "
-                    f"and start script not found: {script_path}"
-                )
-
-            # Start the service in background
-            log_file = f"/tmp/{cap_name.replace('/', '_')}_autostart.log"
-            cmd = f"cd {project_root} && nohup bash {script_path} > {log_file} 2>&1 &"
-            subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-            # Wait for service to come up (max 60s)
-            for attempt in range(60):
-                time.sleep(1)
-                try:
-                    with socket.create_connection((host, port), timeout=2):
-                        if path == "/score":
-                            _LOGGER.info("service_started cap=%s host=%s port=%d", cap_name, host, port)
-                            break
-                        req = urllib.request.Request(f"http://{host}:{port}{path}", method="GET")
-                        with urllib.request.urlopen(req, timeout=3) as resp:
-                            if resp.status < 500:
-                                _LOGGER.info("service_started cap=%s host=%s port=%d", cap_name, host, port)
-                                break
-                except Exception:
-                    pass
-            else:
-                raise RuntimeError(
-                    f"Required microservice '{cap_name}' failed to start on {host}:{port} "
-                    f"within 60 seconds. Check log: {log_file}"
-                )
+        Returns ``None`` when services are ready, otherwise a failed
+        ``WorkflowResult`` that ``run_initial()`` can return directly.
+        """
+        return self._service_preflight_result()
 
     # ─────────────────────────────────────────────────────────────────────────
     # Structured tracing helper
@@ -311,13 +343,29 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
     # ─────────────────────────────────────────────────────────────────────────
 
     def run(self, inp: Any, *, progress_callback=None) -> WorkflowResult:
-        """BMC-enabled run: generate → evaluate → rank → bounded iterative refinement.
+        """BMC-enabled run: delegate to CoordinatorAgent.
 
-        Phase 1: Target preparation + Aptamer generation (Module 1 + Module 2).
-        Phase 2: Evaluate and score (Complex evaluation).
-        Phase 3: AptamerCoordinator diagnoses best candidate; if issues found,
-        broadcast structured feedback to affected modules, regenerate, and
-        re-evaluate. Hard bounds: max 3 rounds, no improvement → early stop.
+        The convergence loop lives in ``CoordinatorAgent``; this workflow exposes
+        the BMC-capable interface (``run_initial``, ``bmc_prepare``,
+        ``bmc_run_round``, ``bmc_finalize``) so the agent can orchestrate
+        generation, diagnosis, and regeneration.
+        """
+        # Lazy import avoids any circular dependency between agents and workflows.
+        from agent_core.agents.coordinator_agent import CoordinatorAgent
+
+        return CoordinatorAgent(self).run(inp, progress_callback=progress_callback)
+
+    def run_initial(
+        self,
+        inp: Any,
+        *,
+        progress_callback=None,
+    ) -> WorkflowResult:
+        """Phase 1 & 2: prepare target, generate aptamers, evaluate, score, and rank.
+
+        Resets per-run workflow state and returns the initial ``WorkflowResult``.
+        State writeback is intentionally left to ``bmc_finalize()`` so that both
+        early-exit and fully-coordinated runs attach state consistently.
         """
         if isinstance(inp, dict):
             inp = RnaAptamerDesignInput(**inp)
@@ -326,7 +374,9 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         self._bmc_trace: list[AptamerCoordinationRound] = []
 
         # ── Pre-flight: ensure all required microservices are running ──
-        self._ensure_services_running()
+        preflight = self._ensure_services_running()
+        if preflight is not None:
+            return preflight
 
         # ── Phase 1: Module preparation and initial generation ──
         protein_path, hotspot, protein_seq_len = self._prepare_target_module(inp)
@@ -340,6 +390,12 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 errors=["target_preparation_failed"],
                 _state_writeback=merged_wb,  # type: ignore[attr-defined]
             )
+
+        # Cache target info for BMC rounds so regeneration can reuse it without
+        # re-resolving the protein structure.
+        self._workflow_state["_bmc_protein_path"] = protein_path
+        self._workflow_state["_bmc_hotspot"] = hotspot
+        self._workflow_state["_bmc_protein_seq_len"] = protein_seq_len
 
         candidates = self._generate_aptamer_module(
             protein_path, hotspot, inp, protein_seq_len=protein_seq_len
@@ -355,157 +411,256 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 _state_writeback=merged_wb,  # type: ignore[attr-defined]
             )
 
-        # ── Phase 2: Evaluate and score all candidates ──
-        for i, candidate in enumerate(candidates):
-            _LOGGER.info(
-                "workflow_evaluating_candidate idx=%d total=%d workflow=%s",
-                i + 1,
-                len(candidates),
-                self.name,
-            )
-            metrics = self.evaluate(candidate)
-            candidate.scores = self.score(metrics)
-            candidate.status = "evaluated"
-            if progress_callback:
-                progress_callback({
-                    "event": "evaluate_progress",
-                    "current": i + 1,
-                    "total": len(candidates),
-                    "candidate_id": candidate.id,
-                    "workflow": self.name,
-                })
-
-        result = self.rank_and_format(candidates)
-
-        if not result.success or not result.all_candidates:
-            merged_wb = dict(self._workflow_state)
-            merged_wb["_workflow_params"] = inp.model_dump()
-            result._state_writeback = merged_wb  # type: ignore[attr-defined]
-            return result
-
-        # ── Phase 3: Bounded Multi-Module Coordination ──
-        self._workflow_state["_bmc_mode"] = inp.bmc_mode
-
-        if inp.bmc_mode == "llm_coord":
-            coordinator: AptamerCoordinator = LLMAptamerCoordinator()
-        else:
-            coordinator = AptamerCoordinator()
-
-        if inp.bmc_mode == "no_bounds":
-            max_rounds = 100
-            improvement_threshold = 0.0
-        else:
-            max_rounds = 3
-            improvement_threshold = 0.01
-
-        self._workflow_state["_bmc_max_rounds"] = max_rounds
-        self._workflow_state["_bmc_improvement_threshold"] = improvement_threshold
-
-        best = result.best_candidate
-        best_score = (
-            best.scores.get("total_score", float("-inf")) if best else float("-inf")
+        # ── Phase 2: Two-stage concurrent evaluation (light on all, heavy on top-k) ──
+        evaluated_candidates = self._evaluate_candidates_concurrent(
+            candidates,
+            progress_callback=progress_callback,
+            progress_event="evaluate_progress",
         )
 
-        if inp.bmc_mode == "1round":
-            _LOGGER.info("bmc_1round_mode_skipping_phase3")
+        return self.rank_and_format(evaluated_candidates)
+
+    def bmc_prepare(
+        self,
+        initial_result: WorkflowResult,
+    ) -> dict[str, Any]:
+        """Prepare BMC state from the initial ranked candidate pool.
+
+        Returns a dict containing the coordinator, reference point, normalization
+        bounds, current best candidate, and round budget. The reference point is
+        fixed to the initial pool when user-provided, otherwise derived as a
+        utopian point that may evolve across rounds.
+        """
+        inp = self._workflow_state.get("_aptamer_input")
+        if inp is None:
+            raise RuntimeError("bmc_prepare called before run_initial")
+
+        self._workflow_state["_bmc_max_rounds"] = inp.bmc_max_rounds
+        self._workflow_state["_bmc_improvement_threshold"] = inp.bmc_improvement_threshold
+
+        coordinator = AptamerCoordinator()
+        max_rounds = inp.bmc_max_rounds
+        improvement_threshold = inp.bmc_improvement_threshold
+
+        # Initial reference point and ASF for the current best candidate.
+        # If the user supplied a reference point, fix its normalization to the
+        # initial candidate pool so the aspiration level stays stable across BMC
+        # rounds. The utopian point is allowed to evolve as the pool improves.
+        norm_ref_point, _, dim_bounds = build_normalized_reference_point(
+            initial_result.all_candidates,
+            AptamerCoordinator.USER_FACING_OBJECTIVES,
+            user_reference_point=inp.reference_point,
+        )
+        if inp.reference_point is not None:
+            self._reference_point_mode = "user"
+            self._fixed_norm_ref_point = dict(norm_ref_point)
+            self._fixed_dim_bounds = {
+                k: dict(v) for k, v in dim_bounds.items()
+            }
         else:
-            for round_num in range(1, max_rounds + 1):
-                if best is None:
-                    break
+            self._reference_point_mode = "utopian"
+            self._fixed_norm_ref_point = None
+            self._fixed_dim_bounds = None
 
-                metrics = best.metadata.get("metrics_bundle", {})
-                issues = coordinator.diagnose(metrics)
+        best = initial_result.best_candidate
+        best_asf = self._candidate_asf(best, norm_ref_point, dim_bounds)
 
-                if not issues:
-                    _LOGGER.info("bmc_converged_no_issues round=%d", round_num)
-                    break
+        return {
+            "coordinator": coordinator,
+            "norm_ref_point": norm_ref_point,
+            "dim_bounds": dim_bounds,
+            "best": best,
+            "best_asf": best_asf,
+            "max_rounds": max_rounds,
+            "improvement_threshold": improvement_threshold,
+            "inp": inp,
+        }
 
-                feedback = coordinator.broadcast_feedback(issues)
-                affected_modules = list(feedback.keys())
+    def bmc_run_round(
+        self,
+        round_num: int,
+        result: WorkflowResult,
+        bmc_state: dict[str, Any],
+        *,
+        progress_callback=None,
+    ) -> tuple[WorkflowResult, dict[str, Any], bool, str]:
+        """Execute one BMC coordination round.
 
-                _LOGGER.info(
-                    "bmc_round_start round=%d issues=%d modules=%s",
-                    round_num,
-                    len(issues),
-                    affected_modules,
-                )
+        Diagnoses the current candidate pool against the reference point,
+        broadcasts feedback, regenerates affected modules, evaluates new
+        candidates, and re-ranks the merged pool.
 
-                # Generate new candidates with adjusted parameters
-                t0 = time.perf_counter()
-                new_candidates = self._regenerate_modules(
-                    inp, feedback, protein_path, hotspot, protein_seq_len, best
-                )
+        Returns ``(result, bmc_state, should_stop, reason)``.
+        """
+        # Service pre-flight: recover any service that went down between rounds.
+        preflight = self._service_preflight_result()
+        if preflight is not None:
+            return preflight, bmc_state, True, "service_preflight_failed"
 
-                if not new_candidates:
-                    _LOGGER.info("bmc_no_new_candidates round=%d", round_num)
-                    break
+        coordinator = bmc_state["coordinator"]
+        max_rounds = bmc_state["max_rounds"]
+        improvement_threshold = bmc_state["improvement_threshold"]
+        inp = bmc_state["inp"]
+        best = bmc_state["best"]
+        best_asf = bmc_state["best_asf"]
 
-                # Evaluate new candidates
-                for i, candidate in enumerate(new_candidates):
-                    _LOGGER.info(
-                        "bmc_evaluating_new idx=%d total=%d round=%d",
-                        i + 1,
-                        len(new_candidates),
-                        round_num,
-                    )
-                    metrics = self.evaluate(candidate)
-                    candidate.scores = self.score(metrics)
-                    candidate.status = "evaluated"
-                    if progress_callback:
-                        progress_callback({
-                            "event": "bmc_evaluate_progress",
-                            "round": round_num,
-                            "current": i + 1,
-                            "total": len(new_candidates),
-                            "candidate_id": candidate.id,
-                            "workflow": self.name,
-                        })
+        if best is None:
+            return result, bmc_state, True, "no_best_candidate"
 
-                # Merge and re-rank
-                all_candidates = result.all_candidates + new_candidates
-                result = self.rank_and_format(all_candidates)
+        protein_path = self._workflow_state.get("_bmc_protein_path")
+        hotspot = self._workflow_state.get("_bmc_hotspot")
+        protein_seq_len = self._workflow_state.get("_bmc_protein_seq_len")
+        if not protein_path or not hotspot:
+            return result, bmc_state, True, "missing_target_info"
 
-                new_best = result.best_candidate
-                new_score = (
-                    new_best.scores.get("total_score", float("-inf"))
-                    if new_best
-                    else float("-inf")
-                )
+        # Select the reference point for this round.
+        if self._reference_point_mode == "user":
+            norm_ref_point = self._fixed_norm_ref_point
+            dim_bounds = self._fixed_dim_bounds
+        else:
+            norm_ref_point, _, dim_bounds = build_normalized_reference_point(
+                result.all_candidates,
+                AptamerCoordinator.USER_FACING_OBJECTIVES,
+                user_reference_point=None,
+            )
 
-                # Record round trace
-                time_elapsed_ms = (time.perf_counter() - t0) * 1000.0
-                round_trace = AptamerCoordinationRound(
-                    round_num=round_num,
-                    best_candidate_id=new_best.id if new_best else "",
-                    best_total_score=new_score,
-                    issues_found=issues,
-                    feedback_dispatched=feedback,
-                    modules_reinvoked=affected_modules,
-                    time_elapsed_ms=time_elapsed_ms,
-                )
-                self._bmc_trace.append(round_trace)
+        # Diagnose a representative set: ASF best + per-objective leaders.
+        diagnosis_candidates = self._select_diagnosis_candidates(
+            result.all_candidates,
+            AptamerCoordinator.USER_FACING_OBJECTIVES,
+            best,
+        )
+        _LOGGER.info(
+            "bmc_diagnosis_set size=%d best_id=%s",
+            len(diagnosis_candidates),
+            best.id if best else None,
+        )
 
-                should_stop, reason = coordinator.has_converged(
-                    new_score,
-                    best_score,
-                    round_num,
-                    max_rounds=max_rounds,
-                    improvement_threshold=improvement_threshold,
-                )
+        raw_issues_with_sources: list[tuple[Issue, dict[str, Any]]] = []
+        for cand in diagnosis_candidates:
+            norm_vec = self._build_norm_candidate_vector(cand, dim_bounds)
+            cand_metrics = cand.metadata.get("metrics_bundle", {})
+            for issue in coordinator.diagnose(norm_vec, norm_ref_point):
+                raw_issues_with_sources.append((issue, cand_metrics))
+        issues, issue_source_metrics = self._merge_issues_with_sources(
+            raw_issues_with_sources
+        )
+        total_violation = sum(issue.violation for issue in issues)
 
-                _LOGGER.info(
-                    "bmc_round_complete round=%d old_score=%.3f new_score=%.3f reason=%s",
-                    round_num,
-                    best_score,
-                    new_score,
-                    reason,
-                )
+        if total_violation <= 0.0:
+            _LOGGER.info(
+                "bmc_converged_no_violation round=%d total_violation=%.4f",
+                round_num,
+                total_violation,
+            )
+            return result, bmc_state, True, "no_violation"
 
-                if should_stop:
-                    break
+        # Use the metrics of the candidate that triggered the worst issue,
+        # not necessarily the ASF best, when broadcasting feedback.
+        worst_issue = max(issues, key=lambda i: i.violation)
+        feedback_metrics = issue_source_metrics[worst_issue.issue_type]
 
-                best = new_best
-                best_score = new_score
+        # NOTE (Fig 5b ablation): pool-mean metrics over the current candidate
+        # pool. Only consumed by broadcast_feedback when the subprocess runs
+        # with APTAMER_FEEDBACK_MODE=pool_average; ignored otherwise, so the
+        # default source-aware behavior is unchanged.
+        pool_metrics = self._pool_mean_metrics(result.all_candidates)
+        feedback = coordinator.broadcast_feedback(
+            issues, feedback_metrics, pool_metrics=pool_metrics
+        )
+        affected_modules = list(feedback.keys())
+
+        _LOGGER.info(
+            "bmc_round_start round=%d issues=%d total_violation=%.4f modules=%s",
+            round_num,
+            len(issues),
+            total_violation,
+            affected_modules,
+        )
+
+        # Generate new candidates with adjusted parameters
+        t0 = time.perf_counter()
+        new_candidates = self._regenerate_modules(
+            inp,
+            feedback,
+            protein_path,
+            hotspot,
+            protein_seq_len,
+            best,
+            issues=issues,
+            issue_source_metrics=issue_source_metrics,
+        )
+
+        if not new_candidates:
+            _LOGGER.info("bmc_no_new_candidates round=%d", round_num)
+            return result, bmc_state, True, "no_new_candidates"
+
+        # Evaluate new candidates (two-stage concurrent)
+        new_evaluated = self._evaluate_candidates_concurrent(
+            new_candidates,
+            progress_callback=progress_callback,
+            progress_event="bmc_evaluate_progress",
+            progress_extra={"round": round_num},
+        )
+
+        # Merge and re-rank
+        all_candidates = result.all_candidates + new_evaluated
+        result = self.rank_and_format(all_candidates)
+
+        new_best = result.best_candidate
+        new_asf = self._candidate_asf(new_best, norm_ref_point, dim_bounds)
+
+        # Record round trace
+        time_elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        round_trace = AptamerCoordinationRound(
+            round_num=round_num,
+            best_candidate_id=new_best.id if new_best else "",
+            best_total_score=-new_asf,
+            issues_found=issues,
+            feedback_dispatched=feedback,
+            modules_reinvoked=affected_modules,
+            time_elapsed_ms=time_elapsed_ms,
+            diagnosis_candidate_ids=[c.id for c in diagnosis_candidates],
+            reference_point_mode=self._reference_point_mode,
+            reference_point=dict(norm_ref_point) if norm_ref_point else {},
+            dim_bounds={
+                k: dict(v) for k, v in dim_bounds.items()
+            } if dim_bounds else {},
+        )
+        self._bmc_trace.append(round_trace)
+
+        should_stop, reason = coordinator.has_converged(
+            -new_asf,
+            -best_asf,
+            round_num,
+            max_rounds=max_rounds,
+            improvement_threshold=improvement_threshold,
+        )
+
+        _LOGGER.info(
+            "bmc_round_complete round=%d old_asf=%.3f new_asf=%.3f reason=%s",
+            round_num,
+            best_asf,
+            new_asf,
+            reason,
+        )
+
+        # Update BMC state for the next round
+        bmc_state["best"] = new_best
+        bmc_state["best_asf"] = new_asf
+        bmc_state["norm_ref_point"] = norm_ref_point
+        bmc_state["dim_bounds"] = dim_bounds
+
+        return result, bmc_state, should_stop, reason
+
+    def bmc_finalize(
+        self,
+        result: WorkflowResult,
+    ) -> WorkflowResult:
+        """Attach final state writeback and return the result."""
+        inp = self._workflow_state.get("_aptamer_input")
+        if inp is None:
+            return result
 
         # Aggregate per-candidate and workflow-level tool records into result.trace
         for c in result.all_candidates:
@@ -519,9 +674,126 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         result._state_writeback = merged_wb  # type: ignore[attr-defined]
         return result
 
+    def _candidate_asf(
+        self,
+        cand: Candidate | None,
+        ref_point: dict[str, float],
+        bounds: dict[str, dict[str, float]],
+    ) -> float:
+        """Achievement Scalarizing Function distance for a candidate (lower = better)."""
+        if cand is None:
+            return float("inf")
+        vec = self._build_norm_candidate_vector(cand, bounds)
+        common = {k: v for k, v in vec.items() if k in ref_point}
+        if not common:
+            return float("inf")
+        weights = {k: 1.0 / len(ref_point) for k in ref_point}
+        return achievement_scalarizing_function(
+            common, ref_point, weights, rho=1e-3
+        )
+
     # ─────────────────────────────────────────────────────────────────────────
     # BMC Module-level helpers
     # ─────────────────────────────────────────────────────────────────────────
+
+    def _select_diagnosis_candidates(
+        self,
+        candidates: list[Candidate],
+        objectives: tuple[str, ...],
+        best_candidate: Candidate | None,
+    ) -> list[Candidate]:
+        """Return the set of candidates that should be diagnosed by BMC.
+
+        Always includes the current best candidate. Additionally includes the
+        per-objective leader (highest raw score) for each diagnostic objective.
+        This exposes trade-offs that the single best candidate may hide.
+        """
+        selected: dict[str, Candidate] = {}
+        if best_candidate is not None:
+            selected[best_candidate.id] = best_candidate
+
+        for key in objectives:
+            champion: Candidate | None = None
+            best_value: float | None = None
+            for c in candidates:
+                value = c.scores.get(key)
+                if value is None:
+                    continue
+                try:
+                    value_f = float(value)
+                except (TypeError, ValueError):
+                    continue
+                if best_value is None or value_f > best_value:
+                    best_value = value_f
+                    champion = c
+            if champion is not None:
+                selected[champion.id] = champion
+
+        return list(selected.values())
+
+    @staticmethod
+    def _pool_mean_metrics(candidates: list[Candidate]) -> dict[str, float]:
+        """Mean of each numeric metric across the candidate pool.
+
+        Averages every numeric entry of each candidate's ``metrics_bundle``
+        (e.g. ``rhofold_mean_plddt``) over all candidates that report it.
+        Used only by the ``APTAMER_FEEDBACK_MODE=pool_average`` ablation
+        (Fig 5b); non-numeric and boolean entries are skipped.
+        """
+        sums: dict[str, float] = {}
+        counts: dict[str, int] = {}
+        for cand in candidates:
+            bundle = cand.metadata.get("metrics_bundle", {}) or {}
+            for key, value in bundle.items():
+                if isinstance(value, bool) or not isinstance(value, (int, float)):
+                    continue
+                sums[key] = sums.get(key, 0.0) + float(value)
+                counts[key] = counts.get(key, 0) + 1
+        return {k: sums[k] / counts[k] for k in sums if counts[k]}
+
+    @staticmethod
+    def _merge_issues_with_sources(
+        issues_with_sources: list[tuple[Issue, dict[str, Any]]],
+    ) -> tuple[list[Issue], dict[str, dict[str, Any]]]:
+        """Merge issues by type, keeping the one with the largest violation.
+
+        Returns a mapping from issue_type to the metrics bundle of the candidate
+        that contributed the worst instance. This lets downstream feedback be
+        based on the candidate that actually triggered the issue, rather than
+        always the ASF best.
+        """
+        merged: dict[str, Issue] = {}
+        source_metrics: dict[str, dict[str, Any]] = {}
+        for issue, metrics in issues_with_sources:
+            existing = merged.get(issue.issue_type)
+            if existing is None or issue.violation > existing.violation:
+                merged[issue.issue_type] = issue
+                source_metrics[issue.issue_type] = metrics
+        return list(merged.values()), source_metrics
+
+    @staticmethod
+    def _build_norm_candidate_vector(
+        candidate: Candidate,
+        dim_bounds: dict[str, dict[str, float]],
+    ) -> dict[str, float]:
+        """Build a normalized objective vector for a single candidate.
+
+        Uses the same min/max bounds that were used to normalize the reference
+        point so that gaps are comparable.
+        """
+        vector: dict[str, float] = {}
+        for key, bounds in dim_bounds.items():
+            raw = candidate.scores.get(key)
+            if raw is None:
+                continue
+            min_val = bounds["min"]
+            max_val = bounds["max"]
+            span = max_val - min_val
+            if span == 0:
+                vector[key] = 0.5
+            else:
+                vector[key] = (float(raw) - min_val) / span
+        return vector
 
     def _prepare_target_module(
         self, inp: RnaAptamerDesignInput
@@ -537,9 +809,14 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             _LOGGER.error("No valid protein structure available")
             return None, None, None
 
-        protein_seq_len = self._resolve_protein_length(
-            protein_path, inp.protein_sequence, chain_id=inp.chain_id
-        )
+        # Use cached protein length across BMC rounds when target is unchanged
+        protein_seq_len = self._workflow_state.get("_cached_protein_seq_len")
+        if protein_seq_len is None:
+            protein_seq_len = self._resolve_protein_length(
+                protein_path, inp.protein_sequence, chain_id=inp.chain_id
+            )
+            if protein_seq_len is not None and protein_seq_len > 0:
+                self._workflow_state["_cached_protein_seq_len"] = protein_seq_len
         if protein_seq_len is None or protein_seq_len <= 0:
             _LOGGER.error("Cannot determine protein sequence length")
             return None, None, None
@@ -552,23 +829,17 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 f"{inp.chain_id}/{part.strip()}" for part in hotspot.split(",")
             )
             _LOGGER.info("hotspot_normalized format=%s", hotspot)
-        expand_hotspot = self._workflow_state.get("_aptamer_expand_hotspot", False)
         if not hotspot:
-            _LOGGER.info("hotspot_not_provided running_auto_identification")
-            hotspot = self._auto_identify_hotspots(protein_path, inp.chain_id)
+            hotspot = self._workflow_state.get("_cached_hotspot")
+            if not hotspot:
+                _LOGGER.info("hotspot_not_provided running_auto_identification")
+                hotspot = self._auto_identify_hotspots(protein_path, inp.chain_id)
+                if hotspot:
+                    self._workflow_state["_cached_hotspot"] = hotspot
             if not hotspot:
                 _LOGGER.error("hotspot_identification_failed")
                 return None, None, None
             _LOGGER.info("hotspot_auto_identified residues=%s", hotspot)
-
-        # Expand hotspot region if requested by legacy critic retry
-        if expand_hotspot and hotspot:
-            expanded = self._expand_hotspot_residues(
-                protein_path, inp.chain_id, hotspot, window=3
-            )
-            if expanded and expanded != hotspot:
-                _LOGGER.info("hotspot_expanded old=%s new=%s", hotspot, expanded)
-                hotspot = expanded
 
         return protein_path, hotspot, protein_seq_len
 
@@ -587,22 +858,21 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
         Supports parameter overrides for BMC regeneration.
         """
-        # Resolve protein length if not provided
+        # Resolve protein length if not provided (use cache across BMC rounds)
+        if protein_seq_len is None:
+            protein_seq_len = self._workflow_state.get("_cached_protein_seq_len")
         if protein_seq_len is None:
             protein_seq_len = self._resolve_protein_length(
                 protein_path, inp.protein_sequence, chain_id=inp.chain_id
             )
+            if protein_seq_len is not None and protein_seq_len > 0:
+                self._workflow_state["_cached_protein_seq_len"] = protein_seq_len
         if protein_seq_len is None or protein_seq_len <= 0:
             _LOGGER.error("Cannot determine protein sequence length")
             return []
 
         # Apply parameter overrides
         aptamer_length = length_override if length_override is not None else inp.aptamer_length
-        # Legacy retry adjustment (backward compatibility)
-        if self._workflow_state.get("_aptamer_retry_adjust_length", False):
-            aptamer_length = min(200, aptamer_length + 5)
-            _LOGGER.info("aptamer_length_adjusted old=%d new=%d", inp.aptamer_length, aptamer_length)
-
         seeds = seeds_override if seeds_override is not None else inp.odesign_seeds
         n_sample = samples_override if samples_override is not None else inp.n_odesign_samples
 
@@ -636,6 +906,12 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         # ── Extract RNA sequences from prediction files ──
         sequences = self._extract_sequences_from_predictions(prediction_paths)
         if not sequences:
+            # CAVEAT (2026-07-27): zero sequences is a TARGET-SIDE boundary on
+            # some proteins, not a transient failure. In the Fig-4 matrix
+            # Ferritin (1FHA) produced zero ODesign sequences in all 12 cells
+            # and across 3 resume retries — the protein offers no RNA-binding
+            # surface ODesign can design against. Do not "fix" this by
+            # retrying; record it as a limitation (see RESUME_CHECKPOINT §4).
             _LOGGER.error("no_sequences_extracted_from_odesign_output")
             return []
 
@@ -688,17 +964,23 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         hotspot: str,
         protein_seq_len: Optional[int],
         best: Candidate,
+        issues: list[Issue],
+        issue_source_metrics: dict[str, dict[str, Any]],
     ) -> list[Candidate]:
         """Regenerate candidates based on AptamerCoordinator feedback.
 
         Maps feedback adjustments to concrete parameter changes and invokes
         the appropriate module regeneration methods.
+
+        Args:
+            issues: Diagnosed issues for this round.
+            issue_source_metrics: Mapping from issue_type to the metrics bundle
+                of the candidate that contributed the worst instance.
         """
         new_candidates: list[Candidate] = []
-        bmc_mode = self._workflow_state.get("_bmc_mode", "full")
 
         # ── Target module regeneration (hotspot expansion) ──
-        if "Target" in feedback and bmc_mode != "no_target":
+        if "Target" in feedback:
             target_fb = feedback["Target"]
             current_window = 3
             for adj in target_fb.adjustments:
@@ -818,10 +1100,23 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         metrics["rhofold_pdb_path"] = rhofold_pdb
         candidate.metadata["rhofold_pdb_path"] = rhofold_pdb
 
-        # ── EGARPS complex scoring (best-effort) ──
+        # ── EGARPS complex scoring (best-effort, gated by fast metrics) ──
         egarps_prob: Optional[float] = None
         odesign_pred_path = candidate.metadata.get("odesign_prediction_path")
-        if odesign_pred_path and self.capabilities.has("score_rna_protein_complex_with_egarps"):
+        gc_content = metrics.get("gc_content")
+        should_run_egarps = True
+        if gc_content is not None and (gc_content < 0.25 or gc_content > 0.85):
+            _LOGGER.debug(
+                "egarps_skipped_extreme_gc gc=%.3f candidate=%s", gc_content, candidate.id
+            )
+            should_run_egarps = False
+        if rhofold_plddt is not None and rhofold_plddt < 65.0:
+            _LOGGER.debug(
+                "egarps_skipped_low_rhofold plddt=%.2f candidate=%s", rhofold_plddt, candidate.id
+            )
+            should_run_egarps = False
+
+        if should_run_egarps and odesign_pred_path and self.capabilities.has("score_rna_protein_complex_with_egarps"):
             pred_path_obj = Path(odesign_pred_path)
             suffix = pred_path_obj.suffix.lower()
             if suffix == ".pdb":
@@ -918,25 +1213,303 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         candidate.metadata["metrics_bundle"] = metrics
         return metrics
 
-    def score(self, metrics: dict[str, Any]) -> dict[str, float]:
-        """Combine raw metrics into a single aptamer quality score."""
-        inp = self._workflow_state.get("_aptamer_input")
-        if inp is not None:
-            return score_aptamer_candidate(
-                metrics,
-                weight_egarps=inp.weight_egarps,
-                weight_rhofold=inp.weight_rhofold,
+    def _evaluate_light(self, candidate: Candidate) -> dict[str, Any]:
+        """Lightweight evaluation: GC content + RhoFold pLDDT only.
+
+        Used for coarse pre-filtering before invoking expensive tools
+        (EGARPS, ProteinX, interface analysis).
+        """
+        seq = candidate.sequence
+        filepath = save_sequence(seq, prefix="aptamer")
+        candidate.metadata["workspace_filepath"] = filepath
+
+        metrics: dict[str, Any] = {"sequence_length": len(seq)}
+
+        gc_content = self._run_capability_float(
+            "compute_rna_sequence_gc_content",
+            {"filepath": filepath},
+            "gc_content",
+            candidate=candidate,
+            step_name="compute_rna_sequence_gc_content",
+        )
+        metrics["gc_content"] = gc_content
+
+        rhofold_plddt: Optional[float] = None
+        rhofold_pdb: Optional[str] = None
+        if self.capabilities.has("predict_rna_tertiary_structure_with_rhofold"):
+            rh_res = self._invoke_and_record(
+                "predict_rna_tertiary_structure_with_rhofold",
+                {"filepath": filepath},
+                candidate=candidate,
+                step_name="predict_rna_tertiary_structure_with_rhofold",
             )
+            if rh_res.success:
+                rhofold_plddt = _pick_float(rh_res.output, "mean_plddt")
+                rhofold_pdb = rh_res.output.get("pdb_filepath", "")
+            else:
+                _LOGGER.warning("aptamer_rhofold_failed error=%s", rh_res.error)
+        metrics["rhofold_mean_plddt"] = rhofold_plddt
+        metrics["rhofold_pdb_path"] = rhofold_pdb
+        candidate.metadata["rhofold_pdb_path"] = rhofold_pdb
+
+        return metrics
+
+    def _coarse_score(self, metrics: dict[str, Any]) -> float:
+        """Coarse score for hierarchical filtering before expensive tools.
+
+        Uses RhoFold pLDDT as the primary fast filter; foldability is the
+        strongest predictor of whether full complex evaluation is worthwhile.
+        """
+        plddt = metrics.get("rhofold_mean_plddt")
+        if plddt is not None:
+            return float(plddt)
+        return 0.0
+
+    def _evaluate_candidates_concurrent(
+        self,
+        candidates: list[Candidate],
+        *,
+        progress_callback: Optional[Any] = None,
+        progress_event: str = "evaluate_progress",
+        progress_extra: Optional[dict[str, Any]] = None,
+        top_k_base: int = 5,
+    ) -> list[Candidate]:
+        """Two-stage concurrent evaluation: light on all, heavy on top-k.
+
+        Returns the subset of candidates that received full evaluation.
+        Non-selected candidates are retained in *candidate.status*
+        ``filtered_out`` with their light metrics for audit transparency.
+        """
+        if not candidates:
+            return []
+
+        total = len(candidates)
+        top_k = max(top_k_base, int(total * 0.5))
+        top_k = min(top_k, total)
+
+        _LOGGER.info(
+            "hierarchical_filter_start total=%d top_k=%d event=%s",
+            total,
+            top_k,
+            progress_event,
+        )
+
+        # Stage 1: light evaluation (GC + RhoFold) for all candidates in parallel
+        light_results: list[tuple[Candidate, dict[str, Any], float]] = []
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            future_to_candidate = {
+                executor.submit(self._evaluate_light, c): c for c in candidates
+            }
+            completed = 0
+            for future in as_completed(future_to_candidate):
+                candidate = future_to_candidate[future]
+                completed += 1
+                try:
+                    metrics = future.result()
+                except Exception as exc:
+                    _LOGGER.warning(
+                        "light_eval_failed candidate=%s exc=%s", candidate.id, exc
+                    )
+                    metrics = {"sequence_length": len(candidate.sequence)}
+                coarse = self._coarse_score(metrics)
+                light_results.append((candidate, metrics, coarse))
+                if progress_callback:
+                    payload = {
+                        "event": progress_event,
+                        "current": completed,
+                        "total": total,
+                        "candidate_id": candidate.id,
+                        "workflow": self.name,
+                        "stage": "light",
+                    }
+                    if progress_extra:
+                        payload.update(progress_extra)
+                    progress_callback(payload)
+
+        # Select top-k by coarse score
+        light_results.sort(key=lambda x: x[2], reverse=True)
+        selected = light_results[:top_k]
+        selected_ids = {c.id for c, _, _ in selected}
+
+        # Retain light metrics for non-selected candidates
+        for candidate, metrics, coarse in light_results:
+            if candidate.id not in selected_ids:
+                candidate.status = "filtered_out"
+                candidate.metadata["metrics_bundle"] = metrics
+                candidate.scores = self.score(metrics)
+
+        _LOGGER.info(
+            "hierarchical_filter_selected top_k=%d total=%d",
+            len(selected),
+            total,
+        )
+
+        # Stage 2: full evaluation on top-k in parallel
+        evaluated: list[Candidate] = []
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            future_to_item = {
+                executor.submit(self.evaluate, c): (c, m) for c, m, _ in selected
+            }
+            completed = 0
+            for future in as_completed(future_to_item):
+                candidate, light_metrics = future_to_item[future]
+                completed += 1
+                try:
+                    full_metrics = future.result()
+                except Exception as exc:
+                    _LOGGER.warning(
+                        "full_eval_failed candidate=%s exc=%s", candidate.id, exc
+                    )
+                    full_metrics = dict(light_metrics)
+                candidate.metadata["metrics_bundle"] = full_metrics
+                candidate.scores = self.score(full_metrics)
+                candidate.status = "evaluated"
+                evaluated.append(candidate)
+                if progress_callback:
+                    payload = {
+                        "event": progress_event,
+                        "current": completed,
+                        "total": len(selected),
+                        "candidate_id": candidate.id,
+                        "workflow": self.name,
+                        "stage": "full",
+                    }
+                    if progress_extra:
+                        payload.update(progress_extra)
+                    progress_callback(payload)
+
+        return evaluated
+
+    def score(self, metrics: dict[str, Any]) -> dict[str, float]:
+        """Return per-objective raw scores for ASF-based reference-point ranking."""
         return score_aptamer_candidate(metrics)
+
+    def _apply_reference_point_and_pareto(
+        self,
+        candidates: list[Candidate],
+        inp: RnaAptamerDesignInput,
+    ) -> tuple[Candidate | None, list[Candidate], dict[str, float] | None, dict[str, float]]:
+        """Reference-point optimization + Pareto frontier (default behaviour).
+
+        The best candidate is always selected via the Achievement Scalarizing
+        Function (ASF).  If the user does not supply a ``reference_point``, a
+        utopian point is derived from the candidate pool.  The Pareto-optimal
+        frontier is always computed and returned.
+
+        Returns ``(best_candidate, pareto_frontier, raw_reference_point, candidate_asf_map)``.
+        """
+        objectives = ["egarps_component", "rhofold_component", "iptm_component"]
+        maximize = {key: True for key in objectives}
+
+        dim_values: dict[str, list[float]] = {key: [] for key in objectives}
+        candidate_vectors: list[tuple[Candidate, dict[str, float]]] = []
+        for candidate in candidates:
+            vec = extract_objective_vector(candidate, objectives)
+            if not vec:
+                continue
+            candidate_vectors.append((candidate, vec))
+            for key, value in vec.items():
+                dim_values[key].append(value)
+
+        candidate_asf_map: dict[str, float] = {}
+        if not candidate_vectors:
+            best = candidates[0] if candidates else None
+            return best, [], None, candidate_asf_map
+
+        normalized_dim_values: dict[str, list[float]] = {}
+        for key, values in dim_values.items():
+            normalized_dim_values[key] = normalize_to_unit_range(values)
+
+        normalized_vectors: list[tuple[Candidate, dict[str, float]]] = []
+        dim_index: dict[str, int] = {key: 0 for key in objectives}
+        for candidate, vec in candidate_vectors:
+            norm_vec: dict[str, float] = {}
+            for key, value in vec.items():
+                norm_vec[key] = normalized_dim_values[key][dim_index[key]]
+                dim_index[key] += 1
+            normalized_vectors.append((candidate, norm_vec))
+
+        all_candidates_for_pareto = [c for c, _ in normalized_vectors]
+        pareto_frontier = compute_pareto_frontier(
+            all_candidates_for_pareto, objectives, maximize
+        )
+        if pareto_frontier:
+            assign_pareto_tags(pareto_frontier, objectives, maximize)
+            pareto_frontier = cap_pareto_frontier(pareto_frontier, max_size=10)
+
+        # Reference point: user-provided or auto-derived utopian point.
+        raw_ref_point: dict[str, float]
+        if inp.reference_point is not None:
+            raw_ref_point = dict(inp.reference_point)
+        else:
+            raw_ref_point = compute_utopian_reference_point(
+                all_candidates_for_pareto, objectives, maximize
+            )
+
+        # Normalize the reference point with the same min/max as candidates.
+        norm_ref_point: dict[str, float] = {}
+        for key in objectives:
+            if key not in raw_ref_point or key not in dim_values:
+                continue
+            user_val = float(raw_ref_point[key])
+            values = dim_values[key]
+            min_val = min(values)
+            max_val = max(values)
+            span = max_val - min_val
+            if span == 0:
+                norm_ref_point[key] = 0.5
+            else:
+                norm_ref_point[key] = (user_val - min_val) / span
+
+        if not norm_ref_point:
+            best = candidates[0] if candidates else None
+            return best, pareto_frontier, raw_ref_point or None, candidate_asf_map
+
+        default_weight = 1.0 / len(norm_ref_point)
+        weights = {key: default_weight for key in norm_ref_point}
+
+        best_candidate: Candidate | None = None
+        best_asf = float("inf")
+        for candidate, norm_vec in normalized_vectors:
+            common_vec = {k: v for k, v in norm_vec.items() if k in norm_ref_point}
+            if not common_vec:
+                continue
+            asf = achievement_scalarizing_function(
+                common_vec, norm_ref_point, weights, rho=1e-3
+            )
+            candidate_asf_map[candidate.id] = asf
+            if asf < best_asf:
+                best_asf = asf
+                best_candidate = candidate
+
+        if best_candidate is None:
+            best_candidate = candidates[0] if candidates else None
+
+        return best_candidate, pareto_frontier, raw_ref_point, candidate_asf_map
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
         if not candidates:
             return self._empty_result("No aptamer candidates produced.")
 
-        ranked = sort_candidates_by_score(
-            candidates, score_key="total_score", descending=True
+        inp = self._workflow_state.get("_aptamer_input")
+        if inp:
+            best, pareto_frontier, raw_ref_point, candidate_asf_map = (
+                self._apply_reference_point_and_pareto(candidates, inp)
+            )
+        else:
+            best = candidates[0] if candidates else None
+            pareto_frontier = []
+            raw_ref_point = None
+            candidate_asf_map = {}
+
+        # Sort candidates by ASF distance to the reference point (lower = better).
+        ranked = sorted(
+            candidates,
+            key=lambda c: candidate_asf_map.get(c.id, float("inf")),
         )
-        best = ranked[0] if ranked else None
+        for i, c in enumerate(ranked, start=1):
+            c.rank = i
+            c.scores["asf_distance"] = candidate_asf_map.get(c.id)
 
         detail_lines: list[str] = []
         for i, c in enumerate(ranked, start=1):
@@ -968,16 +1541,32 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 f"SB={mb.get('salt_bridges')}"
                 if mb.get("salt_bridges") is not None
                 else "SB=N/A",
-                f"total_score={scores.get('total_score', 0.0):.4f}",
+                f"asf={scores.get('asf_distance'):.4f}"
+                if scores.get("asf_distance") is not None
+                else "asf=N/A",
             ]
             detail_lines.append(" | ".join(line_parts))
 
         summary_parts = [
             f"candidates={len(ranked)}",
-            f"best_total_score={best.scores.get('total_score') if best else None}",
-            "---",
-            *detail_lines,
+            f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
+            f"best_candidate_source=reference_point_optimization",
         ]
+        if raw_ref_point is not None:
+            summary_parts.append(f"reference_point={raw_ref_point}")
+        if pareto_frontier:
+            summary_parts.append(f"pareto_frontier_size={len(pareto_frontier)}")
+        summary_parts.append("---")
+        summary_parts.extend(detail_lines)
+
+        extras: dict[str, Any] = {
+            "best_candidate_source": "reference_point_optimization",
+        }
+        if pareto_frontier:
+            extras["pareto_frontier"] = pareto_frontier
+        if raw_ref_point is not None:
+            extras["reference_point"] = raw_ref_point
+
         return WorkflowResult(
             success=True,
             task_id=f"aptamer_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
@@ -985,6 +1574,7 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             all_candidates=ranked,
             summary="\n".join(summary_parts),
             errors=[],
+            **extras,
         )
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -993,13 +1583,18 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
     def _resolve_protein_structure(self, inp: RnaAptamerDesignInput) -> Optional[str]:
         """Return a valid protein structure path, or None."""
-        if inp.protein_structure_path:
-            path = resolve_project_path(inp.protein_structure_path)
+        structure_path = inp.protein_structure_path
+        # Defensive: ignore placeholder paths the LLM may have invented.
+        if structure_path and ("$" in str(structure_path) or "<" in str(structure_path)):
+            _LOGGER.warning("ignoring_placeholder_protein_structure_path path=%s", structure_path)
+            structure_path = None
+        if structure_path:
+            path = resolve_project_path(structure_path)
             if Path(path).exists():
                 return path
             _LOGGER.warning("protein_structure_path_not_found path=%s", path)
         # If only sequence is provided, predict structure with ProteinX
-        if inp.protein_sequence and not inp.protein_structure_path:
+        if inp.protein_sequence and not structure_path:
             _LOGGER.info("protein_sequence_only predicting_structure_with_proteinx")
             if not self.capabilities.has("predict_protein_structure_with_proteinx"):
                 _LOGGER.warning("capability_missing predict_protein_structure_with_proteinx")
@@ -1129,7 +1724,18 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         n_sample: int,
         seeds: list[int],
     ) -> Optional[dict[str, Any]]:
-        """Run ODesign inference and return the result dict."""
+        """Run ODesign inference and return the result dict.
+
+        NOTE (2026-07 experiment incident): ODesign featurization hard-crashes with
+        ``AssertionError`` in ``add_distogram_rep_atom_mask`` when the input PDB has
+        any non-glycine residue with CA but no CB (incomplete side chain, e.g.
+        3v03/BSA LYS-316, ALA-367), because the assert requires one representative
+        atom per token. Symptom at this level: ``candidate_generation_failed`` with
+        ``no_sequences_extracted_from_odesign_output`` (the service HTTP call itself
+        returns 200). Structures must be CB-complete before inference — repair with
+        ``experiments/repair_structure_cb.py`` (originals under
+        ``data/benchmarks/RNA-BioBench-Aptamer/structures/originals/``).
+        """
         cap_result = self._invoke_and_record(
             "run_odesign_inference",
             {
@@ -1345,6 +1951,16 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                             seq_parts.append(aa_map[resname])
                     break  # Only first chain
                 break  # Only first model
+            # CAVEAT (2026-07-27, from the Fig-4 campaign): the protein sequence
+            # is always taken from the FIRST chain of the file, regardless of the
+            # workflow's chain_id. When that chain is not the protein target —
+            # e.g. benchmark structure 1HAO, whose first chain (D) is the DNA
+            # aptamer itself — the extracted "protein" is garbage/none, ProteinX
+            # complex prediction is skipped downstream, and every designed
+            # candidate gets iptm_component = 0. This is silent: scoring still
+            # "works". Before changing this, check experiments/
+            # run_known_aptamer_validation.py, which deliberately extracts from
+            # the target chain instead and documents the comparability caveat.
             return "".join(seq_parts) if seq_parts else None
         except Exception as exc:
             _LOGGER.debug("protein_sequence_extraction_failed err=%s", exc)
@@ -1689,13 +2305,23 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
         ODesign outputs mmCIF files that omit ``_atom_site.B_iso_or_equiv``
         and contain backbone-only RNA structures.  This helper produces a
-        complete PDB with rebuilt RNA bases.
+        complete PDB with rebuilt RNA bases and caches the result per path.
         """
         path_obj = Path(structure_path)
         suffix = path_obj.suffix.lower()
         if suffix not in {".cif", ".mmcif"}:
             return structure_path
-        return self._get_complete_complex_pdb(structure_path)
+
+        cache_key = f"_pdb_conversion:{structure_path}"
+        cached_path = self._workflow_state.get(cache_key)
+        if cached_path and Path(cached_path).exists():
+            _LOGGER.debug("pdb_conversion_cache_hit path=%s", structure_path)
+            return cached_path
+
+        result_path = self._get_complete_complex_pdb(structure_path)
+        if result_path:
+            self._workflow_state[cache_key] = result_path
+        return result_path
 
     def _detect_chains_in_pdb(
         self,
@@ -1773,17 +2399,14 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 # Aptamer-specific scoring helpers
 
 
-def score_aptamer_candidate(
-    metrics: dict[str, Any],
-    weight_egarps: float = 0.50,
-    weight_rhofold: float = 0.50,
-) -> dict[str, float]:
+def score_aptamer_candidate(metrics: dict[str, Any]) -> dict[str, float]:
     """Standalone scoring function for aptamer candidates (reusable outside the workflow).
 
-    EGARPS, RhoFold pLDDT, and ProteinX ipTM are each normalised to [0, 1]
-    and combined using the provided weights.  Missing components are omitted
-    and the remaining active weights are re-normalised so that the sum of
-    active weights equals 1.0.
+    Returns per-objective raw scores for ASF-based reference-point ranking.
+    EGARPS native probability, RhoFold pLDDT, and ProteinX ipTM are each
+    normalised to [0, 1]. The workflow does not compute a weighted-sum
+    total_score; ranking is performed via Achievement Scalarizing Function
+    distance to a reference point.
     """
     egarps_prob = metrics.get("egarps_native_probability")
     rhofold_plddt = metrics.get("rhofold_mean_plddt")
@@ -1792,7 +2415,7 @@ def score_aptamer_candidate(
     scores: dict[str, float] = {}
 
     if egarps_prob is not None:
-        scores["egarps_component"] = float(egarps_prob)
+        scores["egarps_component"] = max(0.0, min(1.0, float(egarps_prob)))
     else:
         scores["egarps_component"] = 0.0
 
@@ -1806,176 +2429,4 @@ def score_aptamer_candidate(
     else:
         scores["iptm_component"] = 0.0
 
-    # ipTM receives the residual weight budget
-    weight_iptm = max(0.0, 1.0 - weight_egarps - weight_rhofold)
-
-    # Weighted sum over available components; re-normalise when some are missing
-    active_weights = 0.0
-    weighted_sum = 0.0
-
-    if egarps_prob is not None:
-        active_weights += weight_egarps
-        weighted_sum += weight_egarps * scores["egarps_component"]
-    if rhofold_plddt is not None:
-        active_weights += weight_rhofold
-        weighted_sum += weight_rhofold * scores["rhofold_component"]
-    if iptm is not None:
-        active_weights += weight_iptm
-        weighted_sum += weight_iptm * scores["iptm_component"]
-
-    if active_weights > 0.0:
-        scores["total_score"] = weighted_sum / active_weights
-    else:
-        scores["total_score"] = 0.0
-
     return scores
-
-
-# LLM Critic Configuration
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-RNA_APTAMER_CRITIC_CONFIG = CriticConfig(
-    workflow_name="rna_aptamer_design",
-    workflow_description=(
-        "Design RNA aptamers against a protein target using 3D-structure-guided generation. "
-        "NOTE: Hard biological thresholds (EGARPS ≥ 0.30, RhoFold pLDDT ≥ 70, ipTM ≥ 0.60, "
-        "interface contacts ≥ 5, GC 30–70%) are handled internally by AptamerCoordinator. "
-        "This Critic focuses on user-intent alignment and scoring strategy, not threshold enforcement."
-    ),
-    evaluation_dimensions=[
-        "User priority alignment: Check whether the user explicitly prioritized binding affinity over foldability (or vice versa). If so, verify that the scoring weights reflect that priority. Coordinator handles raw metric thresholds; you handle intent.",
-        "Scoring balance: If weight_egarps is very high (>0.7) but top candidates have poor RhoFold pLDDT, consider reducing the EGARPS weight to allow more foldable sequences. Conversely, if weight_rhofold dominates but binding is weak, consider increasing EGARPS weight.",
-        "Candidate diversity: If all top candidates come from the same ODesign seed or have nearly identical sequences, recommend increasing sample count or changing seeds for broader exploration.",
-        "Target suitability: If the protein target is very small or has no obvious binding pockets, flag that the problem may be ill-posed rather than suggesting parameter tweaks.",
-        "CRITICAL: Do NOT apply hard thresholds for EGARPS, pLDDT, ipTM, or GC content — AptamerCoordinator already does that deterministically. Focus on whether the results align with the user's stated goals and constraints.",
-    ],
-    adjustable_params={
-        # High-level scoring strategy parameters (user intent alignment)
-        "weight_egarps": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Weight for EGARPS native probability in scoring. Increase to prioritize binding affinity over foldability.",
-        },
-        "weight_rhofold": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Weight for RhoFold pLDDT in scoring. Increase to prioritize RNA foldability over binding affinity.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-)
-
-
-class RnaAptamerDesignLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for RNA aptamer design workflow."""
-
-    def _default_config(self) -> CriticConfig:
-        return RNA_APTAMER_CRITIC_CONFIG
-
-
-class LLMAptamerCoordinator(AptamerCoordinator):
-    """LLM-based coordinator for ablation study (BMC-LLM-Coord).
-
-    Replaces the deterministic ``diagnose()`` with an LLM call while preserving
-    ``broadcast_feedback()`` and ``has_converged()`` from the parent class.
-    On LLM failure, gracefully falls back to the deterministic rule engine.
-    """
-
-    def __init__(self, provider: str = "deepseek", temperature: float = 0.1):
-        super().__init__()
-        self._llm: Any = None
-        try:
-            self._llm = get_llm_for_provider(provider, temperature=temperature)
-        except Exception as exc:
-            _LOGGER.warning("llm_coord_init_failed fallback_to_deterministic exc=%s", exc)
-
-    def diagnose(self, metrics: dict[str, Any]) -> list[Issue]:
-        if self._llm is None:
-            _LOGGER.warning("llm_coord_no_llm fallback_to_deterministic")
-            return super().diagnose(metrics)
-        try:
-            return self._diagnose_with_llm(metrics)
-        except Exception as exc:
-            _LOGGER.warning("llm_coord_diagnose_failed fallback_to_deterministic exc=%s", exc)
-            return super().diagnose(metrics)
-
-    def _diagnose_with_llm(self, metrics: dict[str, Any]) -> list[Issue]:
-        from langchain_core.messages import HumanMessage, SystemMessage
-
-        # Build metrics and threshold lines for the prompt
-        metrics_lines: list[str] = []
-        for k, v in metrics.items():
-            if v is not None and not isinstance(v, str):
-                metrics_lines.append(f"- {k}: {v}")
-
-        threshold_lines: list[str] = []
-        for k, v in self.THRESHOLDS.items():
-            if k == "gc_content_min":
-                threshold_lines.append(f"- gc_content >= {v}")
-            elif k == "gc_content_max":
-                threshold_lines.append(f"- gc_content <= {v}")
-            else:
-                threshold_lines.append(f"- {k} >= {v}")
-
-        metrics_text = "\n".join(metrics_lines) if metrics_lines else "(none)"
-        thresholds_text = "\n".join(threshold_lines) if threshold_lines else "(none)"
-
-        prompt = (
-            "You are a biomolecular design coordinator diagnosing issues in an "
-            "RNA aptamer design candidate.\n\n"
-            f"Metrics:\n{metrics_text}\n\n"
-            f"Thresholds:\n{thresholds_text}\n\n"
-            "Return a JSON array of issues. Each issue must have:\n"
-            '- issue_type: one of BINDING_AFFINITY_LOW, RNA_FOLDABILITY_LOW, '
-            "COMPLEX_CONFIDENCE_LOW, INTERFACE_TOO_WEAK, EXTREME_GC_CONTENT\n"
-            "- value: the actual metric value (number)\n"
-            "- target: the threshold value (number)\n"
-            '- affected_modules: list containing "Target" and/or "Aptamer"\n'
-            "- evidence: a short sentence\n\n"
-            "If no thresholds are violated, return an empty array [].\n"
-            "Return ONLY the JSON array, no markdown, no explanation."
-        )
-
-        messages = [
-            SystemMessage(content="You are a deterministic biomolecular design coordinator."),
-            HumanMessage(content=prompt),
-        ]
-
-        response = self._llm.invoke(messages)
-        content = response.content if hasattr(response, "content") else str(response)
-        content = content.strip()
-
-        # Strip markdown code fences if present
-        if content.startswith("```"):
-            parts = content.split("```", 2)
-            if len(parts) >= 3:
-                content = parts[1]
-                if content.startswith("json"):
-                    content = content[4:].strip()
-
-        items = json.loads(content)
-        if not isinstance(items, list):
-            raise ValueError(f"Expected JSON array, got {type(items).__name__}")
-
-        issues: list[Issue] = []
-        for item in items:
-            amods = item.get("affected_modules", [])
-            if isinstance(amods, str):
-                amods = [amods]
-            issue = Issue(
-                issue_type=item["issue_type"],
-                value=float(item["value"]),
-                target=float(item["target"]),
-                affected_modules=tuple(amods),
-                evidence=item["evidence"],
-            )
-            issues.append(issue)
-
-        return issues
-
-
-# Small helpers

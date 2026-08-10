@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 import subprocess
 import sys
 import tempfile
@@ -69,6 +70,13 @@ class RhoDesignRequest(BaseModel):
             "Sampling temperature. Lower values favor higher recovery; higher values "
             "increase sequence diversity. Defaults to 1e-5 for with-2D mode and 1.0 for "
             "PDB-only mode."
+        ),
+    )
+    seed: Optional[int] = Field(
+        default=None,
+        description=(
+            "Random seed for reproducible/diverse sampling. If omitted, a per-call "
+            "seed is generated automatically."
         ),
     )
     device: int = Field(
@@ -195,6 +203,8 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
     else:
         temperature = 1e-5 if use_secondary_structure else 1.0
 
+    seed = payload.seed if payload.seed is not None else random.randint(0, 2**32 - 1)
+
     script_name = "inference.py" if use_secondary_structure else "inference_without2d.py"
     command = [
         sys.executable,
@@ -207,6 +217,8 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
         str(payload.device),
         "-temp",
         str(temperature),
+        "-seed",
+        str(seed),
     ]
     if secondary_structure_path is not None:
         command.extend(["-ss", str(secondary_structure_path)])

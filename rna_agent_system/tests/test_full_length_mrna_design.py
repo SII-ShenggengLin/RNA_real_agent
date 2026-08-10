@@ -11,17 +11,22 @@ from __future__ import annotations
 
 from tests.helpers import make_mock_capability
 
+import json
+import math
 from typing import Any
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
+from agent_core.agents.quality_agent import QualityAgent
 from agent_core.capabilities.base import CapabilityResult
+from agent_core.quality_profiles.full_length_mrna_design import (
+    FULL_LENGTH_MRNA_QUALITY_PROFILE,
+)
 from agent_core.workflow_models import Candidate, WorkflowResult
+from agent_core.workflows.coordinator import Issue, ReferencePointCoordinator
 from agent_core.workflows.full_length_mrna_design import (
-    FULL_LENGTH_MRNA_CRITIC_CONFIG,
     FullLengthMrnaDesignInput,
-    FullLengthMrnaDesignLLMCritic,
     FullLengthMrnaDesignWorkflow,
     score_full_length_mrna_candidate,
 )
@@ -96,7 +101,7 @@ def test_score_full_length_pure_cds():
 
 
 def test_input_defaults():
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKT")
+    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ")
     assert inp.design_tool == "all"
     assert inp.lambda_value is None
     assert inp.cai_species == "Homo sapiens"
@@ -104,28 +109,30 @@ def test_input_defaults():
     assert inp.utr_mode == "all"
     assert inp.run_fold is True
     assert inp.run_gc is True
+    assert inp.bmc_mode == "rp"
+    assert inp.reference_point is None
 
 
 def test_input_valid_tools():
     for tool in ("lineardesign", "rnarl", "gemorna", "all"):
-        inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool=tool)
+        inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool=tool)
         assert inp.design_tool == tool
 
 
 def test_input_valid_utr_modes():
     for mode in ("short", "medium", "long", "all"):
-        inp = FullLengthMrnaDesignInput(protein_sequence="MKT", utr_mode=mode)
+        inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", utr_mode=mode)
         assert inp.utr_mode == mode
 
 
 def test_input_invalid_design_tool():
     with pytest.raises(Exception):
-        FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="invalid")
+        FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="invalid")
 
 
 def test_input_invalid_utr_mode():
     with pytest.raises(Exception):
-        FullLengthMrnaDesignInput(protein_sequence="MKT", utr_mode="extra_long")
+        FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", utr_mode="extra_long")
 
 
 def test_input_dict_coercion():
@@ -216,7 +223,7 @@ def test_generate_candidates_6cds_9utr_54_total():
     """With 3 unique CDS tools and 3×3 UTR combos, verify 54 candidates."""
     reg = _make_registry_with_mocks()
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="all")
+    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="all")
     candidates = wf.generate_candidates(inp)
     # 3 CDS tools (lineardesign produces 4, but we mock same cap) × 9 UTR combos
     # Actually lineardesign cap returns same sequence every time, so after dedup:
@@ -275,7 +282,7 @@ def test_generate_candidates_dedup_full_sequence():
     reg.get = lambda name: caps[name]
 
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="all")
+    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="all")
     candidates = wf.generate_candidates(inp)
     # 1 unique CDS × 3 UTR5 × 3 UTR3 = 9 unique full sequences
     assert len(candidates) == 9
@@ -294,7 +301,7 @@ def test_generate_candidates_skips_cds_not_multiple_of_3():
     reg.get = lambda name: caps[name]
 
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="lineardesign", lambda_value=0.0)
+    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="lineardesign", lambda_value=0.0)
     candidates = wf.generate_candidates(inp)
     assert len(candidates) == 0
 
@@ -303,13 +310,30 @@ def test_generate_candidates_utr_mode_filter():
     """utr_mode='short' should produce only 1 UTR preset per end → 1 combo per CDS."""
     reg = _make_registry_with_mocks()
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKT", design_tool="all", utr_mode="short")
+    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="all", utr_mode="short")
     candidates = wf.generate_candidates(inp)
     # 3 unique CDS × 1 UTR5(short) × 1 UTR3(short) = 3
     assert len(candidates) == 3
     for c in candidates:
         assert c.metadata["utr5_preset"] == "short"
         assert c.metadata["utr3_preset"] == "short"
+
+
+def test_generate_candidates_propagates_cai_species():
+    """Full-length candidates must inherit cai_species from the workflow input
+    so that downstream CAI evaluation uses the correct species."""
+    reg = _make_registry_with_mocks()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ",
+        design_tool="lineardesign",
+        lambda_value=1.0,
+        cai_species="Mus musculus",
+        utr_mode="short",
+    )
+    candidates = wf.generate_candidates(inp)
+    assert len(candidates) == 1
+    assert candidates[0].metadata["cai_species"] == "Mus musculus"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -422,6 +446,7 @@ def test_evaluate_returns_expected_keys():
     assert "full_length_mfe" in metrics
     assert "cds_cai" in metrics
     assert "cds_gc" in metrics
+    assert "full_length_gc" in metrics
     assert "utr5_ires_potential" in metrics
     assert "utr5_mfe" in metrics
     assert "overall_stability" in metrics
@@ -429,11 +454,71 @@ def test_evaluate_returns_expected_keys():
     assert metrics["total_length"] == len(candidate.sequence)
     assert "utr5_predicted_mrl" in metrics
     assert "utr3_predicted_stability" in metrics
+    assert "junction_5utr_cds_mfe_per_nt" in metrics
+    assert "junction_cds_3utr_mfe_per_nt" in metrics
 
 
-def test_rank_aggregation_produces_total_rank():
-    """Equal-weight 5-dimensional Borda count: each module sorted independently,
-    ranks summed, candidates ordered by total_rank."""
+def test_evaluate_uses_candidate_cai_species():
+    """CAI evaluation must respect candidate.metadata['cai_species'] instead of
+    always falling back to Homo sapiens."""
+    reg = MagicMock()
+
+    def _cai_invoke(args, state=None):
+        species = args.get("species", "Homo sapiens")
+        return CapabilityResult(
+            success=True,
+            tool_name="compute_cai_for_cds_sequence",
+            output={"cai_score": 0.95 if species == "Mus musculus" else 0.75},
+        )
+
+    caps = {
+        "predict_rna_secondary_structure": MagicMock(),
+        "predict_rna_secondary_structure_with_linearfold": MagicMock(),
+        "compute_rna_sequence_gc_content": MagicMock(),
+        "compute_rna_sequence_u_content": MagicMock(),
+        "compute_cai_for_cds_sequence": MagicMock(),
+        "predict_5utr_mrl_with_gemorna": MagicMock(),
+        "predict_3utr_stability_with_gemorna": MagicMock(),
+    }
+    caps["predict_rna_secondary_structure"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="predict_rna_secondary_structure", output={"mfe_kcal_per_mol": -25.0, "structure": "....(((())))...."}
+    )
+    caps["predict_rna_secondary_structure_with_linearfold"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="linearfold", output={"mfe": -22.0, "structure": "..."}
+    )
+    caps["compute_rna_sequence_gc_content"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="gc", output={"gc_content": 0.52, "sequence_length": 30}
+    )
+    caps["compute_rna_sequence_u_content"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="u_content", output={"u_fraction": 0.25}
+    )
+    caps["compute_cai_for_cds_sequence"].invoke = _cai_invoke
+    caps["predict_5utr_mrl_with_gemorna"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="mrl", output={"predicted_mrl": 5.0}
+    )
+    caps["predict_3utr_stability_with_gemorna"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="stab", output={"predicted_stability": 2.0}
+    )
+
+    reg.has = lambda name: name in caps
+    reg.get = lambda name: caps[name]
+
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    candidate = Candidate(
+        sequence="GGGAAACCCUUUAUGCCCGGGUUUAAAUUU",
+        metadata={
+            "utr5_sequence": "GGGAAACCCUUU",
+            "cds_sequence": "AUGCCCGGGUUU",
+            "utr3_sequence": "AAAUUU",
+            "cai_species": "Mus musculus",
+        },
+    )
+    metrics = wf.evaluate(candidate)
+    assert metrics["cds_cai"] == pytest.approx(0.95)
+
+
+def test_rank_aggregation_uses_asf():
+    """Candidates are ranked by ASF distance to the reference point (lower = better)."""
     reg = _make_registry_for_eval()
     wf = FullLengthMrnaDesignWorkflow(reg)
     c1 = Candidate(
@@ -455,15 +540,19 @@ def test_rank_aggregation_produces_total_rank():
     for c in [c1, c2]:
         metrics = wf.evaluate(c)
         c.scores = wf.score(metrics)
+    wf._workflow_state["_full_length_input"] = FullLengthMrnaDesignInput(
+        protein_sequence="MP"
+    )
     result = wf.rank_and_format([c1, c2])
     assert result.success is True
+    assert result.best_candidate is not None
+    # Both candidates should have an ASF distance and a rank.
+    for c in [c1, c2]:
+        assert "asf_distance" in c.scores
+        assert c.rank is not None
+    # Candidate with evaluated 5'UTR MRL should have a lower (better) ASF.
+    assert c1.scores["asf_distance"] < c2.scores["asf_distance"]
     assert result.best_candidate is c1
-    # Equal-weight Borda: c1 wins in cds, utr5_mrl, utr3, full_mfe; c2 wins in junction.
-    # c1 total_rank = 1+1+1+1+2 = 6, c2 total_rank = 2+2+2+2+1 = 9
-    assert c1.scores["total_rank"] == 6
-    assert c2.scores["total_rank"] == 9
-    assert c1.scores["cds_rank"] == 1
-    assert c2.scores["cds_rank"] == 2
 
 
 def test_rank_and_format_with_candidates():
@@ -480,6 +569,9 @@ def test_rank_and_format_with_candidates():
     for c in [c1, c2]:
         metrics = wf.evaluate(c)
         c.scores = wf.score(metrics)
+    wf._workflow_state["_full_length_input"] = FullLengthMrnaDesignInput(
+        protein_sequence="MP"
+    )
     result = wf.rank_and_format([c1, c2])
     assert result.success is True
     assert result.best_candidate is not None
@@ -494,34 +586,165 @@ def test_rank_and_format_empty_candidates():
     assert "empty_candidate_list" in result.errors
 
 
+def test_reference_point_changes_best_candidate():
+    """A reference point favoring one dimension should select the champion of that dimension."""
+    reg = _make_registry_for_eval()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    c1 = Candidate(
+        sequence="AUGCCC",
+        metadata={
+            "utr5_sequence": "GGG", "cds_sequence": "AUGCCC", "utr3_sequence": "AAA",
+            "utr5_preset": "short", "utr3_preset": "short", "cds_source": "lineardesign",
+        },
+    )
+    c2 = Candidate(
+        sequence="AUGGGG",
+        metadata={
+            "utr5_sequence": "CCC", "cds_sequence": "AUGGGG", "utr3_sequence": "UUU",
+            "utr5_preset": "short", "utr3_preset": "short", "cds_source": "rnarl",
+        },
+    )
+    for c in [c1, c2]:
+        metrics = wf.evaluate(c)
+        c.scores = wf.score(metrics)
+
+    # Set input with reference point favoring utr5_mrl (higher is better).
+    wf._workflow_state["_full_length_input"] = FullLengthMrnaDesignInput(
+        protein_sequence="MP",
+        reference_point={"utr5_mrl": 1000.0},
+    )
+    result = wf.rank_and_format([c1, c2])
+    assert result.success is True
+    assert result.best_candidate is not None
+    assert getattr(result, "reference_point", None) == {"utr5_mrl": 1000.0}
+    assert getattr(result, "best_candidate_source", None) == "reference_point_optimization"
+
+
+def test_pareto_frontier_no_dominated_members():
+    """Pareto frontier is always returned and contains only non-dominated candidates."""
+    reg = _make_registry_for_eval()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    c1 = Candidate(
+        sequence="AUGCCC",
+        metadata={
+            "utr5_sequence": "GGG", "cds_sequence": "AUGCCC", "utr3_sequence": "AAA",
+            "utr5_preset": "short", "utr3_preset": "short", "cds_source": "lineardesign",
+        },
+    )
+    c2 = Candidate(
+        sequence="AUGGGG",
+        metadata={
+            "utr5_sequence": "CCC", "cds_sequence": "AUGGGG", "utr3_sequence": "UUU",
+            "utr5_preset": "short", "utr3_preset": "short", "cds_source": "rnarl",
+        },
+    )
+    for c in [c1, c2]:
+        metrics = wf.evaluate(c)
+        c.scores = wf.score(metrics)
+
+    wf._workflow_state["_full_length_input"] = FullLengthMrnaDesignInput(
+        protein_sequence="MP",
+    )
+    result = wf.rank_and_format([c1, c2])
+    assert result.success is True
+    frontier = getattr(result, "pareto_frontier", None)
+    assert frontier is not None
+    assert len(frontier) >= 1
+    # No frontier member should be dominated by another frontier member.
+    ids = {c.id for c in frontier}
+    assert len(ids) == len(frontier)
+
+
+def test_reference_point_validation():
+    """Unknown objective keys in reference_point raise ValueError."""
+    with pytest.raises(ValueError, match="unknown objectives"):
+        FullLengthMrnaDesignInput(
+            protein_sequence="MP",
+            reference_point={"invalid_dim": 1.0},
+        )
+
+
+def test_target_cds_mfe_cai_converts_to_cds_component():
+    """target_cds_mfe and target_cds_cai are converted to a cds_component reference."""
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MP",  # 2 aa → 2 codons → 6 nt
+        target_cds_mfe=-30.0,
+        target_cds_cai=0.9,
+    )
+    # cds_component = (-(-30) + 2 * log(0.9)) / 6
+    expected = (30.0 + 2.0 * math.log(0.9)) / 6.0
+    assert inp.reference_point is not None
+    assert inp.reference_point["cds_component"] == pytest.approx(expected, abs=1e-6)
+
+
+def test_target_cds_cai_requires_mfe():
+    """Only providing target_cds_cai raises ValueError."""
+    with pytest.raises(ValueError, match="must be provided together"):
+        FullLengthMrnaDesignInput(
+            protein_sequence="MP",
+            target_cds_cai=0.9,
+        )
+
+
+def test_reference_point_rejects_cds_component():
+    """The internal cds_component key is no longer accepted in user reference_point."""
+    with pytest.raises(ValueError, match="unknown objectives"):
+        FullLengthMrnaDesignInput(
+            protein_sequence="MP",
+            reference_point={"cds_component": 0.5},
+        )
+
+
+def test_reference_point_rejects_junction_dimensions():
+    """Per-junction score dimensions are internal and rejected from user reference_point."""
+    with pytest.raises(ValueError, match="unknown objectives"):
+        FullLengthMrnaDesignInput(
+            protein_sequence="MP",
+            reference_point={
+                "junction_5utr_cds_score": 0.6,
+                "junction_cds_3utr_score": 0.7,
+            },
+        )
+
+
+def test_bmc_max_rounds_defaults_and_validation():
+    """bmc_max_rounds defaults to 1 and rejects negative values."""
+    inp = FullLengthMrnaDesignInput(protein_sequence="MP")
+    assert inp.bmc_max_rounds == 1
+
+    inp2 = FullLengthMrnaDesignInput(protein_sequence="MP", bmc_max_rounds=3)
+    assert inp2.bmc_max_rounds == 3
+
+    inp3 = FullLengthMrnaDesignInput(protein_sequence="MP", bmc_max_rounds=0)
+    assert inp3.bmc_max_rounds == 0
+
+    with pytest.raises(ValueError):
+        FullLengthMrnaDesignInput(protein_sequence="MP", bmc_max_rounds=-1)
+
+
+def test_bmc_improvement_threshold_defaults_and_validation():
+    """bmc_improvement_threshold defaults to 0.05 and rejects negative values."""
+    inp = FullLengthMrnaDesignInput(protein_sequence="MP")
+    assert inp.bmc_improvement_threshold == pytest.approx(0.05, abs=1e-6)
+
+    inp2 = FullLengthMrnaDesignInput(
+        protein_sequence="MP", bmc_improvement_threshold=0.1
+    )
+    assert inp2.bmc_improvement_threshold == pytest.approx(0.1, abs=1e-6)
+
+    with pytest.raises(ValueError):
+        FullLengthMrnaDesignInput(
+            protein_sequence="MP", bmc_improvement_threshold=-0.01
+        )
+
+
 # ─────────────────────────────────────────────────────────────────────────────
-# 5. LLM Critic tests
+# 5. QualityAgent review tests
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_llm_critic_config():
-    """CriticConfig has correct workflow name and evaluation dimensions."""
-    cfg = FULL_LENGTH_MRNA_CRITIC_CONFIG
-    assert cfg.workflow_name == "full_length_mrna_design"
-    assert "UTR length mode" in cfg.evaluation_dimensions[0]
-    assert "IRES potential" in cfg.evaluation_dimensions[3]
-    assert "CDS quality" in cfg.evaluation_dimensions[6]
-    assert "utr_mode" in cfg.adjustable_params
-    assert "design_tool" in cfg.adjustable_params
-    assert "lambda_value" in cfg.adjustable_params
-    assert cfg.retry_strategy == "adjust_params"
-    assert cfg.max_retries == 2
-
-
-def test_llm_critic_default_config():
-    """FullLengthMrnaDesignLLMCritic exposes the correct default config."""
-    critic = FullLengthMrnaDesignLLMCritic()
-    assert critic.config.workflow_name == "full_length_mrna_design"
-
-
-def test_llm_critic_build_context_stats():
-    """_build_context includes full-length specific statistics."""
-    cands = [
+def _make_sample_candidates() -> list[Candidate]:
+    return [
         Candidate(
             sequence="AUGCCC",
             scores={"total_score": -1.0},
@@ -555,6 +778,26 @@ def test_llm_critic_build_context_stats():
             },
         ),
     ]
+
+
+def test_quality_profile_config():
+    """QualityProfile has correct workflow name and evaluation dimensions."""
+    profile = FULL_LENGTH_MRNA_QUALITY_PROFILE
+    assert profile.workflow_name == "full_length_mrna_design"
+    assert "UTR length mode" in profile.evaluation_dimensions[0]
+    assert "IRES potential" in profile.evaluation_dimensions[3]
+    assert "CDS quality" in profile.evaluation_dimensions[6]
+    assert "utr_mode" in profile.adjustable_params
+    assert "design_tool" in profile.adjustable_params
+    assert "lambda_value" in profile.adjustable_params
+    assert "reference_point" in profile.adjustable_params
+    assert profile.retry_strategy == "adjust_params"
+    assert profile.max_retries == 2
+
+
+def test_quality_profile_build_context_stats():
+    """Profile build_context includes full-length specific statistics."""
+    cands = _make_sample_candidates()
     result = WorkflowResult(
         success=True,
         task_id="t1",
@@ -563,8 +806,7 @@ def test_llm_critic_build_context_stats():
     )
     state: dict[str, Any] = {"user_text": "Design a stable mRNA with long 3'UTR"}
 
-    critic = FullLengthMrnaDesignLLMCritic()
-    ctx = critic._build_context(result, state)
+    ctx = FULL_LENGTH_MRNA_QUALITY_PROFILE.build_context(result, state)
 
     stats = ctx.get("full_length_stats", {})
     assert stats["utr5_preset_distribution"] == {"short": 1, "medium": 1}
@@ -588,8 +830,8 @@ def test_llm_critic_build_context_stats():
     assert best["utr5_ires"] == 0.3
 
 
-def test_llm_critic_build_context_empty_candidates():
-    """_build_context handles empty candidate list gracefully."""
+def test_quality_profile_build_context_empty_candidates():
+    """Profile build_context handles empty candidate list gracefully."""
     result = WorkflowResult(
         success=False,
         task_id="t1",
@@ -597,21 +839,286 @@ def test_llm_critic_build_context_empty_candidates():
         all_candidates=[],
     )
     state: dict[str, Any] = {}
-    critic = FullLengthMrnaDesignLLMCritic()
-    ctx = critic._build_context(result, state)
+    ctx = FULL_LENGTH_MRNA_QUALITY_PROFILE.build_context(result, state)
     assert ctx["candidate_count"] == 0
     stats = ctx.get("full_length_stats", {})
     assert stats["utr5_preset_distribution"] == {}
 
 
-def test_llm_critic_disabled_by_state_flag():
-    """When _llm_critic_enabled is False, should_retry returns False immediately."""
+def test_quality_profile_build_context_previous_best_summary():
+    """Profile build_context exposes previous best candidate metrics when available."""
+    prev_cand = Candidate(
+        sequence="AUGCCC",
+        scores={"total_score": -1.0},
+        metadata={"metrics_bundle": {"cds_cai": 0.827, "full_mfe_per_nt": -0.641}},
+    )
+    prev_result = WorkflowResult(
+        success=True,
+        task_id="prev_turn",
+        best_candidate=prev_cand,
+        all_candidates=[prev_cand],
+    )
+
+    curr_cand = Candidate(
+        sequence="AUGGGG",
+        scores={"total_score": -2.0},
+        metadata={"metrics_bundle": {"cds_cai": 0.880, "full_mfe_per_nt": -0.612}},
+    )
+    curr_result = WorkflowResult(
+        success=True,
+        task_id="curr_turn",
+        best_candidate=curr_cand,
+        all_candidates=[curr_cand],
+    )
+
+    state: dict[str, Any] = {"_previous_workflow_result": prev_result}
+    ctx = FULL_LENGTH_MRNA_QUALITY_PROFILE.build_context(curr_result, state)
+
+    prev_summary = ctx.get("previous_best_summary")
+    assert prev_summary is not None
+    assert prev_summary["source"] == ""
+    assert prev_summary["metrics"]["cds_cai"] == 0.827
+    assert prev_summary["metrics"]["full_mfe_per_nt"] == -0.641
+
+
+def test_quality_agent_disabled_by_state_flag():
+    """When _quality_review_enabled is False, review returns a passing QualityReport."""
+    cands = _make_sample_candidates()
     result = WorkflowResult(
         success=True,
         task_id="t1",
-        best_candidate=None,
-        all_candidates=[],
+        best_candidate=cands[0],
+        all_candidates=cands,
     )
-    state: dict[str, Any] = {"_llm_critic_enabled": False}
-    critic = FullLengthMrnaDesignLLMCritic()
-    assert critic.should_retry(result, state) is False
+    state: dict[str, Any] = {"_quality_review_enabled": False}
+    agent = QualityAgent()
+    report = agent.review(result, FULL_LENGTH_MRNA_QUALITY_PROFILE, state)
+    assert report.action == "pass"
+    assert report.quality_score == 1.0
+    assert report.confidence == 1.0
+
+
+def test_quality_agent_review_with_mocked_llm():
+    """QualityAgent.review parses the mocked LLM response into a QualityReport."""
+    cands = _make_sample_candidates()
+    result = WorkflowResult(
+        success=True,
+        task_id="t1",
+        best_candidate=cands[0],
+        all_candidates=cands,
+    )
+    state: dict[str, Any] = {}
+
+    mock_report = {
+        "overall_assessment": "UTR diversity is low; retry with broader utr_mode.",
+        "quality_score": 0.6,
+        "issues": [
+            {
+                "severity": "warning",
+                "category": "diversity",
+                "description": "Only two distinct UTR preset pairs present.",
+            }
+        ],
+        "action": "retry_with_adjustments",
+        "parameter_overrides": {"utr_mode": "all"},
+        "reasoning": "Increasing UTR preset diversity should improve exploration.",
+        "confidence": 0.8,
+    }
+    mock_llm = MagicMock()
+    mock_llm.invoke.return_value = MagicMock(content=json.dumps(mock_report))
+
+    agent = QualityAgent(llm=mock_llm)
+    report = agent.review(result, FULL_LENGTH_MRNA_QUALITY_PROFILE, state)
+
+    assert report.action == "retry_with_adjustments"
+    assert report.quality_score == pytest.approx(0.6, abs=1e-6)
+    assert report.parameter_overrides == {"utr_mode": "all"}
+    assert len(report.issues) == 1
+    assert report.issues[0].severity == "warning"
+    assert "_last_diagnosis" in state
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. Reference-point stability across BMC rounds
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _make_registry_for_bmc_reference_point() -> MagicMock:
+    """Registry with deterministic, slightly varying fake capability outputs."""
+    reg = MagicMock()
+    _call_count = 0
+
+    def _unique_tag(n: int, length: int = 3) -> str:
+        # Per-call unique ACGT tag so BMC-regenerated UTR/CDS combinations
+        # never collide with already-seen candidates, regardless of how many
+        # capability calls each evaluation path makes.
+        chars = "ACGT"
+        return "".join(chars[(n // (4**i)) % 4] for i in range(length))
+
+    def _fake_invoke(args: dict, state: dict | None = None) -> CapabilityResult:
+        nonlocal _call_count
+        _call_count += 1
+        # 34 aa protein needs 102 nt CDS; keep length a multiple of 3.
+        base_cds = "AUG" * 34
+        cds = base_cds[:-3] + _unique_tag(_call_count)  # still 102 nt
+        return CapabilityResult(
+            success=True,
+            tool_name="fake",
+            output={
+                "generated_sequence": cds,
+                "cds_sequence": cds,
+                "mfe_kcal_per_mol": -45.0,
+                "structure": "." * 102,
+                "fold_tool": "ViennaRNA",
+                "cai_score": 0.82,
+                "gc_content": 0.52,
+                "sequence_length": 102,
+                "u_fraction": 0.25,
+                "overall_stability": 0.78,
+                "predicted_mrl": 7.5,
+                "predicted_stability": 0.65,
+                "max_score": 0.3,
+            },
+        )
+
+    def _has(name: str) -> bool:
+        return True
+
+    def _get(name: str) -> Any:
+        cap = MagicMock()
+        cap.invoke = _fake_invoke
+        return cap
+
+    reg.has = _has
+    reg.get = _get
+    return reg
+
+
+def _force_junction_issue(self, norm_candidate_vector, reference_point, boolean_issues=None):
+    """Deterministic coordinator diagnosis that always finds a junction gap."""
+    return [
+        Issue(
+            issue_type="JUNCTION_5UTR_CDS_SCORE_BELOW_REFERENCE",
+            value=0.3,
+            target=0.8,
+            violation=0.5,
+            affected_modules=("5UTR", "CDS"),
+            evidence="Mock junction gap for testing",
+        )
+    ]
+
+
+def test_user_reference_point_fixed_across_bmc_rounds():
+    """When the user supplies a reference point, its normalized coordinates must
+    stay fixed to the initial candidate pool across BMC rounds.
+    """
+    reg = _make_registry_for_bmc_reference_point()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="M" * 34,  # 34 aa → 102 nt CDS
+        design_tool="all",
+        utr_mode="all",  # allow preset exploration to generate new candidates
+        bmc_max_rounds=2,
+        bmc_improvement_threshold=0.0,  # allow rounds even when ASF improvement is zero
+        target_cds_mfe=-102.0,  # yields cds_component = 1.0 when CAI = 1.0
+        target_cds_cai=1.0,
+        reference_point={
+            "utr5_mrl": 100.0,
+            "utr3_stability": 1.0,
+            "full_mfe_score": 100.0,
+        },
+    )
+
+    with patch.object(ReferencePointCoordinator, "diagnose", _force_junction_issue):
+        result = wf.run(inp)
+
+    assert result.success is True
+    trace = wf._bmc_trace
+    assert len(trace) == 2, f"Expected 2 BMC rounds, got {len(trace)}"
+
+    for round_trace in trace:
+        assert round_trace.reference_point_mode == "user"
+        assert round_trace.reference_point
+        assert round_trace.dim_bounds
+
+    # The normalized reference point coordinates must be identical across rounds.
+    rp_round1 = trace[0].reference_point
+    rp_round2 = trace[1].reference_point
+    assert rp_round1 == rp_round2
+
+    # Dim bounds must also be identical (they come from the initial candidate pool).
+    bounds_round1 = trace[0].dim_bounds
+    bounds_round2 = trace[1].dim_bounds
+    assert bounds_round1 == bounds_round2
+
+    # The workflow should record user mode internally.
+    assert wf._reference_point_mode == "user"
+    assert wf._fixed_norm_ref_point is not None
+    assert wf._fixed_dim_bounds is not None
+
+    # The raw reference point reported in the result must equal the user input.
+    assert getattr(result, "reference_point", None) == {
+        "cds_component": 1.0,
+        "utr5_mrl": 100.0,
+        "utr3_stability": 1.0,
+        "full_mfe_score": 100.0,
+    }
+
+
+def test_utopian_reference_point_mode_across_bmc_rounds():
+    """Without a user reference point, BMC runs in utopian mode."""
+    reg = _make_registry_for_bmc_reference_point()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="M" * 34,
+        design_tool="all",
+        utr_mode="all",
+        bmc_max_rounds=2,
+        bmc_improvement_threshold=0.0,
+    )
+
+    with patch.object(ReferencePointCoordinator, "diagnose", _force_junction_issue):
+        result = wf.run(inp)
+
+    assert result.success is True
+    trace = wf._bmc_trace
+    assert len(trace) == 2
+
+    for round_trace in trace:
+        assert round_trace.reference_point_mode == "utopian"
+        assert round_trace.reference_point
+        assert round_trace.dim_bounds
+
+    assert wf._reference_point_mode == "utopian"
+    assert wf._fixed_norm_ref_point is None
+    assert wf._fixed_dim_bounds is None
+
+
+def test_bmc_trace_records_reference_point_metadata():
+    """Each BMC round trace must record the reference point mode and coordinates."""
+    reg = _make_registry_for_bmc_reference_point()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="M" * 34,
+        design_tool="all",
+        utr_mode="short",
+        bmc_max_rounds=1,
+        reference_point={"utr5_mrl": 50.0},
+    )
+
+    with patch.object(ReferencePointCoordinator, "diagnose", _force_junction_issue):
+        result = wf.run(inp)
+
+    assert result.success is True
+    state = getattr(result, "_state_writeback", {})
+    trace = state.get("_bmc_trace", [])
+
+    assert len(trace) == 1
+    round_dict = trace[0]
+    assert round_dict["reference_point_mode"] == "user"
+    assert "reference_point" in round_dict
+    assert "dim_bounds" in round_dict
+    assert "utr5_mrl" in round_dict["reference_point"]

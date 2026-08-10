@@ -2,9 +2,9 @@ from __future__ import annotations
 
 
 
-from agent_core.tool_executor import ToolExecutor
+from agent_core.capabilities.base import CapabilityRegistry
+from agent_core.tool_executor import ToolExecutor, ToolResult
 from agent_core.tool_registry import ToolRegistry
-from agent_core.tool_runtime import ToolResult
 from agent_core.workflow_baseline_eval import StubCaiTool, StubFoldTool, StubGcTool
 from agent_core.workflows.mrna_sequence_scoring import MrnaSequenceScoringInput, run_mrna_sequence_scoring
 
@@ -34,7 +34,7 @@ def test_mrna_workflow_end_to_end_best_candidate():
     seq_b = "AUGCCCGGGUUUAAAUUUAAAUUUAAA"
     inp = MrnaSequenceScoringInput(
         sequences=[seq_a, seq_b + "AAA"])
-    out = run_mrna_sequence_scoring(inp, executor=ex)
+    out = run_mrna_sequence_scoring(inp, capability_registry=CapabilityRegistry(ex), auto_start_services=False)
     assert out.success is True
     assert out.best_candidate is not None
     assert out.best_candidate.rank == 1
@@ -51,7 +51,7 @@ def test_mrna_workflow_tools_fail_gracefully():
     ex = ToolExecutor(reg)
 
     inp = MrnaSequenceScoringInput(sequence="AUGCAUGCAUGCAU")
-    out = run_mrna_sequence_scoring(inp, executor=ex)
+    out = run_mrna_sequence_scoring(inp, capability_registry=CapabilityRegistry(ex), auto_start_services=False)
     assert out.success is True
     assert out.best_candidate is not None
     assert len(out.errors) >= 2

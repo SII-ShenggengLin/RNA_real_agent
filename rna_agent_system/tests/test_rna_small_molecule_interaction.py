@@ -236,131 +236,109 @@ def test_rank_and_format_all_tools_fail():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_execution_controller_runs_workflow():
-    """ExecutionController should execute rna_small_molecule_interaction as a workflow step."""
-    from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+def test_pipeline_agent_runs_workflow():
+    """PipelineAgent should execute rna_small_molecule_interaction as a workflow node."""
+    from agent_core.agents.pipeline_agent import PipelineAgent
+    from agent_core.agents.quality_agent import QualityAgent
+    from agent_core.agents.specialist_agent import SpecialistAgent
+    from agent_core.agents.synthesis_agent import SynthesisAgent
+    from agent_core.pipeline.models import PipelinePlan
+    from agent_core.quality_profiles.rna_small_molecule_interaction import (
+        RNA_SMALL_MOLECULE_INTERACTION_QUALITY_PROFILE,
+    )
 
     reg = _make_registry()
     wf = RnaSmallMoleculeInteractionWorkflow(reg)
-    workflow_registry = {"rna_small_molecule_interaction": wf}
-
-    controller = ExecutionController(
-        capability_registry=reg,
-        workflow_registry=workflow_registry,
+    specialist = SpecialistAgent(wf, RNA_SMALL_MOLECULE_INTERACTION_QUALITY_PROFILE)
+    pipeline_agent = PipelineAgent(
+        specialist_registry={"rna_small_molecule_interaction": specialist},
+        quality_agent=QualityAgent(),
+        synthesis_agent=SynthesisAgent(),
     )
 
-    plan = ExecutionPlan(steps=[
-        PlanStep(
-            step_id="s1",
-            type="workflow",
-            target="rna_small_molecule_interaction",
-            input_binding={
-                "rna_sequence": "AUGCAUGC",
-                "smiles": "CCO",
-            },
-            output_key="ligand_result",
-            description="Predict RNA-ligand binding",
-        ),
-    ])
+    plan = PipelinePlan.single(
+        workflow="rna_small_molecule_interaction",
+        static_params={"rna_sequence": "AUGCAUGC", "smiles": "CCO"},
+        plan_id="ligand_run",
+        output_alias="ligand_result",
+    )
 
-    state: dict[str, Any] = {}
-    result_state = controller.execute(plan, state)
+    result = pipeline_agent.execute(plan)
 
-    assert result_state["ligand_result"].success is True
-    assert "workflow_result" in result_state
-    assert result_state["workflow_result"].success is True
-    assert "_execution_log" in result_state
-    assert any(entry["event"] == "plan_complete" for entry in result_state["_execution_log"])
+    assert result.success is True
+    node_result = result.node_results["n1"]
+    assert node_result.workflow_result is not None
+    assert node_result.workflow_result.success is True
+    assert result.quality_reports["n1"].action == "pass"
 
 
-def test_execution_controller_no_critic_retry():
-    """rna_small_molecule_interaction has no critic; retry must not be triggered."""
-    from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+def test_pipeline_agent_no_quality_retry():
+    """rna_small_molecule_interaction has empty QualityProfile; retry must not be triggered."""
+    from agent_core.agents.pipeline_agent import PipelineAgent
+    from agent_core.agents.quality_agent import QualityAgent
+    from agent_core.agents.specialist_agent import SpecialistAgent
+    from agent_core.agents.synthesis_agent import SynthesisAgent
+    from agent_core.pipeline.models import PipelinePlan
+    from agent_core.quality_profiles.rna_small_molecule_interaction import (
+        RNA_SMALL_MOLECULE_INTERACTION_QUALITY_PROFILE,
+    )
 
     reg = _make_registry()
     wf = RnaSmallMoleculeInteractionWorkflow(reg)
-    controller = ExecutionController(
-        capability_registry=reg,
-        workflow_registry={"rna_small_molecule_interaction": wf},
+    specialist = SpecialistAgent(wf, RNA_SMALL_MOLECULE_INTERACTION_QUALITY_PROFILE)
+    pipeline_agent = PipelineAgent(
+        specialist_registry={"rna_small_molecule_interaction": specialist},
+        quality_agent=QualityAgent(),
+        synthesis_agent=SynthesisAgent(),
     )
 
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="s1",
-                type="workflow",
-                target="rna_small_molecule_interaction",
-                input_binding={"rna_sequence": "AUGCAUGC", "smiles": "CCO"},
-                output_key="ligand_result",
-                description="Predict RNA-ligand binding",
-            ),
-        ],
-        max_retries=2,
+    plan = PipelinePlan.single(
+        workflow="rna_small_molecule_interaction",
+        static_params={"rna_sequence": "AUGCAUGC", "smiles": "CCO"},
+        plan_id="ligand_no_retry",
+        output_alias="ligand_result",
     )
 
-    replan_called = False
+    result = pipeline_agent.execute(plan)
 
-    def replan_fn(state):
-        nonlocal replan_called
-        replan_called = True
-        return plan
-
-    state: dict[str, Any] = {}
-    result_state = controller.execute(plan, state, replan_fn=replan_fn)
-
-    # No critic registered for rna_small_molecule_interaction → no retry
-    assert replan_called is False
-    assert result_state.get("retry_count", 0) == 0
-    assert result_state["_plan_executed"] is True
-    retry_events = [e for e in result_state["_execution_log"] if e["event"] == "critic_retry"]
-    assert len(retry_events) == 0
+    node_result = result.node_results["n1"]
+    assert node_result.metadata.get("retry_count", 0) == 0
+    assert result.quality_reports["n1"].action == "pass"
 
 
-def test_execution_controller_progress_callback():
-    """progress_callback should receive step_start, step_done, and plan_complete events."""
-    from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+def test_pipeline_agent_progress_callback():
+    """progress_callback should receive payload events from the workflow."""
+    from agent_core.agents.pipeline_agent import PipelineAgent
+    from agent_core.agents.quality_agent import QualityAgent
+    from agent_core.agents.specialist_agent import SpecialistAgent
+    from agent_core.agents.synthesis_agent import SynthesisAgent
+    from agent_core.pipeline.models import PipelinePlan
+    from agent_core.quality_profiles.rna_small_molecule_interaction import (
+        RNA_SMALL_MOLECULE_INTERACTION_QUALITY_PROFILE,
+    )
 
     reg = _make_registry()
     wf = RnaSmallMoleculeInteractionWorkflow(reg)
-    controller = ExecutionController(
-        capability_registry=reg,
-        workflow_registry={"rna_small_molecule_interaction": wf},
+    specialist = SpecialistAgent(wf, RNA_SMALL_MOLECULE_INTERACTION_QUALITY_PROFILE)
+    pipeline_agent = PipelineAgent(
+        specialist_registry={"rna_small_molecule_interaction": specialist},
+        quality_agent=QualityAgent(),
+        synthesis_agent=SynthesisAgent(),
     )
 
-    plan = ExecutionPlan(steps=[
-        PlanStep(
-            step_id="s1",
-            type="workflow",
-            target="rna_small_molecule_interaction",
-            input_binding={"rna_sequence": "AUGCAUGC", "smiles": "CCO"},
-            output_key="ligand_result",
-            description="Predict binding",
-        ),
-    ])
+    plan = PipelinePlan.single(
+        workflow="rna_small_molecule_interaction",
+        static_params={"rna_sequence": "AUGCAUGC", "smiles": "CCO"},
+        plan_id="ligand_progress",
+        output_alias="ligand_result",
+    )
 
     progress_events: list[dict[str, Any]] = []
 
     def progress_callback(event: dict[str, Any]) -> None:
         progress_events.append(event)
 
-    state: dict[str, Any] = {}
-    controller.execute(plan, state, progress_callback=progress_callback)
+    pipeline_agent.execute(plan, progress_callback=progress_callback)
 
-    events = [e["event"] for e in progress_events]
-    assert "step_start" in events
-    assert "step_done" in events
-    assert "plan_complete" in events
-
-
-def test_llm_planner_includes_rna_small_molecule_interaction():
-    """LLMPlanner system prompt should list rna_small_molecule_interaction."""
-    from agent_core.planning.llm_planner import LLMPlanner
-    from agent_core.planning.base import AgentContext
-
-    planner = LLMPlanner(llm=MagicMock())
-    ctx = AgentContext(
-        available_workflows=["rna_small_molecule_interaction"],
-        available_capabilities=[],
-    )
-    prompt = planner._build_system_prompt(ctx)
-    assert "rna_small_molecule_interaction" in prompt
+    events = {e.get("event") for e in progress_events}
+    assert "generate_complete" in events or "evaluate_progress" in events or "step_done" in events

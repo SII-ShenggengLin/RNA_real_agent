@@ -57,7 +57,17 @@ class EGARPSResponse(BaseModel):
 
 
 def _run_egarps(pdb_path: str, academic: bool) -> dict[str, Any]:
-    """Run EGARPS+ predict.py and parse the result."""
+    """Run EGARPS+ predict.py and parse the result.
+
+    WARNING (2026-07-27 campaign): `pdb_path` must be a REAL `.pdb` file.
+    The EGARPS pipeline (external_repos/EGARPS/scripts/ins.py) derives its
+    cache paths with `pdb.replace('.pdb', ...)`, so any input whose filename
+    lacks '.pdb' (e.g. a Protenix .cif) is OVERWRITTEN by its own pickle
+    caches; and its CIF reader rejects Protenix OP3 atoms. Its chain typing
+    also keys on substrings of the basename — basenames containing 'protein'
+    (e.g. 'proteinx') misroute RNA chains. See NOTEs in
+    external_repos/EGARPS/scripts/{ins.py,feature_residue.py}.
+    """
     pdb_path_obj = Path(pdb_path)
     if not pdb_path_obj.exists():
         raise FileNotFoundError(f"PDB file not found: {pdb_path}")

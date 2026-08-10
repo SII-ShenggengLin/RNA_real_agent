@@ -8,5 +8,5 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${SOURCE_DIR}"
 
 source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate base
+conda activate egarps_env
 python -m uvicorn main:app --host 0.0.0.0 --port 8023

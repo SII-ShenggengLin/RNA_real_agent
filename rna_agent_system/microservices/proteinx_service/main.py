@@ -7,6 +7,7 @@ INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synch
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
 import shutil
@@ -129,6 +130,14 @@ class ProteinXPredictResponse(BaseModel):
     """ProteinX prediction response schema.
 
     INTERFACE LOCK (v0.1.0): Locked schema.
+
+    NOTE (2026-07-27 campaign): despite the name, ``pdb_filepath`` points at
+    Protenix's raw mmCIF output (``*_sample_0.cif``). It contains OP3 atoms
+    and must NOT be fed directly to EGARPS (its CIF reader rejects OP3, and
+    the EGARPS pipeline overwrites non-.pdb inputs with its pickle caches)
+    or to PDB-only parsers. Convert with gemmi into a sanitized .pdb copy
+    first — see experiments/run_known_aptamer_validation.py::
+    _proteinx_cif_to_pdb.
     """
 
     pdb_filepath: str = ""
@@ -260,7 +269,8 @@ async def predict_protein(request: ProteinXPredictRequest) -> ProteinXPredictRes
         cmd.extend(["--cycle", str(request.num_recycles)])
 
     try:
-        proc = subprocess.run(
+        proc = await asyncio.to_thread(
+            subprocess.run,
             cmd,
             capture_output=True,
             text=True,
@@ -393,7 +403,8 @@ async def predict_complex(request: ProteinXComplexRequest) -> ProteinXComplexRes
         cmd.extend(["--cycle", str(request.num_recycles)])
 
     try:
-        proc = subprocess.run(
+        proc = await asyncio.to_thread(
+            subprocess.run,
             cmd,
             capture_output=True,
             text=True,

@@ -4,7 +4,6 @@ Covers:
 1. score_secondary_structure_design_candidate unit scoring
 2. RnaSecondaryStructureDesignInput Pydantic validation
 3. Workflow integration with mocked capabilities
-4. Critic retry logic
 """
 
 from __future__ import annotations
@@ -17,7 +16,6 @@ import pytest
 from agent_core.capabilities.base import CapabilityResult
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.rna_secondary_structure_design import (
-    RnaSecondaryStructureDesignCritic,
     RnaSecondaryStructureDesignInput,
     RnaSecondaryStructureDesignWorkflow,
     score_secondary_structure_design_candidate,
@@ -356,34 +354,3 @@ def test_full_pipeline_mocked():
     assert result.best_candidate.scores.get("total_score") is not None
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 4. Critic tests
-# ─────────────────────────────────────────────────────────────────────────────
-# NOTE: RnaSecondaryStructureDesignCritic is an LLM-driven critic;
-# its should_retry() behaviour is non-deterministic.  We do not assert
-# specific return values here — those assertions belong to integration
-# tests that can mock/stub the LLM layer.
-# ─────────────────────────────────────────────────────────────────────────────
-
-
-def _make_workflow_result(candidates: list[Candidate]) -> WorkflowResult:
-    return WorkflowResult(
-        success=True,
-        task_id="test",
-        best_candidate=candidates[0] if candidates else None,
-        all_candidates=candidates,
-        summary="test",
-    )
-
-
-def test_critic_instantiation():
-    """Critic class can be instantiated and exposes a config."""
-    critic = RnaSecondaryStructureDesignCritic()
-    config = critic._default_config()
-    assert config.workflow_name == "rna_secondary_structure_design"
-    assert "repeats" in config.adjustable_params
-    assert "num_invocations" in config.adjustable_params
-    assert "temp_c" in config.adjustable_params
-    assert "function_mode" in config.adjustable_params
-    # gc_target was removed; ensure it no longer appears
-    assert "gc_target" not in config.adjustable_params

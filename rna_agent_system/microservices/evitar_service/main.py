@@ -114,10 +114,11 @@ def _parse_output_summary(output_path: Path) -> tuple[int, list[dict[str, str]]]
         with output_path.open("r", encoding="utf-8", newline="") as handle:
             reader = csv.DictReader(handle, delimiter="\t")
             rows: list[dict[str, str]] = []
-            for idx, row in enumerate(reader):
-                if idx < 10:
-                    rows.append({str(k): str(v) for k, v in row.items()})
-            return idx + 1 if "idx" in locals() else 0, rows
+            count = 0
+            for row in reader:
+                count += 1
+                rows.append({str(k): str(v) for k, v in row.items()})
+            return count, rows
     except Exception:
         # Evitar output may vary by mode and environment; keep service robust.
         return 0, []
@@ -217,6 +218,27 @@ def design_with_evitar(payload: EvitarDesignRequest) -> EvitarDesignResponse:
     predict = (payload.predict or "predsi").strip()
     if predict not in {"predsi", "rnaxs", "CRISPR", "multifapredsi"}:
         raise HTTPException(status_code=400, detail="`predict` must be one of: predsi, rnaxs, CRISPR, multifapredsi.")
+
+    # multifapredsi is only implemented in Evitar.pl for predesign mode.
+    # Reject this combination explicitly so callers get a clear error instead
+    # of a confusing Perl usage dump or a silent fallback to generic design.
+    if mode == "existing" and predict == "multifapredsi":
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "`multifapredsi` is only supported in `predesign` mode. "
+                "Use `predesign` mode or choose `predsi`/`rnaxs` for existing-virus design."
+            ),
+        )
+
+    # In predesign mode Evitar.pl treats the input file as a multi-strain FASTA.
+    # If the caller explicitly provides a strains_path, use it as the input so
+    # cross-strain pre-design actually runs on the intended strain set.
+    if mode == "predesign" and payload.strains_path:
+        strains_path = _resolve_repo_path(payload.strains_path)
+        if not strains_path.exists():
+            raise HTTPException(status_code=400, detail=f"Strains FASTA not found: {strains_path}")
+        input_path = strains_path
 
     _SERVICE_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     if payload.output_filename:

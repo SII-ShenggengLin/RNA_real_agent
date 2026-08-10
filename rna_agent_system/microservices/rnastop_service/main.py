@@ -409,10 +409,13 @@ def _resolve_checkpoint_path(path_override: Optional[str]) -> Path:
         path_override,
         "RNASTOP_CHECKPOINT_PATH",
         [
-            (RNASTOP_MODELS_DIR / DEFAULT_CHECKPOINT_NAME).resolve(),
+            # Prefer the DNABERT-free checkpoint: the DNABERT6 pretrained
+            # weights are not shipped in this repository (external_repos/
+            # RNASTOP/DNABERT6 is empty), so the DNABERT variant cannot run.
             (RNASTOP_MODELS_DIR / "best_model_weights_withoutDNABERT").resolve(),
-            (RNASTOP_ROOT / "scripts" / DEFAULT_CHECKPOINT_NAME).resolve(),
+            (RNASTOP_MODELS_DIR / DEFAULT_CHECKPOINT_NAME).resolve(),
             (RNASTOP_ROOT / "scripts" / "best_model_weights_withoutDNABERT").resolve(),
+            (RNASTOP_ROOT / "scripts" / DEFAULT_CHECKPOINT_NAME).resolve(),
         ],
     )
 
@@ -731,6 +734,30 @@ def _fallback_loop_type(structure: str) -> str:
     return "".join("S" if symbol in "()" else "E" for symbol in structure)
 
 
+def _balance_structure(structure: str) -> str:
+    """Convert dangling brackets to unpaired positions.
+
+    ``RNA.db_to_element_string`` (and potentially other ViennaRNA native
+    calls) segfault on unbalanced dot-bracket strings.  User-supplied
+    structures — especially full-length structures truncated to
+    ``MAX_SEQUENCE_LENGTH`` — can easily be unbalanced, so sanitize before
+    any native call.
+    """
+    chars = list(structure)
+    stack: list[int] = []
+    for idx, symbol in enumerate(chars):
+        if symbol == "(":
+            stack.append(idx)
+        elif symbol == ")":
+            if stack:
+                stack.pop()
+            else:
+                chars[idx] = "."
+    for idx in stack:
+        chars[idx] = "."
+    return "".join(chars)
+
+
 def _normalize_loop_type(loop_type: str) -> str:
     return loop_type.strip().upper()
 
@@ -785,7 +812,7 @@ def _prepare_structure_features(
     structure, mfe = fc.mfe()
 
     if structure_override:
-        structure = structure_override.strip()
+        structure = _balance_structure(structure_override.strip())
     if len(structure) != len(sequence):
         raise HTTPException(
             status_code=400,
@@ -900,6 +927,10 @@ def predict_stability(payload: StabilityPredictionRequest) -> StabilityPredictio
     sequence = _normalize_rna_sequence(payload.sequence)
     truncated = len(sequence) > MAX_SEQUENCE_LENGTH
     used_sequence = sequence[:MAX_SEQUENCE_LENGTH]
+    # Truncate user-supplied structure/loop_type alongside the sequence so a
+    # full-length override stays consistent with the truncated input.
+    structure_override = payload.structure[:MAX_SEQUENCE_LENGTH] if payload.structure else None
+    loop_override = payload.loop_type[:MAX_SEQUENCE_LENGTH] if payload.loop_type else None
     checkpoint_path = _resolve_checkpoint_path(payload.checkpoint_path)
     rnafm_model_path = _resolve_rnafm_path(payload.rnafm_model_path)
     dnabert_model_path = _resolve_dnabert_path(payload.dnabert_model_path)
@@ -912,8 +943,8 @@ def predict_stability(payload: StabilityPredictionRequest) -> StabilityPredictio
 
     structure, loop_type, mfe, features = _prepare_structure_features(
         used_sequence,
-        payload.structure,
-        payload.loop_type,
+        structure_override,
+        loop_override,
     )
     predictions = _predict_profile(used_sequence, structure, loop_type, features, runtime)
 

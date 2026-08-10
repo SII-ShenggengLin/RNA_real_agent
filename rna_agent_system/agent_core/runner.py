@@ -1,21 +1,28 @@
-"""Layer 5 — AgentRunner: unified entry point for all presentation layers."""
+"""Layer 6 — AgentRunner: unified form-driven entry point."""
 
 from __future__ import annotations
 
-import time
-from typing import Any, Iterator, Optional, get_args, get_origin
+import copy
+import logging
+import queue
+import threading
+from typing import Any, Iterator, Optional
 
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
+from pydantic import BaseModel
 
+from agent_core.agents.coordinator_agent import CoordinatorAgent
+from agent_core.agents.pipeline_agent import PipelineAgent
+from agent_core.agents.quality_agent import QualityAgent
+from agent_core.agents.specialist_agent import SpecialistAgent
+from agent_core.agents.synthesis_agent import SynthesisAgent
 from agent_core.capabilities.base import build_default_capability_registry
-from agent_core.planning.base import ExecutionController, Planner
-from agent_core.planning.router import DeterministicRouter
-from agent_core.session_memory import SessionMemory
 from agent_core.file_manager import _SESSION_ID_CTX
+from agent_core.pipeline.models import PipelinePlan, PipelineResult
+from agent_core.quality_profiles import QUALITY_PROFILES
+from agent_core.session_memory import SessionMemory
 from agent_core.state import AgentState, default_state
 from agent_core.tool_executor import ToolExecutor
-from pydantic import BaseModel
-from pydantic.fields import PydanticUndefined
 from agent_core.workflows import (
     AsoTargetScreeningWorkflow,
     FullLengthMrnaDesignWorkflow,
@@ -30,50 +37,42 @@ from agent_core.workflows import (
     SirnaDesignWorkflow,
 )
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class AgentRunner:
     """Unified façade used by FastAPI and CLI.
 
     Parameters
     ----------
-    planner:
-        Concrete ``Planner`` backend (``LLMPlanner``).
     executor:
         ``ToolExecutor`` used to build the ``CapabilityRegistry``.
     session_memory:
         Optional ``SessionMemory`` for multi-turn persistence.
-        When *None* (default), every call to ``.run()`` starts from a
-        fresh state — the single-turn behaviour.
     """
 
     def __init__(
         self,
-        planner: Planner,
         executor: ToolExecutor,
         *,
         session_memory: Optional[SessionMemory] = None,
-        llm_critic_enabled: bool = True,
-        deterministic_router: Optional[DeterministicRouter] = None,
+        quality_review_enabled: bool = True,
+        quality_auto_retry: bool = False,
         persist_run: bool = False,
     ):
-        self.planner = planner
+        # INTERFACE LOCK (v3.4.0) — AgentRunner public API
+        # Sync with docs/INTERFACE_LOCKS.md §19, AGENTS.md, cli/form_chat.py.
         self.executor = executor
-        self.llm_critic_enabled = llm_critic_enabled
-        self.deterministic_router = deterministic_router or DeterministicRouter()
+        self.quality_review_enabled = quality_review_enabled
+        self.quality_auto_retry = quality_auto_retry
         self.persist_run = persist_run
         self.capability_registry = build_default_capability_registry(executor)
-        # INTERFACE LOCK (v1.0.0) — AsoTargetScreening: sync with workflows/aso_target_screening.py
-        # INTERFACE LOCK (v1.0.0) — MrnaSequenceScoring: sync with workflows/mrna_sequence_scoring.py
-        # INTERFACE LOCK (v1.0.0) — FullLengthMrnaDesign: sync with workflows/full_length_mrna_design.py
-        # INTERFACE LOCK (v1.0.0) — RnaAptamerDesign: sync with workflows/rna_aptamer_design.py
-        # INTERFACE LOCK (v1.0.0) — RnaSmallMoleculeInteraction: sync with workflows/rna_small_molecule_interaction.py
         self.workflow_registry: dict[str, Any] = {
             "aso_target_screening": AsoTargetScreeningWorkflow(self.capability_registry),
             "mrna_cds_design": MrnaCdsDesignWorkflow(self.capability_registry),
-            "mrna_sequence_scoring": MrnaSequenceScoringWorkflow(self.executor),
+            "mrna_sequence_scoring": MrnaSequenceScoringWorkflow(self.capability_registry),
             "full_length_mrna_design": FullLengthMrnaDesignWorkflow(self.capability_registry),
             "rna_aptamer_design": RnaAptamerDesignWorkflow(self.capability_registry),
-        # INTERFACE LOCK (v1.0.0) — RnaSecondaryStructureDesign: sync with workflows/rna_secondary_structure_design.py
             "rna_secondary_structure_design": RnaSecondaryStructureDesignWorkflow(self.capability_registry),
             "rna_small_molecule_interaction": RnaSmallMoleculeInteractionWorkflow(self.capability_registry),
             "rna_tertiary_structure_design": RnaTertiaryStructureDesignWorkflow(self.capability_registry),
@@ -81,13 +80,40 @@ class AgentRunner:
             "sirna_design": SirnaDesignWorkflow(self.capability_registry),
             "ires_prediction": IresPredictionWorkflow(self.capability_registry),
         }
-        self.controller = ExecutionController(
-            capability_registry=self.capability_registry,
-            workflow_registry=self.workflow_registry,
+        # Enable automatic microservice startup for all runner-managed workflows.
+        for wf in self.workflow_registry.values():
+            if hasattr(wf, "auto_start_services"):
+                wf.auto_start_services = True
+        self.quality_agent = QualityAgent()
+        self.synthesis_agent = SynthesisAgent()
+        self.specialist_registry = self._build_specialist_registry()
+        self.pipeline_agent = PipelineAgent(
+            specialist_registry=self.specialist_registry,
+            quality_agent=self.quality_agent,
+            synthesis_agent=self.synthesis_agent,
         )
-        self._available_capabilities = self.capability_registry.list_names()
-        self._available_workflows = list(self.workflow_registry.keys())
         self.memory = session_memory
+
+    def _build_specialist_registry(self) -> dict[str, SpecialistAgent]:
+        """Create a SpecialistAgent for each workflow that has a QualityProfile."""
+        registry: dict[str, SpecialistAgent] = {}
+        for wf_name, workflow in self.workflow_registry.items():
+            profile = QUALITY_PROFILES.get(wf_name)
+            if profile is None:
+                continue
+            specialist = SpecialistAgent(workflow, profile)
+            if wf_name in ("full_length_mrna_design", "rna_aptamer_design"):
+                specialist.coordinator_agent = CoordinatorAgent(workflow)
+            registry[wf_name] = specialist
+        return registry
+
+    def run_pipeline(
+        self,
+        plan: PipelinePlan,
+        state: Optional[dict[str, Any]] = None,
+    ) -> PipelineResult:
+        """Execute a PipelinePlan through the multi-agent pipeline engine."""
+        return self.pipeline_agent.execute(plan, state=state)
 
     def _prepare_state(
         self,
@@ -98,135 +124,87 @@ class AgentRunner:
         """Load or create state, inject user message and session_id, and return it."""
         if explicit_state is not None:
             state = explicit_state
-            state["user_text"] = user_input
-            state["session_id"] = session_id
-            state["messages"] = state.get("messages", []) + [HumanMessage(content=user_input)]
         else:
             if self.memory is not None:
                 state = self.memory.load(session_id)
             else:
                 state = default_state("")
-            state["user_text"] = user_input
-            state["session_id"] = session_id
-            state["messages"] = state.get("messages", []) + [HumanMessage(content=user_input)]
-        # 新增：写入LLM Critic开关
-        state["_llm_critic_enabled"] = self.llm_critic_enabled
+        state["user_text"] = user_input
+        state["session_id"] = session_id
+        state["messages"] = state.get("messages", []) + [HumanMessage(content=user_input)]
+        state["_quality_review_enabled"] = self.quality_review_enabled
+        state["_quality_auto_retry"] = self.quality_auto_retry
         return state
 
-    @staticmethod
-    def _extract_param_schema(model_cls: type[BaseModel]) -> str:
-        """Build a concise 'param=default (type) - description' summary from a Pydantic model."""
-        parts: list[str] = []
-        # Include class docstring as preamble so domain-specific warnings reach the LLM
-        if model_cls.__doc__:
-            parts.append(model_cls.__doc__.strip())
-            parts.append("")
-        for name, field_info in model_cls.model_fields.items():
-            default = field_info.default
-            if default is None and hasattr(field_info, "default_factory"):
-                default = field_info.default_factory() if field_info.default_factory is not None else None
-            # Skip private / internal fields
-            if name.startswith("_"):
-                continue
-            annotation = field_info.annotation
-            origin = get_origin(annotation)
-            args = get_args(annotation)
+    def _prepare_state_form(
+        self,
+        session_id: str,
+        explicit_workflow: str,
+        form_params: dict[str, Any],
+        explicit_state: Optional[AgentState] = None,
+    ) -> AgentState:
+        """Load or create state for a form-driven execution.
 
-            # Unwrap Optional[X]
-            if origin is not None and len(args) == 2 and type(None) in args:
-                annotation = args[0] if args[1] is type(None) else args[1]
-                origin = get_origin(annotation)
-                args = get_args(annotation)
-
-            # Pretty-print Literal[...] so the LLM sees allowed values
-            if origin is not None and hasattr(origin, "__name__") and origin.__name__ == "Literal":
-                type_name = f"Literal[{', '.join(repr(v) for v in args)}]"
-            else:
-                type_name = getattr(annotation, "__name__", str(annotation))
-            desc = field_info.description or ""
-            if default is PydanticUndefined:
-                default_str = "(required)"
-            elif default is None:
-                default_str = "None"
-            else:
-                default_str = repr(default)
-            if desc:
-                parts.append(f"  {name}={default_str} ({type_name}) — {desc}")
-            else:
-                parts.append(f"  {name}={default_str} ({type_name})")
-        return "\n".join(parts)
-
-    def _build_workflow_param_schemas(self) -> dict[str, str]:
-        """Collect default-parameter summaries for all registered workflows."""
-        schemas: dict[str, str] = {}
-        for wf_name, wf in self.workflow_registry.items():
-            input_model = getattr(wf, "input_model", None)
-            if input_model is not None and issubclass(input_model, BaseModel):
-                try:
-                    schemas[wf_name] = self._extract_param_schema(input_model)
-                except Exception:
-                    pass
-        return schemas
-
-    def _build_plan(self, user_input: str, state: AgentState) -> Any:
-        """Route and build an execution plan, mutating state in place.
-
-        Routing priority:
-        1. DeterministicRouter (keyword matching) — fast, no LLM call.
-        2. LLMPlanner — handles complex / composite / ambiguous requests.
+        Before overwriting any stale workflow result left in session memory, copy
+        it to ``_previous_workflow_result`` and append it to
+        ``_workflow_result_history``. This preserves cross-turn context for the
+        QualityAgent and CLI report generator.
         """
-        state.setdefault("_execution_log", [])
-
-        # 1. Try deterministic routing first
-        deterministic_plan = self.deterministic_router.route(user_input)
-        if deterministic_plan is not None:
-            state["_execution_plan"] = deterministic_plan.model_dump(mode="json")
-            state["_routing_method"] = "deterministic"
-            state["_execution_log"].append({
-                "event": "routing_decision",
-                "method": "deterministic",
-                "target": deterministic_plan.steps[0].target,
-                "description": deterministic_plan.steps[0].description,
-                "timestamp": time.time(),
-            })
-            state["messages"] = state.get("messages", []) + [
-                AIMessage(
-                    content=f"Router decision: deterministic → {deterministic_plan.steps[0].target}"
-                )
-            ]
-            return deterministic_plan
-
-        # 2. Fallback to LLM-driven planning
-        state["_routing_method"] = "llm"
-        state["_execution_log"].append({
-            "event": "routing_decision",
-            "method": "llm",
-            "timestamp": time.time(),
-        })
-        state["_available_capabilities"] = self._available_capabilities
-        state["_available_workflows"] = self._available_workflows
-
-        wf_schemas = self._build_workflow_param_schemas()
-        state["_workflow_param_schemas"] = wf_schemas
-
-        if hasattr(self.planner, "plan_with_state"):
-            plan = self.planner.plan_with_state(user_input, state)
+        if explicit_state is not None:
+            state = explicit_state
         else:
-            from agent_core.planning.base import AgentContext
-            ctx = AgentContext(
-                session_id=state.get("session_id", ""),
-                available_capabilities=self._available_capabilities,
-                available_workflows=self._available_workflows,
-                workflow_param_schemas=wf_schemas,
+            if self.memory is not None:
+                state = self.memory.load(session_id)
+            else:
+                state = default_state("")
+        state["session_id"] = session_id
+        state["_form_params"] = form_params
+        state["_user_explicit_params"] = sorted(form_params.keys())
+        state["_quality_review_enabled"] = self.quality_review_enabled
+        state["_quality_auto_retry"] = self.quality_auto_retry
+
+        # Cross-turn quality context: snapshot the previous turn's result before
+        # it is replaced by the current run.
+        previous_wf = state.get("workflow_result")
+        if previous_wf is not None:
+            state["_previous_workflow_result"] = copy.deepcopy(previous_wf)
+            history = state.get("_workflow_result_history") or []
+            history = list(history)
+            history.append(copy.deepcopy(previous_wf))
+            state["_workflow_result_history"] = history
+            state.pop("workflow_result", None)
+
+        state.pop("_diagnosis_history", None)
+        state.pop("_bmc_trace", None)
+        return state
+
+    def _sanitize_form_params(
+        self, workflow_name: str, form_params: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Remove invented parameters not present in the workflow input model."""
+        wf = self.workflow_registry.get(workflow_name)
+        if wf is None or not hasattr(wf, "input_model") or wf.input_model is None:
+            return dict(form_params)
+        valid_keys = set(wf.input_model.model_fields.keys())
+        return {k: v for k, v in form_params.items() if k in valid_keys}
+
+    def _validate_required_params_for_workflow(
+        self, workflow_name: str, params: dict[str, Any]
+    ) -> None:
+        """Raise ValueError if any required parameter is missing."""
+        wf = self.workflow_registry.get(workflow_name)
+        if wf is None or not hasattr(wf, "input_model") or wf.input_model is None:
+            return
+        missing: list[str] = []
+        for name, field_info in wf.input_model.model_fields.items():
+            if field_info.is_required():
+                value = params.get(name)
+                if value is None or value == "":
+                    missing.append(name)
+        if missing:
+            raise ValueError(
+                f"Missing required parameters for {workflow_name}: {', '.join(missing)}"
             )
-            plan = self.planner.plan(user_input, ctx)
-
-        state["_execution_plan"] = plan.model_dump(mode="json")
-
-        state["messages"] = state.get("messages", []) + [
-            AIMessage(content="Router decision: LLM-driven planning")
-        ]
-        return plan
 
     @staticmethod
     def _format_final_report(state: dict[str, Any]) -> str:
@@ -239,7 +217,6 @@ class AgentRunner:
             all_candidates = getattr(wf_result, "all_candidates", [])
             best = getattr(wf_result, "best_candidate", None)
 
-            # Build a concise summary
             lines: list[str] = []
             lines.append(f"✓ 工作流执行成功，共生成 {len(all_candidates)} 个候选序列。")
 
@@ -251,7 +228,6 @@ class AgentRunner:
                     f"，综合得分 {total:.3f}" if total is not None else ""
                 ))
 
-                # For full-length mRNA, show CDS info
                 meta = best.metadata or {}
                 cds = meta.get("cds_sequence", "")
                 utr5 = meta.get("utr5_sequence", "")
@@ -266,7 +242,6 @@ class AgentRunner:
                             f"GC={mb.get('cds_gc', 'N/A')}"
                         )
 
-            # Show top-3 candidates (brief)
             top_n = min(3, len(all_candidates))
             if top_n > 1:
                 lines.append(f"\nTop {top_n} 候选序列概览:")
@@ -285,13 +260,12 @@ class AgentRunner:
                         parts.append(f"得分={total:.3f}")
                     lines.append(" | ".join(parts))
 
-            # ── Critic 诊断历史 ──
             diagnosis_history = state.get("_diagnosis_history", [])
             retry_count = state.get("retry_count", 0)
 
             if diagnosis_history or retry_count > 0:
                 lines.append("\n" + "─" * 40)
-                lines.append("LLM Critic 诊断报告")
+                lines.append("QualityAgent 诊断报告")
                 lines.append("─" * 40)
 
                 if retry_count > 0:
@@ -324,17 +298,15 @@ class AgentRunner:
                     elif action != "unknown":
                         lines.append(f"  建议操作: {action}")
 
-                # 如果最后一轮有错误
-                critic_error = state.get("_llm_critic_error")
-                if critic_error:
-                    lines.append(f"\n⚠ Critic 错误: {critic_error.get('type')}: {critic_error.get('message')}")
+                quality_error = state.get("_quality_review_error")
+                if quality_error:
+                    lines.append(f"\n⚠ QualityAgent 错误: {quality_error.get('type')}: {quality_error.get('message')}")
 
                 lines.append("─" * 40)
 
             lines.append("\n详细结果已保存，请查看结果文件获取完整序列及所有指标。")
             return "\n".join(lines)
 
-        # Fallback: report tool execution summary (very concise)
         tool_results = state.get("tool_results", {})
         if tool_results:
             tool_names = list(tool_results.keys())
@@ -342,76 +314,111 @@ class AgentRunner:
 
         return "Execution completed but no structured result was produced."
 
-    def run(
+    def run_form(
         self,
-        user_input: str,
+        form_params: dict[str, Any],
         *,
-        session_id: str = "",
+        session_id: str,
+        explicit_workflow: str,
+        user_text: str = "",
         state: Optional[AgentState] = None,
     ) -> AgentState:
-        """Plan → Execute → Return updated state.
-
-        This is the unified path; it does **not** require LangGraph.
-        """
+        """Execute a workflow from structured form parameters."""
         token = _SESSION_ID_CTX.set(session_id)
         try:
             explicit_state = state is not None
-            prepared = self._prepare_state(user_input, session_id, state if explicit_state else None)
-            plan = self._build_plan(user_input, prepared)
+            prepared = self._prepare_state_form(
+                session_id,
+                explicit_workflow,
+                form_params,
+                state if explicit_state else None,
+            )
+            if user_text:
+                prepared["user_text"] = user_text
+                prepared["messages"] = prepared.get("messages", []) + [HumanMessage(content=user_text)]
 
-            def _replan(s: dict[str, Any]) -> Any:
-                return self.planner.plan_with_state(user_input, s)
+            sanitized_params = self._sanitize_form_params(explicit_workflow, form_params)
+            self._validate_required_params_for_workflow(explicit_workflow, sanitized_params)
 
-            result_state = self.controller.execute(plan, prepared, replan_fn=_replan, persist_run=self.persist_run)
-            result_state["final_report"] = self._format_final_report(result_state)
+            plan = PipelinePlan.single(
+                explicit_workflow,
+                sanitized_params,
+                plan_id=f"form_{session_id}_{explicit_workflow}",
+                output_alias="result",
+            )
+            prepared["_execution_plan"] = plan.model_dump(mode="json")
+            prepared["_routing_method"] = "explicit"
+            prepared["_user_explicit_params"] = sorted(form_params.keys())
+
+            pipeline_result = self.run_pipeline(plan, state=prepared)
+
+            # Write results back to state, preserving the existing AgentState contract.
+            node_result = pipeline_result.node_results.get("n1")
+            if node_result is not None:
+                prepared["workflow_result"] = node_result.workflow_result
+                prepared["retry_count"] = node_result.metadata.get("retry_count", 0)
+                prepared["max_retries"] = node_result.metadata.get("max_retries", 2)
+
+            prepared["pipeline_result"] = pipeline_result.model_dump(mode="json")
+            prepared["final_report"] = self._format_final_report(prepared)
+
+            # Persist form params for multi-turn prefilling.
+            prepared["_last_form_params"] = dict(form_params)
+            by_workflow = prepared.get("_last_form_params_by_workflow", {})
+            by_workflow[explicit_workflow] = dict(form_params)
+            prepared["_last_form_params_by_workflow"] = by_workflow
 
             if self.memory is not None and session_id and not explicit_state:
-                self.memory.save(session_id, result_state)
+                self.memory.save(session_id, prepared)
 
-            return result_state
+            return prepared
         finally:
             _SESSION_ID_CTX.reset(token)
 
-    def stream(
+    def stream_form(
         self,
-        user_input: str,
+        form_params: dict[str, Any],
         *,
-        session_id: str = "",
+        session_id: str,
+        explicit_workflow: str,
+        user_text: str = "",
     ) -> Iterator[dict[str, Any]]:
-        """Yield step-by-step events from the execution pipeline.
-
-        Events are emitted as ``{node_name: state_dict}`` dicts.
-        This shape is compatible with presentation layers.
-        """
-        import queue
-        import threading
-
+        """Yield step-by-step events from a form-driven execution."""
         token = _SESSION_ID_CTX.set(session_id)
         try:
-            state = self._prepare_state(user_input, session_id, None)
-            plan = self._build_plan(user_input, state)
+            state = self._prepare_state_form(session_id, explicit_workflow, form_params)
+            if user_text:
+                state["user_text"] = user_text
+                state["messages"] = state.get("messages", []) + [HumanMessage(content=user_text)]
+
+            sanitized_params = self._sanitize_form_params(explicit_workflow, form_params)
+            self._validate_required_params_for_workflow(explicit_workflow, sanitized_params)
+
+            plan = PipelinePlan.single(
+                explicit_workflow,
+                sanitized_params,
+                plan_id=f"form_{session_id}_{explicit_workflow}",
+                output_alias="result",
+            )
+            state["_execution_plan"] = plan.model_dump(mode="json")
+            state["_routing_method"] = "explicit"
+            state["_user_explicit_params"] = sorted(form_params.keys())
             yield {"router": dict(state)}
 
-            # Expose LLM planning details to the presentation layer
             yield {"plan": {
-                "reasoning": getattr(plan, "reasoning", ""),
+                "reasoning": "",
                 "steps": [
                     {
-                        "step_id": s.step_id,
-                        "type": s.type,
-                        "target": s.target,
-                        "description": s.description,
+                        "step_id": "n1",
+                        "type": "workflow",
+                        "target": n.workflow,
+                        "description": f"Execute {n.workflow}",
                     }
-                    for s in plan.steps
+                    for n in plan.nodes
                 ],
-                "max_retries": getattr(plan, "max_retries", 2),
+                "max_retries": 2,
             }}
 
-            def _replan(s: dict[str, Any]) -> Any:
-                return self.planner.plan_with_state(user_input, s)
-
-            # Use a queue + background thread so that long-running workflow
-            # steps do not block the generator.
             progress_q: queue.Queue[dict[str, Any]] = queue.Queue()
             result_container: dict[str, Any] = {}
 
@@ -420,12 +427,34 @@ class AgentRunner:
 
             def _execute_in_thread() -> None:
                 try:
-                    result = self.controller.execute(
-                        plan, state, replan_fn=_replan, progress_callback=_progress_callback, persist_run=self.persist_run
+                    pipeline_result = self.pipeline_agent.execute(
+                        plan,
+                        state,
+                        progress_callback=_progress_callback,
                     )
-                    result["final_report"] = self._format_final_report(result)
-                    result_container["state"] = result
-                    progress_q.put({"__done__": True, "success": True})
+                    node_result = pipeline_result.node_results.get("n1")
+                    if node_result is not None:
+                        state["workflow_result"] = node_result.workflow_result
+                        state["retry_count"] = node_result.metadata.get("retry_count", 0)
+                        state["max_retries"] = node_result.metadata.get("max_retries", 2)
+                    state["pipeline_result"] = pipeline_result.model_dump(mode="json")
+                    state["final_report"] = self._format_final_report(state)
+                    state["_last_form_params"] = dict(form_params)
+                    by_workflow = state.get("_last_form_params_by_workflow", {})
+                    by_workflow[explicit_workflow] = dict(form_params)
+                    state["_last_form_params_by_workflow"] = by_workflow
+                    result_container["state"] = state
+                    done_error = None
+                    if not pipeline_result.success:
+                        # DIAGNOSIS NOTE (2026-07 experiment incident): when the
+                        # pipeline fails without entries in pipeline_result.errors
+                        # (e.g. a service hiccup mid-evaluation), the generic
+                        # "pipeline failed without recorded errors" message hides
+                        # the root cause. To diagnose, read the session's
+                        # driver/console log and the workflow's own logger output —
+                        # the real error is almost always there, not here.
+                        done_error = "; ".join(pipeline_result.errors) or "pipeline failed without recorded errors"
+                    progress_q.put({"__done__": True, "success": pipeline_result.success, "error": done_error})
                 except Exception as exc:
                     progress_q.put({"__done__": True, "success": False, "error": str(exc)})
 
@@ -436,9 +465,7 @@ class AgentRunner:
                 item = progress_q.get()
                 if item.get("__done__"):
                     if not item.get("success", True):
-                        raise RuntimeError(
-                            f"执行失败: {item.get('error', 'Unknown error')}"
-                        )
+                        raise RuntimeError(f"执行失败: {item.get('error', 'Unknown error')}")
                     break
                 yield {"progress": item}
 
@@ -451,3 +478,4 @@ class AgentRunner:
             yield {"runner": dict(result_state)}
         finally:
             _SESSION_ID_CTX.reset(token)
+

@@ -4,20 +4,21 @@ Pipeline: CRGPT handle design → CRGPT re-score + optional CRISOT off-target
 score → scoring (nn_score + crisot_score) → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SgRnaDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更              ║
+║  SgRnaDesignWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sgrna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
 ║                                                                               ║
 ║    - agent_core/workflows/sgrna_design.py  ← 本文件                          ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/quality_profiles/sgrna_design.py                              ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - microservices/sgrna_design_service/main.py                               ║
@@ -66,9 +67,27 @@ class SgRnaDesignInput(BaseModel):
     budget, or a different exploration strategy). In most cases, accepting the
     defaults will yield good results.
     """
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    crgpt_design_seed_sequence: str = Field(default=None, description="[crgpt_design] seed_sequence: Inline seed/wildtype sgRNA handle sequence (DNA or RNA letters). Exactly one of seed_sequence or filepath must be provided.")
+    crgpt_design_filepath: str = Field(default=None, description="[crgpt_design] filepath: Path to a file containing the seed sgRNA handle sequence. Exactly one of seed_sequence or filepath must be provided.")
+    crgpt_design_n_samples: int = Field(default=10, description="[crgpt_design] n_samples: Number of designed candidate sequences to generate (excluding the wild-type seed).")
+    crgpt_design_mutation_number: int = Field(default=22, description="[crgpt_design] mutation_number: Maximum number of mutations allowed relative to the seed sequence (range 1-40).")
+    crgpt_design_temperature: Any = Field(default=None, description="[crgpt_design] temperature: For mcmc mode: MCMC annealing temperature controlling acceptance of structure-distance-increasing mutations (defaults to 20.0). For naive mode: transformer sampling temperature (defaults to 1.0).")
+    crgpt_design_max_length: Any = Field(default=None, description="[crgpt_design] max_length: Optional target sequence length for naive mode. It overrides the auto-computed max_new_tokens.")
+    crgpt_design_max_overlap: int = Field(default=21, description="[crgpt_design] max_overlap: Maximum longest-common-substring overlap allowed among accepted candidate sequences (range 1-60).")
+    crgpt_design_sampling_mode: str = Field(default='mcmc', description="[crgpt_design] sampling_mode: Sampling strategy: 'mcmc' (original MCMC/annealing with ViennaRNA structure constraints) or 'naive' (direct GPT-2 model.generate sampling).")
+    crgpt_design_path_to_model: str = Field(default=None, description="[crgpt_design] path_to_model: Optional model directory (relative to sgrna_design root or absolute path).")
+    crgpt_design_device: str = Field(default=None, description="[crgpt_design] device: Optional torch device override such as 'cuda:0' or 'cpu'. Defaults to SGRNA_DESIGN_DEVICE env var or cuda:0 if available.")
+    crgpt_design_output_dir: str = Field(default=None, description="[crgpt_design] output_dir: Optional output directory override for FASTA/JSON artifacts. Defaults to workspace/sgrna_design_service.")
+    crgpt_design_service_url: str = Field(default='http://127.0.0.1:8017/design', description="[crgpt_design] service_url: REST endpoint of the sgRNA design microservice.")
+    crgpt_score_sequence: str = Field(default=None, description="[crgpt_score] sequence: sgRNA handle sequence to score (DNA or RNA letters). It is normalized to uppercase DNA and fixed positions are enforced before scoring.")
+    crgpt_score_path_to_model: str = Field(default=None, description="[crgpt_score] path_to_model: Optional model directory override.")
+    crgpt_score_device: str = Field(default=None, description="[crgpt_score] device: Optional torch device override such as 'cuda:0' or 'cpu'.")
+    crgpt_score_service_url: str = Field(default='http://127.0.0.1:8017/score', description="[crgpt_score] service_url: REST endpoint of the sgRNA scoring microservice.")
+    crisot_filepath: str = Field(default=None, description="[crisot] filepath: Path to a file containing the sgRNA sequence (23 nt including NGG PAM). The wrapper reads the sequence from this file rather than accepting it inline.")
+    crisot_target_sequence: str = Field(default=None, description="[crisot] target_sequence: Target DNA sequence (23 nt including NGG PAM) paired with the sgRNA. Both sequences are normalized to uppercase DNA before scoring.")
+    crisot_service_url: str = Field(default='http://127.0.0.1:8011/score', description="[crisot] service_url: REST endpoint of the CRISOT score microservice. Pure routing parameter for the wrapper.")
+    crisot_ref_genome: str = Field(default=None, description="[crisot] ref_genome: Optional reference genome path accepted by the microservice request model. Not exposed by the agent wrapper. It is passed to the CRISOT constructor but is not used during single-pair scoring.")
     seed_sequence: Optional[str] = Field(
         default=None,
         description="Inline sgRNA handle seed sequence (DNA/RNA, 40–120 nt).",
@@ -140,10 +159,6 @@ class SgRnaDesignInput(BaseModel):
         description="Weight for CRISOT score in composite scoring. Default 0.5 balances on-target activity and off-target safety. Only adjust if the user explicitly prioritizes one over the other.",
     )
 
-
-# Scoring helper
-
-
 def score_sgrna_candidate(
     metrics: dict[str, Any],
     weights: dict[str, float],
@@ -194,6 +209,7 @@ def score_sgrna_candidate(
 
 
 class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
+    input_model = SgRnaDesignInput
     """sgRNA handle design using CRGPT.
 
     Pipeline: generate candidates (CRGPT) → evaluate (CRGPT re-score +
@@ -464,83 +480,3 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
             errors=[],
         )
 
-
-# LLM Critic Configuration
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-SGRNA_CRITIC_CONFIG = CriticConfig(
-    workflow_name="sgrna_design",
-    workflow_description="Design sgRNA handle candidates using CRGPT with optional CRISOT off-target scoring",
-    evaluation_dimensions=[
-        "CRGPT nn_score is perplexity (lower is better, range ~[1, +inf)). Values close to 1.0 indicate excellent on-target activity; values above 3.0 suggest poor quality.",
-        "CRISOT score should indicate low off-target potential. Higher is generally better.",
-        "Sequence diversity among candidates is important — if all candidates are very similar, the search may be stuck in a local optimum.",
-        "Mutation count should be reasonable relative to the seed sequence — too many mutations may destabilize the structure.",
-        "MFE (Minimum Free Energy) from structure prediction should indicate a stable secondary structure.",
-    ],
-    adjustable_params={
-        "n_samples": {
-            "type": "int",
-            "min": 1,
-            "max": 200,
-            "hint": "Number of CRGPT samples to generate. Increase to explore more sequence space.",
-        },
-        "mutation_number": {
-            "type": "int",
-            "min": 1,
-            "max": 40,
-            "hint": "Number of positions to mutate. Higher values increase diversity but may reduce structural stability.",
-        },
-        "temperature": {
-            "type": "float",
-            "min": 0.0,
-            "max": 100.0,
-            "hint": "MCMC annealing temperature (mcmc mode) or transformer sampling temperature (naive mode). Higher = more diverse but potentially lower quality.",
-        },
-        "sampling_mode": {
-            "type": "enum",
-            "values": ["mcmc", "naive"],
-            "hint": "Sampling strategy. 'mcmc' uses Monte Carlo search for better exploration; 'naive' uses direct transformer sampling.",
-        },
-        "max_overlap": {
-            "type": "int",
-            "min": 1,
-            "max": 60,
-            "hint": "Maximum overlap between consecutive mutations. Lower = more independent mutations.",
-        },
-        "evaluate_crgpt_score": {
-            "type": "bool",
-            "hint": "Whether to re-score with CRGPT. Keep True for accurate scoring.",
-        },
-        "evaluate_crisot": {
-            "type": "bool",
-            "hint": "Whether to run CRISOT off-target scoring. Keep True if guide and target sequences are provided.",
-        },
-        "weight_nn_score": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Weight for CRGPT nn_score in composite scoring. Increase to prioritize on-target activity.",
-        },
-        "weight_crisot": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Weight for CRISOT score in composite scoring. Increase to prioritize off-target safety.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-)
-
-
-class SgRnaDesignLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for sgRNA handle design workflow."""
-
-    def _default_config(self) -> CriticConfig:
-        return SGRNA_CRITIC_CONFIG
-
-
-# Backward-compatible alias used by tests and external callers
-SgRnaCritic = SgRnaDesignLLMCritic

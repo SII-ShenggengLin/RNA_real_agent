@@ -173,6 +173,7 @@ def get_llm_for_provider(
         api_key=resolved_api_key,
         base_url=resolved_base_url,
         temperature=temperature,
+        timeout=timeout,
         http_client=httpx.Client(timeout=timeout),
         max_retries=max_retries,
         **extra_kwargs,

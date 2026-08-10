@@ -10,7 +10,9 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
+from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import PROJECT_ROOT
+from agent_core.constants.species import DEFAULT_CAI_SPECIES
 from agent_core.sequence_utils import compute_gc_content, normalize_rna_sequence
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
@@ -58,7 +60,7 @@ class StubCaiTool:
     def invoke(self, kwargs):
         return {
             "cai_score": 0.85,
-            "species": "Homo sapiens",
+            "species": DEFAULT_CAI_SPECIES,
             "codon_count": 9,
             "valid_codons": 9,
             "invalid_codons": 0,
@@ -106,7 +108,9 @@ def evaluate_sample(
 
     ex = executor or make_stub_mrna_executor()
     tid = task_id or f"baseline_{sample_id}"
-    wf = run_mrna_sequence_scoring(inp, executor=ex, task_id=tid)
+    wf = run_mrna_sequence_scoring(
+        inp, capability_registry=CapabilityRegistry(ex), task_id=tid, auto_start_services=False
+    )
     best = wf.best_candidate
     score = float(best.scores["total_score"]) if best and "total_score" in best.scores else None
     return {
@@ -135,12 +139,3 @@ def run_baseline_batch(
     for sid, inp in iter_sample_inputs(samples):
         rows.append(evaluate_sample(sid, inp, executor=ex))
     return rows
-
-
-def print_batch_report(rows: List[Dict[str, Any]]) -> None:
-    print("sample_id\ttask_id\tsuccess\tbest_total_score\tn_candidates\twarnings")
-    for r in rows:
-        print(
-            f"{r['sample_id']}\t{r['task_id']}\t{r['success']}\t{r['best_total_score']}\t"
-            f"{r['n_candidates']}\t{r['n_tool_warnings']}"
-        )

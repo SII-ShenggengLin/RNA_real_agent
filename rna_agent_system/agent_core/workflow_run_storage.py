@@ -164,7 +164,7 @@ def dump_result_document(
     trace_json = [rec.model_dump(mode="json") for rec in wf.trace]
     fatal = list(wf.errors) if not wf.success else []
     tool_warnings = list(wf.errors) if wf.success else []
-    return {
+    result_doc: Dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "task_id": wf.task_id,
         "success": wf.success,
@@ -193,6 +193,16 @@ def dump_result_document(
             "diagnosis_history": diagnosis_history or [],
         },
     }
+    # Optional multi-objective outputs
+    if getattr(wf, "pareto_frontier", None):
+        result_doc["pareto_frontier"] = [
+            c.model_dump(mode="json") for c in wf.pareto_frontier
+        ]
+    if getattr(wf, "reference_point", None) is not None:
+        result_doc["reference_point"] = wf.reference_point
+    if getattr(wf, "best_candidate_source", None):
+        result_doc["best_candidate_source"] = wf.best_candidate_source
+    return result_doc
 
 
 def write_json(path: Path, payload: Dict[str, Any]) -> None:

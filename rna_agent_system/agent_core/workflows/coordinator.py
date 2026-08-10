@@ -11,10 +11,25 @@ testable, and grounded in explicit tool-derived thresholds.
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass, field
 from typing import Any
 
+from agent_core.workflows.multi_objective import compute_violation
+
 _LOGGER = logging.getLogger("agent_core.workflows.coordinator")
+
+# NOTE (Fig 5b mechanism ablation, docs/MANUSCRIPT.md §7 panel b):
+# ``APTAMER_FEEDBACK_MODE`` selects which metrics drive the per-module
+# parameter adjustments in ``AptamerCoordinator.broadcast_feedback``.
+#   - ``source_aware`` (default): the metrics bundle of the candidate that
+#     triggered the worst violation — the existing behavior, unchanged.
+#   - ``pool_average``: candidate-pool mean metrics, supplied by the caller
+#     via the optional ``pool_metrics`` argument.
+# Read once per process at import time; every CLI subprocess re-imports this
+# module, so the env var is naturally honoured per run. Any value other than
+# ``pool_average`` falls back to ``source_aware``.
+_APTAMER_FEEDBACK_MODE = os.environ.get("APTAMER_FEEDBACK_MODE", "source_aware").strip().lower()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -24,19 +39,25 @@ _LOGGER = logging.getLogger("agent_core.workflows.coordinator")
 
 @dataclass(frozen=True)
 class Issue:
-    """One diagnosed inter-module conflict."""
+    """One diagnosed inter-module conflict.
+
+    ``violation`` is a continuous non-negative distance from the target.
+    ``0.0`` means the target is satisfied; larger values mean larger deviation.
+    """
 
     issue_type: str
     value: float
     target: float
     affected_modules: tuple[str, ...]
     evidence: str
+    violation: float = 0.0
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "issue_type": self.issue_type,
             "value": self.value,
             "target": self.target,
+            "violation": self.violation,
             "affected_modules": list(self.affected_modules),
             "evidence": self.evidence,
         }
@@ -79,6 +100,10 @@ class CoordinationRound:
     feedback_dispatched: dict[str, ModuleFeedback]
     modules_reinvoked: list[str]
     time_elapsed_ms: float = 0.0
+    diagnosis_candidate_ids: list[str] = field(default_factory=list)
+    reference_point_mode: str = "utopian"
+    reference_point: dict[str, float] = field(default_factory=dict)
+    dim_bounds: dict[str, dict[str, float]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -91,222 +116,126 @@ class CoordinationRound:
             },
             "modules_reinvoked": self.modules_reinvoked,
             "time_elapsed_ms": self.time_elapsed_ms,
+            "diagnosis_candidate_ids": self.diagnosis_candidate_ids,
+            "reference_point_mode": self.reference_point_mode,
+            "reference_point": self.reference_point,
+            "dim_bounds": self.dim_bounds,
         }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Full-Length Coordinator
+# Reference-Point Full-Length Coordinator
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-class FullLengthCoordinator:
-    """Deterministic coordinator for full-length mRNA module conflict diagnosis.
+class ReferencePointCoordinator:
+    """Reference-point driven coordinator for full-length mRNA design.
 
-    Thresholds are chosen based on domain heuristics and LinearDesign benchmarks:
-    - full_mfe_per_nt: ≤ -0.25 kcal/mol/nt (length-normalized stability;
-      MFE is proportional to sequence length, so absolute thresholds are unfair)
-    - full_paired_fraction: ≥ 0.65 (≥65% base-paired; wild-type ~63%,
-      LinearDesign optimal ~83%; see Zhang et al. Nature 2023)
-    - junction_cds_3utr_mfe: ≤ -15 kcal/mol (CDS-3'UTR local stability; 40-nt overlap)
-    - junction_gc_diff: ≤ 0.15 (15% GC difference across junction)
+    Unlike a threshold-based coordinator, this class diagnoses inter-module
+    conflicts by measuring how far the current best candidate is from a
+    user-provided or auto-derived reference point in normalized objective
+    space.  Every objective dimension is min-max normalized to [0, 1] within
+    the candidate pool (in maximization space), so gaps are directly comparable.
 
-    References:
-    - LinearDesign objective: MFECAI_λ = MFE − λ·(|r|/3)·log(CAI)
-      (Zhang et al., "Algorithm for optimized mRNA design improves stability
-      and immunogenicity", Nature 2023)
-    - λ=0 → MFE-only (most stable); λ↑ → CAI improves, MFE worsens.
+    The reference point is the single source of truth for both:
+      - selecting ``best_candidate`` via Achievement Scalarizing Function, and
+      - diagnosing which modules need adjustment during BMC iteration.
     """
 
-    THRESHOLDS: dict[str, float] = {
-        "full_mfe_per_nt": -0.25,     # kcal/mol per nucleotide (wild-type baseline)
-        "full_paired_fraction": 0.65,  # minimum fraction of paired bases
-        "junction_cds_3utr_mfe": -15.0,  # kcal/mol (40-nt overlap)
-        "junction_gc_diff": 0.15,     # max GC diff across junction
+    # Score dimensions used for BMC diagnosis.
+    # Includes 4 user-facing objectives plus 2 internal junction diagnostics.
+    # All dimensions are constructed so that higher values are better
+    # (maximization space).
+    OBJECTIVES: tuple[str, ...] = (
+        "cds_component",
+        "utr5_mrl",
+        "utr3_stability",
+        "full_mfe_score",
+        "junction_5utr_cds_score",
+        "junction_cds_3utr_score",
+    )
+
+    # User-facing objectives exposed in reference_point.
+    USER_FACING_OBJECTIVES: tuple[str, ...] = (
+        "cds_component",
+        "utr5_mrl",
+        "utr3_stability",
+        "full_mfe_score",
+    )
+
+    # Maps each score dimension to the module(s) that can improve it.
+    DIMENSION_TO_MODULES: dict[str, tuple[str, ...]] = {
+        "cds_component": ("CDS",),
+        "full_mfe_score": ("5UTR", "CDS", "3UTR"),
+        "utr5_mrl": ("5UTR",),
+        "utr3_stability": ("3UTR",),
+        "junction_5utr_cds_score": ("5UTR", "CDS"),
+        "junction_cds_3utr_score": ("CDS", "3UTR"),
     }
 
-    # ── Diagnosis ────────────────────────────────────────────────────────────
+    def diagnose(
+        self,
+        norm_candidate_vector: dict[str, float],
+        reference_point: dict[str, float],
+    ) -> list[Issue]:
+        """Return issues for dimensions where candidate is below the reference point.
 
-    def diagnose(self, metrics: dict[str, Any]) -> list[Issue]:
-        """Scan metrics for inter-module conflicts and return structured issues.
+        Args:
+            norm_candidate_vector: Normalized objective values for the candidate
+                being diagnosed.  Values are in [0, 1] (may be outside for
+                ambitious reference points).
+            reference_point: Normalized aspiration level per objective.  Missing
+                dimensions are ignored.
 
-        Every issue carries explicit evidence grounded in tool-derived values.
+        Returns:
+            List of ``Issue`` objects, each with a continuous ``violation``
+            equal to the normalized gap ``reference - candidate``.
         """
         issues: list[Issue] = []
 
-        # 1. Full-length MFE (length-normalized)
-        full_mfe = metrics.get("full_length_mfe")
-        total_length = metrics.get("total_length", 0)
-        if full_mfe is not None and total_length and total_length > 0:
-            mfe_per_nt = float(full_mfe) / int(total_length)
-            if mfe_per_nt > self.THRESHOLDS["full_mfe_per_nt"]:
+        for dim in self.OBJECTIVES:
+            if dim not in reference_point:
+                continue
+            ref = float(reference_point[dim])
+            val = norm_candidate_vector.get(dim)
+            if val is None:
+                continue
+            val = float(val)
+            gap = ref - val
+            if gap > 0.0:
+                modules = self.DIMENSION_TO_MODULES.get(dim, ())
                 issues.append(
                     Issue(
-                        issue_type="FULL_MFE_TOO_HIGH",
-                        value=mfe_per_nt,
-                        target=self.THRESHOLDS["full_mfe_per_nt"],
-                        affected_modules=("5UTR", "CDS", "3UTR"),
+                        issue_type=f"{dim.upper()}_BELOW_REFERENCE",
+                        value=val,
+                        target=ref,
+                        violation=gap,
+                        affected_modules=modules,
                         evidence=(
-                            f"ViennaRNA full-length MFE={full_mfe:.2f} kcal/mol "
-                            f"(length={total_length}nt, "
-                            f"MFE/nt={mfe_per_nt:.4f} kcal/mol/nt) "
-                            f"> threshold={self.THRESHOLDS['full_mfe_per_nt']:.4f}"
+                            f"{dim}={val:.4f} is below reference point "
+                            f"{ref:.4f} by {gap:.4f}"
                         ),
                     )
                 )
-
-        # 1b. Full-length paired fraction (structure stability)
-        paired_fraction = metrics.get("full_paired_fraction")
-        if paired_fraction is not None and float(paired_fraction) < self.THRESHOLDS["full_paired_fraction"]:
-            issues.append(
-                Issue(
-                    issue_type="FULL_STRUCTURE_TOO_LOOSE",
-                    value=float(paired_fraction),
-                    target=self.THRESHOLDS["full_paired_fraction"],
-                    affected_modules=("5UTR", "CDS", "3UTR"),
-                    evidence=(
-                        f"Full-length paired fraction={float(paired_fraction):.2%} "
-                        f"< threshold={self.THRESHOLDS['full_paired_fraction']:.2%}"
-                    ),
-                )
-            )
-
-        # 2. Junction 5'UTR-CDS: check for OVER-stability and buried start codon
-        j1_mfe = metrics.get("junction_5utr_cds_mfe")
-        if j1_mfe is not None and float(j1_mfe) < -20.0:
-            # 5'UTR-CDS junction too stable → may impede ribosome scanning
-            issues.append(
-                Issue(
-                    issue_type="JUNCTION_5UTR_CDS_TOO_STABLE",
-                    value=float(j1_mfe),
-                    target=-20.0,
-                    affected_modules=("5UTR", "CDS"),
-                    evidence=(
-                        f"Junction 5'UTR-CDS MFE={j1_mfe:.2f} kcal/mol "
-                        f"< -20.0 (overly stable; may block ribosome scanning)"
-                    ),
-                )
-            )
-
-        # 2b. Check if AUG start codon is buried in structure
-        aug_buried = metrics.get("junction_5utr_cds_aug_buried")
-        if aug_buried:
-            aug_pos = metrics.get("junction_5utr_cds_aug_position", -1)
-            issues.append(
-                Issue(
-                    issue_type="JUNCTION_5UTR_CDS_AUG_BURIED",
-                    value=1.0,
-                    target=0.0,
-                    affected_modules=("5UTR", "CDS"),
-                    evidence=(
-                        f"AUG start codon at junction position {aug_pos} "
-                        f"is buried in secondary structure"
-                    ),
-                )
-            )
-
-        # 2c. Check if Kozak region is buried in structure
-        kozak_buried = metrics.get("junction_5utr_cds_kozak_buried")
-        if kozak_buried:
-            kozak_start = metrics.get("junction_5utr_cds_kozak_position_start", -1)
-            issues.append(
-                Issue(
-                    issue_type="JUNCTION_5UTR_CDS_KOZAK_BURIED",
-                    value=1.0,
-                    target=0.0,
-                    affected_modules=("5UTR", "CDS"),
-                    evidence=(
-                        f"Kozak region (around junction position {kozak_start}) "
-                        f"is buried in secondary structure"
-                    ),
-                )
-            )
-
-        # 3. Junction CDS-3'UTR stability
-        j2_mfe = metrics.get("junction_cds_3utr_mfe")
-        if j2_mfe is not None and float(j2_mfe) > self.THRESHOLDS["junction_cds_3utr_mfe"]:
-            issues.append(
-                Issue(
-                    issue_type="JUNCTION_CDS_3UTR_UNSTABLE",
-                    value=float(j2_mfe),
-                    target=self.THRESHOLDS["junction_cds_3utr_mfe"],
-                    affected_modules=("CDS", "3UTR"),
-                    evidence=(
-                        f"Junction CDS-3'UTR MFE={j2_mfe:.2f} kcal/mol "
-                        f"> threshold={self.THRESHOLDS['junction_cds_3utr_mfe']:.2f}"
-                    ),
-                )
-            )
-
-        # 4. Junction CDS-3'UTR GC mismatch
-        j2_gc_diff = metrics.get("junction_cds_3utr_gc_diff")
-        if (
-            j2_gc_diff is not None
-            and float(j2_gc_diff) > self.THRESHOLDS["junction_gc_diff"]
-        ):
-            j2_left_gc = metrics.get("junction_cds_3utr_left_gc", 0.0)
-            j2_right_gc = metrics.get("junction_cds_3utr_right_gc", 0.0)
-            issues.append(
-                Issue(
-                    issue_type="JUNCTION_CDS_3UTR_GC_MISMATCH",
-                    value=float(j2_gc_diff),
-                    target=self.THRESHOLDS["junction_gc_diff"],
-                    affected_modules=("CDS", "3UTR"),
-                    evidence=(
-                        f"Junction CDS-3'UTR GC diff={j2_gc_diff:.3f} "
-                        f"(CDS-side={j2_left_gc:.3f}, 3UTR-side={j2_right_gc:.3f}) "
-                        f"> threshold={self.THRESHOLDS['junction_gc_diff']:.3f}"
-                    ),
-                )
-            )
-
-        # 5. Junction 5'UTR-CDS GC mismatch (secondary)
-        j1_gc_diff = metrics.get("junction_5utr_cds_gc_diff")
-        if (
-            j1_gc_diff is not None
-            and float(j1_gc_diff) > self.THRESHOLDS["junction_gc_diff"]
-        ):
-            j1_left_gc = metrics.get("junction_5utr_cds_left_gc", 0.0)
-            j1_right_gc = metrics.get("junction_5utr_cds_right_gc", 0.0)
-            issues.append(
-                Issue(
-                    issue_type="JUNCTION_5UTR_CDS_GC_MISMATCH",
-                    value=float(j1_gc_diff),
-                    target=self.THRESHOLDS["junction_gc_diff"],
-                    affected_modules=("5UTR", "CDS"),
-                    evidence=(
-                        f"Junction 5'UTR-CDS GC diff={j1_gc_diff:.3f} "
-                        f"(5UTR-side={j1_left_gc:.3f}, CDS-side={j1_right_gc:.3f}) "
-                        f"> threshold={self.THRESHOLDS['junction_gc_diff']:.3f}"
-                    ),
-                )
-            )
 
         return issues
 
     # ── Feedback broadcast ───────────────────────────────────────────────────
 
-    def broadcast_feedback(self, issues: list[Issue]) -> dict[str, ModuleFeedback]:
+    def broadcast_feedback(
+        self,
+        issues: list[Issue],
+        metrics: dict[str, Any] | None = None,
+    ) -> dict[str, ModuleFeedback]:
         """Map diagnosed issues to module-specific parameter adjustments."""
         feedback: dict[str, ModuleFeedback] = {}
 
         for issue in issues:
-            if "CDS" in issue.affected_modules:
-                fb = feedback.get("CDS", ModuleFeedback(priority="medium"))
-                fb.adjustments.extend(self._cds_adjustments(issue))
+            for module in issue.affected_modules:
+                fb = feedback.get(module, ModuleFeedback(priority="medium"))
+                fb.adjustments.extend(self._module_adjustments(module, issue, metrics))
                 fb.priority = self._higher_priority(fb.priority, "medium")
-                feedback["CDS"] = fb
-
-            if "5UTR" in issue.affected_modules:
-                fb = feedback.get("5UTR", ModuleFeedback(priority="medium"))
-                fb.adjustments.extend(self._5utr_adjustments(issue))
-                fb.priority = self._higher_priority(fb.priority, "medium")
-                feedback["5UTR"] = fb
-
-            if "3UTR" in issue.affected_modules:
-                fb = feedback.get("3UTR", ModuleFeedback(priority="medium"))
-                fb.adjustments.extend(self._3utr_adjustments(issue))
-                fb.priority = self._higher_priority(fb.priority, "medium")
-                feedback["3UTR"] = fb
+                feedback[module] = fb
 
         return feedback
 
@@ -317,86 +246,98 @@ class FullLengthCoordinator:
 
     # ── Per-module adjustment rules ──────────────────────────────────────────
 
-    def _cds_adjustments(self, issue: Issue) -> list[ParamAdjustment]:
-        """CDS module adjustments based on issue type.
+    def _module_adjustments(
+        self,
+        module: str,
+        issue: Issue,
+        metrics: dict[str, Any] | None,
+    ) -> list[ParamAdjustment]:
+        if module == "CDS":
+            return self._cds_adjustments(issue, metrics)
+        # 5UTR / 3UTR modules intentionally get no parameter adjustments:
+        # UTR presets come from the user's explicit ``utr_mode`` and must not
+        # be overridden by the coordinator (junction issues are handled by
+        # UTR-preset exploration inside the workflow).
+        return []
+
+    def _cds_adjustments(
+        self,
+        issue: Issue,
+        metrics: dict[str, Any] | None,
+    ) -> list[ParamAdjustment]:
+        """CDS adjustments triggered by reference-point gaps.
 
         Physics reminder: LinearDesign λ is inversely related to MFE stability.
         Lower λ → more negative MFE (more stable structure).
+        Higher λ → more weight on CAI.
         """
-        if issue.issue_type == "FULL_MFE_TOO_HIGH":
+        if issue.issue_type in (
+            "CDS_COMPONENT_BELOW_REFERENCE",
+            "FULL_MFE_SCORE_BELOW_REFERENCE",
+        ):
+            return self._cds_lambda_adjustments(metrics)
+        # Everything else (including pure junction issues) gets no CDS
+        # adjustment: λ is a global CDS parameter and has little effect on a
+        # 40-nt junction.
+        return []
+
+    @staticmethod
+    def _cds_lambda_adjustments(
+        metrics: dict[str, Any] | None,
+    ) -> list[ParamAdjustment]:
+        """Choose lambda direction based on whether CAI or MFE is the weaker component.
+
+        If raw metrics are unavailable, default to improving stability (lower λ).
+        """
+        metrics = metrics or {}
+        cds_cai = metrics.get("cds_cai")
+        cds_mfe = metrics.get("cds_mfe")
+
+        # Normalize gaps to comparable scales using typical ranges.
+        # CAI: target ~0.9, bad ~0.5  → gap magnitude up to ~0.4
+        # MFE: target ~-50 (score = 50), bad ~-20 (score = 20) → gap up to ~30
+        cai_gap = 0.9 - float(cds_cai) if cds_cai is not None else None
+        mfe_gap = 50.0 + float(cds_mfe) if cds_mfe is not None else None
+
+        cai_weak = cai_gap is not None and cai_gap > 0.05
+        mfe_weak = mfe_gap is not None and mfe_gap > 0.05
+
+        if cai_weak and not mfe_weak:
+            return [
+                ParamAdjustment(
+                    param="lambda_value",
+                    delta=+2.0,
+                    reason="CDS CAI is below aspiration; increase λ to favor CAI over MFE",
+                )
+            ]
+        if mfe_weak and not cai_weak:
             return [
                 ParamAdjustment(
                     param="lambda_value",
                     delta=-2.0,
-                    reason="Decrease LinearDesign λ to favor MFE (more negative) over CAI",
+                    reason="CDS MFE stability is below aspiration; decrease λ to favor MFE over CAI",
                 )
             ]
-        if issue.issue_type == "FULL_STRUCTURE_TOO_LOOSE":
+        if cai_weak and mfe_weak:
+            # Both are weak: prefer stability because it is usually the harder
+            # constraint to satisfy, but also hint that the user may want a
+            # different design tool.
             return [
                 ParamAdjustment(
                     param="lambda_value",
                     delta=-2.0,
-                    reason="Decrease λ to increase base-pairing and structural stability",
+                    reason="Both CDS CAI and MFE are below aspiration; decrease λ to favor MFE, consider switching design_tool",
                 )
             ]
-        # Note: pure junction issues no longer trigger lambda adjustments.
-        # Lambda is a global CDS parameter; its effect on a 40-nt junction
-        # (only 20 nt from the CDS side) is heavily diluted.  Local junction
-        # problems are addressed more effectively by:
-        #   1. UTR preset exploration (changes the UTR side of the junction)
-        #   2. Junction codon shuffling (synonymous substitution at the CDS
-        #      terminus, changing the CDS side of the junction directly)
-        # These two local controls are fused in _regenerate_modules().
-        if issue.issue_type in (
-            "JUNCTION_5UTR_CDS_TOO_STABLE",
-            "JUNCTION_5UTR_CDS_AUG_BURIED",
-            "JUNCTION_5UTR_CDS_KOZAK_BURIED",
-            "JUNCTION_CDS_3UTR_UNSTABLE",
-        ):
-            return []
-        # GC mismatch issues are diagnosed but have no actionable automated
-        # adjustment in the current architecture (gc_window / terminal_gc_target
-        # are not exposed on the input models).  They are recorded in the BMC
-        # trace for human review.
-        return []
-
-    def _5utr_adjustments(self, issue: Issue) -> list[ParamAdjustment]:
-        """5'UTR module adjustments based on issue type.
-
-        Note: The actual UTR sequence is controlled by GEMORNA presets
-        (short/medium/long), not by a numeric length parameter.  The
-        coordinator therefore emits a ``utr_preset_exploration`` marker
-        instead of a fictitious length delta.
-        """
-        if issue.issue_type in (
-            "JUNCTION_5UTR_CDS_TOO_STABLE",
-            "JUNCTION_5UTR_CDS_AUG_BURIED",
-            "JUNCTION_5UTR_CDS_KOZAK_BURIED",
-        ):
-            return [
-                ParamAdjustment(
-                    param="utr_preset_exploration",
-                    delta=0.0,
-                    reason="Explore alternative 5'UTR presets to change junction sequence context",
-                )
-            ]
-        return []
-
-    def _3utr_adjustments(self, issue: Issue) -> list[ParamAdjustment]:
-        """3'UTR module adjustments based on issue type.
-
-        Note: The actual UTR sequence is controlled by GEMORNA presets
-        (short/medium/long), not by a numeric length parameter.
-        """
-        if issue.issue_type == "JUNCTION_CDS_3UTR_UNSTABLE":
-            return [
-                ParamAdjustment(
-                    param="utr_preset_exploration",
-                    delta=0.0,
-                    reason="Explore alternative 3'UTR presets to change junction sequence context",
-                )
-            ]
-        return []
+        # No clear component gap (e.g. only the combined score is low) →
+        # default to stability-oriented adjustment.
+        return [
+            ParamAdjustment(
+                param="lambda_value",
+                delta=-2.0,
+                reason="CDS component below reference; decrease λ to favor MFE/stability",
+            )
+        ]
 
     # ── Convergence helpers ──────────────────────────────────────────────────
 
@@ -441,6 +382,10 @@ class AptamerCoordinationRound:
     feedback_dispatched: dict[str, ModuleFeedback]
     modules_reinvoked: list[str]
     time_elapsed_ms: float = 0.0
+    diagnosis_candidate_ids: list[str] = field(default_factory=list)
+    reference_point_mode: str = "utopian"
+    reference_point: dict[str, float] = field(default_factory=dict)
+    dim_bounds: dict[str, dict[str, float]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -453,147 +398,85 @@ class AptamerCoordinationRound:
             },
             "modules_reinvoked": self.modules_reinvoked,
             "time_elapsed_ms": self.time_elapsed_ms,
+            "diagnosis_candidate_ids": self.diagnosis_candidate_ids,
+            "reference_point_mode": self.reference_point_mode,
+            "reference_point": self.reference_point,
+            "dim_bounds": self.dim_bounds,
         }
 
 
 class AptamerCoordinator:
-    """Deterministic coordinator for RNA aptamer design module conflict diagnosis.
+    """Reference-point driven coordinator for RNA aptamer design.
 
-    Thresholds are chosen based on aptamer domain heuristics:
-    - egarps_native_probability: ≥ 0.30 (predicted binding affinity)
-    - rhofold_mean_plddt: ≥ 70.0 (RNA monomer foldability confidence)
-    - proteinx_ipTM: ≥ 0.60 (AlphaFold-family complex confidence)
-    - interface_contacts: ≥ 5 (atomic contacts at binding interface)
-    - buried_sasa: ≥ 500.0 Å² (buried solvent-accessible surface area)
-    - gc_content: 30–70% (synthesis-friendly range)
+    Unlike a threshold-based coordinator, this class diagnoses inter-module
+    conflicts by measuring how far the current candidate is from a user-provided
+    or auto-derived reference point in normalized objective space. Every objective
+    dimension is min-max normalized to [0, 1] within the candidate pool
+    (in maximization space), so gaps are directly comparable.
+
+    The reference point is the single source of truth for both:
+      - selecting ``best_candidate`` via Achievement Scalarizing Function, and
+      - diagnosing which modules need adjustment during BMC iteration.
     """
 
-    THRESHOLDS: dict[str, float] = {
-        "egarps_native_probability": 0.30,
-        "rhofold_mean_plddt": 70.0,
-        "proteinx_ipTM": 0.60,
-        "interface_contacts": 5.0,
-        "buried_sasa": 500.0,
-        "gc_content_min": 0.30,
-        "gc_content_max": 0.70,
+    # Score dimensions used for BMC diagnosis and reference-point optimization.
+    OBJECTIVES: tuple[str, ...] = (
+        "egarps_component",
+        "rhofold_component",
+        "iptm_component",
+    )
+
+    # All objectives are user-facing for RNA aptamer design.
+    USER_FACING_OBJECTIVES: tuple[str, ...] = OBJECTIVES
+
+    # Maps each score dimension to the module(s) that can improve it.
+    DIMENSION_TO_MODULES: dict[str, tuple[str, ...]] = {
+        "egarps_component": ("Target", "Aptamer"),
+        "rhofold_component": ("Aptamer",),
+        "iptm_component": ("Target", "Aptamer"),
     }
 
-    # ── Diagnosis ────────────────────────────────────────────────────────────
+    def diagnose(
+        self,
+        norm_candidate_vector: dict[str, float],
+        reference_point: dict[str, float],
+    ) -> list[Issue]:
+        """Return issues for dimensions where candidate is below the reference point.
 
-    def diagnose(self, metrics: dict[str, Any]) -> list[Issue]:
-        """Scan metrics for inter-module conflicts and return structured issues."""
+        Args:
+            norm_candidate_vector: Normalized objective values for the candidate
+                being diagnosed. Values are in [0, 1] (may be outside for
+                ambitious reference points).
+            reference_point: Normalized aspiration level per objective. Missing
+                dimensions are ignored.
+
+        Returns:
+            List of ``Issue`` objects, each with a continuous ``violation``
+            equal to the normalized gap ``reference - candidate``.
+        """
         issues: list[Issue] = []
 
-        # 1. Binding affinity (EGARPS)
-        egarps = metrics.get("egarps_native_probability")
-        if egarps is not None and float(egarps) < self.THRESHOLDS["egarps_native_probability"]:
-            issues.append(
-                Issue(
-                    issue_type="BINDING_AFFINITY_LOW",
-                    value=float(egarps),
-                    target=self.THRESHOLDS["egarps_native_probability"],
-                    affected_modules=("Target", "Aptamer"),
-                    evidence=(
-                        f"EGARPS native_probability={float(egarps):.4f} "
-                        f"< threshold={self.THRESHOLDS['egarps_native_probability']:.4f}"
-                    ),
-                )
-            )
-
-        # 2. RNA foldability (RhoFold pLDDT)
-        plddt = metrics.get("rhofold_mean_plddt")
-        if plddt is not None and float(plddt) < self.THRESHOLDS["rhofold_mean_plddt"]:
-            issues.append(
-                Issue(
-                    issue_type="RNA_FOLDABILITY_LOW",
-                    value=float(plddt),
-                    target=self.THRESHOLDS["rhofold_mean_plddt"],
-                    affected_modules=("Aptamer",),
-                    evidence=(
-                        f"RhoFold mean pLDDT={float(plddt):.2f} "
-                        f"< threshold={self.THRESHOLDS['rhofold_mean_plddt']:.2f}"
-                    ),
-                )
-            )
-
-        # 3. Complex confidence (ProteinX ipTM)
-        iptm = metrics.get("proteinx_ipTM")
-        if iptm is not None and float(iptm) < self.THRESHOLDS["proteinx_ipTM"]:
-            issues.append(
-                Issue(
-                    issue_type="COMPLEX_CONFIDENCE_LOW",
-                    value=float(iptm),
-                    target=self.THRESHOLDS["proteinx_ipTM"],
-                    affected_modules=("Target", "Aptamer"),
-                    evidence=(
-                        f"ProteinX ipTM={float(iptm):.4f} "
-                        f"< threshold={self.THRESHOLDS['proteinx_ipTM']:.4f}"
-                    ),
-                )
-            )
-
-        # 4. Interface strength (contacts or buried SASA)
-        contacts = metrics.get("interface_contacts")
-        bsasa_raw = metrics.get("buried_sasa")
-        bsasa = float(bsasa_raw) if bsasa_raw is not None else None
-        if contacts is not None and float(contacts) < self.THRESHOLDS["interface_contacts"]:
-            bsasa_str = f"{bsasa:.1f}" if bsasa is not None else "N/A"
-            issues.append(
-                Issue(
-                    issue_type="INTERFACE_TOO_WEAK",
-                    value=float(contacts),
-                    target=self.THRESHOLDS["interface_contacts"],
-                    affected_modules=("Target", "Aptamer"),
-                    evidence=(
-                        f"Interface contacts={float(contacts):.0f} "
-                        f"< threshold={self.THRESHOLDS['interface_contacts']:.0f} "
-                        f"(buried SASA={bsasa_str})"
-                    ),
-                )
-            )
-        elif bsasa is not None and bsasa < self.THRESHOLDS["buried_sasa"]:
-            # Secondary check: even if contacts are OK, very low buried SASA is suspicious
-            contacts_str = f"{float(contacts):.0f}" if contacts is not None else "N/A"
-            issues.append(
-                Issue(
-                    issue_type="INTERFACE_TOO_WEAK",
-                    value=bsasa,
-                    target=self.THRESHOLDS["buried_sasa"],
-                    affected_modules=("Target", "Aptamer"),
-                    evidence=(
-                        f"Buried SASA={bsasa:.1f} "
-                        f"< threshold={self.THRESHOLDS['buried_sasa']:.1f} "
-                        f"(contacts={contacts_str})"
-                    ),
-                )
-            )
-
-        # 5. GC content extremes
-        gc = metrics.get("gc_content")
-        if gc is not None:
-            if float(gc) < self.THRESHOLDS["gc_content_min"]:
+        for dim in self.OBJECTIVES:
+            if dim not in reference_point:
+                continue
+            ref = float(reference_point[dim])
+            val = norm_candidate_vector.get(dim)
+            if val is None:
+                continue
+            val = float(val)
+            gap = ref - val
+            if gap > 0.0:
+                modules = self.DIMENSION_TO_MODULES.get(dim, ())
                 issues.append(
                     Issue(
-                        issue_type="EXTREME_GC_CONTENT",
-                        value=float(gc),
-                        target=self.THRESHOLDS["gc_content_min"],
-                        affected_modules=("Aptamer",),
+                        issue_type=f"{dim.upper()}_BELOW_REFERENCE",
+                        value=val,
+                        target=ref,
+                        violation=gap,
+                        affected_modules=modules,
                         evidence=(
-                            f"GC content={float(gc):.3f} "
-                            f"< minimum={self.THRESHOLDS['gc_content_min']:.3f}"
-                        ),
-                    )
-                )
-            elif float(gc) > self.THRESHOLDS["gc_content_max"]:
-                issues.append(
-                    Issue(
-                        issue_type="EXTREME_GC_CONTENT",
-                        value=float(gc),
-                        target=self.THRESHOLDS["gc_content_max"],
-                        affected_modules=("Aptamer",),
-                        evidence=(
-                            f"GC content={float(gc):.3f} "
-                            f"> maximum={self.THRESHOLDS['gc_content_max']:.3f}"
+                            f"{dim}={val:.4f} is below reference point "
+                            f"{ref:.4f} by {gap:.4f}"
                         ),
                     )
                 )
@@ -602,21 +485,35 @@ class AptamerCoordinator:
 
     # ── Feedback broadcast ───────────────────────────────────────────────────
 
-    def broadcast_feedback(self, issues: list[Issue]) -> dict[str, ModuleFeedback]:
-        """Map diagnosed issues to module-specific parameter adjustments."""
+    def broadcast_feedback(
+        self,
+        issues: list[Issue],
+        metrics: dict[str, Any],
+        pool_metrics: dict[str, Any] | None = None,
+    ) -> dict[str, ModuleFeedback]:
+        """Map diagnosed reference-point gaps to module-specific adjustments.
+
+        Args:
+            issues: Diagnosed reference-point gaps.
+            metrics: Metrics bundle of the candidate that triggered the worst
+                violation (source-aware feedback).
+            pool_metrics: Optional candidate-pool mean metrics. Only used when
+                the ``APTAMER_FEEDBACK_MODE=pool_average`` ablation is active
+                (Fig 5b); ignored otherwise, so the default behavior is
+                identical to the source-aware path.
+        """
+        # NOTE (Fig 5b ablation): pool_average mode replaces the worst-violation
+        # source metrics with the candidate-pool mean metrics.
+        if _APTAMER_FEEDBACK_MODE == "pool_average" and pool_metrics is not None:
+            metrics = pool_metrics
         feedback: dict[str, ModuleFeedback] = {}
 
         for issue in issues:
-            if "Target" in issue.affected_modules:
-                fb = feedback.get("Target", ModuleFeedback(priority="medium"))
-                fb.adjustments.extend(self._target_adjustments(issue))
+            for module in issue.affected_modules:
+                fb = feedback.get(module, ModuleFeedback(priority="medium"))
+                fb.adjustments.extend(self._module_adjustments(module, issue, metrics))
                 fb.priority = self._higher_priority(fb.priority, "medium")
-                feedback["Target"] = fb
-            if "Aptamer" in issue.affected_modules:
-                fb = feedback.get("Aptamer", ModuleFeedback(priority="medium"))
-                fb.adjustments.extend(self._aptamer_adjustments(issue))
-                fb.priority = self._higher_priority(fb.priority, "medium")
-                feedback["Aptamer"] = fb
+                feedback[module] = fb
 
         return feedback
 
@@ -627,12 +524,23 @@ class AptamerCoordinator:
 
     # ── Per-module adjustment rules ──────────────────────────────────────────
 
+    def _module_adjustments(
+        self,
+        module: str,
+        issue: Issue,
+        metrics: dict[str, Any],
+    ) -> list[ParamAdjustment]:
+        if module == "Target":
+            return self._target_adjustments(issue)
+        if module == "Aptamer":
+            return self._aptamer_adjustments(issue, metrics)
+        return []
+
     def _target_adjustments(self, issue: Issue) -> list[ParamAdjustment]:
-        """Target (hotspot) module adjustments based on issue type."""
+        """Target (hotspot) module adjustments based on reference-point gaps."""
         if issue.issue_type in (
-            "BINDING_AFFINITY_LOW",
-            "COMPLEX_CONFIDENCE_LOW",
-            "INTERFACE_TOO_WEAK",
+            "EGARPS_COMPONENT_BELOW_REFERENCE",
+            "IPTM_COMPONENT_BELOW_REFERENCE",
         ):
             return [
                 ParamAdjustment(
@@ -643,14 +551,25 @@ class AptamerCoordinator:
             ]
         return []
 
-    def _aptamer_adjustments(self, issue: Issue) -> list[ParamAdjustment]:
-        """Aptamer generation module adjustments based on issue type."""
-        if issue.issue_type == "RNA_FOLDABILITY_LOW":
+    def _aptamer_adjustments(
+        self,
+        issue: Issue,
+        metrics: dict[str, Any],
+    ) -> list[ParamAdjustment]:
+        """Aptamer generation module adjustments based on reference-point gaps."""
+        if issue.issue_type == "RHOFOLD_COMPONENT_BELOW_REFERENCE":
+            plddt = metrics.get("rhofold_mean_plddt")
+            if plddt is not None and plddt < 60.0:
+                delta = 10.0
+                reason = "RhoFold pLDDT is very low; substantially increase aptamer length"
+            else:
+                delta = 5.0
+                reason = "Increase aptamer length to improve foldability"
             return [
                 ParamAdjustment(
                     param="aptamer_length_delta",
-                    delta=5.0,
-                    reason="Increase aptamer length to improve foldability",
+                    delta=delta,
+                    reason=reason,
                 ),
                 ParamAdjustment(
                     param="seed_change",
@@ -659,9 +578,8 @@ class AptamerCoordinator:
                 ),
             ]
         if issue.issue_type in (
-            "BINDING_AFFINITY_LOW",
-            "COMPLEX_CONFIDENCE_LOW",
-            "INTERFACE_TOO_WEAK",
+            "EGARPS_COMPONENT_BELOW_REFERENCE",
+            "IPTM_COMPONENT_BELOW_REFERENCE",
         ):
             return [
                 ParamAdjustment(
@@ -673,14 +591,6 @@ class AptamerCoordinator:
                     param="seed_change",
                     delta=0.0,
                     reason="Change random seeds to explore different sequence space",
-                ),
-            ]
-        if issue.issue_type == "EXTREME_GC_CONTENT":
-            return [
-                ParamAdjustment(
-                    param="seed_change",
-                    delta=0.0,
-                    reason="Change random seeds to find better GC balance",
                 ),
             ]
         return []

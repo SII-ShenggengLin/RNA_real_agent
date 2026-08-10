@@ -1,8 +1,5 @@
 """Verify that siRNA design workflow populates WorkflowResult.trace with tool calls."""
 
-import pytest
-from agent_core.capabilities.base import CapabilityRegistry
-from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
 from agent_core.workflows.sirna_design import SirnaDesignInput, SirnaDesignWorkflow
 
 

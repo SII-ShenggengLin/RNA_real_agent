@@ -112,6 +112,10 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
     required_capabilities: list[str] = []
     input_model: Optional[type[BaseModel]] = None
 
+    # Service pre-flight configuration.  Subclasses and callers may toggle these.
+    auto_start_services: bool = False
+    service_startup_timeout: int = 300
+
     @abstractmethod
     def generate_candidates(self, inp: WorkflowInputT) -> list[Candidate]:
         """Produce one or more candidate sequences from the workflow input."""
@@ -127,6 +131,50 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
         """Turn raw metrics into normalized score components."""
         ...
 
+    def _ensure_required_services(self) -> tuple[bool, list[str]]:
+        """Check (and optionally start) all microservices declared by ``required_capabilities``.
+
+        Returns ``(True, [])`` immediately when ``auto_start_services`` is ``False``
+        or when no capability maps to a microservice.  Otherwise it polls health
+        endpoints and launches missing services via their ``start.sh`` scripts.
+        """
+        if not self.auto_start_services:
+            return True, []
+
+        # Lazy import avoids a hard dependency for tests and pure-computation workflows.
+        from agent_core.services.service_manager import (
+            ensure_services_ready,
+            get_services_for_capabilities,
+        )
+
+        services = get_services_for_capabilities(self.required_capabilities)
+        if not services:
+            return True, []
+        return ensure_services_ready(services, timeout=self.service_startup_timeout)
+
+    def _service_preflight_result(self) -> Optional[WorkflowResult]:
+        """Run the service pre-flight and return a failed result if not ready.
+
+        Returns ``None`` when pre-flight passes (or is disabled) so callers can
+        continue with the real workflow logic.
+        """
+        ready, errors = self._ensure_required_services()
+        if ready:
+            return None
+        _LOGGER.error(
+            "workflow_service_preflight_failed workflow=%s errors=%s",
+            self.name, errors,
+        )
+        return WorkflowResult(
+            success=False,
+            task_id="",
+            summary=(
+                "Workflow pre-flight failed: required microservices are not ready: "
+                f"{', '.join(errors)}"
+            ),
+            errors=errors,
+        )
+
     def run(
         self,
         inp: WorkflowInputT,
@@ -134,6 +182,10 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
         progress_callback: Optional[Callable[[dict[str, Any]], None]] = None,
     ) -> WorkflowResultT:
         """Default orchestration: generate → evaluate → score → rank."""
+        preflight = self._service_preflight_result()
+        if preflight is not None:
+            return preflight
+
         try:
             candidates = self.generate_candidates(inp)
         except Exception as exc:
@@ -210,6 +262,10 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
         Returns ``None`` when the workflow does not support partial rerun or
         when an error occurs (caller should fall back to a full re-run).
         """
+        preflight = self._service_preflight_result()
+        if preflight is not None:
+            return preflight
+
         if not existing_candidates:
             return None
         try:

@@ -3,11 +3,52 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_specs import TOOL_SPECS
+
+
+# Well-known parameters that distinguish repeated invocations of the same tool.
+# Used to build human-readable, non-overlapping keys in state["tool_results"].
+_DISTINGUISHING_PARAMS = (
+    "lambda_value",
+    "model_type",
+    "utr_length",
+    "preset",
+    "mode",
+    "species",
+)
+
+
+def _unique_tool_result_key(
+    tool_name: str,
+    tool_args: dict[str, Any],
+    existing_keys: set[str],
+) -> str:
+    """Return a unique, human-readable key for a tool invocation.
+
+    Prefers well-known distinguishing parameters (e.g. ``lambda_value``) so that
+    repeated calls with different arguments (LinearDesign with λ=1.0 vs λ=0.5)
+    do not overwrite each other. Falls back to a numeric index when no such
+    parameter is present.
+    """
+    for param in _DISTINGUISHING_PARAMS:
+        value = tool_args.get(param)
+        if value is not None:
+            safe = re.sub(r"[^\w\.\-]+", "_", str(value)).strip("_") or "none"
+            candidate = f"{tool_name}_{param}_{safe}"
+            if candidate not in existing_keys:
+                return candidate
+            prefix = f"{candidate}_"
+            idx = sum(1 for k in existing_keys if k.startswith(prefix))
+            return f"{candidate}_{idx}"
+
+    prefix = f"{tool_name}_"
+    idx = sum(1 for k in existing_keys if k.startswith(prefix))
+    return f"{tool_name}_{idx}"
 
 
 @dataclass
@@ -31,24 +72,13 @@ class Capability:
        store it (typically ``state["tool_results"][tool_name]``).
     """
 
-    def __init__(
-        self,
-        tool_name: str,
-        executor: ToolExecutor,
-        *,
-        state_writeback: bool = False,
-    ):
+    def __init__(self, tool_name: str, executor: ToolExecutor):
         self.tool_name = tool_name
         self.executor = executor
-        self.state_writeback = state_writeback
 
     @property
     def name(self) -> str:
         return self.tool_name
-
-    @property
-    def required_tools(self) -> list[str]:
-        return [self.tool_name]
 
     def invoke(self, tool_args: dict[str, Any], state: Optional[dict[str, Any]] = None) -> CapabilityResult:
         """Run the tool and return a normalized ``CapabilityResult``.
@@ -89,7 +119,19 @@ class Capability:
         # generic tool_results bucket.  Top-level state fields are never touched.
         if state is not None:
             state.setdefault("tool_results", {})
+            # Keep the original key pointing to the latest result (backward compatible).
             state["tool_results"][self.tool_name] = normalized
+            # Also store a uniquely-keyed copy so repeated calls to the same tool
+            # (e.g. LinearDesign with different lambdas) are all visible in audit JSON.
+            unique_key = _unique_tool_result_key(
+                self.tool_name, tool_args, set(state["tool_results"].keys())
+            )
+            state["tool_results"][unique_key] = normalized
+
+            # Record per-tool elapsed time for auditability.
+            state.setdefault("_tool_timings", {})
+            state["_tool_timings"][self.tool_name] = result.elapsed_time
+            state["_tool_timings"][unique_key] = result.elapsed_time
 
         return cap_result
 

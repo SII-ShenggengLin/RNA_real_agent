@@ -7,24 +7,24 @@ Generic mode: target sequence → sliding window (19–21 nt) → local filter �
     duplex evaluation → BLAST off-target → score → rank.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SirnaDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更              ║
+║  SirnaDesignWorkflow INTERFACE LOCK (v1.1.1) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sirna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
 ║                                                                               ║
 ║    - agent_core/workflows/sirna_design.py  ← 本文件                          ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/quality_profiles/sirna_design.py                              ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - tests/test_sirna_design_workflow.py                                      ║
-║    - tests/test_sirna_design_comprehensive.py                                 ║
 ║    - tests/test_sirna_workflow_api.py                                         ║
 ║    - tests/test_cli_sirna_entry.py                                            ║
 ║    - docs/INTERFACE_LOCKS.md                                                  ║
@@ -46,6 +46,7 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
+from agent_core.constants.species import DEFAULT_REFERENCE_SPECIES_ID, REFERENCE_SPECIES_IDS
 from agent_core.file_manager import PROJECT_ROOT, read_sequence, save_sequence
 from agent_core.sequence_utils import normalize_rna_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
@@ -111,12 +112,148 @@ class SirnaDesignInput(BaseModel):
     with clear biological justification. When in doubt, OMIT the parameter and
     let the workflow use its defaults.
     """
-
-    model_config = ConfigDict(extra="forbid")
-
-    mode: Literal["antiviral", "generic"] = "antiviral"
-
-    # Target sequence (at least one must be provided)
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    evitar_filepath: Any = Field(default=None, description="[evitar] filepath: Workspace file path to the input FASTA file. For existing mode it is typically the reference viral genome; for predesign mode it is a multi-virus FASTA.")
+    evitar_service_url: Any = Field(default='http://127.0.0.1:8016/design', description="[evitar] service_url: REST endpoint of the Evitar microservice.")
+    evitar_strains_path: Any = Field(default=None, description="[evitar] strains_path: FASTA file of viral strain sequences. In existing mode it is used for cross-strain coverage; in predesign mode, if provided, it replaces the input file as the multi-strain input.")
+    evitar_off_target: Any = Field(default=False, description="[evitar] off_target: Enables Evitar off-target evaluation against the transcriptome and 3'UTR FASTA files.")
+    evitar_ncores: Any = Field(default=1, description="[evitar] ncores: Number of threads passed to Evitar. In existing mode it controls dividefa/select_siRNA parallelism; in predesign mode it controls the Perl threads worker pool.")
+    evitar_p3utr_path: Any = Field(default=None, description="[evitar] p3utr_path: FASTA file of 3'UTR regions used for miRNA-like off-target evaluation.")
+    evitar_transcriptome_path: Any = Field(default=None, description="[evitar] transcriptome_path: FASTA file of the transcriptome used for perfect/imperfect off-target evaluation.")
+    evitar_weight_path: Any = Field(default=None, description="[evitar] weight_path: Gene-weight file for tissue-specific off-target scoring. Format: ENSEMBL ID, Gene Symbol, weight.")
+    evitar_sumtype: Any = Field(default=None, description="[evitar] sumtype: Selection algorithm for predesign mode. Allowed values: SGAR or greedy. If omitted, upstream defaults to SGAR.")
+    evitar_limitnum: Any = Field(default=None, description="[evitar] limitnum: Maximum number of siRNAs/Cas13 gRNAs to output in predesign mode. The Evitar.pl code initializes this to 50; the README documents 30. The wrapper passes None to use the upstream default.")
+    evitar_repeatnum: Any = Field(default=None, description="[evitar] repeatnum: Multi-siRNA penalty factor for predesign mode. The Evitar.pl code initializes this to 2; the README documents 3. The wrapper passes None to use the upstream default.")
+    evitar_pmcuff: Any = Field(default=None, description="[evitar] pmcuff: Perfect-match off-target cutoff. Default upstream value is 1. Candidates with perfect-match off-target count >= pmcuff are removed.")
+    evitar_umcuff: float = Field(default=None, description="[evitar] umcuff: Imperfect-match off-target score cutoff. Default upstream value is 20.")
+    evitar_mircuff: float = Field(default=None, description="[evitar] mircuff: miRNA-like off-target score cutoff. Default upstream value is 20000.")
+    evitar_maxgc: float = Field(default=None, description="[evitar] maxgc: Maximal GC-content cutoff for siRNA prediction. Default upstream value is 0.6.")
+    evitar_mingc: float = Field(default=None, description="[evitar] mingc: Minimal GC-content cutoff for siRNA prediction. Default upstream value is 0.25.")
+    evitar_middlegc: float = Field(default=None, description="[evitar] middlegc: Suboptimal GC-content threshold. Default upstream value is 0.55. GC content between middlegc and maxgc is considered suboptimal and receives a reduced score.")
+    evitar_allow_path: Any = Field(default=None, description="[evitar] allow_path: Text file with one allowed siRNA sequence per line. These sequences are forced into the predesign output when SGARallowban is used.")
+    evitar_ban_path: Any = Field(default=None, description="[evitar] ban_path: Text file with one banned siRNA sequence per line. These sequences are excluded from the design output.")
+    evitar_output: Any = Field(default=None, description="[evitar] output: Hidden upstream parameter that is automatically set by the Evitar microservice to a workspace file in workspace/evitar_service/. Evitar.pl requires --output.")
+    evitar_temp: Any = Field(default='.temptempsi', description="[evitar] temp: Hidden upstream parameter for the temporary working directory. The microservice overrides this with a per-request UUID-named subdirectory to avoid race conditions.")
+    evitar_offtargetperfect: Any = Field(default=False, description="[evitar] offtargetperfect: Hidden upstream switch parsed by Evitar.pl. When present, it acts like off-target mode for the SGAR/greedy selection step even if --offtarget is not used.")
+    evitar_verifytype: Any = Field(default='perfect', description="[evitar] verifytype: Hidden upstream parameter parsed by Evitar.pl. Its value is initialized but not used in the documented execution path.")
+    evitar_mutationrate: Any = Field(default=None, description="[evitar] mutationrate: Hidden upstream parameter passed to select_siRNA via -m when strains are provided. It controls mutation-rate tolerance during strain-specific filtering.")
+    evitar_parameterRNAxs: Any = Field(default=None, description="[evitar] parameterRNAxs: Hidden upstream parameter appended verbatim to the portableRNAxs command when predict='rnaxs'.")
+    evitar_RNAplfold: Any = Field(default=None, description="[evitar] RNAplfold: Hidden upstream parameter passed as -p to predictsiRNA or portableRNAxs, overriding RNAplfold settings.")
+    evitar_offtargetwholematch: Any = Field(default=None, description="[evitar] offtargetwholematch: Hidden upstream parameter parsed by Evitar.pl but not used in the documented execution path.")
+    evitar_offtargetpartmatch: Any = Field(default=None, description="[evitar] offtargetpartmatch: Hidden upstream parameter parsed by Evitar.pl but not used in the documented execution path.")
+    evitar_offtargetmirna: Any = Field(default=None, description="[evitar] offtargetmirna: Hidden upstream parameter parsed by Evitar.pl but not used in the documented execution path.")
+    evitar_range: Any = Field(default=None, description="[evitar] range: Hidden upstream parameter parsed by Evitar.pl but not used in the documented execution path.")
+    gc_filepath: str = Field(default=None, description="[gc] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    gc_service_url: str = Field(default='http://127.0.0.1:8020/gc-content', description="[gc] service_url: POST endpoint for GC content microservice.")
+    gc_timeout_seconds: float = Field(default=120.0, description="[gc] timeout_seconds: HTTP request timeout in seconds.")
+    sirna_duplex_filepath: str = Field(default=None, description="[sirna_duplex] filepath: Workspace file with two FASTA records (sense then antisense) or two plain RNA lines without headers.")
+    sirna_duplex_temp_c: float = Field(default=37.0, description="[sirna_duplex] temp_c: Folding temperature (Celsius).")
+    sirna_duplex_dangles: int = Field(default=2, description="[sirna_duplex] dangles: Dangling-end model.")
+    sirna_duplex_no_lp: bool = Field(default=False, description="[sirna_duplex] no_lp: Disallow lonely pairs.")
+    sirna_duplex_no_gu: bool = Field(default=False, description="[sirna_duplex] no_gu: Disallow GU pairs.")
+    sirna_duplex_no_closing_gu: bool = Field(default=False, description="[sirna_duplex] no_closing_gu: Disallow GU closing pairs.")
+    sirna_duplex_salt: Optional[float] = Field(default=None, description="[sirna_duplex] salt: Salt concentration (M).")
+    sirna_duplex_no_tetra: bool = Field(default=False, description="[sirna_duplex] no_tetra: Omit special hairpin loop energies.")
+    sirna_duplex_energy_model: Optional[int] = Field(default=None, description="[sirna_duplex] energy_model: Energy model index.")
+    sirna_duplex_nsp: Optional[str] = Field(default=None, description="[sirna_duplex] nsp: Non-standard pair specification.")
+    sirna_duplex_param_file: Optional[str] = Field(default=None, description="[sirna_duplex] param_file: Custom parameter file.")
+    sirna_duplex_constraint: Optional[str] = Field(default=None, description="[sirna_duplex] constraint: Hard constraint dot-bracket string.")
+    sirna_duplex_shape_file: Optional[str] = Field(default=None, description="[sirna_duplex] shape_file: Path to SHAPE reactivity data file.")
+    sirna_duplex_shape_method: str = Field(default='D', description="[sirna_duplex] shape_method: SHAPE method: D, Z, or W.")
+    sirna_duplex_concentrations: bool = Field(default=False, description="[sirna_duplex] concentrations: Compute equilibrium concentrations.")
+    sirna_duplex_conc_a: Optional[float] = Field(default=None, description="[sirna_duplex] conc_a: Initial monomer A concentration [mol/L].")
+    sirna_duplex_conc_b: Optional[float] = Field(default=None, description="[sirna_duplex] conc_b: Initial monomer B concentration [mol/L].")
+    sirna_duplex_partfunc: bool = Field(default=False, description="[sirna_duplex] partfunc: Compute partition function for dimer.")
+    sirna_duplex_service_url: str = Field(default='http://127.0.0.1:8003/sirna-duplex', description="[sirna_duplex] service_url: REST endpoint for ViennaRNA duplex cofold.")
+    sirna_duplex_noPS: bool = Field(default=False, description="[sirna_duplex] --noPS: 微服务内部固定传入 --noPS，禁止生成 PostScript 结构图。")
+    sirna_duplex_all_pf: bool = Field(default=False, description="[sirna_duplex] --all_pf: 上游 RNAcofold -a，计算 AA/BB 单体与 AB 二聚体的配分函数。")
+    sirna_duplex_centroid: bool = Field(default=False, description="[sirna_duplex] --centroid: 上游 RNAcofold --centroid，计算 centroid 结构。")
+    sirna_duplex_gquad: bool = Field(default=False, description="[sirna_duplex] --gquad: 上游 RNAcofold -g，考虑 G-四链体形成。")
+    sirna_duplex_maxBPspan: int = Field(default=-1, description="[sirna_duplex] --maxBPspan: 上游 --maxBPspan，限制最大碱基对跨度；默认 -1 表示无限制。")
+    sirna_duplex_batch: bool = Field(default=False, description="[sirna_duplex] --batch: 上游 --batch，对多条序列使用同一约束文件。")
+    sirna_duplex_verbose: bool = Field(default=False, description="[sirna_duplex] --verbose: 上游 -v，输出详细日志。")
+    vienna_fold_filepath: str = Field(default=None, description="[vienna_fold] filepath: Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.")
+    vienna_fold_temp_c: float = Field(default=37.0, description="[vienna_fold] temp_c: Folding temperature (Celsius).")
+    vienna_fold_dangles: int = Field(default=2, description="[vienna_fold] dangles: Dangling-end model.")
+    vienna_fold_no_lp: bool = Field(default=False, description="[vienna_fold] no_lp: Disallow lonely pairs.")
+    vienna_fold_no_gu: bool = Field(default=False, description="[vienna_fold] no_gu: Disallow GU pairs.")
+    vienna_fold_no_closing_gu: bool = Field(default=False, description="[vienna_fold] no_closing_gu: Disallow GU closing pairs.")
+    vienna_fold_salt: Optional[float] = Field(default=None, description="[vienna_fold] salt: Salt concentration (M).")
+    vienna_fold_no_tetra: bool = Field(default=False, description="[vienna_fold] no_tetra: Omit special hairpin loop energies.")
+    vienna_fold_energy_model: Optional[int] = Field(default=None, description="[vienna_fold] energy_model: Energy model index.")
+    vienna_fold_nsp: Optional[str] = Field(default=None, description="[vienna_fold] nsp: Non-standard pair specification.")
+    vienna_fold_param_file: Optional[str] = Field(default=None, description="[vienna_fold] param_file: Custom parameter file.")
+    vienna_fold_constraint: Optional[str] = Field(default=None, description="[vienna_fold] constraint: Hard constraint dot-bracket string.")
+    vienna_fold_shape_file: Optional[str] = Field(default=None, description="[vienna_fold] shape_file: Path to SHAPE reactivity data file.")
+    vienna_fold_shape_method: str = Field(default='D', description="[vienna_fold] shape_method: SHAPE method: D, Z, or W.")
+    vienna_fold_partfunc: bool = Field(default=False, description="[vienna_fold] partfunc: Compute partition function and centroid.")
+    vienna_fold_circ: bool = Field(default=False, description="[vienna_fold] circ: Assume circular RNA.")
+    vienna_fold_gquad: bool = Field(default=False, description="[vienna_fold] gquad: Include G-quadruplex formation.")
+    vienna_fold_service_url: str = Field(default='http://127.0.0.1:8003/fold', description="[vienna_fold] service_url: ViennaRNA fold endpoint.")
+    vienna_fold_noDP: bool = Field(default=False, description="[vienna_fold] --noDP: 上游 --noDP，禁止生成 dot-plot PostScript。")
+    vienna_fold_maxBPspan: int = Field(default=-1, description="[vienna_fold] --maxBPspan: 上游 --maxBPspan，默认 -1 无限制。")
+    vienna_fold_MEA: Any = Field(default=None, description="[vienna_fold] --MEA: 上游 --MEA[=gamma]，基于最大期望精度预测结构。")
+    vienna_fold_batch: bool = Field(default=False, description="[vienna_fold] --batch: 上游 --batch，批量使用约束。")
+    vienna_fold_canonicalBPonly: bool = Field(default=False, description="[vienna_fold] --canonicalBPonly: 上游 --canonicalBPonly，从约束中移除非规范碱基对。")
+    vienna_fold_enforceConstraint: bool = Field(default=False, description="[vienna_fold] --enforceConstraint: 上游 --enforceConstraint，强制约束中圆括号表示的碱基对必须形成。")
+    vienna_fold_shapeConversion: str = Field(default='O', description="[vienna_fold] --shapeConversion: 上游 --shapeConversion，SHAPE 到配对概率的转换方法。")
+    vienna_fold_verbose: bool = Field(default=False, description="[vienna_fold] --verbose: 上游 -v，输出详细日志。")
+    linearfold_filepath: str = Field(default=None, description="[linearfold] filepath: Path to a workspace file containing RNA sequence (plain or FASTA).")
+    linearfold_beam_size: int = Field(default=100, description="[linearfold] beam_size: Beam size for LinearFold (0 = infinite beam).")
+    linearfold_use_vienna: bool = Field(default=False, description="[linearfold] use_vienna: If true, request LinearFold-V (Vienna energy parameters).")
+    linearfold_dangles: int = Field(default=2, description="[linearfold] dangles: Dangling-end model: 0 or 2 (LinearFold --dangles).")
+    linearfold_sharpturn: bool = Field(default=False, description="[linearfold] sharpturn: Enable sharpturn in prediction.")
+    linearfold_constraints: Optional[str] = Field(default=None, description="[linearfold] constraints: Optional constraint string (? . ( ) ) for constrained prediction. If provided, length must match the sequence.")
+    linearfold_shape_file_path: Optional[str] = Field(default=None, description="[linearfold] shape_file_path: Optional path to SHAPE reactivity data file (mutually exclusive with constraints).")
+    linearfold_service_url: str = Field(default='http://127.0.0.1:8015/fold', description="[linearfold] service_url: REST endpoint for the LinearFold microservice.")
+    linearfold_fasta: bool = Field(default=False, description="[linearfold] --fasta: 上游 --fasta，声明输入为 FASTA 格式。")
+    linearfold_verbose: bool = Field(default=False, description="[linearfold] --verbose: 上游 -v/--verbose，输出每个 loop 的能量。")
+    blastn_filepath: str = Field(default=None, description="[blastn] filepath: Query nucleotide sequence file (workspace path or absolute on the server).")
+    blastn_subject_fasta_path: Optional[str] = Field(default=None, description="[blastn] subject_fasta_path: Subject multi-FASTA path (server-side). Indexed with makeblastdb at runtime.")
+    blastn_subject_db: Optional[str] = Field(default=None, description="[blastn] subject_db: Existing nucleotide BLAST database prefix path (server-side), e.g. /data/nt/ref.")
+    blastn_task: str = Field(default='blastn-short', description="[blastn] task: blastn -task: blastn-short | blastn | megablast | dc-megablast.")
+    blastn_evalue: float = Field(default=10.0, description="[blastn] evalue: \u671f\u671b\u503c\u9608\u503c\uff0c\u5bf9\u5e94\u4e0a\u6e38 -evalue\u3002")
+    blastn_word_size: Optional[int] = Field(default=None, description="[blastn] word_size: Optional blastn -word_size (recommended for manual tuning of short queries).")
+    blastn_max_target_seqs: int = Field(default=50, description="[blastn] max_target_seqs: \u6700\u591a\u62a5\u544a\u7684 subject \u5e8f\u5217\u6570\uff0c\u5bf9\u5e94\u4e0a\u6e38 -max_target_seqs\u3002")
+    blastn_perc_identity: Optional[float] = Field(default=None, description="[blastn] perc_identity: Optional minimum percent identity filter passed to blastn.")
+    blastn_strand: str = Field(default='both', description="[blastn] strand: blastn -strand: both | plus | minus.")
+    blastn_outfmt: Optional[str] = Field(default=None, description="[blastn] outfmt: Optional blastn -outfmt argument override (default is tabular format 6).")
+    blastn_service_url: str = Field(default='http://127.0.0.1:8019/blastn', description="[blastn] service_url: URL for the blast_service POST /blastn endpoint.")
+    blastn_blastn_timeout_sec: int = Field(default=600, description="[blastn] blastn_timeout_sec: \u5fae\u670d\u52a1\u5185\u90e8 blastn \u547d\u4ee4\u8d85\u65f6\u65f6\u95f4\u3002")
+    blastn_gapopen: int = Field(default=None, description="[blastn] -gapopen: 上游 -gapopen，打开 gap 的罚分。")
+    blastn_gapextend: int = Field(default=None, description="[blastn] -gapextend: 上游 -gapextend，延伸 gap 的罚分。")
+    blastn_penalty: int = Field(default=None, description="[blastn] -penalty: 上游 -penalty，错配罚分（≤0）。")
+    blastn_reward: int = Field(default=None, description="[blastn] -reward: 上游 -reward，匹配奖励（≥0）。")
+    blastn_dust: str = Field(default='20 64 1', description="[blastn] -dust: 上游 -dust，低复杂度过滤。")
+    blastn_soft_masking: bool = Field(default=True, description="[blastn] -soft_masking: 上游 -soft_masking，将过滤位置作为软屏蔽。")
+    blastn_lcase_masking: bool = Field(default=False, description="[blastn] -lcase_masking: 上游 -lcase_masking，使用大小写作为掩码。")
+    blastn_max_hsps: int = Field(default=None, description="[blastn] -max_hsps: 上游 -max_hsps，每个 subject 保存的最大 HSP 数。")
+    blastn_qcov_hsp_perc: float = Field(default=0.0, description="[blastn] -qcov_hsp_perc: 上游 -qcov_hsp_perc，HSP 对 query 的最小覆盖百分比。")
+    blastn_culling_limit: int = Field(default=0, description="[blastn] -culling_limit: 上游 -culling_limit，若某 hit 被至少多少个更高分 hit 包围则删除。")
+    blastn_best_hit_overhang: float = Field(default=None, description="[blastn] -best_hit_overhang: 上游 -best_hit_overhang，Best Hit 算法 overhang 值。")
+    blastn_best_hit_score_edge: float = Field(default=None, description="[blastn] -best_hit_score_edge: 上游 -best_hit_score_edge，Best Hit 算法 score edge。")
+    blastn_num_threads: int = Field(default=1, description="[blastn] -num_threads: 上游 -num_threads，并行线程数。")
+    bowtie2_filepath: str = Field(default=None, description="[bowtie2] filepath: Query nucleotide sequence file (workspace path or absolute on the server).")
+    bowtie2_subject_fasta_path: Optional[str] = Field(default=None, description="[bowtie2] subject_fasta_path: Subject multi-FASTA path (server-side). Indexed with bowtie2-build at runtime.")
+    bowtie2_subject_index: Optional[str] = Field(default=None, description="[bowtie2] subject_index: Existing bowtie2 index prefix path (server-side).")
+    bowtie2_mode: str = Field(default='local', description="[bowtie2] mode: local | end-to-end. 'local' allows soft-clipping and is preferred for short oligos.")
+    bowtie2_k: int = Field(default=50, description="[bowtie2] k: Report up to <int> alignments per read.")
+    bowtie2_service_url: str = Field(default='http://127.0.0.1:8024/align', description="[bowtie2] service_url: URL for the bowtie2_service POST /align endpoint.")
+    bowtie2_bowtie2_timeout_sec: int = Field(default=300, description="[bowtie2] bowtie2_timeout_sec: \u5fae\u670d\u52a1\u5185\u90e8 bowtie2 \u547d\u4ee4\u8d85\u65f6\u65f6\u95f4\u3002")
+    bowtie2_N: int = Field(default=0, description="[bowtie2] -N: 上游 -N，seed 中允许的最大错配数（0 或 1）。")
+    bowtie2_L: int = Field(default=22, description="[bowtie2] -L: 上游 -L，seed 子串长度。")
+    bowtie2_i: str = Field(default='mode-dependent', description="[bowtie2] -i: 上游 -i，seed 子串间隔函数。")
+    bowtie2_ma: int = Field(default='mode-dependent', description="[bowtie2] --ma: 上游 --ma，匹配奖励。")
+    bowtie2_mp: int = Field(default=6, description="[bowtie2] --mp: 上游 --mp，最大错配罚分。")
+    bowtie2_rdg: str = Field(default='5,3', description="[bowtie2] --rdg: 上游 --rdg，read 端 gap 开放/延伸罚分。")
+    bowtie2_rfg: str = Field(default='5,3', description="[bowtie2] --rfg: 上游 --rfg，reference 端 gap 开放/延伸罚分。")
+    bowtie2_nofw: bool = Field(default=False, description="[bowtie2] --nofw: 上游 --nofw，不对 query 正链进行比对。")
+    bowtie2_norc: bool = Field(default=False, description="[bowtie2] --norc: 上游 --norc，不对 query 反义链进行比对。")
+    bowtie2_trim5: int = Field(default=0, description="[bowtie2] --trim5: 上游 --trim5，从 5' 端切除的碱基数。")
+    bowtie2_trim3: int = Field(default=0, description="[bowtie2] --trim3: 上游 --trim3，从 3' 端切除的碱基数。")
+    bowtie2_seed: int = Field(default=0, description="[bowtie2] --seed: 上游 --seed，随机数种子。")
+    bowtie2_threads: int = Field(default=1, description="[bowtie2] -p/--threads: 上游 -p，并行线程数。")
+    mode: Literal["antiviral", "generic"] = Field(default="antiviral", description="siRNA design mode. 'antiviral' uses Evitar for virus-targeting design; 'generic' uses a sliding-window approach on a plain target sequence.")
     target_sequence: Optional[str] = Field(
         default=None,
         description="Plain RNA/DNA sequence (generic mode primary).",
@@ -125,23 +262,18 @@ class SirnaDesignInput(BaseModel):
         default=None,
         description="FASTA filepath (antiviral mode primary; generic fallback).",
     )
-
-    # Candidate count control
-    candidate_count: int = Field(default=10, ge=1, le=100)
-
-    # Off-target switch and resources
-    off_target_scan: bool = True
-    transcriptome_fasta_path: Optional[str] = None
-    p3utr_path: Optional[str] = None
-    weight_path: Optional[str] = None
-    blast_subject_db: Optional[str] = None
+    candidate_count: int = Field(default=10, ge=1, le=100, description="Number of siRNA candidates to return.")
+    off_target_scan: bool = Field(default=True, description="Whether to scan candidates against the transcriptome for off-target hits.")
+    transcriptome_fasta_path: Optional[str] = Field(default=None, description="Path to the transcriptome FASTA used for off-target evaluation.")
+    p3utr_path: Optional[str] = Field(default=None, description="Path to the 3'UTR FASTA used for miRNA-like off-target evaluation.")
+    weight_path: Optional[str] = Field(default=None, description="Path to a tissue-specific gene-weight file for off-target scoring.")
+    blast_subject_db: Optional[str] = Field(default=None, description="Existing BLAST nucleotide database prefix for off-target scan (legacy blast mode).")
     species: str = Field(
-        default="homo_sapiens",
+        default=DEFAULT_REFERENCE_SPECIES_ID,
         description="Species ID for auto-resolving default transcriptome. "
-                    "See data/references/species/ for available IDs.",
+                    f"Supported IDs: {', '.join(REFERENCE_SPECIES_IDS)}. "
+                    "See data/references/species/ for available reference files.",
     )
-
-    # Antiviral / Evitar parameters — only effective when mode="antiviral"
     evitar_mode: Literal["existing", "predesign"] = Field(
         default="existing",
         description="Evitar mode. Only used when mode='antiviral'. "
@@ -152,18 +284,13 @@ class SirnaDesignInput(BaseModel):
         description="Evitar prediction algorithm. Only used when mode='antiviral'. "
                     "'CRISPR' is for Cas13 guide design.",
     )
-    strains_path: Optional[str] = None
-    ncores: int = 1
-
-    # GC constraints (shared)
-    maxgc: float = Field(default=0.60, ge=0.0, le=1.0)
-    mingc: float = Field(default=0.25, ge=0.0, le=1.0)
-    middlegc: float = Field(default=0.45, ge=0.0, le=1.0)
-
-    # Allow / ban lists
-    allow_path: Optional[str] = None
-    ban_path: Optional[str] = None
-
+    strains_path: Optional[str] = Field(default=None, description="Path to a multi-strain FASTA for cross-strain coverage in Evitar antiviral mode.")
+    ncores: int = Field(default=1, description="Number of CPU threads for Evitar.")
+    maxgc: float = Field(default=0.60, ge=0.0, le=1.0, description="Maximum allowed GC-content for siRNA candidates.")
+    mingc: float = Field(default=0.25, ge=0.0, le=1.0, description="Minimum allowed GC-content for siRNA candidates.")
+    middlegc: float = Field(default=0.45, ge=0.0, le=1.0, description="Midpoint GC-content used for suboptimal-GC scoring.")
+    allow_path: Optional[str] = Field(default=None, description="File with allowed siRNA sequences to force-include in Evitar predesign mode.")
+    ban_path: Optional[str] = Field(default=None, description="File with banned siRNA sequences to exclude in Evitar predesign mode.")
     blast_perc_identity: float = Field(
         default=90.0,
         ge=70.0,
@@ -178,14 +305,6 @@ class SirnaDesignInput(BaseModel):
         default="G,10,4",
         description="Bowtie2 --score-min function. Default G,10,4 allows ~2 mismatches in 21 nt.",
     )
-
-
-# Scoring — INTERFACE LOCKED (v1.0.0)
-#
-# compute_sirna_rank_scores() is the canonical scoring function.
-# Do NOT change the ranking logic or score keys without updating
-# INTERFACE_LOCKS.md §10 and re-running the full test suite.
-
 
 def compute_sirna_rank_scores(candidates: list[Candidate]) -> None:
     """Rank-based scoring across all candidates.
@@ -304,73 +423,22 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
     # ─────────────────────────────────────────────────────────────────────────
 
     def run(self, inp: Any, *, progress_callback=None) -> WorkflowResult:
-        """Accept ``SirnaDesignInput`` or a plain dict."""
+        """Accept ``SirnaDesignInput`` or a plain dict.
+
+        Delegates the standard generate → evaluate → score → rank pipeline to
+        :meth:`BaseDomainWorkflow.run`, moving siRNA-specific GC filtering and
+        rank-based scoring into :meth:`rank_and_format` so future base-class
+        logic is inherited automatically.
+        """
         if isinstance(inp, dict):
             inp = SirnaDesignInput(**inp)
         self._workflow_state = {"_sirna_input": inp}
         self._trace_records = []
 
-        candidates = self.generate_candidates(inp)
-        _LOGGER.info("workflow_generated_candidates count=%d workflow=%s", len(candidates), self.name)
-        if progress_callback:
-            progress_callback({
-                "event": "generate_complete",
-                "candidate_count": len(candidates),
-                "workflow": self.name,
-            })
+        result = super().run(inp, progress_callback=progress_callback)
 
-        for i, candidate in enumerate(candidates):
-            _LOGGER.info("workflow_evaluating_candidate idx=%d total=%d workflow=%s", i + 1, len(candidates), self.name)
-            metrics = self.evaluate(candidate)
-            # Unified GC filter — applied in evaluate phase for both branches
-            gc_content = metrics.get("gc_content")
-            if gc_content is not None and not (inp.mingc <= gc_content <= inp.maxgc):
-                candidate.status = "gc_rejected"
-                _LOGGER.info(
-                    "sirna_gc_rejected idx=%d seq=%s gc=%.3f range=[%.2f,%.2f]",
-                    i + 1, candidate.sequence, gc_content, inp.mingc, inp.maxgc,
-                )
-            else:
-                candidate.status = "evaluated"
-            if progress_callback:
-                progress_callback({
-                    "event": "evaluate_progress",
-                    "current": i + 1,
-                    "total": len(candidates),
-                    "candidate_id": candidate.id,
-                    "workflow": self.name,
-                })
-
-        # If no candidates were generated at all, return early
-        if not candidates:
-            return self.rank_and_format([])
-
-        # Filter out GC-rejected candidates before scoring and ranking
-        passing = [c for c in candidates if c.status != "gc_rejected"]
-        _LOGGER.info("workflow_gc_filter total=%d passing=%d rejected=%d", len(candidates), len(passing), len(candidates) - len(passing))
-
-        if not passing:
-            return WorkflowResult(
-                success=False,
-                task_id="",
-                summary="No candidates passed GC filter.",
-                errors=["all_candidates_gc_rejected"],
-            )
-
-        # Rank-based scoring across passing candidates only
-        compute_sirna_rank_scores(passing)
-
-        _LOGGER.info("workflow_evaluation_complete count=%d workflow=%s", len(passing), self.name)
-
-        # Limit final output to candidate_count
-        if len(passing) > inp.candidate_count:
-            passing = passing[:inp.candidate_count]
-
-        result = self.rank_and_format(passing)
-        # Aggregate per-candidate tool records + workflow-level records into trace
-        result.trace = list(self._trace_records)
-        for c in passing:
-            result.trace.extend(c.tool_records)
+        # Attach workflow-level state writeback (base.run() already aggregates
+        # per-candidate tool records into result.trace).
         merged_wb = dict(self._workflow_state)
         merged_wb["_workflow_params"] = inp.model_dump()
         result._state_writeback = merged_wb  # type: ignore[attr-defined]
@@ -408,8 +476,49 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
         if not candidates:
             return self._empty_result("No candidates produced.")
 
+        # Apply the siRNA GC filter using the input cached in workflow state.
+        inp = self._workflow_state.get("_sirna_input")
+        if inp is not None:
+            passing: list[Candidate] = []
+            for c in candidates:
+                metrics = c.metadata.get("metrics_bundle", {})
+                gc_content = metrics.get("gc_content")
+                if gc_content is not None and not (inp.mingc <= gc_content <= inp.maxgc):
+                    c.status = "gc_rejected"
+                    _LOGGER.info(
+                        "sirna_gc_rejected seq=%s gc=%.3f range=[%.2f,%.2f]",
+                        c.sequence, gc_content, inp.mingc, inp.maxgc,
+                    )
+                else:
+                    c.status = "evaluated"
+                    passing.append(c)
+            _LOGGER.info(
+                "workflow_gc_filter total=%d passing=%d rejected=%d",
+                len(candidates), len(passing), len(candidates) - len(passing),
+            )
+        else:
+            # Fallback when rank_and_format is invoked outside of run().
+            passing = list(candidates)
+            for c in passing:
+                c.status = "evaluated"
+
+        if not passing:
+            return WorkflowResult(
+                success=False,
+                task_id="",
+                summary="No candidates passed GC filter.",
+                errors=["all_candidates_gc_rejected"],
+            )
+
+        # Rank-based scoring across passing candidates only.
+        compute_sirna_rank_scores(passing)
+        _LOGGER.info("workflow_evaluation_complete count=%d workflow=%s", len(passing), self.name)
+
+        if inp is not None and len(passing) > inp.candidate_count:
+            passing = passing[:inp.candidate_count]
+
         ranked = sort_candidates_by_score(
-            candidates, score_key="total_rank", descending=False
+            passing, score_key="total_rank", descending=False
         )
         best = ranked[0] if ranked else None
 
@@ -438,7 +547,7 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
             "---",
             *detail_lines,
         ]
-        return WorkflowResult(
+        result = WorkflowResult(
             success=True,
             task_id=f"sirna_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
             best_candidate=best,
@@ -446,16 +555,23 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
             summary="\n".join(summary_parts),
             errors=[],
         )
+        # Workflow-level trace records come first; base.run() appends per-candidate
+        # tool records after rank_and_format returns.
+        result.trace.extend(self._trace_records)
+        return result
 
     # ─────────────────────────────────────────────────────────────────────────
     # Candidate generation — antiviral branch
     # ─────────────────────────────────────────────────────────────────────────
 
     def _generate_antiviral(self, inp: SirnaDesignInput) -> list[Candidate]:
-        # Resolve target FASTA
+        # Resolve target FASTA.  Evitar's `predictsiRNA` unconditionally
+        # discards the first input line as a FASTA header, so the file must
+        # contain a proper `>` header or the whole sequence is lost.
         fasta_path = inp.target_fasta_path
         if not fasta_path and inp.target_sequence:
-            fasta_path = save_sequence(inp.target_sequence, prefix="sirna_target")
+            seq = "".join(inp.target_sequence.split())
+            fasta_path = save_sequence(f">sirna_target\n{seq}\n", prefix="sirna_target")
             _LOGGER.info("sirna_antiviral_sequence_saved path=%s", fasta_path)
         if not fasta_path:
             _LOGGER.error("sirna_antiviral_no_target")
@@ -768,7 +884,7 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
         relative to the project root.
         """
         inp = self._workflow_state.get("_sirna_input")
-        species = getattr(inp, "species", "homo_sapiens") if inp else "homo_sapiens"
+        species = getattr(inp, "species", DEFAULT_REFERENCE_SPECIES_ID) if inp else DEFAULT_REFERENCE_SPECIES_ID
         # Allow override via environment variable
         import os
         env_species = os.environ.get("RNA_AGENT_DEFAULT_SPECIES", "").strip()
@@ -800,77 +916,3 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
                     return seq
         return ""
 
-
-# LLM Critic Configuration — INTERFACE LOCKED (v1.0.0)
-#
-# SIRNA_CRITIC_CONFIG.adjustable_params keys are consumed by
-# ExecutionController._apply_parameter_overrides().
-# Do NOT rename adjustable_params keys without updating
-# INTERFACE_LOCKS.md §10 and re-running the full test suite.
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-SIRNA_CRITIC_CONFIG = CriticConfig(
-    workflow_name="sirna_design",
-    workflow_description="Design siRNA candidates for gene silencing",
-    evaluation_dimensions=[
-        "Duplex MFE (RNAcofold): more negative = more stable duplex. Very positive values indicate poor binding.",
-        "Off-target count should be minimal. High off-target counts reduce specificity and increase toxicity.",
-        "GC content of siRNA should be 30-60%. Too high GC increases off-target effects; too low reduces stability.",
-        "Consecutive homopolymers (>3 identical bases) should be avoided as they can cause non-specific effects.",
-        "For antiviral mode: Evitar predicted efficiency should be high.",
-    ],
-    adjustable_params={
-        "mode": {
-            "type": "enum",
-            "values": ["antiviral", "generic"],
-            "hint": "Switch between antiviral (uses Evitar) and generic (sliding window) modes.",
-        },
-        "candidate_count": {
-            "type": "int",
-            "min": 1,
-            "max": 100,
-            "hint": "Number of candidates to generate. Increase if too few survive filtering.",
-        },
-        "maxgc": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Maximum GC content filter. Lower if candidates have too-high GC.",
-        },
-        "mingc": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Minimum GC content filter. Raise if candidates have too-low GC.",
-        },
-        "off_target_scan": {
-            "type": "bool",
-            "hint": "Whether to run BLAST off-target scan. Keep True unless it's failing.",
-        },
-        "blast_perc_identity": {
-            "type": "float",
-            "min": 70.0,
-            "max": 100.0,
-            "hint": "BLAST percent identity threshold (only used when alignment_tool='blast'). Lower = stricter off-target filtering (fewer matches).",
-        },
-        "alignment_tool": {
-            "type": "enum",
-            "values": ["blast", "bowtie2"],
-            "hint": "Switch between BLAST (legacy, slower) and Bowtie2 (default, faster) off-target scan engines.",
-        },
-        "bowtie2_score_min": {
-            "type": "str",
-            "hint": "Bowtie2 --score-min function (only used when alignment_tool='bowtie2'). Default G,10,4 allows ~2 mismatches in 21 nt. Tighten (e.g. G,20,8) for stricter filtering.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-)
-
-
-class SirnaDesignLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for siRNA design workflow."""
-
-    def _default_config(self) -> CriticConfig:
-        return SIRNA_CRITIC_CONFIG

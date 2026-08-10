@@ -25,3 +25,6 @@ uvicorn[standard]>=0.27,<1.0
 # Structure parsing and alignment (aptamer design workflow)
 biopython>=1.79
 freesasa>=2.2
+
+# TUI form renderer
+textual>=0.50.0

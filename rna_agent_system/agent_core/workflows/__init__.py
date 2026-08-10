@@ -1,7 +1,7 @@
 """Reusable workflow orchestration (mRNA ranking and future UTR/circRNA variants).
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更       ║
+║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v2.6.3) —— 禁止单方面变更       ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件导出了 full_length_mrna_design workflow 的公开 API。                   ║
 ║  增删导出项必须同步更新全部关联文件并重新跑通端到端测试。                       ║
@@ -29,7 +29,7 @@ from agent_core.workflows.evaluators import (
     UnpairedFractionEvaluator,
 )
 from agent_core.workflows.scoring import (
-    FullLengthMrnaScoringFunction,
+    FullLengthBMCScoringFunction,
     MrnaCdsScoringFunction,
     ScoringFunction,
     SgRnaScoringFunction,
@@ -42,7 +42,6 @@ from agent_core.workflows.scoring import (
 # 关联文件清单见 agent_core/workflows/aso_target_screening.py 顶部的
 # INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from agent_core.workflows.aso_target_screening import (
-    AsoScreeningCritic,
     AsoScreeningInput,
     AsoTargetScreeningWorkflow,
 )
@@ -57,7 +56,7 @@ from agent_core.workflows.full_length_mrna_design import (
     score_full_length_mrna_candidate,
 )
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
-# RnaAptamerDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更
+# RnaAptamerDesignWorkflow INTERFACE LOCK (v1.4.2) —— 禁止单方面变更
 # 关联文件清单见 agent_core/workflows/rna_aptamer_design.py 顶部的
 # INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from agent_core.workflows.rna_aptamer_design import (
@@ -123,7 +122,7 @@ __all__ = [
     "UTR5MrlEvaluator",
     "UnpairedFractionEvaluator",
     # Scoring
-    "FullLengthMrnaScoringFunction",
+    "FullLengthBMCScoringFunction",
     "MrnaCdsScoringFunction",
     "ScoringFunction",
     "SgRnaScoringFunction",
@@ -131,7 +130,6 @@ __all__ = [
     "normalize_score",
     "safe_divide",
     # Workflows
-    "AsoScreeningCritic",
     "AsoScreeningInput",
     "AsoTargetScreeningWorkflow",
     "BaseDomainWorkflow",

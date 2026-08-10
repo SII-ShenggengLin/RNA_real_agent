@@ -6,7 +6,6 @@ from typing import Any, Optional
 from unittest.mock import MagicMock
 
 from agent_core.capabilities.base import CapabilityResult
-from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
 from agent_core.workflow_models import WorkflowResult
 
 
@@ -19,22 +18,6 @@ def make_mock_capability(output: dict[str, Any]) -> MagicMock:
         output=output,
     )
     return cap
-
-
-def build_mock_plan(target: str, input_binding: dict[str, Any]) -> ExecutionPlan:
-    """Build a single-step ExecutionPlan for *target* with *input_binding*."""
-    return ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="s1",
-                type="workflow",
-                target=target,
-                input_binding=input_binding,
-                output_key="result",
-            )
-        ],
-        max_retries=2,
-    )
 
 
 def reverse_complement_rna(seq: str) -> str:
@@ -293,81 +276,6 @@ def make_good_quality_tertiary_result() -> WorkflowResult:
         summary="High quality tertiary structure for critic testing",
         errors=[],
     )
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# ExecutionController helpers
-# ═══════════════════════════════════════════════════════════════════════════════
-
-
-def build_controller(
-    registry,
-    workflow,
-    workflow_name: str,
-) -> ExecutionController:
-    """Build an :class:`ExecutionController` with a single workflow registered."""
-    return ExecutionController(
-        capability_registry=registry,
-        workflow_registry={workflow_name: workflow},
-    )
-
-
-def run_workflow_step(
-    controller: ExecutionController,
-    workflow_name: str,
-    input_binding: dict[str, Any],
-    output_key: str = "result",
-    state: Optional[dict[str, Any]] = None,
-    max_retries: int = 2,
-) -> dict[str, Any]:
-    """Execute a single-step plan and return the result state.
-
-    Previously duplicated in ~30 test files.
-    """
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target=workflow_name,
-                input_binding=input_binding,
-                output_key=output_key,
-            )
-        ],
-        max_retries=max_retries,
-    )
-    return controller.execute(plan, state or {})
-
-
-def assert_controller_success(
-    result_state: dict[str, Any],
-    output_key: Optional[str] = None,
-    retry_count: int = 0,
-) -> None:
-    """Assert that a controller execution succeeded with expected log events."""
-    assert result_state.get("_plan_executed") is True, "Plan was not executed"
-    if output_key is not None:
-        assert output_key in result_state, f"Missing output_key: {output_key}"
-    assert result_state.get("retry_count", 0) == retry_count, (
-        f"Unexpected retry_count: {result_state.get('retry_count')}"
-    )
-    assert "_critic_should_retry" not in result_state
-
-    log = result_state.get("_execution_log", [])
-    assert any(e.get("event") == "step_start" for e in log), "Missing step_start event"
-    assert any(e.get("event") == "step_done" for e in log), "Missing step_done event"
-    assert any(e.get("event") == "plan_complete" for e in log), "Missing plan_complete event"
-
-
-def collect_progress_events(
-    controller: ExecutionController,
-    plan: ExecutionPlan,
-    state: Optional[dict[str, Any]] = None,
-) -> list[dict[str, Any]]:
-    """Execute a plan with a progress callback and return captured events."""
-    events: list[dict[str, Any]] = []
-    controller.execute(plan, state or {}, progress_callback=events.append)
-    return events
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

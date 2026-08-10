@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from tests.helpers import make_mock_capability
 
+from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
@@ -85,10 +86,9 @@ def test_input_defaults():
     inp = RnaTertiaryStructureDesignInput(structure_filepath="test.pdb")
     assert inp.design_tools == "all"
     assert inp.n_samples_per_tool == 3
-    assert inp.rhodesign_temperature == 1e-5
+    assert inp.rhodesign_temperature == 0.1
+    assert inp.rhodesign_temperature_range == 0.05
     assert inp.ribodiffusion_sampling_steps == 50
-    assert inp.weight_rhofold == 0.50
-    assert inp.weight_rmsd == 0.50
 
 
 def test_input_dict_coercion():
@@ -276,6 +276,31 @@ def test_generate_candidates_counts_logged():
     assert len(ribodiffusion_cands) == 2
 
 
+def test_generate_candidates_passes_distinct_temperatures():
+    """Each RhoDesign call should receive a distinct temperature."""
+    _ensure_tmp_pdb()
+    reg = _make_registry_for_generation()
+    wf = RnaTertiaryStructureDesignWorkflow(reg)
+    inp = RnaTertiaryStructureDesignInput(
+        structure_filepath=_TMP_PDB_PATH,
+        design_tools="rhodesign",
+        n_samples_per_tool=3,
+    )
+    captured_temps = []
+    original_invoke = reg.get("design_rna_sequence_with_rhodesign").invoke
+
+    def _wrapped_invoke(args, state=None):
+        captured_temps.append(args.get("temperature"))
+        return original_invoke(args, state=state)
+
+    reg.get("design_rna_sequence_with_rhodesign").invoke = _wrapped_invoke
+    candidates = wf.generate_candidates(inp)
+    assert len(candidates) == 3
+    assert len(captured_temps) == 3
+    assert len(set(captured_temps)) == 3
+    assert all(isinstance(t, float) for t in captured_temps)
+
+
 def test_generate_candidates_rhodesign_only():
     """Generate candidates from RhoDesign only."""
     _ensure_tmp_pdb()
@@ -298,6 +323,24 @@ def test_generate_candidates_missing_structure():
     inp = RnaTertiaryStructureDesignInput(structure_filepath="/nonexistent/path.pdb")
     candidates = wf.generate_candidates(inp)
     assert candidates == []
+
+
+def test_resolve_structure_filepath():
+    """resolve_project_path should locate benchmark structure files."""
+    from agent_core.file_manager import resolve_project_path
+    resolved = resolve_project_path("data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1ehz_clean.pdb")
+    assert resolved is not None
+    assert resolved.endswith("1ehz_clean.pdb")
+    assert Path(resolved).exists()
+
+
+def test_resolve_secondary_structure_filepath():
+    """resolve_project_path should locate secondary-structure contact maps."""
+    from agent_core.file_manager import resolve_project_path
+    resolved = resolve_project_path("data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1ehz_contact_map.npy")
+    assert resolved is not None
+    assert resolved.endswith("1ehz_contact_map.npy")
+    assert Path(resolved).exists()
 
 
 def test_generate_candidates_capability_missing():

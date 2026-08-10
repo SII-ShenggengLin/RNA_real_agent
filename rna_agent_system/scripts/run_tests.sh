@@ -25,16 +25,13 @@ case "${MODE}" in
       tests/test_compute_*.py \
       tests/test_tool_specs_output_models.py \
       tests/test_tool_registry_executor.py \
-      tests/test_tool_runtime.py \
       tests/test_session_memory.py \
       tests/test_workspace_manager.py \
       tests/test_workflow_models.py \
-      tests/test_deterministic_router.py \
       tests/test_file_manager_session.py \
       tests/test_partial_retry.py \
       tests/test_shuffle_cds_junction_codons.py \
       tests/test_viennarna_wrapper_output.py \
-      tests/test_llm_planner.py \
       tests/test_mrna_workflow.py \
       tests/test_sirna_design_workflow.py \
       -q --tb=short
@@ -48,21 +45,18 @@ case "${MODE}" in
       tests/test_compute_*.py \
       tests/test_tool_specs_output_models.py \
       tests/test_tool_registry_executor.py \
-      tests/test_tool_runtime.py \
       tests/test_session_memory.py \
       tests/test_workspace_manager.py \
       tests/test_workflow_models.py \
-      tests/test_deterministic_router.py \
       tests/test_file_manager_session.py \
       tests/test_partial_retry.py \
       tests/test_shuffle_cds_junction_codons.py \
       tests/test_viennarna_wrapper_output.py \
-      tests/test_llm_planner.py \
       tests/test_mrna_workflow.py \
       tests/test_sirna_design_workflow.py \
       tests/test_rna_aptamer_design.py \
       tests/test_bmc_workflow_e2e_mock.py \
-      tests/test_mrna_cds_design_comprehensive.py \
+      tests/test_mrna_cds_design.py \
       tests/test_full_length_mrna_design.py \
       tests/test_workflow_baseline_eval.py \
       tests/test_workflow_observability.py \
@@ -87,7 +81,7 @@ case "${MODE}" in
     # All tests including integration and slow
     # Requires all microservices + DeepSeek API balance
     echo "=== INTEGRATION tests (everything) ==="
-    python -m pytest tests/ -m "integration or slow or live_llm or not integration" -q --tb=short
+    python -m pytest tests/ -m "integration or slow or live_llm or known_issue" -q --tb=short
     ;;
 
   *)

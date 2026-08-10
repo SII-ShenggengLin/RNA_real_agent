@@ -15,12 +15,15 @@ import pytest
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
-from agent_core.tool_executor import ToolExecutor
+from agent_core.tool_executor import ToolExecutor, ToolResult
 from agent_core.tool_registry import ToolRegistry
-from agent_core.tool_runtime import ToolResult
-from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+from agent_core.agents.pipeline_agent import PipelineAgent
+from agent_core.agents.quality_agent import QualityAgent
+from agent_core.agents.specialist_agent import SpecialistAgent
+from agent_core.agents.synthesis_agent import SynthesisAgent
+from agent_core.pipeline.models import PipelinePlan
+from agent_core.quality_profiles.aso_target_screening import ASO_TARGET_SCREENING_QUALITY_PROFILE
 from agent_core.workflows.aso_target_screening import (
-    AsoScreeningCritic,
     AsoScreeningInput,
     AsoTargetScreeningWorkflow,
     _reverse_complement,
@@ -154,17 +157,20 @@ def _build_stub_registry(*, plfold_tool=None) -> CapabilityRegistry:
     return cap_reg
 
 
-def _build_controller_with_aso(*, plfold_tool=None) -> tuple[ExecutionController, CapabilityRegistry]:
+def _build_pipeline_agent_with_aso(*, plfold_tool=None) -> tuple[PipelineAgent, CapabilityRegistry]:
     cap_reg = _build_stub_registry(plfold_tool=plfold_tool)
     # Also register GC capability for downstream binding-resolution tests
     if not cap_reg.has("compute_rna_sequence_gc_content"):
         cap_reg.register("compute_rna_sequence_gc_content")
     wf = AsoTargetScreeningWorkflow(cap_reg)
-    controller = ExecutionController(
-        capability_registry=cap_reg,
-        workflow_registry={"aso_target_screening": wf},
+    specialist = SpecialistAgent(wf, ASO_TARGET_SCREENING_QUALITY_PROFILE)
+    specialist_registry = {"aso_target_screening": specialist}
+    pipeline_agent = PipelineAgent(
+        specialist_registry=specialist_registry,
+        quality_agent=QualityAgent(),
+        synthesis_agent=SynthesisAgent(),
     )
-    return controller, cap_reg
+    return pipeline_agent, cap_reg
 
 
 @pytest.fixture
@@ -271,156 +277,53 @@ def test_aso_workflow_dict_input(target_fasta_path: str):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Critic tests
+# Layer 3 integration tests — PipelineAgent + ASO workflow
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def test_aso_critic_never_retries():
-    """ASO screening critic is an empty interface and never triggers retry."""
-    critic = AsoScreeningCritic()
-    # Build a fake result with mixed-quality candidates
-    from agent_core.workflow_models import Candidate, WorkflowResult
-
-    cands = [
-        Candidate(
-            sequence="A" * 18,
-            sequence_type="aso",
-            metadata={"metrics_bundle": {"binding_dg_kcal_per_mol": -12.0, "mean_unpaired_prob": 0.8}},
-            scores={"composite_score": 1.0},
-        ),
-        Candidate(
-            sequence="G" * 18,
-            sequence_type="aso",
-            metadata={"metrics_bundle": {"binding_dg_kcal_per_mol": -3.0, "mean_unpaired_prob": 0.2}},
-            scores={"composite_score": 2.0},
-        ),
-    ]
-    wf_result = WorkflowResult(
-        success=True,
-        task_id="test",
-        all_candidates=cands,
-        summary="test",
-        errors=[],
+def test_pipeline_agent_aso_no_retry(target_fasta_path: str):
+    """ASO workflow executed by PipelineAgent succeeds without retry."""
+    pipeline_agent, _ = _build_pipeline_agent_with_aso()
+    plan = PipelinePlan.single(
+        workflow="aso_target_screening",
+        static_params={
+            "target_mrna_filepath": target_fasta_path,
+            "aso_length": 18,
+            "window_step": 3,
+            "top_n_windows": 5,
+            "binding_evaluation_tool": "rnaup",
+        },
+        plan_id="aso_no_retry",
+        output_alias="aso_result",
     )
-    state: dict[str, Any] = {}
-    assert critic.should_retry(wf_result, state) is False
-    # Critic must not mutate state (empty interface)
-    assert state == {}
+    result = pipeline_agent.execute(plan)
+
+    assert result.success is True
+    assert "n1" in result.node_results
+    node_result = result.node_results["n1"]
+    assert node_result.workflow_result is not None
+    assert node_result.workflow_result.success is True
+    assert len(node_result.workflow_result.all_candidates) > 0
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# Layer 3 integration tests — ExecutionController + ASO workflow
-# ═══════════════════════════════════════════════════════════════════════════════
-
-
-def test_execution_controller_aso_no_retry(target_fasta_path: str):
-    """ASO workflow executed by ExecutionController never triggers critic retry."""
-    controller, _ = _build_controller_with_aso()
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target="aso_target_screening",
-                input_binding={
-                    "target_mrna_filepath": target_fasta_path,
-                    "aso_length": 18,
-                    "window_step": 3,
-                    "top_n_windows": 5,
-                    "binding_evaluation_tool": "rnaup",
-                },
-                output_key="aso_result",
-            )
-        ],
-        max_retries=2,
+def test_pipeline_agent_aso_dict_input(target_fasta_path: str):
+    """PipelineAgent passes dict input parameters through to the workflow."""
+    pipeline_agent, _ = _build_pipeline_agent_with_aso()
+    plan = PipelinePlan.single(
+        workflow="aso_target_screening",
+        static_params={
+            "target_mrna_filepath": target_fasta_path,
+            "aso_length": 18,
+            "top_n_windows": 3,
+            "binding_evaluation_tool": "rnaup",
+        },
+        plan_id="aso_dict_input",
+        output_alias="aso_result",
     )
-    state: dict[str, Any] = {}
-    final_state = controller.execute(plan, state)
+    result = pipeline_agent.execute(plan)
 
-    # Workflow succeeded
-    assert final_state.get("workflow_result") is not None
-    assert final_state["workflow_result"].success is True
-    assert len(final_state["workflow_result"].all_candidates) > 0
-
-    # No retry should have occurred
-    assert final_state.get("retry_count", 0) == 0
-    log = final_state["_execution_log"]
-    assert not any(e.get("event") == "critic_retry" for e in log)
-    assert not any(e.get("retries_exhausted") for e in log)
-
-    # Step output key and workflow_result both present
-    assert "aso_result" in final_state
-    assert "workflow_result" in final_state
-
-    # State writeback from workflow internal state should be merged
-    assert "_aso_input" in final_state
-    assert "target_filepath" in final_state
-
-
-def test_execution_controller_aso_dict_input(target_fasta_path: str):
-    """ExecutionController passes dict input binding through to the workflow."""
-    controller, _ = _build_controller_with_aso()
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target="aso_target_screening",
-                input_binding={
-                    "target_mrna_filepath": target_fasta_path,
-                    "aso_length": 18,
-                    "top_n_windows": 3,
-                    "binding_evaluation_tool": "rnaup",
-                },
-                output_key="aso_result",
-            )
-        ],
-        max_retries=2,
-    )
-    state: dict[str, Any] = {}
-    final_state = controller.execute(plan, state)
-
-    assert final_state["aso_result"].success is True
-    assert len(final_state["aso_result"].all_candidates) <= 3
-    assert final_state.get("retry_count", 0) == 0
-
-
-def test_execution_controller_aso_binding_resolution(target_fasta_path: str):
-    """ExecutionController resolves $state bindings for downstream capability steps."""
-    controller, _ = _build_controller_with_aso()
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target="aso_target_screening",
-                input_binding={
-                    "target_mrna_filepath": target_fasta_path,
-                    "aso_length": 18,
-                    "window_step": 3,
-                    "top_n_windows": 2,
-                    "binding_evaluation_tool": "rnaup",
-                },
-                output_key="aso_result",
-            ),
-            PlanStep(
-                step_id="step_2",
-                type="capability",
-                target="compute_rna_sequence_gc_content",
-                input_binding={
-                    "filepath": "$state.target_filepath",
-                },
-                output_key="gc_check",
-            ),
-        ],
-        max_retries=2,
-    )
-    state: dict[str, Any] = {}
-    final_state = controller.execute(plan, state)
-
-    # Step 1 output
-    assert "aso_result" in final_state
-    # Step 2 should have resolved $state.target_filepath
-    assert "gc_check" in final_state
-    assert final_state["gc_check"].success is True
-    assert "gc_content" in final_state["gc_check"].output
+    assert result.success is True
+    node_result = result.node_results["n1"]
+    assert node_result.workflow_result is not None
+    assert node_result.workflow_result.success is True
+    assert len(node_result.workflow_result.all_candidates) <= 3

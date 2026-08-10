@@ -25,6 +25,13 @@ from agent_core.sequence_utils import (
     resolve_species_name,
     _load_builtin_codon_tables,
 )
+from agent_core.constants.species import (
+    DEFAULT_CAI_SPECIES,
+    format_cai_species_aliases,
+    DEFAULT_RNARL_MODEL_TYPE,
+    RNARL_MODEL_TYPE_TO_CHECKPOINT,
+    format_rnarl_model_types,
+)
 
 # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
 # 关联文件清单见 microservices/linearfold_service/main.py 顶部的
@@ -648,7 +655,6 @@ def run_blastn_similarity_search(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: BlastnSearchOutput / run_blastn_similarity_search ToolSpec
     - agent_core/state.py :: blast_* fields
-    - agent_core/capabilities/writebacks.py :: blast writeback
     - microservices/blast_service/main.py :: BlastnRequest / BlastnResponse
 
     Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
@@ -886,7 +892,6 @@ def compute_rna_sequence_gc_content(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RnaGcContentOutput / compute_rna_sequence_gc_content ToolSpec
     - agent_core/state.py :: sequence_gc_* fields
-    - agent_core/capabilities/writebacks.py :: GC writeback
     - microservices/rna_sequence_metrics_service/main.py :: GcContentRequest / GcContentResponse
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
@@ -941,7 +946,6 @@ def compute_dot_bracket_unpaired_fraction(
       compute_dot_bracket_unpaired_fraction ToolSpec
     - agent_core/state.py :: dot_bracket_unpaired_fraction / dot_bracket_structure_length /
       dot_bracket_dot_count fields
-    - agent_core/capabilities/writebacks.py :: unpaired fraction writeback
     - microservices/rna_sequence_metrics_service/main.py ::
       UnpairedFractionRequest / UnpairedFractionResponse
 
@@ -992,7 +996,6 @@ def compute_rna_sequence_u_content(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RnaUContentOutput / compute_rna_sequence_u_content ToolSpec
     - agent_core/state.py :: sequence_u_* fields
-    - agent_core/capabilities/writebacks.py :: compute_rna_sequence_u_content writeback
     - microservices/rna_sequence_metrics_service/main.py :: UContentRequest / UContentResponse
     - rna_agent_system/docs/CONTRIBUTING.md
 
@@ -1042,11 +1045,10 @@ class CaiForCdsInput(BaseModel):
         description="Path to CDS sequence file (workspace or absolute); FASTA or plain text. Must be in-frame (length multiple of 3).",
     )
     species: str = Field(
-        default="Homo sapiens",
+        default=DEFAULT_CAI_SPECIES,
         description=(
             "Species name for the reference codon usage table. "
-            "Built-in aliases: human, mouse, rat, fly, worm, zebrafish, "
-            "arabidopsis, yeast, ecoli, bsubtilis, cho. "
+            f"Built-in aliases: {format_cai_species_aliases()}. "
             "If no built-in table matches, a custom_codon_table_path must be provided."
         ),
     )
@@ -1063,7 +1065,7 @@ class CaiForCdsInput(BaseModel):
 @tool(args_schema=CaiForCdsInput)
 def compute_cai_for_cds_sequence(
     filepath: str,
-    species: str = "Homo sapiens",
+    species: str = DEFAULT_CAI_SPECIES,
     custom_codon_table_path: Optional[str] = None,
 ) -> dict[str, Any]:
     """Compute Codon Adaptation Index (CAI) for a CDS sequence file.
@@ -1075,7 +1077,6 @@ def compute_cai_for_cds_sequence(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: CaiForCdsOutput / compute_cai_for_cds_sequence ToolSpec
     - agent_core/state.py :: cai_for_cds_* fields
-    - agent_core/capabilities/writebacks.py :: compute_cai_for_cds_sequence writeback
     - agent_core/sequence_utils.py :: normalize_cds_sequence / build_cai_weights / compute_cai
     - rna_agent_system/docs/CONTRIBUTING.md
 
@@ -1160,8 +1161,11 @@ class ShuffleCdsJunctionCodonsInput(BaseModel):
         description="Number of variant sequences to generate.",
     )
     species: str = Field(
-        default="Homo sapiens",
-        description="Species name for the reference codon usage table (same aliases as compute_cai_for_cds_sequence).",
+        default=DEFAULT_CAI_SPECIES,
+        description=(
+            "Species name for the reference codon usage table "
+            f"(same aliases as compute_cai_for_cds_sequence: {format_cai_species_aliases()})."
+        ),
     )
     seed: Optional[int] = Field(
         default=None,
@@ -1175,7 +1179,7 @@ def shuffle_cds_junction_codons(
     junction_end: str,
     codon_count: int = 6,
     num_variants: int = 8,
-    species: str = "Homo sapiens",
+    species: str = DEFAULT_CAI_SPECIES,
     seed: Optional[int] = None,
 ) -> dict[str, Any]:
     """Generate synonymous-codon variants at the N- or C-terminus of a CDS.
@@ -1191,7 +1195,6 @@ def shuffle_cds_junction_codons(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: ShuffleCdsJunctionCodonsOutput / shuffle_cds_junction_codons ToolSpec
     - agent_core/state.py :: shuffle_cds_junction_* fields
-    - agent_core/capabilities/writebacks.py :: shuffle_cds_junction_codons writeback
     - tests/test_shuffle_cds_junction_codons.py
 
     Args:
@@ -1355,7 +1358,6 @@ def design_sirna_with_evitar(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
     - agent_core/state.py :: evitar_* fields
-    - agent_core/capabilities/writebacks.py :: Evitar writeback
     - microservices/evitar_service/main.py :: EvitarDesignRequest / EvitarDesignResponse
 
     Args:
@@ -2002,7 +2004,6 @@ def design_sgrna_handle_with_crgpt(
     interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: SgRNADesignOutput
     - agent_core/state.py :: sgrna_design_* fields
-    - agent_core/capabilities/writebacks.py :: sgrna_design writeback
 
     Args:
         seed_sequence: Inline seed/wildtype sgRNA handle sequence (DNA/RNA).
@@ -2156,7 +2157,6 @@ class SgRNADesignScoreInput(BaseModel):
     - microservices/sgrna_design_service/main.py :: ScoreRequest
     - agent_core/tool_specs.py :: score_sgrna_handle_with_crgpt ToolSpec
     - agent_core/state.py :: sgrna_design_score_* fields
-    - agent_core/capabilities/writebacks.py :: score_sgrna writeback
     """
 
     sequence: str = Field(
@@ -2237,21 +2237,6 @@ def score_sgrna_handle_with_crgpt(
 # ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
 
 
-class _ViennaParamsMixin(BaseModel):
-    """Shared ViennaRNA energy-model parameters (mirrors upstream vrna_md_t / CLI flags)."""
-
-    temp_c: float = Field(default=37.0, description="Rescale energy parameters to this temperature (C).")
-    dangles: int = Field(default=2, ge=0, le=3, description="Dangling-end model: 0, 1, 2, or 3.")
-    no_lp: bool = Field(default=False, description="Disallow lonely pairs (helices of length 1).")
-    no_gu: bool = Field(default=False, description="Do not allow GU pairs.")
-    no_closing_gu: bool = Field(default=False, description="Do not allow GU pairs at the end of helices.")
-    salt: Optional[float] = Field(default=None, description="Salt concentration in molar (M).")
-    no_tetra: bool = Field(default=False, description="Omit special stabilizing energies for tri-/tetra-/hexaloops.")
-    energy_model: Optional[int] = Field(default=None, description="Set energy model (rarely used).")
-    nsp: Optional[str] = Field(default=None, description="Allow non-standard pairs, e.g. '-GA'.")
-    param_file: Optional[str] = Field(default=None, description="Custom energy parameter file path (or 'DNA').")
-
-
 class FoldViennaInput(BaseModel):
     """Input for ViennaRNA RNAfold (MFE + optional partition function / centroid / MEA)."""
 
@@ -2292,7 +2277,6 @@ class CodonwSlimAnalyzeInput(BaseModel):
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest
     - agent_core/tool_specs.py :: analyze_cds_codon_metrics_with_codonw_slim ToolSpec
     - agent_core/state.py :: codonw_* fields
-    - agent_core/capabilities/writebacks.py :: codonw writeback
     """
 
     filepath: str = Field(
@@ -2574,7 +2558,6 @@ class LinearDesignCdsInput(BaseModel):
     - microservices/lineardesign_service/main.py :: LinearDesignRequest
     - agent_core/tool_specs.py :: design_mrna_cds_with_lineardesign ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/capabilities/writebacks.py :: lineardesign writeback
     """
 
     filepath: str = Field(
@@ -2641,6 +2624,76 @@ class LinearDesignCdsBatchInput(BaseModel):
     )
 
 
+# Junction-aware LinearDesign tool (2026-08, additive; v0.2.0 locked schemas above
+# are untouched). Mirrors microservices/lineardesign_service/main.py ::
+# LinearDesignJunctionAwareRequest (/generate/cds_junction_aware).
+
+
+class LinearDesignCdsJunctionAwareInput(BaseModel):
+    """Input schema for junction-aware LinearDesign CDS design tool.
+
+    Synchronized with:
+    - microservices/lineardesign_service/main.py :: LinearDesignJunctionAwareRequest
+    - agent_core/tool_specs.py :: design_mrna_cds_junction_aware_with_lineardesign ToolSpec
+    """
+
+    filepath: str = Field(
+        ...,
+        description=(
+            "Path to a workspace file containing a protein sequence for LinearDesign CDS design. "
+            "Do not pass raw sequence text directly."
+        ),
+    )
+    protein_sequence: Optional[str] = Field(
+        default=None,
+        description="Optional explicit protein sequence; when provided (non-empty) it "
+        "overrides the sequence read from filepath.",
+    )
+    service_url: str = Field(
+        default="http://127.0.0.1:8014/generate/cds_junction_aware",
+        description="REST endpoint for the junction-aware LinearDesign CDS microservice.",
+    )
+    lambda_value: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="LinearDesign lambda balancing MFE and CAI.",
+    )
+    utr5_flank: Optional[str] = Field(
+        default=None,
+        description="Optional 5' UTR flank RNA sequence; the junction-side flank_nt "
+        "(default 21) nt are folded as fixed sequence with the CDS.",
+    )
+    utr3_flank: Optional[str] = Field(
+        default=None,
+        description="Optional 3' UTR flank RNA sequence; the junction-side flank_nt "
+        "(default 21) nt are folded as fixed sequence with the CDS.",
+    )
+    junction_weight: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="w_jun: penalty in kcal/mol per newly formed base pair touching a "
+        "junction window (0 disables the penalty).",
+    )
+    junction_window_nt: int = Field(
+        default=20,
+        gt=0,
+        description="Half-width (nt) of the junction windows around the flank|CDS boundaries.",
+    )
+    flank_nt: int = Field(
+        default=21,
+        description="Number of junction-side flank nucleotides used per side; must be "
+        "a multiple of 3 and >= 3.",
+    )
+    codon_usage_path: Optional[str] = Field(
+        default=None,
+        description="Optional codon usage CSV path passed through to LinearDesign service.",
+    )
+    verbose: bool = Field(
+        default=False,
+        description="Whether to enable verbose output in LinearDesign.",
+    )
+
+
 class RNARLCdsInput(BaseModel):
     """Input schema for RNARL CDS design tool.
 
@@ -2663,17 +2716,10 @@ class RNARLCdsInput(BaseModel):
         description="REST endpoint for the RNARL CDS generation microservice.",
     )
     model_type: str = Field(
-        default="Homo sapiens mRNA",
+        default=DEFAULT_RNARL_MODEL_TYPE,
         description=(
             "RNARL trained model variant (species / RNA type). "
-            "Must be one of the following 6 supported values: "
-            "`Homo sapiens mRNA` (default), "
-            "`Homo sapiens circular RNA`, "
-            "`Arabidopsis thaliana mRNA`, "
-            "`Escherichia coli mRNA`, "
-            "`Penicillium chrysogenum mRNA`, "
-            "`Chlamydomonas reinhardtii mRNA`, "
-            "`Thermococcus kodakarensis KOD1 mRNA`."
+            f"Supported values: {format_rnarl_model_types()}."
         ),
     )
     checkpoint_path: Optional[str] = Field(
@@ -2696,7 +2742,6 @@ class RhoFoldInput(BaseModel):
     INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RhoFoldOutput / predict_rna_tertiary_structure_with_rhofold ToolSpec
     - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
-    - agent_core/capabilities/writebacks.py :: rhofold writeback
 
     This wrapper exposes the single-sequence prediction mode only.
     MSA-based prediction is not exposed because local MSA databases
@@ -2764,6 +2809,10 @@ class RhoDesignInput(BaseModel):
         gt=0.0,
         description="Sampling temperature passed through to RhoDesign.",
     )
+    seed: Optional[int] = Field(
+        default=None,
+        description="Random seed for reproducible sampling. If omitted, the service generates a per-call seed.",
+    )
     device: int = Field(
         default=0,
         ge=0,
@@ -2815,7 +2864,6 @@ class RiboDiffusionInput(BaseModel):
 #   - agent_core/tools.py  ← 本文件
 #   - agent_core/tool_specs.py
 #   - agent_core/state.py
-#   - agent_core/capabilities/writebacks.py
 # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
 # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
 
@@ -3019,7 +3067,6 @@ class IRESfinderPredictionInput(BaseModel):
     - agent_core/tool_specs.py :: predict_putative_ires_with_iresfinder ToolSpec
     - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest
     - agent_core/state.py :: iresfinder_* fields
-    - agent_core/capabilities/writebacks.py :: IRESfinder writeback
     """
 
     filepath: str = Field(
@@ -3180,7 +3227,6 @@ def analyze_cds_codon_metrics_with_codonw_slim(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: CodonwSlimOutput / analyze_cds_codon_metrics_with_codonw_slim ToolSpec
     - agent_core/state.py :: codonw_* fields
-    - agent_core/capabilities/writebacks.py :: codonw writeback
     - microservices/codonw_slim_service/main.py :: CodonwAnalyzeRequest / CodonwAnalyzeResponse
 
     Wraps the `codonw-slim` library (CodonW) over HTTP. Input should be a **CDS**
@@ -4387,7 +4433,14 @@ def design_mrna_cds_with_lineardesign(
     - microservices/lineardesign_service/main.py
     - agent_core/tool_specs.py :: LinearDesignCdsOutput / ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/capabilities/writebacks.py :: lineardesign writeback
+
+    OPERATIONAL ENVELOPE (2026-07 experiment finding): the upstream LinearDesign
+    C++ binary is OOM-killed (returncode=-9/SIGKILL, surfaced as a 500 from the
+    microservice) on CDS of roughly 7 kb and longer (observed: Factor VIII 7053 nt,
+    Zika polyprotein 10257 nt, both deterministic). ~4 kb CDS (Spike 3822 nt) is
+    fine. Do not treat this as transient — it is a hard capacity boundary of the
+    tool; long targets must use RNARL/GEMORNA instead (workflow `design_tool`
+    parameter), and the boundary belongs in the manuscript's limitations.
 
     Args:
         filepath: Workspace file path containing the input protein sequence.
@@ -4464,7 +4517,6 @@ def design_mrna_cds_batch_with_lineardesign(
     - microservices/lineardesign_service/main.py :: LinearDesignBatchRequest/Response
     - agent_core/tool_specs.py :: LinearDesignCdsBatchOutput / ToolSpec
     - agent_core/state.py :: lineardesign_* fields
-    - agent_core/capabilities/writebacks.py :: lineardesign batch writeback
 
     Args:
         filepath: Workspace file path containing one or more protein sequences.
@@ -4552,11 +4604,120 @@ def design_mrna_cds_batch_with_lineardesign(
         _raise_service_error(exc, "LinearDesign batch")
 
 
+@tool(args_schema=LinearDesignCdsJunctionAwareInput)
+def design_mrna_cds_junction_aware_with_lineardesign(
+    filepath: str,
+    protein_sequence: Optional[str] = None,
+    service_url: str = "http://127.0.0.1:8014/generate/cds_junction_aware",
+    lambda_value: float = 0.0,
+    utr5_flank: Optional[str] = None,
+    utr3_flank: Optional[str] = None,
+    junction_weight: float = 0.0,
+    junction_window_nt: int = 20,
+    flank_nt: int = 21,
+    codon_usage_path: Optional[str] = None,
+    verbose: bool = False,
+) -> dict[str, Any]:
+    """Design an mRNA CDS with junction-aware LinearDesign (fixed UTR flanks + w_jun).
+
+    The full construct (flank5 + CDS + flank3) is folded as one sequence: the
+    junction-side flank slices are fixed nucleotides, and newly formed base pairs
+    touching the junction windows are penalized by ``junction_weight`` (kcal/mol)
+    inside the CKY objective. With both flanks empty the call degenerates to the
+    legacy LinearDesign behavior.
+
+    Synchronized with:
+    - microservices/lineardesign_service/main.py :: /generate/cds_junction_aware
+    - agent_core/tool_specs.py :: LinearDesignCdsJunctionAwareOutput / ToolSpec
+
+    Args:
+        filepath: Workspace file path containing the input protein sequence.
+        protein_sequence: Optional explicit protein sequence overriding the file content.
+        service_url: REST endpoint for the junction-aware LinearDesign microservice.
+        lambda_value: LinearDesign lambda hyperparameter balancing MFE and CAI.
+        utr5_flank: Optional 5' UTR flank RNA sequence (junction-side flank_nt nt used).
+        utr3_flank: Optional 3' UTR flank RNA sequence (junction-side flank_nt nt used).
+        junction_weight: w_jun penalty in kcal/mol per window-touching pair (0 = off).
+        junction_window_nt: Half-width (nt) of the junction windows.
+        flank_nt: Junction-side flank length used per side (multiple of 3, >= 3).
+        codon_usage_path: Optional codon usage table path.
+        verbose: Whether to enable verbose output in the LinearDesign backend.
+
+    Returns:
+        Dict containing the full-construct sequence, CDS-only fields, junction
+        metadata (pair count, thermodynamic MFE), workspace filepath, raw stdout,
+        and stderr.
+
+    Raises:
+        ValueError: If the LinearDesign service is unreachable or returns an invalid payload.
+    """
+    protein = (protein_sequence or read_sequence(filepath)).strip()
+    try:
+        request_payload: dict[str, Any] = {
+            "protein_sequence": protein,
+            "lambda_value": lambda_value,
+            "junction_weight": junction_weight,
+            "junction_window_nt": junction_window_nt,
+            "flank_nt": flank_nt,
+            "verbose": verbose,
+        }
+        if utr5_flank:
+            request_payload["utr5_flank"] = utr5_flank
+        if utr3_flank:
+            request_payload["utr3_flank"] = utr3_flank
+        if codon_usage_path:
+            request_payload["codon_usage_path"] = codon_usage_path
+
+        # Same rule as the legacy wrapper, but on the full-construct length (nt).
+        total_nt = 3 * len(protein) + len(utr5_flank or "") + len(utr3_flank or "")
+        timeout = max(300, int(total_nt * 0.8) + 180)
+
+        response = requests.post(
+            service_url,
+            json=request_payload,
+            timeout=timeout,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "generated_sequence" not in payload:
+            raise ValueError("Missing `generated_sequence` in LinearDesign junction-aware response.")
+        output_filepath = save_sequence(
+            payload["generated_sequence"], prefix="lineardesign_cds_junction_aware"
+        )
+        return {
+            "input_filepath": filepath,
+            "output_filepath": output_filepath,
+            "generated_sequence": payload["generated_sequence"],
+            "structure": payload.get("structure", ""),
+            "mfe": float(payload.get("mfe", 0.0)),
+            "cai_score": float(payload.get("cai_score", 0.0)),
+            "cds_sequence": payload.get("cds_sequence", ""),
+            "cds_cai": float(payload.get("cds_cai", 0.0)),
+            "full_construct_sequence": payload.get(
+                "full_construct_sequence", payload["generated_sequence"]
+            ),
+            "utr5_flank": payload.get("utr5_flank", ""),
+            "utr3_flank": payload.get("utr3_flank", ""),
+            "junction_weight": float(payload.get("junction_weight", junction_weight)),
+            "junction_window_nt": int(payload.get("junction_window_nt", junction_window_nt)),
+            "flank_nt": int(payload.get("flank_nt", flank_nt)),
+            "junction_window_pair_count": int(payload.get("junction_window_pair_count", 0)),
+            "mfe_thermo": float(payload.get("mfe_thermo", payload.get("mfe", 0.0))),
+            "lambda_value": float(payload.get("lambda_value", lambda_value)),
+            "codon_usage_path": payload.get("codon_usage_path", codon_usage_path or ""),
+            "raw_output": payload.get("raw_output", ""),
+            "stderr": payload.get("stderr", ""),
+            "model": payload.get("model", "LinearDesign"),
+        }
+    except requests.RequestException as exc:
+        _raise_service_error(exc, "LinearDesign junction-aware")
+
+
 @tool(args_schema=RNARLCdsInput)
 def design_mrna_cds_with_rnarl(
     filepath: str,
     service_url: str = "http://127.0.0.1:8008/generate/cds",
-    model_type: str = "Homo sapiens mRNA",
+    model_type: str = DEFAULT_RNARL_MODEL_TYPE,
     checkpoint_path: Optional[str] = None,
     esm2_model_path: Optional[str] = None,
     device: Optional[str] = None,
@@ -4646,7 +4807,6 @@ def predict_rna_tertiary_structure_with_rhofold(
 
     INTERFACE LOCK (v0.2.0): Locked return dict keys. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: RhoFoldOutput
-    - agent_core/capabilities/writebacks.py :: rhofold writeback
 
     Args:
         filepath: Workspace file path containing the input RNA sequence.
@@ -4736,6 +4896,7 @@ def design_rna_sequence_with_rhodesign(
     secondary_structure_filepath: Optional[str] = None,
     service_url: str = "http://127.0.0.1:8006/design/from-structure",
     temperature: float = 1e-5,
+    seed: Optional[int] = None,
     device: int = 0,
     timeout_seconds: int = 3600,
 ) -> dict[str, Any]:
@@ -4751,6 +4912,7 @@ def design_rna_sequence_with_rhodesign(
         secondary_structure_filepath: Optional `.npy` contact-map path for the 2D-assisted mode.
         service_url: REST endpoint for the RhoDesign microservice.
         temperature: Sampling temperature for sequence generation.
+        seed: Random seed for reproducible sampling.
         device: CUDA device index used by the upstream RhoDesign script.
 
     Returns:
@@ -4761,15 +4923,17 @@ def design_rna_sequence_with_rhodesign(
         ValueError: If the RhoDesign service is unreachable or returns an invalid payload.
     """
     try:
+        payload: dict[str, Any] = {
+            "pdb_path": pdb_filepath,
+            "secondary_structure_path": secondary_structure_filepath,
+            "temperature": temperature,
+            "device": device,
+        }
+        if seed is not None:
+            payload["seed"] = seed
         response = requests.post(
             service_url,
-            json={
-                "pdb_path": pdb_filepath,
-                "secondary_structure_path": secondary_structure_filepath,
-                "temperature": temperature,
-                "device": device,
-                "timeout_seconds": timeout_seconds,
-            },
+            json={**payload, "timeout_seconds": timeout_seconds},
             timeout=timeout_seconds + 30,
         )
         response.raise_for_status()
@@ -5086,6 +5250,17 @@ def score_rna_protein_complex_with_egarps(
 
     Args:
         filepath: Path to a PDB file containing the RNA-protein complex structure.
+            WARNING (2026-07-27 campaign): this must be a REAL `.pdb` file.
+            (a) The EGARPS pipeline (external_repos/EGARPS/scripts/ins.py)
+            derives cache paths via `pdb.replace('.pdb', ...)` — a no-op for
+            non-`.pdb` inputs — and dumps its pickle caches OVER the input
+            file itself. (b) Its CIF reader rejects the OP3 atoms Protenix
+            writes (`OP3 not in STD_ATOM_NAMES`). (c) Its chain typing keys on
+            `re.search('protein', basename+...)` — basenames containing
+            'protein' (e.g. 'proteinx') misroute RNA chains into the protein
+            feature path. Convert mmCIF via gemmi into a sanitized `.pdb`
+            copy first (see experiments/run_known_aptamer_validation.py::
+            _proteinx_cif_to_pdb).
         academic: If True, use full academic mode (requires DSSR and NACCESS licenses).
             If False (default), use non-academic mode with reduced features.
         service_url: REST endpoint for the EGARPS+ microservice.
@@ -5138,7 +5313,6 @@ def predict_mrna_stability_with_rnastop(
     Any addition/removal must be synchronized with:
     - microservices/rnastop_service/main.py :: StabilityPredictionResponse
     - agent_core/tool_specs.py :: RNASTOPPredictionOutput
-    - agent_core/capabilities/writebacks.py :: RNASTOP writeback
     - agent_core/state.py :: rnastop_* fields
 
     Args:
@@ -5175,30 +5349,6 @@ def predict_mrna_stability_with_rnastop(
         ValueError: If the RNASTOP service is unreachable or returns an invalid payload.
     """
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
-    # RNASTOP hard limit: DNABERT encoder supports max 512 tokens.
-    # If exceeded, return a signal immediately without calling the microservice.
-    _RNASTOP_MAX_LEN = 512
-    if len(sequence) > _RNASTOP_MAX_LEN:
-        return {
-            "input_filepath": filepath,
-            "prediction_filepath": "",
-            "sequence": sequence,
-            "used_sequence": sequence[:_RNASTOP_MAX_LEN],
-            "sequence_length": len(sequence),
-            "used_length": _RNASTOP_MAX_LEN,
-            "truncated": True,
-            "exceeded_max_length": True,
-            "structure": "",
-            "loop_type": "",
-            "mfe": 0.0,
-            "mean_reactivity": 0.0,
-            "mean_deg_mg_ph10": 0.0,
-            "mean_deg_mg_50c": 0.0,
-            "overall_stability": 0.0,
-            "checkpoint_path": str(checkpoint_path or ""),
-            "device": str(device or ""),
-            "model": "RNASTOP",
-        }
     try:
         request_payload: dict[str, Any] = {"sequence": sequence}
         if structure is not None:
@@ -5598,7 +5748,6 @@ def extract_rna_sequence_from_cif(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: ExtractRnaFromCifOutput / ToolSpec
     - agent_core/state.py :: extract_rna_from_cif_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
 
     Args:
         cif_filepath: CIF/MMCIF file path.
@@ -5747,7 +5896,6 @@ def build_odesign_aptamer_input_json(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: BuildOdesignAptamerOutput / ToolSpec
     - agent_core/state.py :: odesign_aptamer_input_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
 
     Args:
         protein_structure_path: Protein structure file path.
@@ -5857,7 +6005,6 @@ def predict_protein_structure_with_proteinx(
     - microservices/proteinx_service/main.py
     - agent_core/tool_specs.py :: ProteinXProteinOutput / ToolSpec
     - agent_core/state.py :: protein_structure_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
 
     Args:
         filepath: FASTA file with protein sequence.
@@ -6140,7 +6287,7 @@ def analyze_rna_protein_interface(
     except ImportError:
         pass
     except Exception as exc:
-        _LOGGER.warning("freesasa_interface_analysis_failed: %s", exc)
+        logging.getLogger(__name__).warning("freesasa_interface_analysis_failed: %s", exc)
 
     return {
         "interface_contacts": interface_contacts,
@@ -6190,7 +6337,6 @@ def identify_protein_binding_hotspots(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: IdentifyProteinBindingHotspotsOutput / ToolSpec
     - agent_core/state.py :: hotspot_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
 
     Args:
         protein_structure_path: Path to the protein structure file (PDB or CIF).
@@ -6396,7 +6542,6 @@ def score_structure_alignment(
     canonical interface. Any addition/removal must be synchronized with:
     - agent_core/tool_specs.py :: StructureAlignmentOutput / ToolSpec
     - agent_core/state.py :: structure_rmsd / structure_tm_score fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
 
     Args:
         reference_pdb_filepath: Reference structure PDB path.
@@ -6458,8 +6603,8 @@ def score_structure_alignment(
     ref_chain = _get_chain(ref_structure, chain_id)
     pred_chain = _get_chain(pred_structure, chain_id)
 
-    ref_coords, ref_res_ids = _extract_coords(ref_chain, atom_type)
-    pred_coords, pred_res_ids = _extract_coords(pred_chain, atom_type)
+    ref_coords, _ = _extract_coords(ref_chain, atom_type)
+    pred_coords, _ = _extract_coords(pred_chain, atom_type)
 
     if not ref_coords:
         raise ValueError(
@@ -6576,7 +6721,9 @@ CRISPR_LANGCHAIN_TOOLS: list[Any] = [
     predict_crispr_off_target_with_crisot_fp,
     generate_crispr_fingerprint_with_crisot,
 ]
-MRNA_LANGCHAIN_TOOLS: list[Any] = [
+# Every non-siRNA/non-CRISPR tool (mRNA, structure prediction, aptamer, BLAST,
+# scoring, ...). Named GENERAL — not MRNA — because it covers far more than mRNA.
+GENERAL_LANGCHAIN_TOOLS: list[Any] = [
     score_rna_ligand_binding_with_gernabind,
     score_rna_ligand_binding_with_rnasmol,
     predict_mrna_stability_with_rnastop,
@@ -6600,6 +6747,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
     predict_rna_tertiary_structure_with_rhofold,
     design_mrna_cds_with_lineardesign,
     design_mrna_cds_batch_with_lineardesign,
+    design_mrna_cds_junction_aware_with_lineardesign,
     design_mrna_cds_with_rnarl,
     design_mrna_cds_with_gemorna,
     design_5utr_with_gemorna,
@@ -6620,7 +6768,7 @@ MRNA_LANGCHAIN_TOOLS: list[Any] = [
 ]
 
 ALL_LANGCHAIN_AGENT_TOOLS: list[Any] = (
-    SIRNA_LANGCHAIN_TOOLS + CRISPR_LANGCHAIN_TOOLS + MRNA_LANGCHAIN_TOOLS
+    SIRNA_LANGCHAIN_TOOLS + CRISPR_LANGCHAIN_TOOLS + GENERAL_LANGCHAIN_TOOLS
 )
 
 WORKFLOW_DEMO_LANGCHAIN_TOOLS: list[Any] = [workflow_demo_echo]

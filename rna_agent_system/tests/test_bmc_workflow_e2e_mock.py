@@ -1,4 +1,4 @@
-"""End-to-end mock test for BMC full-length mRNA design workflow.
+"""End-to-end mock test for reference-point driven BMC full-length mRNA design.
 
 Uses a mock CapabilityRegistry so that no external microservices are required.
 Validates the complete BMC loop: generate → evaluate → diagnose → regenerate → re-rank.
@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.workflow_models import Candidate
+from agent_core.workflows.coordinator import Issue, ReferencePointCoordinator
 from agent_core.workflows.full_length_mrna_design import (
     FullLengthMrnaDesignInput,
     FullLengthMrnaDesignWorkflow,
@@ -19,10 +20,11 @@ from agent_core.workflows.full_length_mrna_design import (
 class _FakeCapResult:
     """Minimal fake capability result."""
 
-    def __init__(self, output: dict | None = None, success: bool = True, error: str = ""):
+    def __init__(self, output: dict | None = None, success: bool = True, error: str = "", elapsed_time: float = 0.0):
         self.output = output or {}
         self.success = success
         self.error = error
+        self.elapsed_time = elapsed_time
 
 
 def _make_mock_registry() -> CapabilityRegistry:
@@ -30,20 +32,25 @@ def _make_mock_registry() -> CapabilityRegistry:
     registry = MagicMock(spec=CapabilityRegistry)
     _call_count = 0
 
+    def _unique_tag(n: int, length: int = 3) -> str:
+        # Per-call unique ACGT tag so BMC-regenerated UTR/CDS combinations
+        # never collide with already-seen candidates, regardless of how many
+        # capability calls each evaluation path makes.
+        chars = "ACGT"
+        return "".join(chars[(n // (4**i)) % 4] for i in range(length))
+
     def _fake_invoke(args: dict, state: dict | None = None) -> _FakeCapResult:
         nonlocal _call_count
         _call_count += 1
-        # Use call count to generate slightly different sequences so that
-        # deduplication does not swallow BMC-regenerated candidates.
-        suffix = "ACGT"[_call_count % 4]
+        tag = _unique_tag(_call_count)
         return _FakeCapResult(
             output={
                 # CDS design
-                "cds_sequence": ("ATG" * 99) + f"AT{suffix}",
-                "generated_sequence": ("ATG" * 99) + f"AT{suffix}",
+                "cds_sequence": ("ATG" * 99) + tag,
+                "generated_sequence": ("ATG" * 99) + tag,
                 # UTR design
-                "utr5_sequence": ("GGG" * 19) + f"GG{suffix}",
-                "utr3_sequence": ("CCC" * 19) + f"CC{suffix}",
+                "utr5_sequence": ("GGG" * 19) + tag,
+                "utr3_sequence": ("CCC" * 19) + tag,
                 # Folding
                 "mfe_kcal_per_mol": -45.0,
                 "structure": "." * 300,
@@ -89,18 +96,22 @@ class TestBMCEndToEnd:
             run_gc=True,
         )
 
-        # Patch junction evaluator to force a BMC iteration by returning
-        # an over-stable 5'UTR-CDS junction that impedes ribosome scanning.
-        with patch.object(
-            wf._junction_evaluator,
-            "evaluate",
-            return_value={
-                "junction_5utr_cds_mfe": -25.0,  # below -20 → triggers TOO_STABLE
-                "junction_5utr_cds_gc_diff": 0.05,
-                "junction_cds_3utr_mfe": -8.0,
-                "junction_cds_3utr_gc_diff": 0.10,
-            },
-        ):
+        # Force a reference-point gap on the 5'UTR-CDS junction by mocking the
+        # coordinator diagnosis.  This keeps the test deterministic and avoids
+        # relying on the exact score distribution produced by the mock registry.
+        def _force_junction_issue(self, norm_candidate_vector, reference_point, boolean_issues=None):
+            return [
+                Issue(
+                    issue_type="JUNCTION_5UTR_CDS_SCORE_BELOW_REFERENCE",
+                    value=0.3,
+                    target=0.8,
+                    violation=0.5,
+                    affected_modules=("5UTR", "CDS"),
+                    evidence="Mock junction gap for testing",
+                )
+            ]
+
+        with patch.object(ReferencePointCoordinator, "diagnose", _force_junction_issue):
             result = wf.run(inp)
 
         assert result.success is True
@@ -108,18 +119,18 @@ class TestBMCEndToEnd:
         assert len(result.all_candidates) > 0
         # BMC trace should be recorded in workflow state
         assert hasattr(wf, "_bmc_trace")
-        # Since junction is over-stable, at least one round of BMC should execute
+        # Since a junction gap was diagnosed, at least one round of BMC should execute
         assert len(wf._bmc_trace) >= 1
         # First round should have diagnosed the junction issue
         first_round = wf._bmc_trace[0]
         assert first_round.round_num == 1
         assert any(
-            i.issue_type == "JUNCTION_5UTR_CDS_TOO_STABLE"
+            i.issue_type == "JUNCTION_5UTR_CDS_SCORE_BELOW_REFERENCE"
             for i in first_round.issues_found
         )
 
     def test_bmc_run_no_issues_no_extra_rounds(self):
-        """If all metrics pass thresholds, BMC should not trigger extra rounds."""
+        """If no reference-point gaps exist, BMC should not trigger extra rounds."""
         registry = _make_mock_registry()
         wf = FullLengthMrnaDesignWorkflow(registry)
 
@@ -131,39 +142,16 @@ class TestBMCEndToEnd:
             run_gc=True,
         )
 
-        # Patch the full workflow evaluate() to return metrics that all pass
-        # coordinator thresholds, so no BMC rounds are triggered.
-        def _fake_evaluate(candidate):
-            return {
-                "full_length_mfe": -80.0,  # well below -50 threshold
-                "cds_cai": 0.85,
-                "cds_mfe": -50.0,
-                "cds_gc": 0.52,
-                "cds_length": 300,
-                "utr5_ires_potential": 0.2,
-                "utr5_length": 60,
-                "utr3_length": 60,
-                "utr5_mfe": -10.0,
-                "overall_stability": 0.80,
-                "total_length": 420,
-                "fold_tool": "ViennaRNA",
-                "utr5_predicted_mrl": 8.0,
-                "utr3_predicted_stability": 0.70,
-                "junction_5utr_cds_mfe": -20.0,
-                "junction_5utr_cds_gc_diff": 0.02,
-                "junction_cds_3utr_mfe": -18.0,
-                "junction_cds_3utr_gc_diff": 0.03,
-            }
-
-        with patch.object(wf, "evaluate", _fake_evaluate):
+        # Mock coordinator diagnosis to always return no issues.
+        with patch.object(ReferencePointCoordinator, "diagnose", return_value=[]):
             result = wf.run(inp)
 
         assert result.success is True
         # No issues → no BMC rounds beyond initial generation
         assert len(wf._bmc_trace) == 0
 
-    def test_bmc_ranking_prefers_bmc_score(self):
-        """When BMC scoring is active, ranking should use total_score."""
+    def test_bmc_ranking_prefers_asf_winner(self):
+        """When reference-point optimization is active, the best candidate is selected by ASF."""
         registry = _make_mock_registry()
         wf = FullLengthMrnaDesignWorkflow(registry)
 
@@ -181,8 +169,8 @@ class TestBMCEndToEnd:
                     "cds_mfe": -50.0,
                     "cds_cai": 0.90,
                     "full_length_mfe": -70.0,
-                    "junction_5utr_cds_mfe": -20.0,
-                    "junction_cds_3utr_mfe": -20.0,
+                    "junction_5utr_cds_mfe_per_nt": -0.50,
+                    "junction_cds_3utr_mfe_per_nt": -0.50,
                     "junction_5utr_cds_gc_diff": 0.0,
                     "junction_cds_3utr_gc_diff": 0.0,
                 },
@@ -201,8 +189,8 @@ class TestBMCEndToEnd:
                     "cds_mfe": -20.0,
                     "cds_cai": 0.50,
                     "full_length_mfe": -30.0,
-                    "junction_5utr_cds_mfe": -5.0,
-                    "junction_cds_3utr_mfe": -5.0,
+                    "junction_5utr_cds_mfe_per_nt": -0.125,
+                    "junction_cds_3utr_mfe_per_nt": -0.125,
                     "junction_5utr_cds_gc_diff": 0.20,
                     "junction_cds_3utr_gc_diff": 0.20,
                 },
@@ -214,6 +202,9 @@ class TestBMCEndToEnd:
             metrics = c.metadata["metrics_bundle"]
             c.scores = wf.score(metrics)
 
+        wf._workflow_state["_full_length_input"] = FullLengthMrnaDesignInput(
+            protein_sequence="M" * 100
+        )
         result = wf.rank_and_format([cand_bad, cand_good])
         best = result.best_candidate
         assert best is not None
@@ -231,16 +222,19 @@ class TestBMCEndToEnd:
             utr_mode="short",
         )
 
-        with patch.object(
-            wf._junction_evaluator,
-            "evaluate",
-            return_value={
-                "junction_5utr_cds_mfe": -5.0,
-                "junction_5utr_cds_gc_diff": 0.05,
-                "junction_cds_3utr_mfe": -8.0,
-                "junction_cds_3utr_gc_diff": 0.10,
-            },
-        ):
+        def _force_junction_issue(self, norm_candidate_vector, reference_point, boolean_issues=None):
+            return [
+                Issue(
+                    issue_type="JUNCTION_CDS_3UTR_SCORE_BELOW_REFERENCE",
+                    value=0.3,
+                    target=0.8,
+                    violation=0.5,
+                    affected_modules=("CDS", "3UTR"),
+                    evidence="Mock junction gap for testing",
+                )
+            ]
+
+        with patch.object(ReferencePointCoordinator, "diagnose", _force_junction_issue):
             result = wf.run(inp)
 
         state = getattr(result, "_state_writeback", {})

@@ -5,13 +5,29 @@ from __future__ import annotations
 import json
 import logging
 import time
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Dict, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from agent_core.tool_registry import ToolNotRegisteredError, ToolRegistry
-from agent_core.tool_runtime import ToolResult
 from agent_core.workflow_models import Candidate, TaskState, ToolCallRecord
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class ToolResult(BaseModel):
+    """Standardized runtime result returned by tool wrappers."""
+
+    model_config = ConfigDict(extra="allow")
+
+    success: bool
+    tool_name: str
+    stdout: str = ""
+    stderr: str = ""
+    artifacts: Dict[str, Any] = Field(default_factory=dict)
+    metrics: Dict[str, Any] = Field(default_factory=dict)
+    error: Optional[Dict[str, Any]] = None
+    elapsed_time: float = 0.0
 
 
 def _truncate(text: str, limit: int = 400) -> str:

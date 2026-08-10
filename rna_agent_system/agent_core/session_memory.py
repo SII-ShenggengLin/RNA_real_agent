@@ -1,4 +1,4 @@
-"""Layer 4 — Session & Memory: in-memory context persistence."""
+"""Layer 5 — Session & Memory: in-memory context persistence."""
 
 from __future__ import annotations
 

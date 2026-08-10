@@ -4,6 +4,14 @@ from langchain_core.messages import HumanMessage
 
 class AgentState(TypedDict, total=False):
     """Shared state — framework fields only; tool results live in ``tool_results``."""
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # CLI END-TO-END INTERFACE LOCK (v2.0.0) — 禁止单方面变更
+    # The CLI (cli/form_chat.py) consumes the fields below. Renaming, removing,
+    # or narrowing their types will break audit report generation and multi-turn
+    # form prefilling. `_workflow_result_history` enables explicit cross-turn
+    # references (e.g. "与第一轮对比") covered by PA_015–PA_024. See
+    # docs/INTERFACE_LOCKS.md §20.
+    # ═══════════════════════════════════════════════════════════════════════════════
     # User / session
     messages: list[Any]
     current_task: str
@@ -12,7 +20,6 @@ class AgentState(TypedDict, total=False):
     # Workspace / shared design state
     workspace_files: list[str]
     input_sequence: str
-    current_filepath: str
     candidate_sequence: str
     # Retry / execution control
     retry_count: int
@@ -22,20 +29,30 @@ class AgentState(TypedDict, total=False):
     # Workflow output
     workflow_result: Any
     final_report: str
+    # JSON-serialized PipelineResult for single/multi-node pipeline audits.
+    pipeline_result: dict[str, Any]
     # Internal execution metadata
     _execution_plan: Any
-    _available_capabilities: list[str]
-    _available_workflows: list[str]
-    _workflow_param_schemas: dict[str, str]
     _execution_log: list[dict[str, Any]]
-    _llm_critic_enabled: bool
-    _critic_should_retry: bool
+    _quality_review_enabled: bool
+    _quality_auto_retry: bool
     _parameter_overrides: dict[str, Any]
     _last_workflow_params: dict[str, Any]
     _last_workflow_target: str
+    # Form-based parameter state
+    _form_params: dict[str, Any]                 # current turn form params
+    _last_form_params: dict[str, Any]            # previous turn form params (same workflow)
+    _last_form_params_by_workflow: dict[str, dict[str, Any]]  # per-workflow history
+    _user_explicit_params: list[str]             # params the user explicitly filled this turn
     _diagnosis_history: list[dict[str, Any]]
-    _llm_critic_error: dict[str, Any]
+    _quality_review_error: dict[str, Any]
     _plan_executed: bool
+    # Transient cross-turn context used by QualityAgent and CLI report generation
+    _previous_workflow_result: Any
+    # Multi-turn workflow result history, allowing the CLI/LLM report to reference
+    # any earlier turn (e.g. "与第一轮对比") instead of only the immediately
+    # previous turn. Each entry is a snapshot of that turn's ``workflow_result``.
+    _workflow_result_history: list[Any]
 
 def default_state(user_text: str) -> AgentState:
     return AgentState(

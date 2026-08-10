@@ -194,65 +194,21 @@ class SgRnaScoringFunction(ScoringFunction):
         return scores
 
 
-class FullLengthMrnaScoringFunction(ScoringFunction):
-    """Score full-length mRNA candidate for Borda-count ranking.
-
-    Returns per-module raw scores:
-      - cds_component: normalized CDS score (combined_score / cds_length)
-      - cds_combined_score: classic -mfe + codon_count * log(CAI)
-      - utr5_mrl: raw predicted MRL
-      - utr3_stability: raw predicted stability
-    """
-
-    def score(self, metrics: dict[str, Any]) -> dict[str, Any]:
-        cds_length = int(metrics.get("cds_length", 0))
-
-        # CDS component
-        cds_bundle = {
-            "mfe_kcal_per_mol": metrics.get("cds_mfe"),
-            "cai_score": metrics.get("cds_cai"),
-            "sequence_length": cds_length,
-        }
-        # Import here to avoid circular dependency at module load time
-        from agent_core.sequence_utils import score_mrna_candidate
-
-        cds_scores = score_mrna_candidate(cds_bundle)
-        cds_combined_score = cds_scores.get("combined_score", 0.0)
-        cds_component = (
-            cds_combined_score / cds_length if cds_length > 0 else None
-        )
-
-        # 5'UTR MRL
-        utr5_mrl = metrics.get("utr5_predicted_mrl")
-        utr5_component = float(utr5_mrl) if utr5_mrl is not None else None
-
-        # 3'UTR stability
-        utr3_stability = metrics.get("utr3_predicted_stability")
-        utr3_component = float(utr3_stability) if utr3_stability is not None else None
-
-        return {
-            "cds_component": cds_component,
-            "cds_combined_score": float(cds_combined_score),
-            "utr5_mrl": utr5_component,
-            "utr3_stability": utr3_component,
-        }
-
-
 class FullLengthBMCScoringFunction(ScoringFunction):
-    """Score full-length mRNA with junction-aware penalty terms.
+    """Score full-length mRNA into per-module raw scores.
 
-    Returns per-module **raw scores** (not a weighted sum).  Aggregation is
-    performed in ``rank_and_format`` via a 5-dimensional **equal-weight Borda
-    count** so that heterogeneous metrics (MFE, CAI, MRL, stability,
-    junction penalties) can be combined without arbitrary min-max bounds.
+    Returns per-module **raw scores** (not a weighted sum).  The workflow
+    aggregates them via reference-point optimization (Achievement Scalarizing
+    Function) in ``rank_and_format``.
 
-    Score components (raw values, passed to Borda ranking)
+    Score components (raw values, passed to reference-point optimization)
     ----------------
     cds_component      : combined_score / cds_length
     utr5_mrl           : predicted mean ribosomal load
     utr3_stability     : predicted 3'UTR stability
     full_mfe_score     : inverted full-length MFE (more negative = higher raw)
-    junction_score     : sum of inverted junction MFEs minus GC-diff penalties
+    junction_5utr_cds_score : inverted 5'UTR-CDS junction MFE/nt minus GC-diff penalty
+    junction_cds_3utr_score : inverted CDS-3'UTR junction MFE/nt minus GC-diff penalty
     """
 
     def score(self, metrics: dict[str, Any]) -> dict[str, float]:
@@ -288,25 +244,28 @@ class FullLengthBMCScoringFunction(ScoringFunction):
         else:
             scores["full_mfe_score"] = 0.0
 
-        # ── Junction score (NEW) ──
-        j1_mfe = metrics.get("junction_5utr_cds_mfe")
-        j2_mfe = metrics.get("junction_cds_3utr_mfe")
-        j1_gc_diff = metrics.get("junction_5utr_cds_gc_diff", 0.0)
-        j2_gc_diff = metrics.get("junction_cds_3utr_gc_diff", 0.0)
+        # ── Junction scores (length-normalized MFE) ──
+        # Use per-nt MFE so junctions of different effective lengths are comparable.
+        # More negative MFE → higher raw score (same sign convention as full MFE).
+        # GC-diff penalty uses coefficient 1.0 so that MFE and GC smoothness
+        # contribute on comparable scales (~0-0.5 vs ~0-1.0).
+        j1_mfe_per_nt = metrics.get("junction_5utr_cds_mfe_per_nt")
+        j2_mfe_per_nt = metrics.get("junction_cds_3utr_mfe_per_nt")
+        j1_gc_diff = metrics.get("junction_5utr_cds_gc_diff")
+        j2_gc_diff = metrics.get("junction_cds_3utr_gc_diff")
 
-        junction_score = 0.0
-        if j1_mfe is not None:
-            junction_score += -float(j1_mfe)
-        if j2_mfe is not None:
-            junction_score += -float(j2_mfe)
-        gc_penalty = 0.0
+        junction_5utr_cds_score = 0.0
+        if j1_mfe_per_nt is not None:
+            junction_5utr_cds_score += -float(j1_mfe_per_nt)
         if j1_gc_diff is not None:
-            gc_penalty += float(j1_gc_diff)
-        if j2_gc_diff is not None:
-            gc_penalty += float(j2_gc_diff)
-        junction_score -= 5.0 * gc_penalty
-        scores["junction_score"] = junction_score
+            junction_5utr_cds_score -= 1.0 * float(j1_gc_diff)
+        scores["junction_5utr_cds_score"] = junction_5utr_cds_score
 
-        # No total here — aggregation happens via equal-weight Borda count in
-        # rank_and_format so that each dimension contributes one rank.
+        junction_cds_3utr_score = 0.0
+        if j2_mfe_per_nt is not None:
+            junction_cds_3utr_score += -float(j2_mfe_per_nt)
+        if j2_gc_diff is not None:
+            junction_cds_3utr_score -= 1.0 * float(j2_gc_diff)
+        scores["junction_cds_3utr_score"] = junction_cds_3utr_score
+
         return scores

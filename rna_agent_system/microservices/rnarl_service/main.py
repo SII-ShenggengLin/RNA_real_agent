@@ -15,6 +15,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from transformers import AutoTokenizer, EsmModel
 
+from agent_core.constants.species import (
+    DEFAULT_RNARL_MODEL_TYPE,
+    RNARL_MODEL_TYPE_TO_CHECKPOINT,
+)
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RNARL_ROOT = PROJECT_ROOT / "external_repos" / "RNARL"
 RNARL_SCRIPTS_DIR = RNARL_ROOT / "scripts"
@@ -26,16 +31,8 @@ if str(RNARL_SCRIPTS_DIR) not in sys.path:
 
 from utils import ActorModel_encoder_esm2, Tokenizer  # type: ignore  # noqa: E402
 
-MODEL_TYPE_TO_CHECKPOINT = {
-    "Homo sapiens mRNA": "homo_mrna.pt",
-    "Homo sapiens circular RNA": "homo_circ.pt",
-    "Arabidopsis thaliana mRNA": "Arabidopsis.pt",
-    "Escherichia coli mRNA": "EscherichiaColi.pt",
-    "Penicillium chrysogenum mRNA": "PC.pt",
-    "Chlamydomonas reinhardtii mRNA": "CR.pt",
-    "Thermococcus kodakarensis KOD1 mRNA": "TK.pt",
-}
-DEFAULT_MODEL_TYPE = "Homo sapiens mRNA"
+MODEL_TYPE_TO_CHECKPOINT = RNARL_MODEL_TYPE_TO_CHECKPOINT
+DEFAULT_MODEL_TYPE = DEFAULT_RNARL_MODEL_TYPE
 MAX_PROTEIN_LENGTH = 1308
 MODEL_CONFIG: Dict[str, Any] = {
     "d_model": 768,

@@ -86,6 +86,74 @@ class RiboDiffusionResponse(BaseModel):
     stderr: str = ""
 
 
+# Mapping from common RNA modified nucleotides (HETATM residue names)
+# to canonical residue names so that the RiboDiffusion parser reads all
+# residues as standard ATOM records.
+_RNA_MODIFIED_RESIDUE_MAP: dict[str, str] = {
+    # G derivatives
+    "2MG": "  G",
+    "M2G": "  G",
+    "7MG": "  G",
+    "OMG": "  G",
+    "YYG": "  G",
+    # C derivatives
+    "5MC": "  C",
+    "OMC": "  C",
+    # U derivatives
+    "PSU": "  U",
+    "5MU": "  U",
+    "H2U": "  U",
+    # A derivatives
+    "1MA": "  A",
+}
+
+# Standard RNA residue names that may appear in HETATM records of already-
+# canonicalized PDB files (e.g., *_clean.pdb from the benchmark set).
+_RNA_STANDARD_RESIDUES: set[str] = {"  A", "  C", "  G", "  U"}
+
+
+def _preprocess_pdb_for_ribodiffusion(pdb_path: Path) -> tuple[Path, int]:
+    """Rewrite HETATM modified RNA residues as ATOM canonical residues.
+
+    RiboDiffusion's parser only reads ATOM lines, so modified nucleotides
+    (e.g., 2MG, PSU) are dropped and the resulting sequence is shorter than
+    the target. This function creates a temporary PDB where those residues
+    are converted to standard A/C/G/U ATOM records.
+
+    Returns:
+        Tuple of (path to use for upstream inference, number of modified
+        residue records that were canonicalized).
+    """
+    original_text = pdb_path.read_text(encoding="utf-8")
+    modified_count = 0
+    lines_out: list[str] = []
+    for line in original_text.splitlines(keepends=True):
+        if not (line.startswith("ATOM") or line.startswith("HETATM")):
+            lines_out.append(line)
+            continue
+        record = line[:6]
+        resi_name = line[17:20]
+        if record == "HETATM" and (
+            resi_name in _RNA_MODIFIED_RESIDUE_MAP
+            or resi_name in _RNA_STANDARD_RESIDUES
+        ):
+            canonical = _RNA_MODIFIED_RESIDUE_MAP.get(resi_name, resi_name)
+            new_line = "ATOM  " + line[6:17] + canonical + line[20:]
+            lines_out.append(new_line)
+            modified_count += 1
+        else:
+            lines_out.append(line)
+
+    if modified_count == 0:
+        return pdb_path, 0
+
+    SERVICE_WORKDIR.mkdir(parents=True, exist_ok=True)
+    tmp_dir = Path(tempfile.mkdtemp(prefix="ribodiffusion_pdb_", dir=SERVICE_WORKDIR))
+    preprocessed_path = tmp_dir / f"{pdb_path.stem}_canonical.pdb"
+    preprocessed_path.write_text("".join(lines_out), encoding="utf-8")
+    return preprocessed_path, modified_count
+
+
 def _resolve_checkpoint(checkpoint_name: str) -> Path:
     """Return absolute checkpoint path and verify existence."""
     ckpt_path = CKPT_DIR / f"{checkpoint_name}.pth"
@@ -136,6 +204,7 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
         raise HTTPException(status_code=500, detail=f"RiboDiffusion repo missing at {RIBODIFFUSION_ROOT}")
 
     pdb_path = _resolver.require_existing(payload.pdb_path, "PDB input")
+    preprocessed_path, modified_count = _preprocess_pdb_for_ribodiffusion(pdb_path)
     pdb_stem = pdb_path.name.replace(".pdb", "").replace(".PDB", "")
     if "/" in pdb_stem:
         pdb_stem = pdb_stem.split("/")[-1]
@@ -148,7 +217,7 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
         sys.executable,
         "main.py",
         "--PDB_file",
-        str(pdb_path),
+        str(preprocessed_path),
         "--save_folder",
         str(save_folder),
         "--deterministic" if payload.deterministic else "--nodeterministic",
@@ -206,6 +275,13 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
     sequences = [_read_fasta_sequence(fp) for fp in fasta_files]
     paths_str = [str(fp) for fp in fasta_files]
 
+    preprocessed_annotation = ""
+    if modified_count > 0:
+        preprocessed_annotation = (
+            f"[RiboDiffusionService] Preprocessed PDB: {preprocessed_path}; "
+            f"canonicalized {modified_count} modified residue records.\n"
+        )
+
     return RiboDiffusionResponse(
         input_pdb_path=str(pdb_path),
         pdb_id=pdb_stem,
@@ -216,6 +292,6 @@ def design_from_pdb(payload: RiboDiffusionRequest) -> RiboDiffusionResponse:
         checkpoint_path=str(ckpt_path),
         service_output_dir=str(run_root),
         fasta_dir=str(fasta_dir),
-        stdout=result.stdout.strip(),
+        stdout=preprocessed_annotation + result.stdout.strip(),
         stderr=result.stderr.strip(),
     )

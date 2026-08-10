@@ -23,12 +23,13 @@ Key design principles
 ║    - agent_core/workflows/rna_secondary_structure_design.py  ← 本文件        ║
 ║    - agent_core/workflows/base.py                                             ║
 ║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
-║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/quality_profiles/rna_secondary_structure_design.py            ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - agent_core/tool_executor.py                                              ║
@@ -38,8 +39,6 @@ Key design principles
 ║    - agent_core/workflow_models.py                                            ║
 ║    - tests/test_rna_secondary_structure_design.py                             ║
 ║    - tests/test_rna_secondary_structure_design_layer3.py                      ║
-║    - tests/test_rna_secondary_structure_design_full_stack.py                  ║
-║    - tests/test_rna_secondary_structure_design_comprehensive.py               ║
 ║                                                                               ║
 ║  当前测试状态：全部 67 个 pytest 用例通过（含 1 个 live LLM 测试）。           ║
 ║  规则：违反此规则的提交将被回退。                                             ║
@@ -74,9 +73,52 @@ class RnaSecondaryStructureDesignInput(BaseModel):
     or when you have strong domain-specific justification. Do NOT tweak defaults
     just because they "look like" they could be better.
     """
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    inverse_fold_filepath: str = Field(default=None, description="[inverse_fold] filepath: Workspace file: first non-empty line = dot-bracket structure; optional second line = IUPAC start hint.")
+    inverse_fold_temp_c: float = Field(default=37.0, description="[inverse_fold] temp_c: Temperature in Celsius.")
+    inverse_fold_dangles: int = Field(default=2, description="[inverse_fold] dangles: Dangling-end model.")
+    inverse_fold_no_gu: bool = Field(default=False, description="[inverse_fold] no_gu: Disallow GU pairs.")
+    inverse_fold_no_closing_gu: bool = Field(default=False, description="[inverse_fold] no_closing_gu: Disallow GU closing pairs.")
+    inverse_fold_salt: Optional[float] = Field(default=None, description="[inverse_fold] salt: Salt concentration (M).")
+    inverse_fold_no_tetra: bool = Field(default=False, description="[inverse_fold] no_tetra: Omit special hairpin loop energies.")
+    inverse_fold_energy_model: Optional[int] = Field(default=None, description="[inverse_fold] energy_model: Energy model index.")
+    inverse_fold_nsp: Optional[str] = Field(default=None, description="[inverse_fold] nsp: Non-standard pair specification.")
+    inverse_fold_param_file: Optional[str] = Field(default=None, description="[inverse_fold] param_file: Custom parameter file.")
+    inverse_fold_repeats: int = Field(default=1, description="[inverse_fold] repeats: RNAinverse repeat searches (-R).")
+    inverse_fold_function_mode: str = Field(default='m', description="[inverse_fold] function_mode: RNAinverse -F: m (MFE target), p (partition), or mp.")
+    inverse_fold_final_cost: Optional[float] = Field(default=None, description="[inverse_fold] final_cost: RNAinverse -f: stop threshold for -Fp.")
+    inverse_fold_alphabet: Optional[str] = Field(default=None, description="[inverse_fold] alphabet: RNAinverse -a: custom nucleotide alphabet.")
+    inverse_fold_service_url: str = Field(default='http://127.0.0.1:8003/inverse-fold', description="[inverse_fold] service_url: REST endpoint for ViennaRNA inverse fold.")
+    inverse_fold_verbose: bool = Field(default=False, description="[inverse_fold] --verbose: 上游 RNAinverse -v，输出未成功搜索的详细信息。")
+    vienna_fold_filepath: str = Field(default=None, description="[vienna_fold] filepath: Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.")
+    vienna_fold_temp_c: float = Field(default=37.0, description="[vienna_fold] temp_c: Folding temperature (Celsius).")
+    vienna_fold_dangles: int = Field(default=2, description="[vienna_fold] dangles: Dangling-end model.")
+    vienna_fold_no_lp: bool = Field(default=False, description="[vienna_fold] no_lp: Disallow lonely pairs.")
+    vienna_fold_no_gu: bool = Field(default=False, description="[vienna_fold] no_gu: Disallow GU pairs.")
+    vienna_fold_no_closing_gu: bool = Field(default=False, description="[vienna_fold] no_closing_gu: Disallow GU closing pairs.")
+    vienna_fold_salt: Optional[float] = Field(default=None, description="[vienna_fold] salt: Salt concentration (M).")
+    vienna_fold_no_tetra: bool = Field(default=False, description="[vienna_fold] no_tetra: Omit special hairpin loop energies.")
+    vienna_fold_energy_model: Optional[int] = Field(default=None, description="[vienna_fold] energy_model: Energy model index.")
+    vienna_fold_nsp: Optional[str] = Field(default=None, description="[vienna_fold] nsp: Non-standard pair specification.")
+    vienna_fold_param_file: Optional[str] = Field(default=None, description="[vienna_fold] param_file: Custom parameter file.")
+    vienna_fold_constraint: Optional[str] = Field(default=None, description="[vienna_fold] constraint: Hard constraint dot-bracket string.")
+    vienna_fold_shape_file: Optional[str] = Field(default=None, description="[vienna_fold] shape_file: Path to SHAPE reactivity data file.")
+    vienna_fold_shape_method: str = Field(default='D', description="[vienna_fold] shape_method: SHAPE method: D, Z, or W.")
+    vienna_fold_partfunc: bool = Field(default=False, description="[vienna_fold] partfunc: Compute partition function and centroid.")
+    vienna_fold_circ: bool = Field(default=False, description="[vienna_fold] circ: Assume circular RNA.")
+    vienna_fold_gquad: bool = Field(default=False, description="[vienna_fold] gquad: Include G-quadruplex formation.")
+    vienna_fold_service_url: str = Field(default='http://127.0.0.1:8003/fold', description="[vienna_fold] service_url: ViennaRNA fold endpoint.")
+    vienna_fold_noDP: bool = Field(default=False, description="[vienna_fold] --noDP: 上游 --noDP，禁止生成 dot-plot PostScript。")
+    vienna_fold_maxBPspan: int = Field(default=-1, description="[vienna_fold] --maxBPspan: 上游 --maxBPspan，默认 -1 无限制。")
+    vienna_fold_MEA: Any = Field(default=None, description="[vienna_fold] --MEA: 上游 --MEA[=gamma]，基于最大期望精度预测结构。")
+    vienna_fold_batch: bool = Field(default=False, description="[vienna_fold] --batch: 上游 --batch，批量使用约束。")
+    vienna_fold_canonicalBPonly: bool = Field(default=False, description="[vienna_fold] --canonicalBPonly: 上游 --canonicalBPonly，从约束中移除非规范碱基对。")
+    vienna_fold_enforceConstraint: bool = Field(default=False, description="[vienna_fold] --enforceConstraint: 上游 --enforceConstraint，强制约束中圆括号表示的碱基对必须形成。")
+    vienna_fold_shapeConversion: str = Field(default='O', description="[vienna_fold] --shapeConversion: 上游 --shapeConversion，SHAPE 到配对概率的转换方法。")
+    vienna_fold_verbose: bool = Field(default=False, description="[vienna_fold] --verbose: 上游 -v，输出详细日志。")
+    gc_filepath: str = Field(default=None, description="[gc] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    gc_service_url: str = Field(default='http://127.0.0.1:8020/gc-content', description="[gc] service_url: POST endpoint for GC content microservice.")
+    gc_timeout_seconds: float = Field(default=120.0, description="[gc] timeout_seconds: HTTP request timeout in seconds.")
     target_structure: str = Field(
         ...,
         description="Target RNA secondary structure in dot-bracket notation.",
@@ -122,13 +164,10 @@ class RnaSecondaryStructureDesignInput(BaseModel):
         ),
     )
 
-
-# Workflow implementation
-
-
 class RnaSecondaryStructureDesignWorkflow(
     BaseDomainWorkflow[RnaSecondaryStructureDesignInput, WorkflowResult]
 ):
+    input_model = RnaSecondaryStructureDesignInput
     """Design RNA sequences from a target secondary structure.
 
     Pipeline: ViennaRNA RNAinverse (×N invocations) → GC + RNAfold validation →
@@ -503,81 +542,3 @@ def score_secondary_structure_design_candidate(
     scores["total_score"] = scores["structure_distance_ratio"]
     return scores
 
-
-# LLM Critic Configuration
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-RNA_SECONDARY_STRUCTURE_CRITIC_CONFIG = CriticConfig(
-    workflow_name="rna_secondary_structure_design",
-    workflow_description="Design RNA sequences that fold into a target secondary structure using ViennaRNA RNAinverse",
-    evaluation_dimensions=[
-        "Structural fidelity is the primary metric. The designed sequence should fold back into the target secondary structure as closely as possible.",
-        "Sequence diversity among candidates is important — all candidates should not be identical, which would indicate poor exploration of the sequence space.",
-        "MFE (Minimum Free Energy) should indicate reasonable thermodynamic stability. More negative values suggest more stable structures, but excessively negative values may indicate over-stabilization.",
-        "Hamming distance from the inverse-fold tool reflects how much the designed sequence deviates from the provided start sequence, if any.",
-        "Score semantics: total_score = structure_distance_ratio (distance / length). 0.0 means PERFECT match, 1.0 means completely different. SMALLER is better. mfe is the raw MFE value in kcal/mol; more negative = more stable.",
-    ],
-    adjustable_params={
-        "repeats": {
-            "type": "int",
-            "hint": "Number of RNAinverse search repeats per invocation. Increase for more candidates and better exploration.",
-        },
-        "num_invocations": {
-            "type": "int",
-            "hint": "Number of independent inverse-fold invocations. Higher values explore more local optima.",
-        },
-        "temp_c": {
-            "type": "float",
-            "hint": "Temperature in °C for RNAinverse. Adjust if sequences are too stable or unstable.",
-        },
-        "function_mode": {
-            "type": "enum",
-            "values": ["m", "p", "mp"],
-            "hint": "RNAinverse objective: 'm' = MFE target, 'p' = partition, 'mp' = both. Switch if one mode underperforms.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-)
-
-
-class RnaSecondaryStructureDesignLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for RNA secondary structure design workflow."""
-
-    def _default_config(self) -> CriticConfig:
-        return RNA_SECONDARY_STRUCTURE_CRITIC_CONFIG
-
-    def _build_diagnosis_prompt(self, context: dict[str, Any]) -> list[tuple[str, str]]:
-        """Override to inject score interpretation into the user prompt."""
-        messages = super()._build_diagnosis_prompt(context)
-        score_legend = (
-            "\n\n## Score Interpretation (CRITICAL)\n"
-            "- total_score = structure_distance_ratio (structure_distance / sequence_length). "
-            "0.0 means PERFECT structural match, 1.0 means completely different. SMALLER is better.\n"
-            "- mfe = raw MFE value in kcal/mol. More negative = more thermodynamically stable.\n"
-            "Do NOT assume total_score follows a 0-1 'higher is better' scale. "
-            "A total_score of 0.0 is EXCELLENT, not poor."
-        )
-        parameter_tuning_guidance = (
-            "\n\n## Parameter Tuning Guidance (RNA Secondary Structure Design)\n"
-            "The default parameters below are carefully tuned and battle-tested. "
-            "Only recommend overrides when you have STRONG evidence that a specific parameter directly caused the issue.\n"
-            "- repeats=10: This is an empirically sound value for RNAinverse search repeats. "
-            "Only increase if ALL candidates consistently show poor structural fidelity (structure_distance_ratio > 0.3).\n"
-            "- num_invocations=3: Sufficient to explore most local optima. "
-            "Only increase if candidate sequences show very low diversity (most candidates are identical or nearly identical).\n"
-            "- function_mode='m' (MFE target): The most stable and reliable mode. "
-            "Do NOT switch to 'p' or 'mp' unless the user explicitly requested partition-function-based design, or MFE mode consistently underperforms across multiple retries.\n"
-            "- temp_c=37.0: Standard physiological temperature. "
-            "Do NOT change unless the user explicitly requests a different temperature.\n"
-            "In short: prefer no parameter changes over speculative adjustments."
-        )
-        modified = list(messages)
-        role, content = modified[-1]
-        modified[-1] = (role, content + score_legend + parameter_tuning_guidance)
-        return modified
-
-
-# Backward-compatible alias used by tests and downstream consumers.
-RnaSecondaryStructureDesignCritic = RnaSecondaryStructureDesignLLMCritic

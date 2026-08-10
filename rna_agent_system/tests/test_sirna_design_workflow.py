@@ -4,13 +4,10 @@ from __future__ import annotations
 import pytest
 
 from agent_core.capabilities.base import CapabilityRegistry
-from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
-from agent_core.tool_executor import ToolExecutor
+from agent_core.tool_executor import ToolExecutor, ToolResult
 from agent_core.tool_registry import ToolRegistry
-from agent_core.tool_runtime import ToolResult
 from agent_core.workflows.sirna_design import (
     SirnaDesignInput,
-    SirnaDesignLLMCritic,
     SirnaDesignWorkflow,
     score_sirna_candidate,
 )
@@ -131,26 +128,6 @@ def _build_workflow(*tools):
     ):
         cap_reg.register(name)
     return SirnaDesignWorkflow(cap_reg)
-
-
-def _build_controller_with_sirna(*tools):
-    reg = _build_registry_with(*tools)
-    ex = ToolExecutor(reg)
-    cap_reg = CapabilityRegistry(ex)
-    for name in (
-        "design_sirna_with_evitar",
-        "compute_rna_sequence_gc_content",
-        "compute_sirna_duplex_binding_vienna",
-        "predict_rna_secondary_structure",
-        "run_blastn_similarity_search",
-    ):
-        cap_reg.register(name)
-    wf = SirnaDesignWorkflow(cap_reg)
-    controller = ExecutionController(
-        capability_registry=cap_reg,
-        workflow_registry={"sirna_design": wf},
-    )
-    return controller, cap_reg
 
 
 class _StubBlastAllHitsThenZeroTool:
@@ -299,175 +276,4 @@ def test_score_sirna_candidate_formula():
     assert scores2["total_score"] < scores["total_score"]
 
 
-def test_registry_has_sirna_critic():
-    from agent_core.workflows.registry import get_critic_for_workflow
 
-    critic = get_critic_for_workflow("sirna_design")
-    assert critic is not None
-    assert isinstance(critic, SirnaDesignLLMCritic)
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Layer 3 integration tests — ExecutionController + Critic retry loop
-# ═══════════════════════════════════════════════════════════════════════════════
-
-
-@pytest.mark.skip(reason="LLM-based critic does not support deterministic retry triggering from stubs")
-def test_execution_controller_sirna_retry_exhausted():
-    """When BLAST always returns high hits, ExecutionController marks retries_exhausted
-    once plan.max_retries is reached (here set to 1 so Controller caps before Critic).
-    """
-    controller, _ = _build_controller_with_sirna(
-        _StubEvitarTool(),
-        _StubGcTool(),
-        _StubDuplexTool(),
-        _StubFoldTool(),
-        _StubBlastHighHitTool(),  # always returns 10 hits
-    )
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target="sirna_design",
-                input_binding={
-                    "mode": "antiviral",
-                    "target_sequence": _LONG_SEQ,
-                    "candidate_count": 3,
-                    "transcriptome_fasta_path": "dummy_transcriptome.fa",
-                },
-                output_key="sirna_result",
-            )
-        ],
-        max_retries=1,  # stricter than Critic.MAX_RETRIES (2) to force exhaustion
-    )
-
-    def _replan(state):
-        return plan
-
-    state: dict[str, Any] = {}
-    final_state = controller.execute(plan, state, replan_fn=_replan)
-
-    # Critic should have triggered retry at least once
-    log = final_state["_execution_log"]
-    critic_events = [e for e in log if e.get("event") == "critic_retry"]
-    assert len(critic_events) >= 1
-
-    # retry_count should be 1 (incremented once before second run)
-    assert final_state.get("retry_count") == 1
-
-    # Because max_retries=1, the second run that triggers retry causes exhaustion
-    plan_complete_events = [e for e in log if e.get("event") == "plan_complete"]
-    assert any(e.get("retries_exhausted") for e in plan_complete_events)
-
-    # workflow_result must be present and successful
-    assert final_state.get("workflow_result") is not None
-    assert final_state["workflow_result"].success is True
-    assert final_state["workflow_result"].best_candidate is not None
-
-    # next_constraints should carry safety warning from critic or exhaustion
-    assert "next_constraints" in final_state
-
-
-@pytest.mark.skip(reason="LLM-based critic does not support deterministic retry triggering from stubs")
-def test_execution_controller_sirna_retry_then_pass():
-    """Critic triggers retry on first run; second run passes (zero off-targets)."""
-    controller, _ = _build_controller_with_sirna(
-        _StubEvitarTool(),
-        _StubGcTool(),
-        _StubDuplexTool(),
-        _StubFoldTool(),
-        _StubBlastAllHitsThenZeroTool(),  # first run all hits, then zero
-    )
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target="sirna_design",
-                input_binding={
-                    "mode": "antiviral",
-                    "target_sequence": _LONG_SEQ,
-                    "candidate_count": 3,
-                    "transcriptome_fasta_path": "dummy_transcriptome.fa",
-                },
-                output_key="sirna_result",
-            )
-        ],
-        max_retries=2,
-    )
-
-    def _replan(state):
-        return plan
-
-    state: dict[str, Any] = {}
-    final_state = controller.execute(plan, state, replan_fn=_replan)
-
-    log = final_state["_execution_log"]
-    critic_events = [e for e in log if e.get("event") == "critic_retry"]
-    # Exactly one critic_retry (first run fails, second run passes)
-    assert len(critic_events) == 1
-
-    # retry_count incremented once after first retry
-    assert final_state.get("retry_count") == 1
-
-    # Should NOT be exhausted because second run passed
-    plan_complete_events = [e for e in log if e.get("event") == "plan_complete"]
-    assert not any(e.get("retries_exhausted") for e in plan_complete_events)
-
-    # workflow_result present and successful
-    assert final_state.get("workflow_result") is not None
-    assert final_state["workflow_result"].success is True
-
-    # State writeback from workflow internal state should be merged
-    assert "_sirna_input" in final_state
-
-
-def test_execution_controller_state_bindings():
-    """ExecutionController resolves $state bindings and writes step output keys."""
-    controller, _ = _build_controller_with_sirna(
-        _StubEvitarTool(),
-        _StubGcTool(),
-        _StubDuplexTool(),
-        _StubFoldTool(),
-        _StubBlastZeroTool(),
-    )
-    plan = ExecutionPlan(
-        steps=[
-            PlanStep(
-                step_id="step_1",
-                type="workflow",
-                target="sirna_design",
-                input_binding={
-                    "mode": "antiviral",
-                    "target_sequence": _LONG_SEQ,
-                    "candidate_count": 3,
-                },
-                output_key="sirna_result",
-            ),
-            PlanStep(
-                step_id="step_2",
-                type="capability",
-                target="compute_rna_sequence_gc_content",
-                input_binding={
-                    "filepath": "$state.sirna_result.best_candidate.sequence",
-                },
-                output_key="gc_check",
-            ),
-        ],
-        max_retries=2,
-    )
-
-    state: dict[str, Any] = {"_llm_critic_enabled": False}
-    final_state = controller.execute(plan, state)
-
-    # Step 1 output key written
-    assert "sirna_result" in final_state
-    assert final_state["sirna_result"].success is True
-
-    # Step 2 should have resolved binding and produced a result
-    assert "gc_check" in final_state
-    assert final_state["gc_check"].success is True
-
-    # workflow_result should also be present (auto-written for workflow steps)
-    assert "workflow_result" in final_state

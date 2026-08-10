@@ -15,19 +15,15 @@ but instead screens a target transcript for the most accessible binding sites.
 ║                                                                               ║
 ║    - agent_core/workflows/aso_target_screening.py  ← 本文件                  ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/workflows/__init__.py                                         ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - agent_core/sequence_utils.py                                             ║
 ║    - tests/test_aso_target_screening.py                                       ║
-║    - tests/test_aso_target_screening_comprehensive.py                         ║
 ║    - docs/INTERFACE_LOCKS.md                                                  ║
 ║    - docs/WORKFLOWS.md                                                        ║
 ║                                                                               ║
@@ -46,7 +42,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import read_sequence, save_sequence, save_text_file
-from agent_core.planning.base import Critic
 from agent_core.sequence_utils import _pick_float, normalize_rna_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow
@@ -66,9 +61,101 @@ class AsoScreeningInput(BaseModel):
     well-justified request. If the user does not specify a parameter, always
     use the default value rather than inventing an alternative.
     """
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    plfold_filepath: str = Field(default=None, description="[plfold] filepath: Workspace file with RNA sequence (plain or FASTA).")
+    plfold_temp_c: float = Field(default=37.0, description="[plfold] temp_c: Temperature in Celsius.")
+    plfold_dangles: int = Field(default=2, description="[plfold] dangles: Dangling-end model.")
+    plfold_no_lp: bool = Field(default=False, description="[plfold] no_lp: Disallow lonely pairs.")
+    plfold_no_gu: bool = Field(default=False, description="[plfold] no_gu: Disallow GU pairs.")
+    plfold_no_closing_gu: bool = Field(default=False, description="[plfold] no_closing_gu: Disallow GU closing pairs.")
+    plfold_salt: Optional[float] = Field(default=None, description="[plfold] salt: Salt concentration (M).")
+    plfold_no_tetra: bool = Field(default=False, description="[plfold] no_tetra: Omit special hairpin loop energies.")
+    plfold_energy_model: Optional[int] = Field(default=None, description="[plfold] energy_model: Energy model index.")
+    plfold_nsp: Optional[str] = Field(default=None, description="[plfold] nsp: Non-standard pair specification.")
+    plfold_param_file: Optional[str] = Field(default=None, description="[plfold] param_file: Custom parameter file.")
+    plfold_winsize: int = Field(default=70, description="[plfold] winsize: RNAplfold -W window size.")
+    plfold_span: int = Field(default=70, description="[plfold] span: RNAplfold -L max pair span.")
+    plfold_unpaired_ulength: int = Field(default=25, description="[plfold] unpaired_ulength: RNAplfold -u upper bound for stretch probabilities in lunp output.")
+    plfold_cutoff: Optional[float] = Field(default=None, description="[plfold] cutoff: RNAplfold -c probability cutoff.")
+    plfold_opening_energies: bool = Field(default=False, description="[plfold] opening_energies: RNAplfold -O: return opening energies instead of probabilities.")
+    plfold_service_url: str = Field(default='http://127.0.0.1:8003/plfold-profiles', description="[plfold] service_url: REST endpoint for ViennaRNA RNAplfold profile (lunp column 1).")
+    plfold_shape: Optional[str] = Field(default=None, description="[plfold] --shape: 上游 RNAplfold --shape。")
+    plfold_print_onthefly: bool = Field(default=False, description="[plfold] --print_onthefly: 上游 RNAplfold -o。")
+    plfold_verbose: bool = Field(default=False, description="[plfold] --verbose: 上游 -v。")
+    aso_accessibility_filepath: str = Field(default=None, description="[aso_accessibility] filepath: Workspace file with full target RNA sequence (plain or FASTA).")
+    aso_accessibility_region_start: int = Field(default=None, description="[aso_accessibility] region_start: 1-based inclusive ASO / binding region start on target RNA.")
+    aso_accessibility_region_end: int = Field(default=None, description="[aso_accessibility] region_end: 1-based inclusive region end.")
+    aso_accessibility_aso_oligo_length: int = Field(default=18, description="[aso_accessibility] aso_oligo_length: ASO length (nt) used for joint unpaired stretch probability.")
+    aso_accessibility_temp_c: float = Field(default=37.0, description="[aso_accessibility] temp_c: Temperature in Celsius.")
+    aso_accessibility_dangles: int = Field(default=2, description="[aso_accessibility] dangles: Dangling-end model.")
+    aso_accessibility_no_lp: bool = Field(default=False, description="[aso_accessibility] no_lp: Disallow lonely pairs.")
+    aso_accessibility_no_gu: bool = Field(default=False, description="[aso_accessibility] no_gu: Disallow GU pairs.")
+    aso_accessibility_no_closing_gu: bool = Field(default=False, description="[aso_accessibility] no_closing_gu: Disallow GU closing pairs.")
+    aso_accessibility_salt: Optional[float] = Field(default=None, description="[aso_accessibility] salt: Salt concentration (M).")
+    aso_accessibility_no_tetra: bool = Field(default=False, description="[aso_accessibility] no_tetra: Omit special hairpin loop energies.")
+    aso_accessibility_energy_model: Optional[int] = Field(default=None, description="[aso_accessibility] energy_model: Energy model index.")
+    aso_accessibility_nsp: Optional[str] = Field(default=None, description="[aso_accessibility] nsp: Non-standard pair specification.")
+    aso_accessibility_param_file: Optional[str] = Field(default=None, description="[aso_accessibility] param_file: Custom parameter file.")
+    aso_accessibility_winsize: int = Field(default=70, description="[aso_accessibility] winsize: RNAplfold window size -W.")
+    aso_accessibility_span: int = Field(default=70, description="[aso_accessibility] span: RNAplfold max pair span -L.")
+    aso_accessibility_unpaired_ulength: int = Field(default=25, description="[aso_accessibility] unpaired_ulength: RNAplfold -u upper bound (auto-expanded server-side).")
+    aso_accessibility_cutoff: Optional[float] = Field(default=None, description="[aso_accessibility] cutoff: RNAplfold -c probability cutoff.")
+    aso_accessibility_opening_energies: bool = Field(default=False, description="[aso_accessibility] opening_energies: RNAplfold -O: return opening energies instead of probabilities.")
+    aso_accessibility_service_url: str = Field(default='http://127.0.0.1:8003/aso-accessibility', description="[aso_accessibility] service_url: REST endpoint for RNAplfold accessibility.")
+    aso_accessibility_shape: Optional[str] = Field(default=None, description="[aso_accessibility] --shape: 上游 RNAplfold --shape，使用 SHAPE 数据。")
+    aso_accessibility_print_onthefly: bool = Field(default=False, description="[aso_accessibility] --print_onthefly: 上游 RNAplfold -o，边计算边输出以节省内存。")
+    aso_accessibility_verbose: bool = Field(default=False, description="[aso_accessibility] --verbose: 上游 -v，输出详细日志。")
+    rnaup_filepath1: str = Field(default=None, description="[rnaup] filepath1: Workspace file with first RNA sequence (target, typically longer).")
+    rnaup_filepath2: str = Field(default=None, description="[rnaup] filepath2: Workspace file with second RNA sequence (probe / small RNA).")
+    rnaup_temp_c: float = Field(default=37.0, description="[rnaup] temp_c: Folding temperature (Celsius).")
+    rnaup_dangles: int = Field(default=2, description="[rnaup] dangles: Dangling-end model.")
+    rnaup_no_lp: bool = Field(default=False, description="[rnaup] no_lp: Disallow lonely pairs.")
+    rnaup_no_gu: bool = Field(default=False, description="[rnaup] no_gu: Disallow GU pairs.")
+    rnaup_no_closing_gu: bool = Field(default=False, description="[rnaup] no_closing_gu: Disallow GU closing pairs.")
+    rnaup_salt: Optional[float] = Field(default=None, description="[rnaup] salt: Salt concentration (M).")
+    rnaup_no_tetra: bool = Field(default=False, description="[rnaup] no_tetra: Omit special hairpin loop energies.")
+    rnaup_energy_model: Optional[int] = Field(default=None, description="[rnaup] energy_model: Energy model index.")
+    rnaup_nsp: Optional[str] = Field(default=None, description="[rnaup] nsp: Non-standard pair specification.")
+    rnaup_param_file: Optional[str] = Field(default=None, description="[rnaup] param_file: Custom parameter file.")
+    rnaup_ulength: int = Field(default=4, description="[rnaup] ulength: Length of unstructured region (-u).")
+    rnaup_window: int = Field(default=25, description="[rnaup] window: Maximal interaction region length (-w).")
+    rnaup_include_both: bool = Field(default=False, description="[rnaup] include_both: Include unpaired probabilities in both RNAs (-b).")
+    rnaup_extend5: int = Field(default=0, description="[rnaup] extend5: Extend interaction on 5' side (-5).")
+    rnaup_extend3: int = Field(default=0, description="[rnaup] extend3: Extend interaction on 3' side (-3).")
+    rnaup_contributions: str = Field(default='S', description="[rnaup] contributions: Contributions to output (-c): S, H, I, M, E.")
+    rnaup_service_url: str = Field(default='http://127.0.0.1:8003/rnaup', description="[rnaup] service_url: REST endpoint for ViennaRNA RNAup.")
+    rnaup_constraint1: Optional[str] = Field(default=None, description="[rnaup] constraint1: \u5fae\u670d\u52a1 RnaUpRequest \u652f\u6301\u4f46 wrapper \u672a\u66b4\u9732\u7684 target \u7ea6\u675f\u3002")
+    rnaup_constraint2: Optional[str] = Field(default=None, description="[rnaup] constraint2: \u5fae\u670d\u52a1 RnaUpRequest \u652f\u6301\u4f46 wrapper \u672a\u66b4\u9732\u7684 probe \u7ea6\u675f\u3002")
+    rnaup_interaction_pairwise: bool = Field(default=False, description="[rnaup] --interaction_pairwise: 上游 --interaction_pairwise，激活成对相互作用模式。")
+    rnaup_interaction_first: bool = Field(default=False, description="[rnaup] --interaction_first: 上游 --interaction_first，仅使用第一条序列的相互作用模式。")
+    rnaup_no_header: bool = Field(default=False, description="[rnaup] --no_header: 上游 --no_header，输出文件不带头信息。")
+    rnaup_no_output_file: bool = Field(default=False, description="[rnaup] --no_output_file: 上游 -o/--no_output_file，微服务内部固定开启，不写入文件。")
+    sirna_duplex_filepath: str = Field(default=None, description="[sirna_duplex] filepath: Workspace file with two FASTA records (sense then antisense) or two plain RNA lines without headers.")
+    sirna_duplex_temp_c: float = Field(default=37.0, description="[sirna_duplex] temp_c: Folding temperature (Celsius).")
+    sirna_duplex_dangles: int = Field(default=2, description="[sirna_duplex] dangles: Dangling-end model.")
+    sirna_duplex_no_lp: bool = Field(default=False, description="[sirna_duplex] no_lp: Disallow lonely pairs.")
+    sirna_duplex_no_gu: bool = Field(default=False, description="[sirna_duplex] no_gu: Disallow GU pairs.")
+    sirna_duplex_no_closing_gu: bool = Field(default=False, description="[sirna_duplex] no_closing_gu: Disallow GU closing pairs.")
+    sirna_duplex_salt: Optional[float] = Field(default=None, description="[sirna_duplex] salt: Salt concentration (M).")
+    sirna_duplex_no_tetra: bool = Field(default=False, description="[sirna_duplex] no_tetra: Omit special hairpin loop energies.")
+    sirna_duplex_energy_model: Optional[int] = Field(default=None, description="[sirna_duplex] energy_model: Energy model index.")
+    sirna_duplex_nsp: Optional[str] = Field(default=None, description="[sirna_duplex] nsp: Non-standard pair specification.")
+    sirna_duplex_param_file: Optional[str] = Field(default=None, description="[sirna_duplex] param_file: Custom parameter file.")
+    sirna_duplex_constraint: Optional[str] = Field(default=None, description="[sirna_duplex] constraint: Hard constraint dot-bracket string.")
+    sirna_duplex_shape_file: Optional[str] = Field(default=None, description="[sirna_duplex] shape_file: Path to SHAPE reactivity data file.")
+    sirna_duplex_shape_method: str = Field(default='D', description="[sirna_duplex] shape_method: SHAPE method: D, Z, or W.")
+    sirna_duplex_concentrations: bool = Field(default=False, description="[sirna_duplex] concentrations: Compute equilibrium concentrations.")
+    sirna_duplex_conc_a: Optional[float] = Field(default=None, description="[sirna_duplex] conc_a: Initial monomer A concentration [mol/L].")
+    sirna_duplex_conc_b: Optional[float] = Field(default=None, description="[sirna_duplex] conc_b: Initial monomer B concentration [mol/L].")
+    sirna_duplex_partfunc: bool = Field(default=False, description="[sirna_duplex] partfunc: Compute partition function for dimer.")
+    sirna_duplex_service_url: str = Field(default='http://127.0.0.1:8003/sirna-duplex', description="[sirna_duplex] service_url: REST endpoint for ViennaRNA duplex cofold.")
+    sirna_duplex_noPS: bool = Field(default=False, description="[sirna_duplex] --noPS: 微服务内部固定传入 --noPS，禁止生成 PostScript 结构图。")
+    sirna_duplex_all_pf: bool = Field(default=False, description="[sirna_duplex] --all_pf: 上游 RNAcofold -a，计算 AA/BB 单体与 AB 二聚体的配分函数。")
+    sirna_duplex_centroid: bool = Field(default=False, description="[sirna_duplex] --centroid: 上游 RNAcofold --centroid，计算 centroid 结构。")
+    sirna_duplex_gquad: bool = Field(default=False, description="[sirna_duplex] --gquad: 上游 RNAcofold -g，考虑 G-四链体形成。")
+    sirna_duplex_maxBPspan: int = Field(default=-1, description="[sirna_duplex] --maxBPspan: 上游 --maxBPspan，限制最大碱基对跨度；默认 -1 表示无限制。")
+    sirna_duplex_batch: bool = Field(default=False, description="[sirna_duplex] --batch: 上游 --batch，对多条序列使用同一约束文件。")
+    sirna_duplex_verbose: bool = Field(default=False, description="[sirna_duplex] --verbose: 上游 -v，输出详细日志。")
     target_mrna_filepath: str = Field(
         ...,
         description="Path to target mRNA sequence file (plain or FASTA).",
@@ -95,7 +182,6 @@ class AsoScreeningInput(BaseModel):
         default="rnaup",
         description="Tool for ASO-target binding evaluation: RNAup (thermodynamic) or RNAcofold (duplex MFE).",
     )
-
 
 class AsoSite(BaseModel):
     """One ranked ASO binding site result."""
@@ -643,19 +729,3 @@ class AsoTargetScreeningWorkflow(
         return dict(cap_result.output)
 
 
-# Critic
-
-
-class AsoScreeningCritic(Critic):
-    """Empty critic placeholder for ASO target screening.
-
-    ASO screening is a deterministic evaluation workflow: the same input always
-    yields the same accessibility profile and binding energies. There is no
-    stochastic generation or iterative refinement step, so retry loops would
-    only waste compute. This workflow is intentionally NOT paired with a real
-    critic; this class exists solely as a structural empty interface.
-    """
-
-    def should_retry(self, workflow_result: WorkflowResult, state: dict[str, Any]) -> bool:
-        """Always returns ``False`` — ASO screening never retries."""
-        return False

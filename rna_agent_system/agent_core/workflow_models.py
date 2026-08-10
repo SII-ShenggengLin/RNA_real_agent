@@ -123,6 +123,22 @@ class WorkflowResult(BaseModel):
         description="Relative path to persisted result.json when persistence is enabled.",
     )
 
+    @property
+    def is_hard_failure(self) -> bool:
+        """True when the workflow result itself is unusable.
+
+        A hard failure overrides any advisory quality report and forces retry.
+        Centralizing this predicate on ``WorkflowResult`` keeps ``QualityAgent``
+        and ``SpecialistAgent`` from drifting on the definition of a hard failure.
+        """
+        if self.success is False:
+            return True
+        if self.errors:
+            return True
+        if not self.all_candidates:
+            return True
+        return False
+
 
 def sort_candidates_by_score(
     candidates: List[Candidate],

@@ -3,15 +3,15 @@
 Layer 0 — Direct tool invocation (HTTP calls to microservices)
 Layer 1 — Capability wrapping + state writeback
 Layer 2 — Workflow orchestration (generate → evaluate → score → rank)
-Layer 3 — Planning & Control (ExecutionController + LLM Critic + retry + parameter override)
+Layer 3 — Multi-Agent Execution (PipelineAgent + QualityAgent + retry + parameter override)
 
 These tests use REAL microservices (ports 8017 for sgrna_design, 8011 for CRISOT)
-and REAL DeepSeek API for LLM Critic.  They verify:
+and REAL DeepSeek API for QualityAgent.  They verify:
   - GPU tools run on GPU
   - CPU tools run on CPU
   - DeepSeek API is successfully called and produces actionable output
   - Retry logic works end-to-end
-  - Parameter adjustments from LLM Critic are applied
+  - Parameter adjustments from QualityAgent are applied
 
 Requirements:
   - sgrna_design_service running on port 8017 (GPU-capable)
@@ -486,12 +486,12 @@ class TestLayer2Workflow:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Layer 3 — Planning & Control (LLM Critic + ExecutionController + retry)
+# Layer 3 — Multi-Agent Execution (PipelineAgent + QualityAgent + retry)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-class TestLayer3PlanningAndControl:
-    """Layer 3: ExecutionController + LLM Critic + retry + parameter override."""
+class TestLayer4PlanningAndControl:
+    """Layer 3: PipelineAgent + QualityAgent + SpecialistAgent + retry + parameter override."""
 
     @pytest.fixture
     def real_workflow(self):
@@ -515,9 +515,26 @@ class TestLayer3PlanningAndControl:
 
         return SgRnaDesignWorkflow(cap_reg)
 
-    def test_layer3_llm_critic_diagnose_calls_deepseek(self, real_workflow):
-        """LLM Critic diagnose() should successfully call DeepSeek API."""
-        from agent_core.workflows.sgrna_design import SgRnaDesignInput, SgRnaDesignLLMCritic
+    def _make_pipeline_agent(self, real_workflow):
+        """Build a PipelineAgent backed by a SpecialistAgent for sgrna_design."""
+        from agent_core.agents.pipeline_agent import PipelineAgent
+        from agent_core.agents.quality_agent import QualityAgent
+        from agent_core.agents.specialist_agent import SpecialistAgent
+        from agent_core.agents.synthesis_agent import SynthesisAgent
+        from agent_core.quality_profiles.sgrna_design import SGRNA_QUALITY_PROFILE
+
+        specialist = SpecialistAgent(real_workflow, SGRNA_QUALITY_PROFILE)
+        return PipelineAgent(
+            specialist_registry={"sgrna_design": specialist},
+            quality_agent=QualityAgent(),
+            synthesis_agent=SynthesisAgent(),
+        )
+
+    def test_layer3_quality_agent_diagnose_calls_deepseek(self, real_workflow):
+        """QualityAgent.review() should successfully call DeepSeek API."""
+        from agent_core.agents.quality_agent import QualityAgent
+        from agent_core.quality_profiles.sgrna_design import SGRNA_QUALITY_PROFILE
+        from agent_core.workflows.sgrna_design import SgRnaDesignInput
 
         inp = SgRnaDesignInput(
             seed_sequence=_SEED_60,
@@ -530,51 +547,31 @@ class TestLayer3PlanningAndControl:
         result = real_workflow.run(inp)
         assert result.success is True
 
-        critic = SgRnaDesignLLMCritic()
+        quality_agent = QualityAgent()
         state: dict = {}
 
         # This call goes out to DeepSeek API
-        diagnosis = critic.diagnose(result, state)
+        report = quality_agent.review(result, SGRNA_QUALITY_PROFILE, state)
 
         # Verify we got a real structured response
-        assert diagnosis.overall_assessment, "Expected assessment text from LLM"
-        assert 0.0 <= diagnosis.quality_score <= 1.0, "quality_score should be in [0, 1]"
-        assert diagnosis.action in (
+        assert report.overall_assessment, "Expected assessment text from LLM"
+        assert 0.0 <= report.quality_score <= 1.0, "quality_score should be in [0, 1]"
+        assert report.action in (
+            "pass",
             "retry_with_adjustments",
             "retry_with_alternative",
-            "proceed_with_filtered",
             "abort",
-        ), f"Unexpected action: {diagnosis.action}"
-        assert diagnosis.confidence >= 0.0, "confidence should be non-negative"
+        ), f"Unexpected action: {report.action}"
+        assert report.confidence >= 0.0, "confidence should be non-negative"
         # State should record the diagnosis
         assert "_diagnosis_history" in state
         assert len(state["_diagnosis_history"]) == 1
 
-    def test_layer3_llm_critic_should_retry_on_poor_results(self, real_workflow):
-        """When results are poor, LLM Critic should recommend retry."""
-        from agent_core.workflows.sgrna_design import (
-            SgRnaDesignInput,
-            SgRnaDesignLLMCritic,
-            SgRnaDesignWorkflow,
-        )
-        from agent_core.capabilities.base import CapabilityRegistry
-        from agent_core.tool_executor import ToolExecutor
-        from agent_core.tool_registry import ToolRegistry
-
-        # Build a workflow where we FORCE poor scores by using CPU with
-        # extreme parameters that produce poor results
-        reg = ToolRegistry()
-        reg.register(real_workflow.capabilities.executor.registry.get("design_sgrna_handle_with_crgpt"))
-        reg.register(real_workflow.capabilities.executor.registry.get("score_sgrna_handle_with_crgpt"))
-        reg.register(real_workflow.capabilities.executor.registry.get("score_crispr_off_target_with_crisot"))
-
-        executor = ToolExecutor(reg)
-        cap_reg = CapabilityRegistry(executor)
-        cap_reg.register("design_sgrna_handle_with_crgpt")
-        cap_reg.register("score_sgrna_handle_with_crgpt")
-        cap_reg.register("score_crispr_off_target_with_crisot")
-
-        wf = SgRnaDesignWorkflow(cap_reg)
+    def test_layer3_quality_agent_recommends_retry_on_poor_results(self, real_workflow):
+        """When results are poor, QualityAgent should recommend retry."""
+        from agent_core.agents.quality_agent import QualityAgent
+        from agent_core.quality_profiles.sgrna_design import SGRNA_QUALITY_PROFILE
+        from agent_core.workflows.sgrna_design import SgRnaDesignInput
 
         # Run with very challenging parameters to get poor results
         inp = SgRnaDesignInput(
@@ -586,19 +583,19 @@ class TestLayer3PlanningAndControl:
             evaluate_crgpt_score=True,
             evaluate_crisot=False,
         )
-        result = wf.run(inp)
+        result = real_workflow.run(inp)
         assert result.success is True  # workflow itself succeeds
 
-        critic = SgRnaDesignLLMCritic()
+        quality_agent = QualityAgent()
         state: dict = {}
-        should_retry = critic.should_retry(result, state)
+        report = quality_agent.review(result, SGRNA_QUALITY_PROFILE, state)
 
-        # The diagnosis should have been recorded regardless of retry decision
+        # The diagnosis should have been recorded
         assert "_last_diagnosis" in state or "_diagnosis_history" in state
-        assert "_parameter_overrides" in state or not should_retry
+        assert "_parameter_overrides" in state
 
         # If retry is recommended, verify parameter overrides are provided
-        if should_retry:
+        if report.action in ("retry_with_adjustments", "retry_with_alternative"):
             overrides = state.get("_parameter_overrides", {})
             assert len(overrides) > 0, "Expected parameter overrides for retry"
             # Overrides should only contain known parameters
@@ -616,9 +613,9 @@ class TestLayer3PlanningAndControl:
             for key in overrides:
                 assert key in known_params, f"Unknown parameter override: {key}"
 
-    def test_layer3_execution_controller_e2e(self, real_workflow):
-        """ExecutionController should run sgrna_design workflow end-to-end."""
-        from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+    def test_layer3_pipeline_agent_e2e(self, real_workflow):
+        """PipelineAgent should run sgrna_design workflow end-to-end."""
+        from agent_core.pipeline.models import PipelinePlan
         from agent_core.workflows.sgrna_design import SgRnaDesignInput
 
         # Verify direct workflow run works first (isolates service issues)
@@ -631,140 +628,116 @@ class TestLayer3PlanningAndControl:
         direct_result = real_workflow.run(direct_inp)
         assert direct_result.success is True, (
             f"Direct workflow run failed: {direct_result.errors}. "
-            "This indicates a service-side issue, not ExecutionController."
+            "This indicates a service-side issue, not PipelineAgent."
         )
 
-        controller = ExecutionController(
-            capability_registry=real_workflow.capabilities,
-            workflow_registry={"sgrna_design": real_workflow},
-        )
-        plan = ExecutionPlan(
-            steps=[
-                PlanStep(
-                    step_id="sgrna_1",
-                    type="workflow",
-                    target="sgrna_design",
-                    input_binding={
-                        "seed_sequence": _SEED_60,
-                        "n_samples": 3,
-                        "mutation_number": 8,
-                        "sampling_mode": "naive",
-                    },
-                    output_key="sgrna_result",
-                    description="Design sgRNA handles",
-                )
-            ]
+        pipeline = self._make_pipeline_agent(real_workflow)
+        plan = PipelinePlan.single(
+            workflow="sgrna_design",
+            static_params={
+                "seed_sequence": _SEED_60,
+                "n_samples": 3,
+                "mutation_number": 8,
+                "sampling_mode": "naive",
+            },
+            plan_id="sgrna_pipeline_1",
+            output_alias="sgrna_result",
         )
         state: dict = {}
-        result_state = controller.execute(plan, state)
+        pipeline_result = pipeline.execute(plan, state)
 
-        assert result_state.get("_plan_executed") is True
-        assert "sgrna_result" in result_state
-        assert result_state["sgrna_result"].success is True, (
-            f"ExecutionController workflow failed: {result_state['sgrna_result'].errors}"
+        assert pipeline_result.success is True, (
+            f"PipelineAgent workflow failed: {pipeline_result.errors}"
         )
-        assert "workflow_result" in result_state
+        assert "n1" in pipeline_result.node_results
+        node_result = pipeline_result.node_results["n1"]
+        assert node_result.success is True, (
+            f"Node execution failed: {node_result.errors}"
+        )
+        assert node_result.workflow_result is not None
+        assert node_result.workflow_result.success is True
 
-    def test_layer3_execution_controller_with_parameter_override(self, real_workflow):
-        """ExecutionController should apply parameter overrides from Critic."""
-        from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+    def test_layer3_specialist_agent_applies_parameter_overrides(self, real_workflow):
+        """SpecialistAgent should apply parameter overrides from QualityAgent."""
+        from agent_core.agents.quality_agent import QualityAgent
+        from agent_core.agents.specialist_agent import SpecialistAgent
+        from agent_core.quality_profiles.sgrna_design import SGRNA_QUALITY_PROFILE
+        from agent_core.workflows.sgrna_design import SgRnaDesignInput
 
-        controller = ExecutionController(
-            capability_registry=real_workflow.capabilities,
-            workflow_registry={"sgrna_design": real_workflow},
+        # Run with extreme parameters so QualityAgent recommends adjustments
+        inp = SgRnaDesignInput(
+            seed_sequence=_SEED_60,
+            n_samples=2,
+            mutation_number=30,
+            sampling_mode="naive",
+            temperature=5.0,
+            evaluate_crgpt_score=True,
+            evaluate_crisot=False,
         )
-        plan = ExecutionPlan(
-            steps=[
-                PlanStep(
-                    step_id="sgrna_1",
-                    type="workflow",
-                    target="sgrna_design",
-                    input_binding={
-                        "seed_sequence": _SEED_60,
-                        "n_samples": 2,
-                        "mutation_number": 5,
-                        "sampling_mode": "naive",
-                    },
-                    output_key="sgrna_result",
-                    description="Design sgRNA handles",
-                )
-            ],
-            max_retries=0,  # No automatic retry; we manually test override
-        )
+
+        specialist = SpecialistAgent(real_workflow, SGRNA_QUALITY_PROFILE)
+        quality_agent = QualityAgent()
         state: dict = {}
-        controller.execute(plan, state)
 
-        # Manually simulate what Critic would do
-        state["_parameter_overrides"] = {"mutation_number": 15, "temperature": 2.0}
-        controller._apply_parameter_overrides(plan, state, state["_parameter_overrides"])
+        result = specialist.run(
+            node_id="sgrna_override_test",
+            params=inp.model_dump(),
+            quality_agent=quality_agent,
+            state=state,
+        )
 
-        # Verify the plan was modified
-        binding = plan.steps[0].input_binding
-        assert binding["mutation_number"] == 15, f"Expected mutation_number=15, got {binding.get('mutation_number')}"
-        assert binding["temperature"] == 2.0, f"Expected temperature=2.0, got {binding.get('temperature')}"
-        # Original seed_sequence should be preserved
-        assert binding["seed_sequence"] == _SEED_60
+        # Diagnosis and overrides should be recorded
+        assert "_diagnosis_history" in state
+        assert "_parameter_overrides" in state
 
-    def test_layer3_critic_retry_with_real_deepseek(self, real_workflow):
-        """Full end-to-end: ExecutionController + real LLM Critic + retry cycle.
+        # If retry occurred, the final params should differ from the initial ones
+        if result.metadata.get("retry_count", 0) > 0:
+            final_params = state.get("_last_workflow_params", {})
+            assert (
+                final_params.get("mutation_number", 30) != 30
+                or final_params.get("temperature", 5.0) != 5.0
+            ), "Expected QualityAgent-recommended overrides to be applied"
+
+    def test_layer3_pipeline_agent_retry_with_real_deepseek(self, real_workflow):
+        """Full end-to-end: PipelineAgent + QualityAgent + SpecialistAgent + retry cycle.
 
         This test forces poor quality results and verifies that:
         1. DeepSeek API is called for diagnosis
-        2. Critic recommends parameter adjustments
-        3. ExecutionController applies overrides and re-runs
+        2. QualityAgent recommends parameter adjustments
+        3. SpecialistAgent applies overrides and re-runs
         4. The process completes within retry budget
         """
-        from agent_core.planning.base import ExecutionController, ExecutionPlan, PlanStep
+        from agent_core.pipeline.models import PipelinePlan
 
-        controller = ExecutionController(
-            capability_registry=real_workflow.capabilities,
-            workflow_registry={"sgrna_design": real_workflow},
+        pipeline = self._make_pipeline_agent(real_workflow)
+        plan = PipelinePlan.single(
+            workflow="sgrna_design",
+            static_params={
+                "seed_sequence": _SEED_60,
+                "n_samples": 2,
+                "mutation_number": 30,  # extreme value to trigger poor results
+                "sampling_mode": "naive",
+                "temperature": 5.0,  # extreme temperature
+            },
+            plan_id="sgrna_retry_pipeline",
+            output_alias="sgrna_result",
         )
-        plan = ExecutionPlan(
-            steps=[
-                PlanStep(
-                    step_id="sgrna_1",
-                    type="workflow",
-                    target="sgrna_design",
-                    input_binding={
-                        "seed_sequence": _SEED_60,
-                        "n_samples": 2,
-                        "mutation_number": 30,  # extreme value to trigger poor results
-                        "sampling_mode": "naive",
-                        "temperature": 5.0,  # extreme temperature
-                    },
-                    output_key="sgrna_result",
-                    description="Design sgRNA handles with extreme params",
-                )
-            ],
-            max_retries=1,
-        )
-
-        def _replan(s: dict) -> ExecutionPlan:
-            return plan
 
         state: dict = {}
         start_time = time.time()
-        result_state = controller.execute(plan, state, replan_fn=_replan)
+        pipeline_result = pipeline.execute(plan, state)
         elapsed = time.time() - start_time
 
         # Basic completion checks
-        assert result_state.get("_plan_executed") is True
-        assert "sgrna_result" in result_state
-
-        # Verify DeepSeek was called (diagnosis history exists)
-        diag_history = result_state.get("_diagnosis_history", [])
-        assert len(diag_history) >= 1, (
-            f"Expected at least one LLM diagnosis. State keys: {list(result_state.keys())}"
+        assert pipeline_result.success is True, (
+            f"Pipeline retry cycle failed: {pipeline_result.errors}"
         )
 
-        # Check retry-related state
-        if result_state.get("retry_count", 0) > 0:
-            # If retry happened, verify parameter overrides were applied
-            log = result_state.get("_execution_log", [])
-            override_events = [e for e in log if e.get("event") == "parameter_override"]
-            # The override may or may not happen depending on what DeepSeek recommends
-            # We just verify the diagnosis was made
+        # Verify DeepSeek was called (diagnosis history exists)
+        diag_history = state.get("_diagnosis_history", [])
+        assert len(diag_history) >= 1, (
+            f"Expected at least one LLM diagnosis. State keys: {list(state.keys())}"
+        )
 
         # Log timing for observability
         print(f"\n[Layer3 test] DeepSeek + retry cycle completed in {elapsed:.1f}s")

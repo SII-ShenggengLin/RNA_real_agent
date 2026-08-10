@@ -2,28 +2,28 @@
 
 Input sequence → IRESfinder (3 modes) → merge positive windows →
 structural validation (ViennaRNA fold + RNAplfold + dot-bracket) →
-scoring → ranking → confidence annotation via Critic.
+scoring → ranking → confidence annotation via QualityAgent.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  IresPredictionWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更           ║
+║  IresPredictionWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更           ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 ires_prediction workflow 的权威实现。任何字段增删、函数签名变动、   ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
 ║                                                                               ║
 ║    - agent_core/workflows/ires_prediction.py  ← 本文件                       ║
 ║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/writebacks.py                                    ║
 ║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/planning/base.py                                              ║
-║    - agent_core/planning/llm_critic.py                                        ║
+║    - agent_core/agents/quality_agent.py                                       ║
+║    - agent_core/agents/specialist_agent.py                                    ║
+║    - agent_core/agents/pipeline_agent.py                                      ║
+║    - agent_core/quality_profiles/ires_prediction.py                           ║
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - microservices/iresfinder_service/main.py                                 ║
 ║    - tests/test_ires_prediction.py                                            ║
-║    - tests/test_ires_prediction_comprehensive.py                              ║
 ║    - docs/INTERFACE_LOCKS.md                                                  ║
 ║    - docs/WORKFLOWS.md                                                        ║
 ║    - AGENTS.md                                                                ║
@@ -177,7 +177,7 @@ def _merge_overlapping_windows(
 class IresPredictionInput(BaseModel):
     """Input for the IRES prediction & validation workflow.
 
-    IMPORTANT — Parameter Override Policy for LLM Planner:
+    IMPORTANT — Parameter Override Policy:
     The default parameters below have been carefully tuned by domain experts
     for general-purpose IRES screening (probability_threshold=0.5, window_size=174,
     step_size=50, top_n_candidates=5).  These defaults perform well across a
@@ -187,9 +187,72 @@ class IresPredictionInput(BaseModel):
     "I need at least 10 candidates").  When in doubt, OMIT the parameter and
     let the workflow use its built-in defaults.
     """
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    iresfinder_filepath: str = Field(default=None, description="[iresfinder] filepath: Path to a workspace or repo-relative file containing RNA/DNA sequence or FASTA. Do not pass raw sequence text directly.")
+    iresfinder_window_size: int = Field(default=174, description="[iresfinder] window_size: Sliding-window length used only in mode 2 (upstream default: 174).")
+    iresfinder_step_size: int = Field(default=50, description="[iresfinder] step_size: Sliding-window step size used only in mode 2 (upstream default: 50).")
+    iresfinder_decision_threshold: float = Field(default=0.5, description="[iresfinder] decision_threshold: Probability threshold for labeling a fragment as IRES (upstream default: 0.5).")
+    iresfinder_service_url: str = Field(default='http://127.0.0.1:8013/predict', description="[iresfinder] service_url: REST endpoint for the IRESfinder microservice.")
+    iresfinder_out: str = Field(default=None, description="[iresfinder] -o/--out (unexposed): 上游 IRESfinder.py 的输出文件参数。")
+    linearfold_filepath: str = Field(default=None, description="[linearfold] filepath: Path to a workspace file containing RNA sequence (plain or FASTA).")
+    linearfold_beam_size: int = Field(default=100, description="[linearfold] beam_size: Beam size for LinearFold (0 = infinite beam).")
+    linearfold_use_vienna: bool = Field(default=False, description="[linearfold] use_vienna: If true, request LinearFold-V (Vienna energy parameters).")
+    linearfold_dangles: int = Field(default=2, description="[linearfold] dangles: Dangling-end model: 0 or 2 (LinearFold --dangles).")
+    linearfold_sharpturn: bool = Field(default=False, description="[linearfold] sharpturn: Enable sharpturn in prediction.")
+    linearfold_constraints: Optional[str] = Field(default=None, description="[linearfold] constraints: Optional constraint string (? . ( ) ) for constrained prediction. If provided, length must match the sequence.")
+    linearfold_shape_file_path: Optional[str] = Field(default=None, description="[linearfold] shape_file_path: Optional path to SHAPE reactivity data file (mutually exclusive with constraints).")
+    linearfold_service_url: str = Field(default='http://127.0.0.1:8015/fold', description="[linearfold] service_url: REST endpoint for the LinearFold microservice.")
+    linearfold_fasta: bool = Field(default=False, description="[linearfold] --fasta: 上游 --fasta，声明输入为 FASTA 格式。")
+    linearfold_verbose: bool = Field(default=False, description="[linearfold] --verbose: 上游 -v/--verbose，输出每个 loop 的能量。")
+    vienna_fold_filepath: str = Field(default=None, description="[vienna_fold] filepath: Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.")
+    vienna_fold_temp_c: float = Field(default=37.0, description="[vienna_fold] temp_c: Folding temperature (Celsius).")
+    vienna_fold_dangles: int = Field(default=2, description="[vienna_fold] dangles: Dangling-end model.")
+    vienna_fold_no_lp: bool = Field(default=False, description="[vienna_fold] no_lp: Disallow lonely pairs.")
+    vienna_fold_no_gu: bool = Field(default=False, description="[vienna_fold] no_gu: Disallow GU pairs.")
+    vienna_fold_no_closing_gu: bool = Field(default=False, description="[vienna_fold] no_closing_gu: Disallow GU closing pairs.")
+    vienna_fold_salt: Optional[float] = Field(default=None, description="[vienna_fold] salt: Salt concentration (M).")
+    vienna_fold_no_tetra: bool = Field(default=False, description="[vienna_fold] no_tetra: Omit special hairpin loop energies.")
+    vienna_fold_energy_model: Optional[int] = Field(default=None, description="[vienna_fold] energy_model: Energy model index.")
+    vienna_fold_nsp: Optional[str] = Field(default=None, description="[vienna_fold] nsp: Non-standard pair specification.")
+    vienna_fold_param_file: Optional[str] = Field(default=None, description="[vienna_fold] param_file: Custom parameter file.")
+    vienna_fold_constraint: Optional[str] = Field(default=None, description="[vienna_fold] constraint: Hard constraint dot-bracket string.")
+    vienna_fold_shape_file: Optional[str] = Field(default=None, description="[vienna_fold] shape_file: Path to SHAPE reactivity data file.")
+    vienna_fold_shape_method: str = Field(default='D', description="[vienna_fold] shape_method: SHAPE method: D, Z, or W.")
+    vienna_fold_partfunc: bool = Field(default=False, description="[vienna_fold] partfunc: Compute partition function and centroid.")
+    vienna_fold_circ: bool = Field(default=False, description="[vienna_fold] circ: Assume circular RNA.")
+    vienna_fold_gquad: bool = Field(default=False, description="[vienna_fold] gquad: Include G-quadruplex formation.")
+    vienna_fold_service_url: str = Field(default='http://127.0.0.1:8003/fold', description="[vienna_fold] service_url: ViennaRNA fold endpoint.")
+    vienna_fold_noDP: bool = Field(default=False, description="[vienna_fold] --noDP: 上游 --noDP，禁止生成 dot-plot PostScript。")
+    vienna_fold_maxBPspan: int = Field(default=-1, description="[vienna_fold] --maxBPspan: 上游 --maxBPspan，默认 -1 无限制。")
+    vienna_fold_MEA: Any = Field(default=None, description="[vienna_fold] --MEA: 上游 --MEA[=gamma]，基于最大期望精度预测结构。")
+    vienna_fold_batch: bool = Field(default=False, description="[vienna_fold] --batch: 上游 --batch，批量使用约束。")
+    vienna_fold_canonicalBPonly: bool = Field(default=False, description="[vienna_fold] --canonicalBPonly: 上游 --canonicalBPonly，从约束中移除非规范碱基对。")
+    vienna_fold_enforceConstraint: bool = Field(default=False, description="[vienna_fold] --enforceConstraint: 上游 --enforceConstraint，强制约束中圆括号表示的碱基对必须形成。")
+    vienna_fold_shapeConversion: str = Field(default='O', description="[vienna_fold] --shapeConversion: 上游 --shapeConversion，SHAPE 到配对概率的转换方法。")
+    vienna_fold_verbose: bool = Field(default=False, description="[vienna_fold] --verbose: 上游 -v，输出详细日志。")
+    plfold_filepath: str = Field(default=None, description="[plfold] filepath: Workspace file with RNA sequence (plain or FASTA).")
+    plfold_temp_c: float = Field(default=37.0, description="[plfold] temp_c: Temperature in Celsius.")
+    plfold_dangles: int = Field(default=2, description="[plfold] dangles: Dangling-end model.")
+    plfold_no_lp: bool = Field(default=False, description="[plfold] no_lp: Disallow lonely pairs.")
+    plfold_no_gu: bool = Field(default=False, description="[plfold] no_gu: Disallow GU pairs.")
+    plfold_no_closing_gu: bool = Field(default=False, description="[plfold] no_closing_gu: Disallow GU closing pairs.")
+    plfold_salt: Optional[float] = Field(default=None, description="[plfold] salt: Salt concentration (M).")
+    plfold_no_tetra: bool = Field(default=False, description="[plfold] no_tetra: Omit special hairpin loop energies.")
+    plfold_energy_model: Optional[int] = Field(default=None, description="[plfold] energy_model: Energy model index.")
+    plfold_nsp: Optional[str] = Field(default=None, description="[plfold] nsp: Non-standard pair specification.")
+    plfold_param_file: Optional[str] = Field(default=None, description="[plfold] param_file: Custom parameter file.")
+    plfold_winsize: int = Field(default=70, description="[plfold] winsize: RNAplfold -W window size.")
+    plfold_span: int = Field(default=70, description="[plfold] span: RNAplfold -L max pair span.")
+    plfold_unpaired_ulength: int = Field(default=25, description="[plfold] unpaired_ulength: RNAplfold -u upper bound for stretch probabilities in lunp output.")
+    plfold_cutoff: Optional[float] = Field(default=None, description="[plfold] cutoff: RNAplfold -c probability cutoff.")
+    plfold_opening_energies: bool = Field(default=False, description="[plfold] opening_energies: RNAplfold -O: return opening energies instead of probabilities.")
+    plfold_service_url: str = Field(default='http://127.0.0.1:8003/plfold-profiles', description="[plfold] service_url: REST endpoint for ViennaRNA RNAplfold profile (lunp column 1).")
+    plfold_shape: Optional[str] = Field(default=None, description="[plfold] --shape: 上游 RNAplfold --shape。")
+    plfold_print_onthefly: bool = Field(default=False, description="[plfold] --print_onthefly: 上游 RNAplfold -o。")
+    plfold_verbose: bool = Field(default=False, description="[plfold] --verbose: 上游 -v。")
+    unpaired_filepath: str = Field(default=None, description="[unpaired] filepath: Path to dot-bracket secondary structure (first structural line used; FASTA header skipped).")
+    unpaired_service_url: str = Field(default='http://127.0.0.1:8020/unpaired-fraction', description="[unpaired] service_url: POST endpoint for unpaired-fraction microservice.")
+    unpaired_timeout_seconds: float = Field(default=120.0, description="[unpaired] timeout_seconds: HTTP request timeout in seconds.")
     sequence_filepath: str = Field(
         ...,
         description="Path to the input sequence file (FASTA or plain text).",
@@ -228,12 +291,6 @@ class IresPredictionInput(BaseModel):
         default=True,
         description="Run LinearFold (primary) / ViennaRNA (fallback) fold + RNAplfold + dot-bracket analysis on each candidate region.",
     )
-
-
-# Confidence assignment helper — INTERFACE LOCKED (v1.0.0)
-# The confidence thresholds are calibrated for IRES screening. Changing them
-# affects downstream ranking and user expectations.
-
 
 def assign_confidence(ires_probability: float, mean_unpaired_fraction: float | None) -> str:
     """Assign confidence based on IRESfinder probability and structural complexity.
@@ -589,7 +646,7 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
         """Score is driven solely by IRESfinder probability.
 
         Structural metrics (MFE, unpaired fraction, RNAplfold) are reported in
-        the candidate metadata for user inspection and LLM Critic review, but
+        the candidate metadata for user inspection and QualityAgent review, but
         they are not folded into the numeric score due to lack of calibrated
         evidence for an optimal unpaired-fraction target.
         """
@@ -658,162 +715,3 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
             errors=[],
         )
 
-
-# LLM Critic Configuration — INTERFACE LOCKED (v1.0.0)
-# Do NOT rename adjustable_params keys (breaks Critic→Controller parameter override).
-# Do NOT change retry_strategy or max_retries without updating ExecutionController tests.
-
-from agent_core.planning.llm_critic import BaseLLMCritic, CriticConfig
-
-IRES_PREDICTION_CRITIC_CONFIG = CriticConfig(
-    workflow_name="ires_prediction",
-    workflow_description="Predict putative IRES elements in an RNA/DNA sequence using IRESfinder with optional structural validation",
-    evaluation_dimensions=[
-        "IRESfinder probability scores reflect the model's confidence that a region functions as an IRES. Higher scores generally indicate stronger prediction confidence, but the appropriate threshold depends on the application (screening vs. validation). Evaluate relative to other candidates and the user's stated requirements rather than enforcing a fixed cutoff.",
-        "Structural validation via LinearFold (primary) or ViennaRNA (fallback) fold provides the predicted secondary structure (dot-bracket notation) and MFE. A stable but not excessively rigid structure is typically desirable for IRES function — overly rigid structures may impede ribosome access, while overly unstable ones lack the scaffold needed for IRES activity.",
-        "Mean unpaired fraction from dot-bracket analysis and RNAplfold local accessibility both indicate how much of the structure is single-stranded. IRES function generally benefits from a balance: some structured regions provide scaffold, while exposed single-stranded regions allow ribosome entry. Evaluate this balance relative to the candidate set and user intent rather than applying a universal numeric target.",
-        "Coverage and distribution of candidate regions across the input sequence matters. Too few candidates may indicate the sequence lacks IRES-like features or that parameters are too restrictive. Clustered candidates in a small region may suggest a localized IRES element; scattered candidates may indicate multiple weak signals.",
-        "CRITICAL: Base your quality assessment on the user's original intent and any explicit constraints they stated. If the user specified thresholds (e.g., 'probability must be > 0.9', 'need at least 3 candidates', 'focus on the 5\\'UTR region'), evaluate whether the results meet those constraints. Failure to meet user constraints is a CRITICAL issue. Do not apply universal thresholds that may be inappropriate for this specific screening task.",
-    ],
-    adjustable_params={
-        "probability_threshold": {
-            "type": "float",
-            "min": 0.0,
-            "max": 1.0,
-            "hint": "Probability threshold for labeling a fragment as IRES. Lower to catch more candidates (but with lower confidence); raise for stricter filtering.",
-        },
-        "window_size": {
-            "type": "int",
-            "min": 20,
-            "max": 5000,
-            "hint": "Sliding-window size for mode 2. Adjust based on expected IRES length in the target organism.",
-        },
-        "step_size": {
-            "type": "int",
-            "min": 1,
-            "max": 5000,
-            "hint": "Sliding-window step size for mode 2. Smaller steps give better coverage but more overlap; larger steps are faster but may miss regions.",
-        },
-        "top_n_candidates": {
-            "type": "int",
-            "min": 1,
-            "max": 100,
-            "hint": "Number of top candidate regions to keep after merging. Increase if too few candidates are found.",
-        },
-        "run_structural_validation": {
-            "type": "bool",
-            "hint": "Whether to run ViennaRNA structural validation. Keep True for better confidence assessment.",
-        },
-        "iresfinder_mode": {
-            "type": "enum",
-            "values": [0, 1, 2],
-            "hint": "IRESfinder mode: 0=full sequence, 1=header-specified subsequence, 2=sliding window. Switch to mode 2 for long sequences where localized IRES elements are expected.",
-        },
-    },
-    retry_strategy="adjust_params",
-    max_retries=2,
-)
-
-
-class IresPredictionLLMCritic(BaseLLMCritic):
-    """LLM-driven Critic for IRES prediction workflow.
-
-    Focuses on whether candidate regions satisfy constraints from the user's
-    original prompt rather than applying hard-coded thresholds.
-    """
-
-    def _default_config(self) -> CriticConfig:
-        return IRES_PREDICTION_CRITIC_CONFIG
-
-    def _build_context(self, result: WorkflowResult, state: dict[str, Any]) -> dict[str, Any]:
-        """Extend base context with IRES-specific statistics."""
-        ctx = super()._build_context(result, state)
-
-        candidates = result.all_candidates
-        if not candidates:
-            ctx["ires_stats"] = {
-                "probability_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "mfe_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "unpaired_fraction_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "plfold_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "region_length_range": {"min": None, "max": None, "mean": None, "count": 0},
-                "coverage": {"min_start": None, "max_end": None, "total_span": None},
-                "mode_distribution": {},
-            }
-            constraints = state.get("user_constraints")
-            if constraints:
-                ctx["user_constraints"] = constraints
-            return ctx
-
-        prob_values: list[float] = []
-        mfe_values: list[float] = []
-        unpaired_values: list[float] = []
-        plfold_values: list[float] = []
-        length_values: list[float] = []
-        starts: list[int] = []
-        ends: list[int] = []
-        mode_dist: dict[str, int] = {}
-
-        for c in candidates:
-            meta = c.metadata or {}
-            mb = meta.get("metrics_bundle", {})
-
-            mode = str(meta.get("iresfinder_mode", "unknown"))
-            mode_dist[mode] = mode_dist.get(mode, 0) + 1
-
-            prob = mb.get("ires_probability")
-            if prob is not None:
-                prob_values.append(float(prob))
-
-            mfe = mb.get("mfe_kcal_per_mol")
-            if mfe is not None:
-                mfe_values.append(float(mfe))
-
-            unp = mb.get("mean_unpaired_fraction")
-            if unp is not None:
-                unpaired_values.append(float(unp))
-
-            plf = mb.get("mean_unpaired_prob_1nt")
-            if plf is not None:
-                plfold_values.append(float(plf))
-
-            length = mb.get("region_length")
-            if length is not None:
-                length_values.append(float(length))
-
-            start = mb.get("start")
-            end = mb.get("end")
-            if start is not None:
-                starts.append(int(start))
-            if end is not None:
-                ends.append(int(end))
-
-        def _stats(values: list[float]) -> dict[str, Any]:
-            if not values:
-                return {"min": None, "max": None, "mean": None, "count": 0}
-            return {
-                "min": round(min(values), 4),
-                "max": round(max(values), 4),
-                "mean": round(sum(values) / len(values), 4),
-                "count": len(values),
-            }
-
-        ctx["ires_stats"] = {
-            "probability_range": _stats(prob_values),
-            "mfe_range": _stats(mfe_values),
-            "unpaired_fraction_range": _stats(unpaired_values),
-            "plfold_range": _stats(plfold_values),
-            "region_length_range": _stats(length_values),
-            "coverage": {
-                "min_start": min(starts) if starts else None,
-                "max_end": max(ends) if ends else None,
-                "total_span": max(ends) - min(starts) + 1 if starts and ends else None,
-            },
-            "mode_distribution": mode_dist,
-        }
-
-        return ctx
-
-
-# Backwards-compatible alias used in tests and docs.
-IresPredictionCritic = IresPredictionLLMCritic

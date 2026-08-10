@@ -5,6 +5,7 @@ from uuid import uuid4
 
 import pytest
 
+from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import PROJECT_ROOT
 from agent_core.tool_executor import ToolExecutor
 from agent_core.tool_registry import ToolRegistry
@@ -30,7 +31,9 @@ def _run_parent():
 def test_workflow_persist_request_and_result_json(stub_ex):
     parent = _run_parent()
     inp = MrnaSequenceScoringInput(sequence="AUGCAUGCAUGCAU")
-    out = run_mrna_sequence_scoring(inp, executor=stub_ex, task_id="paper-exp-001")
+    out = run_mrna_sequence_scoring(
+        inp, capability_registry=CapabilityRegistry(stub_ex), task_id="paper-exp-001", auto_start_services=False
+    )
     assert out.public_summary
     assert out.public_summary.startswith("task_id=")
 
@@ -63,7 +66,7 @@ def test_workflow_persist_request_and_result_json(stub_ex):
 def test_workflow_failed_run_still_persisted(stub_ex):
     parent = _run_parent()
     inp = MrnaSequenceScoringInput(sequence="")
-    out = run_mrna_sequence_scoring(inp, executor=stub_ex)
+    out = run_mrna_sequence_scoring(inp, capability_registry=CapabilityRegistry(stub_ex), auto_start_services=False)
     assert out.success is False
 
     maybe_persist_workflow_run(
@@ -88,7 +91,7 @@ def test_trace_contains_tool_steps():
     reg.register(StubCaiTool())
     ex = ToolExecutor(reg)
     inp = MrnaSequenceScoringInput(sequence="AUGCAU")
-    out = run_mrna_sequence_scoring(inp, executor=ex)
+    out = run_mrna_sequence_scoring(inp, capability_registry=CapabilityRegistry(ex), auto_start_services=False)
     assert len(out.trace) == 3
     names = {r.tool_name for r in out.trace}
     assert "compute_rna_sequence_gc_content" in names

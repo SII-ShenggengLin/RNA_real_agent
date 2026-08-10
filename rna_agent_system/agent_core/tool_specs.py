@@ -17,6 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from agent_core.tool_interface import ToolDependency, ToolExample, ToolSpec, ToolStatus, ToolTransport
 from agent_core import tools as tool_wrappers
+from agent_core.constants.species import format_cai_species_aliases
 
 
 class _OutBase(BaseModel):
@@ -479,6 +480,42 @@ class LinearDesignCdsBatchOutput(_OutBase):
     model: str
 
 
+# Junction-aware LinearDesign tool (2026-08, additive; v0.2.0 locked schemas above
+# are untouched). Mirrors microservices/lineardesign_service/main.py ::
+# LinearDesignJunctionAwareResponse.
+
+
+class LinearDesignCdsJunctionAwareOutput(_OutBase):
+    """Junction-aware LinearDesign CDS design output schema.
+
+    Synchronized with:
+    - agent_core/tools.py :: design_mrna_cds_junction_aware_with_lineardesign return dict
+    - microservices/lineardesign_service/main.py :: LinearDesignJunctionAwareResponse
+    """
+
+    input_filepath: str
+    output_filepath: str
+    generated_sequence: str
+    structure: str
+    mfe: float
+    cai_score: float
+    cds_sequence: str = ""
+    cds_cai: float = 0.0
+    full_construct_sequence: str = ""
+    utr5_flank: str = ""
+    utr3_flank: str = ""
+    junction_weight: float = 0.0
+    junction_window_nt: int = 20
+    flank_nt: int = 21
+    junction_window_pair_count: int = 0
+    mfe_thermo: float = 0.0
+    lambda_value: float
+    codon_usage_path: str
+    raw_output: str
+    stderr: str = ""
+    model: str
+
+
 class RNARLCdsOutput(_OutBase):
     """RNARL CDS design output schema.
 
@@ -714,7 +751,6 @@ class BuildOdesignAptamerOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: build_odesign_aptamer_input_json (wrapper return dict)
     - agent_core/state.py :: odesign_aptamer_input_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
     """
     input_json_filepath: str
     design_config: Dict[str, Any]
@@ -727,7 +763,6 @@ class ExtractRnaFromCifOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: extract_rna_sequence_from_cif (wrapper return dict)
     - agent_core/state.py :: extract_rna_from_cif_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
     """
     sequence: str
     chain_id: str
@@ -744,7 +779,6 @@ class ProteinXProteinOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: predict_protein_structure_with_proteinx (wrapper return dict)
     - agent_core/state.py :: protein_structure_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
     """
     pdb_filepath: str = ""
     mean_pae: float = 0.0
@@ -786,7 +820,6 @@ class IdentifyProteinBindingHotspotsOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: identify_protein_binding_hotspots (wrapper return dict)
     - agent_core/state.py :: hotspot_* fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
     """
     hotspot_residues: str
     hotspot_patch_size: int
@@ -804,7 +837,6 @@ class StructureAlignmentOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: score_structure_alignment (wrapper return dict)
     - agent_core/state.py :: structure_rmsd / structure_tm_score fields
-    - agent_core/capabilities/writebacks.py :: writeback mapping
     """
     rmsd: float
     tm_score: float
@@ -865,7 +897,6 @@ class RnaUContentOutput(_OutBase):
     - agent_core/tools.py :: compute_rna_sequence_u_content (wrapper return dict)
     - microservices/rna_sequence_metrics_service/main.py :: UContentResponse
     - agent_core/state.py :: sequence_u_* fields
-    - agent_core/capabilities/writebacks.py :: compute_rna_sequence_u_content writeback
     """
 
     input_filepath: str
@@ -884,7 +915,6 @@ class CaiForCdsOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
     - agent_core/tools.py :: compute_cai_for_cds_sequence (wrapper return dict)
     - agent_core/state.py :: cai_for_cds_* fields
-    - agent_core/capabilities/writebacks.py :: compute_cai_for_cds_sequence writeback
     """
 
     input_filepath: str
@@ -904,7 +934,6 @@ class ShuffleCdsJunctionCodonsOutput(_OutBase):
     INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
     - agent_core/tools.py :: shuffle_cds_junction_codons (wrapper return dict)
     - agent_core/state.py :: shuffle_cds_junction_* fields
-    - agent_core/capabilities/writebacks.py :: shuffle_cds_junction_codons writeback
     """
 
     original_sequence: str
@@ -1262,6 +1291,36 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearDesignCdsBatchOutput,
         status=ToolStatus.partial,
     ),
+    # Junction-aware LinearDesign tool (2026-08, additive; v0.2.0 locked specs above
+    # are untouched). Synchronized with microservices/lineardesign_service/main.py ::
+    # /generate/cds_junction_aware and agent_core/tools.py ::
+    # design_mrna_cds_junction_aware_with_lineardesign.
+    "design_mrna_cds_junction_aware_with_lineardesign": ToolSpec(
+        identity="design_mrna_cds_junction_aware_with_lineardesign",
+        display_name="LinearDesign junction-aware protein→CDS design",
+        version="0.1.0-port8014",
+        source="https://github.com/LinearDesignSoftware/LinearDesign",
+        transport=ToolTransport.http,
+        endpoint="http://127.0.0.1:8014/generate/cds_junction_aware",
+        capabilities=[
+            "Generate CDS with fixed UTR flank slices folded into the full construct (cross-junction pairs visible to the optimizer).",
+            "Apply a junction-window pair penalty (junction_weight, kcal/mol) inside the CKY objective.",
+            "Report CDS-only sequence/CAI, window pair count, and thermodynamic MFE alongside the objective value.",
+        ],
+        limitations=[
+            "Requires the patched LinearDesign binary (JUNCTION-PATCH 2026-08; run `make` in external_repos/LinearDesign).",
+            "Single-sequence endpoint; `mfe` is the CKY objective value (thermodynamic MFE + penalty), see `mfe_thermo` for the pure MFE.",
+        ],
+        task_tags=["protein_to_cds_design", "junction_aware_design"],
+        requires=[
+            ToolDependency(name="Linux", detail="Documented deployment target"),
+            ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service (port 8014)"),
+        ],
+        produces=["output_filepath", "generated_sequence", "cds_sequence", "cds_cai", "junction_window_pair_count", "mfe_thermo"],
+        input_model=tool_wrappers.LinearDesignCdsJunctionAwareInput,
+        output_model=LinearDesignCdsJunctionAwareOutput,
+        status=ToolStatus.partial,
+    ),
     # INTERFACE LOCK (v0.2.0): RNARL tool spec. See docs/tools/design_mrna_cds_with_rnarl.md
     # for the canonical contract. Modify only in sync with wrapper + microservice.
     "design_mrna_cds_with_rnarl": ToolSpec(
@@ -1531,7 +1590,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         ],
         limitations=[
             "This repo wrapper exposes prediction only (not beam/MCTS optimization).",
-            "Hard length limit: 512 nt (DNABERT encoder max). Longer sequences return exceeded_max_length=True without inference.",
+            "Sequences longer than 512 nt are truncated to the first 512 nt by the service (truncated=True).",
         ],
         task_tags=["mrna_stability_prediction"],
         requires=[ToolDependency(name="GPU", detail="RNASTOP inference"), ToolDependency(name="RNASTOP microservice", detail="microservices/rnastop_service (port 8009)")],
@@ -1543,7 +1602,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             "mean_deg_mg_ph10",
             "mean_deg_mg_50c",
             "overall_stability",
-            "exceeded_max_length",
         ],
         input_model=tool_wrappers.RNASTOPPredictionInput,
         output_model=RNASTOPPredictionOutput,
@@ -1831,7 +1889,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # Locked contract. Modify only in sync with:
     # - agent_core/tools.py :: BuildOdesignAptamerInput / build_odesign_aptamer_input_json
     # - agent_core/state.py :: odesign_aptamer_input_* fields
-    # - agent_core/capabilities/writebacks.py :: writeback mapping
     "build_odesign_aptamer_input_json": ToolSpec(
         identity="build_odesign_aptamer_input_json",
         display_name="ODesign aptamer input JSON builder",
@@ -1865,7 +1922,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # Locked contract. Modify only in sync with:
     # - agent_core/tools.py :: ExtractRnaFromCifInput / extract_rna_sequence_from_cif
     # - agent_core/state.py :: extract_rna_from_cif_* fields
-    # - agent_core/capabilities/writebacks.py :: writeback mapping
     "extract_rna_sequence_from_cif": ToolSpec(
         identity="extract_rna_sequence_from_cif",
         display_name="Extract RNA sequence from CIF/MMCIF",
@@ -1894,7 +1950,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/tools.py :: ProteinXProteinInput / predict_protein_structure_with_proteinx
     # - microservices/proteinx_service/main.py
     # - agent_core/state.py :: protein_structure_* fields
-    # - agent_core/capabilities/writebacks.py :: writeback mapping
     "predict_protein_structure_with_proteinx": ToolSpec(
         identity="predict_protein_structure_with_proteinx",
         display_name="ProteinX (Protenix) protein structure prediction",
@@ -1983,7 +2038,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # Locked contract. Modify only in sync with:
     # - agent_core/tools.py :: IdentifyProteinBindingHotspotsInput / identify_protein_binding_hotspots
     # - agent_core/state.py :: hotspot_* fields
-    # - agent_core/capabilities/writebacks.py :: writeback mapping
     "identify_protein_binding_hotspots": ToolSpec(
         identity="identify_protein_binding_hotspots",
         display_name="Identify protein binding hotspots (RNA aptamer)",
@@ -2020,7 +2074,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # Locked contract. Modify only in sync with:
     # - agent_core/tools.py :: StructureAlignmentInput / score_structure_alignment
     # - agent_core/state.py :: structure_rmsd / structure_tm_score fields
-    # - agent_core/capabilities/writebacks.py :: writeback mapping
     "score_structure_alignment": ToolSpec(
         identity="score_structure_alignment",
         display_name="RNA structure alignment (RMSD + TM-score)",
@@ -2055,11 +2108,9 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/workflow_tools/rna_gc_content_workflow.py
     #   - agent_core/workflows/mrna_sequence_scoring.py
     #   - agent_core/sequence_utils.py
     #   - agent_core/workflow_baseline_eval.py
-    #   - tests/test_rna_gc_content_workflow.py
     #   - tests/test_compute_rna_sequence_gc_content.py
     "compute_rna_sequence_gc_content": ToolSpec(
         identity="compute_rna_sequence_gc_content",
@@ -2106,7 +2157,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/capabilities/writebacks.py
     #   - agent_core/sequence_utils.py
     #   - tests/test_compute_rna_sequence_u_content.py
     #   - rna_agent_system/docs/CONTRIBUTING.md
@@ -2138,7 +2188,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/capabilities/writebacks.py
     #   - agent_core/sequence_utils.py
     #   - agent_core/data/codon_usage_kazusa.json
     #   - tests/test_compute_cai_for_cds_sequence.py
@@ -2152,7 +2201,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         endpoint="",
         capabilities=[
             "Compute Codon Adaptation Index (CAI) for a coding sequence using Kazusa codon usage tables.",
-            "Supports built-in tables for human, mouse, rat, fly, worm, zebrafish, arabidopsis, yeast, ecoli, bsubtilis, cho.",
+            f"Supports built-in tables for {format_cai_species_aliases()}.",
             "Allows custom codon usage tables via JSON file.",
         ],
         limitations=[
@@ -2178,7 +2227,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - agent_core/tools.py
     #   - agent_core/tool_specs.py  ← 本文件
     #   - agent_core/state.py
-    #   - agent_core/capabilities/writebacks.py
     #   - tests/test_shuffle_cds_junction_codons.py
     "shuffle_cds_junction_codons": ToolSpec(
         identity="shuffle_cds_junction_codons",

@@ -23,6 +23,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from agent_core.capabilities.base import CapabilityRegistry, CapabilityResult
+from agent_core.constants.species import DEFAULT_CAI_SPECIES
 from agent_core.file_manager import save_sequence, save_text_file
 from agent_core.sequence_utils import _pick_float, _pick_int
 from agent_core.workflow_models import Candidate, ToolCallRecord
@@ -319,7 +320,7 @@ class CAIEvaluator(BaseEvaluator):
         capabilities: CapabilityRegistry,
         *,
         species_key: str = "cai_species",
-        default_species: str = "Homo sapiens",
+        default_species: str = DEFAULT_CAI_SPECIES,
     ):
         super().__init__(capabilities)
         self.species_key = species_key
@@ -647,18 +648,41 @@ class IRESEvaluator(BaseEvaluator):
         return {}
 
 
+# Full-length ddG window definitions for the 5'UTR-CDS junction (report-only
+# metric; aligned with experiments/junction_ddg_pilot_eval.py, Phase 0 pilot).
+_DDG_W1_UPSTREAM_NT = 6
+_DDG_W1_DOWNSTREAM_NT = 9   # from CDS start -> 15 nt AUG/Kozak context
+_DDG_W2_UTR_NT = 60
+_DDG_W2_CDS_NT = 30
+
+
+def _ddg_constraint_string(full_len: int, start: int, end: int) -> str:
+    """'?' everywhere, '.' (forced unpaired) inside [start, end)."""
+    c = ["?"] * full_len
+    for i in range(max(0, start), min(full_len, end)):
+        c[i] = "."
+    return "".join(c)
+
+
 class JunctionEvaluator(BaseEvaluator):
-    """Evaluate junction stability, GC continuity, and translation accessibility.
+    """Evaluate junction stability, GC continuity, and translation-start openness.
 
     Assesses the 20-nt overlap regions at:
     - 5'UTR / CDS boundary (last 20 nt of 5'UTR + first 20 nt of CDS)
     - CDS / 3'UTR boundary (last 20 nt of CDS + first 20 nt of 3'UTR)
 
-    For the 5'UTR-CDS junction, additionally checks whether the AUG start codon
-    and its Kozak context are base-paired (buried), which would impede ribosome
-    scanning and translation initiation.
+    For the 5'UTR-CDS junction, additionally reports a full-length
+    constrained-fold ddG (``ddG_open = MFE_constrained - MFE_unconstrained``)
+    on the concatenated mRNA (utr5 + cds + utr3) with LinearFold, where the
+    constraint forces the AUG-context window unpaired. Two windows are
+    reported: W1 (narrow, CDS start -6..+9) and W2 (wide, 5'UTR tail 60 nt +
+    CDS head 30 nt, clipped to the actual UTR length). This replaces the
+    retired fragment-fold AUG/Kozak burial booleans, which were falsified as a
+    translation-initiation proxy by pre-registered experiments (P1 v2, P2, and
+    the Phase 0 ddG pilot ``junction_ddg_pilot_summary.json``). ddG is a
+    report/profile metric only; it never triggers automatic repair.
 
-    Returns MFE, GC-difference, and accessibility metrics for each junction.
+    Returns MFE, GC-difference, and ddG metrics for each junction.
     """
 
     primary_cap = "predict_rna_secondary_structure_with_linearfold"
@@ -680,7 +704,15 @@ class JunctionEvaluator(BaseEvaluator):
         j1_seq = j1_left + j1_right
 
         if len(j1_seq) >= 10:
-            j1_metrics = self._evaluate_junction(j1_seq, "junction_5utr_cds", candidate, context)
+            # CDS starts right after the 5'UTR slice in the junction sequence
+            j1_metrics = self._evaluate_junction(
+                j1_seq,
+                "junction_5utr_cds",
+                candidate,
+                context,
+                cds_start_offset=len(j1_left),
+                split_offset=len(j1_left),
+            )
             results.update(j1_metrics)
 
         # Junction 2: CDS - 3'UTR
@@ -689,13 +721,29 @@ class JunctionEvaluator(BaseEvaluator):
         j2_seq = j2_left + j2_right
 
         if len(j2_seq) >= 10:
-            j2_metrics = self._evaluate_junction(j2_seq, "junction_cds_3utr", candidate, context)
+            j2_metrics = self._evaluate_junction(
+                j2_seq,
+                "junction_cds_3utr",
+                candidate,
+                context,
+                split_offset=len(j2_left),
+            )
             results.update(j2_metrics)
+
+        # Full-length constrained-fold ddG at the 5'UTR-CDS junction
+        # (report-only; replaces the retired burial booleans).
+        results.update(self._evaluate_ddg_open(utr5, cds, utr3, candidate, context))
 
         return results
 
     def _evaluate_junction(
-        self, seq: str, prefix: str, candidate: Candidate, context: dict[str, Any]
+        self,
+        seq: str,
+        prefix: str,
+        candidate: Candidate,
+        context: dict[str, Any],
+        cds_start_offset: int | None = None,
+        split_offset: int | None = None,
     ) -> dict[str, Any]:
         state = context.get("workflow_state", {})
         # Include candidate.id to guarantee unique filenames across evaluations
@@ -703,6 +751,7 @@ class JunctionEvaluator(BaseEvaluator):
         seq_fp = save_sequence(seq, prefix=unique_prefix)
 
         metrics: dict[str, Any] = {}
+        metrics[f"{prefix}_length"] = len(seq)
         args = {"filepath": seq_fp}
         step_name = f"{candidate.id}_{prefix}_fold"
 
@@ -743,33 +792,156 @@ class JunctionEvaluator(BaseEvaluator):
                     candidate, self.fallback_cap, args, res, step_name=step_name
                 )
 
-        # GC diff: split the junction in half and compute GC difference
-        mid = len(seq) // 2
-        left_gc = self._gc_content(seq[:mid])
-        right_gc = self._gc_content(seq[mid:])
+        # Length-normalized junction MFE for fair comparison across variable overlaps
+        mfe = metrics.get(f"{prefix}_mfe")
+        if mfe is not None and len(seq) > 0:
+            metrics[f"{prefix}_mfe_per_nt"] = float(mfe) / len(seq)
+
+        # GC diff: compare GC content of the two sides of the actual junction
+        # boundary (UTR fragment vs CDS fragment, or CDS fragment vs UTR
+        # fragment).  ``split_offset`` is the length of the left-hand fragment
+        # (5'UTR for junction_5utr_cds, CDS for junction_cds_3utr).  This is
+        # more biologically meaningful than always splitting at the midpoint,
+        # especially when one side is shorter than the 20-nt overlap window.
+        effective_split = split_offset
+        if effective_split is None and cds_start_offset is not None:
+            effective_split = cds_start_offset
+        if effective_split is None or effective_split <= 0 or effective_split >= len(seq):
+            effective_split = len(seq) // 2
+        left_gc = self._gc_content(seq[:effective_split])
+        right_gc = self._gc_content(seq[effective_split:])
         metrics[f"{prefix}_gc_diff"] = abs(left_gc - right_gc)
         metrics[f"{prefix}_left_gc"] = left_gc
         metrics[f"{prefix}_right_gc"] = right_gc
 
-        # Translation-start check (5'UTR-CDS junction only)
-        if prefix == "junction_5utr_cds":
-            structure = metrics.get(f"{prefix}_structure", "")
-            if structure:
-                start_checks = self._check_translation_start(seq, structure)
-                # Prefix keys for consistency with other junction metrics
-                metrics[f"{prefix}_aug_found"] = start_checks.get("aug_found", False)
-                metrics[f"{prefix}_aug_buried"] = start_checks.get("aug_buried", False)
-                metrics[f"{prefix}_aug_position"] = start_checks.get("aug_position", -1)
-                metrics[f"{prefix}_kozak_buried"] = start_checks.get("kozak_buried", False)
-                metrics[f"{prefix}_kozak_position_start"] = start_checks.get("kozak_position_start", -1)
-
         return metrics
 
-    @staticmethod
-    def _check_translation_start(seq: str, structure: str) -> dict[str, Any]:
-        """Check whether AUG and Kozak region are buried in secondary structure.
+    def _evaluate_ddg_open(
+        self,
+        utr5: str,
+        cds: str,
+        utr3: str,
+        candidate: Candidate,
+        context: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Full-length constrained-fold ddG at the 5'UTR-CDS junction.
 
-        The first AUG in the junction sequence is assumed to be the start codon.
+        ``ddG_open = MFE_constrained - MFE_unconstrained`` (>= 0 when the
+        constraint is obeyed), both folds on the full construct
+        ``utr5 + cds + utr3`` via LinearFold. The constraint string is '?'
+        over the full length with '.' (forced unpaired) inside the window.
+        Two windows are reported (coordinates recorded per candidate):
+
+        - W1 (narrow): [cds_start - 6, cds_start + 9) — 15 nt AUG/Kozak context
+        - W2 (wide): [max(0, cds_start - 60), cds_start + 30) — 5'UTR tail
+          60 nt + CDS head 30 nt, clipped to the actual UTR length
+
+        The unconstrained full-length MFE reuses the workflow's full fold from
+        ``context["full_length_fold"]`` when it was produced by the same
+        backend (LinearFold); otherwise one unconstrained fold is run here.
+        On any fold failure the ddG fields stay ``None`` (fault-tolerant,
+        consistent with the other evaluators).
+        """
+        if not self.capabilities.has(self.primary_cap):
+            return {}
+
+        full = utr5 + cds + utr3
+        n = len(full)
+        u5 = len(utr5)
+        w1s, w1e = max(0, u5 - _DDG_W1_UPSTREAM_NT), min(n, u5 + _DDG_W1_DOWNSTREAM_NT)
+        w2s, w2e = max(0, u5 - _DDG_W2_UTR_NT), min(n, u5 + _DDG_W2_CDS_NT)
+
+        metrics: dict[str, Any] = {
+            "junction_5utr_cds_ddg_open_w1": None,
+            "junction_5utr_cds_ddg_open_w2": None,
+            "junction_5utr_cds_ddg_w1_start": w1s,
+            "junction_5utr_cds_ddg_w1_end": w1e,
+            "junction_5utr_cds_ddg_w2_start": w2s,
+            "junction_5utr_cds_ddg_w2_end": w2e,
+        }
+
+        state = context.get("workflow_state", {})
+
+        # Reuse the workflow's full-length fold only when it came from the
+        # same backend — mixing LinearFold/ViennaRNA MFEs invalidates ddG.
+        mfe_un: float | None = None
+        reused = context.get("full_length_fold") or {}
+        if reused.get("fold_tool") == "LinearFold" and reused.get("mfe") is not None:
+            mfe_un = float(reused["mfe"])
+        else:
+            mfe_un = self._fold_full_mfe(full, candidate, state, tag="unconstrained")
+        if mfe_un is None:
+            return metrics
+
+        for tag, (s, e) in (("w1", (w1s, w1e)), ("w2", (w2s, w2e))):
+            constraints = _ddg_constraint_string(n, s, e)
+            mfe_c = self._fold_full_mfe(
+                full, candidate, state, constraints=constraints, tag=f"constrained_{tag}"
+            )
+            if mfe_c is None:
+                continue
+            metrics[f"junction_5utr_cds_ddg_open_{tag}"] = mfe_c - mfe_un
+        return metrics
+
+    def _fold_full_mfe(
+        self,
+        full_seq: str,
+        candidate: Candidate,
+        state: dict[str, Any],
+        constraints: str | None = None,
+        tag: str = "",
+    ) -> float | None:
+        """One LinearFold call on the full construct; returns MFE or None."""
+        seq_fp = save_sequence(
+            full_seq, prefix=f"junction_ddg_{tag}_{candidate.id}"
+        )
+        args: dict[str, Any] = {"filepath": seq_fp}
+        if constraints is not None:
+            args["constraints"] = constraints
+        step_name = f"{candidate.id}_junction_ddg_{tag}_fold"
+        try:
+            res = self.capabilities.get(self.primary_cap).invoke(args, state=state)
+        except Exception as exc:  # noqa: BLE001 - fault-tolerant report metric
+            _LOGGER.warning(
+                "junction_ddg_fold_error tag=%s error=%s", tag, exc
+            )
+            return None
+        if not res.success:
+            _LOGGER.warning(
+                "junction_ddg_fold_failed tag=%s error=%s", tag, res.error
+            )
+            _trace_capability_call(
+                candidate, self.primary_cap, args, res, step_name=step_name
+            )
+            return None
+        mfe = _pick_float(res.output, "mfe")
+        _trace_capability_call(
+            candidate,
+            self.primary_cap,
+            args,
+            res,
+            step_name=step_name,
+            extra_metrics={f"junction_5utr_cds_ddg_mfe_{tag}": mfe},
+        )
+        return mfe
+
+    @staticmethod
+    def _check_translation_start(
+        seq: str, structure: str, cds_start_offset: int | None = None
+    ) -> dict[str, Any]:
+        """Check whether the CDS-start AUG and its Kozak context are buried.
+
+        Retained for experiment-script reproducibility
+        (``experiments/junction_aware_codon_optimizer.py`` imports it); the
+        evaluator no longer emits burial booleans — they were replaced by the
+        full-length ddG report metric (see ``_evaluate_ddg_open``).
+
+        If `cds_start_offset` is provided, the AUG at exactly that position is
+        treated as the canonical start codon. This avoids false positives from
+        upstream AUGs (uAUGs) that may appear in the 5'UTR portion of the
+        junction. If the offset is omitted, the function falls back to scanning
+        for the first AUG in the junction sequence.
+
         Returns flags indicating whether the AUG or its Kozak context are
         base-paired (buried), which would impede ribosome scanning.
         """
@@ -781,25 +953,32 @@ class JunctionEvaluator(BaseEvaluator):
             "kozak_position_start": -1,
         }
 
-        seq_upper = seq.upper()
-        aug_pos = seq_upper.find("AUG")
-        if aug_pos == -1:
+        if len(structure) != len(seq):
             return result
+
+        seq_upper = seq.upper()
+
+        if cds_start_offset is not None and 0 <= cds_start_offset <= len(seq) - 3:
+            # Use the canonical start codon at the CDS boundary
+            aug_pos = cds_start_offset
+            if seq_upper[aug_pos : aug_pos + 3] != "AUG":
+                return result
+        else:
+            # Fallback: scan for the first AUG (legacy behavior for short inputs)
+            aug_pos = seq_upper.find("AUG")
+            if aug_pos == -1:
+                return result
 
         result["aug_found"] = True
         result["aug_position"] = aug_pos
-
-        # Ensure structure string matches sequence length
-        if len(structure) != len(seq):
-            return result
 
         # Check if any of the 3 AUG nucleotides is paired
         aug_struct = structure[aug_pos : aug_pos + 3]
         result["aug_buried"] = any(c in "()" for c in aug_struct)
 
-        # Kozak region: 4 nt upstream + AUG + 1 nt downstream = 8 nt total
-        # Consensus: GCCR CCa tgG (positions -6 to +1 relative to A)
-        # We check the region [aug_pos-4, aug_pos+4] if fully within junction
+        # Kozak region: 4 nt upstream + AUG + 1 nt downstream
+        # Consensus context spans approximately positions -6 to +4 around the A,
+        # but the junction window may truncate the upstream flank.
         kozak_start = max(0, aug_pos - 4)
         kozak_end = min(len(seq), aug_pos + 4)  # exclusive; covers AUG + 1 nt after G
         kozak_struct = structure[kozak_start:kozak_end]

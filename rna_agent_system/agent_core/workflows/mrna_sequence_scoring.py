@@ -3,7 +3,7 @@
 Existing mRNA sequences → GC + fold + CAI → scoring → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MrnaSequenceScoringWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更       ║
+║  MrnaSequenceScoringWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更       ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 mrna_sequence_scoring workflow 的权威实现。任何字段增删、           ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
@@ -11,7 +11,7 @@ Existing mRNA sequences → GC + fold + CAI → scoring → ranking → Workflow
 ║    - agent_core/workflows/mrna_sequence_scoring.py  ← 本文件                 ║
 ║    - agent_core/workflows/base.py                                             ║
 ║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/workflows/registry.py                                         ║
+║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
 ║    - agent_core/sequence_utils.py                                             ║
 ║    - agent_core/workflow_models.py                                            ║
@@ -22,10 +22,13 @@ Existing mRNA sequences → GC + fold + CAI → scoring → ranking → Workflow
 ║    - agent_core/file_manager.py                                               ║
 ║    - tests/test_mrna_sequence_scoring_layer3.py                               ║
 ║    - tests/test_mrna_workflow.py                                              ║
-║    - tests/test_mrna_sequence_scoring_comprehensive.py                        ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
+
+v1.1.0: the constructor now takes ``CapabilityRegistry`` like every other
+workflow (previously ``ToolExecutor``); the registry's executor is still used
+internally for tool trace records.
 """
 
 from __future__ import annotations
@@ -36,10 +39,11 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from agent_core.capabilities.base import CapabilityRegistry, build_default_capability_registry
+from agent_core.constants.species import DEFAULT_CAI_SPECIES
 from agent_core.file_manager import save_sequence
 from agent_core.sequence_utils import normalize_rna_sequence
 from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
-from agent_core.tool_registry import ToolRegistry
 from agent_core.workflow_models import Candidate, TaskState, WorkflowResult, sort_candidates_by_score
 from agent_core.workflow_run_storage import build_public_summary
 from agent_core.workflows.base import BaseDomainWorkflow
@@ -50,12 +54,50 @@ _LOGGER = logging.getLogger("agent_core.workflows.mrna_sequence_scoring")
 
 class MrnaSequenceScoringInput(BaseModel):
     """Inputs for ``MrnaSequenceScoringWorkflow`` — pure scoring of existing sequence(s)."""
-
-    model_config = ConfigDict(extra="forbid")
-
+    # Tool-level parameter overrides (from tools_parameter_analysis.json)
+    gc_filepath: str = Field(default=None, description="[gc] filepath: Path to RNA or DNA sequence (workspace or server absolute); FASTA or plain text.")
+    gc_timeout_seconds: float = Field(default=120.0, description="[gc] timeout_seconds: HTTP request timeout in seconds.")
+    linearfold_filepath: str = Field(default=None, description="[linearfold] filepath: Path to a workspace file containing RNA sequence (plain or FASTA).")
+    linearfold_beam_size: int = Field(default=100, description="[linearfold] beam_size: Beam size for LinearFold (0 = infinite beam).")
+    linearfold_use_vienna: bool = Field(default=False, description="[linearfold] use_vienna: If true, request LinearFold-V (Vienna energy parameters).")
+    linearfold_dangles: int = Field(default=2, description="[linearfold] dangles: Dangling-end model: 0 or 2 (LinearFold --dangles).")
+    linearfold_sharpturn: bool = Field(default=False, description="[linearfold] sharpturn: Enable sharpturn in prediction.")
+    linearfold_constraints: Optional[str] = Field(default=None, description="[linearfold] constraints: Optional constraint string (? . ( ) ) for constrained prediction. If provided, length must match the sequence.")
+    linearfold_shape_file_path: Optional[str] = Field(default=None, description="[linearfold] shape_file_path: Optional path to SHAPE reactivity data file (mutually exclusive with constraints).")
+    linearfold_service_url: str = Field(default='http://127.0.0.1:8015/fold', description="[linearfold] service_url: REST endpoint for the LinearFold microservice.")
+    linearfold_fasta: bool = Field(default=False, description="[linearfold] --fasta: 上游 --fasta，声明输入为 FASTA 格式。")
+    linearfold_verbose: bool = Field(default=False, description="[linearfold] --verbose: 上游 -v/--verbose，输出每个 loop 的能量。")
+    vienna_fold_filepath: str = Field(default=None, description="[vienna_fold] filepath: Path to RNA sequence file in workspace, e.g. workspace/seq_xxx.fasta.")
+    vienna_fold_temp_c: float = Field(default=37.0, description="[vienna_fold] temp_c: Folding temperature (Celsius).")
+    vienna_fold_dangles: int = Field(default=2, description="[vienna_fold] dangles: Dangling-end model.")
+    vienna_fold_no_lp: bool = Field(default=False, description="[vienna_fold] no_lp: Disallow lonely pairs.")
+    vienna_fold_no_gu: bool = Field(default=False, description="[vienna_fold] no_gu: Disallow GU pairs.")
+    vienna_fold_no_closing_gu: bool = Field(default=False, description="[vienna_fold] no_closing_gu: Disallow GU closing pairs.")
+    vienna_fold_salt: Optional[float] = Field(default=None, description="[vienna_fold] salt: Salt concentration (M).")
+    vienna_fold_no_tetra: bool = Field(default=False, description="[vienna_fold] no_tetra: Omit special hairpin loop energies.")
+    vienna_fold_energy_model: Optional[int] = Field(default=None, description="[vienna_fold] energy_model: Energy model index.")
+    vienna_fold_nsp: Optional[str] = Field(default=None, description="[vienna_fold] nsp: Non-standard pair specification.")
+    vienna_fold_param_file: Optional[str] = Field(default=None, description="[vienna_fold] param_file: Custom parameter file.")
+    vienna_fold_constraint: Optional[str] = Field(default=None, description="[vienna_fold] constraint: Hard constraint dot-bracket string.")
+    vienna_fold_shape_file: Optional[str] = Field(default=None, description="[vienna_fold] shape_file: Path to SHAPE reactivity data file.")
+    vienna_fold_shape_method: str = Field(default='D', description="[vienna_fold] shape_method: SHAPE method: D, Z, or W.")
+    vienna_fold_partfunc: bool = Field(default=False, description="[vienna_fold] partfunc: Compute partition function and centroid.")
+    vienna_fold_circ: bool = Field(default=False, description="[vienna_fold] circ: Assume circular RNA.")
+    vienna_fold_gquad: bool = Field(default=False, description="[vienna_fold] gquad: Include G-quadruplex formation.")
+    vienna_fold_service_url: str = Field(default='http://127.0.0.1:8003/fold', description="[vienna_fold] service_url: ViennaRNA fold endpoint.")
+    vienna_fold_noDP: bool = Field(default=False, description="[vienna_fold] --noDP: 上游 --noDP，禁止生成 dot-plot PostScript。")
+    vienna_fold_maxBPspan: int = Field(default=-1, description="[vienna_fold] --maxBPspan: 上游 --maxBPspan，默认 -1 无限制。")
+    vienna_fold_MEA: Any = Field(default=None, description="[vienna_fold] --MEA: 上游 --MEA[=gamma]，基于最大期望精度预测结构。")
+    vienna_fold_batch: bool = Field(default=False, description="[vienna_fold] --batch: 上游 --batch，批量使用约束。")
+    vienna_fold_canonicalBPonly: bool = Field(default=False, description="[vienna_fold] --canonicalBPonly: 上游 --canonicalBPonly，从约束中移除非规范碱基对。")
+    vienna_fold_enforceConstraint: bool = Field(default=False, description="[vienna_fold] --enforceConstraint: 上游 --enforceConstraint，强制约束中圆括号表示的碱基对必须形成。")
+    vienna_fold_shapeConversion: str = Field(default='O', description="[vienna_fold] --shapeConversion: 上游 --shapeConversion，SHAPE 到配对概率的转换方法。")
+    vienna_fold_verbose: bool = Field(default=False, description="[vienna_fold] --verbose: 上游 -v，输出详细日志。")
+    cai_filepath: str = Field(default=None, description="[cai] filepath: Path to CDS sequence file (workspace or absolute); FASTA or plain text. Must be in-frame (length multiple of 3).")
+    cai_species: str = Field(default=DEFAULT_CAI_SPECIES, description="[cai] species: Species name for the reference codon usage table. Built-in aliases: human, mouse, rat, fly, worm, zebrafish, arabidopsis, yeast, ecoli, bsubtilis, cho. If no built-in table matches, a custom_codon_table_path must be provided.")
+    cai_custom_codon_table_path: Optional[str] = Field(default=None, description="[cai] custom_codon_table_path: Optional path to a custom codon usage JSON file. Format: {\"codon\": {\"aa\": \"X\", \"fraction\": 0.42}, ...}. When provided, ``species`` is used only for metadata/labeling.")
     sequence: Optional[str] = Field(default=None, description="Single RNA/DNA sequence string.")
     sequences: Optional[List[str]] = Field(default=None, description="Multiple sequences.")
-
     gc_tool_name: str = Field(
         default="compute_rna_sequence_gc_content",
         description="Registry name for GC tool (LangChain tool in agent_core.tools).",
@@ -72,16 +114,17 @@ class MrnaSequenceScoringInput(BaseModel):
         default="http://127.0.0.1:8020/gc-content",
         description="Passed to GC tool kwargs.",
     )
-
-    run_gc_tool: bool = Field(default=True)
-    run_fold_tool: bool = Field(default=True)
-
+    run_gc_tool: bool = Field(default=True, description="Whether to run the GC-content tool on the input sequence(s).")
+    run_fold_tool: bool = Field(default=True, description="Whether to run the folding tool on the input sequence(s).")
 
 class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, WorkflowResult]):
-    """Score existing mRNA sequences via ToolExecutor-driven tools.
+    input_model = MrnaSequenceScoringInput
+    """Score existing mRNA sequences via ``CapabilityRegistry``-driven tools.
 
-    Orchestrates candidate generation and tool evaluation via ``ToolExecutor``.
-    Workflow code does not invoke subprocess or HTTP directly; tools remain in ``agent_core.tools``.
+    Takes a ``CapabilityRegistry`` like every other workflow; the registry's
+    ``ToolExecutor`` performs the actual tool dispatch so trace records are
+    still attached to candidates/tasks.  Workflow code does not invoke
+    subprocess or HTTP directly; tools remain in ``agent_core.tools``.
     """
 
     name = "mrna_sequence_scoring"
@@ -93,8 +136,9 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
         "compute_cai_for_cds_sequence",
     ]
 
-    def __init__(self, executor: ToolExecutor):
-        self.executor = executor
+    def __init__(self, capability_registry: CapabilityRegistry):
+        self.capabilities = capability_registry
+        self.executor = capability_registry.executor
 
     # ─────────────────────────────────────────────────────────────────────────
     # BaseDomainWorkflow interface
@@ -167,7 +211,7 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
             candidate=candidate,
             step_name="cai",
             filepath=filepath,
-            species="Homo sapiens",
+            species=getattr(self._current_input, "cai_species", DEFAULT_CAI_SPECIES),
         )
         if cai_res.success:
             cai_score = _pick_float(cai_res.metrics, cai_res.artifacts.get("result"), "cai_score")
@@ -221,6 +265,12 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
         if isinstance(inp, dict):
             inp = MrnaSequenceScoringInput(**inp)
         inp_dict = inp.model_dump(mode="json")
+
+        # Service pre-flight: auto-start required microservices when enabled.
+        preflight = self._service_preflight_result()
+        if preflight is not None:
+            preflight.task_id = str(task_id).strip() if task_id is not None and str(task_id).strip() else ""
+            return preflight
 
         candidates = self.generate_candidates(inp)
 
@@ -289,22 +339,23 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
 def run_mrna_sequence_scoring(
     inp: MrnaSequenceScoringInput,
     *,
-    registry: Optional[ToolRegistry] = None,
-    executor: Optional[ToolExecutor] = None,
+    capability_registry: Optional[CapabilityRegistry] = None,
     task_id: Optional[str] = None,
+    auto_start_services: bool = True,
 ) -> WorkflowResult:
-    """Functional entry point: builds registry/executor if omitted."""
-    if executor is not None:
-        wf = MrnaSequenceScoringWorkflow(executor)
-        return wf.run(inp, task_id=task_id)
-    reg = registry or build_default_tool_registry(include_demo=False)
-    ex = ToolExecutor(reg)
-    wf = MrnaSequenceScoringWorkflow(ex)
+    """Functional entry point: builds a default capability registry if omitted.
+
+    ``auto_start_services`` defaults to ``True`` so the standalone entry point
+    behaves like ``AgentRunner``-managed workflows.  When passing a custom
+    ``capability_registry`` in unit tests or other managed environments, set
+    ``auto_start_services=False`` to skip the service pre-flight.
+    """
+    if capability_registry is None:
+        executor = ToolExecutor(build_default_tool_registry(include_demo=False))
+        capability_registry = build_default_capability_registry(executor)
+    wf = MrnaSequenceScoringWorkflow(capability_registry)
+    wf.auto_start_services = auto_start_services
     return wf.run(inp, task_id=task_id)
-
-
-# ── backward-compatible aliases (deprecated, keep for transition) ──
-MrnaWorkflowInput = MrnaSequenceScoringInput
 
 
 def _pick_float(metrics: Dict[str, Any], result_obj: Any, key: str) -> Optional[float]:
