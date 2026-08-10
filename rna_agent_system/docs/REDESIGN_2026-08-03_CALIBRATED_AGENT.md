@@ -136,6 +136,15 @@ E1 先行（数据就绪，2 周内可出试点结果）；E2 用 E1 判据；E3
 
 目标期刊：**Nat Methods 直冲**（2026-08-04 用户拍板）；拒稿后依次转 Nat Commun → NAR Genomics & Bioinformatics（保底资产无需补实验）。叙事脊梁：**系统前向呈现 + 真实案例验证**——"先画像、后发言"的门控系统在真实设计战役上拦住了非门控管线会发出的越级 claim；自家图 4 战役以 worked example 形式呈现（**不做"自我撤回"修辞**，2026-08-04 用户决定）。
 
+> **§4 v3 更新（2026-08-10，成稿交叉核对后）**：论文草稿 `docs/PAPER_DRAFT.md` 已成型，最终章节映射与本骨架的差异如下（以草稿为准）：
+> 1. 草稿将本骨架 Results 1 拆为两节——"Capability profiling revokes presumed oracle powers"（E1+P2）与"Budget-matched self-audit dissolves apparent coordination gains"（P0/P3+E2），分别呼应引言的问题 1（oracle 盲信）与问题 3（预算混淆）；
+> 2. 草稿新增两节：平台生物有效性（旧图 2 数据，209/210、CAI 0.744/0.730/0.674）作为系统合法性证据；端到端案例（旧图 7 A/B/C，其中 B 按 E2 口径作审计示例而非优越性 claim）；
+> 3. E4 从独立 Results 节并入"量化失败分析"节（与接头三连 NO-GO、失败分类学并列呈现）；
+> 4. **E2(b) 外部文献用法复核正式 descoped**——未执行、不在草稿 v1 中；若审稿人要求再启动；
+> 5. 标题演化为 *Calibrated agency: a tool-first RNA design agent that profiles its oracles and gates its own claims*；
+> 6. 草稿 Limitations 已覆盖：无湿实验、单一 LLM 后端（跨 LLM 实验取消的用户决策口径）、A 臂基线性质、HER2 类零可行档、画像目前仅覆盖适配体链三个 oracle、锚点集规模。
+> 数字交叉核对结果：E1–E6、P0–P3、图 2–7 的全部引用数字与 `docs/PAPER_FACT_SHEET.md` 一致。
+
 ## 5. 里程碑（约 3 个月，v2 因 DecisionGate/SelfModel 工程量 +1 周）
 
 | 周 | 交付 |
