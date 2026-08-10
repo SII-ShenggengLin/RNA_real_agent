@@ -2,7 +2,7 @@
 
 > **Project root**: `rna_agent_system/`  
 > **Readers**: human developers / AI agents  
-> **Last updated**: 2026-06-01
+> **Last updated**: 2026-08-10
 
 ---
 
@@ -10,9 +10,9 @@
 
 An LLM-driven agent system for RNA bioinformatics design and analysis.
 
-- **Input**: natural-language requests, RNA/protein sequences, structure files
+- **Input**: structured workflow parameters via TUI form or JSON file; RNA/protein sequences and structure files are provided as parameter values
 - **Output**: designed sequences, predictions, scores, and structured reports
-- **Mechanism**: DeepSeek-powered planner (Layer 3) orchestrates domain workflows (Layer 2) that call isolated microservices (Layer 0)
+- **Mechanism**: The user explicitly selects a workflow and fills a structured form; `AgentRunner` executes the workflow directly. Routing is explicit-only — LLM calls exist only at two advisory points (quality review, multi-node synthesis).
 
 **Core principles**
 
@@ -21,7 +21,7 @@ An LLM-driven agent system for RNA bioinformatics design and analysis.
 | Sequences never go in prompts | Long sequences travel via `workspace/` file paths, never inside chat context |
 | Environment isolation | Every tool has its own Conda environment + FastAPI microservice |
 | HTTP decoupling | Agent layer calls tools only through HTTP APIs, never by direct imports |
-| Source independence | Third-party repos are managed as git submodules under `external_repos/` |
+| Source independence | 20 vendored external repos under `external_repos/` (17 registered git submodules) |
 
 ---
 
@@ -29,14 +29,19 @@ An LLM-driven agent system for RNA bioinformatics design and analysis.
 
 ```
 ┌──────────────────────────────────────────────┐
-│  Layer 5  Presentation                       │
-│           FastAPI / CLI                      │
+│  Layer 6  Entry Points                       │
+│           AgentRunner / FastAPI / TUI CLI    │
 ├──────────────────────────────────────────────┤
-│  Layer 4  Session & Memory                   │
+│  Layer 5  Session & Workspace                │
 │           Multi-turn context, workspace      │
 ├──────────────────────────────────────────────┤
-│  Layer 3  Planning & Control                 │
-│           LLMPlanner → ExecutionController   │
+│  Layer 4  Planning & Multi-Agent Execution   │
+│           PipelineAgent / SpecialistAgent    │
+│           CoordinatorAgent / QualityAgent    │
+│           SynthesisAgent (+ calibrated/)     │
+├──────────────────────────────────────────────┤
+│  Layer 3  Service Orchestration              │
+│           Health check & auto-start          │
 ├──────────────────────────────────────────────┤
 │  Layer 2  Domain Workflows                   │
 │           mRNA / siRNA / CRISPR / ...        │
@@ -57,22 +62,32 @@ For full architecture details, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ```
 rna_agent_system/
-├── agent_core/                 # Agent orchestration (Layers 1–5)
+├── agent_core/                 # Agent orchestration (Layers 1–6 internals)
 │   ├── capabilities/           #   Layer 1: atomic tool wrappers
-│   ├── planning/               #   Layer 3: LLMPlanner + ExecutionController
 │   ├── workflows/              #   Layer 2: domain workflow implementations
-│   ├── workflow_tools/         #   LangChain Runnable workflow tools
+│   ├── services/               #   Layer 3: microservice health/orchestration
+│   ├── agents/                 #   Layer 4: multi-agent execution
+│   │                           #     PipelineAgent, SpecialistAgent,
+│   │                           #     CoordinatorAgent, QualityAgent,
+│   │                           #     SynthesisAgent
+│   ├── pipeline/               #   Layer 4: PipelinePlan/Node/Edge models
+│   ├── calibrated/             #   Layer 4: calibrated strategy stack
+│   │                           #     (SelfModel, Profiler, Gates, CaseMemory)
 │   ├── tools.py                #   Layer 0: @tool wrappers (HTTP → microservices)
 │   ├── tool_specs.py           #   Pydantic output schemas & ToolSpec registry
-│   ├── runner.py               #   Layer 5: AgentRunner façade
+│   ├── llm_config.py           #   LLM client factory (get_llm_for_provider)
+│   ├── runner.py               #   Layer 6: AgentRunner façade
 │   ├── state.py                #   AgentState definition
 │   └── ...
 ├── microservices/              # FastAPI microservices (one per tool)
-├── external_repos/             # Third-party source (git submodules)
+├── external_repos/             # Third-party source (20 vendored repos, 17 git submodules)
 ├── workspace/                  # Runtime artifacts (sequences, structures, logs)
 ├── tests/                      # pytest suite
 ├── cli/                        # Command-line entry points
-├── workflow_api/               # FastAPI HTTP API for workflow execution
+│   ├── form_chat.py            #   Interactive TUI form CLI (resource check → workflow select → service start → form)
+│   ├── resource_checker.py     #   GPU / RAM / CPU pre-flight checks
+│   └── service_orchestrator.py #   Workflow-to-microservice mapping & health polling
+├── workflow_api/               # FastAPI HTTP API entry point (`app.py` only)
 └── docs/                       # Documentation (this directory)
 ```
 
@@ -80,13 +95,49 @@ rna_agent_system/
 
 ## 4. Quick Start
 
+### 4.1 Install main agent environment
+
 ```bash
-# 1. Install main agent environment
 cd rna_agent_system
 pip install -r requirements.txt
+```
 
-# 2. Run the test suite
-PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x --ignore=tests/integration -m "not integration"
+### 4.2 Interactive TUI CLI (recommended)
+
+```bash
+PYTHONPATH="$(pwd):$PYTHONPATH" python cli/form_chat.py
+```
+
+Flow:
+1. System resource check (GPU ≥ 24 GB, free RAM ≥ 16 GB)
+2. Pick 1 or more workflows (e.g. `1,3,8`)
+3. Required microservices are started automatically
+4. Each turn, pick the active workflow and fill the structured TUI form
+5. Basic parameters are shown by default; advanced tool overrides are folded
+
+### 4.3 Non-interactive single shot
+
+Create a JSON file with the workflow parameters and run:
+
+```bash
+PYTHONPATH="$(pwd):$PYTHONPATH" python cli/form_chat.py \
+  --workflow rna_small_molecule_interaction \
+  --params-file params.json
+```
+
+Example `params.json`:
+
+```json
+{
+  "rna_sequence": "AUGCAUGCAUGC",
+  "smiles": "CCO"
+}
+```
+
+### 4.4 Run the test suite
+
+```bash
+PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x
 ```
 
 > For full environment setup, microservice startup, compilation steps, submodule management, and per-service curl examples, see [`DEPLOYMENT.md`](DEPLOYMENT.md).
@@ -113,7 +164,7 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x --ignore=tests/integr
 | Port | Service | Domain |
 |------|---------|--------|
 | 8003 | ViennaRNA | Secondary structure / cofold / accessibility / inverse folding |
-| 8004 | GEMORNA | CDS design |
+| 8004 | GEMORNA | CDS + UTR design |
 | 8005 | RhoFold | Tertiary structure prediction |
 | 8006 | RhoDesign | Structure → sequence design |
 | 8007 | RNAsmol | RNA–ligand scoring |
@@ -133,8 +184,9 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x --ignore=tests/integr
 | 8021 | RiboDiffusion | 3D → sequence (diffusion) |
 | 8022 | ProteinX | Protein structure + RNA-protein complex |
 | 8023 | EGARPS | RNA-protein complex scoring |
+| 8024 | Bowtie2 | Short-sequence alignment |
 
-> New tools should use ports starting from **8024**.
+> New tools should use ports starting from **8025**.
 
 For per-tool specs and deployment notes, see [`TOOLS.md`](TOOLS.md).  
 For workflow deep-dives, see [`WORKFLOWS.md`](WORKFLOWS.md).
@@ -145,11 +197,11 @@ For workflow deep-dives, see [`WORKFLOWS.md`](WORKFLOWS.md).
 
 | ID | Limitation | Impact |
 |----|------------|--------|
-| L1 | Planner requires DeepSeek API | Planning fails if API is unavailable |
+| L1 | LLM advisory calls (quality review / synthesis) default to DeepSeek API | Those two touches are skipped/fail-safe without a key; execution itself is fully deterministic |
 | L2 | Some GPU-weighted tools need manual setup | Not all environments can run every tool |
 | L3 | RhoFold is single-sequence mode only | MSA database not connected |
 | L4 | RNASTOP only supports stability prediction | Beam / MCTS optimization not connected |
-| L5 | CLI is the primary interface | No web UI shipped |
+| L5 | CLI primary entry | No web UI |
 
 ---
 
@@ -158,11 +210,13 @@ For workflow deep-dives, see [`WORKFLOWS.md`](WORKFLOWS.md).
 | Document | Purpose |
 |----------|---------|
 | [`README.md`](README.md) | This file — project overview and quick start |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Five-layer architecture, core module APIs, design principles |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Seven-layer architecture, core module APIs, design principles |
 | [`WORKFLOWS.md`](WORKFLOWS.md) | All domain workflows: pipelines, scoring formulas, critic design |
+| [`MANUSCRIPT.md`](MANUSCRIPT.md) | Experiment manual: benchmark/anchor assets, pilot-first protocol, data availability |
 | [`TOOLS.md`](TOOLS.md) | Per-tool specs, port registry, microservice deployment notes |
 | [`BMC_FRAMEWORK.md`](BMC_FRAMEWORK.md) | Bounded Multi-Module Coordination: Type-I/Type-II motivation and strategy |
 | [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) | Interface Lock Policy, canonical references, sync checklists |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Environment setup, testing recipes, curl examples |
 | [`CHANGELOG.md`](CHANGELOG.md) | Change logs for locked interfaces and major workflows |
+| [`DECISIONS.md`](DECISIONS.md) | Decisions, concluded directions and do-not-repeat register |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Coding standards, new-tool procedure, commit conventions |

@@ -1,7 +1,7 @@
 # Workflows Reference
 
-> **Scope**: all Layer-2 domain workflows — their pipelines, scoring formulas, critic strategies, and relationships.
-> **Last updated**: 2026-06-01
+> **Scope**: all Layer-2 domain workflows — their pipelines, scoring formulas, and quality review strategies.  
+> **Last updated**: 2026-07-06
 
 ---
 
@@ -9,16 +9,16 @@
 
 1. [Base Interface](#1-base-interface)
 2. [mRNA CDS Design](#2-mrna-cds-design)
-3. [Full-Length mRNA Design](#3-full-length-mrna-design)
-4. [siRNA Design](#4-sirna-design)
-5. [sgRNA Handle Design](#5-sgrna-handle-design)
-6. [RNA Secondary Structure → Sequence Design](#6-rna-secondary-structure--sequence-design)
-7. [RNA Tertiary Structure → Sequence Design](#7-rna-tertiary-structure--sequence-design)
-8. [RNA–Small Molecule Interaction](#8-rnasmall-molecule-interaction)
-9. [RNA Aptamer Design](#9-rna-aptamer-design)
-10. [IRES Prediction & Validation](#10-ires-prediction--validation)
-11. [ASO Target Screening](#11-aso-target-screening)
-12. [Workflow Landscape Summary](#12-workflow-landscape-summary)
+3. [mRNA Sequence Scoring](#3-mrna-sequence-scoring)
+4. [Full-Length mRNA Design](#4-full-length-mrna-design)
+5. [siRNA Design](#5-sirna-design)
+6. [sgRNA Handle Design](#6-sgrna-handle-design)
+7. [RNA Secondary Structure → Sequence Design](#7-rna-secondary-structure--sequence-design)
+8. [RNA Tertiary Structure → Sequence Design](#8-rna-tertiary-structure--sequence-design)
+9. [RNA–Small Molecule Interaction](#9-rnasmall-molecule-interaction)
+10. [RNA Aptamer Design](#10-rna-aptamer-design)
+11. [IRES Prediction & Validation](#11-ires-prediction--validation)
+12. [ASO Target Screening](#12-aso-target-screening)
 
 ---
 
@@ -34,625 +34,484 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
 
     @abstractmethod
     def generate_candidates(self, inp: WorkflowInputT) -> list[Candidate]: ...
-
     @abstractmethod
     def evaluate(self, candidate: Candidate) -> dict[str, Any]: ...
-
     @abstractmethod
     def score(self, metrics: dict[str, Any]) -> dict[str, float]: ...
 
-    def run(self, inp: WorkflowInputT) -> WorkflowResultT:
+    def run(
+        self,
+        inp: WorkflowInputT,
+        *,
+        progress_callback: Optional[Callable[[dict[str, Any]], None]] = None,
+    ) -> WorkflowResultT:
         candidates = self.generate_candidates(inp)
-        for candidate in candidates:
-            metrics = self.evaluate(candidate)
-            candidate.scores = self.score(metrics)
-            candidate.status = "evaluated"
+        if progress_callback:
+            progress_callback({
+                "event": "generate_complete",
+                "candidate_count": len(candidates),
+                "workflow": self.name,
+            })
+        for i, candidate in enumerate(candidates):
+            try:
+                metrics = self.evaluate(candidate)
+                candidate.scores = self.score(metrics)
+                candidate.status = "evaluated"
+            except Exception:
+                candidate.status = "failed"
+            if progress_callback:
+                progress_callback({
+                    "event": "evaluate_progress",
+                    "current": i + 1,
+                    "total": len(candidates),
+                    "candidate_id": candidate.id,
+                    "workflow": self.name,
+                })
         return self.rank_and_format(candidates)
 ```
+
+The authoritative `required_capabilities` list for each workflow is the class attribute in its source file. Required-capability blocks are reproduced below only for workflows where they are especially relevant; for the others, see the source file directly.
 
 ---
 
 ## 2. mRNA CDS Design
 
-> **File**: `workflows/mrna_cds_design.py`  
-> **Class**: `MrnaCdsDesignWorkflow`  
-> **Input model**: `MrnaCdsDesignInput`  
-> **Critic**: `MrnaCdsDesignLLMCritic` ✅ (registered in `workflows/registry.py`)
-> **Status**: ✅ **INTERFACE LOCKED** — see [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §8
+> **File**: `workflows/mrna_cds_design.py` | **QualityProfile**: `MRNA_CDS_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §8
 
-### 2.1 Purpose
+**Purpose**: Design optimal coding sequences from a protein sequence using LinearDesign, RNARL, and GEMORNA.
 
-Design optimal coding sequences from a protein sequence. Uses multiple CDS design tools (LinearDesign, RNARL, GEMORNA) to generate diverse candidates, evaluates each with structural and expression metrics, scores and ranks them.
+**Pipeline**
+1. **Generate** — LinearDesign (λ = 0, 1, 4, 10), RNARL (1, only when the expression species has a supported RNARL checkpoint), GEMORNA (1); up to 6 candidates, deduplicated
+2. **Evaluate** — GC content, U content (reference only), LinearFold MFE (ViennaRNA fallback), unpaired fraction, RNASTOP stability, CAI
+3. **Score** — `total_score = -mfe + codon_count * log(CAI)`
+4. **Rank** — by `total_score` descending
 
-### 2.2 Pipeline
+**Truncation support**: Set `truncate_n_terminal=N` to design only for the first N amino acids, or `truncate_c_terminal=N` for the last N. The original `protein_sequence` is preserved in the audit trail; the workflow saves and uses the truncated region.
 
-1. **Candidate generation** (`generate_candidates()`)
-   - LinearDesign: λ = 0, 1, 4, 10 (4 candidates)
-   - RNARL (1 candidate, GPU)
-   - GEMORNA (1 candidate, GPU)
-   - Total up to 6, deduplicated by sequence
-2. **Evaluation** (`evaluate()`) — per candidate
-   - GC content (`compute_rna_sequence_gc_content`, port 8020, CPU)
-   - U content (`compute_rna_sequence_u_content`, port 8020, CPU) — reference metric only
-   - Secondary structure MFE (`predict_rna_secondary_structure_with_linearfold`, LinearFold port 8015, CPU)
-   - Fallback: `predict_rna_secondary_structure` (ViennaRNA port 8003, CPU)
-   - Unpaired fraction (`compute_dot_bracket_unpaired_fraction`, port 8020, CPU)
-   - RNASTOP overall stability (`predict_mrna_stability_with_rnastop`, port 8009, GPU)
-   - CAI (`compute_cai_for_cds_sequence`, pure Python, CPU)
-3. **Scoring** (`score()`)
-   ```python
-   total_score = -mfe + codon_count * log(CAI)
-   ```
-   where `codon_count = sequence_length // 3`
-4. **Ranking** (`rank_and_format()`): sort by `total_score` descending
+**RNARL species note**: RNARL only supports the model types listed in `agent_core/constants/species.py` (`RNARL_MODEL_TYPES_LIST`). When `cai_species` does not map to one of those checkpoints (e.g. yeast), RNARL is skipped rather than silently run with the wrong organism model.
 
-### 2.3 Critic strategy (`MrnaCdsDesignLLMCritic`)
+**QualityAgent** (advisory by default): produces a `QualityReport`; the `SpecialistAgent` decides retry only on hard failures. Adjustable params: `design_tool`, `lambda_value`, `model_type`, `cai_species`.
 
-- **Type**: LLM-driven (DeepSeek)
-- **Max retries**: 2 (configurable via `MRNA_CDS_CRITIC_CONFIG.max_retries`)
-- **Evaluation dimensions**:
-  - CAI: > 0.8 good for human, < 0.4 poor
-  - MFE: more negative = more stable; too negative may impede translation
-  - GC content, U content, and unpaired fraction: reported for reference only (not in score)
-  - RNASTOP `overall_stability`: closer to 1.0 = higher predicted stability
-  - LinearDesign λ trade-off: λ=0 favors MFE (most stable), λ→∞ favors CAI
-  - Tool diversity: if all candidates from same tool, suggest switching
-- **Adjustable params**:
-  - `design_tool`: enum `["lineardesign", "rnarl", "gemorna", "all"]`
-  - `lambda_value`: float [0.0, 20.0]
-  - `model_type`: RNARL model type (7 choices)
-  - `cai_species`: species string for CAI computation
-- **Retry action**: `retry_with_adjustments` or `retry_with_alternative`
-- **Parameter override filtering**: only keys in `CriticConfig.adjustable_params` are accepted; unknown keys are dropped with a warning
+**Required capabilities**
+```python
+["design_mrna_cds_with_lineardesign", "design_mrna_cds_with_rnarl", "design_mrna_cds_with_gemorna",
+ "predict_rna_secondary_structure", "predict_rna_secondary_structure_with_linearfold",
+ "compute_rna_sequence_gc_content", "compute_rna_sequence_u_content",
+ "compute_dot_bracket_unpaired_fraction", "predict_mrna_stability_with_rnastop",
+ "compute_cai_for_cds_sequence"]
+```
 
-### 2.4 State writeback
+---
 
-The workflow result includes `_state_writeback` containing:
-- `_workflow_params`: the exact input parameters used
-- All tool results from the workflow's internal execution
+## 3. mRNA Sequence Scoring
 
-This is consumed by `ExecutionController._run_step()` to merge workflow internal state into the outer agent state.
+> **File**: `workflows/mrna_sequence_scoring.py` | **QualityProfile**: **None** (deterministic ranking-only) | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §18
 
-### 2.5 Input model (`MrnaCdsDesignInput`)
+**Purpose**: Evaluate existing mRNA sequences with GC content, secondary-structure MFE, and CAI — no generation step.
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `protein_sequence` | `str` | **required** | Amino-acid string (uppercase, 1-letter) |
-| `design_tool` | `Literal` | `"all"` | `"lineardesign"`, `"rnarl"`, `"gemorna"`, `"all"` |
-| `lambda_value` | `float` | `None` | LinearDesign MFE/CAI trade-off [0, +∞). Required when `design_tool="lineardesign"` |
-| `model_type` | `Literal` | `"Homo sapiens mRNA"` | RNARL model type (7 choices) |
-| `cai_species` | `str` | `"Homo sapiens"` | Species for CAI computation |
-| `run_fold` | `bool` | `True` | Whether to run secondary structure prediction |
-| `run_gc` | `bool` | `True` | Whether to compute GC content |
+**Pipeline**: `generate_candidates()` (wrap input sequence(s)) → `evaluate()` (GC + LinearFold/ViennaRNA + CAI) → `score()` → `rank_and_format()`
 
-### 2.6 Required capabilities
+**Scoring**
+```python
+combined_score = -mfe + codon_count * math.log(cai)
+total_score = combined_score
+```
+
+**Required capabilities**
+```python
+["compute_rna_sequence_gc_content", "predict_rna_secondary_structure_with_linearfold",
+ "predict_rna_secondary_structure", "compute_cai_for_cds_sequence"]
+```
+
+---
+
+## 4. Full-Length mRNA Design
+
+> **File**: `workflows/full_length_mrna_design.py` | **QualityProfile**: `FULL_LENGTH_MRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §14
+
+**Purpose**: Design complete mRNA (5'UTR + CDS + 3'UTR). Reuses `MrnaCdsDesignWorkflow` for CDS, then appends UTR combinations and evaluates full-length metrics with BMC Type-I coordination.
+
+**Pipeline**
+1. **Generate** — CDS via `MrnaCdsDesignWorkflow` × UTR presets (short/medium/long) → full-length candidates
+2. **Evaluate** — full-length MFE, 5'UTR MRL, 3'UTR stability, U content, **full-length GC content**, **junction MFE** (5'UTR–CDS, CDS–3'UTR), **junction GC diff**, **junction full-length ddG** (5'UTR–CDS, report-only; IRES potential and RNASTOP overall stability are computed by underlying tools but are not propagated into the coordinator metrics in the current implementation)
+3. **Score** — per-module raw scores are computed for reference-point optimization
+4. **Rank** — `rank_and_format()` sorts candidates by ASF distance to the reference point and returns a Pareto frontier on the user-facing objectives
+5. **BMC Phase** — `CoordinatorAgent` orchestrates the bounded loop. It calls the workflow's `run_initial` / `bmc_prepare` / `bmc_run_round` / `bmc_finalize` phases, while `ReferencePointCoordinator` performs the actual diagnosis and feedback broadcasting in normalized objective space. Configured for **1 regeneration round** (`bmc_max_rounds=1`, `bmc_improvement_threshold=0.05` in normalized ASF space). `bmc_mode` is retained for interface compatibility and only accepts `"rp"`. User-provided `reference_point` values are normalized against the initial candidate pool and **fixed across BMC rounds**; the auto-derived utopian point is re-derived each round from the current candidate pool.
+
+**Reference-point coordination**
+
+The coordinator uses the same normalized objective space as `best_candidate` selection:
+
+- Each objective is converted to maximization space and min-max normalized within the candidate pool.
+- The reference point is user-provided (`reference_point`) or auto-derived as the utopian point (best observed value per dimension).
+- A gap (`reference − candidate`) > 0 produces an issue whose `violation` equals the gap.
+- **User-provided reference points** are normalized against the initial candidate pool once, before the first BMC round, and the normalized coordinates are kept fixed for diagnosis and ASF comparison across all BMC rounds. This guarantees that the user's aspiration level does not drift as new candidates are added.
+- **Auto-derived utopian points** are recomputed from the current candidate pool at the start of each BMC round, so the aspiration level can rise as better candidates are discovered.
+- Each `CoordinationRound` in `_bmc_trace` records `reference_point_mode` (`user` or `utopian`), the normalized `reference_point`, and the per-dimension `dim_bounds` used for that round.
+
+**User-facing score dimensions** (valid `reference_point` keys)
+
+| Dimension | Module(s) | Interpretation |
+|-----------|-----------|----------------|
+| `utr5_mrl` | 5'UTR | Predicted mean ribosomal load (higher = better) |
+| `utr3_stability` | 3'UTR | Predicted 3'UTR stability (higher = better) |
+| `full_mfe_score` | 5'UTR, CDS, 3'UTR | Inverted full-length MFE (higher = less negative) |
+
+The CDS dimension is supplied indirectly via `target_cds_mfe` and `target_cds_cai` (see below); it is synthesized into the internal `cds_component` = (`-mfe + codons*log(CAI)`) / `cds_length_nt`.
+
+**Internal diagnostic dimensions** (not exposed as `reference_point` keys)
+
+| Dimension | Module(s) | Interpretation |
+|-----------|-----------|----------------|
+| `junction_5utr_cds_score` | 5'UTR, CDS | Inverted 5'UTR–CDS junction MFE/nt minus GC-diff penalty |
+| `junction_cds_3utr_score` | CDS, 3'UTR | Inverted CDS–3'UTR junction MFE/nt minus GC-diff penalty |
+
+The junction GC-diff compares the GC content of the actual UTR and CDS fragments at the junction boundary (e.g. the last 20 nt of 5'UTR vs the first 20 nt of CDS), not the midpoint of the concatenated overlap sequence. This ensures the metric reflects the GC continuity across the biological boundary, even when one side is shorter than the 20-nt overlap window. The penalty coefficient is `1.0` so that MFE and GC-smoothness contribute on comparable scales.
+
+**Issue types & actions**
+
+| Issue type | Meaning | Action |
+|------------|---------|--------|
+| `CDS_COMPONENT_BELOW_REFERENCE` | CDS quality below aspiration | Sub-diagnosis: increase λ by 2 if CAI weak, decrease λ by 2 if MFE weak |
+| `FULL_MFE_SCORE_BELOW_REFERENCE` | Full-length stability below aspiration | Sub-diagnosis: same as CDS_COMPONENT_BELOW_REFERENCE |
+| `UTR5_MRL_BELOW_REFERENCE` | 5'UTR translation efficiency below aspiration | Explore 5'UTR presets |
+| `UTR3_STABILITY_BELOW_REFERENCE` | 3'UTR stability below aspiration | Explore 3'UTR presets |
+| `JUNCTION_5UTR_CDS_SCORE_BELOW_REFERENCE` | 5'UTR–CDS junction below aspiration | Explore 5'UTR presets |
+| `JUNCTION_CDS_3UTR_SCORE_BELOW_REFERENCE` | CDS–3'UTR junction below aspiration | Explore 3'UTR presets |
+
+BMC convergence stops when the total violation reaches zero.
+
+> **Note (v2.8.0)**: The fragment-fold AUG/Kozak burial booleans and the junction codon-shuffling repair path were removed after three pre-registered experiments (P1 v2, P2, Phase 0 ddG pilot) falsified fragment burial as a translation-initiation proxy. Translation-start openness at the 5'UTR–CDS junction is now reported as a full-length constrained-fold ddG (`junction_5utr_cds_ddg_open_w1/w2` = MFE_constrained − MFE_unconstrained on the full construct, W1 = CDS start −6..+9, W2 = 5'UTR tail 60 nt + CDS head 30 nt clipped to the actual UTR). ddG is a report/profile metric only — it never triggers automatic repair.
+
+**Scoring**
+
+`rank_and_format()` sorts candidates by ASF distance to the reference point. Per-module raw metrics include CDS `-mfe + codons*log(CAI)`, 5'UTR MRL, 3'UTR stability, full-length MFE, and junction MFE/GC-diff.
+
+**Reference-point optimization (default, v2.5.0)**
+
+`best_candidate` is always selected by Achievement Scalarizing Function (ASF) distance to the reference point described above. Each dimension is min-max normalized within the candidate pool:
 
 ```python
-required_capabilities = [
-    "design_mrna_cds_with_lineardesign",      # port 8014, CPU
-    "design_mrna_cds_with_rnarl",             # port 8008, GPU
-    "design_mrna_cds_with_gemorna",           # port 8004, GPU
-    "predict_rna_secondary_structure",        # port 8003, CPU
-    "predict_rna_secondary_structure_with_linearfold",  # port 8015, CPU
-    "compute_rna_sequence_gc_content",        # port 8020, CPU
-    "compute_rna_sequence_u_content",         # port 8020, CPU
-    "compute_dot_bracket_unpaired_fraction",  # port 8020, CPU
-    "predict_mrna_stability_with_rnastop",    # port 8009, GPU
-    "compute_cai_for_cds_sequence",           # pure Python, CPU
+ASF = max_i { w_i * (r_i - s_i) } + rho * sum_i { w_i * |r_i - s_i| }
+```
+
+User-facing valid `reference_point` keys: `utr5_mrl`, `utr3_stability`, `full_mfe_score`. The CDS objective is supplied via `target_cds_mfe` and `target_cds_cai`. Weights default to equal over the specified dimensions.
+
+**User-friendly CDS targets**
+
+Users must specify CDS objectives via `target_cds_mfe` (kcal/mol) and `target_cds_cai`; the internal `cds_component` is no longer accepted as a user-facing `reference_point` key. When both `target_cds_mfe` and `target_cds_cai` are supplied, the workflow converts them:
+
+```python
+cds_component = (-target_cds_mfe + codons * log(target_cds_cai)) / cds_length_nt
+```
+
+**Pareto frontier output (default, v2.5.0)**
+
+The non-dominated candidate set is always returned in `WorkflowResult.pareto_frontier`, computed on the four user-facing objectives. Each frontier member may carry `metadata["pareto_tag"]` indicating the dimension it leads in (e.g., `cds_component`, `full_mfe_score`, `balanced`). The frontier is capped at 10 members to keep responses manageable.
+
+**QualityAgent** (advisory by default): produces a `QualityReport` for every run. `CoordinatorAgent` drives the bounded iteration; `ReferencePointCoordinator` supplies the deterministic diagnosis and feedback. The `SpecialistAgent` decides workflow-level retry based on the `QualityReport`; retry is only triggered on hard failures (empty candidates, tool failures, sequence anomalies). Soft suggestions are reported to the user for confirmation.
+
+**Required capabilities**
+```python
+["design_5utr_with_gemorna", "design_3utr_with_gemorna",
+ "predict_5utr_mrl_with_gemorna", "predict_3utr_stability_with_gemorna",
+ "design_mrna_cds_with_lineardesign", "design_mrna_cds_with_rnarl",
+ "design_mrna_cds_with_gemorna", "compute_cai_for_cds_sequence",
+ "compute_rna_sequence_gc_content", "compute_dot_bracket_unpaired_fraction",
+ "predict_rna_secondary_structure",
+ "predict_rna_secondary_structure_with_linearfold",
+ "predict_mrna_stability_with_rnastop", "compute_rna_sequence_u_content"]
+```
+
+---
+
+## 5. siRNA Design
+
+> **File**: `workflows/sirna_design.py` | **QualityProfile**: `SIRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §10
+
+**Purpose**: Design siRNA guides with safety gating on off-target count and specificity.
+
+**Modes**
+- `antiviral` — Evitar design (port 8016)
+- `generic` — Sliding window (21 nt, step 1) over target sequence; local GC/homopolymer filters
+
+**Evaluation**: GC content, duplex MFE (ViennaRNA RNAcofold), off-target scan (Bowtie2 by default; BLAST optional via `alignment_tool`)
+
+**Scoring**
+
+```python
+total_rank = rank(duplex_mfe) + rank(off_target_count)   # smaller = better
+```
+
+The legacy weighted formula is not used for ranking.
+
+**Required capabilities**
+```python
+["design_sirna_with_evitar", "compute_rna_sequence_gc_content",
+ "compute_sirna_duplex_binding_vienna", "predict_rna_secondary_structure",
+ "predict_rna_secondary_structure_with_linearfold",
+ "run_blastn_similarity_search", "run_bowtie2_short_alignment"]
+```
+
+**QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures.
+
+---
+
+## 6. sgRNA Handle Design
+
+> **File**: `workflows/sgrna_design.py` | **QualityProfile**: `SGRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §11
+
+**Purpose**: Optimize sgRNA handle sequences using CRGPT, with optional CRISOT off-target scoring.
+
+**Pipeline**: seed handle → CRGPT design (mcmc/naive) → CRGPT re-score → optional CRISOT → weighted scoring → rank
+
+**Scoring**
+```python
+nn_component = 1.0 / nn_score  # clamped [0, 1]
+crisot_component = clamp(crisot_score, 0.0, 1.0)
+total_score = (weight_nn * nn_component + weight_crisot * crisot_component) / active_weights
+```
+
+**QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures. Adjustable params: `n_samples`, `mutation_number`, `temperature`, `sampling_mode`, `max_overlap`, `evaluate_crgpt_score`, `evaluate_crisot`, `weight_nn_score`, `weight_crisot`.
+
+---
+
+## 7. RNA Secondary Structure → Sequence Design
+
+> **File**: `workflows/rna_secondary_structure_design.py` | **QualityProfile**: `RNA_SECONDARY_STRUCTURE_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §16
+
+**Purpose**: Design RNA sequences from a target secondary structure (dot-bracket) using ViennaRNA `RNAinverse`. No PDB or GPU required.
+
+**Prerequisites**: ViennaRNA (port 8003), RNA metrics (port 8020)
+
+**Pipeline**: validate input → `inverse_fold_rna_secondary_structure_vienna` (`num_invocations` × `repeats`, default `repeats=10`) → deduplicate → GC + RNAfold validation → structure-distance scoring → rank
+
+**Input notes**
+- `repeats` default is **10**.
+- `temp_c` sets the folding temperature (°C).
+- `function_mode` selects inverse-folding mode (`m`, `p`, or `mp`).
+
+**Scoring**: `total_score = structure_distance / sequence_length` (smaller is better; 0 = perfect match)
+
+**QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures.
+
+---
+
+## 8. RNA Tertiary Structure → Sequence Design
+
+> **File**: `workflows/rna_tertiary_structure_design.py` | **QualityProfile**: `RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §17
+
+**Purpose**: Design RNA sequences from a 3D structure (PDB/CIF) using RhoDesign and/or RiboDiffusion, validated with RhoFold and structure alignment.
+
+**Prerequisites**: RhoDesign (8006), RiboDiffusion (8021), RhoFold (8005), biopython
+
+**Pipeline**: resolve structure path (PDB ID fallback) → RhoDesign + RiboDiffusion generation → deduplication → evaluate (GC + MFE + RhoFold pLDDT + RMSD/TM-score) → score → rank
+
+**Structure-path resolution**
+- `structure_filepath` accepts a repo-relative path, absolute path, or PDB ID.
+- A PDB ID such as `"1ehz"` is resolved against `data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1ehz_clean.pdb`.
+- `secondary_structure_filepath` accepts a path or PDB ID and resolves the corresponding `{id}_contact_map.npy`.
+
+**RhoDesign defaults**
+- `rhodesign_temperature = 0.8`
+- `rhodesign_temperature_range = 0.5`
+- Each temperature sample uses a distinct random seed to ensure diversity.
+- The default sweep [0.3, 0.8, 1.3] for `n_samples_per_tool=3` is chosen so that RhoDesign produces three distinct sequences on typical tRNA targets while keeping recovery rates above ~0.9.
+
+**RiboDiffusion preprocessing**
+- Modified nucleotides in HETATM records (e.g., 2MG, PSU) are canonicalized to A/C/G/U before upstream parsing so the output sequence length matches the input structure.
+
+**Scoring**
+```python
+rhofold_component = pLDDT / 100
+rmsd_component    = max(0, 1 - RMSD / 5.0)
+total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component
+```
+
+**QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures.
+
+**Input notes**
+- `structure_filepath` accepts a repo-relative path, absolute path, or PDB ID (resolved against `data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/`).
+- `weight_rhofold` and `weight_rmsd` control the final scoring blend (defaults 0.5 each).
+
+**Known third-party limitations on tRNA-Phe 1EHZ**
+- RiboDiffusion can collapse to wild-type-like sequences for this target.
+- RhoFold single-sequence prediction fails to recapitulate the native fold for 1EHZ, so RMSD/TM-score metrics are dominated by the predictor, not the workflow.
+
+---
+
+## 9. RNA–Small Molecule Interaction
+
+> **File**: `workflows/rna_small_molecule_interaction.py` | **QualityProfile**: **None** | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §9
+
+**Purpose**: Predict RNA-small molecule binding propensity for a given RNA sequence and ligand SMILES. Runs RNAsmol and/or GerNA-Bind, averages their probability scores.
+
+**Prerequisites**: RNAsmol (8007), GerNA-Bind (8010)
+
+**Pipeline**: validate (RNA + SMILES) → wrap as single `Candidate` → RNAsmol + GerNA-Bind scoring → average probabilities → rank
+
+**Scoring**: `total_score = average(available probability_positive values)`
+
+---
+
+## 10. RNA Aptamer Design
+
+> **File**: `workflows/rna_aptamer_design.py` | **QualityProfile**: `RNA_APTAMER_QUALITY_PROFILE` (BMC Type-II `AptamerCoordinator` is internal) | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §15
+
+**Purpose**: Design RNA aptamers targeting a protein using ODesign, then validate with ProteinX complex prediction, EGARPS scoring, and interface analysis.
+
+**Pipeline**: hotspot identification → `build_odesign_aptamer_input_json` → `run_odesign_inference` (8012) → hierarchical evaluate (light stage: GC + RhoFold 8005 on all candidates; full stage: ProteinX 8022 + EGARPS 8023 + interface analysis on top `max(5, int(n*0.5))` candidates; EGARPS gated by RhoFold ≥ 65 and GC ∈ [0.25, 0.85]) → score → `AptamerCoordinator` BMC Type-II reference-point diagnosis (representative candidate set)
+
+**Required capabilities**
+
+```python
+[
+    "identify_protein_binding_hotspots",
+    "build_odesign_aptamer_input_json",
+    "run_odesign_inference",
+    "compute_rna_sequence_gc_content",
+    "predict_rna_tertiary_structure_with_rhofold",
+    "score_rna_protein_complex_with_egarps",
+    "extract_rna_sequence_from_cif",
+    "predict_rna_protein_complex_with_proteinx",
+    "analyze_rna_protein_interface",
+    "predict_protein_structure_with_proteinx",  # used only when protein_sequence is provided without a structure file
 ]
 ```
 
----
+**Scoring**
 
-## 3. Full-Length mRNA Design
-
-> **File**: `workflows/full_length_mrna_design.py`  
-> **Class**: `FullLengthMrnaDesignWorkflow`  
-> **Critic**: `FullLengthMrnaDesignLLMCritic` ✅ (registered in `workflows/registry.py`)
-
-### 3.1 Purpose
-
-Design complete mRNA molecules including 5'UTR, CDS, and 3'UTR. Reuses `MrnaCdsDesignWorkflow` for CDS generation, then appends UTR combinations and evaluates full-length metrics.
-
-**Since v2.0.0**: Implements **Bounded Multi-Module Coordination (BMC)** — an iterative, rule-based coordinator that diagnoses inter-module conflicts (junction stability, GC continuity) and broadcasts structured feedback to affected modules for refinement.
-
-### 3.2 Required capabilities
+`score_aptamer_candidate()` returns per-objective raw scores normalized to `[0, 1]`:
 
 ```python
-required_capabilities = [
-    "design_5utr_with_gemorna",               # port 8004
-    "design_3utr_with_gemorna",               # port 8004
-    "predict_5utr_mrl_with_gemorna",          # port 8004
-    "predict_3utr_stability_with_gemorna",    # port 8004
-    "predict_rna_secondary_structure",        # port 8003 (ViennaRNA)
-    "predict_rna_secondary_structure_with_linearfold",  # port 8015
-    "predict_putative_ires_with_iresfinder",  # port 8013
-    "predict_mrna_stability_with_rnastop",    # port 8009
-    "compute_rna_sequence_u_content",         # port 8020
-]
+{
+    "egarps_component": egarps_native_probability,
+    "rhofold_component": rhofold_mean_plddt / 100,
+    "iptm_component": proteinx_ipTM,
+}
 ```
 
-> **Note**: `predict_5utr_mrl_with_gemorna` and `predict_3utr_stability_with_gemorna` are **always invoked** during `evaluate()` as of 2026-06-09. `predict_putative_ires_with_iresfinder` and `predict_mrna_stability_with_rnastop` are registered but may be skipped in certain execution paths.
+There is no weighted-sum `total_score`. Ranking is performed by Achievement Scalarizing Function (ASF) distance to a reference point.
 
-### 3.3 Candidate generation (Phase 1)
+**Reference-point optimization (default, v1.4.0)**
 
+`best_candidate` is always selected by ASF distance to a reference point. Users can supply a `reference_point` dictionary; if omitted, a utopian point is derived from the candidate pool. Each objective is min-max normalized within the candidate pool. Valid keys: `egarps_component`, `rhofold_component`, `iptm_component`.
+
+The candidate list in `WorkflowResult.all_candidates` is sorted by ASF distance (`asf_distance`), with the best candidate first.
+
+**Pareto frontier output (default, v1.4.0)**
+
+The non-dominated candidate set is always returned in `WorkflowResult.pareto_frontier`. Frontier members are tagged by their leading dimension and capped at 10 members.
+
+**BMC Type-II reference-point coordination (v1.4.0)**
+
+The internal coordinator (`AptamerCoordinator`, BMC Type-II) is now reference-point driven. It no longer uses hard biological thresholds. Each BMC round:
+
+1. Builds a normalized reference point from the candidate pool (user-provided points are fixed across rounds; utopian points are re-derived each round).
+2. Builds a representative diagnosis set: the ASF best plus the per-objective leader for each key in `AptamerCoordinator.USER_FACING_OBJECTIVES` (`egarps_component`, `rhofold_component`, `iptm_component`).
+3. Diagnoses each candidate by comparing its normalized objective vector to the reference point; gaps produce `{dim}_BELOW_REFERENCE` issues.
+4. `_merge_issues_with_sources()` merges issues by type, keeping the worst violation and the source candidate's raw metrics bundle.
+5. `broadcast_feedback()` maps reference-point gaps to module-specific adjustments.
+
+This exposes trade-offs that the single best candidate may hide (e.g., a candidate with excellent binding but poor foldability).
+
+**Source-aware module adjustments (v1.4.0)**
+
+| Issue type | Affected module | Adjustment | Source-aware rule |
+|------------|-----------------|------------|-------------------|
+| `EGARPS_COMPONENT_BELOW_REFERENCE` | Target | `hotspot_expansion += 2` | Expand hotspot window |
+| `IPTM_COMPONENT_BELOW_REFERENCE` | Target | `hotspot_expansion += 2` | Expand hotspot window |
+| `RHOFOLD_COMPONENT_BELOW_REFERENCE` | Aptamer | `aptamer_length_delta` | 5 nt by default; **10 nt** if source `rhofold_mean_plddt < 60.0` |
+| `EGARPS_COMPONENT_BELOW_REFERENCE` | Aptamer | `n_samples_delta += 5`, `seed_change` | More samples + new seeds |
+| `IPTM_COMPONENT_BELOW_REFERENCE` | Aptamer | `n_samples_delta += 5`, `seed_change` | More samples + new seeds |
+
+The `aptamer_length_delta` is applied in `_regenerate_modules()` as `length_override = min(200, inp.aptamer_length + int(aptamer_length_delta))`.
+
+**BMC bounds**
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `bmc_max_rounds` | 1 | Maximum BMC rounds; 0 disables iteration |
+| `bmc_improvement_threshold` | 0.05 | Minimum normalized ASF improvement to continue |
+
+**QualityAgent** (advisory by default): produces a `QualityReport` for every run. The reference-point coordinator handles objective-space gaps deterministically. The `QualityAgent` focuses on user-intent alignment and exploration strategy. Retry decisions are made by the `SpecialistAgent` based on the `QualityReport` and the `quality_auto_retry` setting; retry is triggered on hard failures (tool failures, empty candidates).
+
+---
+
+## 11. IRES Prediction & Validation
+
+> **File**: `workflows/ires_prediction.py` | **QualityProfile**: `IRES_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §13
+
+**Purpose**: Identify potential IRES elements within a 5'UTR or candidate sequence, with structural validation.
+
+**Pipeline**: IRESfinder prediction (port 8013; modes 0/1/2) → extract candidates (threshold > 0.5, merge overlaps) → structural validation (LinearFold primary / ViennaRNA fallback, RNAplfold accessibility, unpaired fraction) → score → rank
+
+**Required capabilities**
 ```python
-cds_workflow = MrnaCdsDesignWorkflow(capability_registry)
-cds_result = cds_workflow.run(MrnaCdsDesignInput(protein_sequence=...))
-for cds_cand in cds_result.all_candidates:
-    for utr5_preset in ("short", "medium", "long"):
-        for utr3_preset in ("short", "medium", "long"):
-            full_seq = utr5 + cds_cand.sequence + utr3
+["predict_putative_ires_with_iresfinder",
+ "predict_rna_secondary_structure_with_linearfold",
+ "predict_rna_secondary_structure",
+ "predict_rna_local_accessibility_profile_vienna",
+ "compute_dot_bracket_unpaired_fraction"]
 ```
 
-CDS metrics are carried forward via `candidate.metadata["cds_metrics"]`.
-
-### 3.4 Evaluation (Phase 2)
-
-| Metric | Tool | Purpose |
-|--------|------|---------|
-| Full-length MFE | `predict_rna_secondary_structure_with_linearfold` (8015) / `predict_rna_secondary_structure` (8003) fallback | Overall thermodynamic stability |
-| 5'UTR IRES potential | `predict_putative_ires_with_iresfinder` (8013) | Translation initiation potential |
-| 5'UTR MRL | `predict_5utr_mrl_with_gemorna` (8004) | Mean ribosomal load |
-| 3'UTR stability | `predict_3utr_stability_with_gemorna` (8004) | Degradation resistance |
-| Overall stability | `predict_mrna_stability_with_rnastop` (8009) | Predicted half-life |
-| CDS U content | `compute_rna_sequence_u_content` (8020) via `MrnaCdsDesignWorkflow` sub-evaluator | Reference metric for CDS composition |
-| Full-length U content | `compute_rna_sequence_u_content` (8020) | Reference metric for full molecule composition |
-| **Junction 5'UTR–CDS MFE** | `predict_rna_secondary_structure_with_linearfold` (8015) / `predict_rna_secondary_structure` (8003) fallback | **NEW: Local stability at 5' boundary** |
-| **Junction CDS–3'UTR MFE** | `predict_rna_secondary_structure_with_linearfold` (8015) / `predict_rna_secondary_structure` (8003) fallback | **NEW: Local stability at 3' boundary** |
-| **Junction GC diff** | Local computation | **NEW: GC continuity across boundaries** |
-
-### 3.5 Scoring
-
-#### Classic mode (Borda count, no junction metrics)
-
+**Scoring**
 ```python
-# Rank each module independently (descending; higher = better)
-cds_rank  = rank_by(candidates, key="cds_component",  descending=True)
-utr5_rank = rank_by(candidates, key="utr5_mrl",       descending=True)
-utr3_rank = rank_by(candidates, key="utr3_stability", descending=True)
-
-# Sum ranks; smaller sum = better overall candidate
-total_rank = cds_rank + utr5_rank + utr3_rank
+composite_score = ires_probability
 ```
 
-#### BMC mode (junction-aware, activated when junction metrics are present)
+Structural metrics (MFE, unpaired fraction, RNAplfold) are reported in candidate metadata for user inspection and `QualityAgent` review, but they are not folded into the numeric score.
 
-```python
-total_score = 0.25 * cds_component
-            + 0.15 * utr5_mrl
-            + 0.15 * utr3_stability
-            + 0.20 * full_mfe_score      # inverted MFE (more negative = higher score)
-            + 0.25 * junction_score      # sum of inverted junction MFEs minus GC penalties
-```
+**QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures.
 
-`junction_score` rewards stable junctions (more negative MFE) and penalizes GC discontinuities (>15% diff).
+**Confidence assignment**
 
-### 3.6 Bounded Multi-Module Coordination (Phase 3)
+| IRES probability | Unpaired fraction | Confidence |
+|------------------|-------------------|------------|
+| ≥ 0.8 | 0.3–0.7 | high |
+| ≥ 0.6 | 0.2–0.8 | medium |
+| ≥ 0.5 | any | low |
+| < 0.5 | any | rejected |
 
-After initial ranking, the deterministic `FullLengthCoordinator` inspects the best candidate for inter-module conflicts:
-
-| Issue type | Threshold | Affected modules | Feedback action |
-|------------|-----------|------------------|-----------------|
-| `FULL_MFE_TOO_HIGH` | MFE/nt > −0.25 kcal/mol/nt | 5UTR, CDS, 3UTR | **Decrease** LinearDesign λ by 2 |
-| `FULL_STRUCTURE_TOO_LOOSE` | paired fraction < 65% | 5UTR, CDS, 3UTR | **Decrease** λ by 2 |
-| `JUNCTION_5UTR_CDS_TOO_STABLE` | junction MFE < −20 | 5UTR, CDS | **Explore 5'UTR presets**; **shuffle N-terminus codons** |
-| `JUNCTION_5UTR_CDS_AUG_BURIED` | AUG start codon paired | 5UTR, CDS | **Explore 5'UTR presets**; **shuffle N-terminus codons** |
-| `JUNCTION_5UTR_CDS_KOZAK_BURIED` | Kozak region paired | 5UTR, CDS | **Explore 5'UTR presets**; **shuffle N-terminus codons** |
-| `JUNCTION_CDS_3UTR_UNSTABLE` | junction MFE > −15 | CDS, 3UTR | **Explore 3'UTR presets**; **shuffle C-terminus codons** |
-| `JUNCTION_CDS_3UTR_GC_MISMATCH` | GC diff > 0.15 | CDS, 3UTR | **Diagnostic only** (recorded in BMC trace for review) |
-| `JUNCTION_5UTR_CDS_GC_MISMATCH` | GC diff > 0.15 | 5UTR, CDS | **Diagnostic only** (recorded in BMC trace for review) |
-
-**Key design principles**:
-1. **Length-normalized MFE**: Absolute MFE thresholds are unfair across different sequence lengths (MFE ∝ length per Zhang et al., Nature 2023). We use `MFE / total_length` (kcal/mol/nt) and `paired_fraction` (derived from the dot-bracket structure produced by the fold tool — LinearFold primary, ViennaRNA fallback) instead.
-2. **λ is reserved for global problems only**: LinearDesign λ is **inversely** related to MFE stability — **lower λ → more negative MFE**. λ adjustments are triggered **only** by global issues (`FULL_MFE_TOO_HIGH`, `FULL_STRUCTURE_TOO_LOOSE`). Pure junction issues do **not** adjust λ, because λ is a global CDS parameter and its effect on a 40-nt junction (only 20 nt from the CDS side) is heavily diluted.
-3. **Translation-initiation-aware junction evaluation**: The 5'UTR-CDS junction is evaluated for **accessibility**, not raw stability. The `JunctionEvaluator` checks whether the AUG start codon and its Kozak context are base-paired (buried), which would impede ribosome scanning.
-4. **Dual local-control junction optimization**: For pure junction issues, `_regenerate_modules()` fuses two local strategies:
-   - **UTR preset exploration** (changes the UTR side of the junction)
-   - **Junction codon shuffling** via `shuffle_cds_junction_codons` (synonymous substitution at the CDS terminus, 6 codons / up to 4 variants, changing the CDS side of the junction directly)
-   Together they provide fine-grained control over the 40-nt overlap without perturbing the rest of the CDS.
-5. **Tool switch**: If `design_tool` was `"all"` and a global issue triggers a λ adjustment, BMC automatically switches `design_tool` to `"lineardesign"` so the λ change takes effect (the fixed λ grid for `"all"` would otherwise ignore the adjustment).
-
-**Bounds**:
-- Maximum 3 coordination rounds
-- Early stop if score degrades or improvement < 1.0
-- Each round generates ≤6 CDS candidates (λ-adjusted + shuffled) × ≤2 UTR presets
-
-The complete BMC trace (rounds, issues, feedback, modules reinvoked) is recorded in `result._state_writeback["_bmc_trace"]`.
-
-### 3.7 Critic strategy
-
-Filters candidates on **5'UTR IRES potential** only. Default threshold: `0.5`. Retry is triggered only when surviving candidates drop below `MIN_GOOD_CANDIDATES = 5`.
+Without structural data: downgrade one tier.
 
 ---
 
-## 4. siRNA Design
+## 12. ASO Target Screening
 
-> **File**: `workflows/sirna_design.py`  
-> **Classes**: `SirnaDesignWorkflow`, `SirnaCritic`  
-> **Status**: ✅ Implemented (v1.1.0)
+> **File**: `workflows/aso_target_screening.py` | **QualityProfile**: **None** (deterministic) | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §12
 
-### 4.1 Purpose
+**Purpose**: Screen a full-length mRNA to identify the most accessible regions for ASO binding.
 
-Design siRNA guides with safety gating on off-target count and specificity.
+**Pipeline**: RNAplfold accessibility profile (8003) → sliding-window scan (15–20 nt) → reverse-complement ASO design → binding evaluation (RNAup or RNAcofold, 8003) → Borda-count ranking
 
-### 4.2 Modes
-
-| Mode | Description |
-|------|-------------|
-| `antiviral` | Calls `design_sirna_with_evitar` (port 8016); parses top_results into Candidates |
-| `generic` | Sliding window (21 nt, step 1) over user-provided target sequence; local filters on GC, homopolymers, sense strand end |
-
-### 4.3 Evaluation
-
-- GC content (port 8020)
-- Duplex MFE (ViennaRNA RNAcofold, port 8003)
-- Off-target scan (BLAST `blastn-short`, port 8019) — or Evitar built-in counts
-
-### 4.4 Scoring
-
-```python
-total_score = 0.4 * efficiency + 0.2 * gc_component + 0.4 * specificity_component
-```
-
-### 4.5 Critic strategy (`SirnaDesignLLMCritic`)
-
-- **Type**: LLM-driven (DeepSeek)
-- **Max retries**: 2 (configurable via `SIRNA_CRITIC_CONFIG.max_retries`)
-- **Evaluation dimensions**:
-  - Duplex MFE (RNAcofold): more negative = more stable
-  - Off-target count: should be minimal
-  - GC content: 30–60% optimal range
-  - Consecutive homopolymers (>3 identical bases) should be avoided
-  - Evitar predicted efficiency (antiviral mode)
-- **Adjustable params**:
-  - `mode`: enum `["antiviral", "generic"]`
-  - `candidate_count`: int [1, 100]
-  - `maxgc`: float [0.0, 1.0]
-  - `mingc`: float [0.0, 1.0]
-  - `off_target_scan`: bool
-  - `blast_perc_identity`: float [70.0, 100.0]
-- **Retry action**: `retry_with_adjustments` — tighten GC bounds and BLAST identity on retry
-- **Graceful degradation**: After 2 retries, accept result regardless
+**Scoring**: `sum_rank = accessibility_rank + binding_rank` (smaller = better)
 
 ---
 
-## 5. sgRNA Handle Design
-
-> **File**: `workflows/sgrna_design.py`  
-> **Classes**: `SgRnaDesignWorkflow`, `SgRnaDesignLLMCritic`  
-> **Status**: ✅ Implemented (v1.0.0)
-
-### 5.1 Purpose
-
-Optimize sgRNA handle (scaffold) sequences using CRGPT, with optional CRISOT off-target scoring.
-
-### 5.2 Pipeline
-
-```
-seed handle → CRGPT design (mcmc / naive) → candidate list
-  → CRGPT re-score per candidate (default on)
-  → CRISOT off-target score (optional, if guide + target provided)
-  → scoring (nn_score + crisot_score)
-  → ranking → WorkflowResult
-```
-
-### 5.3 Evaluation
-
-1. **CRGPT re-score** (`score_sgrna_handle_with_crgpt`, port 8017): `nn_score`, `log_likelihood`, `structure_distance`, `mfe`
-2. **CRISOT off-target score** (`score_crispr_off_target_with_crisot`, port 8011): only when both `guide_sequence` and `target_sequence` are provided
-
-### 5.4 Scoring
-
-```python
-nn_component     = clamp(nn_score / 2.0, 0, 1)
-crisot_component = clamp(crisot_score, 0, 1)
-total_score      = weight_nn_score * nn_component + weight_crisot_score * crisot_component
-```
-
-Default weights: `0.5 / 0.5`. If CRISOT is not evaluated, falls back to `nn_component` only.
-
-### 5.5 Critic strategy (`SgRnaDesignLLMCritic`)
-
-- **Type**: LLM-driven (DeepSeek)
-- **Max retries**: 2 (configurable via `SGRNA_CRITIC_CONFIG.max_retries`)
-- **Evaluation dimensions**:
-  - CRGPT `nn_score` perplexity: lower is better; reflects handle quality
-  - CRISOT off-target score: higher specificity is safer
-  - Sequence diversity among candidates
-  - Mutation count vs. seed: appropriate level of variation
-  - MFE stability of designed handles
-- **Adjustable params**:
-  - `n_samples`: int [1, 200]
-  - `mutation_number`: int [1, 40]
-  - `temperature`: float (sampling temperature)
-  - `sampling_mode`: enum `["mcmc", "naive"]`
-  - `max_overlap`: int [1, 60]
-  - `evaluate_crgpt_score`: bool
-  - `evaluate_crisot`: bool
-  - `weight_nn_score`: float [0.0, 1.0]
-  - `weight_crisot`: float [0.0, 1.0]
-- **Retry action**: `retry_with_adjustments` — increase sample count, adjust temperature, or switch sampling mode
-- **Graceful degradation**: After 2 retries, accept result regardless
-
----
-
-## 6. RNA Secondary Structure → Sequence Design
-
-> **File**: `workflows/rna_secondary_structure_design.py`  
-> **Classes**: `RnaSecondaryStructureDesignWorkflow`, `RnaSecondaryStructureDesignLLMCritic`  
-> **Task type**: `secondary_structure_design`
-
-### 6.1 Purpose
-
-Design RNA sequences from a target **secondary structure** (dot-bracket notation) using ViennaRNA `RNAinverse`. No PDB or GPU required.
-
-### 6.2 Prerequisites
-
-| Microservice | Port | Required |
-|--------------|------|----------|
-| ViennaRNA fold | 8003 | `viennarna` conda package |
-| RNA metrics | 8020 | GC content |
-
-### 6.3 Pipeline
-
-1. **Input validation**: `target_structure` must be non-empty dot-bracket; `start_sequence` (optional) must match length
-2. **Candidate generation**: `inverse_fold_rna_secondary_structure_vienna` called `num_invocations` times independently, each with `repeats` stochastic searches
-3. **Deduplication**: exact sequence duplicates merged
-4. **Evaluation**: GC content + ViennaRNA RNAfold → structure Hamming distance
-5. **Scoring**:
-   ```python
-   structure_component = 1 - structure_distance / sequence_length
-   total_score         = structure_component
-   ```
-6. **Ranking**: sort by `total_score` descending
-
-### 6.4 Critic strategy (`RnaSecondaryStructureDesignLLMCritic`)
-
-- **Type**: LLM-driven (DeepSeek)
-- **Max retries**: 2 (configurable via `RNA_SECONDARY_STRUCTURE_CRITIC_CONFIG.max_retries`)
-- **Evaluation dimensions**:
-  - Structural fidelity: designed sequence should fold back into the target structure
-  - Sequence diversity: candidates should not all be identical
-  - MFE stability: reasonable thermodynamic stability
-  - Score interpretation: `total_score = structure_distance_ratio` where 0.0 = perfect match, smaller is better
-- **Adjustable params**:
-  - `repeats`: int (RNAinverse search repeats per invocation)
-  - `num_invocations`: int (independent inverse-fold calls)
-  - `temp_c`: float (temperature in °C)
-  - `function_mode`: enum `["m", "p", "mp"]`
-- **Retry action**: `retry_with_adjustments` — increase repeats or num_invocations when structural fidelity is poor across all candidates
-- **Parameter tuning guidance**: defaults (`repeats=10`, `num_invocations=3`, `function_mode="m"`, `temp_c=37.0`) are empirically tuned; only override with strong evidence
-
----
-
-## 7. RNA Tertiary Structure → Sequence Design
-
-> **File**: `workflows/rna_tertiary_structure_design.py`  
-> **Classes**: `RnaTertiaryStructureDesignWorkflow`, `RnaTertiaryStructureDesignLLMCritic`  
-> **Task type**: `tertiary_structure_design`
-
-### 7.1 Purpose
-
-Design RNA sequences from a given 3D structure (PDB/CIF) using RhoDesign and/or RiboDiffusion, then validate with RhoFold and structure alignment.
-
-### 7.2 Prerequisites
-
-| Microservice | Port | Required checkpoint |
-|--------------|------|---------------------|
-| RhoDesign | 8006 | `ss_apexp_best.pth` + `no_ss_apexp_best.pth` |
-| RiboDiffusion | 8021 | `exp_inf.pth` or `exp_inf_large.pth` |
-| RhoFold | 8005 | Pre-trained checkpoint |
-| Structure alignment | — | biopython |
-
-### 7.3 Pipeline
-
-1. **Candidate generation**
-   - RhoDesign: `n_samples_per_tool` independent calls with temperature sweep
-   - RiboDiffusion: single call with `n_samples = n_samples_per_tool`
-2. **Deduplication**: exact duplicates merged across both tools
-3. **Evaluation** (per candidate)
-   - GC content (8020)
-   - Secondary structure MFE (8003)
-   - Tertiary structure foldability — RhoFold pLDDT (8005)
-   - Structural fidelity — RMSD + TM-score vs. reference
-4. **Scoring**:
-   ```python
-   rhofold_component = pLDDT / 100
-   rmsd_component    = max(0, 1 - RMSD / 5.0)
-   total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component
-   ```
-5. **Ranking**: sort by `total_score` descending
-
-### 7.4 Critic strategy (`RnaTertiaryStructureDesignLLMCritic`)
-
-- **Type**: LLM-driven (DeepSeek)
-- **Max retries**: 2 (configurable via `RNA_TERTIARY_STRUCTURE_CRITIC_CONFIG.max_retries`)
-- **Evaluation dimensions**:
-  - RhoFold pLDDT: predicted foldability of the designed sequence
-  - TM-score: structural similarity to reference
-  - RMSD: spatial deviation from reference
-  - GC content: synthesis-friendly range
-  - ViennaRNA MFE: thermodynamic stability
-  - Recovery rate: sequence compatibility with target backbone
-  - Tool diversity: candidates from both RhoDesign and RiboDiffusion
-- **Adjustable params**:
-  - `design_tools`: enum `["all", "rhodesign", "ribodiffusion"]`
-  - `n_samples_per_tool`: int [1, 20]
-  - `rhodesign_temperature`: float
-  - `temperature_range`: float
-  - `ribodiffusion_sampling_steps`: int
-- **Retry action**: `retry_with_adjustments` — increase samples, switch design tools, or adjust temperature
-- **Parameter tuning guidance**: defaults (`n_samples_per_tool=3`, `scoring weights=0.5/0.5`) are carefully tuned; only override with strong evidence
-
----
-
-## 8. RNA–Small Molecule Interaction
-
-> **File**: `workflows/rna_small_molecule_interaction.py`  
-> **Class**: `RnaSmallMoleculeInteractionWorkflow`  
-> **Input model**: `RnaSmallMoleculeInteractionInput`  
-> **Critic**: **None** (prediction-only)  
-> **Status**: ✅ **INTERFACE LOCKED** — see [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §9
-
-### 8.1 Purpose
-
-Predict RNA-small molecule binding propensity for a given RNA sequence and ligand SMILES. Runs RNAsmol and/or GerNA-Bind, averages their probability scores.
-
-### 8.2 Prerequisites
-
-| Microservice | Port | Required |
-|--------------|------|----------|
-| RNAsmol | 8007 | 6 weight files |
-| GerNA-Bind | 8010 | `Robin_random.pth` + `RNA-FM_pretrained.pth` |
-
-### 8.3 Pipeline
-
-1. **Input validation**: RNA sequence (AUGC), SMILES string, optional PDB/secondary structure
-2. **Candidate generation**: wrap single `(rna_sequence, smiles)` pair as one `Candidate`
-3. **Evaluation**
-   - `score_rna_ligand_binding_with_rnasmol` (8007)
-   - `score_rna_ligand_binding_with_gernabind` (8010)
-4. **Scoring**:
-   ```python
-   if both tools succeed:
-       total_score = average of available probability components
-   else if one succeeds:
-       total_score = that tool's probability
-   else:
-       total_score = 0.0
-   ```
-
----
-
-## 9. RNA Aptamer Design
-
-> **File**: `workflows/rna_aptamer_design.py`  
-> **Classes**: `RnaAptamerDesignWorkflow`, `RnaAptamerDesignLLMCritic`, `AptamerCoordinator`  
-> **Critic**: ✅ `RnaAptamerDesignLLMCritic` (LLM-driven) + `AptamerCoordinator` (BMC Type-II deterministic)  
-> **Status**: ✅ **INTERFACE LOCKED** — see [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §15
-
-### 9.1 Purpose
-
-Design RNA aptamers targeting a protein using ODesign, then validate with ProteinX complex prediction, EGARPS scoring, and interface analysis.
-
-### 9.2 Pipeline
-
-1. **Input preparation**: `build_odesign_aptamer_input_json` from protein structure + hotspots
-2. **Candidate generation**: `run_odesign_inference` (8012)
-3. **Evaluation**
-   - RhoFold 3D structure prediction (8005)
-   - ProteinX RNA-protein complex prediction (8022)
-   - EGARPS complex scoring (8023)
-   - Interface analysis (pure Python)
-4. **Scoring**:
-   ```python
-   total_score = EGARPS + (RhoFold_pLDDT / 100) + ipTM
-   ```
-   GC content is computed for critic gating but does not contribute to ranking.
-
----
-
-## 10. IRES Prediction & Validation
-
-> **File**: `workflows/ires_prediction.py`  
-> **Classes**: `IresPredictionWorkflow`, `IresPredictionLLMCritic`  
-> **Task type**: `ires`
-
-### 10.1 Purpose
-
-Identify potential IRES elements within a 5'UTR or candidate sequence, with structural validation.
-
-### 10.2 Pipeline
-
-1. **IRES prediction** (`predict_putative_ires_with_iresfinder`, port 8013)
-   - Mode 0: full sequence; Mode 1: header subsequence; Mode 2: sliding window
-2. **Extract top candidates**: threshold > 0.5, merge overlapping windows
-3. **Structural validation** (per candidate)
-   - LinearFold fold (8015, primary) / ViennaRNA fold (8003, fallback)
-   - RNAplfold accessibility profile (8003)
-   - Dot-bracket unpaired fraction (8020)
-4. **Scoring**:
-   ```python
-   accessibility_score = 1 - abs(mean_unpaired_fraction - 0.5) * 2
-   composite = ires_probability * accessibility_score
-   ```
-   (peaks at 0.5: IRES needs structured scaffold with exposed core)
-
-### 10.3 Critic strategy (`IresPredictionLLMCritic`)
-
-- **Type**: LLM-driven (DeepSeek)
-- **Max retries**: 2 (configurable via `IRES_PREDICTION_CRITIC_CONFIG.max_retries`)
-- **Evaluation dimensions**:
-  - IRESfinder probability scores: confidence that a region functions as an IRES
-  - Structural validation: LinearFold (primary) / ViennaRNA (fallback) predicted secondary structure and MFE
-  - Mean unpaired fraction / RNAplfold accessibility: balance between structured scaffold and exposed regions
-  - Coverage and distribution of candidates across the input sequence
-  - User constraints: explicit thresholds or region requirements from the original prompt
-- **Adjustable params**:
-  - `probability_threshold`: float [0.0, 1.0]
-  - `window_size`: int [20, 5000]
-  - `step_size`: int [1, 5000]
-  - `top_n_candidates`: int [1, 100]
-  - `run_structural_validation`: bool
-  - `iresfinder_mode`: int [0, 2]
-- **Retry action**: `retry_with_adjustments` — lower probability threshold to catch more candidates, adjust window/step size, or enable structural validation
-- **Confidence assignment** (workflow-internal, not from LLM Critic):
-
-  | IRES probability | Unpaired fraction | Confidence |
-  |------------------|-------------------|------------|
-  | ≥ 0.8 | 0.3–0.7 | high |
-  | ≥ 0.6 | 0.2–0.8 | medium |
-  | ≥ 0.5 | any | low |
-  | < 0.5 | any | rejected |
-
----
-
-## 11. ASO Target Screening
-
-> **File**: `workflows/aso_target_screening.py`  
-> **Classes**: `AsoTargetScreeningWorkflow`, `AsoScreeningCritic` (empty placeholder)  
-> **Task type**: `aso`
-
-### 11.1 Purpose
-
-Screen a full-length mRNA to identify the most accessible regions for ASO binding.
-
-### 11.2 Pipeline
-
-1. **Full-length accessibility profiling** (`predict_rna_local_accessibility_profile_vienna`, 8003)
-2. **Identify high-accessibility windows** (sliding window, 15–20 nt)
-3. **For each top window**:
-   - Design complementary ASO sequence (reverse complement)
-   - Evaluate binding (RNAup or RNAcofold, 8003)
-4. **Rank-based scoring** (Borda count):
-   ```python
-   accessibility_rank = rank_by(mean_unpaired_prob, descending=True)
-   binding_rank       = rank_by(binding_component, descending=True)
-   sum_rank           = accessibility_rank + binding_rank
-   ```
-   Smaller `sum_rank` = better overall site.
-
-### 11.3 Critic strategy
-
-**No critic** — deterministic evaluation-only pipeline. `AsoScreeningCritic.should_retry` unconditionally returns `False`.
-
----
-
-## 12. Workflow Landscape Summary
-
-| Priority | Domain | Workflow | Type | Critic |
-|----------|--------|----------|------|--------|
-| P0 | mRNA | CDS design & optimization | design | ❌ None (ranking-only) |
-| P0 | mRNA | Full-length mRNA design | design | ✅ `FullLengthMrnaDesignLLMCritic` |
-| P0 | CRISPR | sgRNA handle design | design | ✅ `SgRnaDesignLLMCritic` |
-| P1 | siRNA | siRNA design + safety | design | ✅ `SirnaDesignLLMCritic` |
-| P1 | structure | 2° structure → sequence | design | ✅ `RnaSecondaryStructureDesignLLMCritic` |
-| P1 | structure | 3° structure → sequence | design | ✅ `RnaTertiaryStructureDesignLLMCritic` |
-| P1 | mRNA | IRES prediction | evaluation | ✅ `IresPredictionLLMCritic` (confidence only) |
-| P2 | ligand | RNA–ligand scoring | evaluation | ❌ None (prediction-only) |
-| P2 | RNA-protein | Aptamer design | design | ✅ `RnaAptamerDesignLLMCritic` |
-| P2 | ASO | ASO target screening | evaluation | ❌ None (deterministic) |
-
-*For per-tool specs and microservice details, see [`TOOLS.md`](TOOLS.md).*  
-*For architecture and core module APIs, see [`ARCHITECTURE.md`](ARCHITECTURE.md).*
+## Workflow Landscape Summary
+
+### Quality review coverage
+
+Quality review is performed by the unified `QualityAgent` using workflow-specific `QualityProfile` instances from `agent_core/quality_profiles/`.
+
+| Priority | Domain | Workflow | Quality review | QualityProfile |
+|----------|--------|----------|----------------|----------------|
+| P0 | mRNA | CDS design | ✅ Yes | `MRNA_CDS_QUALITY_PROFILE` |
+| P0 | mRNA | Full-length mRNA design | ✅ Yes | `FULL_LENGTH_MRNA_QUALITY_PROFILE` |
+| P1 | siRNA | siRNA design | ✅ Yes | `SIRNA_QUALITY_PROFILE` |
+| P1 | structure | 2° structure → sequence | ✅ Yes | `RNA_SECONDARY_STRUCTURE_QUALITY_PROFILE` |
+| P1 | structure | 3° structure → sequence | ✅ Yes | `RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE` |
+| P1 | mRNA | IRES prediction | ✅ Yes | `IRES_QUALITY_PROFILE` |
+| P2 | mRNA | mRNA sequence scoring | ❌ No | — |
+| P2 | ligand | RNA–small molecule interaction | ❌ No | — |
+| P2 | RNA-protein | Aptamer design | ✅ Yes | `RNA_APTAMER_QUALITY_PROFILE` |
+| P2 | CRISPR | sgRNA handle design | ✅ Yes | `SGRNA_QUALITY_PROFILE` |
+| P2 | ASO | ASO target screening | ❌ No | — |
+
+### Retry behavior
+
+The execution engine is `PipelineAgent` + `SpecialistAgent` + `QualityAgent` + `SynthesisAgent`. The `SpecialistAgent` invokes `QualityAgent` to produce a `QualityReport` for workflows that have a `QualityProfile`. In advisory mode (`quality_auto_retry=False`), the `QualityReport` is recorded but the `SpecialistAgent` retries only on hard failures (`success=False`, empty candidates, or tool errors). In auto-retry mode (`quality_auto_retry=True`), the `SpecialistAgent` may re-run the workflow with overrides when the `QualityReport` recommends adjustments.
+
+*For per-tool specs and microservice details, see [`TOOLS.md`](TOOLS.md).  
+For architecture and core module APIs, see [`ARCHITECTURE.md`](ARCHITECTURE.md).*

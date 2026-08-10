@@ -1,7 +1,7 @@
 # Tools Reference
 
 > **Scope**: per-tool specs, microservice deployment notes, and port registry.
-> **Last updated**: 2026-06-01
+> **Last updated**: 2026-07-06
 
 ---
 
@@ -17,6 +17,8 @@
 8. [siRNA / Antisense](#8-sirna--antisense)
 9. [Sequence & CDS Metrics](#9-sequence--cds-metrics)
 10. [Other Tools](#10-other-tools)
+    - 10.5 [Bowtie2](#105-bowtie2-port-8024)
+    - 10.6 [Structure Utilities](#106-structure-utilities-pure-python)
 
 ---
 
@@ -28,7 +30,7 @@
 | 8004 | `microservices/gemorna_service/` | GEMORNA | CDS + UTR design | ✅ Linux GPU |
 | 8005 | `microservices/rhofold_service/` | RhoFold | Tertiary structure prediction | ✅ Linux GPU |
 | 8006 | `microservices/rhodesign_service/` | RhoDesign | Structure → sequence design | ✅ Linux GPU |
-| 8007 | `microservices/rnasmol_service/` | RNAsmol | RNA–ligand scoring | ✅ Linux GPU |
+| 8007 | `microservices/rnasmol_service/` | RNAsmol | RNA–ligand scoring | ✅ Linux (CPU default; GPU via `start_gpu.sh`) |
 | 8008 | `microservices/rnarl_service/` | RNARL | CDS design (7 species) | ✅ Linux GPU |
 | 8009 | `microservices/rnastop_service/` | RNASTOP | mRNA stability | ✅ Linux GPU |
 | 8010 | `microservices/gernabind_service/` | GerNA-Bind | RNA–ligand scoring + binding-site | ✅ Linux GPU |
@@ -48,6 +50,8 @@
 | 8024 | `microservices/bowtie2_service/` | Bowtie2 | Short-sequence alignment | ✅ Linux |
 
 > New tools should use ports starting from **8025**.
+>
+> **Note**: Bowtie2 (port 8024) is declared in `SirnaDesignWorkflow.required_capabilities`, so the CLI pre-flight auto-starts it via `microservices/bowtie2_service/start.sh` (base conda env provides the `bowtie2` binary).
 
 ---
 
@@ -56,7 +60,7 @@
 ### 2.1 ViennaRNA Suite (Port 8003)
 
 | Upstream | [ViennaRNA/ViennaRNA](https://github.com/ViennaRNA/ViennaRNA.git) |
-| Endpoints | `GET /health`, `POST /fold`, `POST /sirna-duplex`, `POST /aso-accessibility`, `POST /plfold-profiles`, `POST /inverse-fold` |
+| Endpoints | `GET /health`, `POST /fold`, `POST /sirna-duplex`, `POST /aso-accessibility`, `POST /plfold-profiles`, `POST /inverse-fold`, `POST /rnaup` |
 | Backend | Prefer RNAlib (`import RNA`), fallback to CLI |
 
 **Agent tools**
@@ -65,8 +69,8 @@
 |------|-------|--------|
 | `predict_rna_secondary_structure` | `filepath` | `structure`, `mfe_kcal_per_mol` |
 | `compute_sirna_duplex_binding_vienna` | `filepath` (2 FASTA records) | `structure` (with `&`), `mfe_kcal_per_mol` |
-| `compute_rna_rna_interaction_vienna` | `filepath` (2 FASTA records) | `structure`, `mfe_kcal_per_mol` |
-| `compute_aso_target_accessibility_vienna` | `filepath`, `region_start`, `region_end` | `mean_unpaired_prob` |
+| `compute_rna_rna_interaction_vienna` | `filepath1`, `filepath2` | `interaction_energy`, `interaction_structure`, `raw_stdout`, `sequence1`, `sequence2` |
+| `compute_aso_target_accessibility_vienna` | `filepath`, `region_start`, `region_end` | `mean_unpaired_prob_single_nt`, `joint_unpaired_prob_stretch_ending_at_region_end` |
 | `predict_rna_local_accessibility_profile_vienna` | `filepath` | per-position unpaired probs |
 | `inverse_fold_rna_secondary_structure_vienna` | `filepath` (dot-bracket + optional hint) | `best_sequence` |
 
@@ -91,6 +95,10 @@
 **Notes**
 - Run `cd external_repos/LinearFold && make` to build binaries.
 - `LINEARFOLD_ROOT` env var can override the repo directory.
+- **MFE sign convention**: upstream `linearfold_c` (CONTRAfold) prints a raw
+  Viterbi score where *higher = more stable*. The service negates it so that
+  `mfe` from both backends always means *more negative = more stable*
+  (consistent with LinearFold-V and ViennaRNA).
 
 ---
 
@@ -99,7 +107,7 @@
 ### 3.1 LinearDesign (Port 8014)
 
 | Upstream | [LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign.git) |
-| Endpoints | `GET /health`, `POST /generate/cds`, `POST /generate/cds/batch` |
+| Endpoints | `GET /health`, `POST /generate/cds`, `POST /generate/cds/batch`, `POST /generate/cds_junction_aware` (local JUNCTION-PATCH, 2026-08) |
 
 **Agent tools**
 
@@ -107,10 +115,14 @@
 |------|----------------|
 | `design_mrna_cds_with_lineardesign` | `lambda_value` (MFE/CAI balance), `codon_usage_path`, `verbose` |
 | `design_mrna_cds_batch_with_lineardesign` | Same params; accepts FASTA or multi-line text |
+| `design_mrna_cds_junction_aware_with_lineardesign` | `utr5_flank`/`utr3_flank` (junction-side 21 nt folded with CDS), `junction_weight` (w_jun window pair penalty), `junction_window_nt`, `flank_nt`; see `docs/tools/design_mrna_cds_junction_aware_with_lineardesign.md` |
+| `shuffle_cds_junction_codons` | Pure-Python helper for junction codon shuffling (no microservice) |
 
 **Notes**
-- Run `cd external_repos/LinearDesign && make` to generate `bin/LinearDesign_2D`.
+- Run `cd external_repos/LinearDesign && make` to generate `bin/LinearDesign_2D.real`, then restore the memory-guard wrapper as `bin/LinearDesign_2D` (the wrapper caps the address space via `ulimit -v`, default 100 GiB, override with `LINEARDESIGN_MAX_RSS_KB`). Never expose the raw binary as `bin/LinearDesign_2D`: unbounded runs previously exhausted the 200 GiB container cgroup and the OOM killer SIGKILLed unrelated processes (2026-08-06).
+- The service also rejects oversized proteins up front (`LINEARDESIGN_MAX_AA`, default 1800 aa; DP-lattice memory grows ~quadratically, ~7.5 GiB at 500 aa) so over-budget jobs fail fast instead of burning memory until the wrapper cap aborts them.
 - `LINEARDESIGN_ROOT` env var can override the directory.
+- `design_mrna_cds_junction_aware_with_lineardesign` (v0.1.0, INTERFACE_LOCKS §21) is a registered capability **not wired into any workflow**: the P2 pre-registered acceptance (2026-08-04, 72 cells) returned NO-GO — the global-fold window penalty does not repair fragment-fold AUG/Kozak burial (penalty/metric coordinate mismatch; `experiments/results/junction_integrated_optimizer_summary.json`). Large-protein memory: HER2-scale ≈ 47 GiB RSS, keep concurrency ≤ 2 on 200 GiB hosts.
 
 ### 3.2 RNARL (Port 8008)
 
@@ -123,15 +135,16 @@
 
 | `model_type` | Checkpoint |
 |--------------|------------|
-| `homo_mrna` | Homo sapiens mRNA |
-| `homo_circ` | Homo sapiens circular RNA |
-| `Arabidopsis` | Arabidopsis thaliana |
-| `EscherichiaColi` | E. coli |
-| `PC` | Penicillium chrysogenum |
-| `CR` | Chlamydomonas reinhardtii |
-| `TK` | Thermococcus kodakarensis KOD1 |
+| `Homo sapiens mRNA` | Human mRNA |
+| `Homo sapiens circular RNA` | Human circular RNA |
+| `Arabidopsis thaliana mRNA` | Arabidopsis thaliana |
+| `Escherichia coli mRNA` | E. coli |
+| `Penicillium chrysogenum mRNA` | Penicillium chrysogenum |
+| `Chlamydomonas reinhardtii mRNA` | Chlamydomonas reinhardtii |
+| `Thermococcus kodakarensis KOD1 mRNA` | Thermococcus kodakarensis KOD1 |
 
 **Notes**
+- The canonical list of `model_type` values and their checkpoint filenames is maintained in `agent_core/constants/species.py` (`RNARL_MODEL_TYPES_LIST`, `RNARL_MODEL_TYPE_TO_CHECKPOINT`).
 - Weights: `external_repos/RNARL/checkpoints/*.pt` + `esm2_model_t33_650M_UR50D/`
 - Max 1308 amino acids.
 
@@ -204,19 +217,25 @@
 **Agent tool**: `score_rna_ligand_binding_with_rnasmol(filepath, smiles, ...)`
 
 **Notes**
-- New GPUs (RTX 4090) **must** use `environment.gpu.yml`.
-- Device can be overridden via `RNASMOL_DEVICE` env var.
+- `start.sh` pins `RNASMOL_DEVICE=cpu`: the bundled `rnasmol_service_env` ships
+  PyTorch 1.7.1 (max sm_75), which cannot run kernels on RTX 4090 (sm_89) and
+  otherwise stalls the first request for minutes on PTX JIT. CPU inference is
+  milliseconds-fast for this model. For real GPU inference use `start_gpu.sh`
+  (`rnasmol_service_gpu_env`, torch 2.1) with `RNASMOL_DEVICE=cuda:0`.
+- The default checkpoint is preloaded at service startup, so a passed health
+  check means scoring is immediately ready.
 
 ### 5.2 GerNA-Bind (Port 8010)
 
 | Upstream | [GENTEL-lab/GerNA-Bind](https://github.com/GENTEL-lab/GerNA-Bind) |
-| Endpoints | `POST /score`, `POST /predict-binding-site` |
+| Endpoints | `POST /score` (agent tool); `POST /predict-binding-site` exists in the microservice but has no agent wrapper yet |
 
 **Agent tool**: `score_rna_ligand_binding_with_gernabind(filepath, smiles, ...)`
 
 **Notes**
 - Checkpoints: `Robin_random.pth` (affinity) + `Hariboss_Model_baseline.pth` (binding-site).
-- If no `pdb_path` provided, auto-calls `rhofold_service` to generate 3D structure.
+- If no `pdb_path` provided, auto-calls `rhofold_service` (port 8005) to generate the 3D structure. `RnaSmallMoleculeInteractionWorkflow.required_capabilities` therefore declares `predict_rna_tertiary_structure_with_rhofold`, so the CLI pre-flight starts RhoFold automatically.
+- First-time GPU setup: run `bash microservices/gernabind_service/install_pyg_gpu.sh` after creating the Conda environment.
 
 ---
 
@@ -233,11 +252,12 @@
 - GPU required.
 - Non-academic mode (`academic=False`, default) skips DSSR and NACCESS, using zero-padding.
 - Academic mode requires DSSR and NACCESS licenses.
+- The service `start.sh` activates the `base` Conda environment. The upstream dependencies are expected to be installed in an environment named `egarps_env` (per `start.sh` comments), but the launcher currently uses `base` for uvicorn startup.
 
 ### 6.2 ProteinX (Port 8022)
 
 | Upstream | [bytedance/Protenix](https://github.com/bytedance/Protenix) |
-| Endpoints | `POST /predict`, `POST /predict/complex` |
+| Endpoints | `POST /predict/protein`, `POST /predict/complex` |
 
 **Agent tools**
 
@@ -248,6 +268,8 @@
 
 **Notes**
 - Outputs `ipTM` (interface predicted TM-score) from confidence JSON.
+- Long Protenix subprocess calls run in a background thread (`asyncio.to_thread`) so the `/health` endpoint stays responsive during inference.
+- The service is currently single-worker; concurrent prediction requests are serialized by the single event-loop thread.
 
 ### 6.3 Interface Analysis (Pure Python)
 
@@ -313,7 +335,7 @@
 | Upstream | [dingyaozhang/Evitar](https://github.com/dingyaozhang/Evitar.git) |
 | Endpoint | `POST /design` |
 
-**Agent tool**: `design_sirna_with_evitar(filepath, mode=..., predict=..., off_target_params=...)`
+**Agent tool**: `design_sirna_with_evitar(filepath, mode="existing", predict="predsi", off_target=False, p3utr_path=..., transcriptome_path=..., weight_path=..., pmcuff=..., umcuff=..., mircuff=...)`
 
 **Notes**
 - Linux only (upstream `bin/` contains Linux executables).
@@ -334,7 +356,7 @@
 
 **Agent tool**: `compute_cai_for_cds_sequence(filepath, species="Homo sapiens", ...)`
 
-**Built-in species (11)**: Human, Mouse, Rat, Fruit fly, Worm, Zebrafish, Arabidopsis, Yeast, E. coli K-12, B. subtilis, CHO.
+**Built-in species (11)**: `arabidopsis`, `bsubtilis`/`b. subtilis`, `cho`, `ecoli`/`e. coli`, `fly`, `human`, `mouse`, `rat`, `worm`, `yeast`, `zebrafish`. Values are case-insensitive and map to the Kazusa codon-usage tables. The canonical aliases and mappings are maintained in `agent_core/constants/species.py` (`CAI_SPECIES_ALIASES`, `CAI_CANONICAL_SPECIES`).
 
 **Notes**
 - Pure Python; no microservice.
@@ -343,13 +365,14 @@
 
 ### 9.3 codonw-slim (Port 8018)
 
+| Endpoint | `POST /analyze/cds` |
+
 **Agent tool**: `analyze_cds_codon_metrics_with_codonw_slim(filepath)`
 
 **Metrics**: CAI, Fop, CBI, Nc (ENC), GC, GC1/2/3, hydropathy, aromaticity, and optional tables.
 
 **Notes**
-- **Must run `bash install_codonw_slim.sh` after `conda env create`.**
-- Input must be in-frame CDS.
+- Input must be in-frame CDS. Run `install_codonw_slim.sh` after env creation.
 
 ### 9.4 Junction Codon Shuffler (Pure Python)
 
@@ -388,13 +411,21 @@ Generate synonymous-codon variants at the N- or C-terminus of a CDS to alter loc
 
 ### 10.2 RNASTOP (Port 8009)
 
+| Endpoint | `POST /predict/stability` |
+
 **Agent tool**: `predict_mrna_stability_with_rnastop(filepath, structure=None, loop_type=None)`
 
 **Notes**
-- **Hard limit**: 512 nt (DNABERT encoder maximum).
-- Sequences >1022 nt are truncated.
+- **Hard limit**: 512 nt (model encoder maximum). Longer sequences are truncated
+  to the first 512 nt by the service (`truncated=True`); user-supplied
+  `structure` / `loop_type` are truncated alongside, and dangling brackets from
+  truncation are sanitized to unpaired before any native ViennaRNA call.
+- Default checkpoint: `best_model_weights_withoutDNABERT` (the DNABERT6
+  pretrained weights are not shipped in this repository).
 
 ### 10.3 IRESfinder (Port 8013)
+
+| Endpoint | `POST /predict` |
 
 **Agent tool**: `predict_putative_ires_with_iresfinder(filepath, mode=0, ...)`
 
@@ -404,13 +435,26 @@ Generate synonymous-codon variants at the N- or C-terminus of a CDS to alter loc
 
 ### 10.4 ODesign (Port 8012)
 
+| Endpoint | `POST /design/from-json` |
+
 **Agent tool**: `run_odesign_inference(input_json_filepath)`
 
 **Notes**
 - Checkpoints: `odesign_base_na_rigid.pt` + `oinvfold_rna.ckpt`.
 - Complex tasks are best prepared with explicit JSON.
 
-### 10.5 Structure Utilities (Pure Python)
+### 10.5 Bowtie2 (Port 8024)
+
+| Endpoint | `POST /align` |
+
+**Agent tool**: `run_bowtie2_short_alignment(filepath, subject_fasta_path=..., subject_index=..., mode="local", k=50, score_min="G,20,8")`
+
+**Notes**
+- Provide exactly one of `subject_fasta_path` or `subject_index`.
+- `mode` can be `local` (allows soft-clipping, preferred for short oligos) or `end-to-end`.
+- Auto-started by the CLI service pre-flight (declared by `SirnaDesignWorkflow`).
+
+### 10.6 Structure Utilities (Pure Python)
 
 | Tool | Description |
 |------|-------------|

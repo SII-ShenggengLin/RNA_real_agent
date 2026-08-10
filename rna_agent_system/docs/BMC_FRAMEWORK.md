@@ -1,7 +1,7 @@
 # Bounded Multi-Module Coordination (BMC) Framework
 
 > **Scope**: design motivation, conceptual foundations, and execution strategy of the BMC framework, covering both Type-I (Physical Assembly) and Type-II (Functional Coupling) instantiations.
-> **Last updated**: 2026-06-01
+> **Last updated**: 2026-08-10
 
 ---
 
@@ -21,6 +21,8 @@
 
 The core idea is that the global scoring function of the assembled molecule is **not separable** — i.e., the quality of the full assembly is not simply the sum of each module's local quality. Therefore, local optima for individual modules do not guarantee a global optimum for the assembled molecule, and explicit inter-module negotiation is required.
 
+> **Positioning note (2026-08-10) — what BMC is and is not.** The stronger "coordination gain" narrative — that BMC's diagnosis-guided coordination beats serial assembly on outcome metrics — was **falsified by three pre-registered/controlled results**: P0 budget-matched control (Cliff's δ = 0.278 < 0.3 gate, Wilcoxon p = 0.129 → NO-GO; `experiments/results/p0_budget_matched_summary.json`), P3 guided-vs-unguided (δ = 0.222, p = 0.110 → NO-GO; `experiments/results/p3_guided_vs_unguided_summary.json`), and the Fig 5 b/c mechanism ablations (no test survives BH-FDR; `experiments/results/fig5_summary.json`). The defensible value of BMC as deployed is therefore **bounded budget allocation + a resampling mechanism + auditability**: hard round/improvement bounds make iteration cost predictable, the per-round regeneration is where any gain comes from, and the deterministic reference-point diagnosis makes every adjustment inspectable and reproducible. The mechanism specification below (three phases, Type-I/Type-II coupling, reference-point ASF ranking, boundedness) is the **current in-use mechanism** and remains accurate; only the superiority claim is retired. See `docs/DECISIONS.md` for the full do-not-repeat register.
+
 BMC follows a three-phase algorithmic skeleton shared by both instantiations:
 
 - **Phase 1 — Independent Generation**: Each module generates candidates within its own constraints.
@@ -35,43 +37,17 @@ BMC follows a three-phase algorithmic skeleton shared by both instantiations:
 
 ### 2.1 Hard Round Limit
 
-```python
-max_rounds = 3
-```
+The coordinator supports a configurable hard round limit. The current bounds are:
 
-Regardless of the current result quality, BMC runs at most **3 iteration rounds** after the initial generation and evaluation.
+| Workflow | `max_rounds` |
+|----------|--------------|
+| `full_length_mrna_design` | 1 |
+| `rna_aptamer_design` | 1 (configurable via `bmc_max_rounds`) |
 
-**Why this bound?**
-- Bioinformatics toolchains (ViennaRNA, ProteinX, RhoFold, etc.) are computationally expensive per call. Unbounded iteration leads to unpredictable time and cost.
-- In practice, improvement typically saturates after 3 rounds; further iterations yield diminishing returns.
-- It eliminates the systemic risk of an agent that "never finishes."
+These values are set in the workflow files (`full_length_mrna_design.py`, `rna_aptamer_design.py`), not in the coordinator itself.
 
-### 2.2 Improvement Threshold
+> **Implementation note**: BMC-capable workflows expose a four-phase interface (`run_initial`, `bmc_prepare`, `bmc_run_round`, `bmc_finalize`). `CoordinatorAgent` (Layer 4) detects this interface and orchestrates the bounded convergence loop, while the concrete `ReferencePointCoordinator` / `AptamerCoordinator` objects remain inside the Layer-2 workflow modules and supply the domain-specific diagnosis/feedback rules.
 
-```python
-improvement_threshold = 1.0
-```
-
-Even before the round limit is reached, iteration stops immediately if the score improvement falls below this threshold (or if the score degrades).
-
-**Why this bound?**
-- Prevents meaningless oscillation in noisy metric ranges (e.g., MFE fluctuating from -0.26 to -0.255 with no biological significance).
-- Conserves computational budget for tasks with genuine room for improvement.
-
-### 2.3 Constrained Parameter Adjustment Space
-
-Feedback from the Coordinator does not allow arbitrary modifications. Each module's adjustable parameters are pre-defined with clear bounds:
-
-| Module | Allowed Adjustment | Bound Constraint |
-|--------|-------------------|-----------------|
-| 5'UTR | Switch UTR preset (short/medium/long) | 3 discrete options only |
-| CDS | Adjust λ (MFE vs. CAI trade-off) | Step size ±2, with upper/lower bounds |
-| 3'UTR | Switch UTR preset | 3 discrete options only |
-| Aptamer length | ±5 nt | Min/max length enforced |
-| Hotspot window | +2 residues per round | Upper bound 10 residues |
-| Sample count | +5 per round | Upper bound 20 |
-
-**Why this bound?**
 - Prevents parameter drift (e.g., λ jumping from 2 to 10, causing the design to completely abandon translation efficiency).
 - Ensures every adjustment stays within a biologically reasonable range.
 - Makes the entire process **predictable, reproducible, and auditable** — not a "black-box exploration" by an LLM.
@@ -80,12 +56,12 @@ Feedback from the Coordinator does not allow arbitrary modifications. Each modul
 
 | Aspect | Unbounded | Bounded (BMC) |
 |--------|-----------|---------------|
-| Iteration rounds | Infinite loop until "satisfied" | Hard upper bound of 3 |
-| Improvement criterion | Continue on any change | Stop if improvement < 1.0 |
+| Iteration rounds | Infinite loop until "satisfied" | Hard upper bound = workflow `bmc_max_rounds` (1 for both workflows) |
+| Improvement criterion | Continue on any change | Stop if improvement < workflow `improvement_threshold` |
 | Parameter adjustment | Arbitrary values and steps | Pre-defined options, bounded steps |
 | Computational cost | Unpredictable, potentially infinite | Upper-bound predictable |
 | Reproducibility | Low (LLM behavior varies) | High (deterministic rules) |
-| Failure mode | May never converge | Safely exits after at most 3 rounds |
+| Failure mode | May never converge | Safely exits after at most `max_rounds` rounds |
 
 > **In one sentence**: "Bounded" means BMC is not an open-ended search or LLM free exploration, but a structured negotiation process constrained by hard round limits, convergence thresholds, and bounded parameter adjustment spaces — ensuring iterative optimization completes within a computable, auditable, and terminable scope.
 
@@ -110,7 +86,7 @@ BMC is instantiated in two biologically distinct modes. Understanding their diff
 This distinction fundamentally shapes:
 - What the Coordinator evaluates (junction thermodynamics vs. complex quality metrics).
 - How feedback is routed (which specific module is responsible for the issue).
-- What regeneration actions are allowed (UTR preset switching vs. hotspot window expansion).
+- What regeneration actions are allowed (junction codon shuffling vs. hotspot window expansion).
 
 ---
 
@@ -132,29 +108,38 @@ BMC Type-I "Physical Assembly" addresses this by dividing the design into three 
 
 **Phase 1 — Independent Generation**: Each module generates candidates in parallel. The 5'UTR and 3'UTR agents explore preset libraries (short/medium/long); the CDS agent runs LinearDesign or RNARL with a user-specified λ.
 
-**Phase 2 — Assembly & Evaluation**: The `FullLengthCoordinator` evaluates the assembled full-length sequence with a suite of junction-aware metrics:
+**Phase 2 — Assembly & Evaluation**: The `ReferencePointCoordinator` evaluates the assembled full-length sequence in normalized objective space using the same score dimensions that drive `best_candidate` selection:
 
-| Metric | Threshold | Biological Meaning |
-|--------|-----------|-------------------|
-| `full_mfe_per_nt` | ≤ −0.25 kcal/mol/nt | Length-normalized global thermodynamic stability |
-| `full_paired_fraction` | ≥ 0.65 | Overall structural compactness |
-| `junction_cds_3utr_mfe` | ≤ −15 kcal/mol | Local stability at the CDS-3'UTR junction (40-nt overlap) |
-| `junction_5utr_cds_mfe` | < −20 kcal/mol | 5'UTR-CDS junction over-stability (blocks ribosome scanning) |
-| `junction_5utr_cds_aug_buried` / `kozak_buried` | Binary check | Whether the AUG / Kozak is buried in secondary structure |
-| `junction_gc_diff` | ≤ 0.15 | GC-content discontinuity across the junction |
+| Dimension | Module(s) | Biological Meaning |
+|-----------|-----------|-------------------|
+| `cds_component` | CDS | Normalized CDS quality (`-mfe + codons*log(CAI)`) / length |
+| `utr5_mrl` | 5'UTR | Predicted mean ribosomal load |
+| `utr3_stability` | 3'UTR | Predicted 3'UTR stability |
+| `full_mfe_score` | 5'UTR, CDS, 3'UTR | Inverted full-length MFE (higher = more stable) |
+
+**Internal diagnostics** (used by the BMC coordinator but not exposed as user-facing `reference_point` keys):
+
+| Dimension | Module(s) | Biological Meaning |
+|-----------|-----------|-------------------|
+| `junction_5utr_cds_score` | 5'UTR, CDS | 5'UTR-CDS junction quality (inverted MFE/nt minus GC-diff penalty, coefficient 1.0) |
+| `junction_cds_3utr_score` | CDS, 3'UTR | CDS-3'UTR junction quality (inverted MFE/nt minus GC-diff penalty, coefficient 1.0) |
+
+Each dimension is converted to maximization space and min-max normalized within the candidate pool. The reference point is user-provided (`reference_point`) or auto-derived as the utopian point (best observed value per dimension). A gap (`reference − candidate`) > 0 produces an issue whose `violation` equals the gap.
+
+> **Junction ddG report metric (v2.8.0)**: The former AUG/Kozak burial booleans were removed after three pre-registered experiments (P1 v2, P2, Phase 0 ddG pilot) falsified fragment-fold burial as a translation-initiation proxy. `JunctionEvaluator` now reports a full-length constrained-fold ddG at the 5'UTR–CDS junction (`junction_5utr_cds_ddg_open_w1/w2` = MFE_constrained − MFE_unconstrained on the full utr5+cds+utr3 construct; W1 = CDS start −6..+9, W2 = 5'UTR tail 60 nt + CDS head 30 nt clipped to the actual UTR). ddG is a report/profile metric only — it is not a score dimension and never triggers regeneration.
 
 **Phase 3 — Bounded Iteration**: If the Coordinator detects issues, it broadcasts structured `ModuleFeedback` to affected modules:
 
 | Issue Type | Affected Module(s) | Regeneration Action |
 |-----------|-------------------|--------------------|
-| `FULL_MFE_TOO_HIGH` / `FULL_STRUCTURE_TOO_LOOSE` | CDS | Decrease λ by 2 to favor MFE over CAI |
-| `JUNCTION_CDS_3UTR_UNSTABLE` | 3'UTR (primary), CDS (secondary) | Explore alternative 3'UTR presets; shuffle junction codons |
-| `JUNCTION_5UTR_CDS_TOO_STABLE` / `AUG_BURIED` / `KOZAK_BURIED` | 5'UTR (primary), CDS (secondary) | Explore alternative 5'UTR presets; shuffle junction codons |
-| `JUNCTION_*_GC_MISMATCH` | — | Logged in trace for human review (no automated adjustment) |
+| `CDS_COMPONENT_BELOW_REFERENCE` | CDS (primary), 5'UTR & 3'UTR logged | CDS: sub-diagnosis chooses λ direction — increase λ by 2 if CAI is weak, decrease λ by 2 if MFE is weak |
+| `FULL_MFE_SCORE_BELOW_REFERENCE` | CDS (primary), 5'UTR & 3'UTR logged | CDS: same sub-diagnosis as `CDS_COMPONENT_BELOW_REFERENCE` |
+| `UTR5_MRL_BELOW_REFERENCE` | 5'UTR | None — UTR presets always honour the user's `utr_mode`; the coordinator never overrides them |
+| `UTR3_STABILITY_BELOW_REFERENCE` | 3'UTR | None — UTR presets always honour the user's `utr_mode` |
+| `JUNCTION_5UTR_CDS_SCORE_BELOW_REFERENCE` | 5'UTR (primary), CDS | None — UTR presets honour `utr_mode`; no junction-triggered CDS mutation (v2.8.0 removed codon shuffling) |
+| `JUNCTION_CDS_3UTR_SCORE_BELOW_REFERENCE` | 3'UTR (primary), CDS | None — UTR presets honour `utr_mode`; no junction-triggered CDS mutation (v2.8.0 removed codon shuffling) |
 
-All regeneration operates within the hard bounds of `max_rounds=3` and `improvement_threshold=1.0`, with the Coordinator deterministically deciding convergence.
-
-> **In one paragraph**: Full-length mRNA design employs BMC Type-I "Physical Assembly" because the molecule comprises three sequence modules (5'UTR, CDS, 3'UTR) that are independently optimized by existing tools but physically concatenated into a single chain. Simple concatenation causes junction-level defects — thermodynamic discontinuity, GC-content mismatch, and AUG/Kozak burial — that impair translation initiation. BMC addresses this through a three-phase process: independent module generation, assembly evaluation by a deterministic `FullLengthCoordinator` that checks junction MFE, GC difference, and start-codon accessibility against hard thresholds, and bounded iterative refinement where structured feedback drives targeted regeneration (UTR preset switching, λ adjustment, junction codon shuffling) within a hard limit of 3 rounds, ensuring the assembled molecule maintains thermodynamic continuity and structural accessibility at translation initiation sites.
+All regeneration operates within the hard bound of `max_rounds=1`. Convergence is measured in normalized ASF space with `improvement_threshold=0.05` for full-length mRNA.
 
 ---
 
@@ -174,47 +159,43 @@ These conflicts arise precisely because the two modules are optimized independen
 
 ### Strategy
 
-BMC Type-II "Functional Coupling" addresses this through the same three-phase skeleton, but with a Coordinator that evaluates 3D complex quality rather than sequence junctions:
+BMC Type-II "Functional Coupling" addresses this through the same three-phase skeleton as Type-I, but with a Coordinator that evaluates 3D complex quality against a user-specified **reference point** rather than fixed biological thresholds:
 
-**Phase 1 — Independent Generation**: The two modules operate in parallel without knowledge of each other:
+**Phase 1 — Independent Generation**: The two modules operate independently without knowledge of each other (in the current implementation the target module runs before the aptamer module):
 
 | Module | Tool / Method | Output |
 |--------|--------------|--------|
 | **Target** | Hotspot residue identification from PDB structure | Candidate hotspot residue windows (position, size, confidence) |
 | **Aptamer** | ODesign generating RNA sequences based on hotspot info | Candidate aptamer sequences (varying length, seed, sampling parameters) |
 
-**Phase 2 — Assembly & Evaluation**: The `AptamerCoordinator` evaluates each target-ligand pair as an assembled complex:
+**Phase 2 — Normalization, Ranking, and Reference-Point Diagnosis**: The workflow first normalizes the three user-facing objectives (`egarps_component`, `rhofold_component`, `iptm_component`) against the initial candidate pool. Candidates are ranked by **ASF (Achievement Scalarizing Function) distance** to the reference point, and a Pareto frontier is maintained. The `AptamerCoordinator` then diagnoses normalized gaps between candidate objective vectors and the reference point:
 
-| Metric | Threshold | Biological Meaning |
-|--------|-----------|-------------------|
-| `egarps_native_probability` | ≥ 0.30 | Predicted binding affinity |
-| `rhofold_mean_plddt` | ≥ 70.0 | RNA monomer folding confidence |
-| `proteinx_ipTM` | ≥ 0.60 | Complex structure prediction confidence |
-| `interface_contacts` | ≥ 5 | Number of atomic contacts at the interface |
-| `buried_sasa` | ≥ 500.0 Å² | Buried solvent-accessible surface area |
-| `gc_content` | [0.30, 0.70] | Synthesis-friendly range |
+| Objective | Normalization | Reference-Point Meaning |
+|-----------|--------------|------------------------|
+| `egarps_component` | `egarps_native_probability` | Desired predicted binding affinity |
+| `rhofold_component` | `max(0, min(1, rhofold_mean_plddt / 100))` | Desired RNA monomer folding confidence |
+| `iptm_component` | `max(0, min(1, proteinx_ipTM))` | Desired complex structure prediction confidence |
 
-**Phase 3 — Bounded Iteration**: The Coordinator diagnoses issues and broadcasts structured feedback:
+The reference point is the single source of truth for both `best_candidate` selection and module-level feedback. User-provided reference values are normalized once against the initial pool and fixed across BMC rounds; auto-derived utopian reference points are re-derived each round from the current candidate set.
+
+**Phase 3 — Bounded Iteration**: The Coordinator builds a representative diagnosis set (ASF best + per-objective leaders), diagnoses each candidate against the reference point, merges issues by objective while preserving the source metrics of the worst violation, and broadcasts structured feedback:
 
 | Issue Type | Meaning | Target Module Action | Aptamer Module Action |
 |-----------|---------|---------------------|----------------------|
-| `BINDING_AFFINITY_LOW` | Insufficient predicted affinity | Expand hotspot window (+2 residues/round, max 10) | Increase samples / change seeds |
-| `RNA_FOLDABILITY_LOW` | Poor RNA self-folding | — | Adjust length (±5 nt) / change seeds |
-| `COMPLEX_CONFIDENCE_LOW` | Unreliable overall complex structure | Expand hotspot window | Increase samples / change seeds |
-| `INTERFACE_TOO_WEAK` | Insufficient interface contacts / burial | Expand hotspot window | Increase samples / change seeds |
-| `EXTREME_GC_CONTENT` | GC outside synthesis-friendly range | — | Change seeds |
+| `EGARPS_COMPONENT_BELOW_REFERENCE` | Affinity below reference | Expand hotspot window (+2 residues/round, max 10) | Increase samples / change seeds |
+| `RHOFOLD_COMPONENT_BELOW_REFERENCE` | Foldability below reference | — | Lengthen aptamer by +5 nt; **+10 nt** if source `rhofold_mean_plddt < 60.0`; also `seed_change` |
+| `IPTM_COMPONENT_BELOW_REFERENCE` | Complex confidence below reference | Expand hotspot window | Increase samples / change seeds |
 
-### Two-Tier Critic Design
+The feedback is **source-aware**: `broadcast_feedback()` receives the raw metrics of the candidate that triggered the worst violation, so adjustment intensity matches actual severity rather than the average/best candidate.
 
-RNA aptamer design uniquely employs a **two-tier Critic** architecture:
+> **Ablation toggle (Fig 5b)**: setting the environment variable `APTAMER_FEEDBACK_MODE=pool_average` makes `AptamerCoordinator.broadcast_feedback()` derive adjustments from the candidate-pool mean metrics (supplied by the workflow via the optional `pool_metrics` argument) instead of the worst-violation source metrics. The default (`source_aware`, or any unset/unrecognized value) is byte-identical to the behavior described above.
 
-| Tier | Component | Role | Decision Basis |
-|------|-----------|------|---------------|
-| **Workflow-internal** | `AptamerCoordinator` | Hard-threshold conflict detection and fast iteration | Deterministic rules (6 thresholds above), millisecond response |
-| **ExecutionController-level** | `RnaAptamerDesignLLMCritic` | User intent alignment and scoring weight adjustment | LLM reasoning (e.g., when user requests "prioritize binding over foldability", adjusts scoring weights) |
+### Interface with the Multi-Agent Execution Layer
 
-The Coordinator handles **objective biophysical constraints** (if pLDDT < 70, the design must change — no discussion). The LLM Critic handles **subjective user preferences** (trading off one metric against another based on natural language intent).
+`RnaAptamerDesignWorkflow` exposes the same reference-point/ASF interface as `FullLengthMrnaDesignWorkflow`: `reference_point`, `bmc_max_rounds`, and `bmc_improvement_threshold` are part of the workflow input. The `AptamerCoordinator` remains deterministic and reference-point driven. `CoordinatorAgent` orchestrates the BMC loop for both workflows by consuming their four-phase BMC interface; the domain-specific diagnosis and feedback broadcasting remain inside the workflow modules.
 
-> **In one paragraph**: RNA aptamer design employs BMC Type-II "Functional Coupling" because the task involves two functionally independent yet physically coupled modules — target protein hotspot identification (determining "where to bind") and RNA ligand generation (determining "what to bind with") — whose biological function depends on the quality of the assembled 3D RNA-protein complex. A naive serial pipeline ignores this coupling, producing designs that suffer from multi-objective conflicts such as high affinity but poor foldability, or strong local matching but low complex confidence. BMC addresses this through a three-phase process: parallel independent generation of hotspot windows and aptamer candidates, assembly evaluation by the `AptamerCoordinator` using EGARPS, RhoFold, and ProteinX to assess binding affinity, RNA foldability, and complex confidence against hard thresholds, and bounded iterative refinement where structured feedback drives targeted regeneration (hotspot window expansion, aptamer length/seed adjustment, sampling increase) within a deterministic rule engine and a hard limit of 3 rounds, thereby balancing binding affinity, structural foldability, and complex stability.
+Quality review is performed by `QualityAgent` using the workflow-specific `RNA_APTAMER_QUALITY_PROFILE` (or `FULL_LENGTH_MRNA_QUALITY_PROFILE` for full-length mRNA). `QualityAgent` produces an advisory `QualityReport` with diagnosis and suggested overrides; retry decisions are made by `SpecialistAgent` based on that report and hard execution outcomes. `QualityAgent` does not trigger iteration on its own, and BMC round limits continue to be enforced by the coordinator logic.
+
+The default bound for aptamer design is `bmc_max_rounds=1` (set to `0` to skip BMC iteration entirely).
 
 ---
