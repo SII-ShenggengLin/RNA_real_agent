@@ -59,6 +59,13 @@ E12 缓存, append-only); 运行记录 append-only
 (experiments/results/e12_runs_<stage>.jsonl); 判定书由全量记录每次重算
 (e12_verdict_<stage>.json); 确定性 tie-break + 固定种子。
 
+判据书补遗 v1 (2026-08-13, 用户拍板): 面板门 NAV 测量 = laplace 率 ×
+NAV_DEPTH=11 (S2 可达深度: probe n1 + probe2 n2 + 1 轮 n8), 而非探针深度
+(n2) 下的 raw 交付数 — S1 matrix_lock 的 nav_frac=0.0 即 raw-count 伪影
+(n2 池不可能交付 5, 即使该长度在 n8 下必交付); 判据书 NAV 语义与 E10
+同构 ("某格内长度可交付 ≥5", 按 S2 实际可达深度估计)。判据 (P<0.05 ∧
+C e2e ≥ 0.8) 与门阈值 (her2 ≤ 2 ∧ NAV ≥ 10 ∧ A-fail ≥ 14) 不变。
+
 Usage (from ``rna_agent_system/``):
     PYTHONPATH="$(pwd):$PYTHONPATH" python experiments/run_e12_gennav_aptamer.py --stage s0
     ... --stage s1 --resume
@@ -1286,11 +1293,20 @@ def ensure_e12_services(log: Any = print) -> None:
     log(f"[preflight] {len(services)} service(s) healthy", flush=True)
 
 
-def measure_s1_cells(records: list[dict]) -> dict[str, dict]:
-    """S1 实测 per-target (A-fail, NAV, HER2) — 判据书 §面板规则。
+# 判据书补遗 v1 (2026-08-13, 用户拍板): 面板门 NAV 测量 = laplace 率 × S2 可达
+# 深度, 而非探针深度下的 raw 交付数。理由: S1 探针深度 n2/长度下任何单长度池
+# 都凑不出 5, raw-count 系统性低估可导航性 (S1 matrix_lock nav_frac=0.0 即此
+# 伪影); 判据书 NAV 语义 = E10 的 "某格内长度可交付 ≥5" (S2 深度实测)。
+# 口径: rate(L) = (passers+1)/(n+2) over 合并池 (A n16 + probe n2);
+# navigable iff ∃ 带内长度: rate(L) × NAV_DEPTH >= 5。
+NAV_DEPTH = 11  # S2 该长度可达样本: probe n1 + probe2 n2 + 1 轮 n8 (保守)
 
-    A-fail 由 A 记录 (A 格 gear) 判定; NAV/HER2 由 A + C(probe) 合并池的
-    最佳格长度判定 (deliver_profile, D1 忠实)。"""
+
+def measure_s1_cells(records: list[dict]) -> dict[str, dict]:
+    """S1 实测 per-target (A-fail, NAV, HER2) — 判据书 §面板规则 (补遗 v1)。
+
+    A-fail 由 A 记录 (A 格 gear) 判定 (deliver_profile, D1 忠实);
+    NAV/HER2 = rate-based (laplace 率 × NAV_DEPTH >= 5, 判据书补遗 v1)。"""
     latest: dict[tuple[str, str], dict] = {}
     for r in records:
         if r.get("success"):
@@ -1304,18 +1320,30 @@ def measure_s1_cells(records: list[dict]) -> dict[str, dict]:
                   in A_GEARS]
         merged = ((a_rec["candidates"] if a_rec else [])
                   + (c_rec["candidates"] if c_rec else []))
+        per_len: dict[int, list[int]] = {}
+        for c in merged:
+            L = c["gear"]["aptamer_length"]
+            counts = per_len.setdefault(L, [0, 0])
+            counts[1] += 1
+            if any(c["matrix_pass"].values()):
+                counts[0] += 1
         a_fail_cells, nav_cells, her2_cells = [], [], []
         for p in PROFILE_ORDER:
             a_del = len(deliver_profile(a_grid, p)["ids"])
-            best = max(
-                len(deliver_profile(
-                    [c for c in merged if c["gear"]["aptamer_length"] == L],
-                    p)["ids"])
-                for L in C_LATTICE_LENGTHS) if merged else 0
             if a_del >= DELIVERY_SIZE:
                 continue
             a_fail_cells.append(f"{t}/{p}")
-            if best >= DELIVERY_SIZE:
+            spec = PROFILES[p]
+            navigable = False
+            for L in C_LATTICE_LENGTHS:
+                if not (spec["lo"] <= L <= spec["hi"]):
+                    continue
+                k, n = per_len.get(L, [0, 0])
+                rate = (k + 1) / (n + 2) if n else 0.0
+                if rate * NAV_DEPTH >= DELIVERY_SIZE:
+                    navigable = True
+                    break
+            if navigable:
                 nav_cells.append(f"{t}/{p}")
             else:
                 her2_cells.append(f"{t}/{p}")
