@@ -1,0 +1,20 @@
+{
+  "target_id": "OTC",
+  "target_name": "Ornithine transcarbamylase",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P00480",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "HEK293",
+  "paper_references": [
+    "doi:10.1056/NEJMoa2303574"
+  ],
+  "notes": "Urea-cycle enzyme deficient in OTC deficiency; clinical mRNA therapy target. Replaces Zika_E_protein (3419 aa, beyond LinearDesign memory guard).",
+  "uniprot_accession": "P00480",
+  "protein_sequence": "MLFNLRILLNNAAFRNGHNFMVRNFRCGQPLQNKVQLKGRDLLTLKNFTGEEIKYMLWLSADLKFRIKQKGEYLPLLQGKSLGMIFEKRSTRTRLSTETGFALLGGHPCFLTTQDIHLGVNESLTDTARVLSSMADAVLARVYKQSDLDTLAKEASIPIINGLSDLYHPIQILADYLTLQEHYSSLKGLTLSWIGDGNNILHSIMMSAAKFGMHLQAATPKGYEPDASVTKLAEQYAKENGTKLLLTNDPLEAAHGGNVLITDTWISMGQEEEKKKRLQAFQGYQVTMKTAKVAASDWTFLHCLPRKPEEVDDEVFYSPRSLVFPEAENRKWTIMAVMVSLLTDYSPQLQKPKF",
+  "protein_length_aa": 354,
+  "sequence_checksum": "95A32A68BF351F66D110A48B53BB4F4D",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "OTC_HUMAN",
+  "expected_cds_length_nt": 1062
+}

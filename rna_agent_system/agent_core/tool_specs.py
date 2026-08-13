@@ -591,7 +591,7 @@ class RiboDiffusionOutput(_OutBase):
     model: str
 
 
-# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# RNAsmOL 接口冻结声明 (v0.3.0) —— 禁止单方面变更
 # 关联文件清单（修改时必须全部同步）：
 #   - microservices/rnasmol_service/main.py
 #   - agent_core/tools.py
@@ -603,7 +603,7 @@ class RiboDiffusionOutput(_OutBase):
 class RNAsmolScoreOutput(_OutBase):
     """RNAsmol scoring output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
     - microservices/rnasmol_service/main.py :: ScoreResponse
     - agent_core/state.py :: rnasmol_* fields
@@ -1503,7 +1503,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RiboDiffusionOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0) — RNAsmol scoring tool spec
+    # INTERFACE LOCK (v0.3.0) — RNAsmol scoring tool spec
     # Any field addition/removal must be synchronized with:
     # - microservices/rnasmol_service/main.py :: ScoreRequest / ScoreResponse
     # - agent_core/tools.py :: RNAsmolScoreInput / score_rna_ligand_binding_with_rnasmol
@@ -1513,7 +1513,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(
         identity="score_rna_ligand_binding_with_rnasmol",
         display_name="RNAsmol RNA-ligand scoring",
-        version="0.2.0",
+        version="0.3.0",
         source="https://github.com/hongli-ma/RNAsmol",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8007/score",

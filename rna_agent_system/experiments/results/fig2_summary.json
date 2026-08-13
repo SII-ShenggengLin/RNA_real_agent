@@ -63,36 +63,34 @@
     },
     "sirna_design": {
       "n_tasks": 22,
-      "n_success": 21,
+      "n_success": 22,
       "median_elapsed_s": 43.4,
-      "notes": [
-        "04_sirna_design_009_gc_rich_target"
-      ]
+      "notes": null
     }
   },
   "total": {
     "n_tasks": 210,
-    "n_success": 209
+    "n_success": 210
   },
   "fig2a_cds_nulls": {
     "n": {
       "wt": 20,
       "random_syn": 200,
-      "cai_only": 18
+      "cai_only": 20
     },
     "cai_score": {
       "wt": {
-        "median": 0.7298119169834983
+        "median": 0.7285905932693981
       },
       "random_syn": {
-        "median": 0.6738305833879931
+        "median": 0.6723169743681472
       },
       "cai_only": {
-        "median": 0.7438259565799159
+        "median": 0.7454304750202037
       },
       "wt_vs_random": {
-        "mannwhitney_p": 5.579505478183843e-07,
-        "cliffs_delta": 0.6795
+        "mannwhitney_p": 4.023013793756525e-07,
+        "cliffs_delta": 0.688
       }
     },
     "mfe_per_nt": {
@@ -100,14 +98,14 @@
         "median": -0.05066310980762807
       },
       "random_syn": {
-        "median": -0.047401704414991926
+        "median": -0.04728281276431072
       },
       "cai_only": {
         "median": -0.35573179035193236
       },
       "wt_vs_random": {
-        "mannwhitney_p": 0.28117585552776436,
-        "cliffs_delta": -0.1465
+        "mannwhitney_p": 0.23042430911277723,
+        "cliffs_delta": -0.163
       }
     },
     "gc_content": {
@@ -115,14 +113,14 @@
         "median": 0.4490723154674533
       },
       "random_syn": {
-        "median": 0.4692682675328358
+        "median": 0.4697754749568221
       },
       "cai_only": {
         "median": 0.564201601507301
       },
       "wt_vs_random": {
-        "mannwhitney_p": 0.35411917240318547,
-        "cliffs_delta": -0.126
+        "mannwhitney_p": 0.4423679455092472,
+        "cliffs_delta": -0.1045
       }
     },
     "paired_wt_beats_random_cai": "15/20"
@@ -138,12 +136,10 @@
     "median_plddt_component": 0.704
   },
   "fig2c_sirna": {
-    "n": 21,
+    "n": 22,
     "median_off_target": 0.0,
-    "zero_off_target": "20/21",
-    "quality_abort_cases": [
-      "04_sirna_design_009_gc_rich_target"
-    ]
+    "zero_off_target": "21/22",
+    "quality_abort_cases": []
   },
   "fig2i_ires": {
     "n_pos": 3,
@@ -163,7 +159,7 @@
     "n_binders": 4,
     "n_near_cognate": 4,
     "n_random_chem": 9,
-    "auroc_vs_random_chem": 0.5,
+    "auroc_vs_random_chem": 0.722,
     "auroc_vs_near_cognate": 0.312,
     "note": "scores reflect the underlying RNAsmol/GerNA-Bind models on short aptamers (out-of-training-distribution); reported as a tool-boundary finding"
   }

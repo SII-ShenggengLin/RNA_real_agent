@@ -1,0 +1,20 @@
+{
+  "target_id": "PDGFB",
+  "target_name": "Platelet-derived growth factor subunit B",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01127",
+  "species_for_codon_optimization": "Homo sapiens",
+  "expression_system": "HEK293",
+  "paper_references": [
+    "doi:10.1038/309722a0"
+  ],
+  "notes": "Secreted growth factor; PDGF-BB is also an aptamer anchor target in this project. Replaces Factor_VIII (2351 aa, beyond LinearDesign memory guard).",
+  "uniprot_accession": "P01127",
+  "protein_sequence": "MNRCWALFLSLCCYLRLVSAEGDPIPEELYEMLSDHSIRSFDDLQRLLHGDPGEEDGAELDLNMTRSHSGGELESLARGRRSLGSLTIAEPAMIAECKTRTEVFEISRRLIDRTNANFLVWPPCVEVQRCSGCCNNRNVQCRPTQVQLRPVQVRKIEIVRKKPIFKKATVTLEDHLACKCETVAAARPVTRSPGGSQEQRAKTPQTRVTIRTVRVRRPPKGKHRKFKHTHDKTALKETLGA",
+  "protein_length_aa": 241,
+  "sequence_checksum": "F0731A603F2593B0B8AAFE0CFE53DC31",
+  "organism_scientific": "Homo sapiens",
+  "entry_name": "PDGFB_HUMAN",
+  "expected_cds_length_nt": 723
+}

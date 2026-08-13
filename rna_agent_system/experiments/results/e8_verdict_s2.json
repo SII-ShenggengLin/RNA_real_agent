@@ -1,0 +1,315 @@
+{
+  "stage": "s2",
+  "timestamp": "2026-08-11T17:31:55",
+  "n_targets": 10,
+  "targets": [
+    "BSA",
+    "Chymotrypsinogen",
+    "Concanavalin_A",
+    "Lysozyme",
+    "MBP",
+    "SARS-CoV-2_Nucleocapsid",
+    "TNF_alpha",
+    "Thrombin",
+    "Trypsin",
+    "VEGF"
+  ],
+  "pairs": [
+    {
+      "target_id": "BSA",
+      "profile": "compact",
+      "A_jcd": false,
+      "C_jcd": true
+    },
+    {
+      "target_id": "BSA",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "BSA",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Chymotrypsinogen",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Chymotrypsinogen",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Chymotrypsinogen",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Concanavalin_A",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Concanavalin_A",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Concanavalin_A",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Lysozyme",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Lysozyme",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Lysozyme",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "MBP",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": false
+    },
+    {
+      "target_id": "MBP",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "MBP",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "profile": "extended",
+      "A_jcd": false,
+      "C_jcd": true
+    },
+    {
+      "target_id": "TNF_alpha",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "TNF_alpha",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "TNF_alpha",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Thrombin",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Thrombin",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Thrombin",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Trypsin",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Trypsin",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Trypsin",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "VEGF",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "VEGF",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "VEGF",
+      "profile": "extended",
+      "A_jcd": false,
+      "C_jcd": true
+    }
+  ],
+  "primary": {
+    "n_pairs": 30,
+    "mcnemar": {
+      "b": 3,
+      "c": 1,
+      "p": 0.625
+    },
+    "c_e2e_rate": 0.9,
+    "a_e2e_rate": 0.7,
+    "criterion": "p < 0.05 AND c_e2e_rate >= 0.8",
+    "pass": false,
+    "decisive_at": "s2 (n=30 pairs); descriptive only at s0/s1"
+  },
+  "secondary": {
+    "c_delivered_matrix_pass_rate": 1.0,
+    "criterion_rate_ge_0.9": true,
+    "llm_budget_compliance": true,
+    "llm_calls_per_target": {
+      "BSA": 5,
+      "Chymotrypsinogen": 4,
+      "Concanavalin_A": 5,
+      "Lysozyme": 4,
+      "MBP": 6,
+      "SARS-CoV-2_Nucleocapsid": 5,
+      "TNF_alpha": 4,
+      "Thrombin": 5,
+      "Trypsin": 4,
+      "VEGF": 4
+    },
+    "request_generate_per_target": {
+      "BSA": 4,
+      "Chymotrypsinogen": 3,
+      "Concanavalin_A": 4,
+      "Lysozyme": 3,
+      "MBP": 4,
+      "SARS-CoV-2_Nucleocapsid": 4,
+      "TNF_alpha": 3,
+      "Thrombin": 4,
+      "Trypsin": 3,
+      "VEGF": 3
+    },
+    "degraded_profiles_total": 1
+  },
+  "mechanism": {
+    "all_gear_calls_ok": true,
+    "gear_errors": [],
+    "zero_candidate_targets": [],
+    "no_zero_candidate_anomaly": true,
+    "budget_violations": [],
+    "budget_compliance": true,
+    "decision_gate_demonstrations": [
+      {
+        "target_id": "BSA",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "Chymotrypsinogen",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "Concanavalin_A",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "Lysozyme",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "MBP",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "SARS-CoV-2_Nucleocapsid",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "TNF_alpha",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "Thrombin",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "Trypsin",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "VEGF",
+        "verdict": "reject",
+        "forbidden": true
+      }
+    ],
+    "decision_gate_demo_forbidden": true,
+    "first_odesign_call_seconds": 141.86616293154657
+  },
+  "notes": {
+    "ferritin_excluded": "deterministic ODesign zero-output boundary (experiments/results/RESUME_CHECKPOINT.md §4)",
+    "hotspot_fallbacks": {
+      "SARS-CoV-2_Nucleocapsid": "auto_identify_fallback_known_out_of_structure"
+    },
+    "s2_matrix_expansion": "2026-08-11: 8 -> 10 targets (+Concanavalin_A, +Chymotrypsinogen); primary endpoint n = 30 pairs",
+    "c_request_generate_cap": "2026-08-11: <=2 -> <=4 rounds; 48-raw hard cap both arms unchanged"
+  },
+  "go_no_go": "NO-GO",
+  "go_rule": "mechanism AND primary endpoint (s2)",
+  "elapsed_seconds": 16591.18
+}

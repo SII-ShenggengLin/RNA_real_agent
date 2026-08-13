@@ -1,0 +1,220 @@
+{
+ "experiment": "E7 — capability profiling of the mRNA workflow's expression oracle (gemorna_5utr_mrl) on measured-MRL anchor sets",
+ "date": "2026-08-11",
+ "oracle": "gemorna_5utr_mrl",
+ "task_type": "full_length_mrna",
+ "anchor_set": "data/benchmarks/external_anchors/utr_mrl/e7_mrl_anchor_set.json",
+ "preregistration": "experiments/run_e7_mrna_oracle_profiling.py docstring (2026-08-11)",
+ "gates": {
+  "screening": "AUROC > 0.8 (10,000-fold bootstrap 95% CI, seed 0)",
+  "ranking": "Spearman rho >= 0.6 on ranking_eligible vs measured rl"
+ },
+ "per_family": {
+  "sample2019_egfp_random50": {
+   "n_scored": 238,
+   "screening": {
+    "auroc": 0.9902777777777778,
+    "auroc_ci_lo": 0.9752777777777778,
+    "auroc_ci_hi": 1.0,
+    "n_pos": 60,
+    "n_neg": 60,
+    "grade": "verified"
+   },
+   "ranking": {
+    "spearman_rho": 0.9255753230189917,
+    "n": 120,
+    "grade": "verified"
+   }
+  },
+  "sample2019_varying_length_human": {
+   "n_scored": 230,
+   "screening": {
+    "auroc": 1.0,
+    "auroc_ci_lo": 1.0,
+    "auroc_ci_hi": 1.0,
+    "n_pos": 60,
+    "n_neg": 60,
+    "grade": "verified"
+   },
+   "ranking": {
+    "spearman_rho": 0.8353024154620525,
+    "n": 120,
+    "grade": "verified"
+   }
+  },
+  "sample2019_varying_length_random": {
+   "n_scored": 238,
+   "screening": {
+    "auroc": 1.0,
+    "auroc_ci_lo": 1.0,
+    "auroc_ci_hi": 1.0,
+    "n_pos": 60,
+    "n_neg": 60,
+    "grade": "verified"
+   },
+   "ranking": {
+    "spearman_rho": 0.9201084939719412,
+    "n": 120,
+    "grade": "verified"
+   }
+  }
+ },
+ "self_model": "experiments/results/e7_selfmodel/self_model.json",
+ "gate_demo": [
+  {
+   "demo": "a_ranking_action_on_verified_family",
+   "gate": "DecisionGate",
+   "action": {
+    "action_id": "e7_demo_a",
+    "kind": "oracle_lookup",
+    "oracle": "gemorna_5utr_mrl",
+    "use": "ranking_objective",
+    "estimated_budget": 0
+   },
+   "task_type": "full_length_mrna",
+   "target_family": "sample2019_egfp_random50",
+   "expected_verdict": "allow",
+   "actual_verdict": "allow",
+   "expectation_met": true,
+   "decision": {
+    "action_id": "e7_demo_a",
+    "verdict": "allow",
+    "reason": "gemorna_5utr_mrl has verified ranking power on sample2019_egfp_random50",
+    "oracle": "gemorna_5utr_mrl",
+    "required_capability": "ranking",
+    "evidence": [
+     {
+      "kind": "jsonl",
+      "path": "experiments/results/e7_mrl_scoring.jsonl",
+      "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+     },
+     {
+      "kind": "summary_json",
+      "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+      "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+     }
+    ],
+    "substitute": null
+   }
+  },
+  {
+   "demo": "b_ranking_action_on_unprofiled_family",
+   "gate": "DecisionGate",
+   "action": {
+    "action_id": "e7_demo_b",
+    "kind": "oracle_lookup",
+    "oracle": "gemorna_5utr_mrl",
+    "use": "ranking_objective",
+    "estimated_budget": 0
+   },
+   "task_type": "full_length_mrna",
+   "target_family": "unprofiled_novel_utr_family",
+   "expected_verdict": "require_profiling",
+   "actual_verdict": "downgrade",
+   "expectation_met": false,
+   "note": "SelfModel transfers same-(oracle, task_type) grades across families with decayed confidence (design doc 2.3 step 1); a never-profiled family therefore yields the transfer verdict (downgrade from a verified donor / reject from a failed donor), not require_profiling. The plain require_profiling path is demonstrated by demo (c).",
+   "decision": {
+    "action_id": "e7_demo_b",
+    "verdict": "downgrade",
+    "reason": "ranking grade transferred from gemorna_5utr_mrl:full_length_mrna:sample2019_egfp_random50 with decayed confidence=0.5; conclusions capped at within-target relative comparisons",
+    "oracle": "gemorna_5utr_mrl",
+    "required_capability": "ranking",
+    "evidence": [
+     {
+      "kind": "jsonl",
+      "path": "experiments/results/e7_mrl_scoring.jsonl",
+      "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+     },
+     {
+      "kind": "summary_json",
+      "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+      "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+     }
+    ],
+    "substitute": null
+   }
+  },
+  {
+   "demo": "c_ranking_action_unprofiled_oracle_3utr_stability",
+   "gate": "DecisionGate",
+   "action": {
+    "action_id": "e7_demo_c",
+    "kind": "oracle_lookup",
+    "oracle": "gemorna_3utr_stability",
+    "use": "ranking_objective",
+    "estimated_budget": 0
+   },
+   "task_type": "full_length_mrna",
+   "target_family": "sample2019_egfp_random50",
+   "expected_verdict": "require_profiling",
+   "actual_verdict": "require_profiling",
+   "expectation_met": true,
+   "decision": {
+    "action_id": "e7_demo_c",
+    "verdict": "require_profiling",
+    "reason": "gemorna_3utr_stability has no ranking profiling for (full_length_mrna, sample2019_egfp_random50); run CapabilityProfiler first",
+    "oracle": "gemorna_3utr_stability",
+    "required_capability": "ranking",
+    "evidence": [],
+    "substitute": null
+   }
+  },
+  {
+   "demo": "d_absolute_expression_claim_downgrade",
+   "gate": "ClaimGate",
+   "claim": {
+    "claim_id": "e7_demo_d",
+    "text": "5'UTR candidate A will drive higher protein expression than candidate B in the final mRNA.",
+    "claim_type": "ranking",
+    "scope": "absolute",
+    "dependencies": [
+     {
+      "oracle": "gemorna_5utr_mrl",
+      "capability": "ranking",
+      "scope": "",
+      "grade": null
+     }
+    ]
+   },
+   "task_type": "full_length_mrna",
+   "target_family": "unprofiled_novel_utr_family",
+   "expected_verdict": "downgrade",
+   "expected_scope": "within_target_relative",
+   "actual_verdict": "downgrade",
+   "expectation_met": true,
+   "verdict_detail": {
+    "claim_id": "e7_demo_d",
+    "verdict": "downgrade",
+    "reason": "dependency grade transferred with decayed confidence; scope absolute -> within_target_relative",
+    "dependencies": [
+     {
+      "oracle": "gemorna_5utr_mrl",
+      "capability": "ranking",
+      "scope": "",
+      "grade": "transferred"
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "jsonl",
+      "path": "experiments/results/e7_mrl_scoring.jsonl",
+      "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+     },
+     {
+      "kind": "summary_json",
+      "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+      "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+     }
+    ],
+    "rewritten_text": "[DOWNGRADED: dependency grade transferred with decayed confidence; scope absolute -> within_target_relative] Within unprofiled_novel_utr_family only, and only as a relative comparison between candidates: 5'UTR candidate A will drive higher protein expression than candidate B in the final mRNA."
+   }
+  }
+ ],
+ "go": true,
+ "notes": [
+  "sample2019_egfp_random50 is in-training-distribution for GEMORNA's MRL head (trained on this assay); a pass there is the pre-registered positive control.",
+  "A failed family is a registered capability boundary, not a bug.",
+  "gemorna_3utr_stability remains unprofiled by design (no measured anchor set)."
+ ],
+ "service_errors": 0
+}

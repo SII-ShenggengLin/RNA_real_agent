@@ -375,8 +375,14 @@ class TestSeedGroups:
 class TestFullMatrix:
     def test_full_targets_match_benchmark_dir(self):
         files = sorted(p.stem for p in TARGETS_DIR.glob("*.json"))
-        assert sorted(FULL_TARGETS) == files
-        assert len(FULL_TARGETS) == 20
+        # 2026-08-11 panel swap (paper v2): Zika_E_protein (3419 aa) and
+        # Factor_VIII (2351 aa) — both beyond the LinearDesign memory guard —
+        # were replaced in the benchmark directory by OTC (354 aa) and PDGFB
+        # (241 aa). FULL_TARGETS above remains E4's historical pre-swap list,
+        # which its concluded 120-campaign results reference.
+        expected = sorted((set(FULL_TARGETS) - {"Zika_E_protein", "Factor_VIII"}) | {"OTC", "PDGFB"})
+        assert expected == files
+        assert len(files) == 20
 
     def test_full_matrix_has_120_campaigns(self):
         matrix = expected_matrix()

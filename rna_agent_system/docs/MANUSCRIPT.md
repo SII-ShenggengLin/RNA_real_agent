@@ -108,14 +108,14 @@ per figure:
 
 | Figure | Data | Verdict-file pointer | Downgraded conclusion |
 |--------|------|----------------------|------------------------|
-| 2 platform quality | ✅ 209/210 tasks | `fig2_summary.json` | Platform runs and outputs beat biological nulls (CAI 0.744 designed vs 0.730 WT vs 0.674 random); small-molecule scoring at chance (AUROC 0.5) reported as tool boundary |
+| 2 platform quality | ✅ 210/210 tasks | `fig2_summary.json` | Platform runs and outputs beat biological nulls (CAI 0.745 designed vs 0.729 WT vs 0.672 random; panel refreshed 2026-08-11: OTC/PDGFB replaced the two oversized targets, and the legacy advisory-abort siRNA task completes under current governance); small-molecule scoring profiled two-sided (in-distribution AUROC 0.974/0.983 exactly reproducing published power after the RNAsmol v0.3.0 preprocessing-fidelity fix; out-of-distribution short aptamers show no demonstrated near-cognate discrimination) — `rnasmol_boundary_panel.json` |
 | 3 Type-I BMC | ✅ 240/240 | `fig3_summary.json` | No significant fixed-reference ASF difference at any BMC depth (bmc×1 p = 0.81 NS) |
 | 4 Type-II BMC | ✅ 228/240 | `fig4_summary.json` | Ungated egarps/hypervolume effects (p ≈ 2e-4) **confounded** — unprofiled oracle (P2/E1) + budget (P0); not a coordination claim |
 | 5 mechanism ablations | ✅ 141 + 12 boundary | `fig5_summary.json` | No panel-b/c test survives BH-FDR; λ clamp contains extreme starts; negative controls clean |
 | 6 governance/backends | ✅ 38 + 29 | `fig6_quality_ablation.jsonl`, `fig6_backends.jsonl` | QualityAgent advisory-only (both arms 19/19); backend matrix: deepseek 19/19, nominal claude arm 8 endpoint-misconfig failures (historical fact; extension cancelled, §4) |
 | 7 case studies | ✅ 3/3 | `fig7_cases/*/case_summary.json` | End-to-end cases complete in minutes-to-hour and land near anchors on score-chain metrics; Case B is **not** a superiority claim (E2) |
 
-### 3.2 Tier 2 — calibrated-agent campaign (E1–E6): verdicts
+### 3.2 Tier 2 — calibrated-agent campaign (E1–E8): verdicts
 
 | Exp | Question | Verdict | Verdict / report files |
 |-----|----------|---------|------------------------|
@@ -125,6 +125,8 @@ per figure:
 | E4 | Does cross-campaign memory improve efficiency or design quality? | **NO-GO** (full matrix): budget saving 74.2% (814 vs 3153 evals) but all 3 learning slopes positive (t p = 0.91) and 4/4 quality metrics NS; memory strategy abandoned | `e4_pilot_summary.json`, `e4_full_summary.json` |
 | E5 | Gated constraint navigation (selection layer) | **S0 GO** (τ = 1.0, 3 LLM calls); **S1 NO-GO** (3/5 cells failed: A1AT R3, Insulin D1, GFP D2; EPO/IL-2 single-target GO); every failure structural in the generation-method layer | `e5_verdict_s0.json`, `e5_verdict_s1.json` (per-target overwrite semantics — see fact sheet), report `E5_REPORT_2026-08-09.md` |
 | E6 | Generation-layer navigation (GenNav) | **S0/S1/S2 GO**. S2 primary endpoint: per-profile JCD-pass McNemar C vs A (n = 54) **p = 1.86e-09, discordant 30:0**, c_e2e_gene = 1.0. Secondary endpoint **failed and disclosed** (Wilcoxon p = 1.65e-07 passes; quality bundle fails, driven by HER2 `feasible_gears = []` degrade) | `e6_s2_verdict_aggregated.json` (S2; do not cite per-stage verdict files), closeout `HANDOFF_2026-08-10_E6_CLOSED_S2_GO.md` |
+| E7 | mRNA-side oracle profiling (GEMORNA 5′UTR MRL on measured-MRL anchors, Sample et al. GSE114002) | **GO** (2026-08-11): all three families pass both E1-identical gates — screening AUROC **0.990 / 1.000 / 1.000**, ranking ρ **0.926 / 0.920 / 0.835** (706 anchors, zero LLM); 3′UTR stability predictor registered unprofiled → gated off | `e7_mrna_oracle_profile_summary.json`, `e7_gate_demo.jsonl`; anchor set `data/benchmarks/external_anchors/utr_mrl/e7_mrl_anchor_set.json` |
+| E8 | Aptamer-side GenNav (ODesign length/seed gears; budget-matched 48-cap arms) | **Primary endpoint NOT met** (2026-08-11): McNemar **b=3/c=1, p = 0.625** (n = 30); C repairs all three rule-arm failures it meets (BSA compact; VEGF / SARS-CoV-2 N extended), one self-shortfall (MBP compact 4/5); C e2e 9/10 vs A 7/10 at mean 36 vs 48 raw spend; task largely saturates → registered as a scope finding (DECISIONS.md Part 2 row 9), not an advantage claim | `e8_verdict_s2.json`, `e8_runs_s2.jsonl`, audit `e8_audit/` |
 
 Pivot pilots P0–P3 and the junction line (P1, P1 v2, junction-integrated
 optimizer, ddG Phase-0 pilot) are summarized with exact numbers in
@@ -134,9 +136,12 @@ optimizer, ddG Phase-0 pilot) are summarized with exact numbers in
 `junction_ddg_pilot_summary.json`, `p2_aptamer_calibration_summary.json`,
 `p3_guided_vs_unguided_summary.json`.
 
-Failure taxonomy across all campaigns: `failure_taxonomy.json` (35 final
+Failure taxonomy across all campaigns: `failure_taxonomy.json` (35 legacy final
 failures, all deterministic boundaries or explicit governance/misconfig
-outcomes). Model/API provenance: `MODEL_API_USAGE.md` (sole external LLM in all
+outcomes; 2026-08-11 note: the two LinearDesign-OOM targets have been replaced
+in the benchmark panel by OTC/PDGFB, and the one legacy advisory abort completes
+on rerun under current governance — the taxonomy file is kept as the historical
+record). Model/API provenance: `MODEL_API_USAGE.md` (sole external LLM in all
 results: DeepSeek `deepseek-v4-pro`).
 
 ---

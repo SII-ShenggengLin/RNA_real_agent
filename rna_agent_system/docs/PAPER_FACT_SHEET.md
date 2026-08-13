@@ -23,24 +23,29 @@
 
 ## 2. Legacy Figure 2–7 campaign (final state)
 
-### Fig 2 — platform coverage & biological output quality
+### Fig 2 — platform coverage & biological output quality (updated 2026-08-11)
 - **Purpose**: one-shot success and output quality of all 11 workflows on the 210-task benchmark.
 - **Design**: 210 tasks across 11 workflows (per-workflow task counts in `coverage`), single run each.
-- **Pre-registered gate**: none in file (descriptive campaign summary).
-- **Exact numbers** (`fig2_summary.json`):
-  - `total.n_tasks` = 210, `total.n_success` = **209** (single failure: `04_sirna_design_009_gc_rich_target`, a correct QualityAgent abort; `coverage.sirna_design` 21/22).
-  - Fig2a CDS nulls (`fig2a_cds_nulls`): n = 20 WT / 200 random-synonymous / 18 designed (cai_only).
-    CAI medians: designed **0.7438259565799159**, WT **0.7298119169834983**, random **0.6738305833879931**.
-    WT vs random: Mann-Whitney **p = 5.579505478183843e-07**, Cliff's δ = 0.6795; paired WT-beats-random 15/20.
-    MFE/nt medians: WT −0.05066, random −0.04740, designed −0.35573 (WT vs random p = 0.2812, NS).
+- **2026-08-11 refresh** (paper v2): (a) the one legacy failure (`04_sirna_design_009_gc_rich_target`, a 2026-07 QualityAgent abort under pre-governance-fix rules) was rerun 2026-08-11 and **succeeded in 91.4 s** — under the 2026-08-10 governance an LLM abort is advisory-only and cannot fail a run; (b) the two oversized fig2a targets (Zika_E_protein 3419 aa, Factor_VIII 2351 aa, both beyond the LinearDesign memory guard) were **replaced by OTC (354 aa, UniProt P00480, RefSeq NM_000531.6) and PDGFB (241 aa, P01127, NM_002608.4)**, translation-verified by `experiments/swap_fig2a_targets.py`; their fig2_cds_nulls records were pruned and the two new targets run through `make_cds_nulls.py`; (c) the small-molecule panel was rerun after the RNAsmol v0.3.0 preprocessing-fidelity fix (see below).
+- **Exact numbers** (`fig2_summary.json`, regenerated 2026-08-11):
+  - `total.n_tasks` = 210, `total.n_success` = **210** (`coverage.sirna_design` 22/22).
+  - Fig2a CDS nulls (`fig2a_cds_nulls`): n = 20 WT / 200 random-synonymous / **20 designed** (cai_only).
+    CAI medians: designed **0.7454304750202037**, WT **0.7285905932693981**, random **0.6723169743681472**.
+    WT vs random: Mann-Whitney **p = 4.023013793756525e-07**, Cliff's δ = 0.688; paired WT-beats-random 15/20.
+    MFE/nt medians: WT −0.05066, random −0.04728, designed −0.35573 (WT vs random p = 0.2304, NS).
   - Fig2e secondary-structure inverse folding (`fig2e_secondary_design`): **exact_match 22/25** (rate 0.88, median distance 0).
   - Fig2f tertiary design: n = 20, median pLDDT component 0.704.
-  - Fig2c siRNA: n = 21, median off-target 0.0, zero-off-target 20/21.
+  - Fig2c siRNA: n = 22, median off-target 0.0, zero-off-target 21/22, `quality_abort_cases` = [].
   - Fig2i IRES (`fig2i_ires`): n_pos = 3, n_neg = 49; **AUROC 0.762**, 95% CI [0.429, 0.98]; positives EMCV 0.8081 / HCV 0.4425 / Poliovirus 0.9356.
-  - Fig2h small molecule (`fig2h_small_molecule`): 4 binders / 4 near-cognate / 9 random-chem; **AUROC vs random-chem = 0.5**, vs near-cognate = 0.312 (file note: out-of-training-distribution tool boundary).
-- **Verdict**: n/a (descriptive). **Conclusion**: platform runs 209/210; designed CDSs lift CAI over WT (0.744 vs 0.730) while WT itself is already above random (p = 5.6e-7); IRES finder is moderately discriminative, small-molecule scoring is at chance on short aptamers.
+  - Fig2h small molecule (`fig2h_small_molecule`, rerun 2026-08-11 with RNAsmol v0.3.0): 4 binders / 4 near-cognate / 9 random-chem; **AUROC vs random-chem = 0.722**, vs near-cognate = 0.312 (workflow-level mean of RNAsmol + GerNA-Bind; out-of-training-distribution boundary stands — near-cognate discrimination absent).
+- **Verdict**: n/a (descriptive). **Conclusion**: platform runs 210/210; designed CDSs lift CAI over WT (0.745 vs 0.729) while WT itself is already above random (p = 4.0e-7); IRES finder is moderately discriminative; small-molecule scoring is profiled two-sided (below).
 
-**Claim check (Fig 2)**: 209/210 ✓; CAI 0.744/0.730/0.674 ✓ (exact: 0.74383/0.72981/0.67383); WT>random p = 5.6e-7 ✓ (exact 5.5795e-07); 22/25 ✓; IRES AUROC 0.762 ✓; small-molecule AUROC 0.5 ✓ — **all VERIFIED**.
+### Fig 2d addendum — RNAsmol two-sided boundary panel (`rnasmol_boundary_panel.json`, 2026-08-11; driver `experiments/run_rnasmol_boundary_panel.py`)
+- **Purpose**: profile the *deployed* small-molecule oracle from both sides — its own training distribution and the out-of-distribution (OOD) short-aptamer panel.
+- **Deployment-fidelity finding**: pre-fix, the v0.2.0 service (uppercased RNA vocab; corrected full adjacency) scored AUROC **0.7864** (robin test) / **0.4103** (pdb test) on RNAsmol's own held-out splits; the upstream-official pipeline (`preprocessing.py` + `test.py`, same checkpoints) scores **0.9744 / 0.9828**. After the v0.3.0 verbatim-faithful preprocessing port, the service reproduces the official numbers **exactly** (0.9744/0.9828).
+- **In-distribution**: robin_molperturbation test n = 1492, AUROC **0.9744** (95% CI 0.9678–0.9804); pdb_molperturbation test n = 170, AUROC **0.9828** (0.9615–0.9971; ≤500-nt subset 0.9788, n = 126; 44 rows truncated service-side at 500 nt). Decoy case studies: FMN_ribocil true binder rank **2/1601** (0.125 pct), MALAT1_furamidine rank **7/265** (2.6 pct).
+- **Out-of-distribution** (fig2h 17 pairs, RNAsmol-only rescoring): binder-vs-random-chem AUROC **0.7222** (CI 0.278–1.0), binder-vs-near-cognate **0.5625** (CI 0.063–1.0) — both CIs include chance; guanine-riboswitch direction inverted (binder 0.27 < near-cognate adenine 0.98).
+- **Verdict**: GO (in-distribution AUROCs > 0.8 gate with CIs excluding 0.5; decoys in top 5%; OOD chance-consistent) — the two-sided boundary statement the paper reports.
 
 ### Fig 3 — Type-I BMC (full-length mRNA) ablation
 - **Purpose**: does BMC coordination (×1/×2/×3) beat Serial on the full-length mRNA workflow?
@@ -233,6 +238,47 @@
 
 **Claim check**: S0/S2 GO ✓ (verdict files); **S1 GO — VERIFIED-WITH-NUANCE**: the on-disk `e6_verdict_s1.json` is a per-target-overwrite *intermediate* state (last cell IL-2, `go_no_go` = "NO-GO", directional_C_ge_A_4of5 = false on a single cell); both 2026-08-10 handoffs state the file uses E5-style overwrite semantics and the final S1 adjudication (on the last 5 run records) was GO with all six v8 criteria — do not cite `e6_verdict_s1.json` as the S1 verdict. McNemar p = 1.86e-09, 30:0, n = 54 ✓; c_e2e_gene = 1.0 ✓; secondary failed & disclosed (Wilcoxon p = 1.65e-07 passes, quality fails, HER2 feasible_gears = [] degrade) ✓; LLM 43, mean 2.4/gene ✓ (spot-check: run records contain 43 C-arm calls; a naive regex over the JSONL double-counts nested copies as 86) — **VERIFIED**.
 
+### E7 — mRNA-side oracle capability profiling (`e7_mrna_oracle_profile_summary.json`, 2026-08-11)
+- **Purpose**: extend capability profiling to the full-length mRNA workflow's oracles — the positive-control counterpart to E1 (profiling must be able to *certify* power, not only revoke it).
+- **Design**: oracle = GEMORNA 5′UTR MRL (port 8004); 706 assertion-curated anchors with measured MRL from Sample et al. 2019 (GEO GSE114002; GSM3130435 random 50-nt EGFP library + GSM4084997 varying-length 25–100 nt library, split by its `set` column into random / human-endogenous families; generator `experiments/curate_e7_mrl_anchor_set.py`, anchor set `data/benchmarks/external_anchors/utr_mrl/e7_mrl_anchor_set.json`). Per family: 60 high-MRL + 60 low-MRL tier anchors (screening), 120 rank-stratified anchors (ranking). Gates identical to E1: screening AUROC > 0.8 (10,000-fold bootstrap CI, seed 0); ranking Spearman ρ ≥ 0.6.
+- **Exact numbers**: `sample2019_egfp_random50` (in-training-distribution) AUROC **0.9903** [0.9753–1.0], ρ = **0.9256** → verified/verified; `sample2019_varying_length_random` AUROC **1.0000**, ρ = **0.9201** → verified/verified; `sample2019_varying_length_human` AUROC **1.0000**, ρ = **0.8353** → verified/verified. 706/706 service calls succeeded. S0 sanity: high-tier mean predicted MRL 6.34 vs low-tier 2.48.
+- **Gate demonstration** (`e7_gate_demo.jsonl`): ranking by `gemorna_5utr_mrl` on a verified family → **allow**; on a never-profiled family of the same oracle → **downgrade** (the SelfModel transfers same-(oracle, task) grades across families with decayed confidence — designed behavior, recorded with `expectation_met: false` against the naive `require_profiling` expectation); ranking by `gemorna_3utr_stability` (no measured anchor set exists — unprofiled by design) → **require_profiling**; an absolute-scope expression claim → ClaimGate downgrade to `within_target_relative`.
+- **Verdict: GO** (`go: true` — all three families pass both gates).
+- **Conclusion**: the MRL oracle has verified screening/ranking power on human-assay 5′UTRs; the 3′UTR stability predictor stays unprofiled and gated off. The capability map is now two-sided across the platform's flagship task families.
+
+**Claim check**: numbers as reported by the E7 driver run of 2026-08-11 against `e7_mrna_oracle_profile_summary.json` / `e7_gate_demo.jsonl` — **VERIFIED**.
+
+### E8 — aptamer-side GenNav (GenNav-Apt) (`e8_verdict_s2.json`, 2026-08-11; driver `experiments/run_e8_gennav_aptamer.py`)
+- **Purpose**: test GenNav's generality on the second flagship task family — RNA aptamer design with the ODesign structure-guided generator (length/seed/sample-count gears instead of LinearDesign λ), under the E1-imposed constraint that no structure oracle may rank candidates.
+- **Design**: arms A (rule grid: lengths {30,50,80} × seeds {42,123} × 8 samples = 48 raw) vs C (gated navigation: 6-gear probe at n=2 (12 raw) + ≤ 4 request_generate rounds, same 48-raw cap; ≤ 9 LLM calls/target; DeepSeek temp 0.0). Delivery 5/profile, 3 length-banded profiles (compact 25–39, standard 40–60, extended 61–85 nt); matrix: GC ∈ [0.35,0.70], homopolymer < 6 nt, LinearFold stem ≤ 12 bp; batch diversity D1 ≥ 0.15 normalized Levenshtein. Primary endpoint: paired exact McNemar on per-profile JCD, n = 30 pairs (10 targets), p < 0.05 ∧ C-e2e ≥ 0.8. S0 = Thrombin mechanism gate; S1 = 3 targets (rerun once after the 2026-08-11 amendments ①–⑤: request cap 2→4, band-gap navigation context, delivery 5/profile confirmation, precise degrade reasons); S2 = 10 targets.
+- **Notable fix en route**: SARS-CoV-2_Nucleocapsid's `known_hotspot_residues` (A/44–48) fall outside the 6m3m chain-A numbering (49–174) → deterministic zero-output from ODesign; the driver now assertion-checks JSON hotspots against structure numbering and falls back to auto-identify (fig4-consistent).
+- **Exact numbers (S2)**: McNemar **b = 3, c = 1, p = 0.625** → primary endpoint **NOT met** (NO-GO on the pre-registered gate). Discordants: BSA compact (A✗/C✓), VEGF extended (A✗/C✓), SARS-CoV-2_Nucleocapsid extended (A✗/C✓), MBP compact (A✓/C✗ — C fell one D1-deliverable short, 4/5, after the LLM prioritized other bands with its 4 rounds). Gene-level e2e: **C 9/10 vs A 7/10**. 26/30 pairs concordant-pass (task largely saturates). C delivered-candidate matrix-pass rate 1.0; LLM 4–6 calls/target (S2 total 46, mean 4.6); request_generate ≤ 4; C raw spend mean ≈ 36 vs A 48; **zero budget violations**; DecisionGate demos 10/10 `reject` on oracle-ranking. Campaign LLM total: 76 calls (S0 4, S1 12 + 14 rerun, S2 46).
+- **Verdict: NO-GO on the primary endpoint; reported as a scope finding** — navigation transfers mechanically and repairs every rule-arm failure it meets, but the aptamer matrix mostly saturates, so the advantage is not decisive (same saturation logic as E5's S2 recommendation).
+- **Conclusion**: GenNav's value regime is confirmed two-sided in mechanism (probe → allocate → deliver-or-degrade, gates enforced) with the statistical decisiveness currently carried by the mRNA task, whose codon-objective trade-offs make delivery structurally hard.
+
+**Claim check**: b=3/c=1/p=0.625, e2e 9/10 vs 7/10, mean raw 36 vs 48, LLM 46 at S2 / 76 total, 10/10 gate demos ✓ — **VERIFIED** against `e8_verdict_s2.json` and `e8_runs_s2.jsonl` (2026-08-11).
+
+### E9 — aptamer GenNav re-anchored (scarcity matrix) (`e9_verdict_s2.json`, 2026-08-12; driver `experiments/run_e9_gennav_aptamer.py`)
+- **Purpose**: probe whether the E8 aptamer boundary is budget rather than mechanism — re-anchor the constraint matrix so delivery becomes length-gear-scarce (per-profile stem caps: compact 25–34 nt/stem≤8, standard 40–55 nt/stem≤10, extended 61–80 nt/stem≤12, relax v1; nine-length lattice {25,30,35,40,50,60,65,70,80}).
+- **Exact numbers (S2, 10 targets)**: McNemar **b = 6, c = 8, p = 0.79** → primary endpoint **NOT met**. Rule-arm failures rose 3/30 (E8) → 11/30 (E9) (scarcity structure works); navigator repaired 6/11 but conceded 8 cells (c = 8): LLM reinforcement decision noise (probe n2 → gear choice) + all-bands-scarce targets (N, BSA, TNF-α) starving the standard band.
+- **Conclusion**: boundary localized to probe-vs-reinforcement budget structure within the fixed 48-raw cap; the re-anchored matrix is a reusable construct (per-profile gear-scarce delivery).
+
+**Claim check**: b=6/c=8/p=0.79, rule-arm failures 11/30 ✓ — **VERIFIED** against `e9_verdict_s2.json` (2026-08-12).
+
+### E10 — aptamer GenNav mechanized allocation (`e10_verdict_s2.json`, 2026-08-12; driver `experiments/run_e10_gennav_aptamer.py`)
+- **Purpose**: mechanize the reinforcement decision (deterministic gap-weighted allocator with laplace-smoothed probe pass rates proposes gears; LLM arbitrates only) + two-stage probe (18 raw probe + ≤ 8 raw probe2) + 12-target panel (10 fixed + CAII/Pepsin via pre-registered A-fail-density rule, five-target S1 probe: frac 0.6 ≥ 0.3).
+- **Exact numbers (S2, 12 targets)**: McNemar **b = 9, c = 4, p = 0.267** → primary endpoint **NOT met** (mechanism block all-pass: zero budget violations, gate demos forbidden). c = 4 all single-band starvations (BSA extended, MBP compact, N standard, Thrombin standard): bands with sub-20% pass rates need 2+ reinforcement rounds, unreachable in 3 rounds under the 48-raw cap. Min-round variants simulated worse (b = 7–9, c = 5–6) — E10's band-priority 3 rounds is the Pareto front at 48 raw. C e2e 0.50 vs A 0.33.
+- **Conclusion**: mechanized allocation works as simulated (b 6→9, c 8→4, P 0.79→0.27); the aptamer boundary is budget structure, not mechanism.
+
+**Claim check**: b=9/c=4/p=0.267, c-cell list, C e2e 0.50 vs A 0.33 ✓ — **VERIFIED** against `e10_verdict_s2.json` and `e10_runs_s2.jsonl` (2026-08-12).
+
+### E11 — escape-route closure simulation (cap 64 / panel expansion) (`experiments/analysis/e11_feasibility_sim.py`, 2026-08-13; pre-registration gate, real E10 S2 cache, no services)
+- **Purpose**: close the two escape routes the E10 boundary left open — symmetric budget rescale (48→64) and panel expansion — before any re-preregistration.
+- **Exact numbers**: symmetric cap-64 grid (5 A-arm lattices × 3 C protocols): rule-arm failing cells 14 → **5–8** under any symmetric lattice extension; navigator discordant repairs **b = 9 → 2–7**, conceded cells **c = 3–4**, **P ≥ 0.34** across all variants (floor-round and degrade-aware protocols do not rescue it — A-arm strengthening is the binding constraint). Asymmetric A-48/C-64 alone reaches b = 9/c = 1/p = 0.0215 but changes the comparison basis (C +33% budget) — rejected against the budget-matching iron rule (user decision 2026-08-13). Panel route: benchmark = 20 targets (19 usable, ferritin zero-output excluded); full-panel paired McNemar **≈ 0.11–0.13** (the "20-target P ≈ 0.07" estimate in the 2026-08-13 handoff was a one-sided value; two-sided ≈ 0.13).
+- **Conclusion**: both escape routes closed by simulation/statistics — the aptamer boundary is structural (navigator advantage peaks at 48 raw, shrinks as the static grid grows).
+
+**Claim check**: grid b/c/P values ✓ — **VERIFIED** by re-running `experiments/analysis/e11_feasibility_sim.py` (deterministic, real cache; 2026-08-13).
+
 ---
 
 ## 5. Failure taxonomy and API cost
@@ -252,11 +298,11 @@
 
 ## 6. Top-20 key numbers the paper can cite directly
 
-1. Platform coverage: **209/210** benchmark tasks succeed across **11 workflows, 54 tools, 22 local microservices (ports 8003–8024)** (`fig2_summary.json` total; TOOLS.md §1).
-2. Designed CDS CAI median **0.7438** vs WT **0.7298** vs random-synonymous **0.6738** (n = 18/20/200); WT > random p = **5.58e-07**, δ = 0.6795 (`fig2_summary.json` fig2a_cds_nulls).
+1. Platform coverage: **210/210** benchmark tasks succeed across **11 workflows, 54 tools, 22 local microservices (ports 8003–8024)** (`fig2_summary.json` total, refreshed 2026-08-11; TOOLS.md §1).
+2. Designed CDS CAI median **0.7454** vs WT **0.7286** vs random-synonymous **0.6723** (n = 20/20/200; OTC/PDGFB replaced the two oversized targets 2026-08-11); WT > random p = **4.02e-07**, δ = 0.688 (`fig2_summary.json` fig2a_cds_nulls).
 3. Secondary-structure inverse folding exact match **22/25 (0.88)** (`fig2_summary.json` fig2e).
 4. IRES AUROC **0.762** (95% CI [0.429, 0.98], 3 pos / 49 neg) (`fig2_summary.json` fig2i).
-5. Small-molecule scoring AUROC **0.5** vs random chem — tool boundary, reported as such (`fig2_summary.json` fig2h).
+5. Small-molecule oracle, two-sided profile (2026-08-11, `rnasmol_boundary_panel.json`): in-distribution test AUROC **0.9744** (robin) / **0.9828** (pdb) — exact official-pipeline parity after the RNAsmol v0.3.0 preprocessing-fidelity fix — decoy true-ligand ranks **2/1601** and **7/265**; out-of-distribution short-aptamer panel has no demonstrated power (workflow-level AUROC vs near-cognate **0.312**; RNAsmol-only 0.722/0.563, CIs include chance).
 6. Fig-3 Type-I: bmc_x1 vs serial fixed-reference ASF **p = 0.8124, NS** (n = 20 targets, 240/240 jobs) (`fig3_summary.json`).
 7. Fig-3 burial: serial buries AUG/Kozak in **38/60 runs (0.633)**; bmc_x1 clears **4/18** serial-buried targets (`fig3_summary.json` burial).
 8. Fig-4 Type-II ungated effect: egarps component **p = 2.10e-04, δ = +0.457** (n = 19); 3-D hypervolume **p = 2.61e-04** (n = 57) (`fig4_summary.json`).
@@ -284,4 +330,4 @@
 5. **P1 file internal inconsistency** → `j1_mfe_per_nt_vs_bmc1_wins` structured field = "13/18" while `go_no_go.evidence` text says "16/18"; quote the structured field (13/18).
 6. **E1 v2 "best screening 0.8"** → rhofold×PDGF-BB AUROC is exactly 0.8 and the gate is strict `> 0.8`; phrase as "best cell reached AUROC 0.8 (95% CI 0.33–1.0), still not passing".
 7. **Fig-7A anchor nuance** → the designed candidate and BNT162b2 are *both* AUG/Kozak-buried under the fragment-fold metric; do not imply the designed candidate is junction-clean.
-8. **Fig-2 "designed CDS CAI 0.744"** → the designed arm n = 18 (not 20); two of the 20 WT proteins (Zika, Factor VIII) hit the LinearDesign OOM boundary (`failure_taxonomy.json` fig2_cds_nulls_boundary).
+8. **RESOLVED 2026-08-11 — Fig-2 designed arm n = 18** → the two oversized WT proteins (Zika polyprotein 3419 aa, Factor VIII 2351 aa) were replaced by OTC (354 aa) and PDGFB (241 aa); the designed arm is now n = 20, median CAI 0.7454 (see §2 Fig 2 refresh). E4's historical target list keeps the two old targets (its concluded results reference them); `tests/test_e4_pilot.py::test_full_targets_match_benchmark_dir` codifies the swap.

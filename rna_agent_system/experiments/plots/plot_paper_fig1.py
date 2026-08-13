@@ -6,7 +6,9 @@ Pure matplotlib-patches schematic, no data dependencies.
 Layout (180 mm wide canvas):
   a  Seven-layer stack (L0 tools .. L6 entry), left ~2/3 of the canvas.
   b  Tool-first data flow with the two deterministic gates, top right.
-  c  Bounded multi-module coordination loop, bottom right.
+     (Bottom right: the bounded coordination loop, shown de-emphasized as
+     auditable budget allocation — paper v2 no longer presents BMC as a
+     strategy, so it carries no panel letter; v2 legend has only a/b.)
 
 Content follows docs/ARCHITECTURE.md, docs/PAPER_DRAFT.md (Results §1) and
 AGENTS.md. All counts verified in docs/PAPER_FACT_SHEET.md:
@@ -134,7 +136,7 @@ for label, h, title, body, color in layers:
         agents = [
             "PipelineAgent — deterministic scheduling",
             "SpecialistAgent — per-workflow strategy / retry",
-            "CoordinatorAgent — bounded coordination (BMC)",
+            "CoordinatorAgent — bounded coordination loop",
             "QualityAgent — advisory review only",
             "SynthesisAgent — multi-node synthesis",
         ]
@@ -214,11 +216,13 @@ text(ax, BX_C, rep_y - 2.8,
      "comes from a validated generator",
      size=6.4, weight="bold", color=PALETTE["red"], style="italic")
 
-# ============================================================== Panel c ====
+# ====================================================== Coordination loop ===
+# De-emphasized (paper v2): no panel letter, muted title — the loop is retained
+# as auditable budget allocation, not presented as a strategy.
 CX_L, CX_R = 65.5, 99.5
 CX_C = (CX_L + CX_R) / 2
-text(ax, CX_C, 46.5, "Bounded multi-module coordination", size=8.5,
-     weight="bold")
+text(ax, CX_C, 46.5, "Bounded coordination loop\n(auditable budget allocation)",
+     size=7.5, weight="bold", color="#555555")
 
 cnodes = [
     ("1 · Independent module generation", PALETTE["blue"]),
@@ -256,7 +260,7 @@ text(ax, CX_C, bnd_y - 3.8,
      size=6.2, color="#333333")
 
 # ---------------------------------------------------------- panel letters --
-for letter, (lx, ly) in zip("abc", [(0.5, 117.0), (64.5, 117.0), (64.5, 49.0)]):
+for letter, (lx, ly) in zip("ab", [(0.5, 117.0), (64.5, 117.0)]):
     text(ax, lx, ly, letter, size=11, weight="bold", ha="left", va="top")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)

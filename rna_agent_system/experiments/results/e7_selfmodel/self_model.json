@@ -1,0 +1,164 @@
+{
+ "schema_version": "calibrated_v1",
+ "records": [
+  {
+   "oracle": "gemorna_5utr_mrl",
+   "task_type": "full_length_mrna",
+   "target_family": "sample2019_egfp_random50",
+   "capabilities": {
+    "screening": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 0.9902777777777778,
+      "auroc_ci_lo": 0.9752777777777778,
+      "auroc_ci_hi": 1.0
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e7_mrl_scoring.jsonl",
+       "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+       "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+      }
+     ],
+     "profiled_at": "2026-08-11",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    },
+    "ranking": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "spearman_rho": 0.9255753230189917
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e7_mrl_scoring.jsonl",
+       "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+       "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+      }
+     ],
+     "profiled_at": "2026-08-11",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  },
+  {
+   "oracle": "gemorna_5utr_mrl",
+   "task_type": "full_length_mrna",
+   "target_family": "sample2019_varying_length_human",
+   "capabilities": {
+    "screening": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 1.0,
+      "auroc_ci_lo": 1.0,
+      "auroc_ci_hi": 1.0
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e7_mrl_scoring.jsonl",
+       "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+       "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+      }
+     ],
+     "profiled_at": "2026-08-11",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    },
+    "ranking": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "spearman_rho": 0.8353024154620525
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e7_mrl_scoring.jsonl",
+       "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+       "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+      }
+     ],
+     "profiled_at": "2026-08-11",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  },
+  {
+   "oracle": "gemorna_5utr_mrl",
+   "task_type": "full_length_mrna",
+   "target_family": "sample2019_varying_length_random",
+   "capabilities": {
+    "screening": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 1.0,
+      "auroc_ci_lo": 1.0,
+      "auroc_ci_hi": 1.0
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e7_mrl_scoring.jsonl",
+       "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+       "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+      }
+     ],
+     "profiled_at": "2026-08-11",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    },
+    "ranking": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "spearman_rho": 0.9201084939719412
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e7_mrl_scoring.jsonl",
+       "note": "E7 raw gemorna_5utr_mrl oracle responses per anchor (706 entries, 3 families)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e7_mrna_oracle_profile_summary.json",
+       "note": "E7 profiling verdict summary (gates identical to E1: AUROC>0.8, rho>=0.6)"
+      }
+     ],
+     "profiled_at": "2026-08-11",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  }
+ ]
+}

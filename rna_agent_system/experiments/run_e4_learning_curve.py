@@ -198,7 +198,10 @@ TARGETS_DIR = PROJECT_ROOT / "data" / "benchmarks" / "RNA-BioBench-FullLength-mR
 DEFAULT_OUTPUT = PROJECT_ROOT / "experiments" / "results" / "e4_full_runs.jsonl"
 CASE_MEMORY_ROOT = PROJECT_ROOT / "workspace" / "e4_full" / "case_memory"
 
-# Pre-registered full matrix (all 20 benchmark targets, see docstring).
+# Pre-registered full matrix (all 20 benchmark targets at campaign time, see docstring).
+# NOTE (2026-08-11): this is E4's historical target list — its concluded results
+# reference Zika_E_protein / Factor_VIII cells. The benchmark directory has since
+# swapped those two oversized targets for OTC / PDGFB; do not "sync" this list.
 FULL_TARGETS = [
     "A1AT", "Albumin", "Beta_galactosidase", "EPO", "Factor_VIII", "GFP",
     "Growth_hormone", "HER2", "HIV-1_Env_gp120", "HPV16_L1", "IFN_alpha_2a",

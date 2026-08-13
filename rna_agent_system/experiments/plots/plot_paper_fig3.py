@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
-"""Paper Fig 3 — Oracle capability profiling (E1 v2 + P2 calibration).
+"""Paper Fig 3 — Oracle capability profiling, two-sided (E1 v2 + P2 + E7).
 
-Panels:
+Panels (paper v2, 2026-08-11):
   a  Screening heatmap: 3 oracles x 6 targets AUROC (centered at 0.5 = chance).
   b  Ranking: Spearman rho per oracle x target vs pre-registered rho >= 0.6 gate.
-  c  Docking: native-pose rank for 5 RNA-protein complexes (rank 1 = best, inverted y).
-  d  P2 calibration: thrombin 4-point Kd series + binder-vs-negative score strips.
+  c  Aptamer chain, continued: docking native-pose ranks (0/5 top-1) + P2
+     thrombin 4-point Kd calibration (rho = 0.40) + binder-vs-negative strips
+     (AUROC = 0.356).
+  d  mRNA chain (E7): GEMORNA 5'UTR MRL oracle passes both gates on all three
+     measured-MRL anchor families (n = 706 anchors); the 3'UTR stability
+     predictor is registered unprofiled and gated off (hatched cells).
+     Message: revocation on the aptamer chain, certification on the mRNA chain.
 
 Data (read directly, nothing recomputed beyond reshaping):
   experiments/results/e1_capability_summary_v2.json
   experiments/results/p2_aptamer_calibration_summary.json
   experiments/results/p2_aptamer_calibration.jsonl
+  experiments/results/e7_mrna_oracle_profile_summary.json
 
 Output: experiments/plots/paper/fig3.png  (300 dpi)
 """
@@ -97,11 +103,24 @@ binders = [r["raw"]["egarps_native_probability"] for r in p2_rows if r["role"] =
 negatives = [r["raw"]["egarps_native_probability"] for r in p2_rows if r["role"] == "negative"]
 p2_auroc = p2s["binder_vs_negative"]["auroc"]
 
+# E7 mRNA-side oracle profile (GEMORNA 5'UTR MRL on measured-MRL anchors).
+e7 = json.load(open(RESULTS / "e7_mrna_oracle_profile_summary.json"))
+e7_fams = e7["per_family"]
+e7_order = ["sample2019_egfp_random50", "sample2019_varying_length_human",
+            "sample2019_varying_length_random"]
+e7_short = ["EGFP\nrandom-50", "human\nvary-length", "random\nvary-length"]
+e7_auroc = [e7_fams[f]["screening"]["auroc"] for f in e7_order]
+e7_rho = [e7_fams[f]["ranking"]["spearman_rho"] for f in e7_order]
+e7_n = sum(e7_fams[f]["n_scored"] for f in e7_order)
+assert e7_n == 706 and all(e7_fams[f]["screening"]["grade"] == "verified"
+                           and e7_fams[f]["ranking"]["grade"] == "verified"
+                           for f in e7_order)
+
 # ---------------------------------------------------------------- figure ----
-fig = plt.figure(figsize=(7.2, 7.0))
+fig = plt.figure(figsize=(7.2, 10.4))
 gs = gridspec.GridSpec(
-    2, 2, figure=fig, height_ratios=[1.0, 0.95], width_ratios=[1.0, 1.0],
-    hspace=0.58, wspace=0.40, left=0.125, right=0.98, top=0.90, bottom=0.10,
+    3, 2, figure=fig, height_ratios=[1.05, 0.72, 0.78], width_ratios=[1.0, 1.0],
+    hspace=0.40, wspace=0.40, left=0.125, right=0.98, top=0.95, bottom=0.075,
 )
 
 # ---- Panel a: screening AUROC heatmap -------------------------------------
@@ -163,84 +182,126 @@ axb.yaxis.grid(True, color="#EBEBEB", lw=0.6, zorder=0)
 axb.set_axisbelow(True)
 panel_label(axb, "b", dx=-0.20)
 
-# ---- Panel c: docking native-pose ranks ------------------------------------
-axc = fig.add_subplot(gs[1, 0])
+# ---- Panel c: docking + affinity calibration (aptamer chain) ----------------
+gsc = gridspec.GridSpecFromSubplotSpec(1, 3, subplot_spec=gs[1, :], wspace=0.50)
+
+axc1 = fig.add_subplot(gsc[0, 0])
 labels, ranks, totals = [], [], []
 for key, d in dock_cases:
-    labels.append(f"{LIGAND[key]}\n({PDB[key]})")
+    labels.append(LIGAND[key])
     ranks.append(d["native_rank"])
     totals.append(d["n_poses_scored"])
 xc = np.arange(len(labels))
 for xi, r, n in zip(xc, ranks, totals):
-    axc.plot([xi, xi], [1, r], color=GREY, lw=1.0, zorder=2)
-    axc.scatter([xi], [r], s=42, color=BLUE, zorder=3, edgecolor="white", linewidth=0.6)
-    axc.annotate(f"{r}/{n}", xy=(xi, r), xytext=(0, 6), textcoords="offset points",
-                 ha="center", fontsize=7, color="black")
-axc.axhline(1, color=GREEN, lw=0.9, ls="--", zorder=1)
-axc.text(0.1, 2.6, "native pose ranked top-1 (best)", fontsize=6.5, color=GREEN)
-axc.set_ylim(23, -2.0)  # inverted: rank 1 (best) at top
-axc.set_yticks([1, 5, 10, 15, 21])
-axc.set_ylabel("Native-pose rank among scored poses\n(rank 1 = best)")
-axc.set_xticks(xc)
-axc.set_xticklabels(labels, fontsize=6.5)
-axc.set_xlim(-0.55, len(labels) - 0.45)
-axc.set_title("Docking power: native-pose rank (EGARPS)", pad=24)
-axc.text(0.5, 1.075, "gate: native top-1 in ≥ 2/3 of cases  →  0/5 passed",
-         transform=axc.transAxes, ha="center", fontsize=7.5, color=RED)
-strip_spines(axc)
-panel_label(axc, "c", dx=-0.26, dy=1.13)
+    axc1.plot([xi, xi], [1, r], color=GREY, lw=0.9, zorder=2)
+    axc1.scatter([xi], [r], s=26, color=BLUE, zorder=3, edgecolor="white",
+                 linewidth=0.5)
+    axc1.annotate(f"{r}/{n}", xy=(xi, r), xytext=(0, 4),
+                  textcoords="offset points", ha="center", fontsize=5.6)
+axc1.axhline(1, color=GREEN, lw=0.9, ls="--", zorder=1)
+axc1.set_ylim(24, -3.0)  # inverted: rank 1 (best) at top
+axc1.set_yticks([1, 5, 10, 15, 21])
+axc1.set_ylabel("native-pose rank\n(rank 1 = best)", fontsize=6.5)
+axc1.set_xticks(xc)
+axc1.set_xticklabels(labels, fontsize=6, rotation=24, ha="right")
+axc1.set_xlim(-0.55, len(labels) - 0.45)
+axc1.set_title("docking: native-pose rank\n0/5 top-1 (gate ≥ 2/3) → fail",
+               pad=4, fontsize=7)
+strip_spines(axc1)
+axc1.tick_params(labelsize=6)
+panel_label(axc1, "c", dx=-0.24, dy=1.16)
 
-# ---- Panel d: P2 calibration (two sub-axes) --------------------------------
-gsd = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[1, 1], wspace=0.75)
-axd1 = fig.add_subplot(gsd[0, 0])
-axd1.scatter(thr_x, thr_y, s=34, color=BLUE, zorder=3, edgecolor="white", linewidth=0.6)
-short = {"hd22_thrombin": "HD22", "hd22_t27_thrombin": "HD22-T27",
-         "toggle25t_thrombin": "Tog-25t", "tba_thrombin": "TBA"}
-offsets = {"hd22_thrombin": (4, 4), "hd22_t27_thrombin": (5, -3),
-           "toggle25t_thrombin": (4, -8), "tba_thrombin": (4, 3)}
-for p, xi, yi in zip(thr_pts, thr_x, thr_y):
-    axd1.annotate(short[p["id"]], xy=(xi, yi), xytext=offsets[p["id"]],
-                  textcoords="offset points", fontsize=6, color=GREY)
-axd1.set_yscale("log")
-axd1.set_ylim(3e-4, 3)
-axd1.set_xlim(-1.85, 0.75)
-axd1.set_xlabel("−log$_{10}$ $K_d$ (nM), thrombin series", fontsize=7)
-axd1.set_ylabel("EGARPS native probability", fontsize=7)
-axd1.set_title("Thrombin 4-point $K_d$ series", pad=26, fontsize=7.5)
-axd1.text(0.5, 1.05, f"Spearman ρ = {thr_rho:.2f}\n(gate ≥ 0.6) → fail",
-          transform=axd1.transAxes, ha="center", va="bottom", fontsize=6.5,
-          color=RED, linespacing=1.3)
-strip_spines(axd1)
-axd1.yaxis.grid(True, color="#EBEBEB", lw=0.6, zorder=0)
-axd1.set_axisbelow(True)
-axd1.tick_params(labelsize=6.5)
+axc2 = fig.add_subplot(gsc[0, 1])
+axc2.scatter(thr_x, thr_y, s=24, color=BLUE, zorder=3, edgecolor="white",
+             linewidth=0.5)
+axc2.set_yscale("log")
+axc2.set_ylim(3e-4, 3)
+axc2.set_xlim(-1.85, 0.75)
+axc2.set_xlabel("−log$_{10}$ $K_d$ (nM), thrombin", fontsize=6.5)
+axc2.set_ylabel("EGARPS native prob.", fontsize=6.5)
+axc2.set_title(f"affinity calibration (thrombin)\nρ = {thr_rho:.2f} "
+               "(gate ≥ 0.6) → fail", pad=4, fontsize=7)
+strip_spines(axc2)
+axc2.yaxis.grid(True, color="#EBEBEB", lw=0.6, zorder=0)
+axc2.set_axisbelow(True)
+axc2.tick_params(labelsize=6)
 
-axd2 = fig.add_subplot(gsd[0, 1])
+axc3 = fig.add_subplot(gsc[0, 2])
 rng = np.random.default_rng(7)
 for xi, vals, col in [(0, binders, BLUE), (1, negatives, RED)]:
     jit = rng.uniform(-0.12, 0.12, len(vals))
-    axd2.scatter(np.full(len(vals), xi) + jit, vals, s=26, color=col, alpha=0.85,
-                 zorder=3, edgecolor="white", linewidth=0.5)
-axd2.set_yscale("log")
-axd2.set_ylim(8e-9, 6)
-axd2.set_xlim(-0.6, 3.5)
-axd2.set_xticks([0, 1])
-axd2.set_xticklabels(["binders (n=9)", "negatives (n=5)"], rotation=22, ha="right")
-axd2.set_ylabel("EGARPS native probability", fontsize=7)
-axd2.set_title("Binders vs negatives", pad=26, fontsize=7.5)
-axd2.text(0.30, 1.05, f"AUROC = {p2_auroc:.3f}\ndirectionally inverted",
-          transform=axd2.transAxes, ha="center", va="bottom", fontsize=6.5,
-          color=RED, linespacing=1.3)
-axd2.annotate("pegaptanib\n1.9×10$^{-6}$", xy=(0.06, 1.9145918e-06),
-              xytext=(-0.52, 2.0e-4), fontsize=6, ha="left", linespacing=1.2,
-              arrowprops=dict(arrowstyle="-", lw=0.6, color=GREY))
-axd2.annotate("scrambled TBA 0.99\nrandom 30-nt 0.95", xy=(1.02, 0.97),
-              xytext=(-0.5, 1.6), fontsize=6, ha="left", va="bottom",
-              linespacing=1.3,
-              arrowprops=dict(arrowstyle="-", lw=0.6, color=GREY))
+    axc3.scatter(np.full(len(vals), xi) + jit, vals, s=20, color=col,
+                 alpha=0.85, zorder=3, edgecolor="white", linewidth=0.4)
+axc3.set_yscale("log")
+axc3.set_ylim(8e-9, 6)
+axc3.set_xlim(-0.6, 1.6)
+axc3.set_xticks([0, 1])
+axc3.set_xticklabels([f"binders\n(n={len(binders)})",
+                      f"negatives\n(n={len(negatives)})"], fontsize=6)
+axc3.set_ylabel("EGARPS native prob.", fontsize=6.5)
+axc3.set_title(f"binders vs negatives\nAUROC = {p2_auroc:.3f} (inverted) → fail",
+               pad=4, fontsize=7)
+strip_spines(axc3)
+axc3.tick_params(labelsize=6)
+
+# ---- Panel d: E7 mRNA-side oracle profile ------------------------------------
+gsd = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[2, :], wspace=0.38)
+fam_labels = e7_short + ["3'UTR stab.\n(unprofiled)"]
+xd = np.arange(len(fam_labels))
+
+axd1 = fig.add_subplot(gsd[0, 0])
+axd1.bar(xd[:3], e7_auroc, width=0.62, color=GREEN, zorder=3)
+axd1.bar([xd[3]], [1.0], width=0.62, facecolor="white", edgecolor=GREY,
+         hatch="///", lw=0.7, zorder=3)
+axd1.text(xd[3], 0.44, "registered\nunprofiled\ngated off", ha="center",
+          fontsize=6, color=GREY, linespacing=1.3)
+for xi, v in zip(xd[:3], e7_auroc):
+    axd1.text(xi, v + 0.04, f"{v:.3f}", ha="center", fontsize=6.5,
+              color=GREEN, fontweight="bold")
+axd1.axhline(0.8, color=RED, lw=0.9, ls="--", zorder=2)
+axd1.text(3.45, 0.79, "gate > 0.8", fontsize=6, color=RED, ha="right",
+          va="top")
+axd1.set_xticks(xd)
+axd1.set_xticklabels(fam_labels, fontsize=6.5)
+axd1.set_xlim(-0.55, 3.55)
+axd1.set_ylim(0, 1.20)
+axd1.set_yticks([0, 0.5, 0.8, 1.0])
+axd1.set_ylabel("screening AUROC", fontsize=7)
+axd1.set_title("screening: 3/3 families verified", pad=4, fontsize=7)
+strip_spines(axd1)
+axd1.tick_params(labelsize=6.5)
+axd1.yaxis.grid(True, color="#EBEBEB", lw=0.6, zorder=0)
+axd1.set_axisbelow(True)
+panel_label(axd1, "d", dx=-0.16, dy=1.16)
+
+axd2 = fig.add_subplot(gsd[0, 1])
+axd2.bar(xd[:3], e7_rho, width=0.62, color=GREEN, zorder=3)
+axd2.bar([xd[3]], [1.0], width=0.62, facecolor="white", edgecolor=GREY,
+         hatch="///", lw=0.7, zorder=3)
+axd2.text(xd[3], 0.44, "registered\nunprofiled\ngated off", ha="center",
+          fontsize=6, color=GREY, linespacing=1.3)
+for xi, v in zip(xd[:3], e7_rho):
+    axd2.text(xi, v + 0.04, f"{v:.3f}", ha="center", fontsize=6.5,
+              color=GREEN, fontweight="bold")
+axd2.axhline(0.6, color=RED, lw=0.9, ls="--", zorder=2)
+axd2.text(3.45, 0.59, "gate ρ ≥ 0.6", fontsize=6, color=RED, ha="right",
+          va="top")
+axd2.set_xticks(xd)
+axd2.set_xticklabels(fam_labels, fontsize=6.5)
+axd2.set_xlim(-0.55, 3.55)
+axd2.set_ylim(0, 1.10)
+axd2.set_yticks([0, 0.3, 0.6, 0.9])
+axd2.set_ylabel("Spearman ρ (score vs measured MRL)", fontsize=7)
+axd2.set_title("ranking: 3/3 families verified", pad=4, fontsize=7)
 strip_spines(axd2)
 axd2.tick_params(labelsize=6.5)
-panel_label(axd1, "d", dx=-0.34, dy=1.10)
+axd2.yaxis.grid(True, color="#EBEBEB", lw=0.6, zorder=0)
+axd2.set_axisbelow(True)
+axd1.text(0.0, 1.26,
+          f"mRNA chain (E7): GEMORNA 5′UTR MRL oracle — certified, "
+          f"n = {e7_n} anchors",
+          transform=axd1.transAxes, fontsize=7.5, color=GREEN,
+          fontweight="bold", ha="left")
 
 fig.savefig(OUTDIR / "fig3.png")
 print("wrote", OUTDIR / "fig3.png")

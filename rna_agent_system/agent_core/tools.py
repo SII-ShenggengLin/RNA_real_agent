@@ -2858,7 +2858,7 @@ class RiboDiffusionInput(BaseModel):
     device: int = Field(default=0, ge=0, description="CUDA device index for the subprocess.")
 
 
-# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# RNAsmOL 接口冻结声明 (v0.3.0) —— 禁止单方面变更
 # 关联文件清单（修改时必须全部同步）：
 #   - microservices/rnasmol_service/main.py
 #   - agent_core/tools.py  ← 本文件
@@ -2870,7 +2870,7 @@ class RiboDiffusionInput(BaseModel):
 class RNAsmolScoreInput(BaseModel):
     """Input schema for RNAsmol RNA-ligand scoring.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
     - microservices/rnasmol_service/main.py :: ScoreRequest
     - agent_core/tool_specs.py :: score_rna_ligand_binding_with_rnasmol ToolSpec
     """
@@ -5080,7 +5080,7 @@ def score_rna_ligand_binding_with_rnasmol(
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the RNAsmol microservice.
 
-    INTERFACE LOCK (v0.2.0): The return dict keys below are the canonical interface.
+    INTERFACE LOCK (v0.3.0): The return dict keys below are the canonical interface.
     Any addition/removal must be synchronized with:
     - microservices/rnasmol_service/main.py :: ScoreResponse
     - agent_core/tool_specs.py :: RNAsmolScoreOutput

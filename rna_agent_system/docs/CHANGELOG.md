@@ -1,7 +1,7 @@
 # Change Log
 
 > **Scope**: locked interface changes and major workflow introductions.
-> **Last updated**: 2026-08-10
+> **Last updated**: 2026-08-13
 
 > **Layer-numbering note (2026-08-10)**: the architecture was renumbered from
 > five layers (L0–L5, including "Layer 2.5") to **seven layers (L0–L6)** —
@@ -9,6 +9,73 @@
 > multi-agent execution), old Layer 4 → L5 (session/workspace), old Layer 5 →
 > L6 (entry points). Entries dated before 2026-08-10 keep the numbering in
 > force at the time they were written.
+
+---
+
+## 2026-08-13 — Dual-generalization campaign close-out: E3-M GO, E9/E10 NO-GO, escape routes closed by simulation
+
+**Campaign conclusion (no interface lock changes).** The two core-innovation
+generalization claims now stand as follows:
+
+- **E3-M (mRNA-side calibrated-agency) — GO**: gated-vs-ungated audit on real
+  full-length mRNA design-reporting tasks (20 tasks; 10 trusted-deterministic +
+  10 untrusted-oracle) — FP 38.9% (7/18) → 8.3% (1/12), true-positive retention
+  100%, gated overreach 0. Together with E3 (57.9% → 0%) the "both flagship
+  task families" gating claim has double support. Artifacts:
+  `experiments/e3_mrna/` (audit task set + builder), `run_e3_mrna_gated_vs_ungated.py`,
+  `experiments/results/e3_mrna_runs_{pilot,full}_adjudicated*`.
+- **E9/E10 (aptamer-side GenNav) — NO-GO, boundary localized**: re-anchored
+  scarcity matrix (E9: b=6/c=8, P=0.79) then mechanized allocation (E10:
+  b=9/c=4, P=0.267, mechanism block all-pass). The aptamer boundary is budget
+  structure, not mechanism — c-reversal bands need 2+ reinforcement rounds at
+  sub-20% pass rates, unreachable in 3 rounds at the 48-raw two-arm cap.
+- **E11 pre-registration-gate simulation closed both escape routes**
+  (`experiments/analysis/e11_feasibility_sim.py`, real E10 S2 cache, 5 A-lattice
+  × 3 C-protocol grid): symmetric cap 48→64 is structurally NO-GO — any
+  symmetric static-grid extension strengthens the rule arm (A-fail 14 → 5–8)
+  and erodes the navigator's discordant repairs (b = 9 → 2–7, P ≥ 0.34);
+  panel expansion is capped by the 20-target benchmark (19 usable; full-panel
+  two-sided McNemar ≈ 0.11–0.13 — the handoff's "20-target P ≈ 0.07" was a
+  one-sided value). The asymmetric A-48/C-64 variant (simulated P = 0.0215)
+  was rejected by user decision against the budget-matching iron rule.
+- **Paper sync**: `PAPER_DRAFT.md` GenNav paragraph now reports the aptamer
+  boundary as structural with both escape routes closed; `PAPER_FACT_SHEET.md`
+  gained E9/E10/E11 rows; `DECISIONS.md` Part 1 (i) + Part 2 row 10 + timeline;
+  `FIX_2026-08-12_DUAL_GENERALIZATION.md` gained 附录 H.
+- **Commit scope**: full campaign evidence base (E3-M runs/adjudications, E9/E10
+  runs/verdicts/caches, drivers, feasibility sims, docs) — intermediates
+  (`experiments/e3_mrna/{tmp,work,__pycache__}`) intentionally excluded.
+
+---
+
+## 2026-08-11 — RNAsmol scoring tool v0.3.0: preprocessing-fidelity fix (official test.py parity)
+
+**Locked interface change (RNAsmol tool lock, v0.2.0 → v0.3.0).** The
+request/response schema is unchanged — the bump records a behavior-level
+preprocessing-fidelity fix in the RNAsmol microservice.
+
+- **Bug**: `microservices/rnasmol_service/main.py` uppercased RNA sequences
+  (destroying the case-sensitive modified-base vocab tokens 5-8) and built a
+  *corrected* full molecular adjacency, while upstream
+  `external_repos/RNAsmol/rnasmol/preprocessing.py` builds the adjacency with
+  a quirk (only the first two directed edge pairs zipped, indices shifted -1)
+  that the shipped checkpoints were actually trained with.
+- **Fix**: the service now ports upstream preprocessing verbatim — sequence
+  case is preserved, and the upstream adjacency / `get_top_k_matrix` slicing
+  semantics are replicated bit-for-bit (do not "fix" them). No Pydantic
+  field, endpoint, or inference-graph change.
+- **Evidence**: post-fix the service reproduces the official upstream
+  `test.py` reference metrics exactly — `robin_molperturbation` test AUROC
+  0.9744, `pdb_molperturbation` test AUROC 0.9828; decoy case studies rank
+  the true binder at 2/1601 (FMN_ribocil) and 7/265 (MALAT1_furamidine).
+  Boundary panel: `experiments/results/rnasmol_boundary_panel.json`.
+- **Sync surfaces**: `microservices/rnasmol_service/main.py` (header lock
+  block + `ScoreRequest` / `ScoreResponse` / `score()` docstrings),
+  `agent_core/tools.py` (`RNAsmolScoreInput` + wrapper lock comments),
+  `agent_core/tool_specs.py` (spec `version="0.3.0"`), `docs/TOOLS.md` §5.1,
+  and `docs/tools/score_rna_ligand_binding_with_rnasmol.md` (newly created —
+  the lock header had listed it as a sync surface but the file never
+  existed).
 
 ---
 

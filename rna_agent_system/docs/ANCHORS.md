@@ -23,6 +23,7 @@ data/benchmarks/external_anchors/
 ├── wt_cds/                     # one wild-type CDS fasta per Fig-3 target
 ├── ires/                       # ires_positive.fa + utr_negative.fa panels
 ├── small_molecule/             # pairs.json (binder / non-binder ligand pairs)
+├── utr_mrl/                    # e7_mrl_anchor_set.json — E7 measured-MRL anchors (generated)
 └── vaccine_mrna/               # BNT162b2 / mRNA-1273 assembled contigs
 ```
 

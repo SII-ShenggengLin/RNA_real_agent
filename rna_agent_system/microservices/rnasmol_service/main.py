@@ -1,7 +1,7 @@
 """RNAsmol microservice for RNA-ligand binding scoring."""
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# RNAsmOL 接口冻结声明 (v0.2.0) —— 禁止单方面变更
+# RNAsmOL 接口冻结声明 (v0.3.0) —— 禁止单方面变更
 # ═══════════════════════════════════════════════════════════════════════════════
 # 以下代码已经过与原始仓库 https://github.com/hongli-ma/RNAsmol 的逐行对照
 # 验证，并通过端到端测试确认可运行。自 2026-04-23 起，此接口冻结为正式
@@ -18,13 +18,17 @@
 #      覆盖：基本推理、权重智能选择、device 切换、错误边界。
 #   3. 同步提升 INTERFACE LOCK 版本号（如 v0.2.0 → v0.3.0）。
 #
+# 版本记录：
+#   - 2026-08-11 (v0.3.0)：预处理保真修复（保留大小写敏感词表、逐字复刻上游
+#     邻接矩阵/top-k 切片语义），修复后服务复现上游官方 test.py 参考指标
+#     （robin 0.9744 / pdb 0.9828 AUROC）；请求/响应 schema 未变。
+#
 # 违反上述规则的代码提交将被视为破坏性变更并回退。
 # ═══════════════════════════════════════════════════════════════════════════════
 
 from __future__ import annotations
 
 import os
-import re
 import sys
 from functools import lru_cache
 from pathlib import Path
@@ -114,7 +118,7 @@ VOCAB_PROTEIN = {
 class ScoreRequest(BaseModel):
     """RNAsmol scoring request schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: RNAsmolScoreInput
     - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     """
@@ -157,7 +161,7 @@ class ScoreRequest(BaseModel):
 class ScoreResponse(BaseModel):
     """RNAsmol scoring response schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
+    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
     - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
     - agent_core/tool_specs.py :: RNAsmolScoreOutput
     - docs/tools/score_rna_ligand_binding_with_rnasmol.md
@@ -175,13 +179,15 @@ class ScoreResponse(BaseModel):
 
 
 def _normalize_rna_sequence(raw_text: str) -> str:
+    # Upstream-faithful (external_repos/RNAsmol/rnasmol/preprocessing.py): the case is
+    # preserved because the RNAsmol vocab is case-sensitive (lowercase a/c/g/u encode
+    # modified bases, tokens 5-8). Do NOT uppercase or T->U-convert here.
     sequence_lines = [
         line.strip()
         for line in raw_text.splitlines()
         if line.strip() and not line.lstrip().startswith(">")
     ]
-    merged = "".join(sequence_lines).upper().replace("T", "U")
-    sequence = re.sub(r"[^A-Z]", "", merged)
+    sequence = "".join(sequence_lines)
     if not sequence:
         raise HTTPException(status_code=400, detail="RNA sequence is empty after normalization.")
     return sequence
@@ -280,25 +286,41 @@ def _mol_to_graph(mol: Chem.Mol) -> Tuple[np.ndarray, np.ndarray]:
     features = []
     for atom in mol.GetAtoms():
         feature = _atom_features(atom)
-        features.append(feature / max(feature.sum(), 1.0))
+        features.append(feature / np.sum(feature))
 
     if not features:
         raise HTTPException(status_code=400, detail="SMILES produced an empty molecular graph.")
 
+    edges = []
+    for bond in mol.GetBonds():
+        edges.append([bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()])
+
+    if not edges:
+        raise HTTPException(
+            status_code=400,
+            detail="SMILES produced a bond-less molecular graph (unsupported by upstream RNAsmol preprocessing).",
+        )
+
+    # Upstream-faithful adjacency — verbatim port of
+    # external_repos/RNAsmol/rnasmol/preprocessing.py :: mol_to_graph, including its
+    # indexing quirk: only the first two directed edge pairs are zipped, and each
+    # index is shifted by -1. The shipped checkpoints were trained on tensors built
+    # this way (verified: official test.py on these tensors gives the published
+    # test AUROCs), so the service must reproduce them bit-for-bit; a "corrected"
+    # full adjacency silently degrades the model.
+    graph = nx.Graph(edges).to_directed()
+    edge_index = []
+    for e1, e2 in graph.edges:
+        edge_index.append([e1, e2])
+    if len(edge_index) < 2:
+        raise HTTPException(
+            status_code=400,
+            detail="SMILES produced a degenerate molecular graph (unsupported by upstream RNAsmol preprocessing).",
+        )
     num_nodes = len(features)
     adjacency = np.zeros((num_nodes, num_nodes), dtype=np.float32)
-    undirected_edges = []
-    for bond in mol.GetBonds():
-        begin_idx = bond.GetBeginAtomIdx()
-        end_idx = bond.GetEndAtomIdx()
-        undirected_edges.append((begin_idx, end_idx))
-        adjacency[begin_idx, end_idx] = 1.0
-        adjacency[end_idx, begin_idx] = 1.0
-
-    if undirected_edges:
-        graph = nx.Graph(undirected_edges).to_directed()
-        for src, dst in graph.edges:
-            adjacency[src, dst] = 1.0
+    for i, j in zip(edge_index[0], edge_index[1]):
+        adjacency[i - 1, j - 1] = 1.0
 
     return np.asarray(features, dtype=np.float32), adjacency
 
@@ -312,10 +334,11 @@ def _get_ppr_matrix(adj_matrix: np.ndarray, alpha: float = 0.1) -> np.ndarray:
 
 
 def _get_top_k_matrix(matrix: np.ndarray, k: int = 5) -> np.ndarray:
+    # Verbatim port of upstream get_top_k_matrix (negative-slice semantics included).
     num_nodes = matrix.shape[0]
     row_idx = np.arange(num_nodes)
     matrix = matrix.copy()
-    matrix[matrix.argsort(axis=0)[: max(num_nodes - k, 0)], row_idx] = 0.0
+    matrix[matrix.argsort(axis=0)[: num_nodes - k], row_idx] = 0.0
     norm = matrix.sum(axis=0)
     norm[norm <= 0] = 1.0
     return matrix / norm
@@ -501,7 +524,7 @@ def health() -> Dict[str, object]:
 def score(payload: ScoreRequest) -> ScoreResponse:
     """RNAsmol scoring endpoint.
 
-    INTERFACE LOCK (v0.2.0): The request/response schema and inference pipeline
+    INTERFACE LOCK (v0.3.0): The request/response schema and inference pipeline
     (SMILES → molecular graph + PPR + RNA sequence encoding → MCNN_GCN) are canonical.
     Do not change without updating the wrapper, tool spec, and documentation.
     """

@@ -1,0 +1,202 @@
+{
+  "service": "http://127.0.0.1:8007/score",
+  "timestamp": "2026-08-11T09:08:52",
+  "robin_test": {
+    "n": 1492,
+    "n_pos": 763,
+    "n_neg": 729,
+    "n_rna_over_500nt_truncated": 0,
+    "elapsed_seconds": 13.0,
+    "auroc": 0.9744,
+    "auroc_ci95": [
+      0.9678,
+      0.9804
+    ],
+    "auroc_gate_0.8_pass": true
+  },
+  "pdb_test": {
+    "n": 170,
+    "n_pos": 87,
+    "n_neg": 83,
+    "n_rna_over_500nt_truncated": 44,
+    "elapsed_seconds": 1.7,
+    "auroc": 0.9828,
+    "auroc_ci95": [
+      0.9615,
+      0.9971
+    ],
+    "auroc_gate_0.8_pass": true,
+    "subset_le500nt": {
+      "n": 126,
+      "auroc": 0.9788,
+      "auroc_ci95": [
+        0.9501,
+        0.9975
+      ]
+    }
+  },
+  "FMN_ribocil_decoy": {
+    "n": 1601,
+    "n_pos": 1,
+    "n_neg": 1600,
+    "n_rna_over_500nt_truncated": 0,
+    "elapsed_seconds": 13.7,
+    "true_binder_rank": 2,
+    "true_binder_percentile": 0.125,
+    "top5pct_gate_pass": true
+  },
+  "MALAT1_furamidine_decoy": {
+    "n": 265,
+    "n_pos": 1,
+    "n_neg": 264,
+    "n_rna_over_500nt_truncated": 0,
+    "elapsed_seconds": 2.2,
+    "true_binder_rank": 7,
+    "true_binder_percentile": 2.642,
+    "top5pct_gate_pass": true
+  },
+  "ood_aptamer": {
+    "n": 17,
+    "n_binders": 4,
+    "n_near_cognate": 4,
+    "n_random_chem": 9,
+    "auroc_vs_random_chem": 0.7222,
+    "auroc_vs_random_chem_ci95": [
+      0.2778,
+      1.0
+    ],
+    "auroc_vs_near_cognate": 0.5625,
+    "auroc_vs_near_cognate_ci95": [
+      0.0625,
+      1.0
+    ],
+    "chance_consistent": true,
+    "per_pair": [
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "theo_aptamer_theophylline",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 0.950551450252533
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "theo_aptamer_caffeine",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9472209811210632
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "tar_neomycin",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 1.0
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "tar_paromomycin",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 1.0
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "tar_theophylline",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9781666994094849
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "grna_aptamer_guanine",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 0.2719097137451172
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "grna_aptamer_adenine",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9759051203727722
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "grna_aptamer_caffeine",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9920491576194763
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "theo_aspirin",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.5010915398597717
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "theo_benzoic_acid",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.5011167526245117
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "theo_ethanol",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.8996618390083313
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "tar_aspirin",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.28572872281074524
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "tar_benzoic_acid",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.40473198890686035
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "tar_ethanol",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.9551296830177307
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "grna_aspirin",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.17237147688865662
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "grna_benzoic_acid",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.2969330847263336
+      },
+      {
+        "arm": "ood_aptamer",
+        "pair_id": "grna_ethanol",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.9843708872795105
+      }
+    ]
+  },
+  "verdict": {
+    "in_distribution_auroc_gt_0.8_all": true,
+    "decoy_top5pct_all": true,
+    "ood_chance_consistent": true,
+    "go": true
+  }
+}

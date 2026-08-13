@@ -9,8 +9,11 @@ Data sources (all read from experiments/results/, nothing recomputed):
   - e4_full_summary.json                     (panel c)
 
 Panels:
-  a  Failure funnel: 214 transient events (all recovered) vs 35 final
-     failures, all deterministic boundaries / governance outcomes.
+  a  Failure funnel: 214 transient events (all recovered) vs 35 legacy final
+     failures — ODesign zero-output 24, endpoint misconfiguration 8,
+     LinearDesign memory boundary 2 (the two oversized targets have since
+     been replaced in the Fig-2 panel), 1 legacy advisory abort (completes
+     under the 2026-08-10 governance).
   b  Junction repair "no free lunch": three pre-registered NO-GO routes
      plotted against their pre-registered acceptance gates.
   c  E4 cross-campaign memory: 74.2% budget saving but no learning
@@ -97,9 +100,10 @@ def main() -> None:
          fin["boundary_odesign_zero_output"], PALETTE["red"]),
         ("Endpoint misconfiguration (nominal 2nd-LLM arm)",
          fin["endpoint_misconfig"], PALETTE["red"]),
-        ("LinearDesign memory boundary (Zika / Factor VIII)",
+        ("LinearDesign memory boundary (2 oversized targets — since replaced)",
          fin["boundary_lineardesign_oom"], PALETTE["red"]),
-        ("Correct advisory quality abort (GC-rich siRNA)",
+        ("Legacy advisory abort (GC-rich siRNA) — completes under current "
+         "governance",
          fin["llm_abort_correct"], PALETTE["red"]),
     ]
     ypos = list(range(len(rows)))[::-1]
@@ -119,8 +123,8 @@ def main() -> None:
     axa.text(212, 4.7, "transient — 214 events, all recovered",
              ha="right", va="center", fontsize=6.8, color=PALETTE["blue"],
              fontweight="bold")
-    axa.text(212, 1.35, "final — 35 failures, all deterministic\n"
-             "boundaries or governance outcomes",
+    axa.text(212, 1.35, "final — 35 legacy failures: 34 deterministic\n"
+             "boundaries + 1 advisory abort (now succeeding)",
              ha="right", va="center", fontsize=6.8, color=PALETTE["red"],
              fontweight="bold")
     axa.set_title("Failure taxonomy across the legacy platform campaigns (~1,400 runs)",

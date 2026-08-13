@@ -1,0 +1,133 @@
+{
+  "stage": "s1",
+  "timestamp": "2026-08-11T12:51:56",
+  "n_targets": 3,
+  "targets": [
+    "SARS-CoV-2_Nucleocapsid",
+    "Thrombin",
+    "VEGF"
+  ],
+  "pairs": [
+    {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "profile": "extended",
+      "A_jcd": false,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Thrombin",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Thrombin",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "Thrombin",
+      "profile": "extended",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "VEGF",
+      "profile": "compact",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "VEGF",
+      "profile": "standard",
+      "A_jcd": true,
+      "C_jcd": true
+    },
+    {
+      "target_id": "VEGF",
+      "profile": "extended",
+      "A_jcd": false,
+      "C_jcd": true
+    }
+  ],
+  "primary": {
+    "n_pairs": 9,
+    "mcnemar": {
+      "b": 2,
+      "c": 0,
+      "p": 0.5
+    },
+    "c_e2e_rate": 1,
+    "a_e2e_rate": 0.3333333333333333,
+    "criterion": "p < 0.05 AND c_e2e_rate >= 0.8",
+    "pass": false,
+    "decisive_at": "s2 (n=30 pairs); descriptive only at s0/s1"
+  },
+  "secondary": {
+    "c_delivered_matrix_pass_rate": 1.0,
+    "criterion_rate_ge_0.9": true,
+    "llm_budget_compliance": true,
+    "llm_calls_per_target": {
+      "SARS-CoV-2_Nucleocapsid": 5,
+      "Thrombin": 5,
+      "VEGF": 4
+    },
+    "request_generate_per_target": {
+      "SARS-CoV-2_Nucleocapsid": 4,
+      "Thrombin": 4,
+      "VEGF": 3
+    },
+    "degraded_profiles_total": 0
+  },
+  "mechanism": {
+    "all_gear_calls_ok": true,
+    "gear_errors": [],
+    "zero_candidate_targets": [],
+    "no_zero_candidate_anomaly": true,
+    "budget_violations": [],
+    "budget_compliance": true,
+    "decision_gate_demonstrations": [
+      {
+        "target_id": "SARS-CoV-2_Nucleocapsid",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "Thrombin",
+        "verdict": "reject",
+        "forbidden": true
+      },
+      {
+        "target_id": "VEGF",
+        "verdict": "reject",
+        "forbidden": true
+      }
+    ],
+    "decision_gate_demo_forbidden": true,
+    "first_odesign_call_seconds": 140.65536478348076
+  },
+  "notes": {
+    "ferritin_excluded": "deterministic ODesign zero-output boundary (experiments/results/RESUME_CHECKPOINT.md §4)",
+    "hotspot_fallbacks": {
+      "SARS-CoV-2_Nucleocapsid": "auto_identify_fallback_known_out_of_structure"
+    },
+    "s2_matrix_expansion": "2026-08-11: 8 -> 10 targets (+Concanavalin_A, +Chymotrypsinogen); primary endpoint n = 30 pairs",
+    "c_request_generate_cap": "2026-08-11: <=2 -> <=4 rounds; 48-raw hard cap both arms unchanged"
+  },
+  "go_no_go": "GO",
+  "go_rule": "mechanism gate (s0/s1 staging)",
+  "elapsed_seconds": 1343.01
+}
