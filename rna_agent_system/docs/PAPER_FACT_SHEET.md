@@ -272,6 +272,27 @@
 
 **Claim check**: b=9/c=4/p=0.267, c-cell list, C e2e 0.50 vs A 0.33 ✓ — **VERIFIED** against `e10_verdict_s2.json` and `e10_runs_s2.jsonl` (2026-08-12).
 
+### E12 — aptamer GenNav densified lattice + S1 priors (`e12_verdict_s2.json`, 2026-08-14; driver `experiments/run_e12_gennav_aptamer.py`)
+- **Purpose**: last open lever after the matrix sweep (0/324 decisive, `e12_matrix_sweep.py`) — lattice densification (17 lengths, ~3 nt per band) + S1-measured laplace priors, with a pre-registered panel gate (rate-based NAV, addendum v1).
+- **Exact numbers (S2, 12 targets)**: McNemar **b = 9, c = 2, P = 0.0654** (E10 was 9:4/P=0.267 — c halved, P 4× improved, one c-cell short); C e2e 0.25 vs A 0.00; mechanism block all-pass.
+- **Conclusion**: densification + priors are effective levers (P 4×); e2e ≥ 0.8 gate structurally unreachable — panel's 7 double-A-fail targets exceed per-target repair capacity (addendum v2).
+
+**Claim check**: b=9/c=2/p=0.0654296875, c-cell list (Pepsin compact, Thrombin standard), C e2e 0.25 ✓ — **VERIFIED** against `e12_verdict_s2.json` (2026-08-14).
+
+### E13 — controlled replication: panel axis formally closed (`e13_verdict_s2.json`, 2026-08-14; driver `experiments/run_e13_gennav_aptamer.py`)
+- **Purpose**: formally close the panel axis with a fresh pre-registered criteria book — panel rule changed to a direct per-target nav ≥ 1 ∧ a_fail ≥ 1 constraint (user-confirmed not a standards reduction; criteria untouched).
+- **Exact numbers (S2, 12 targets)**: **bit-identical to E12** — b=9/c=2/P=0.0654, C e2e 0.25/A 0.00, all 36 JCD pairs equal (programmatic check); whole campaign from cache in 133 s, zero new generations.
+- **Conclusion**: panel axis closed — E12's panel was nav-maximal (21/21); no panel rule moves the dual-gate endpoint; e2e ≥ 0.8 is a per-target reliability × budget bound.
+
+**Claim check**: b=9/c=2/p=0.0654296875, 36-pair identity with E12 ✓ — **VERIFIED** against `e13_verdict_s2.json` + `e12_verdict_s2.json` (2026-08-14).
+
+### E14 — aptamer GenNav PRIMARY ENDPOINT GO (`e14_verdict_s2.json`, 2026-08-14; driver `experiments/run_e14_gennav_aptamer.py`)
+- **Purpose**: decisive same-budget test under a user-adjudicated relative-advantage endpoint (paired McNemar P<0.05 single gate; e2e demoted to secondary disclosure — 12/36 cells jointly infeasible at 48-raw, axes closed appendices I/J/L), with protocol addenda: v1 cycling guarantee (1803a77), v2 4×n6 rounds + n8-over-n2 unblock (7ce7875).
+- **Exact numbers (S2, 12 targets)**: McNemar **b = 14, c = 3, P = 0.0127 < 0.05 — GO** (iteration path: E12/E13 9:2/0.0654 → v1 14:6/0.115 → v2 10:3/0.092 → v3 14:3/0.0127). C delivers 26/36 profile cells vs A 15/36 (72% vs 42%); C e2e 0.50 (6/12 targets) vs A 0.00 (relative 6:0); C matrix pass rate 1.0; zero budget violations; **1 LLM call across the run** (deterministic guarantee rounds); 3 A-wins (MBP extended, Papain compact, Thrombin extended) and 7 jointly-infeasible cells disclosed.
+- **Conclusion**: **positive aptamer-side navigation result** — same-budget navigation wins discordant cells 14:3; validated levers: lattice densification (E12), S1 priors (E12), guaranteed-repair allocation (E14); absolute e2e gate is a target-set property at this budget, reported as boundary.
+
+**Claim check**: b=14/c=3/p=0.012725830078125, c-cell list, C e2e 0.50/A 0.00, LLM=1 ✓ — **VERIFIED** against `e14_verdict_s2.json` + `e14_runs_s2.jsonl` (2026-08-14).
+
 ### E11 — escape-route closure simulation (cap 64 / panel expansion) (`experiments/analysis/e11_feasibility_sim.py`, 2026-08-13; pre-registration gate, real E10 S2 cache, no services)
 - **Purpose**: close the two escape routes the E10 boundary left open — symmetric budget rescale (48→64) and panel expansion — before any re-preregistration.
 - **Exact numbers**: symmetric cap-64 grid (5 A-arm lattices × 3 C protocols): rule-arm failing cells 14 → **5–8** under any symmetric lattice extension; navigator discordant repairs **b = 9 → 2–7**, conceded cells **c = 3–4**, **P ≥ 0.34** across all variants (floor-round and degrade-aware protocols do not rescue it — A-arm strengthening is the binding constraint). Asymmetric A-48/C-64 alone reaches b = 9/c = 1/p = 0.0215 but changes the comparison basis (C +33% budget) — rejected against the budget-matching iron rule (user decision 2026-08-13). Panel route: benchmark = 20 targets (19 usable, ferritin zero-output excluded); full-panel paired McNemar **≈ 0.11–0.13** (the "20-target P ≈ 0.07" estimate in the 2026-08-13 handoff was a one-sided value; two-sided ≈ 0.13).
