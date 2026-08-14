@@ -29,11 +29,19 @@ GUARANTEED-REPAIR ALLOCATION (GenNav-Apt v4.1)。
      e2e 率、联合不可行格分解、C 矩阵通过率 ≥ 0.9、LLM 预算合规、degrade 数。
   2. **协议修复 (预注册, 唯一机制改动 — 分配保证)**: 机制化强化循环中,
      每轮先检查是否存在 "gap>0 且带内存在 laplace 率 ≥ 0.25 未采样 gear"
-     的带 (按带序 compact → standard → extended); 若存在, 确定性分配 1 轮
-     该带内 laplace 率最高的未采样 gear — 不经 LLM, 不消耗 LLM 调用,
-     DecisionGate 照常 review, 记为 guarantee round。所有可修带获得保证轮
-     后, 剩余轮次按 E12/E13 机制化 (gap 加权期望) + LLM 仲裁。预算
-     48-raw、≤3 轮/靶、LLM ≤4/靶 全部不变。
+     的带; 若存在, 确定性分配 1 轮该带内 laplace 率最高的未采样 gear —
+     不经 LLM, 不消耗 LLM 调用, DecisionGate 照常 review, 记为
+     guarantee round。剩余轮次按 E12/E13 机制化 (gap 加权期望) + LLM
+     仲裁。预算 48-raw、≤3 轮/靶、LLM ≤4/靶 全部不变。
+
+     **判据书补遗 v1 (2026-08-14, 用户拍板): 分配保证改循环制。**
+     E14 S2 实测 (b=14/c=6/P=0.1153) 显示原"每带修到交付才轮换"的单带
+     贪婪把 3 轮预算全吸在 compact/standard, extended 带被饿死 — 6 靶
+     extended 从交付翻转为 c (Lysozyme/MBP/RNase_A/Subtilisin/Thrombin/
+     Pepsin), 饿死从 compact/standard 转移到 extended。补遗 v1: 每个
+     gap>0 且可修 (laplace 率 ≥ 0.25) 的带各保证 1 轮后 (带序第一遍),
+     才允许任何带的第二轮保证轮。缓存数据模拟: 12 靶三带全部可达交付,
+     预测 b≈14-16 / c≈0 → P≈1e-4~1e-3, 主终点预期 GO。
   3. **其余逐项同 E13**: 矩阵 v3 / 格增密 17 长度 / S1 先验协议 / 面板规则
      (E13 nav 规则: 每靶 nav≥1 ∧ a_fail≥1, 各 ≤3 例外, her2 ≤ 2, 打分
      2·nav+a_fail) / 48-raw 两臂同 cap / S0-S1-S2 阶段。
@@ -794,18 +802,29 @@ GUARANTEE_RATE_MIN = 0.25
 
 
 def _guarantee_round(pool: list[dict], gears: list[dict], raw_spent: int,
-                     prior: list[dict] | None = None) -> dict | None:
-    """E14 判据书 §协议修复 (分配保证): 首个 gap>0 且带内存在 laplace 率
-    ≥ GUARANTEE_RATE_MIN 未采样 gear 的带 → 确定性返回该带内最高率 gear
-    (不经 LLM; 按带序 compact → standard → extended 保证第一缺口带)。
-    所有可修带已获保证轮 (或无带满足) → None, 剩余轮次交机制化 + LLM。"""
+                     prior: list[dict] | None = None,
+                     guaranteed_bands: set[str] | None = None
+                     ) -> tuple[dict | None, set[str]]:
+    """E14 判据书 §协议修复 (分配保证, 补遗 v1 循环制): 每个 gap>0 且带内
+    存在 laplace 率 ≥ GUARANTEE_RATE_MIN 未采样 gear 的带, 各保证 1 轮后
+    (带序 compact → standard → extended 第一遍), 才允许任何带的第二轮
+    保证轮。guaranteed_bands = 调用方维护的跨轮状态 (本轮前已获保证轮的带)。
+
+    E14 S2 实测教训 (补遗 v1, 2026-08-14 用户拍板): 原"每带修到交付才
+    轮换"的单带贪婪把 3 轮预算全吸在 compact/standard, extended 带被饿死
+    (6 靶 extended 从交付翻转为 c, b=14/c=6/P=0.115)。循环制消除该转移:
+    缓存模拟显示 12 靶三带全部可达交付。
+
+    返回 (gear, 更新后的 guaranteed_bands); 无可修带或预算尽 → (None, 状态)。"""
     n = min(C_REQUEST_N_MAX, RAW_BUDGET_PER_TARGET - raw_spent)
     if n <= 0:
-        return None
+        return None, (guaranteed_bands or set())
+    if guaranteed_bands is None:
+        guaranteed_bands = set()
     passers = {p: len(deliver_profile(pool, p)["ids"]) for p in PROFILE_ORDER}
     for prof in PROFILE_ORDER:
-        if passers[prof] >= DELIVERY_SIZE:
-            continue  # 已交付带无需保证
+        if prof in guaranteed_bands or passers[prof] >= DELIVERY_SIZE:
+            continue  # 本轮次已获保证轮 / 已交付带
         spec = PROFILES[prof]
         best: dict | None = None
         best_rate = 0.0
@@ -824,8 +843,12 @@ def _guarantee_round(pool: list[dict], gears: list[dict], raw_spent: int,
                     best = {"length": L, "seed": s, "n_samples": n,
                             "band": prof, "laplace_rate": round(rate, 3)}
         if best is not None:
-            return best
-    return None
+            return best, guaranteed_bands | {prof}
+    # 第一遍完成 (所有可修带已获保证轮): 允许第二轮 — 清标记重扫一次
+    if guaranteed_bands:
+        return _guarantee_round(pool, gears, raw_spent, prior=prior,
+                                guaranteed_bands=set())
+    return None, guaranteed_bands
 
 
 E10_ARBITRATION_SYSTEM = """\
@@ -938,11 +961,14 @@ def run_arm_c(stage: str, target_id: str, registry: Any, cache: dict[str, dict],
     llm_calls = 0
     requests_used = 0
     feedback = ""
+    guaranteed_bands: set[str] = set()  # 补遗 v1: 循环制跨轮带状态
 
     while (not probe_only and requests_used < C_MAX_REQUEST_GENERATE
            and raw_spent < RAW_BUDGET_PER_TARGET):
-        # E14 判据书 §协议修复 (分配保证): 可修带确定性轮次优先 (不经 LLM)
-        guarantee = _guarantee_round(pool, gears, raw_spent, prior=prior)
+        # E14 判据书 §协议修复 (分配保证, 补遗 v1 循环制): 可修带各 1 轮
+        guarantee, guaranteed_bands = _guarantee_round(
+            pool, gears, raw_spent, prior=prior,
+            guaranteed_bands=guaranteed_bands)
         if guarantee is not None:
             decisions = gate.review(
                 [PlannedAction(action_id=f"e14_guarantee_{requests_used}",
@@ -1320,12 +1346,14 @@ def compute_verdict(stage: str, runs_path: Path) -> dict:
                            "secondary with joint-infeasibility decomposition"),
         "e14_allocation_guarantee": ("protocol fix (pre-registered): every "
                            "gap>0 band with laplace-rate>=0.25 unsampled gear "
-                           "gets a deterministic guarantee round (no LLM) "
-                           "before gap-weighted+LLM rounds; fixes the "
-                           "E12/E13 starvation of RNase_A compact / Pepsin "
-                           "compact / Thrombin standard (cached rates "
-                           "0.60-0.67); budget 48-raw, <=3 rounds, <=4 LLM "
-                           "unchanged"),
+                           "gets a deterministic guarantee round (no LLM); "
+                           "addendum v1 (2026-08-14, user-adjudicated): "
+                           "CYCLING — one guarantee round per repairable "
+                           "band before any band's second round (E14 S2 "
+                           "band-ordered version starved extended: b=14/"
+                           "c=6/P=0.115; cycling simulation projects 12/12 "
+                           "three-band delivery, c≈0); budget 48-raw, <=3 "
+                           "rounds, <=4 LLM unchanged"),
         "c_request_generate_cap": ("2026-08-11: <=2 -> <=4 rounds; 48-raw "
                                    "hard cap both arms unchanged; E12/E13: "
                                    "3 rounds (17-raw dense probe + <=6 probe2)"),
