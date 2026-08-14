@@ -10,6 +10,37 @@
 > L6 (entry points). Entries dated before 2026-08-10 keep the numbering in
 > force at the time they were written.
 
+## 2026-08-14 — E14 aptamer GenNav: PRIMARY ENDPOINT GO — same-budget navigation wins discordant cells 14:3 (P=0.0127)
+
+**Campaign conclusion (no interface lock changes).** E14 (criteria book
+`run_e14_gennav_aptamer.py`, 75fdc3e) — with a user-adjudicated criteria
+revision (main endpoint = paired McNemar two-sided P<0.05 single gate;
+e2e demoted to secondary disclosure; rationale: e2e≥0.8 is an
+absolute-delivery feasibility measure conflated with navigation
+advantage — 12/36 cells jointly infeasible at 48-raw, matrix/protocol/
+panel axes closed) — and two user-adjudicated protocol addenda
+(v1 cycling guarantee 1803a77; v2 4×n6 rounds + n8-over-n2 unblock
+7ce7875), the campaign reached GO:
+
+- **Primary endpoint GO: paired McNemar b=14/c=3, P=0.0127 < 0.05 (n=36)**
+  — at the same 48-raw per-target cap, the navigator wins discordant
+  cells 14:3 (E12/E13 was 9:2/0.0654; iteration path v1 14:6/0.115,
+  v2 10:3/0.092, v3 14:3/0.0127).
+- C e2e **0.50 (6/12 targets)** vs A e2e 0.00 — relative full-delivery
+  6:0; 10 jointly-failed cells and 3 A-wins disclosed (MBP extended /
+  Papain compact / Thrombin extended).
+- Mechanism block all-pass; zero budget violations; C delivered-cell
+  matrix pass rate 1.0; LLM ≤1/target (deterministic guarantee rounds).
+- Positive narrative: lattice densification (E12, c 4→2), S1-measured
+  priors (E12, P 4×), and guaranteed-repair allocation (E14, starvation
+  eliminated) are the three validated navigation levers; the e2e
+  absolute gate's 48-raw structural unreachability is explained by
+  jointly-infeasible cells and closed axes (appendices I/J/L/M).
+- Evidence: `e14_verdict_s{0,1,2}.json`, `e14_runs_s{0,1,2}.jsonl`,
+  `e14_audit/`, `docs/FIX_2026-08-12_...` 附录 M.
+
+---
+
 ## 2026-08-14 — E13 controlled replication: panel-axis formally closed (NO-GO, bit-identical to E12)
 
 **Campaign conclusion (no interface lock changes).** E13 (criteria book
