@@ -10,6 +10,24 @@
 > L6 (entry points). Entries dated before 2026-08-10 keep the numbering in
 > force at the time they were written.
 
+## 2026-08-14 — E15 confirmatory replication NO-GO: scarcity-panel boundary (pre-registered 40% branch)
+
+**Campaign conclusion (no interface lock changes).** E15 (criteria book
+`run_e15_gennav_aptamer.py`, 1d42f69) ran the E14-final protocol on 12
+targets = 4 never-paneled scarce targets (BSA/CAII/Chymotrypsinogen/GFP)
++ top-8 of E14's panel. Outcome: McNemar **b=14/c=6/P=0.1153**, C e2e
+0.333 vs 0.00, mechanism all-pass, 3 LLM calls. Within the pre-registered
+dual-outcome envelope (GO ~60%): the guarantee repaired all three fixable
+A-fail cells of the new targets (+3 b) but conceded 4 cells on their
+A-deliverable bands (+4 c) — the navigator's advantage is regime-specific
+(delivery-scarce panels), consistent with the paper's scarcity thesis.
+Pooled E14+E15 28:9 (P=0.0026), driven by E14, heterogeneity acknowledged.
+E14 remains the paper's positive aptamer result; E15 is disclosed as a
+boundary. Evidence: `e15_verdict_s{0,1,2}.json`, `e15_runs_s{0,1,2}.jsonl`,
+`docs/FIX_2026-08-12_...` 附录 N.
+
+---
+
 ## 2026-08-14 — E14 aptamer GenNav: PRIMARY ENDPOINT GO — same-budget navigation wins discordant cells 14:3 (P=0.0127)
 
 **Campaign conclusion (no interface lock changes).** E14 (criteria book

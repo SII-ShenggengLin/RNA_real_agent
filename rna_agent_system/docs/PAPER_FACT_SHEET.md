@@ -293,6 +293,13 @@
 
 **Claim check**: b=14/c=3/p=0.012725830078125, c-cell list, C e2e 0.50/A 0.00, LLM=1 ✓ — **VERIFIED** against `e14_verdict_s2.json` + `e14_runs_s2.jsonl` (2026-08-14).
 
+### E15 — confirmatory replication: scarcity-panel boundary (`e15_verdict_s2.json`, 2026-08-14; driver `experiments/run_e15_gennav_aptamer.py`)
+- **Purpose**: pre-registered dual-outcome confirmatory run (E14-final protocol; 12 targets = 4 never-paneled scarce targets BSA/CAII/Chymotrypsinogen/GFP + top-8 of E14's panel by S1 score).
+- **Exact numbers (S2)**: McNemar **b = 14, c = 6, P = 0.1153** → primary endpoint NOT met (pre-registered 40% branch); C e2e 0.333 vs A 0.00; mechanism all-pass, zero violations, 3 LLM calls. New targets: b=3 (all three fixable A-fail cells repaired), c=4 (their A-deliverable bands). Pooled E14+E15: b=28/c=9, P=0.0026 (driven by E14, heterogeneity acknowledged).
+- **Conclusion**: **navigation advantage is regime-specific to delivery-scarce panels** — empirically confirms the paper's scarcity thesis; E14 remains the primary positive aptamer result, E15 disclosed as boundary.
+
+**Claim check**: b=14/c=6/p=0.11531829833984375, c-cell list, C e2e 0.333, LLM=3 ✓ — **VERIFIED** against `e15_verdict_s2.json` + `e15_runs_s2.jsonl` (2026-08-14).
+
 ### E11 — escape-route closure simulation (cap 64 / panel expansion) (`experiments/analysis/e11_feasibility_sim.py`, 2026-08-13; pre-registration gate, real E10 S2 cache, no services)
 - **Purpose**: close the two escape routes the E10 boundary left open — symmetric budget rescale (48→64) and panel expansion — before any re-preregistration.
 - **Exact numbers**: symmetric cap-64 grid (5 A-arm lattices × 3 C protocols): rule-arm failing cells 14 → **5–8** under any symmetric lattice extension; navigator discordant repairs **b = 9 → 2–7**, conceded cells **c = 3–4**, **P ≥ 0.34** across all variants (floor-round and degrade-aware protocols do not rescue it — A-arm strengthening is the binding constraint). Asymmetric A-48/C-64 alone reaches b = 9/c = 1/p = 0.0215 but changes the comparison basis (C +33% budget) — rejected against the budget-matching iron rule (user decision 2026-08-13). Panel route: benchmark = 20 targets (19 usable, ferritin zero-output excluded); full-panel paired McNemar **≈ 0.11–0.13** (the "20-target P ≈ 0.07" estimate in the 2026-08-13 handoff was a one-sided value; two-sided ≈ 0.13).
