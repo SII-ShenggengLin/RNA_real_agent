@@ -14,6 +14,10 @@ Panels:
      primary endpoint NOT met (26/30 pairs saturate); shown honestly as
      mechanical, budget-matched transfer (C e2e 9/10 vs A 7/10; mean raw spend
      36 vs 48 candidates).
+  e  E14 S2 aptamer PRIMARY ENDPOINT GO: per-profile JCD grid, 12 targets x 3
+     profiles; discordance 14:3 (McNemar P = 0.0127, n = 36) — C delivers
+     26/36 vs A 15/36 cells, C e2e 6/12 vs A 0/12; single LLM call across
+     the run (deterministic guarantee allocation).
 
 Data:
   experiments/results/E5_REPORT_2026-08-09.md   (pool-pass counts, r5 table)
@@ -144,11 +148,45 @@ assert len(e8_discordant) == 8
 n8_concordant_pass = int(np.sum(grid8_a & grid8_c))
 assert n8_concordant_pass == 26
 
+
+# Panel e: E14 S2 aptamer PRIMARY ENDPOINT GO — per-pair JCD from the verdict.
+e14v = json.load(open(RESULTS / "e14_verdict_s2.json"))
+e14_runs = [json.loads(l) for l in open(RESULTS / "e14_runs_s2.jsonl")]
+e14_profiles = ["compact", "standard", "extended"]
+e14_targets = e14v["targets"]
+e14_pairs = {(p["target_id"], p["profile"]): (p["A_jcd"], p["C_jcd"])
+             for p in e14v["pairs"]}
+grid14_a = np.array([[e14_pairs[(t, p)][0] for t in e14_targets]
+                     for p in e14_profiles])
+grid14_c = np.array([[e14_pairs[(t, p)][1] for t in e14_targets]
+                     for p in e14_profiles])
+b14 = int(np.sum((~grid14_a) & grid14_c))
+c14 = int(np.sum(grid14_a & (~grid14_c)))
+mc14 = e14v["primary"]["mcnemar"]
+assert (b14, c14) == (mc14["b"], mc14["c"]) == (14, 3), (b14, c14)
+assert e14v["primary"]["n_pairs"] == 36 and e14v["primary"]["pass"]
+e14_llm = {r.get("target_id"): r.get("llm_calls", 0)
+           for r in e14_runs if r["arm"] == "C"}
+assert sum(e14_llm.values()) == 1, sum(e14_llm.values())
+assert (e14v["primary"]["a_e2e_rate"], e14v["primary"]["c_e2e_rate"]) == (0.0, 0.5)
+e14_discordant = []
+for j, t in enumerate(e14_targets):
+    for i, p in enumerate(e14_profiles):
+        a_ok, c_ok = e14_pairs[(t, p)]
+        if a_ok != c_ok:
+            winner = "C" if c_ok else "A"
+            e14_discordant += [(i, j, winner), (3 + i, j, winner)]
+assert len(e14_discordant) == 2 * (b14 + c14) == 34
+n14_c = int(np.sum(grid14_a & grid14_c)) + b14
+n14_a = int(np.sum(grid14_a & grid14_c)) + c14
+assert (n14_c, n14_a) == (26, 15), (n14_c, n14_a)
+
 # ---------------------------------------------------------------- figure ----
 fig = plt.figure(figsize=(7.2, 9.7))
 gs = gridspec.GridSpec(
-    3, 2, figure=fig, height_ratios=[1.0, 0.95, 0.82], width_ratios=[1.25, 1.15],
-    hspace=0.52, wspace=0.30, left=0.14, right=0.985, top=0.94, bottom=0.115,
+    4, 2, figure=fig, height_ratios=[1.0, 0.95, 0.82, 0.92],
+    width_ratios=[1.25, 1.15],
+    hspace=0.55, wspace=0.30, left=0.14, right=0.985, top=0.94, bottom=0.095,
 )
 
 # ---- Panel a: E5 pool-pass fractions ----------------------------------------
@@ -297,6 +335,52 @@ axd.legend(handles=[
     facecolor="white", framealpha=0.95, edgecolor="#CCCCCC", fontsize=6,
     ncol=1, handlelength=1.1, borderaxespad=0.0, labelspacing=0.4)
 axd.text(-0.058, 1.20, "d", transform=axd.transAxes, fontsize=10,
+         fontweight="bold", va="top", ha="left")
+
+
+# ---- Panel e: E14 S2 aptamer PRIMARY ENDPOINT GO (bottom row) ----------------
+gse = gridspec.GridSpecFromSubplotSpec(1, 1, subplot_spec=gs[3, :])
+axe = fig.add_subplot(gse[0, 0])
+grid14 = np.vstack([grid14_a, grid14_c])  # 6 rows x 12 targets
+axe.imshow(grid14.astype(float), cmap=cmap, vmin=0, vmax=1, aspect="auto")
+axe.axhline(2.5, color="white", lw=3.0)
+axe.text(-1.25, 1.0, "arm A\nrule-based", fontsize=6, ha="right", va="center",
+         linespacing=1.3)
+axe.text(-1.25, 4.0, "arm C\ngated GenNav", fontsize=6, ha="right",
+         va="center", linespacing=1.3)
+axe.set_yticks(range(6))
+axe.set_yticklabels(e14_profiles + e14_profiles, fontsize=6)
+axe.set_xticks(range(len(e14_targets)))
+short14 = [t.replace("SARS-CoV-2_Nucleocapsid", "SARS-CoV-2 N")
+           for t in e14_targets]
+axe.set_xticklabels(short14, rotation=90, fontsize=5.4)
+axe.set_xlim(-0.5, len(e14_targets) - 0.5 + 3.8)
+axe.xaxis.set_ticks_position("bottom")
+axe.tick_params(length=0)
+strip_spines(axe, keep=())
+for r, j, winner in e14_discordant:
+    axe.add_patch(plt.Rectangle(
+        (j - 0.5, r - 0.5), 1, 1, fill=False, lw=1.5,
+        ec=BLUE if winner == "C" else ORANGE))
+axe.set_title("E14 S2: PRIMARY ENDPOINT GO — GenNav on 12 aptamer targets",
+              pad=17)
+axe.text(0.36, 1.065,
+         f"McNemar P = {mc14['p']:.4f}, discordant {b14}:{c14} (n = 36) — "
+         "same 48-raw budget",
+         transform=axe.transAxes, ha="center", fontsize=6.8, fontweight="bold")
+axe.text(0.36, 1.015,
+         f"C delivers {n14_c}/36 vs A {n14_a}/36 cells; C e2e 6/12 vs A 0/12; "
+         "1 LLM call (deterministic guarantee allocation)",
+         transform=axe.transAxes, ha="center", fontsize=6.2, color=GREY)
+axe.legend(handles=[
+    Patch(fc=GREEN, label="pass"),
+    Patch(fc=RED, label="fail"),
+    Patch(fill=False, ec=BLUE, lw=1.5, label="C-only win (14)"),
+    Patch(fill=False, ec=ORANGE, lw=1.5, label="A-only win (3)"),
+], loc="upper left", bbox_to_anchor=(0.755, 0.99), frameon=True,
+    facecolor="white", framealpha=0.95, edgecolor="#CCCCCC", fontsize=6,
+    ncol=1, handlelength=1.1, borderaxespad=0.0, labelspacing=0.4)
+axe.text(-0.058, 1.20, "e", transform=axe.transAxes, fontsize=10,
          fontweight="bold", va="top", ha="left")
 
 fig.savefig(OUTDIR / "fig5.png")
