@@ -1,7 +1,7 @@
 # Change Log
 
 > **Scope**: locked interface changes and major workflow introductions.
-> **Last updated**: 2026-08-13
+> **Last updated**: 2026-08-14
 
 > **Layer-numbering note (2026-08-10)**: the architecture was renumbered from
 > five layers (L0–L5, including "Layer 2.5") to **seven layers (L0–L6)** —
@@ -9,6 +9,29 @@
 > multi-agent execution), old Layer 4 → L5 (session/workspace), old Layer 5 →
 > L6 (entry points). Entries dated before 2026-08-10 keep the numbering in
 > force at the time they were written.
+
+## 2026-08-14 — E12 aptamer GenNav (lattice-densified + S1 priors): primary endpoint NO-GO, discordance near-significant
+
+**Campaign conclusion (no interface lock changes).** E12 (criteria book
+`run_e12_gennav_aptamer.py`, pre-registered 2026-08-13) ran the full
+S0/S1/S2 discipline with matrix v3 (stems 7/9/12), a 17-length densified
+C lattice, S1-measured laplace priors, and a pre-registered panel gate.
+
+- S0 mechanism gate GO; S1 (19-candidate dense probe) GO with panel gate
+  (rate-based NAV, addendum v1) PASSED — her2 targets 1/19 (BSA), e2e
+  ceiling 12/12.
+- S2 (12 targets, equal 48-raw cap): McNemar **b=9, c=2, P=0.0654**
+  (E10: b=9/c=4/P=0.267 — c halved, P 4x improved, one c-cell short of
+  significance), C e2e **0.25** vs criterion 0.8 (structural: 48-raw repair
+  capacity cannot fully deliver 2-A-fail targets), A e2e 0.00. Mechanism
+  block all-pass; NO budget violations.
+- Addendum v2 recorded: the panel gate's aggregate-NAV constraint does not
+  model per-target repair capacity — an e2e-reachable panel needs per-target
+  A-fail <= 1, a design lesson for any future campaign. Criteria unchanged.
+- Evidence: `e12_verdict_s{0,1,2}.json`, `e12_runs_s{0,1,2}.jsonl`,
+  `e12_odesign_cache.jsonl`, `e12_audit/`, `docs/FIX_2026-08-12_...` 附录 J/K.
+
+---
 
 ---
 
