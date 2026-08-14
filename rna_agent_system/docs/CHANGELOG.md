@@ -10,6 +10,35 @@
 > L6 (entry points). Entries dated before 2026-08-10 keep the numbering in
 > force at the time they were written.
 
+## 2026-08-14 — E13 controlled replication: panel-axis formally closed (NO-GO, bit-identical to E12)
+
+**Campaign conclusion (no interface lock changes).** E13 (criteria book
+`run_e13_gennav_aptamer.py`, pre-registered 259973c) was a controlled
+replication: everything identical to E12 except the panel rule, which was
+changed to a direct per-target constraint on the e2e driver (nav ≥ 1 ∧
+a_fail ≥ 1 per target, ≤3 exceptions each, her2 ≤ 2; score 2·nav + a_fail).
+User confirmed the panel-rule change is not a standards reduction (criteria
+P<0.05 ∧ C e2e≥0.8 untouched).
+
+- Pre-registration analysis (cached-data deterministic replay) found the
+  E12 addendum-v2 rule ("per-target A-fail ≤ 1") infeasible (only 9/19
+  targets qualify), and its proxy misdirected — A-fail is not the e2e
+  driver; rate-based nav is (E12 e2e achievers all nav=2 incl. double-A-fail;
+  nav≤1 targets e2e=0). E12's panel was already nav-maximal (21/21).
+- S0/S1 mechanism gates GO; panel gate PASSED with the pre-registered
+  projection — panel identical to E12's, target-for-target.
+- S2: **NO-GO, bit-identical to E12** — McNemar b=9/c=2/P=0.0654, C e2e
+  0.25/A e2e 0.00; all 36 JCD pairs equal to E12 (programmatic check).
+  Whole campaign ran from cache in 133 s, zero new ODesign generations.
+- **Conclusion: panel axis formally closed.** No panel rule moves the
+  dual-gate endpoint under 48-raw; e2e ≥ 0.8 is a per-target reliability ×
+  budget bound. Matrix (appendix J), protocol (appendix I), and panel
+  (appendix L) axes all closed.
+- Evidence: `e13_verdict_s{0,1,2}.json`, `e13_runs_s{0,1,2}.jsonl`,
+  `e13_audit/`, `docs/FIX_2026-08-12_...` 附录 L.
+
+---
+
 ## 2026-08-14 — E12 aptamer GenNav (lattice-densified + S1 priors): primary endpoint NO-GO, discordance near-significant
 
 **Campaign conclusion (no interface lock changes).** E12 (criteria book
