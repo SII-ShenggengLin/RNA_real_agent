@@ -42,6 +42,21 @@ GUARANTEED-REPAIR ALLOCATION (GenNav-Apt v4.1)。
      gap>0 且可修 (laplace 率 ≥ 0.25) 的带各保证 1 轮后 (带序第一遍),
      才允许任何带的第二轮保证轮。缓存数据模拟: 12 靶三带全部可达交付,
      预测 b≈14-16 / c≈0 → P≈1e-4~1e-3, 主终点预期 GO。
+
+     **判据书补遗 v2 (2026-08-14, 用户拍板): 轮次 3×n8 → 4×n6 (预算
+     中性 47 raw) + n8-over-n2 解锁 + 口径一致化。**
+     E14 S2 v2 实测 (b=10/c=3/P=0.0923) 诊断: ① 3 轮/靶不足以覆盖
+     2-3 个缺口带 (每靶修复能力 ≈1-2 格的上界); ② probe2 补采 (n2)
+     占用 (L, seed) 后封锁了保证轮对该 gear 的 n8 采样 — Pepsin compact
+     的 L28 (真率 0.40) 被 n2 占用, 保证轮只能选 L25 (率 0.21);
+     ③ 稀疏样本率估计噪声 (RNase_A standard 的 L40/L43 真率 0.75,
+     轮次时刻估计率 <0.25 而落选)。补遗 v2 修复: ① 轮次上限 3→4,
+     每轮 n 8→6 (4×6=24 raw, 与 3×8 预算完全相等; 17+6+24=47 ≤48);
+     ② 保证轮与机制化提案的已采样判定改为"仅深度 ≥ n8 视为已采样",
+     n2 占用不再封锁 n8 采样; ③ 可修判定与排序沿用 laplace 率
+     (与面板门 NAV 同源, rate×NAV_DEPTH 为门槛尺度化, 选择排序不变)。
+     LLM ≤4/靶不变。缓存模拟: 三 c 格均获 2 轮覆盖 (循环两遍),
+     预期 c≈0, b≈11-13 → P≈1e-4~0.02, 主终点预期 GO。
   3. **其余逐项同 E13**: 矩阵 v3 / 格增密 17 长度 / S1 先验协议 / 面板规则
      (E13 nav 规则: 每靶 nav≥1 ∧ a_fail≥1, 各 ≤3 例外, her2 ≤ 2, 打分
      2·nav+a_fail) / 48-raw 两臂同 cap / S0-S1-S2 阶段。
@@ -167,8 +182,8 @@ C_LATTICE_LENGTHS = (25, 28, 31, 34, 40, 43, 46, 49, 52, 55,
 C_PROBE_SEED = 42
 C_PROBE_N = 1                  # E12: S2 probe 17 长度 × n1 (17 raw); S1 探针 n2
 C_REQUEST_SEEDS = (7, 99)
-C_REQUEST_N_MAX = 8
-C_MAX_REQUEST_GENERATE = 3     # E12: 机制化强化 ≤3 轮 (48 - 17 - ≤6 补采)
+C_REQUEST_N_MAX = 6            # E14 补遗 v2: 轮次 n 8→6 (4×6=24 raw, 预算中性)
+C_MAX_REQUEST_GENERATE = 4     # E14 补遗 v2: 轮次 ≤3→≤4 (48 - 17 - ≤6 补采)
 C_LLM_MAX = 4                  # E12: 仲裁轮 ≤3 + finalize 1
 RAW_BUDGET_PER_TARGET = 48
 C_PROBE2_BUDGET = 6            # 阶段 2 补采预算 (≤3 长度 × n2, seed 7)
@@ -775,7 +790,9 @@ def _mechanized_proposals(pool: list[dict], gears: list[dict],
         if _band_of(L) is None:
             continue  # 格内缝隙长度 (不在任何带) 不可作为强化 gear
         for s in C_REQUEST_SEEDS:
-            if any(g["aptamer_length"] == L and g["seed"] == s for g in gears):
+            # 补遗 v2: 同 _guarantee_round — 仅 n8 深度视为已采样
+            if any(g["aptamer_length"] == L and g["seed"] == s
+                   and g["n_samples"] >= 8 for g in gears):
                 continue
             rate = _laplace_rate(pool, L, prior=prior)
             exp_new = rate * n
@@ -832,8 +849,11 @@ def _guarantee_round(pool: list[dict], gears: list[dict], raw_spent: int,
             if not (spec["lo"] <= L <= spec["hi"]):
                 continue
             for s in C_REQUEST_SEEDS:
+                # 补遗 v2: 仅当该 (L, seed) 已有深度 ≥ n8 的 gear 才视为已采样
+                # (n2 补采占用不再封锁 n8 保证轮 — E14 v2 实测: Pepsin L28/
+                # RNase_A L40 等被 probe2 的 n2 占用, 保证轮只能选弱 gear)
                 if any(g["aptamer_length"] == L and g["seed"] == s
-                       for g in gears):
+                       and g["n_samples"] >= 8 for g in gears):
                     continue
                 rate = _laplace_rate(pool, L, prior=prior)
                 if rate < GUARANTEE_RATE_MIN:
@@ -1348,12 +1368,14 @@ def compute_verdict(stage: str, runs_path: Path) -> dict:
                            "gap>0 band with laplace-rate>=0.25 unsampled gear "
                            "gets a deterministic guarantee round (no LLM); "
                            "addendum v1 (2026-08-14, user-adjudicated): "
-                           "CYCLING — one guarantee round per repairable "
-                           "band before any band's second round (E14 S2 "
-                           "band-ordered version starved extended: b=14/"
-                           "c=6/P=0.115; cycling simulation projects 12/12 "
-                           "three-band delivery, c≈0); budget 48-raw, <=3 "
-                           "rounds, <=4 LLM unchanged"),
+                           "CYCLING — one round per repairable band before "
+                           "any band's second round (v1 band-ordered starved "
+                           "extended: b=14/c=6/P=0.115); addendum v2 "
+                           "(2026-08-14, user-adjudicated): 4 rounds x n6 "
+                           "(budget-neutral 47 raw), n8-over-n2 unblock "
+                           "(v2 cycling: b=10/c=3/P=0.092 — probe2 n2 "
+                           "occupancy blocked high-rate gears); <=4 LLM "
+                           "unchanged"),
         "c_request_generate_cap": ("2026-08-11: <=2 -> <=4 rounds; 48-raw "
                                    "hard cap both arms unchanged; E12/E13: "
                                    "3 rounds (17-raw dense probe + <=6 probe2)"),
