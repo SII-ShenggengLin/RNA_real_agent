@@ -6,7 +6,6 @@ from typing import Any
 
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, ScrollableContainer, Vertical
-from textual.reactive import reactive
 from textual.widgets import Button, Checkbox, Collapsible, Input, Label, Select, Static, TextArea
 
 from .schema_builder import FormField, FormSchema

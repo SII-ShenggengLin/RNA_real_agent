@@ -1,0 +1,17 @@
+{"id": "theo_aptamer_theophylline", "ok": true, "score": 0.07735116415492956, "elapsed": 11.437}
+{"id": "theo_aptamer_caffeine", "ok": true, "score": 0.07802913910137438, "elapsed": 11.282}
+{"id": "tar_neomycin", "ok": true, "score": 0.3786978236436609, "elapsed": 11.739}
+{"id": "tar_paromomycin", "ok": true, "score": 0.2245392647468776, "elapsed": 11.41}
+{"id": "tar_theophylline", "ok": true, "score": 0.5262736047049763, "elapsed": 11.223}
+{"id": "grna_aptamer_guanine", "ok": true, "score": 0.10685800845138645, "elapsed": 11.31}
+{"id": "grna_aptamer_adenine", "ok": true, "score": 0.7767690642404731, "elapsed": 11.44}
+{"id": "grna_aptamer_caffeine", "ok": true, "score": 0.0847928908940436, "elapsed": 11.516}
+{"id": "theo_aspirin", "ok": true, "score": 0.14119436207081618, "elapsed": 11.172}
+{"id": "theo_benzoic_acid", "ok": true, "score": 0.30031621529357216, "elapsed": 11.196}
+{"id": "theo_ethanol", "ok": true, "score": 0.057005376332799125, "elapsed": 11.994}
+{"id": "tar_aspirin", "ok": true, "score": 0.29717485152852735, "elapsed": 11.42}
+{"id": "tar_benzoic_acid", "ok": true, "score": 0.32256810588892837, "elapsed": 11.391}
+{"id": "tar_ethanol", "ok": true, "score": 0.024387580032445573, "elapsed": 11.43}
+{"id": "grna_aspirin", "ok": true, "score": 0.10680906105514318, "elapsed": 12.2}
+{"id": "grna_benzoic_acid", "ok": true, "score": 0.23792520347603507, "elapsed": 11.985}
+{"id": "grna_ethanol", "ok": true, "score": 0.3674021920513346, "elapsed": 11.684}

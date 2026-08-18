@@ -155,11 +155,6 @@ def build_record(
     pf = results.get("pareto_frontier")
     record["pareto_frontier_size"] = len(pf) if isinstance(pf, list) else None
 
-    bmc_trace = results.get("_bmc_trace") or []
-    record["bmc_rounds"] = len(bmc_trace)
-    if bmc_trace:
-        record["bmc_trace"] = bmc_trace
-
     trace = results.get("trace") or []
     record["n_trace_steps"] = len(trace)
     record["tools_used"] = sorted({t.get("tool_name", "") for t in trace if t.get("tool_name")})

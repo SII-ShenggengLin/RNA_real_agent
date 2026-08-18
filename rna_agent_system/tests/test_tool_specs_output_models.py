@@ -7,8 +7,6 @@ def test_tool_specs_have_output_models_for_registered_tools():
     must_exist = [
         "predict_rna_secondary_structure",
         "predict_rna_secondary_structure_with_linearfold",
-        "evaluate_rna_structure_with_linearfold",
-        "predict_rna_secondary_structure_with_linearfold_zuker",
         "run_blastn_similarity_search",
         "compute_sirna_duplex_binding_vienna",
         "compute_rna_rna_interaction_vienna",

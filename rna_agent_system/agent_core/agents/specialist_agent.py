@@ -7,7 +7,7 @@ import logging
 from typing import Any
 
 from agent_core.agents.base import AgentResult, BaseAgent
-from agent_core.agents.quality_agent import QualityAgent, QualityProfile, QualityReport
+from agent_core.agents.quality_agent import QualityAgent, QualityProfile
 from agent_core.workflow_models import WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow
 
@@ -29,7 +29,6 @@ class SpecialistAgent(BaseAgent):
     ) -> None:
         self.workflow = workflow
         self.quality_profile = quality_profile
-        self.coordinator_agent: Any | None = None
 
     def run(
         self,
@@ -167,8 +166,6 @@ class SpecialistAgent(BaseAgent):
         inp: Any,
         progress_callback: Any | None,
     ) -> WorkflowResult:
-        if self.coordinator_agent is not None:
-            return self.coordinator_agent.run(inp, progress_callback=progress_callback)
         return self.workflow.run(inp, progress_callback=progress_callback)
 
     @staticmethod

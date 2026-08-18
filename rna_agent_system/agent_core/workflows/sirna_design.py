@@ -43,7 +43,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.constants.species import DEFAULT_REFERENCE_SPECIES_ID, REFERENCE_SPECIES_IDS
@@ -243,7 +243,7 @@ class SirnaDesignInput(BaseModel):
     bowtie2_N: int = Field(default=0, description="[bowtie2] -N: 上游 -N，seed 中允许的最大错配数（0 或 1）。")
     bowtie2_L: int = Field(default=22, description="[bowtie2] -L: 上游 -L，seed 子串长度。")
     bowtie2_i: str = Field(default='mode-dependent', description="[bowtie2] -i: 上游 -i，seed 子串间隔函数。")
-    bowtie2_ma: int = Field(default='mode-dependent', description="[bowtie2] --ma: 上游 --ma，匹配奖励。")
+    bowtie2_ma: str = Field(default='mode-dependent', description="[bowtie2] --ma: 上游 --ma，匹配奖励。")
     bowtie2_mp: int = Field(default=6, description="[bowtie2] --mp: 上游 --mp，最大错配罚分。")
     bowtie2_rdg: str = Field(default='5,3', description="[bowtie2] --rdg: 上游 --rdg，read 端 gap 开放/延伸罚分。")
     bowtie2_rfg: str = Field(default='5,3', description="[bowtie2] --rfg: 上游 --rfg，reference 端 gap 开放/延伸罚分。")
@@ -391,6 +391,7 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
     """
 
     name = "sirna_design"
+    task_type = "sirna_design"
     description = (
         "Design siRNA candidates (antiviral via Evitar or generic sliding-window) "
         "with duplex evaluation and off-target safety screening."

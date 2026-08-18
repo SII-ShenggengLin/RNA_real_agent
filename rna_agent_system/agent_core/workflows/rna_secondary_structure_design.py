@@ -51,12 +51,12 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Callable, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence, save_text_file
 from agent_core.sequence_utils import _pick_float
-from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
+from agent_core.workflow_models import Candidate, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
 from agent_core.workflows.evaluators import _trace_capability_call
 
@@ -175,6 +175,7 @@ class RnaSecondaryStructureDesignWorkflow(
     """
 
     name = "rna_secondary_structure_design"
+    task_type = "rna_secondary_structure_design"
     description = (
         "Design RNA sequences that fold into a target secondary structure using "
         "ViennaRNA RNAinverse. Pipeline: inverse folding → GC + fold validation → "

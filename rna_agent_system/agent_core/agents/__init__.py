@@ -1,7 +1,6 @@
 """Multi-agent execution layer."""
 
 from agent_core.agents.base import AgentResult, BaseAgent
-from agent_core.agents.coordinator_agent import CoordinatorAgent
 from agent_core.agents.pipeline_agent import PipelineAgent
 from agent_core.agents.quality_agent import (
     QualityAgent,
@@ -17,7 +16,6 @@ __all__ = [
     "AgentResult",
     "PipelineAgent",
     "SpecialistAgent",
-    "CoordinatorAgent",
     "QualityAgent",
     "QualityProfile",
     "QualityIssue",

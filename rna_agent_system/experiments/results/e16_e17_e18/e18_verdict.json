@@ -1,0 +1,26 @@
+{
+ "campaign": "e18",
+ "oracle": "rnastop_stability",
+ "task_type": "full_length_mrna",
+ "score_field": "overall_stability",
+ "graded_at": "2026-08-18T16:06:37.531007+00:00",
+ "cells": {
+  "rnastop_public_test_107nt": {
+   "n_binder": 60,
+   "n_negative": 60,
+   "auroc": 0.9083,
+   "auroc_ci": [
+    0.8528,
+    0.9558
+   ],
+   "screening_pass": true,
+   "n_ranking": 120,
+   "spearman_rho": 0.5789,
+   "spearman_p": 4.3335445091226465e-12,
+   "ranking_pass": false,
+   "all_gates_pass": false
+  }
+ },
+ "go": false,
+ "governance_flip": "pending -> enforce (record exists; grade whatever it is)"
+}

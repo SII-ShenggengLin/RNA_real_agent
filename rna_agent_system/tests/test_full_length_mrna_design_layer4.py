@@ -1,10 +1,9 @@
 """Layer-3 integration tests for FullLengthMrnaDesignWorkflow via multi-agent execution.
 
 Covers:
-- Workflow invocation through PipelineAgent + SpecialistAgent + CoordinatorAgent
+- Workflow invocation through PipelineAgent + SpecialistAgent
 - Progress callback propagation from the workflow
 - QualityAgent integration with FULL_LENGTH_MRNA_QUALITY_PROFILE
-- BMC parameter handling (bmc_max_rounds, bmc_improvement_threshold)
 """
 
 from __future__ import annotations
@@ -12,7 +11,6 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from agent_core.agents import (
-    CoordinatorAgent,
     PipelineAgent,
     QualityAgent,
     QualityReport,
@@ -208,7 +206,6 @@ def _build_pipeline_agent(
     registry = _build_full_registry(ires_score=ires_score)
     workflow = FullLengthMrnaDesignWorkflow(registry)
     specialist = SpecialistAgent(workflow, FULL_LENGTH_MRNA_QUALITY_PROFILE)
-    specialist.coordinator_agent = CoordinatorAgent(workflow)
     quality_agent = QualityAgent(llm=quality_llm)
     synthesis_agent = SynthesisAgent(enable_llm=False)
     pipeline_agent = PipelineAgent(
@@ -259,7 +256,7 @@ def test_full_length_mrna_design_via_pipeline_agent():
 
 
 def test_full_length_mrna_design_progress_callback():
-    """Progress callback receives workflow events from the BMC/full-length run."""
+    """Progress callback receives workflow events from the full-length run."""
     pipeline_agent, _workflow = _build_pipeline_agent(ires_score=0.1)
 
     plan = PipelinePlan.single(
@@ -382,85 +379,3 @@ def test_quality_agent_review_with_mocked_llm():
     roles = [role for role, _ in mock_llm.last_messages]
     assert "system" in roles
     assert "user" in roles
-
-
-def test_bmc_max_rounds_zero_skips_coordination():
-    """bmc_max_rounds=0 disables BMC and leaves an empty trace."""
-    pipeline_agent, _workflow = _build_pipeline_agent(ires_score=0.1)
-    plan = PipelinePlan.single(
-        workflow="full_length_mrna_design",
-        static_params={
-            "protein_sequence": "MKTAIVE",
-            "design_tool": "lineardesign",
-            "lambda_value": 0.0,
-            "utr_mode": "short",
-            "bmc_max_rounds": 0,
-        },
-    )
-
-    state: dict[str, Any] = {"_quality_review_enabled": False}
-    result = pipeline_agent.execute(plan, state)
-
-    wf_result = result.node_results["n1"].workflow_result
-    assert isinstance(wf_result, WorkflowResult)
-    assert wf_result.success is True
-    assert len(wf_result.all_candidates) > 0
-
-    writeback = getattr(wf_result, "_state_writeback", {}) or {}
-    assert writeback.get("_bmc_trace") == []
-
-
-def test_bmc_max_rounds_positive_accepted_and_traced():
-    """bmc_max_rounds>0 is accepted, the workflow succeeds, and the BMC trace is present.
-
-    With the default utopian reference point and deterministic stub metrics the
-    candidate pool may already satisfy all reference values, so the trace can be
-    legitimately empty. The important assertions are: the parameter is accepted,
-    ``_bmc_trace`` exists, and increasing the round budget does not break the run.
-    """
-    pipeline_agent, _workflow = _build_pipeline_agent(ires_score=0.1)
-    plan = PipelinePlan.single(
-        workflow="full_length_mrna_design",
-        static_params={
-            "protein_sequence": "MKTAIVE",
-            "design_tool": "lineardesign",
-            "lambda_value": 0.0,
-            "utr_mode": "short",
-            "bmc_max_rounds": 2,
-        },
-    )
-
-    state: dict[str, Any] = {"_quality_review_enabled": False}
-    result = pipeline_agent.execute(plan, state)
-
-    wf_result = result.node_results["n1"].workflow_result
-    assert isinstance(wf_result, WorkflowResult)
-    assert wf_result.success is True
-    assert len(wf_result.all_candidates) > 0
-
-    writeback = getattr(wf_result, "_state_writeback", {}) or {}
-    assert "_bmc_trace" in writeback
-    assert isinstance(writeback["_bmc_trace"], list)
-
-
-def test_bmc_improvement_threshold_accepted():
-    """bmc_improvement_threshold is accepted as a workflow input."""
-    pipeline_agent, _workflow = _build_pipeline_agent(ires_score=0.1)
-    plan = PipelinePlan.single(
-        workflow="full_length_mrna_design",
-        static_params={
-            "protein_sequence": "MKTAIVE",
-            "design_tool": "lineardesign",
-            "lambda_value": 0.0,
-            "utr_mode": "short",
-            "bmc_max_rounds": 1,
-            "bmc_improvement_threshold": 0.05,
-        },
-    )
-
-    state: dict[str, Any] = {"_quality_review_enabled": False}
-    result = pipeline_agent.execute(plan, state)
-
-    wf_result = result.node_results["n1"].workflow_result
-    assert isinstance(wf_result, WorkflowResult)
-    assert wf_result.success is True

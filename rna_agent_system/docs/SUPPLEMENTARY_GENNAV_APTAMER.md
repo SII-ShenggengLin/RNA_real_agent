@@ -1,5 +1,10 @@
 # Supplementary — GenNav aptamer-side campaign (E8–E15): pre-registration archive, power analysis, sensitivity
 
+> **Provenance note (2026-08-18)**: the experiment drivers named below
+> were deleted in the system simplification pass (DECISIONS.md (n)); every
+> number cited here is backed by the retained verdict/run files under
+> `experiments/results/`.
+
 **Scope**: the complete evidence trail behind the paper's aptamer GenNav
 results (E14 primary-endpoint GO, McNemar b=14/c=3/P=0.0127). Every
 pre-registration, adjudication, and result file is committed in git; this

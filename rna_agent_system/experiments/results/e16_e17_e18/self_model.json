@@ -1,0 +1,183 @@
+{
+ "schema_version": "calibrated_v1",
+ "records": [
+  {
+   "oracle": "gernabind_probability",
+   "task_type": "rna_small_molecule",
+   "target_family": "pdb_pairs_perturbation",
+   "capabilities": {
+    "screening": {
+     "grade": "failed",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 0.4615,
+      "auroc_ci_lo": 0.1538,
+      "auroc_ci_hi": 0.7885
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e16_e17_e18/e17_scoring.jsonl",
+       "note": "e17 raw oracle responses (probability_positive)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e16_e17_e18/verdict.json",
+       "note": "e17 verdict (gates identical to E1/E7)"
+      }
+     ],
+     "profiled_at": "2026-08-18T16:06:07.753177+00:00",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  },
+  {
+   "oracle": "iresfinder_score",
+   "task_type": "ires_prediction",
+   "target_family": "independent_5utr_ires_vs_nonires",
+   "capabilities": {
+    "screening": {
+     "grade": "failed",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 0.6795,
+      "auroc_ci_lo": 0.4487,
+      "auroc_ci_hi": 0.8846
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e16_e17_e18/e16_scoring.jsonl",
+       "note": "e16 raw oracle responses (max_score)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e16_e17_e18/verdict.json",
+       "note": "e16 verdict (gates identical to E1/E7)"
+      }
+     ],
+     "profiled_at": "2026-08-18T16:06:07.673068+00:00",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  },
+  {
+   "oracle": "iresfinder_score",
+   "task_type": "ires_prediction",
+   "target_family": "independent_core_ires_vs_nonires",
+   "capabilities": {
+    "screening": {
+     "grade": "failed",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 0.7308,
+      "auroc_ci_lo": 0.5064,
+      "auroc_ci_hi": 0.9231
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e16_e17_e18/e16_scoring.jsonl",
+       "note": "e16 raw oracle responses (max_score)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e16_e17_e18/verdict.json",
+       "note": "e16 verdict (gates identical to E1/E7)"
+      }
+     ],
+     "profiled_at": "2026-08-18T16:06:07.673068+00:00",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  },
+  {
+   "oracle": "iresfinder_score",
+   "task_type": "ires_prediction",
+   "target_family": "upstream_testing_ires_vs_nonires",
+   "capabilities": {
+    "screening": {
+     "grade": "failed",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 0.7619,
+      "auroc_ci_lo": 0.6525,
+      "auroc_ci_hi": 0.8569
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e16_e17_e18/e16_scoring.jsonl",
+       "note": "e16 raw oracle responses (max_score)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e16_e17_e18/verdict.json",
+       "note": "e16 verdict (gates identical to E1/E7)"
+      }
+     ],
+     "profiled_at": "2026-08-18T16:06:07.673068+00:00",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  },
+  {
+   "oracle": "rnastop_stability",
+   "task_type": "full_length_mrna",
+   "target_family": "rnastop_public_test_107nt",
+   "capabilities": {
+    "screening": {
+     "grade": "verified",
+     "confidence": 1.0,
+     "metrics": {
+      "auroc": 0.9083,
+      "auroc_ci_lo": 0.8528,
+      "auroc_ci_hi": 0.9558
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e16_e17_e18/e18_scoring.jsonl",
+       "note": "e18 raw oracle responses (overall_stability)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e16_e17_e18/verdict.json",
+       "note": "e18 verdict (gates identical to E1/E7)"
+      }
+     ],
+     "profiled_at": "2026-08-18T16:06:37.531007+00:00",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    },
+    "ranking": {
+     "grade": "failed",
+     "confidence": 1.0,
+     "metrics": {
+      "spearman_rho": 0.5789,
+      "spearman_p": 4.3335445091226465e-12
+     },
+     "evidence": [
+      {
+       "kind": "jsonl",
+       "path": "experiments/results/e16_e17_e18/e18_scoring.jsonl",
+       "note": "e18 raw oracle responses (overall_stability)"
+      },
+      {
+       "kind": "summary_json",
+       "path": "experiments/results/e16_e17_e18/verdict.json",
+       "note": "e18 verdict (gates identical to E1/E7)"
+      }
+     ],
+     "profiled_at": "2026-08-18T16:06:37.531007+00:00",
+     "source_case_id": null,
+     "transferred_from_grade": null
+    }
+   }
+  }
+ ]
+}

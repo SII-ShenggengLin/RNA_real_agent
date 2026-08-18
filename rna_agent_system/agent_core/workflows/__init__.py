@@ -1,7 +1,7 @@
 """Reusable workflow orchestration (mRNA ranking and future UTR/circRNA variants).
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v2.6.3) —— 禁止单方面变更       ║
+║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v3.0.0) —— 禁止单方面变更       ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件导出了 full_length_mrna_design workflow 的公开 API。                   ║
 ║  增删导出项必须同步更新全部关联文件并重新跑通端到端测试。                       ║
@@ -28,15 +28,7 @@ from agent_core.workflows.evaluators import (
     UTR5MrlEvaluator,
     UnpairedFractionEvaluator,
 )
-from agent_core.workflows.scoring import (
-    FullLengthBMCScoringFunction,
-    MrnaCdsScoringFunction,
-    ScoringFunction,
-    SgRnaScoringFunction,
-    SirnaRankScoringFunction,
-    normalize_score,
-    safe_divide,
-)
+from agent_core.workflows.scoring import FullLengthScoringFunction
 
 # AsoTargetScreeningWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更
 # 关联文件清单见 agent_core/workflows/aso_target_screening.py 顶部的
@@ -122,13 +114,7 @@ __all__ = [
     "UTR5MrlEvaluator",
     "UnpairedFractionEvaluator",
     # Scoring
-    "FullLengthBMCScoringFunction",
-    "MrnaCdsScoringFunction",
-    "ScoringFunction",
-    "SgRnaScoringFunction",
-    "SirnaRankScoringFunction",
-    "normalize_score",
-    "safe_divide",
+    "FullLengthScoringFunction",
     # Workflows
     "AsoScreeningInput",
     "AsoTargetScreeningWorkflow",

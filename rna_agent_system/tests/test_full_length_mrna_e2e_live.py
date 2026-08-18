@@ -2,7 +2,7 @@
 
 These tests exercise the complete stack:
   Layer 3: QualityAgent (quality review; mocked in most tests below)
-  Layer 3: PipelineAgent / SpecialistAgent / CoordinatorAgent (multi-agent execution)
+  Layer 3: PipelineAgent / SpecialistAgent (multi-agent execution)
   Layer 2: FullLengthMrnaDesignWorkflow (generation + evaluation + ranking)
   Layer 1: Stub capabilities (fast, deterministic)
   Layer 0: File manager, state management
@@ -16,7 +16,6 @@ from typing import Any
 import pytest
 
 from agent_core.agents import (
-    CoordinatorAgent,
     PipelineAgent,
     QualityAgent,
     QualityReport,
@@ -323,12 +322,12 @@ class TestQualityAgent:
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# Layer 3 — Full retry flow: PipelineAgent + SpecialistAgent + CoordinatorAgent
+# Layer 3 — Full retry flow: PipelineAgent + SpecialistAgent
 # ═══════════════════════════════════════════════════════════════════════
 
 
 class TestFullRetryFlow:
-    """End-to-end: PipelineAgent drives BMC full_length_mrna_design with mocked QualityAgent."""
+    """End-to-end: PipelineAgent drives full_length_mrna_design with mocked QualityAgent."""
 
     @staticmethod
     def _mock_llm(*responses: str) -> Any:
@@ -358,11 +357,10 @@ class TestFullRetryFlow:
         return json.dumps(report)
 
     def _build_pipeline(self, mock_llm: Any) -> PipelineAgent:
-        """Assemble a PipelineAgent for full_length_mrna_design with a CoordinatorAgent."""
+        """Assemble a PipelineAgent for full_length_mrna_design."""
         registry = _build_stub_registry(ires_score=0.1)
         workflow = FullLengthMrnaDesignWorkflow(registry)
         specialist = SpecialistAgent(workflow, FULL_LENGTH_MRNA_QUALITY_PROFILE)
-        specialist.coordinator_agent = CoordinatorAgent(workflow)
         quality_agent = QualityAgent(llm=mock_llm)
         synthesis_agent = SynthesisAgent(enable_llm=False)
         return PipelineAgent(
@@ -372,7 +370,7 @@ class TestFullRetryFlow:
         )
 
     def test_pipeline_runs_full_length_workflow(self):
-        """PipelineAgent executes the BMC workflow and returns a successful result."""
+        """PipelineAgent executes the workflow and returns a successful result."""
         report_json = self._report_json(action="pass", quality_score=0.95)
         pipeline_agent = self._build_pipeline(self._mock_llm(report_json))
 

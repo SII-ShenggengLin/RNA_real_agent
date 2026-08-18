@@ -231,6 +231,7 @@ class AsoTargetScreeningWorkflow(
     """
 
     name = "aso_target_screening"
+    task_type = "aso_target_screening"
     input_model = AsoScreeningInput
     description = (
         "Screen a target mRNA for optimal ASO binding sites. "

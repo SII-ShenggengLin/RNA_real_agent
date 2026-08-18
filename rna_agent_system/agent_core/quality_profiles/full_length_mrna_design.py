@@ -99,9 +99,8 @@ FULL_LENGTH_MRNA_QUALITY_PROFILE = QualityProfile(
         "Design full-length mRNA (5'UTR + CDS + 3'UTR) from protein sequence. "
         "CDS is generated via MrnaCdsDesignWorkflow (LinearDesign/RNARL/GEMORNA); "
         "UTRs are appended from GEMORNA short/medium/long presets. "
-        "BMC coordination is reference-point driven: the coordinator compares each "
-        "candidate's normalized objective scores to a user-provided or auto-derived "
-        "reference point and regenerates modules when gaps exist. "
+        "Candidates are ranked by Achievement Scalarizing Function distance to a "
+        "user-provided or auto-derived reference point. "
         "CDS-level quality concerns should be addressed by adjusting design_tool "
         "or lambda_value, which are passed down to the CDS sub-workflow."
     ),
@@ -152,7 +151,7 @@ FULL_LENGTH_MRNA_QUALITY_PROFILE = QualityProfile(
         },
         "reference_point": {
             "type": "dict",
-            "hint": "Optional per-objective aspiration point for ASF selection and BMC coordination. User-facing keys: cds_component, utr5_mrl, utr3_stability, full_mfe_score. Missing dimensions use the candidate-pool utopian point.",
+            "hint": "Optional per-objective aspiration point for ASF selection. User-facing keys: cds_component, utr5_mrl, utr3_stability, full_mfe_score. Missing dimensions use the candidate-pool utopian point.",
         },
         "target_cds_mfe": {
             "type": "float",

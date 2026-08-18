@@ -15,7 +15,17 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from agent_core.tool_interface import ToolDependency, ToolExample, ToolSpec, ToolStatus, ToolTransport
+from agent_core.tool_interface import (
+    OracleDescriptor,
+    OracleEvidenceUse,
+    OracleGovernance,
+    ToolDependency,
+    ToolExample,
+    ToolKind,
+    ToolSpec,
+    ToolStatus,
+    ToolTransport,
+)
 from agent_core import tools as tool_wrappers
 from agent_core.constants.species import format_cai_species_aliases
 
@@ -189,62 +199,6 @@ class LinearFoldOutput(_OutBase):
     model: str
 
 
-class LinearFoldEvalOutput(_OutBase):
-    sequence_filepath: str = ""
-    structure_filepath: str = ""
-    sequence: str
-    structure: str
-    energy: float
-    backend: str = ""
-    model: str
-    verbose_details: Optional[str] = None
-
-
-class LinearFoldZukerSuboptOutput(_OutBase):
-    filepath: str
-    sequence: str
-    mfe: float
-    structures: List[Dict[str, Any]]
-    backend: str = ""
-    model: str
-
-
-# codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-
-class CodonwSlimOutput(_OutBase):
-    """Full output schema for codonw-slim CDS metrics.
-
-    Every scalar metric and optional table exposed by the upstream CodonSeq
-    class is represented here so that the agent has a complete, typed contract.
-
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: analyze_cds_codon_metrics_with_codonw_slim (wrapper return dict)
-    - microservices/codonw_slim_service/main.py :: CodonwAnalyzeResponse
-    - agent_core/state.py :: codonw_* fields
-    """
-
-    input_filepath: str
-    metrics_json_filepath: str
-    cai_score: float
-    enc: float
-    fop: float
-    cbi: float
-    hydropathy: float = 0.0
-    aromaticity: float = 0.0
-    genetic_code: int = 0
-    cds_length_nt: int = 0
-    cds_length_codons: int = 0
-    normalization_note: str = ""
-    silent_base_usage: dict[str, Any] = {}
-    bases2: dict[str, Any] = {}
-    codon_usage: Optional[dict[str, Any]] = None
-    rscu: Optional[dict[str, Any]] = None
-    dinuc: Optional[dict[str, Any]] = None
-    aa_usage: Optional[dict[str, Any]] = None
-    raau: Optional[dict[str, Any]] = None
-    bases: Optional[dict[str, Any]] = None
-    model: str
-
 
 class CrisotScoreOutput(_OutBase):
     input_filepath: str
@@ -258,62 +212,6 @@ class CrisotSpecOutput(_OutBase):
     input_csv_filepath: str
     scored_csv_filepath: str
     crisot_spec: float
-    model: str
-
-
-class CrisotOffSpecOutput(_OutBase):
-    input_filepath: str
-    sgrna: str
-    target_sequence: str
-    genome_path: str
-    crisot_spec: float
-    off_target_count: int
-    scored_csv_filepath: str
-    model: str
-
-
-class CrisotOptimizeOutput(_OutBase):
-    input_filepath: str
-    target_sequence: str
-    genome_path: str
-    optimized_available: bool
-    best_sgrna: str = ""
-    best_mutation: str = ""
-    best_delta_spec: float = 0.0
-    best_crisot_score: float = 0.0
-    best_crisot_spec: float = 0.0
-    optimization_csv_filepath: str = ""
-    optimized_sgrna_filepath: str = ""
-    model: str
-
-
-class CrisotScoresOutput(_OutBase):
-    input_csv_filepath: str
-    scored_csv_filepath: str
-    row_count: int
-    model: str
-
-
-class CrisotRescoreOutput(_OutBase):
-    input_txt_filepath: str
-    rescore_csv_filepath: str
-    genome_path: str
-    sgrna_count: int
-    model: str
-
-
-class CrisotFpOutput(_OutBase):
-    input_csv_filepath: str
-    fp_csv_filepath: str
-    xgb_model: str
-    row_count: int
-    model: str
-
-
-class CrisotGenFpOutput(_OutBase):
-    sgrna: str
-    target_sequence: str
-    fp_csv_filepath: str
     model: str
 
 
@@ -443,77 +341,11 @@ class LinearDesignCdsOutput(_OutBase):
     model: str
 
 
-class LinearDesignCdsBatchItemOutput(_OutBase):
-    """Per-item result inside a LinearDesign batch response."""
-
-    success: bool
-    generated_sequence: str = ""
-    structure: str = ""
-    mfe: float = 0.0
-    cai_score: float = 0.0
-    raw_output: str = ""
-    stderr: str = ""
-    error: str = ""
-
-
-class LinearDesignCdsBatchOutput(_OutBase):
-    """LinearDesign batch CDS design output schema.
-
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: design_mrna_cds_batch_with_lineardesign return dict
-    - microservices/lineardesign_service/main.py :: LinearDesignBatchResponse
-    - agent_core/state.py :: lineardesign_* fields
-    """
-
-    input_filepath: str
-    output_filepath: str
-    best_generated_sequence: str = ""
-    best_structure: str = ""
-    best_mfe: float = 0.0
-    best_cai_score: float = 0.0
-    count: int
-    success_count: int
-    items: List[LinearDesignCdsBatchItemOutput]
-    lambda_value: float
-    codon_usage_path: str
-    batch_json_filepath: str
-    model: str
 
 
 # Junction-aware LinearDesign tool (2026-08, additive; v0.2.0 locked schemas above
 # are untouched). Mirrors microservices/lineardesign_service/main.py ::
 # LinearDesignJunctionAwareResponse.
-
-
-class LinearDesignCdsJunctionAwareOutput(_OutBase):
-    """Junction-aware LinearDesign CDS design output schema.
-
-    Synchronized with:
-    - agent_core/tools.py :: design_mrna_cds_junction_aware_with_lineardesign return dict
-    - microservices/lineardesign_service/main.py :: LinearDesignJunctionAwareResponse
-    """
-
-    input_filepath: str
-    output_filepath: str
-    generated_sequence: str
-    structure: str
-    mfe: float
-    cai_score: float
-    cds_sequence: str = ""
-    cds_cai: float = 0.0
-    full_construct_sequence: str = ""
-    utr5_flank: str = ""
-    utr3_flank: str = ""
-    junction_weight: float = 0.0
-    junction_window_nt: int = 20
-    flank_nt: int = 21
-    junction_window_pair_count: int = 0
-    mfe_thermo: float = 0.0
-    lambda_value: float
-    codon_usage_path: str
-    raw_output: str
-    stderr: str = ""
-    model: str
 
 
 class RNARLCdsOutput(_OutBase):
@@ -928,22 +760,6 @@ class CaiForCdsOutput(_OutBase):
     model: str
 
 
-class ShuffleCdsJunctionCodonsOutput(_OutBase):
-    """Junction codon shuffler output schema.
-
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: shuffle_cds_junction_codons (wrapper return dict)
-    - agent_core/state.py :: shuffle_cds_junction_* fields
-    """
-
-    original_sequence: str
-    junction_end: str
-    shuffled_region_start: int
-    shuffled_region_end: int
-    variants: list[dict[str, Any]]
-    model: str
-
-
 class WorkflowDemoEchoOutput(_OutBase):
     """Workflow demo echo output schema.
 
@@ -961,6 +777,8 @@ class WorkflowDemoEchoOutput(_OutBase):
 TOOL_SPECS: Dict[str, ToolSpec] = {
     "compute_sirna_duplex_binding_vienna": ToolSpec(
         identity="compute_sirna_duplex_binding_vienna",
+        kind=ToolKind.compute,
+
         display_name="ViennaRNA duplex cofold (siRNA sense/antisense)",
         version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
@@ -998,6 +816,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # 本次修改的基准日期：2026-04-24。
     "design_sirna_with_evitar": ToolSpec(
         identity="design_sirna_with_evitar",
+        kind=ToolKind.generator,
+
         display_name="Evitar siRNA/Cas13 design",
         version="0.2.0",
         source="https://github.com/dingyaozhang/Evitar",
@@ -1039,6 +859,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     "run_blastn_similarity_search": ToolSpec(
         identity="run_blastn_similarity_search",
+        kind=ToolKind.compute,
+
         display_name="BLAST+ blastn similarity search",
         version="0.2.0",
         source="https://blast.ncbi.nlm.nih.gov/Blast.cgi",
@@ -1062,6 +884,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "run_bowtie2_short_alignment": ToolSpec(
         identity="run_bowtie2_short_alignment",
+        kind=ToolKind.compute,
+
         display_name="Bowtie2 short-sequence alignment",
         version="0.1.0",
         source="https://bowtie-bio.sourceforge.net/bowtie2/index.shtml",
@@ -1085,6 +909,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "predict_rna_secondary_structure": ToolSpec(
         identity="predict_rna_secondary_structure",
+        kind=ToolKind.compute,
+
         display_name="ViennaRNA RNAfold (secondary structure)",
         version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
@@ -1101,6 +927,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "compute_rna_rna_interaction_vienna": ToolSpec(
         identity="compute_rna_rna_interaction_vienna",
+        kind=ToolKind.compute,
+
         display_name="ViennaRNA RNAup (RNA-RNA interaction thermodynamics)",
         version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
@@ -1121,6 +949,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "compute_aso_target_accessibility_vienna": ToolSpec(
         identity="compute_aso_target_accessibility_vienna",
+        kind=ToolKind.compute,
+
         display_name="ViennaRNA RNAplfold accessibility (ASO)",
         version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
@@ -1137,6 +967,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "predict_rna_local_accessibility_profile_vienna": ToolSpec(
         identity="predict_rna_local_accessibility_profile_vienna",
+        kind=ToolKind.compute,
+
         display_name="ViennaRNA RNAplfold local accessibility profile",
         version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
@@ -1157,6 +989,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "inverse_fold_rna_secondary_structure_vienna": ToolSpec(
         identity="inverse_fold_rna_secondary_structure_vienna",
+        kind=ToolKind.generator,
+
         display_name="ViennaRNA RNAinverse (inverse folding)",
         version="0.4.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
@@ -1181,6 +1015,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     "predict_rna_secondary_structure_with_linearfold": ToolSpec(
         identity="predict_rna_secondary_structure_with_linearfold",
+        kind=ToolKind.compute,
+
         display_name="LinearFold secondary structure",
         version="0.2.0-port8015",
         source="https://github.com/LinearFold/LinearFold",
@@ -1198,38 +1034,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearFoldOutput,
         status=ToolStatus.available,
     ),
-    "evaluate_rna_structure_with_linearfold": ToolSpec(
-        identity="evaluate_rna_structure_with_linearfold",
-        display_name="LinearFold structure energy evaluation",
-        version="0.2.0-port8015",
-        source="https://github.com/LinearFold/LinearFold",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8015/eval",
-        capabilities=["Evaluate free energy of a given RNA secondary structure."],
-        limitations=["Only supports dot-bracket notation; pseudoknots are ignored."],
-        task_tags=["rna_secondary_structure_evaluation"],
-        requires=[ToolDependency(name="LinearFold microservice", detail="microservices/linearfold_service (port 8015)")],
-        produces=["energy"],
-        input_model=tool_wrappers.LinearFoldEvalInput,
-        output_model=LinearFoldEvalOutput,
-        status=ToolStatus.available,
-    ),
-    "predict_rna_secondary_structure_with_linearfold_zuker": ToolSpec(
-        identity="predict_rna_secondary_structure_with_linearfold_zuker",
-        display_name="LinearFold Zuker suboptimal structures",
-        version="0.2.0-port8015",
-        source="https://github.com/LinearFold/LinearFold",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8015/fold/zuker_subopt",
-        capabilities=["Enumerate Zuker suboptimal RNA secondary structures within an energy window."],
-        limitations=["Number of suboptimal structures grows with sequence length and energy window."],
-        task_tags=["rna_secondary_structure_prediction"],
-        requires=[ToolDependency(name="LinearFold microservice", detail="microservices/linearfold_service (port 8015)")],
-        produces=["structures", "mfe"],
-        input_model=tool_wrappers.LinearFoldZukerSuboptInput,
-        output_model=LinearFoldZukerSuboptOutput,
-        status=ToolStatus.available,
-    ),
     # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/lineardesign_service/main.py
@@ -1243,6 +1047,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # 本次修改的基准日期：2026-04-24。
     "design_mrna_cds_with_lineardesign": ToolSpec(
         identity="design_mrna_cds_with_lineardesign",
+        kind=ToolKind.generator,
+
         display_name="LinearDesign protein→CDS design",
         version="0.2.0-port8014",
         source="https://github.com/LinearDesignSoftware/LinearDesign",
@@ -1266,65 +1072,12 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearDesignCdsOutput,
         status=ToolStatus.partial,
     ),
-    "design_mrna_cds_batch_with_lineardesign": ToolSpec(
-        identity="design_mrna_cds_batch_with_lineardesign",
-        display_name="LinearDesign protein→CDS batch design",
-        version="0.2.0-port8014",
-        source="https://github.com/LinearDesignSoftware/LinearDesign",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8014/generate/cds/batch",
-        capabilities=[
-            "Batch-generate CDS sequences from multiple protein sequences (FASTA or plain text).",
-            "Mirrors upstream ``cat FASTA_FILE | ./lineardesign`` capability.",
-        ],
-        limitations=[
-            "Requires server-side compiled binaries (run `make` in external_repos/LinearDesign).",
-            "All sequences share the same lambda and codon usage settings.",
-        ],
-        task_tags=["protein_to_cds_design", "batch_design"],
-        requires=[
-            ToolDependency(name="Linux", detail="Documented deployment target"),
-            ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service (port 8014)"),
-        ],
-        produces=["output_filepath", "best_generated_sequence", "count", "success_count", "items", "batch_json_filepath"],
-        input_model=tool_wrappers.LinearDesignCdsBatchInput,
-        output_model=LinearDesignCdsBatchOutput,
-        status=ToolStatus.partial,
-    ),
-    # Junction-aware LinearDesign tool (2026-08, additive; v0.2.0 locked specs above
-    # are untouched). Synchronized with microservices/lineardesign_service/main.py ::
-    # /generate/cds_junction_aware and agent_core/tools.py ::
-    # design_mrna_cds_junction_aware_with_lineardesign.
-    "design_mrna_cds_junction_aware_with_lineardesign": ToolSpec(
-        identity="design_mrna_cds_junction_aware_with_lineardesign",
-        display_name="LinearDesign junction-aware protein→CDS design",
-        version="0.1.0-port8014",
-        source="https://github.com/LinearDesignSoftware/LinearDesign",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8014/generate/cds_junction_aware",
-        capabilities=[
-            "Generate CDS with fixed UTR flank slices folded into the full construct (cross-junction pairs visible to the optimizer).",
-            "Apply a junction-window pair penalty (junction_weight, kcal/mol) inside the CKY objective.",
-            "Report CDS-only sequence/CAI, window pair count, and thermodynamic MFE alongside the objective value.",
-        ],
-        limitations=[
-            "Requires the patched LinearDesign binary (JUNCTION-PATCH 2026-08; run `make` in external_repos/LinearDesign).",
-            "Single-sequence endpoint; `mfe` is the CKY objective value (thermodynamic MFE + penalty), see `mfe_thermo` for the pure MFE.",
-        ],
-        task_tags=["protein_to_cds_design", "junction_aware_design"],
-        requires=[
-            ToolDependency(name="Linux", detail="Documented deployment target"),
-            ToolDependency(name="LinearDesign microservice", detail="microservices/lineardesign_service (port 8014)"),
-        ],
-        produces=["output_filepath", "generated_sequence", "cds_sequence", "cds_cai", "junction_window_pair_count", "mfe_thermo"],
-        input_model=tool_wrappers.LinearDesignCdsJunctionAwareInput,
-        output_model=LinearDesignCdsJunctionAwareOutput,
-        status=ToolStatus.partial,
-    ),
     # INTERFACE LOCK (v0.2.0): RNARL tool spec. See docs/tools/design_mrna_cds_with_rnarl.md
     # for the canonical contract. Modify only in sync with wrapper + microservice.
     "design_mrna_cds_with_rnarl": ToolSpec(
         identity="design_mrna_cds_with_rnarl",
+        kind=ToolKind.generator,
+
         display_name="RNARL protein→CDS design",
         version="0.2.0",
         source="https://github.com/SII-ShenggengLin/RNARL",
@@ -1344,6 +1097,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - microservices/gemorna_service/main.py :: CdsDesignRequest / CdsDesignResponse
     "design_mrna_cds_with_gemorna": ToolSpec(
         identity="design_mrna_cds_with_gemorna",
+        kind=ToolKind.generator,
+
         display_name="GEMORNA protein→CDS design",
         version="0.2.0",
         source="https://github.com/RainaBio/GEMORNA",
@@ -1363,6 +1118,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - microservices/gemorna_service/main.py :: UtrDesignRequest / UtrDesignResponse
     "design_5utr_with_gemorna": ToolSpec(
         identity="design_5utr_with_gemorna",
+        kind=ToolKind.generator,
+
         display_name="GEMORNA 5'UTR design",
         version="0.2.0",
         source="https://github.com/RainaBio/GEMORNA",
@@ -1382,6 +1139,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - microservices/gemorna_service/main.py :: UtrDesignRequest / UtrDesignResponse
     "design_3utr_with_gemorna": ToolSpec(
         identity="design_3utr_with_gemorna",
+        kind=ToolKind.generator,
+
         display_name="GEMORNA 3'UTR design",
         version="0.2.0",
         source="https://github.com/RainaBio/GEMORNA",
@@ -1401,6 +1160,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - microservices/gemorna_service/main.py :: UtrPredictionRequest / Utr5MrlPredictionResponse
     "predict_5utr_mrl_with_gemorna": ToolSpec(
         identity="predict_5utr_mrl_with_gemorna",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="gemorna_5utr_mrl",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.enforce,
+            default_task_type="full_length_mrna",
+        ),
+
         display_name="GEMORNA 5'UTR MRL prediction",
         version="0.1.0",
         source="https://github.com/RainaBio/GEMORNA",
@@ -1420,6 +1187,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - microservices/gemorna_service/main.py :: UtrPredictionRequest / Utr3StabilityPredictionResponse
     "predict_3utr_stability_with_gemorna": ToolSpec(
         identity="predict_3utr_stability_with_gemorna",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="gemorna_3utr_stability",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.enforce,
+            default_task_type="full_length_mrna",
+        ),
+
         display_name="GEMORNA 3'UTR stability prediction",
         version="0.1.0",
         source="https://github.com/RainaBio/GEMORNA",
@@ -1440,6 +1215,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
         identity="predict_rna_tertiary_structure_with_rhofold",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="rhofold_mean_plddt",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.enforce,
+            default_task_type="rna_aptamer_design",
+        ),
+
         display_name="RhoFold tertiary structure prediction",
         version="0.2.0",
         source="https://github.com/ml4bio/RhoFold",
@@ -1460,6 +1243,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - docs/tools/design_rna_sequence_with_rhodesign.md
     "design_rna_sequence_with_rhodesign": ToolSpec(
         identity="design_rna_sequence_with_rhodesign",
+        kind=ToolKind.generator,
+
         display_name="RhoDesign structure→sequence design",
         version="0.2.0",
         source="https://github.com/ml4bio/RhoDesign",
@@ -1480,6 +1265,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/workflows/rna_tertiary_structure_design.py
     "design_rna_inverse_fold_with_ribodiffusion": ToolSpec(
         identity="design_rna_inverse_fold_with_ribodiffusion",
+        kind=ToolKind.generator,
+
         display_name="RiboDiffusion tertiary inverse folding",
         version="0.2.0",
         source="https://github.com/ml4bio/RiboDiffusion",
@@ -1512,6 +1299,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(
         identity="score_rna_ligand_binding_with_rnasmol",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="rnasmol",
+            evidence_use=OracleEvidenceUse.screening_evaluation,
+            governance=OracleGovernance.enforce,
+            default_task_type="rna_small_molecule",
+        ),
+
         display_name="RNAsmol RNA-ligand scoring",
         version="0.3.0",
         source="https://github.com/hongli-ma/RNAsmol",
@@ -1535,6 +1330,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
     "score_rna_ligand_binding_with_gernabind": ToolSpec(
         identity="score_rna_ligand_binding_with_gernabind",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="gernabind_probability",
+            evidence_use=OracleEvidenceUse.screening_evaluation,
+            governance=OracleGovernance.enforce,
+            default_task_type="rna_small_molecule",
+        ),
+
         display_name="GerNA-Bind RNA-ligand scoring",
         version="0.1.0",
         source="https://github.com/GENTEL-lab/GerNA-Bind",
@@ -1557,6 +1360,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: egarps_* fields
     "score_rna_protein_complex_with_egarps": ToolSpec(
         identity="score_rna_protein_complex_with_egarps",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="egarps_native_probability",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.enforce,
+            default_task_type="rna_aptamer_design",
+        ),
+
         display_name="EGARPS+ RNA-protein complex scoring",
         version="0.1.0",
         source="https://github.com/hzau-liulab/EGARPS",
@@ -1579,6 +1390,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: rnastop_* fields
     "predict_mrna_stability_with_rnastop": ToolSpec(
         identity="predict_mrna_stability_with_rnastop",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="rnastop_stability",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.enforce,
+            default_task_type="full_length_mrna",
+        ),
+
         display_name="RNASTOP stability/degradation prediction",
         version="0.1.0",
         source="https://github.com/SII-ShenggengLin/RNASTOP",
@@ -1614,6 +1433,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: iresfinder_* fields
     "predict_putative_ires_with_iresfinder": ToolSpec(
         identity="predict_putative_ires_with_iresfinder",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="iresfinder_score",
+            evidence_use=OracleEvidenceUse.screening_evaluation,
+            governance=OracleGovernance.enforce,
+            default_task_type="ires_prediction",
+        ),
+
         display_name="IRESfinder prediction",
         version="0.2.0",
         source="https://github.com/xiaofengsong/IRESfinder",
@@ -1646,39 +1473,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=IRESfinderPredictionOutput,
         status=ToolStatus.available,
     ),
-    # codonw-slim INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # 关联文件清单见本文件上方 CodonwSlimOutput 的 INTERFACE LOCK 注释。
-    "analyze_cds_codon_metrics_with_codonw_slim": ToolSpec(
-        identity="analyze_cds_codon_metrics_with_codonw_slim",
-        display_name="codonw-slim CDS metrics",
-        version="0.2.0",
-        source="https://github.com/smsaladi/codonw-slim",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8018/analyze/cds",
-        capabilities=[
-            "Compute codon usage metrics: CAI, Fop, CBI, Nc (ENC), hydropathy, aromaticity.",
-            "Compute base composition (overall, by codon position, silent sites): GC3s, GC1/2/3, A3s/T3s/C3s/G3s.",
-            "Optional tables: codon usage counts, RSCU, dinucleotide by frame, amino-acid usage, RAAU, base composition matrix.",
-            "Support multiple genetic codes (0--7) and reference species indices for CAI/CBI/Fop.",
-        ],
-        limitations=[
-            "Requires in-frame CDS input (length multiple of 3); trailing bases are trimmed server-side.",
-            "No error checking for start/stop codons, internal stops, or partial codons (upstream CodonW behaviour).",
-        ],
-        task_tags=["cds_codon_metrics", "codon_usage", "cai", "cbi", "fop", "enc", "nc"],
-        requires=[ToolDependency(name="codonw-slim microservice", detail="microservices/codonw_slim_service (port 8018)")],
-        produces=[
-            "cai_score", "enc", "fop", "cbi",
-            "hydropathy", "aromaticity",
-            "silent_base_usage", "bases2",
-            "metrics_json_filepath",
-            "codon_usage", "rscu", "dinuc",
-            "aa_usage", "raau", "bases",
-        ],
-        input_model=tool_wrappers.CodonwSlimAnalyzeInput,
-        output_model=CodonwSlimOutput,
-        status=ToolStatus.available,
-    ),
     # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/crisot_service/main.py
@@ -1691,6 +1485,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # 本次修改的基准日期：2026-04-24。
     "score_crispr_off_target_with_crisot": ToolSpec(
         identity="score_crispr_off_target_with_crisot",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="crisot_off_target_score",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.pending,
+            default_task_type="sgrna_design",
+        ),
+
         display_name="CRISOT score (single pair)",
         version="0.1.0",
         source="https://github.com/bm2-lab/CRISOT",
@@ -1707,6 +1509,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "calculate_crispr_specificity_with_crisot": ToolSpec(
         identity="calculate_crispr_specificity_with_crisot",
+        kind=ToolKind.compute,
+
         display_name="CRISOT specificity (CSV)",
         version="0.1.0",
         source="https://github.com/bm2-lab/CRISOT",
@@ -1721,102 +1525,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=CrisotSpecOutput,
         status=ToolStatus.partial,
     ),
-    "search_crispr_off_targets_with_crisot": ToolSpec(
-        identity="search_crispr_off_targets_with_crisot",
-        display_name="CRISOT genome-wide off-spec search",
-        version="0.1.0",
-        source="https://github.com/bm2-lab/CRISOT",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8011/off-spec",
-        capabilities=["Search genome-wide off-targets and compute specificity with Cas-OFFinder + CRISOT."],
-        limitations=["Requires reference genome FASTA and Cas-OFFinder installed in service env."],
-        task_tags=["crispr_offtarget_search"],
-        requires=[ToolDependency(name="Reference genome", detail="FASTA path"), ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
-        produces=["off_target_count", "scored_csv_filepath"],
-        input_model=tool_wrappers.CrisotOffSpecInput,
-        output_model=CrisotOffSpecOutput,
-        status=ToolStatus.partial,
-    ),
-    "optimize_sgrna_with_crisot": ToolSpec(
-        identity="optimize_sgrna_with_crisot",
-        display_name="CRISOT sgRNA optimization",
-        version="0.2.0",
-        source="https://github.com/bm2-lab/CRISOT",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8011/optimize",
-        capabilities=["Optimize sgRNA mutations to improve specificity under mismatch constraints."],
-        limitations=["Can be slow on large genomes; requires genome FASTA and Cas-OFFinder."],
-        task_tags=["crispr_sgrna_optimization"],
-        requires=[ToolDependency(name="Reference genome", detail="FASTA path"), ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
-        produces=["best_sgrna", "best_delta_spec"],
-        input_model=tool_wrappers.CrisotOptimizeInput,
-        output_model=CrisotOptimizeOutput,
-        status=ToolStatus.partial,
-    ),
-    "score_batch_crispr_off_targets_with_crisot": ToolSpec(
-        identity="score_batch_crispr_off_targets_with_crisot",
-        display_name="CRISOT batch scoring (CSV)",
-        version="0.1.0",
-        source="https://github.com/bm2-lab/CRISOT",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8011/scores",
-        capabilities=["Batch calculate CRISOT-Score for sgRNA-target pairs in a CSV."],
-        limitations=["Requires CSV with expected column names; does not search genome-wide off-targets."],
-        task_tags=["crispr_offtarget_scoring"],
-        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
-        produces=["scored_csv_filepath"],
-        input_model=tool_wrappers.CrisotScoresInput,
-        output_model=CrisotScoresOutput,
-        status=ToolStatus.partial,
-    ),
-    "rescore_sgrnas_with_crisot": ToolSpec(
-        identity="rescore_sgrnas_with_crisot",
-        display_name="CRISOT genome-wide rescore and reranking",
-        version="0.1.0",
-        source="https://github.com/bm2-lab/CRISOT",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8011/rescore",
-        capabilities=["Rescore and rerank sgRNAs by CRISOT-Score and CRISOT-Spec using Cas-OFFinder genome-wide search."],
-        limitations=["Requires reference genome FASTA and Cas-OFFinder installed in service env."],
-        task_tags=["crispr_sgrna_rescore"],
-        requires=[ToolDependency(name="Reference genome", detail="FASTA path"), ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
-        produces=["rescore_csv_filepath", "sgrna_count"],
-        input_model=tool_wrappers.CrisotRescoreInput,
-        output_model=CrisotRescoreOutput,
-        status=ToolStatus.partial,
-    ),
-    "predict_crispr_off_target_with_crisot_fp": ToolSpec(
-        identity="predict_crispr_off_target_with_crisot_fp",
-        display_name="CRISOT-FP XGBoost off-target prediction",
-        version="0.1.0",
-        source="https://github.com/bm2-lab/CRISOT",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8011/crisot-fp",
-        capabilities=["Predict CRISPR off-target effects using CRISOT-FP molecular interaction fingerprints and XGBoost."],
-        limitations=["Requires trained XGBoost models (trained_models.zip unzipped). Supports Circle-seq, Site-seq, and Change-seq models."],
-        task_tags=["crispr_offtarget_scoring"],
-        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
-        produces=["fp_csv_filepath"],
-        input_model=tool_wrappers.CrisotFpInput,
-        output_model=CrisotFpOutput,
-        status=ToolStatus.partial,
-    ),
-    "generate_crispr_fingerprint_with_crisot": ToolSpec(
-        identity="generate_crispr_fingerprint_with_crisot",
-        display_name="CRISOT-FP fingerprint encoding",
-        version="0.1.0",
-        source="https://github.com/bm2-lab/CRISOT",
-        transport=ToolTransport.http,
-        endpoint="http://127.0.0.1:8011/gen-fp",
-        capabilities=["Generate CRISOT-FP molecular interaction fingerprint encoding for a single sgRNA-target pair."],
-        limitations=["Input normalization enforces 23-nt sequences."],
-        task_tags=["crispr_fingerprint_encoding"],
-        requires=[ToolDependency(name="CRISOT microservice", detail="microservices/crisot_service (port 8011)")],
-        produces=["fp_csv_filepath"],
-        input_model=tool_wrappers.CrisotGenFpInput,
-        output_model=CrisotGenFpOutput,
-        status=ToolStatus.partial,
-    ),
     # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
     # 关联文件清单（修改时必须全部同步）：
     #   - microservices/sgrna_design_service/main.py
@@ -1829,6 +1537,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # 本次修改的基准日期：2026-04-24。
     "design_sgrna_handle_with_crgpt": ToolSpec(
         identity="design_sgrna_handle_with_crgpt",
+        kind=ToolKind.generator,
+
         display_name="CRGPT sgRNA handle design",
         version="0.3.0-port8017",
         source="https://github.com/bitguolab/sgrna_design",
@@ -1848,6 +1558,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "score_sgrna_handle_with_crgpt": ToolSpec(
         identity="score_sgrna_handle_with_crgpt",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="crgpt_handle_score",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.pending,
+            default_task_type="sgrna_design",
+        ),
+
         display_name="CRGPT sgRNA handle scoring",
         version="0.2.0-port8017",
         source="https://github.com/bitguolab/sgrna_design",
@@ -1871,6 +1589,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - docs/tools/run_odesign_inference.md
     "run_odesign_inference": ToolSpec(
         identity="run_odesign_inference",
+        kind=ToolKind.generator,
+
         display_name="ODesign inference (from JSON)",
         version="0.3.0",
         source="https://github.com/OTeam-AI4S/ODesign",
@@ -1891,6 +1611,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: odesign_aptamer_input_* fields
     "build_odesign_aptamer_input_json": ToolSpec(
         identity="build_odesign_aptamer_input_json",
+        kind=ToolKind.utility,
+
         display_name="ODesign aptamer input JSON builder",
         version="0.1.0",
         source="in-repo utility (no external algorithm)",
@@ -1924,6 +1646,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: extract_rna_from_cif_* fields
     "extract_rna_sequence_from_cif": ToolSpec(
         identity="extract_rna_sequence_from_cif",
+        kind=ToolKind.utility,
+
         display_name="Extract RNA sequence from CIF/MMCIF",
         version="0.1.0",
         source="in-repo utility (biopython)",
@@ -1952,6 +1676,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: protein_structure_* fields
     "predict_protein_structure_with_proteinx": ToolSpec(
         identity="predict_protein_structure_with_proteinx",
+        kind=ToolKind.predictor,
+
         display_name="ProteinX (Protenix) protein structure prediction",
         version="0.1.0",
         source="https://github.com/bytedance/Protenix",
@@ -1982,6 +1708,14 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # Do NOT modify output fields, types, or descriptions without updating tools.py, state.py, writebacks.py
     "predict_rna_protein_complex_with_proteinx": ToolSpec(
         identity="predict_rna_protein_complex_with_proteinx",
+        kind=ToolKind.predictor,
+        oracle=OracleDescriptor(
+            oracle_id="proteinx_ipTM",
+            evidence_use=OracleEvidenceUse.ranking_objective,
+            governance=OracleGovernance.enforce,
+            default_task_type="rna_aptamer_design",
+        ),
+
         display_name="ProteinX RNA-protein complex prediction",
         version="0.1.0",
         source="https://github.com/bytedance/Protenix",
@@ -2010,6 +1744,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # Do NOT modify output fields, types, or descriptions without updating tools.py, state.py, writebacks.py
     "analyze_rna_protein_interface": ToolSpec(
         identity="analyze_rna_protein_interface",
+        kind=ToolKind.compute,
+
         display_name="Analyze RNA-protein interface",
         version="0.1.0",
         source="in-repo utility (biopython + freesasa)",
@@ -2040,6 +1776,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: hotspot_* fields
     "identify_protein_binding_hotspots": ToolSpec(
         identity="identify_protein_binding_hotspots",
+        kind=ToolKind.compute,
+
         display_name="Identify protein binding hotspots (RNA aptamer)",
         version="0.1.0",
         source="in-repo utility (freesasa + biopython + DBSCAN)",
@@ -2076,6 +1814,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     # - agent_core/state.py :: structure_rmsd / structure_tm_score fields
     "score_structure_alignment": ToolSpec(
         identity="score_structure_alignment",
+        kind=ToolKind.compute,
+
         display_name="RNA structure alignment (RMSD + TM-score)",
         version="0.1.0",
         source="in-repo utility (biopython SVDSuperimposer)",
@@ -2114,6 +1854,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - tests/test_compute_rna_sequence_gc_content.py
     "compute_rna_sequence_gc_content": ToolSpec(
         identity="compute_rna_sequence_gc_content",
+        kind=ToolKind.compute,
+
         display_name="RNA sequence GC content",
         version="0.1.0-port8020",
         source="in-repo microservice (no external algorithm)",
@@ -2137,6 +1879,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     ),
     "compute_dot_bracket_unpaired_fraction": ToolSpec(
         identity="compute_dot_bracket_unpaired_fraction",
+        kind=ToolKind.compute,
+
         display_name="Dot-bracket unpaired fraction",
         version="0.1.0-port8020",
         source="in-repo microservice (Vienna/LinearFold-style dot-bracket notation)",
@@ -2162,6 +1906,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - rna_agent_system/docs/CONTRIBUTING.md
     "compute_rna_sequence_u_content": ToolSpec(
         identity="compute_rna_sequence_u_content",
+        kind=ToolKind.compute,
+
         display_name="RNA sequence U content",
         version="0.1.0-port8020",
         source="in-repo microservice (no external algorithm)",
@@ -2194,6 +1940,8 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
     #   - rna_agent_system/docs/CONTRIBUTING.md
     "compute_cai_for_cds_sequence": ToolSpec(
         identity="compute_cai_for_cds_sequence",
+        kind=ToolKind.compute,
+
         display_name="CAI for CDS (Kazusa tables)",
         version="0.1.0",
         source="https://www.kazusa.or.jp/codon/",
@@ -2222,45 +1970,10 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # Shuffle CDS junction codons INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - tests/test_shuffle_cds_junction_codons.py
-    "shuffle_cds_junction_codons": ToolSpec(
-        identity="shuffle_cds_junction_codons",
-        display_name="Shuffle CDS junction codons",
-        version="0.1.0",
-        source="in-repo pure computation (no microservice)",
-        transport=ToolTransport.python_api,
-        endpoint="",
-        capabilities=[
-            "Generate synonymous-codon variants at the N- or C-terminus of a CDS.",
-            "Preserves amino-acid sequence; weights choices by species codon usage.",
-            "Used to alter local RNA structure at 5'UTR-CDS or CDS-3'UTR junctions.",
-        ],
-        limitations=[
-            "Input must be a valid CDS (length multiple of 3, AUGC only).",
-            "Only standard genetic code; no custom tables yet.",
-            "Variants are sampled stochastically; exact set depends on seed.",
-        ],
-        task_tags=["cds_design", "codon_optimization", "junction_engineering"],
-        requires=[],
-        produces=["original_sequence", "junction_end", "shuffled_region_start", "shuffled_region_end", "variants"],
-        input_model=tool_wrappers.ShuffleCdsJunctionCodonsInput,
-        output_model=ShuffleCdsJunctionCodonsOutput,
-        status=ToolStatus.available,
-        examples=[
-            ToolExample(
-                title="Shuffle first 6 codons of a human CDS",
-                input={"filepath": "workspace/cds.fa", "junction_end": "n_terminus", "codon_count": 6, "num_variants": 4},
-                output_excerpt={"junction_end": "n_terminus", "variants": [{"cai_score": 0.82, "changed_codons": 3}]},
-            )
-        ],
-    ),
     "workflow_demo_echo": ToolSpec(
         identity="workflow_demo_echo",
+        kind=ToolKind.utility,
+
         display_name="Workflow Demo Echo",
         version="0.1.0",
         source="internal",

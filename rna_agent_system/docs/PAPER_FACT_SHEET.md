@@ -1,5 +1,10 @@
 # Paper Fact Sheet — Verified Numbers from `experiments/results/`
 
+> **Provenance note (2026-08-18)**: the experiment drivers named below
+> were deleted in the system simplification pass (DECISIONS.md (n)); every
+> number cited here is backed by the retained verdict/run files under
+> `experiments/results/`.
+
 > **Purpose**: fact-check table for manuscript writing. Every number below was copied verbatim from
 > the named result file (JSON field path given); nothing was recomputed. Claims listed in the
 > audit request are marked **VERIFIED** (file agrees), **VERIFIED-WITH-NUANCE** (number agrees but
@@ -13,8 +18,8 @@
 
 | Claim | File evidence | Status |
 |---|---|---|
-| 54 tools | `agent_core/tool_specs.py`: `len(TOOL_SPECS) == 54` (imported and counted 2026-08-10) | VERIFIED |
-| 22 microservices, ports 8003–8024 | `docs/TOOLS.md` §1 Port Registry: 22 rows, ports 8003 (ViennaRNA) through 8024 (Bowtie2); `microservices/` contains exactly those 22 service directories | VERIFIED |
+| 42 tools | `agent_core/tool_specs.py`: `len(TOOL_SPECS) == 42` (recounted 2026-08-18 after the simplification pass removed 12 dead tools; the pre-cleanup count of 54 was verified 2026-08-10) | VERIFIED |
+| 21 microservices, ports 8003–8024 | `microservices/` contains 21 service directories (recounted 2026-08-18; 22 before the codonw-slim service removal) | VERIFIED |
 | 11 workflows | `docs/ARCHITECTURE.md` §Layer 2 ("All 11 workflows"); `agent_core/workflows/` has 11 workflow classes (mrna_cds_design, full_length_mrna_design, mrna_sequence_scoring, sirna_design, sgrna_design, aso_target_screening, ires_prediction, rna_aptamer_design, rna_secondary_structure_design, rna_tertiary_structure_design, rna_small_molecule_interaction) | VERIFIED |
 | "20 external-repo **submodules**" | `rna_agent_system/external_repos/` contains **20 directories**, but `.gitmodules` registers only **17 submodule paths** (EGARPS, Protenix, RiboDiffusion are plain directories, not registered submodules) | **MISMATCH → correct to "20 external repos vendored under `external_repos/`, 17 of them registered git submodules"** |
 | PA regression 19 tasks (006–024) | `rna_agent_system/pa_benchmarks.json` keys: '006'…'024' = 19 tasks | VERIFIED |
@@ -326,7 +331,7 @@
 
 ## 6. Top-20 key numbers the paper can cite directly
 
-1. Platform coverage: **210/210** benchmark tasks succeed across **11 workflows, 54 tools, 22 local microservices (ports 8003–8024)** (`fig2_summary.json` total, refreshed 2026-08-11; TOOLS.md §1).
+1. Platform coverage: **210/210** benchmark tasks succeed across **11 workflows, 54 tools, 22 local microservices (ports 8003–8024)** (`fig2_summary.json` total, refreshed 2026-08-11; TOOLS.md §1). *Scale as of that refresh; the 2026-08-18 simplification pass later reduced the platform to 42 tools / 21 services with the 210/210 workflow set unchanged — the registered next step regenerates these panels against the gated platform.*
 2. Designed CDS CAI median **0.7454** vs WT **0.7286** vs random-synonymous **0.6723** (n = 20/20/200; OTC/PDGFB replaced the two oversized targets 2026-08-11); WT > random p = **4.02e-07**, δ = 0.688 (`fig2_summary.json` fig2a_cds_nulls).
 3. Secondary-structure inverse folding exact match **22/25 (0.88)** (`fig2_summary.json` fig2e).
 4. IRES AUROC **0.762** (95% CI [0.429, 0.98], 3 pos / 49 neg) (`fig2_summary.json` fig2i).
@@ -358,4 +363,4 @@
 5. **P1 file internal inconsistency** → `j1_mfe_per_nt_vs_bmc1_wins` structured field = "13/18" while `go_no_go.evidence` text says "16/18"; quote the structured field (13/18).
 6. **E1 v2 "best screening 0.8"** → rhofold×PDGF-BB AUROC is exactly 0.8 and the gate is strict `> 0.8`; phrase as "best cell reached AUROC 0.8 (95% CI 0.33–1.0), still not passing".
 7. **Fig-7A anchor nuance** → the designed candidate and BNT162b2 are *both* AUG/Kozak-buried under the fragment-fold metric; do not imply the designed candidate is junction-clean.
-8. **RESOLVED 2026-08-11 — Fig-2 designed arm n = 18** → the two oversized WT proteins (Zika polyprotein 3419 aa, Factor VIII 2351 aa) were replaced by OTC (354 aa) and PDGFB (241 aa); the designed arm is now n = 20, median CAI 0.7454 (see §2 Fig 2 refresh). E4's historical target list keeps the two old targets (its concluded results reference them); `tests/test_e4_pilot.py::test_full_targets_match_benchmark_dir` codifies the swap.
+8. **RESOLVED 2026-08-11 — Fig-2 designed arm n = 18** → the two oversized WT proteins (Zika polyprotein 3419 aa, Factor VIII 2351 aa) were replaced by OTC (354 aa) and PDGFB (241 aa); the designed arm is now n = 20, median CAI 0.7454 (see §2 Fig 2 refresh). E4's historical target list kept the two old targets (its concluded results reference them).

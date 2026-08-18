@@ -162,13 +162,15 @@ serve it), never a model-quality result. See `DECISIONS.md` Part 1(d).
 
 ## 5. Reproduction Pointers
 
-- Drivers: `experiments/run_*.py`, `experiments/analysis/stats_utils.py`
-  (Wilcoxon / Cliff's δ / BH-FDR / bootstrap AUROC), per-campaign drivers named
-  in the verdict files. Two legacy drivers (`run_quality_ablation.py`,
-  `run_llm_backend_comparison.py`) still reference the removed planner API and
-  are frozen — update them if ever rerun.
+- Evidence: every campaign's verdict JSON / raw run records live under
+  `experiments/results/` (the durable audit record). The E1–E15 era drivers
+  were deleted in the 2026-08-18 simplification (DECISIONS.md (n)); the live
+  drivers are `experiments/run_platform_quality_benchmark.py` (fig2),
+  `experiments/run_e16_e17_e18_oracle_profiling.py` (profiling) and
+  `experiments/analysis/stats_utils.py` (Wilcoxon / Cliff's δ / BH-FDR /
+  bootstrap AUROC).
 - CLI regression: `run_pa_test.py <006..024>` over `pa_benchmarks.json`.
 - Agent-core suite: `PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x`
-  (baseline 668 passed).
+  (baseline 488 passed).
 - Conventions: JSONL = one record per run; analysis never reads session logs
   directly — only the JSONLs/summaries above.

@@ -8,35 +8,20 @@ Architecture: Full-length workflow reuses MrnaCdsDesignWorkflow for CDS
 generation and evaluation; only full-length and UTR metrics are computed here.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v2.8.0) —— 禁止单方面变更       ║
+║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v3.0.0) —— 禁止单方面变更       ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 full_length_mrna_design workflow 的权威实现。任何字段增删、         ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
 ║                                                                               ║
 ║    - agent_core/workflows/full_length_mrna_design.py  ← 本文件               ║
-║    - agent_core/workflows/base.py                                             ║
 ║    - agent_core/workflows/mrna_cds_design.py                                  ║
 ║    - agent_core/workflows/evaluators.py                                       ║
 ║    - agent_core/workflows/scoring.py                                          ║
-║    - agent_core/workflows/coordinator.py                                      ║
 ║    - agent_core/sequence_utils.py                                             ║
 ║    - agent_core/quality_profiles/__init__.py                                  ║
 ║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/agents/coordinator_agent.py                                   ║
-║    - agent_core/quality_profiles/full_length_mrna_design.py                   ║
-║    - agent_core/tool_specs.py                                                 ║
 ║    - tests/test_full_length_mrna_design.py                                    ║
-║    - tests/test_full_length_mrna_design_layer3.py                             ║
-║    - tests/test_bmc_full_length_mrna.py                                       ║
-║    - tests/test_bmc_workflow_e2e_mock.py                                      ║
 ║    - tests/test_full_length_mrna_e2e_live.py                                  ║
-║    - test_pa003_full_length_end_to_end.py                                     ║
-║    - test_pa004_full_length_end_to_end.py                                     ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -44,30 +29,22 @@ generation and evaluation; only full-length and UTR metrics are computed here.
 
 from __future__ import annotations
 
-import json
 import logging
 import math
-import time
 from datetime import datetime, timezone
 from typing import Any, Callable, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from agent_core.constants.species import (
     DEFAULT_CAI_SPECIES,
     DEFAULT_RNARL_MODEL_TYPE,
-    RNARL_MODEL_TYPES_LIST,
     format_cai_species_aliases,
 )
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow, SubWorkflowEvaluator
-from agent_core.workflows.coordinator import (
-    CoordinationRound,
-    Issue,
-    ReferencePointCoordinator,
-)
 from agent_core.workflows.evaluators import (
     GCContentEvaluator,
     IRESEvaluator,
@@ -82,20 +59,28 @@ from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesi
 from agent_core.workflows.multi_objective import (
     achievement_scalarizing_function,
     assign_pareto_tags,
-    build_normalized_reference_point,
     cap_pareto_frontier,
     compute_pareto_frontier,
     compute_utopian_reference_point,
     extract_objective_vector,
     normalize_to_unit_range,
 )
-from agent_core.workflows.scoring import FullLengthBMCScoringFunction
+from agent_core.workflows.scoring import FullLengthScoringFunction
 from agent_core.sequence_utils import score_mrna_candidate
 
 _LOGGER = logging.getLogger("agent_core.workflows.full_length_mrna_design")
 
 # UTR length presets exposed by GEMORNA
 _UTR_PRESETS: list[str] = ["short", "medium", "long"]
+
+# User-facing objectives used for reference-point (ASF) selection and the
+# Pareto frontier. Junction scores remain internal diagnostics.
+_USER_FACING_OBJECTIVES: tuple[str, ...] = (
+    "cds_component",
+    "utr5_mrl",
+    "utr3_stability",
+    "full_mfe_score",
+)
 
 
 class FullLengthMrnaDesignInput(BaseModel):
@@ -187,35 +172,11 @@ class FullLengthMrnaDesignInput(BaseModel):
     utr_mode: Literal["short", "medium", "long", "all"] = Field(default="all", description="UTR generation mode. 'gemorna' generates 5'/3' UTRs with GEMORNA; 'none' skips UTR generation.")
     run_fold: bool = Field(default=True, description="Whether to fold the full-length mRNA sequence for secondary-structure evaluation.")
     run_gc: bool = Field(default=True, description="Whether to compute GC-content of the full-length mRNA sequence.")
-    bmc_mode: Literal["rp"] = Field(
-        default="rp",
-        description=(
-            "BMC coordinator mode. 'rp'=reference-point driven coordinator."
-        ),
-    )
-    bmc_max_rounds: int = Field(
-        default=1,
-        ge=0,
-        description=(
-            "Maximum number of BMC coordination rounds. 0 disables iterative refinement. "
-            "Higher values allow the workflow to progressively improve the candidate pool "
-            "toward the reference point, at the cost of additional microservice calls."
-        ),
-    )
-    bmc_improvement_threshold: float = Field(
-        default=0.05,
-        ge=0.0,
-        description=(
-            "Minimum normalized ASF improvement required to continue BMC iterations. "
-            "If the best candidate's ASF distance to the reference point does not improve "
-            "by at least this amount in a round, iteration stops early."
-        ),
-    )
     reference_point: Optional[dict[str, float]] = Field(
         default=None,
         description=(
-            "Per-objective reference point for Achievement Scalarizing Function selection "
-            "and BMC coordination. If omitted, a utopian point is derived from the candidate pool. "
+            "Per-objective reference point for Achievement Scalarizing Function selection. "
+            "If omitted, a utopian point is derived from the candidate pool. "
             "User-facing keys: utr5_mrl, utr3_stability, full_mfe_score. "
             "Use target_cds_mfe and target_cds_cai to specify CDS objectives; they are "
             "automatically converted into the internal cds_component."
@@ -364,6 +325,7 @@ class FullLengthMrnaDesignWorkflow(
     """Protein → CDS (via MrnaCdsDesignWorkflow) + UTR → incremental eval → ASF rank."""
 
     name = "full_length_mrna_design"
+    task_type = "full_length_mrna"
     input_model = FullLengthMrnaDesignInput
     description = (
         "Design full-length mRNA (5'UTR + CDS + 3'UTR) from protein sequence, "
@@ -394,10 +356,6 @@ class FullLengthMrnaDesignWorkflow(
         self.capabilities = capability_registry
         self._workflow_state: dict[str, Any] = {}
         self._cds_state_writeback: dict[str, Any] = {}
-        # Reference-point stability across BMC rounds (see INTERFACE_LOCKS.md §14)
-        self._fixed_norm_ref_point: Optional[dict[str, float]] = None
-        self._fixed_dim_bounds: Optional[dict[str, dict[str, float]]] = None
-        self._reference_point_mode: Literal["user", "utopian"] = "utopian"
         self._cds_evaluator = SubWorkflowEvaluator(
             lambda: self._create_cds_workflow(),
             sequence_key="cds_sequence",
@@ -443,288 +401,29 @@ class FullLengthMrnaDesignWorkflow(
         self,
         inp: FullLengthMrnaDesignInput | dict[str, Any],
         *,
-        progress_callback: Optional[Callable[[dict[str, Any]], None]] = None,
+        progress_callback: Optional[Callable[..., None]] = None,
     ) -> WorkflowResult:
-        """BMC-enabled run: delegate to CoordinatorAgent.
+        """Generate → evaluate → score → rank, with per-run state and writeback.
 
-        The convergence loop lives in ``CoordinatorAgent``; this workflow exposes
-        the BMC-capable interface (``run_initial``, ``bmc_prepare``,
-        ``bmc_run_round``, ``bmc_finalize``) so the agent can orchestrate
-        generation, diagnosis, and regeneration.
-        """
-        # Lazy import avoids any circular dependency between agents and workflows.
-        from agent_core.agents.coordinator_agent import CoordinatorAgent
-
-        return CoordinatorAgent(self).run(inp, progress_callback=progress_callback)
-
-    def run_initial(
-        self,
-        inp: FullLengthMrnaDesignInput | dict[str, Any],
-        *,
-        progress_callback: Optional[Callable[[dict[str, Any]], None]] = None,
-    ) -> WorkflowResult:
-        """Phase 1 & 2: generate full-length candidates, evaluate, score, and rank.
-
-        Resets per-run workflow state and returns the initial ``WorkflowResult``.
-        State writeback is intentionally left to ``bmc_finalize()`` so that both
-        early-exit and fully-coordinated runs attach state consistently.
+        Resets per-run workflow state (which carries the tool-level parameter
+        overrides from the input model), runs the base orchestration, then
+        attaches the merged state writeback so every run stays auditable.
         """
         if isinstance(inp, dict):
             inp = FullLengthMrnaDesignInput(**inp)
         self._workflow_state = {}  # reset per run
         self._cds_state_writeback = {}  # reset per run
         self._workflow_state["_full_length_input"] = inp
-        self._bmc_trace: list[CoordinationRound] = []
 
-        # ── Phase 1 & 2: Standard generate → evaluate → score → rank ──
-        return super().run(inp, progress_callback=progress_callback)
+        result = super().run(inp, progress_callback=progress_callback)
+        return self._finalize_result(result)
 
-    def bmc_prepare(
-        self,
-        initial_result: WorkflowResult,
-    ) -> dict[str, Any]:
-        """Prepare BMC state from the initial ranked candidate pool.
-
-        Returns a dict containing the coordinator, reference point, normalization
-        bounds, current best candidate, and round budget. The reference point is
-        fixed to the initial pool when user-provided, otherwise derived as a
-        utopian point that may evolve across rounds.
-        """
-        inp = self._workflow_state.get("_full_length_input")
-        if inp is None:
-            raise RuntimeError("bmc_prepare called before run_initial")
-
-        self._workflow_state["_bmc_mode"] = inp.bmc_mode
-        coordinator = ReferencePointCoordinator()
-        max_rounds = inp.bmc_max_rounds
-        improvement_threshold = inp.bmc_improvement_threshold
-
-        # Initial reference point and ASF for the current best candidate.
-        # If the user supplied a reference point, we fix its normalization to the
-        # initial candidate pool so the aspiration level stays stable across BMC
-        # rounds.  The utopian point is allowed to evolve as the pool improves.
-        norm_ref_point, _, dim_bounds = build_normalized_reference_point(
-            initial_result.all_candidates,
-            ReferencePointCoordinator.USER_FACING_OBJECTIVES,
-            user_reference_point=inp.reference_point,
-        )
-        if inp.reference_point is not None:
-            self._reference_point_mode = "user"
-            self._fixed_norm_ref_point = dict(norm_ref_point)
-            self._fixed_dim_bounds = {
-                k: dict(v) for k, v in dim_bounds.items()
-            }
-        else:
-            self._reference_point_mode = "utopian"
-            self._fixed_norm_ref_point = None
-            self._fixed_dim_bounds = None
-
-        best = initial_result.best_candidate
-        best_asf = self._candidate_asf(best, norm_ref_point, dim_bounds)
-
-        return {
-            "coordinator": coordinator,
-            "norm_ref_point": norm_ref_point,
-            "dim_bounds": dim_bounds,
-            "best": best,
-            "best_asf": best_asf,
-            "max_rounds": max_rounds,
-            "improvement_threshold": improvement_threshold,
-            "inp": inp,
-        }
-
-    def bmc_run_round(
-        self,
-        round_num: int,
-        result: WorkflowResult,
-        bmc_state: dict[str, Any],
-        *,
-        progress_callback: Optional[Callable[[dict[str, Any]], None]] = None,
-    ) -> tuple[WorkflowResult, dict[str, Any], bool, str]:
-        """Execute one BMC coordination round.
-
-        Diagnoses the current candidate pool against the reference point,
-        broadcasts feedback, regenerates affected modules, evaluates new
-        candidates, and re-ranks the merged pool.
-
-        Returns ``(result, bmc_state, should_stop, reason)``.
-        """
-        # Service pre-flight: a service may have gone down between the initial
-        # run and this BMC round; recover it before doing real work.
-        preflight = self._service_preflight_result()
-        if preflight is not None:
-            return preflight, bmc_state, True, "service_preflight_failed"
-
-        coordinator = bmc_state["coordinator"]
-        max_rounds = bmc_state["max_rounds"]
-        improvement_threshold = bmc_state["improvement_threshold"]
-        inp = bmc_state["inp"]
-        best = bmc_state["best"]
-        best_asf = bmc_state["best_asf"]
-
-        if best is None:
-            return result, bmc_state, True, "no_best_candidate"
-
-        # Select the reference point for this round.
-        # User-provided reference points are fixed to the initial candidate
-        # pool's normalization bounds; utopian points are re-derived from the
-        # current candidate pool.
-        if self._reference_point_mode == "user":
-            norm_ref_point = self._fixed_norm_ref_point
-            dim_bounds = self._fixed_dim_bounds
-        else:
-            norm_ref_point, _, dim_bounds = build_normalized_reference_point(
-                result.all_candidates,
-                ReferencePointCoordinator.USER_FACING_OBJECTIVES,
-                user_reference_point=None,
-            )
-
-        # Diagnose a representative set: ASF best + per-objective leaders.
-        # This exposes trade-offs that a single best candidate may hide.
-        diagnosis_candidates = self._select_diagnosis_candidates(
-            result.all_candidates,
-            ReferencePointCoordinator.USER_FACING_OBJECTIVES,
-            best,
-        )
-        _LOGGER.info(
-            "bmc_diagnosis_set size=%d best_id=%s",
-            len(diagnosis_candidates),
-            best.id if best else None,
-        )
-
-        raw_issues_with_sources: list[tuple[Issue, dict[str, Any]]] = []
-        for cand in diagnosis_candidates:
-            norm_vec = self._build_norm_candidate_vector(cand, dim_bounds)
-            cand_metrics = cand.metadata.get("metrics_bundle", {})
-            for issue in coordinator.diagnose(norm_vec, norm_ref_point):
-                raw_issues_with_sources.append((issue, cand_metrics))
-        issues, issue_source_metrics = self._merge_issues_with_sources(
-            raw_issues_with_sources
-        )
-        total_violation = sum(issue.violation for issue in issues)
-
-        if total_violation <= 0.0:
-            _LOGGER.info(
-                "bmc_converged_no_violation round=%d total_violation=%.4f",
-                round_num,
-                total_violation,
-            )
-            return result, bmc_state, True, "no_violation"
-
-        # For CDS-level feedback, prefer the metrics of the candidate that
-        # actually triggered the worst CDS gap. Fallback to best metrics.
-        feedback_metrics = best.metadata.get("metrics_bundle", {})
-        if "CDS_COMPONENT_BELOW_REFERENCE" in issue_source_metrics:
-            feedback_metrics = issue_source_metrics["CDS_COMPONENT_BELOW_REFERENCE"]
-        elif "FULL_MFE_SCORE_BELOW_REFERENCE" in issue_source_metrics:
-            feedback_metrics = issue_source_metrics["FULL_MFE_SCORE_BELOW_REFERENCE"]
-
-        feedback = coordinator.broadcast_feedback(issues, feedback_metrics)
-        affected_modules = list(feedback.keys())
-
-        _LOGGER.info(
-            "bmc_round_start round=%d issues=%d total_violation=%.4f modules=%s",
-            round_num,
-            len(issues),
-            total_violation,
-            affected_modules,
-        )
-
-        # Generate new candidates with adjusted parameters
-        t0 = time.perf_counter()
-        new_candidates = self._regenerate_modules(
-            inp,
-            feedback,
-            best,
-            result.all_candidates,
-            diagnosis_candidates,
-        )
-
-        if not new_candidates:
-            _LOGGER.info("bmc_no_new_candidates round=%d", round_num)
-            return result, bmc_state, True, "no_new_candidates"
-
-        # Evaluate new candidates
-        for i, candidate in enumerate(new_candidates):
-            _LOGGER.info(
-                "bmc_evaluating_new idx=%d total=%d round=%d",
-                i + 1,
-                len(new_candidates),
-                round_num,
-            )
-            metrics = self.evaluate(candidate)
-            candidate.scores = self.score(metrics)
-            candidate.status = "evaluated"
-            if progress_callback:
-                progress_callback({
-                    "event": "bmc_evaluate_progress",
-                    "round": round_num,
-                    "current": i + 1,
-                    "total": len(new_candidates),
-                    "candidate_id": candidate.id,
-                    "workflow": self.name,
-                })
-
-        # Merge and re-rank
-        all_candidates = result.all_candidates + new_candidates
-        result = self.rank_and_format(all_candidates)
-
-        new_best = result.best_candidate
-        new_asf = self._candidate_asf(new_best, norm_ref_point, dim_bounds)
-
-        # Record round trace
-        time_elapsed_ms = (time.perf_counter() - t0) * 1000.0
-        round_trace = CoordinationRound(
-            round_num=round_num,
-            best_candidate_id=new_best.id if new_best else "",
-            best_total_score=-new_asf,  # negated for display: higher = better
-            issues_found=issues,
-            feedback_dispatched=feedback,
-            modules_reinvoked=affected_modules,
-            time_elapsed_ms=time_elapsed_ms,
-            diagnosis_candidate_ids=[c.id for c in diagnosis_candidates],
-            reference_point_mode=self._reference_point_mode,
-            reference_point=dict(norm_ref_point) if norm_ref_point else {},
-            dim_bounds={
-                k: dict(v) for k, v in dim_bounds.items()
-            } if dim_bounds else {},
-        )
-        self._bmc_trace.append(round_trace)
-
-        should_stop, reason = coordinator.has_converged(
-            -new_asf,
-            -best_asf,
-            round_num,
-            max_rounds=max_rounds,
-            improvement_threshold=improvement_threshold,
-        )
-
-        _LOGGER.info(
-            "bmc_round_complete round=%d old_asf=%.3f new_asf=%.3f reason=%s",
-            round_num,
-            best_asf,
-            new_asf,
-            reason,
-        )
-
-        # Update BMC state for the next round
-        bmc_state["best"] = new_best
-        bmc_state["best_asf"] = new_asf
-        bmc_state["norm_ref_point"] = norm_ref_point
-        bmc_state["dim_bounds"] = dim_bounds
-
-        return result, bmc_state, should_stop, reason
-
-    def bmc_finalize(
-        self,
-        result: WorkflowResult,
-    ) -> WorkflowResult:
-        """Attach final state writeback and return the result."""
+    def _finalize_result(self, result: WorkflowResult) -> WorkflowResult:
+        """Attach the merged state writeback (params + sub-workflow state)."""
         inp = self._workflow_state.get("_full_length_input")
         if inp is None:
             return result
 
-        # Merge state writeback
         merged_wb = dict(self._workflow_state)
         for key, value in self._cds_state_writeback.items():
             if isinstance(value, dict) and isinstance(merged_wb.get(key), dict):
@@ -732,121 +431,8 @@ class FullLengthMrnaDesignWorkflow(
             else:
                 merged_wb[key] = value
         merged_wb["_workflow_params"] = inp.model_dump()
-        merged_wb["_bmc_trace"] = [r.to_dict() for r in self._bmc_trace]
-        merged_wb["_reference_point"] = (
-            inp.reference_point if inp.reference_point is not None else "utopian"
-        )
         result._state_writeback = merged_wb  # type: ignore[attr-defined]
         return result
-
-    def _candidate_asf(
-        self,
-        cand: Candidate | None,
-        ref_point: dict[str, float],
-        bounds: dict[str, dict[str, float]],
-    ) -> float:
-        """Achievement Scalarizing Function distance for a candidate (lower = better)."""
-        if cand is None:
-            return float("inf")
-        vec = self._build_norm_candidate_vector(cand, bounds)
-        common = {k: v for k, v in vec.items() if k in ref_point}
-        if not common:
-            return float("inf")
-        weights = {k: 1.0 / len(ref_point) for k in ref_point}
-        return achievement_scalarizing_function(
-            common, ref_point, weights, rho=1e-3
-        )
-
-    @staticmethod
-    def _build_norm_candidate_vector(
-        candidate: Candidate,
-        dim_bounds: dict[str, dict[str, float]],
-    ) -> dict[str, float]:
-        """Build a normalized objective vector for a single candidate.
-
-        Uses the same min/max bounds that were used to normalize the reference
-        point so that gaps are comparable.
-        """
-        vector: dict[str, float] = {}
-        for key, bounds in dim_bounds.items():
-            raw = candidate.scores.get(key)
-            if raw is None:
-                continue
-            min_val = bounds["min"]
-            max_val = bounds["max"]
-            span = max_val - min_val
-            if span == 0:
-                vector[key] = 0.5
-            else:
-                vector[key] = (float(raw) - min_val) / span
-        return vector
-
-    @staticmethod
-    def _select_diagnosis_candidates(
-        candidates: list[Candidate],
-        objectives: tuple[str, ...],
-        best_candidate: Candidate | None,
-    ) -> list[Candidate]:
-        """Return the set of candidates that should be diagnosed by BMC.
-
-        Always includes the ASF best candidate. Additionally includes the
-        per-objective leader (highest raw score) for each user-facing objective.
-        This gives the coordinator visibility into trade-offs that the single
-        best candidate may not represent.
-        """
-        selected: dict[str, Candidate] = {}
-        if best_candidate is not None:
-            selected[best_candidate.id] = best_candidate
-
-        for key in objectives:
-            champion: Candidate | None = None
-            best_value: float | None = None
-            for c in candidates:
-                value = c.scores.get(key)
-                if value is None:
-                    continue
-                try:
-                    value_f = float(value)
-                except (TypeError, ValueError):
-                    continue
-                if best_value is None or value_f > best_value:
-                    best_value = value_f
-                    champion = c
-            if champion is not None:
-                selected[champion.id] = champion
-
-        return list(selected.values())
-
-    @staticmethod
-    def _merge_issues_with_sources(
-        issues_with_sources: list[tuple[Issue, dict[str, Any]]],
-    ) -> tuple[list[Issue], dict[str, dict[str, Any]]]:
-        """Merge issues by type, keeping the one with the largest violation.
-
-        When multiple diagnosis candidates flag the same kind of gap, only the
-        most severe instance should drive module adjustments, to avoid
-        duplicating feedback for the same module.
-
-        Additionally returns a mapping from issue_type to the metrics bundle of
-        the candidate that contributed the worst instance. This lets downstream
-        feedback (e.g. CDS lambda direction) be based on the candidate that
-        actually triggered the issue, rather than always the ASF best.
-
-        Args:
-            issues_with_sources: List of (issue, source_candidate_metrics)
-                tuples collected from all diagnosis candidates.
-
-        Returns:
-            Tuple of (merged_issues, issue_type -> source_metrics).
-        """
-        merged: dict[str, Issue] = {}
-        source_metrics: dict[str, dict[str, Any]] = {}
-        for issue, metrics in issues_with_sources:
-            existing = merged.get(issue.issue_type)
-            if existing is None or issue.violation > existing.violation:
-                merged[issue.issue_type] = issue
-                source_metrics[issue.issue_type] = metrics
-        return list(merged.values()), source_metrics
 
     def generate_candidates(self, inp: FullLengthMrnaDesignInput) -> list[Candidate]:
         """Generate full-length candidates: CDS baseline + UTR append.
@@ -1098,242 +684,7 @@ class FullLengthMrnaDesignWorkflow(
 
     def score(self, metrics: dict[str, Any]) -> dict[str, Any]:
         # Per-module raw scores for reference-point optimization.
-        return FullLengthBMCScoringFunction().score(metrics)
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # BMC module regeneration helpers
-    # ─────────────────────────────────────────────────────────────────────────
-
-    def _adjust_input_from_feedback(
-        self,
-        inp: FullLengthMrnaDesignInput,
-        feedback: dict[str, Any],
-    ) -> FullLengthMrnaDesignInput:
-        """Build a parameter-adjusted input from coordinator feedback.
-
-        Only CDS-level adjustments are actionable in the current architecture;
-        UTR adjustments are realized via preset switching in
-        ``_regenerate_modules()``.
-        """
-        # Start from current input values
-        new_lambda = inp.lambda_value
-        new_design_tool = inp.design_tool
-        lambda_adjusted = False
-
-        cds_feedback = feedback.get("CDS")
-        if cds_feedback is not None:
-            for adj in cds_feedback.adjustments:
-                if adj.param == "lambda_value":
-                    lambda_adjusted = True
-                    if new_lambda is not None:
-                        new_lambda = max(0.0, min(20.0, new_lambda + adj.delta))
-                    else:
-                        # If lambda was not set, start from a heuristic default
-                        new_lambda = max(0.0, min(20.0, 2.0 + adj.delta))
-
-        # If lambda is being adjusted but design_tool is "all", the adjustment
-        # would be ignored because generate_candidates uses a fixed lambda grid
-        # for "all". Switch to "lineardesign" so the lambda change takes effect.
-        if lambda_adjusted and new_design_tool == "all":
-            new_design_tool = "lineardesign"
-
-        # If no actionable CDS adjustments but UTR is affected, we still
-        # return a copy so that _regenerate_modules can try different presets.
-        # The internal cds_component must be stripped from the user-facing
-        # reference_point; it will be re-synthesized from target_cds_mfe/cai
-        # by the input validator.
-        user_reference_point = None
-        if inp.reference_point is not None:
-            user_reference_point = {
-                k: v
-                for k, v in inp.reference_point.items()
-                if k != "cds_component"
-            }
-        return FullLengthMrnaDesignInput(
-            protein_sequence=inp.protein_sequence,
-            design_tool=new_design_tool,
-            lambda_value=new_lambda,
-            model_type=inp.model_type,
-            cai_species=inp.cai_species,
-            utr_mode=inp.utr_mode,
-            run_fold=inp.run_fold,
-            run_gc=inp.run_gc,
-            bmc_mode=inp.bmc_mode,
-            bmc_max_rounds=inp.bmc_max_rounds,
-            bmc_improvement_threshold=inp.bmc_improvement_threshold,
-            reference_point=user_reference_point,
-            target_cds_mfe=inp.target_cds_mfe,
-            target_cds_cai=inp.target_cds_cai,
-        )
-
-    def _regenerate_modules(
-        self,
-        inp: FullLengthMrnaDesignInput,
-        feedback: dict[str, Any],
-        current_best: Candidate,
-        existing_candidates: list[Candidate],
-        diagnosis_candidates: list[Candidate] | None = None,
-    ) -> list[Candidate]:
-        """Generate new candidates by adjusting parameters per coordinator feedback.
-
-        Strategy:
-        1. Adjust CDS parameters (lambda, tool) based on CDS feedback.
-        2. Collect CDS seeds from the diagnosis set (best + per-objective leaders).
-           When CDS parameters are unchanged, these seeds preserve trade-off
-           diversity instead of only reusing the current best CDS.
-        3. If UTR feedback exists, explore alternative UTR presets to change
-           the junction sequence context.
-        4. Combine all CDS candidates (λ-adjusted + seeds) with UTR presets.
-        5. Deduplicate against existing candidates.
-        """
-        adjusted_inp = self._adjust_input_from_feedback(inp, feedback)
-
-        # Determine whether CDS parameters actually changed.
-        # If only junction issues exist (no cds_component / full_mfe_score gap),
-        # the reference-point coordinator does not emit lambda adjustments, so
-        # re-generating CDS with the same parameters is wasteful.  In that case
-        # we reuse the current best CDS and rely on UTR exploration.
-        cds_params_unchanged = (
-            adjusted_inp.design_tool == inp.design_tool
-            and adjusted_inp.lambda_value == inp.lambda_value
-        )
-
-        if cds_params_unchanged:
-            # Reuse CDS seeds from the whole diagnosis set, not just the best.
-            # This preserves trade-off diversity: a candidate that leads in one
-            # objective can contribute its CDS to the new UTR combinations.
-            seeds: list[str] = []
-            seed_labels: list[str] = []
-            best_cds_seq = current_best.metadata.get("cds_sequence", "") if current_best else ""
-            if best_cds_seq:
-                seeds.append(best_cds_seq)
-                seed_labels.append("current_best")
-            for cand in diagnosis_candidates or []:
-                cds_seq = cand.metadata.get("cds_sequence", "")
-                if cds_seq and cds_seq not in seeds:
-                    seeds.append(cds_seq)
-                    seed_labels.append(f"diagnosis_seed:{cand.id}")
-
-            cds_candidates = [
-                Candidate(
-                    sequence=cds_seq,
-                    sequence_type="cds",
-                    source=label,
-                    metadata={"cds_sequence": cds_seq},
-                )
-                for cds_seq, label in zip(seeds, seed_labels)
-            ]
-            _LOGGER.info(
-                "bmc_reusing_diagnosis_cds_seeds count=%d labels=%s",
-                len(cds_candidates),
-                seed_labels,
-            )
-        else:
-            cds_inp = MrnaCdsDesignInput(
-                protein_sequence=adjusted_inp.protein_sequence,
-                design_tool=adjusted_inp.design_tool,
-                lambda_value=adjusted_inp.lambda_value,
-                model_type=adjusted_inp.model_type,
-                cai_species=adjusted_inp.cai_species,
-                run_fold=adjusted_inp.run_fold,
-                run_gc=adjusted_inp.run_gc,
-            )
-            cds_workflow = MrnaCdsDesignWorkflow(self.capabilities)
-            cds_candidates = cds_workflow.generate_candidates(cds_inp)
-
-        # Track the provenance of each CDS sequence for source labeling.
-        cds_source_map: dict[str, str] = {}
-        for c in cds_candidates:
-            cds_source_map[c.sequence] = c.source
-        all_cds_seqs = list(cds_source_map.keys())
-
-        # UTR presets always honour the user's ``utr_mode`` selection; BMC
-        # rounds never expand beyond it (the coordinator no longer emits
-        # ``utr_preset_exploration`` overrides).
-        utr_presets = self._resolve_utr_presets(adjusted_inp.utr_mode)
-        # Limit presets to avoid explosion during BMC
-        if len(utr_presets) > 2:
-            utr_presets = utr_presets[:2]
-
-        seen = {c.sequence for c in existing_candidates}
-        new_candidates: list[Candidate] = []
-
-        for cds_seq in all_cds_seqs[:6]:  # cap at 6 CDS to avoid explosion
-            for utr5_preset in utr_presets:
-                utr5_seq = self._generate_utr("5utr", utr5_preset)
-                if utr5_seq is None:
-                    continue
-                for utr3_preset in utr_presets:
-                    utr3_seq = self._generate_utr("3utr", utr3_preset)
-                    if utr3_seq is None:
-                        continue
-
-                    full_seq = utr5_seq + cds_seq + utr3_seq
-                    if full_seq in seen:
-                        continue
-                    seen.add(full_seq)
-
-                    # Determine source label for traceability
-                    cds_origin = cds_source_map.get(cds_seq, "unknown")
-                    is_current_best = cds_origin == "current_best"
-                    if is_current_best:
-                        source_label = f"bmc:current_best:utr5_{utr5_preset}:utr3_{utr3_preset}"
-                        cds_source = "current_best"
-                    elif cds_origin.startswith("diagnosis_seed:"):
-                        seed_id = cds_origin.split(":", 1)[1]
-                        source_label = f"bmc:diagnosis_seed:{seed_id}:utr5_{utr5_preset}:utr3_{utr3_preset}"
-                        cds_source = "diagnosis_seed"
-                    else:
-                        source_label = f"bmc:lambda_adjusted:utr5_{utr5_preset}:utr3_{utr3_preset}"
-                        cds_source = "lambda_adjusted"
-
-                    candidate = Candidate(
-                        sequence=full_seq,
-                        sequence_type="mrna",
-                        source=source_label,
-                        metadata={
-                            "utr5_sequence": utr5_seq,
-                            "cds_sequence": cds_seq,
-                            "utr3_sequence": utr3_seq,
-                            "utr5_length": len(utr5_seq),
-                            "utr3_length": len(utr3_seq),
-                            "utr5_preset": utr5_preset,
-                            "utr3_preset": utr3_preset,
-                            "cds_length": len(cds_seq),
-                            "cds_source": cds_source,
-                            "protein_sequence": adjusted_inp.protein_sequence,
-                            "cai_species": adjusted_inp.cai_species,
-                            "bmc_regenerated": True,
-                            "bmc_feedback_modules": list(feedback.keys()),
-                        },
-                    )
-                    new_candidates.append(candidate)
-                    _LOGGER.info(
-                        "bmc_candidate_generated source=%s utr5=%s utr3=%s len=%d",
-                        source_label,
-                        utr5_preset,
-                        utr3_preset,
-                        len(full_seq),
-                    )
-
-        # Hard cap to keep microservice call volume bounded when multiple
-        # diagnosis candidates trigger overlapping module feedback.
-        _MAX_BMC_NEW_CANDIDATES = 24
-        if len(new_candidates) > _MAX_BMC_NEW_CANDIDATES:
-            # Preserve source diversity by keeping a spread across source labels.
-            # Simple deterministic fallback: keep the first N generated.
-            new_candidates = new_candidates[:_MAX_BMC_NEW_CANDIDATES]
-            _LOGGER.info(
-                "bmc_capped_new_candidates kept=%d",
-                _MAX_BMC_NEW_CANDIDATES,
-            )
-
-        _LOGGER.info(
-            "bmc_regeneration_complete new=%d seen_total=%d",
-            len(new_candidates),
-            len(seen),
-        )
-        return new_candidates
+        return FullLengthScoringFunction().score(metrics)
 
     def _apply_reference_point_and_pareto(
         self,
@@ -1352,7 +703,7 @@ class FullLengthMrnaDesignWorkflow(
 
         Returns ``(best_candidate, pareto_frontier, raw_reference_point, candidate_asf_map)``.
         """
-        objectives = list(ReferencePointCoordinator.USER_FACING_OBJECTIVES)
+        objectives = list(_USER_FACING_OBJECTIVES)
         maximize = {key: True for key in objectives}
 
         # Build per-dimension value tables, skipping candidates with missing dims.

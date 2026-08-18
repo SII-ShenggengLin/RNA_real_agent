@@ -41,7 +41,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Callable, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import read_sequence, save_sequence, save_text_file
@@ -334,6 +334,7 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
     """
 
     name = "ires_prediction"
+    task_type = "ires_prediction"
     input_model = IresPredictionInput
     description = (
         "Predict putative IRES elements in an RNA/DNA sequence using IRESfinder, "

@@ -1,7 +1,7 @@
 # Architecture & Core Interfaces
 
 > **Scope**: design principles, seven-layer architecture, core module APIs, routing strategy, and workflow–quality co-design.  
-> **Last updated**: 2026-08-10
+> **Last updated**: 2026-08-18 (BMC framework removed — see DECISIONS.md (m))
 
 ---
 
@@ -12,8 +12,7 @@
 3. [Core Modules](#3-core-modules)
 4. [Routing Strategy](#4-routing-strategy)
 5. [Workflow–Quality Co-Design](#5-workflowquality-co-design)
-6. [Bounded Multi-Module Coordination (BMC)](#6-bounded-multi-module-coordination-bmc)
-7. [How to Extend](#7-how-to-extend)
+6. [How to Extend](#6-how-to-extend)
 
 ---
 
@@ -58,7 +57,7 @@ tool_executor.py (ToolResult, dispatch + tracing)
 │ Layer 4  Planning & Multi-Agent          │
 │          Execution                       │
 │          PipelineAgent → Specialist/     │
-│          Coordinator/Quality/Synthesis   │
+│          Quality/Synthesis              │
 │          (+ calibrated/ strategy stack)  │
 ├──────────────────────────────────────────┤
 │ Layer 3  Service Orchestration           │
@@ -84,7 +83,7 @@ tool_executor.py (ToolResult, dispatch + tracing)
 
 | File | Responsibility |
 |------|---------------|
-| `tools.py` | ~6,450 lines of `@tool` wrappers. Normalizes input, calls microservice HTTP endpoint, parses response. |
+| `tools.py` | ~5,300 lines of `@tool` wrappers. Normalizes input, calls microservice HTTP endpoint, parses response. |
 | `tool_specs.py` | Pydantic `ToolSpec` registry and output schemas. |
 | `tool_registry.py` | Minimal name-based registry for LangChain-compatible tools. |
 | `tool_executor.py` | `ToolResult` container; resolves tools, invokes via LangChain `.invoke`, normalizes results, appends trace records. |
@@ -181,8 +180,7 @@ The multi-agent execution layer is the stateful bridge between the entry points 
 | Agent | Responsibility |
 |-------|---------------|
 | `PipelineAgent` | Deterministic scheduling of `PipelinePlan` nodes, input binding resolution, critical-failure handling, and final synthesis delegation. Does **not** call LLMs. |
-| `SpecialistAgent` | Per-workflow strategy: runs the workflow (or `CoordinatorAgent` for BMC workflows), invokes `QualityAgent`, decides retry/adjust/abort, and returns `AgentResult`. |
-| `CoordinatorAgent` | BMC controller for coupled workflows. Detects the BMC-capable interface (`run_initial`, `bmc_prepare`, `bmc_run_round`, `bmc_finalize`) and orchestrates the bounded convergence loop, delegating module-specific diagnosis/feedback to the workflow's `ReferencePointCoordinator` / `AptamerCoordinator`. |
+| `SpecialistAgent` | Per-workflow strategy: runs the workflow, invokes `QualityAgent`, decides retry/adjust/abort, and returns `AgentResult`. |
 | `QualityAgent` | Unified quality review using workflow-specific `QualityProfile`. Outputs an advisory `QualityReport`; it neither triggers retry on its own nor can it flip a successful run to failed. |
 | `SynthesisAgent` | Passes through single-node results; for multi-node pipelines, generates a concise synthesis report. |
 
@@ -193,33 +191,37 @@ result = pipeline_agent.execute(plan, state)
 # PipelineAgent delegates each node to a SpecialistAgent, which may consult QualityAgent.
 ```
 
-BMC-capable workflows expose a four-phase interface (`run_initial`, `bmc_prepare`, `bmc_run_round`, `bmc_finalize`) that `CoordinatorAgent` consumes to drive bounded multi-module iteration.
+#### 2.5.1 Calibrated Layer-4 strategy stack (`agent_core/calibrated/`)
 
-#### 2.5.1 Calibrated Layer-4 strategy stack (`agent_core/calibrated/`, additive — W5–9)
-
-New package implementing `docs/REDESIGN_2026-08-03_CALIBRATED_AGENT.md` §2.2 (empirical self-model + dual gating). The legacy agents above are untouched and serve as the E3 control arm. All components except the declaration stage are deterministic (no LLM):
+Calibrated strategy package (empirical self-model + dual gating). All components are deterministic (no LLM):
 
 | Module | Component | Responsibility |
 |--------|-----------|----------------|
 | `models.py` | — | Shared Pydantic schemas: `CapabilityRecord` ((oracle, task_type, target_family) → CASF four-capability cells with grade/confidence/evidence), `PlannedAction`, `GateDecision`, `Claim`/`ClaimVerdict`, `CampaignRecord`, `AuditEvent`. |
 | `self_model.py` | `SelfModel` | Core state: query (exact → transferred with decayed confidence → unprofiled) and update; every update emits an audit event. |
-| `case_memory.py` | `CaseMemory` | Campaign archive (JSONL) + deterministic weighted-similarity retrieval; persistent carrier of the SelfModel snapshot. |
 | `audit_trail.py` | `AuditTrail` | Append-only JSONL event log (`self_model_update` / `profiling_run` / `gate_decision` / `claim_verdict` / `budget_event`). |
-| `profiling_metrics.py` + `profiler.py` | `CapabilityProfiler` | Anchor-set measurement → CASF grading (AUROC > 0.8 / ρ ≥ 0.6 / top-1 ≥ 2/3, mirroring the E1 analysis). Backends: `e1_driver` (subprocess delegation to the pre-registered E1 driver, zero modification) and `deterministic` (pure-Python metric oracles). |
+| `profiling_metrics.py` | Anchor profiling thresholds + metric helpers shared by the profiling campaigns (`AUROC_PASS`, `RHO_PASS`, bootstrap AUROC CI). |
 | `decision_gate.py` | `DecisionGate` | Pre-action gating: `ranking_objective` requires verified ranking, `screening_evaluation` verified screening, `docking_validation` verified docking; failed → reject (with substitute), unprofiled → require_profiling, transferred → downgrade. |
-| `claim_gate.py` | `ClaimGate` | Pre-publication gating under the uniform "no claim without a verified basis" rule: comparative claims (ranking/screening) must declare a capability-checked basis (deterministic proxies enter the same profiling protocol — no free back door); claims pass only with verified dependencies; transferred-verified downgrades one step along the scope ladder (absolute → within_target_relative → trend_only) via deterministic templates (optional LLM polish, off by default); failed/unprofiled → reject. |
-| `experiment_planner.py` | `ExperimentPlanner` | LLM declaration of claim capability dependencies + minimal profiling plan (structured-JSON idiom, injectable `llm`); deterministic budget allocation conditioned on gate verdicts. |
-| `campaign_runner.py` | `CalibratedCampaignRunner` | The §2.3 seven-step campaign flow (the E3 treatment arm); execution is delegated to an injected callable so Layer-2 workflows stay reusable. |
+| `claim_gate.py` | `ClaimGate` | Pre-publication gating under the uniform "no claim without a verified basis" rule: comparative claims (ranking/screening) must declare a capability-checked basis; claims pass only with verified dependencies; transferred-verified downgrades one step along the scope ladder; failed/unprofiled → reject. |
+| `runtime.py` | `CalibratedRuntime` | Production CapGate integration (§2.5.3): tool-call audit trail + DecisionGate choke point keyed to the calling workflow's task type. |
 
 #### 2.5.2 Relationship between the seven-layer architecture and the Calibrated Agent stack
 
-The seven-layer skeleton is **compatible with the calibrated-agent redesign as-is — no wholesale re-architecture is needed**:
+- **L0–L3 are the execution base.** The tool/capability/workflow/service-orchestration layers are exactly what the calibrated stack drives; the profiling campaigns measure oracles through the same L0–L2 toolchain.
+- **L5/L6 are unchanged.** Session/workspace management and the `AgentRunner` / CLI / FastAPI entry points are unaffected by the strategy layer.
+- **L4 strategy.** The `calibrated/` package (`SelfModel` / `DecisionGate` / `ClaimGate` / `AuditTrail` / `CalibratedRuntime`) coexists with the classic four agents (`Pipeline` / `Specialist` / `Quality` / `Synthesis`), which are the production execution path.
+- **Retired from the old L4**: `LLMPlanner` (routing has been explicit-only in production), the `CapabilityProfiler`/`ExperimentPlanner`/`CalibratedCampaignRunner`/`CaseMemory` experiment stack (superseded by the direct profiling-campaign protocol; the E4 memory strategy was NO-GO — DECISIONS.md (c)), and the entire BMC framework (`CoordinatorAgent` + coordinators, removed 2026-08-18 after triple falsification — DECISIONS.md (a), (m)).
 
-- **L0–L3 are reused unchanged as the execution base.** The tool/capability/workflow/service-orchestration layers are exactly what the calibrated stack drives: the E5/E6 drivers call `FullLengthMrnaDesignWorkflow` directly, and the `CapabilityProfiler` measures oracles through the same L0–L2 toolchain (E1 driver delegation).
-- **L5/L6 are unchanged.** Session/workspace management and the `AgentRunner` / CLI / FastAPI entry points are unaffected by the strategy pivot.
-- **What the pivot changes is the L4 strategy layer.** The `calibrated/` package (`SelfModel` / `CapabilityProfiler` / `DecisionGate` / `ClaimGate` / `CaseMemory` / `AuditTrail` / `CalibratedCampaignRunner`) is the new L4 strategy stack and **coexists** with the classic five agents (`Pipeline` / `Specialist` / `Coordinator` / `Quality` / `Synthesis`), which remain the production execution path and served as the E3 control arm.
-- **What actually retired from the old L4**: only `LLMPlanner` (deleted with the `planning/` package — routing has been explicit-only in production) and the "BMC coordination gain" narrative (falsified by P0/P3 and Fig 5 b/c; the BMC mechanism itself is retained as bounded budget allocation — see `BMC_FRAMEWORK.md` and `DECISIONS.md`).
-- **Migration path**: calibrated gating enters the production CLI gradually under the pilot-first rule (`MANUSCRIPT.md` §2) — pre-registered pilot, GO/NO-GO gate, then scale-up. E3 already validated the gate on the audit task set (FP 57.9% → 0, TP retention 112.5%).
+#### 2.5.3 Platform CapGate runtime — production integration (2026-08-18)
+
+`agent_core/calibrated/runtime.py` (`CalibratedRuntime`) connects the calibrated stack to the platform's execution path; `AgentRunner` configures it at construction from `RNADA_CAPGATE` (`off` | `advisory` | `enforce`, default **enforce**):
+
+- **Full-pipeline auditability**: `ToolExecutor.run_tool` records *every* tool call (name, kwargs summary, success, elapsed, error type) to the runtime's append-only `AuditTrail` (default `workspace/audit/platform_audit.jsonl`, override `RNADA_CAPGATE_AUDIT`). Audit writes are best-effort and can never fail a run.
+- **DecisionGate at the tool choke point**: managed oracle tools are reviewed against the SelfModel before invocation, **keyed to the calling workflow's task context** — every workflow declares `task_type` (the flagship three match their SelfModel keys exactly), `BaseDomainWorkflow` execution paths set it via `task_context(...)` (aptamer's thread-pool evaluators receive it via `contextvars.copy_context().run`), and reviews fall back to the oracle's registered default only outside a workflow. The managed set is **derived from the ToolSpec oracle ontology** (`tool_interface.py` `ToolKind`/`OracleDescriptor`; `runtime.MANAGED_ORACLE_TOOLS` + `ORACLE_GOVERNANCE`): the **9 enforce** oracles (EGARPS/Protenix/RhoFold aptamer oracles, both GEMORNA UTR predictors, RNAsmol, plus the three E16–E18 graded oracles — IRESfinder screening failed on 3 upstream families, GerNA-Bind screening failed at chance level, RNASTOP screening verified but ranking failed) are blocked under `enforce` when their evidentiary basis is absent (`failed`, or `unprofiled` with no donor) — the call returns a `GatedActionError` `ToolResult` and workflows' existing fallbacks keep runs alive (oracle components default to 0.0 for all candidates equally). The **2 remaining pending** oracles (CRGPT handle score, CRISOT off-target score — no labeled anchor set on disk, DECISIONS.md (l)) are reviewed and audited like enforced ones but never blocked. Profiling and report-only callers wrap calls in `oracle_use("scoring_annotation")`.
+- **Tool inventory manifest** (`agent_core/tool_inventory.py`, `python -m agent_core.tool_inventory`): every tool's kind, oracle descriptor, backing microservice, real callers (AST-scanned) and status (production / experiment_only / reserved / demo) in one generated JSON (`experiments/results/tool_inventory.json`) — the supplementary tool table; completeness enforced by `tests/test_tool_ontology.py`.
+- **Packaged default SelfModel**: `agent_core/calibrated/default_self_model.json` (generator `experiments/build_default_self_model.py`) bundles the frozen E1 (aptamer structure oracles: 36 failed screening/ranking cells + docking), E7 (GEMORNA 5′UTR MRL verified on 3 families) and RNAsmol boundary (verified in-distribution, failed short-aptamer OOD) verdicts — so production gating reflects the published profiling results from the first run.
+- **ClaimGate in synthesis**: `SynthesisAgent` extracts headline claims of multi-node reports (the only LLM step), adjudicates them deterministically, and appends a "Gated claims" section (pass / downgraded wording / rejected with reason); extraction failure leaves the report unchanged and is audited.
+- **Conservative transfer** (`SelfModel.query`): a never-profiled (oracle, task) family inherits the donors' **worst** grade per capability — a failed family poisons the transfer, so family choice cannot cherry-pick a pass.
 
 ### 2.6 Layer 5 — Session & Workspace
 
@@ -286,7 +288,7 @@ Both FastAPI (`workflow_api/app.py`) and CLI (`cli/*.py`) go through `AgentRunne
 
 ### 3.2 `agent_core/tools.py` — Tool Wrappers
 
-~6,450 lines of `@tool` wrappers. The **single source of truth** for HTTP calls to microservices.
+~5,300 lines of `@tool` wrappers. The **single source of truth** for HTTP calls to microservices.
 
 ### 3.3 `agent_core/tool_specs.py` — Output Schemas & ToolSpec Registry
 
@@ -354,7 +356,7 @@ LLM calls exist only at two advisory points, both built via `agent_core/llm_conf
 | `QualityAgent.review()` | Once per reviewed workflow run (advisory; see §4.4) | 0.2 |
 | `SynthesisAgent` | Once per multi-node pipeline | 0.3 |
 
-Both agents accept an injectable `llm`; with `llm=None` the DeepSeek client is built lazily on first use. Everything else — routing, BMC coordination, retry gating — is rule-based, so a run without any API key still executes deterministically end to end.
+Both agents accept an injectable `llm`; with `llm=None` the DeepSeek client is built lazily on first use. Everything else — routing, retry gating — is rule-based, so a run without any API key still executes deterministically end to end.
 
 ### 4.3 Execution Pipeline
 
@@ -371,7 +373,7 @@ User Input ──→ explicit_workflow (CLI pick / --workflow / --pipeline-file)
                             SynthesisAgent ──→ Final Report
 ```
 
-`AgentRunner.run_form()` or `.stream_form()` is the single entry point. `PipelineAgent.execute()` drives the loop internally; each node is executed by a `SpecialistAgent`, which consults `QualityAgent` and delegates BMC workflows to `CoordinatorAgent`.
+`AgentRunner.run_form()` or `.stream_form()` is the single entry point. `PipelineAgent.execute()` drives the loop internally; each node is executed by a `SpecialistAgent`, which consults `QualityAgent`.
 
 ### 4.4 Retry Logic
 
@@ -408,7 +410,7 @@ When a `QualityProfile` *is* used, its pass/fail criteria must be derivable from
 | `mrna_cds_design` | `MRNA_CDS_QUALITY_PROFILE` | LLM-driven review (CAI, MFE, GC, RNASTOP) |
 | `sirna_design` | `SIRNA_QUALITY_PROFILE` | Safety review: off-target, specificity, GC |
 | `sgrna_design` | `SGRNA_QUALITY_PROFILE` | Quality review: `nn_score` and on-target metrics |
-| `rna_aptamer_design` | `RNA_APTAMER_QUALITY_PROFILE` | BMC-aware quality review |
+| `rna_aptamer_design` | `RNA_APTAMER_QUALITY_PROFILE` | Reference-point-aware quality review |
 | `ires_prediction` | `IRES_QUALITY_PROFILE` | IRES activity and structure fidelity |
 | `rna_secondary_structure_design` | `RNA_SECONDARY_STRUCTURE_QUALITY_PROFILE` | Structure fidelity vs target |
 | `rna_tertiary_structure_design` | `RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE` | pLDDT / structural confidence |
@@ -448,19 +450,7 @@ When adding a new task type:
 
 ---
 
-## 6. Bounded Multi-Module Coordination (BMC)
-
-For detailed BMC design — including Type-I (Physical Assembly) vs Type-II (Functional Coupling), and motivation/strategy for both full-length mRNA and RNA aptamer design — see **`BMC_FRAMEWORK.md`**.
-
-Key points:
-- **Type-I**: `full_length_mrna_design` — 5'UTR ⊕ CDS ⊕ 3'UTR physical concatenation, coordinated by `ReferencePointCoordinator` in normalized objective space.
-- **Type-II**: `rna_aptamer_design` — target hotspot + aptamer ligand functional coupling in 3D space, coordinated by `AptamerCoordinator`.
-- Both share the same three-phase BMC skeleton (Independent Generation → Assembly & Evaluation → Bounded Iteration) with deterministic rule-based diagnosis. The bound is configured per workflow: `full_length_mrna_design` currently uses `max_rounds=1`; `rna_aptamer_design` defaults to `bmc_max_rounds=1` with `bmc_improvement_threshold=0.05`. Users can raise `bmc_max_rounds` to enable additional rounds.
-- BMC-capable workflows expose the four-phase interface (`run_initial`, `bmc_prepare`, `bmc_run_round`, `bmc_finalize`). `CoordinatorAgent` detects this interface and orchestrates the bounded convergence loop, while the concrete diagnosis/feedback rules remain in the workflow-specific `ReferencePointCoordinator` / `AptamerCoordinator`. `SpecialistAgent` injects `CoordinatorAgent` for BMC workflows so they are treated uniformly.
-
----
-
-## 7. How to Extend
+## 6. How to Extend
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full new-tool procedure, interface lock annotations, and commit conventions.
 

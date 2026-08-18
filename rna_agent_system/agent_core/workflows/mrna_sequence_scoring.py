@@ -37,7 +37,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from agent_core.capabilities.base import CapabilityRegistry, build_default_capability_registry
 from agent_core.constants.species import DEFAULT_CAI_SPECIES
@@ -128,6 +128,7 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
     """
 
     name = "mrna_sequence_scoring"
+    task_type = "mrna_sequence_scoring"
     description = "Score existing mRNA sequences with GC, fold, and CAI metrics."
     required_capabilities = [
         "compute_rna_sequence_gc_content",

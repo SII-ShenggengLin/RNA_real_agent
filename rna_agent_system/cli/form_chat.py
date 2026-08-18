@@ -162,16 +162,6 @@ def _save_workflow_results(state: dict[str, Any], session_id: str) -> Optional[P
         data["_quality_review_error"] = state["_quality_review_error"]
 
     data["_user_explicit_params"] = state.get("_user_explicit_params", [])
-    # NOTE (2026-07-20 fix): the BMC coordination trace is written by each BMC
-    # workflow's ``bmc_finalize`` into ``result._state_writeback["_bmc_trace"]``
-    # (INTERFACE_LOCKS §14 audit field). ``state`` never carries it, so without
-    # this fallback the artifact's ``_bmc_trace`` was always ``[]``.
-    bmc_trace = state.get("_bmc_trace") or []
-    if not bmc_trace:
-        wf_writeback = getattr(wf, "_state_writeback", None) or {}
-        if isinstance(wf_writeback, dict):
-            bmc_trace = wf_writeback.get("_bmc_trace") or []
-    data["_bmc_trace"] = bmc_trace
     data["_tool_timings"] = state.get("_tool_timings", {})
     data["_last_form_params"] = state.get("_last_form_params", {})
 

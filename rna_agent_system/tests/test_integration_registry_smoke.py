@@ -10,7 +10,7 @@ def test_default_registry_registers_core_mrna_tools():
     assert reg.has("compute_rna_sequence_gc_content")
     assert reg.has("predict_rna_secondary_structure_with_linearfold")
     assert reg.has("design_mrna_cds_with_lineardesign")
-    assert reg.has("design_mrna_cds_batch_with_lineardesign")
+    assert reg.has("design_mrna_cds_with_lineardesign")
 
 
 def test_demo_tool_only_when_requested():

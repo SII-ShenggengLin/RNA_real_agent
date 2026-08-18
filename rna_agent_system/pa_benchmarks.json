@@ -30,7 +30,7 @@
         "candidate_count": 10,
         "evitar_mode": "predesign",
         "evitar_predict": "multifapredsi",
-        "strains_path": "workspace/ns1_strains.fasta",
+        "strains_path": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/ns1_strains.fasta",
         "alignment_tool": "bowtie2",
         "bowtie2_score_min": "G,20,8",
         "species": "homo_sapiens",
@@ -42,7 +42,7 @@
         "candidate_count": 15,
         "evitar_mode": "predesign",
         "evitar_predict": "multifapredsi",
-        "strains_path": "workspace/ns1_strains.fasta",
+        "strains_path": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/ns1_strains.fasta",
         "alignment_tool": "bowtie2",
         "bowtie2_score_min": "G,20,8",
         "maxgc": 0.55,
@@ -163,9 +163,7 @@
           "egarps_component": 0.5,
           "rhofold_component": 0.5,
           "iptm_component": 0.5
-        },
-        "bmc_max_rounds": 1,
-        "bmc_improvement_threshold": 0.05
+        }
       },
       {
         "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/6m3m.pdb",
@@ -179,9 +177,7 @@
           "egarps_component": 0.8,
           "rhofold_component": 0.2,
           "iptm_component": 0.5
-        },
-        "bmc_max_rounds": 1,
-        "bmc_improvement_threshold": 0.05
+        }
       },
       {
         "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/6m3m.pdb",
@@ -195,9 +191,7 @@
           "egarps_component": 0.8,
           "rhofold_component": 0.2,
           "iptm_component": 0.5
-        },
-        "bmc_max_rounds": 1,
-        "bmc_improvement_threshold": 0.05
+        }
       },
       {
         "protein_structure_path": "",
@@ -212,9 +206,7 @@
           "egarps_component": 0.8,
           "rhofold_component": 0.2,
           "iptm_component": 0.5
-        },
-        "bmc_max_rounds": 1,
-        "bmc_improvement_threshold": 0.05
+        }
       }
     ],
     "constants": {
@@ -263,21 +255,21 @@
     "workflow": "aso_target_screening",
     "params_by_turn": [
       {
-        "target_mrna_filepath": "workspace/epo_mrna.fa",
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/epo_mrna.fa",
         "aso_length": 20,
         "window_step": 1,
         "top_n_windows": 10,
         "binding_evaluation_tool": "rnaup"
       },
       {
-        "target_mrna_filepath": "workspace/epo_mrna.fa",
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/epo_mrna.fa",
         "aso_length": 18,
         "window_step": 1,
         "top_n_windows": 10,
         "binding_evaluation_tool": "rnacofold"
       },
       {
-        "target_mrna_filepath": "workspace/epo_mrna.fa",
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/epo_mrna.fa",
         "aso_length": 18,
         "window_step": 1,
         "top_n_windows": 20,
@@ -285,7 +277,7 @@
       }
     ],
     "constants": {
-      "TARGET_MRNA": "workspace/epo_mrna.fa"
+      "TARGET_MRNA": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/epo_mrna.fa"
     }
   },
   "012": {
@@ -437,7 +429,7 @@
         "candidate_count": 10,
         "evitar_mode": "predesign",
         "evitar_predict": "multifapredsi",
-        "strains_path": "workspace/sarscov2_nsp12_strains.fasta",
+        "strains_path": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/sarscov2_nsp12_strains.fasta",
         "alignment_tool": "bowtie2",
         "bowtie2_score_min": "G,20,8",
         "maxgc": 0.55,
@@ -631,21 +623,21 @@
     "workflow": "aso_target_screening",
     "params_by_turn": [
       {
-        "target_mrna_filepath": "workspace/ttr_mrna.fa",
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/ttr_mrna.fa",
         "aso_length": 18,
         "window_step": 1,
         "top_n_windows": 10,
         "binding_evaluation_tool": "rnaup"
       },
       {
-        "target_mrna_filepath": "workspace/ttr_mrna.fa",
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/ttr_mrna.fa",
         "aso_length": 25,
         "window_step": 1,
         "top_n_windows": 10,
         "binding_evaluation_tool": "rnaup"
       },
       {
-        "target_mrna_filepath": "workspace/ttr_mrna.fa",
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/ttr_mrna.fa",
         "aso_length": 25,
         "window_step": 3,
         "top_n_windows": 20,
@@ -653,7 +645,7 @@
       }
     ],
     "constants": {
-      "TARGET_MRNA": "workspace/ttr_mrna.fa"
+      "TARGET_MRNA": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/ttr_mrna.fa"
     }
   },
   "023": {

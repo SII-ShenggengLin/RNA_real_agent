@@ -4,7 +4,7 @@ Pipeline: CRGPT handle design → CRGPT re-score + optional CRISOT off-target
 score → scoring (nn_score + crisot_score) → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SgRnaDesignWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更              ║
+║  SgRnaDesignWorkflow INTERFACE LOCK (v1.2.0; v1.1.0 + optional off_target_sequences / weight_crisot_specificity input fields and the crisot_specificity scoring component — additive, default-off) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sgrna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
@@ -40,7 +40,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Callable, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import read_sequence, save_sequence
@@ -50,6 +50,7 @@ from agent_core.workflows.base import BaseDomainWorkflow
 from agent_core.workflows.evaluators import (
     CRGPTEvaluator,
     CRISOTEvaluator,
+    CRISOTSpecificityEvaluator,
     CompositeEvaluator,
 )
 
@@ -158,6 +159,16 @@ class SgRnaDesignInput(BaseModel):
         le=1.0,
         description="Weight for CRISOT score in composite scoring. Default 0.5 balances on-target activity and off-target safety. Only adjust if the user explicitly prioritizes one over the other.",
     )
+    off_target_sequences: list[str] = Field(
+        default_factory=list,
+        description="Optional candidate off-target DNA sequences (23 nt including NGG PAM). When non-empty and the CRISOT service is reachable, the workflow additionally computes the aggregate CRISOT-Spec genome-context specificity (crisot_specificity component). Empty (default) leaves workflow behaviour unchanged.",
+    )
+    weight_crisot_specificity: float = Field(
+        default=0.3,
+        ge=0.0,
+        le=1.0,
+        description="Weight for the CRISOT-Spec specificity component when off_target_sequences is provided. Inactive while the list is empty.",
+    )
 
 def score_sgrna_candidate(
     metrics: dict[str, Any],
@@ -189,6 +200,12 @@ def score_sgrna_candidate(
     else:
         scores["crisot_component"] = 0.0
 
+    # Aggregate genome-context specificity (only present when the input
+    # supplied off_target_sequences and the CRISOT spec call succeeded).
+    crisot_specificity = metrics.get("crisot_specificity")
+    if crisot_specificity is not None:
+        scores["crisot_specificity_component"] = max(0.0, min(1.0, float(crisot_specificity)))
+
     active_weights = 0.0
     weighted_sum = 0.0
     for key, weight in weights.items():
@@ -217,6 +234,7 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
     """
 
     name = "sgrna_design"
+    task_type = "sgrna_design"
     description = (
         "Design sgRNA handle candidates using CRGPT. Pipeline: generate → "
         "evaluate (CRGPT re-score + optional CRISOT) → score → rank."
@@ -227,6 +245,7 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
         "design_sgrna_handle_with_crgpt",    # mandatory for candidate generation
         "score_sgrna_handle_with_crgpt",     # optional re-scoring
         "score_crispr_off_target_with_crisot",  # optional CRISOT off-target
+        "calculate_crispr_specificity_with_crisot",  # optional aggregate CRISOT-Spec
     ]
 
     def __init__(self, capability_registry: CapabilityRegistry):
@@ -236,6 +255,7 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
         self.evaluator = CompositeEvaluator([
             CRGPTEvaluator(self.capabilities),
             CRISOTEvaluator(self.capabilities),
+            CRISOTSpecificityEvaluator(self.capabilities),
         ])
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -426,6 +446,7 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
         weights = {
             "nn": float(getattr(inp, "weight_nn_score", 0.5)) if inp else 0.5,
             "crisot": float(getattr(inp, "weight_crisot", 0.5)) if inp else 0.5,
+            "crisot_specificity": float(getattr(inp, "weight_crisot_specificity", 0.3)) if inp else 0.3,
         }
         return score_sgrna_candidate(metrics, weights)
 

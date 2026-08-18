@@ -112,9 +112,25 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
     required_capabilities: list[str] = []
     input_model: Optional[type[BaseModel]] = None
 
+    task_type: str = ""
+    """Calibrated-stack task key under which this workflow's oracle calls are
+    gated (CapGate SelfModel queries).  Every concrete workflow must declare
+    it; ``""`` means calls fall back to each oracle's registered default task
+    (pre-W1.2 behaviour)."""
+
     # Service pre-flight configuration.  Subclasses and callers may toggle these.
     auto_start_services: bool = False
     service_startup_timeout: int = 300
+
+    def _task_type_context(self) -> Any:
+        """Context manager keying CapGate oracle reviews to this workflow's task."""
+        import contextlib
+
+        if self.task_type:
+            from agent_core.calibrated.runtime import task_context
+
+            return task_context(self.task_type)
+        return contextlib.nullcontext()
 
     @abstractmethod
     def generate_candidates(self, inp: WorkflowInputT) -> list[Candidate]:
@@ -186,53 +202,54 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
         if preflight is not None:
             return preflight
 
-        try:
-            candidates = self.generate_candidates(inp)
-        except Exception as exc:
-            _LOGGER.exception("workflow_generate_failed workflow=%s error=%s", self.name, exc)
-            return WorkflowResult(
-                success=False,
-                task_id="",
-                summary=f"Workflow failed during candidate generation: {exc}",
-                errors=[f"{type(exc).__name__}: {exc}"],
-            )
-        _LOGGER.info("workflow_generated_candidates count=%d workflow=%s", len(candidates), self.name)
-        if progress_callback:
-            progress_callback({
-                "event": "generate_complete",
-                "candidate_count": len(candidates),
-                "workflow": self.name,
-            })
+        with self._task_type_context():
+            try:
+                candidates = self.generate_candidates(inp)
+            except Exception as exc:
+                _LOGGER.exception("workflow_generate_failed workflow=%s error=%s", self.name, exc)
+                return WorkflowResult(
+                    success=False,
+                    task_id="",
+                    summary=f"Workflow failed during candidate generation: {exc}",
+                    errors=[f"{type(exc).__name__}: {exc}"],
+                )
+            _LOGGER.info("workflow_generated_candidates count=%d workflow=%s", len(candidates), self.name)
+            if progress_callback:
+                progress_callback({
+                    "event": "generate_complete",
+                    "candidate_count": len(candidates),
+                    "workflow": self.name,
+                })
 
-        try:
-            for i, candidate in enumerate(candidates):
-                _LOGGER.info("workflow_evaluating_candidate idx=%d total=%d workflow=%s", i + 1, len(candidates), self.name)
-                metrics = self.evaluate(candidate)
-                candidate.scores = self.score(metrics)
-                candidate.status = "evaluated"
-                if progress_callback:
-                    progress_callback({
-                        "event": "evaluate_progress",
-                        "current": i + 1,
-                        "total": len(candidates),
-                        "candidate_id": candidate.id,
-                        "workflow": self.name,
-                    })
-        except Exception as exc:
-            _LOGGER.exception("workflow_evaluate_failed workflow=%s error=%s", self.name, exc)
-            return WorkflowResult(
-                success=False,
-                task_id="",
-                summary=f"Workflow failed during evaluation: {exc}",
-                errors=[f"{type(exc).__name__}: {exc}"],
-            )
+            try:
+                for i, candidate in enumerate(candidates):
+                    _LOGGER.info("workflow_evaluating_candidate idx=%d total=%d workflow=%s", i + 1, len(candidates), self.name)
+                    metrics = self.evaluate(candidate)
+                    candidate.scores = self.score(metrics)
+                    candidate.status = "evaluated"
+                    if progress_callback:
+                        progress_callback({
+                            "event": "evaluate_progress",
+                            "current": i + 1,
+                            "total": len(candidates),
+                            "candidate_id": candidate.id,
+                            "workflow": self.name,
+                        })
+            except Exception as exc:
+                _LOGGER.exception("workflow_evaluate_failed workflow=%s error=%s", self.name, exc)
+                return WorkflowResult(
+                    success=False,
+                    task_id="",
+                    summary=f"Workflow failed during evaluation: {exc}",
+                    errors=[f"{type(exc).__name__}: {exc}"],
+                )
 
-        _LOGGER.info("workflow_evaluation_complete count=%d workflow=%s", len(candidates), self.name)
-        result = self.rank_and_format(candidates)
-        # Aggregate per-candidate tool records into workflow trace
-        for c in candidates:
-            result.trace.extend(c.tool_records)
-        return result
+            _LOGGER.info("workflow_evaluation_complete count=%d workflow=%s", len(candidates), self.name)
+            result = self.rank_and_format(candidates)
+            # Aggregate per-candidate tool records into workflow trace
+            for c in candidates:
+                result.trace.extend(c.tool_records)
+            return result
 
     def _empty_result(self, summary: str) -> WorkflowResult:
         """Return a standard empty-candidate ``WorkflowResult``."""
@@ -268,36 +285,37 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
 
         if not existing_candidates:
             return None
-        try:
-            for i, candidate in enumerate(existing_candidates):
+        with self._task_type_context():
+            try:
+                for i, candidate in enumerate(existing_candidates):
+                    _LOGGER.info(
+                        "partial_rerun_evaluating idx=%d total=%d workflow=%s",
+                        i + 1,
+                        len(existing_candidates),
+                        self.name,
+                    )
+                    metrics = self.evaluate(candidate)
+                    candidate.scores = self.score(metrics)
+                    candidate.status = "evaluated"
+                    if progress_callback:
+                        progress_callback({
+                            "event": "evaluate_progress",
+                            "current": i + 1,
+                            "total": len(existing_candidates),
+                            "candidate_id": candidate.id,
+                            "workflow": self.name,
+                        })
                 _LOGGER.info(
-                    "partial_rerun_evaluating idx=%d total=%d workflow=%s",
-                    i + 1,
+                    "partial_rerun_complete count=%d workflow=%s",
                     len(existing_candidates),
                     self.name,
                 )
-                metrics = self.evaluate(candidate)
-                candidate.scores = self.score(metrics)
-                candidate.status = "evaluated"
-                if progress_callback:
-                    progress_callback({
-                        "event": "evaluate_progress",
-                        "current": i + 1,
-                        "total": len(existing_candidates),
-                        "candidate_id": candidate.id,
-                        "workflow": self.name,
-                    })
-            _LOGGER.info(
-                "partial_rerun_complete count=%d workflow=%s",
-                len(existing_candidates),
-                self.name,
-            )
-            result = self.rank_and_format(existing_candidates)
-            for c in existing_candidates:
-                result.trace.extend(c.tool_records)
-            return result
-        except Exception as exc:
-            _LOGGER.exception(
-                "partial_rerun_failed workflow=%s error=%s", self.name, exc
-            )
-            return None
+                result = self.rank_and_format(existing_candidates)
+                for c in existing_candidates:
+                    result.trace.extend(c.tool_records)
+                return result
+            except Exception as exc:
+                _LOGGER.exception(
+                    "partial_rerun_failed workflow=%s error=%s", self.name, exc
+                )
+                return None

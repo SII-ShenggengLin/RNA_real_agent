@@ -41,7 +41,6 @@
 | 8015 | `microservices/linearfold_service/` | LinearFold | Secondary structure (beam search) | ✅ Linux |
 | 8016 | `microservices/evitar_service/` | Evitar | siRNA design | ✅ Linux |
 | 8017 | `microservices/sgrna_design_service/` | CRGPT | sgRNA handle design | ✅ Linux GPU |
-| 8018 | `microservices/codonw_slim_service/` | codonw-slim | Codon metrics | ✅ Linux |
 | 8019 | `microservices/blast_service/` | BLAST+ | Nucleotide similarity | ✅ Linux |
 | 8020 | `microservices/rna_sequence_metrics_service/` | RNA metrics | GC / U / unpaired fraction | ✅ Linux |
 | 8021 | `microservices/ribodiffusion_service/` | RiboDiffusion | 3D → sequence (diffusion) | ✅ Linux GPU |
@@ -81,7 +80,7 @@
 ### 2.2 LinearFold Suite (Port 8015)
 
 | Upstream | [LinearFold/LinearFold](https://github.com/LinearFold/LinearFold.git) |
-| Endpoints | `GET /health`, `POST /fold`, `POST /fold/zuker_subopt`, `POST /eval` |
+| Endpoints | `GET /health`, `POST /fold` |
 | Backend | Direct C++ binary calls |
 
 **Agent tools**
@@ -89,8 +88,6 @@
 | Tool | Input | Output |
 |------|-------|--------|
 | `predict_rna_secondary_structure_with_linearfold` | `filepath`, optional `constraints` | `structure`, `mfe` |
-| `evaluate_rna_structure_with_linearfold` | `filepath` | energy evaluation |
-| `predict_rna_secondary_structure_with_linearfold_zuker` | `filepath` | subopt structures |
 
 **Notes**
 - Run `cd external_repos/LinearFold && make` to build binaries.
@@ -107,22 +104,19 @@
 ### 3.1 LinearDesign (Port 8014)
 
 | Upstream | [LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign.git) |
-| Endpoints | `GET /health`, `POST /generate/cds`, `POST /generate/cds/batch`, `POST /generate/cds_junction_aware` (local JUNCTION-PATCH, 2026-08) |
+| Endpoints | `GET /health`, `POST /generate/cds` |
 
 **Agent tools**
 
 | Tool | Key parameters |
 |------|----------------|
 | `design_mrna_cds_with_lineardesign` | `lambda_value` (MFE/CAI balance), `codon_usage_path`, `verbose` |
-| `design_mrna_cds_batch_with_lineardesign` | Same params; accepts FASTA or multi-line text |
-| `design_mrna_cds_junction_aware_with_lineardesign` | `utr5_flank`/`utr3_flank` (junction-side 21 nt folded with CDS), `junction_weight` (w_jun window pair penalty), `junction_window_nt`, `flank_nt`; see `docs/tools/design_mrna_cds_junction_aware_with_lineardesign.md` |
-| `shuffle_cds_junction_codons` | Pure-Python helper for junction codon shuffling (no microservice) |
 
 **Notes**
 - Run `cd external_repos/LinearDesign && make` to generate `bin/LinearDesign_2D.real`, then restore the memory-guard wrapper as `bin/LinearDesign_2D` (the wrapper caps the address space via `ulimit -v`, default 100 GiB, override with `LINEARDESIGN_MAX_RSS_KB`). Never expose the raw binary as `bin/LinearDesign_2D`: unbounded runs previously exhausted the 200 GiB container cgroup and the OOM killer SIGKILLed unrelated processes (2026-08-06).
 - The service also rejects oversized proteins up front (`LINEARDESIGN_MAX_AA`, default 1800 aa; DP-lattice memory grows ~quadratically, ~7.5 GiB at 500 aa) so over-budget jobs fail fast instead of burning memory until the wrapper cap aborts them.
 - `LINEARDESIGN_ROOT` env var can override the directory.
-- `design_mrna_cds_junction_aware_with_lineardesign` (v0.1.0, INTERFACE_LOCKS §21) is a registered capability **not wired into any workflow**: the P2 pre-registered acceptance (2026-08-04, 72 cells) returned NO-GO — the global-fold window penalty does not repair fragment-fold AUG/Kozak burial (penalty/metric coordinate mismatch; `experiments/results/junction_integrated_optimizer_summary.json`). Large-protein memory: HER2-scale ≈ 47 GiB RSS, keep concurrency ≤ 2 on 200 GiB hosts.
+- Removed 2026-08-18: `design_mrna_cds_batch_with_lineardesign`, `design_mrna_cds_junction_aware_with_lineardesign` (P2 pre-registered NO-GO — the junction-aware objective never repaired fragment-fold burial; `experiments/results/junction_integrated_optimizer_summary.json`) and `shuffle_cds_junction_codons` (junction auto-repair strategy falsified, DECISIONS.md (b)).
 
 ### 3.2 RNARL (Port 8008)
 
@@ -308,12 +302,6 @@
 |------|-------------------|
 | `score_crispr_off_target_with_crisot` | ❌ |
 | `calculate_crispr_specificity_with_crisot` | ❌ |
-| `search_crispr_off_targets_with_crisot` | ✅ |
-| `optimize_sgrna_with_crisot` | ✅ |
-| `score_batch_crispr_off_targets_with_crisot` | ❌ |
-| `rescore_sgrnas_with_crisot` | ✅ |
-| `predict_crispr_off_target_with_crisot_fp` | ❌ |
-| `generate_crispr_fingerprint_with_crisot` | ❌ |
 
 **Notes**
 - `cas-offinder` must be on PATH for genome-wide operations.
@@ -372,40 +360,9 @@
 - Uses Sharp & Li relative adaptiveness weights from Kazusa tables.
 - Stop codons excluded from calculation.
 
-### 9.3 codonw-slim (Port 8018)
-
-| Endpoint | `POST /analyze/cds` |
-
-**Agent tool**: `analyze_cds_codon_metrics_with_codonw_slim(filepath)`
-
-**Metrics**: CAI, Fop, CBI, Nc (ENC), GC, GC1/2/3, hydropathy, aromaticity, and optional tables.
-
-**Notes**
-- Input must be in-frame CDS. Run `install_codonw_slim.sh` after env creation.
-
-### 9.4 Junction Codon Shuffler (Pure Python)
-
-**Agent tool**: `shuffle_cds_junction_codons(filepath, junction_end, codon_count=6, num_variants=8, species="Homo sapiens", seed=None)`
-
-Generate synonymous-codon variants at the N- or C-terminus of a CDS to alter local RNA secondary structure at module junctions (5'UTR-CDS or CDS-3'UTR) without changing the encoded protein.
-
-**Parameters**
-| Parameter | Description |
-|-----------|-------------|
-| `junction_end` | ``n_terminus`` (affects 5'UTR-CDS junction) or ``c_terminus`` (affects CDS-3'UTR junction) |
-| `codon_count` | Number of terminal codons to shuffle (1--12, default 6) |
-| `num_variants` | Number of variant sequences to generate (1--32, default 8) |
-| `species` | Reference species for codon-usage weighting |
-| `seed` | Optional RNG seed for reproducibility |
-
-**Returns**
-- `original_sequence`, `junction_end`, `shuffled_region_start/end`
-- `variants`: list of `{sequence, cai_score, changed_codons, changes}`
-
-**Notes**
-- Pure Python; no microservice.
-- Synonymous choices are weighted by species codon usage (Kazusa tables) so high-CAI variants are naturally favored.
-- Used by the BMC coordinator as a fine-grained local control for junction structure optimization.
+(9.3 codonw-slim and 9.4 junction codon shuffler removed 2026-08-18 together
+with their tools — no production consumer; junction auto-repair strategy
+falsified, DECISIONS.md (b).)
 
 ---
 

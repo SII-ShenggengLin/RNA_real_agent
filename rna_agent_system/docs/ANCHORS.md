@@ -1,8 +1,8 @@
 # External Anchors — Directory Spec & Curation Script Pattern
 
 > Canonical spec for `data/benchmarks/external_anchors/` and its generator scripts.
-> Templates: `experiments/curate_e1_anchor_set.py` (pilot) and
-> `experiments/curate_e1_anchor_set_v2.py` (extension — the reference implementation).
+> Reference implementation: `experiments/curate_e16_e17_e18_anchor_sets.py`
+> (assertion-checked, deterministic; also see `curate_e7_mrl_anchor_set.py`).
 > Created 2026-08-04 (W3–4 milestone: anchor infrastructure consolidation).
 
 ## 1. Directory layout

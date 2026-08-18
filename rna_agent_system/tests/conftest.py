@@ -38,7 +38,22 @@ def pytest_collection_modifyitems(config, items):
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Shared fixtures (previously duplicated across comprehensive test files)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ═════════════════════════════════════════════════════════════════════════════════
+
+@pytest.fixture(autouse=True)
+def _hermetic_calibrated_runtime(monkeypatch):
+    """Keep the suite hermetic: no platform CapGate unless a test opts in.
+
+    ``AgentRunner`` reads ``RNADA_CAPGATE`` at construction; tests default to
+    ``off`` and configure ``CalibratedRuntime`` explicitly when testing gates.
+    """
+    from agent_core.calibrated.runtime import CalibratedRuntime
+
+    CalibratedRuntime.clear()
+    monkeypatch.setenv("RNADA_CAPGATE", "off")
+    yield
+    CalibratedRuntime.clear()
+
 
 @pytest.fixture(scope="module")
 def executor():

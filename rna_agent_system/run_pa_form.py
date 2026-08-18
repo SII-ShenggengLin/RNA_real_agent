@@ -53,6 +53,12 @@ def run_form_round(
 
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{PROJECT_ROOT}:{env.get('PYTHONPATH', '')}"
+    # PA benchmarks are process-aware CLI regressions: run under CapGate
+    # advisory so enforce-mode oracle gating (the registered E16–E18
+    # consequence, DECISIONS.md (j)/(l)) does not fail whole workflows whose
+    # scoring oracles are legitimately blocked in production. Explicit
+    # RNADA_CAPGATE in the caller's environment wins.
+    env.setdefault("RNADA_CAPGATE", "advisory")
 
     cmd = [
         sys.executable,

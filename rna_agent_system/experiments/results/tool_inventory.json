@@ -1,0 +1,769 @@
+{
+  "schema_version": "tool_inventory_v1",
+  "summary": {
+    "total_tools": 42,
+    "scientific_tools": 41,
+    "status": {
+      "production": 41,
+      "experiment_only": 0,
+      "reserved": 0,
+      "demo": 1
+    },
+    "kind": {
+      "compute": 16,
+      "utility": 3,
+      "generator": 11,
+      "predictor": 12
+    },
+    "service_backed": 35
+  },
+  "tools": [
+    {
+      "name": "analyze_rna_protein_interface",
+      "display_name": "Analyze RNA-protein interface",
+      "kind": "compute",
+      "oracle": null,
+      "service": null,
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "build_odesign_aptamer_input_json",
+      "display_name": "ODesign aptamer input JSON builder",
+      "kind": "utility",
+      "oracle": null,
+      "service": null,
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "calculate_crispr_specificity_with_crisot",
+      "display_name": "CRISOT specificity (CSV)",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8011
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/sgrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_aso_target_accessibility_vienna",
+      "display_name": "ViennaRNA RNAplfold accessibility (ASO)",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8003
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/aso_target_screening.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_cai_for_cds_sequence",
+      "display_name": "CAI for CDS (Kazusa tables)",
+      "kind": "compute",
+      "oracle": null,
+      "service": null,
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py",
+        "agent_core/workflows/mrna_sequence_scoring.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_dot_bracket_unpaired_fraction",
+      "display_name": "Dot-bracket unpaired fraction",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8020
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/ires_prediction.py",
+        "agent_core/workflows/mrna_cds_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_rna_rna_interaction_vienna",
+      "display_name": "ViennaRNA RNAup (RNA-RNA interaction thermodynamics)",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8003
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/aso_target_screening.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_rna_sequence_gc_content",
+      "display_name": "RNA sequence GC content",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8020
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py",
+        "agent_core/workflows/mrna_sequence_scoring.py",
+        "agent_core/workflows/rna_aptamer_design.py",
+        "agent_core/workflows/rna_secondary_structure_design.py",
+        "agent_core/workflows/rna_tertiary_structure_design.py",
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_rna_sequence_u_content",
+      "display_name": "RNA sequence U content",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8020
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "compute_sirna_duplex_binding_vienna",
+      "display_name": "ViennaRNA duplex cofold (siRNA sense/antisense)",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8003
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/aso_target_screening.py",
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_3utr_with_gemorna",
+      "display_name": "GEMORNA 3'UTR design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8004
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/full_length_mrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_5utr_with_gemorna",
+      "display_name": "GEMORNA 5'UTR design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8004
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/full_length_mrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_mrna_cds_with_gemorna",
+      "display_name": "GEMORNA protein→CDS design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8004
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_mrna_cds_with_lineardesign",
+      "display_name": "LinearDesign protein→CDS design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8014
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_mrna_cds_with_rnarl",
+      "display_name": "RNARL protein→CDS design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8008
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_rna_inverse_fold_with_ribodiffusion",
+      "display_name": "RiboDiffusion tertiary inverse folding",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8021
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_tertiary_structure_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_rna_sequence_with_rhodesign",
+      "display_name": "RhoDesign structure→sequence design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8006
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_tertiary_structure_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_sgrna_handle_with_crgpt",
+      "display_name": "CRGPT sgRNA handle design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8017
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/sgrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "design_sirna_with_evitar",
+      "display_name": "Evitar siRNA/Cas13 design",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8016
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "extract_rna_sequence_from_cif",
+      "display_name": "Extract RNA sequence from CIF/MMCIF",
+      "kind": "utility",
+      "oracle": null,
+      "service": null,
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "identify_protein_binding_hotspots",
+      "display_name": "Identify protein binding hotspots (RNA aptamer)",
+      "kind": "compute",
+      "oracle": null,
+      "service": null,
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "inverse_fold_rna_secondary_structure_vienna",
+      "display_name": "ViennaRNA RNAinverse (inverse folding)",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8003
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_secondary_structure_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_3utr_stability_with_gemorna",
+      "display_name": "GEMORNA 3'UTR stability prediction",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "gemorna_3utr_stability",
+        "evidence_use": "ranking_objective",
+        "governance": "enforce",
+        "default_task_type": "full_length_mrna"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8004
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_5utr_mrl_with_gemorna",
+      "display_name": "GEMORNA 5'UTR MRL prediction",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "gemorna_5utr_mrl",
+        "evidence_use": "ranking_objective",
+        "governance": "enforce",
+        "default_task_type": "full_length_mrna"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8004
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_mrna_stability_with_rnastop",
+      "display_name": "RNASTOP stability/degradation prediction",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "rnastop_stability",
+        "evidence_use": "ranking_objective",
+        "governance": "enforce",
+        "default_task_type": "full_length_mrna"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8009
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/mrna_cds_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_protein_structure_with_proteinx",
+      "display_name": "ProteinX (Protenix) protein structure prediction",
+      "kind": "predictor",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8022
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_putative_ires_with_iresfinder",
+      "display_name": "IRESfinder prediction",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "iresfinder_score",
+        "evidence_use": "screening_evaluation",
+        "governance": "enforce",
+        "default_task_type": "ires_prediction"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8013
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/ires_prediction.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_rna_local_accessibility_profile_vienna",
+      "display_name": "ViennaRNA RNAplfold local accessibility profile",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8003
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/aso_target_screening.py",
+        "agent_core/workflows/ires_prediction.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_rna_protein_complex_with_proteinx",
+      "display_name": "ProteinX RNA-protein complex prediction",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "proteinx_ipTM",
+        "evidence_use": "ranking_objective",
+        "governance": "enforce",
+        "default_task_type": "rna_aptamer_design"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8022
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_rna_secondary_structure",
+      "display_name": "ViennaRNA RNAfold (secondary structure)",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8003
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/ires_prediction.py",
+        "agent_core/workflows/mrna_cds_design.py",
+        "agent_core/workflows/mrna_sequence_scoring.py",
+        "agent_core/workflows/rna_secondary_structure_design.py",
+        "agent_core/workflows/rna_tertiary_structure_design.py",
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_rna_secondary_structure_with_linearfold",
+      "display_name": "LinearFold secondary structure",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8015
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/full_length_mrna_design.py",
+        "agent_core/workflows/ires_prediction.py",
+        "agent_core/workflows/mrna_cds_design.py",
+        "agent_core/workflows/mrna_sequence_scoring.py",
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "predict_rna_tertiary_structure_with_rhofold",
+      "display_name": "RhoFold tertiary structure prediction",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "rhofold_mean_plddt",
+        "evidence_use": "ranking_objective",
+        "governance": "enforce",
+        "default_task_type": "rna_aptamer_design"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8005
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py",
+        "agent_core/workflows/rna_small_molecule_interaction.py",
+        "agent_core/workflows/rna_tertiary_structure_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "run_blastn_similarity_search",
+      "display_name": "BLAST+ blastn similarity search",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8019
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "run_bowtie2_short_alignment",
+      "display_name": "Bowtie2 short-sequence alignment",
+      "kind": "compute",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8024
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/sirna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "run_odesign_inference",
+      "display_name": "ODesign inference (from JSON)",
+      "kind": "generator",
+      "oracle": null,
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8012
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "score_crispr_off_target_with_crisot",
+      "display_name": "CRISOT score (single pair)",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "crisot_off_target_score",
+        "evidence_use": "ranking_objective",
+        "governance": "pending",
+        "default_task_type": "sgrna_design"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8011
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/sgrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "score_rna_ligand_binding_with_gernabind",
+      "display_name": "GerNA-Bind RNA-ligand scoring",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "gernabind_probability",
+        "evidence_use": "screening_evaluation",
+        "governance": "enforce",
+        "default_task_type": "rna_small_molecule"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8010
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_small_molecule_interaction.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "score_rna_ligand_binding_with_rnasmol",
+      "display_name": "RNAsmol RNA-ligand scoring",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "rnasmol",
+        "evidence_use": "screening_evaluation",
+        "governance": "enforce",
+        "default_task_type": "rna_small_molecule"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8007
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_small_molecule_interaction.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "score_rna_protein_complex_with_egarps",
+      "display_name": "EGARPS+ RNA-protein complex scoring",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "egarps_native_probability",
+        "evidence_use": "ranking_objective",
+        "governance": "enforce",
+        "default_task_type": "rna_aptamer_design"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8023
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_aptamer_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "score_sgrna_handle_with_crgpt",
+      "display_name": "CRGPT sgRNA handle scoring",
+      "kind": "predictor",
+      "oracle": {
+        "oracle_id": "crgpt_handle_score",
+        "evidence_use": "ranking_objective",
+        "governance": "pending",
+        "default_task_type": "sgrna_design"
+      },
+      "service": {
+        "host": "127.0.0.1",
+        "port": 8017
+      },
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/evaluators.py",
+        "agent_core/workflows/sgrna_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "score_structure_alignment",
+      "display_name": "RNA structure alignment (RMSD + TM-score)",
+      "kind": "compute",
+      "oracle": null,
+      "service": null,
+      "status": "production",
+      "reserved_reason": null,
+      "production_callers": [
+        "agent_core/workflows/rna_tertiary_structure_design.py"
+      ],
+      "experiment_callers": []
+    },
+    {
+      "name": "workflow_demo_echo",
+      "display_name": "Workflow Demo Echo",
+      "kind": "utility",
+      "oracle": null,
+      "service": null,
+      "status": "demo",
+      "reserved_reason": null,
+      "production_callers": [],
+      "experiment_callers": []
+    }
+  ]
+}

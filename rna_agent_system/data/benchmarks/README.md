@@ -156,3 +156,17 @@ If you use these datasets, please cite the RNADesignAgent paper (in preparation)
 
 The benchmark datasets are released under the same license as the RNADesignAgent project.
 Protein sequences are from UniProt (CC BY 4.0) and PDB structures are from RCSB PDB.
+
+## PA static fixtures (`RNA-BioBench-ProcessAware/fixtures/`, 2026-08-18)
+
+Regression-benchmark input assets referenced by `pa_benchmarks.json`. They
+previously lived untracked under `workspace/` and were lost in a workspace
+clean; rebuilt 2026-08-18 from NCBI records and the local Evitar test genomes,
+now git-tracked:
+
+| File | Contents | Provenance |
+|------|----------|------------|
+| `ns1_strains.fasta` | Dengue NS1 gene, 4 serotype references + the PA_006 query isolate | `NC_001477.1` / `NC_001474.2` / `NC_001475.1` / `NC_002640.1` mat_peptide "nonstructural protein NS1" (1056 nt each), efetch 2026-08-18 |
+| `sarscov2_nsp12_strains.fasta` | SARS-CoV-2 nsp12 (RdRp) CDS, Wuhan-Hu-1 + 7 early-2020 isolates + the PA_016 query | `NC_045512.2` genome 13442..16236 (2795 nt, direct ORF1ab slice — the GenBank mat_peptide join overlaps 1 nt at the frameshift and must not be used verbatim); isolates from `external_repos/Evitar/test/strains.fa` extracted at the conserved nsp12 start anchor |
+| `epo_mrna.fa` | Human EPO mRNA (1340 nt) | `NM_000799.3`, efetch 2026-08-18 |
+| `ttr_mrna.fa` | Human TTR mRNA (616 nt) | `NM_000371.4`, efetch 2026-08-18 |

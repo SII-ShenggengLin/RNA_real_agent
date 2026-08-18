@@ -113,7 +113,18 @@ class ToolExecutor:
         )
 
     def run_tool(self, tool_name: str, **kwargs: Any) -> ToolResult:
-        """Invoke tool by name with standardized success/error handling."""
+        """Invoke tool by name with standardized success/error handling.
+
+        Every call is recorded to the platform audit trail and managed oracle
+        tools are checked against the calibrated SelfModel before invocation
+        (blocked only under ``enforce`` policy; see
+        ``agent_core/calibrated/runtime.py``).
+        """
+
+        from agent_core.calibrated.runtime import CalibratedRuntime
+
+        runtime = CalibratedRuntime.instance()
+        kwargs_summary = _summarize_kwargs(kwargs)
 
         started = time.perf_counter()
         try:
@@ -121,6 +132,11 @@ class ToolExecutor:
         except ToolNotRegisteredError as exc:
             elapsed = time.perf_counter() - started
             self.logger.warning("tool not registered: %s", exc.tool_name)
+            if runtime is not None:
+                runtime.record_tool_call(
+                    tool_name, kwargs_summary=kwargs_summary, success=False,
+                    elapsed_time=elapsed, error_type="ToolNotRegisteredError",
+                )
             return ToolResult(
                 success=False,
                 tool_name=tool_name,
@@ -132,7 +148,32 @@ class ToolExecutor:
                 elapsed_time=elapsed,
             )
 
-        self.logger.info("tool invoke start name=%s kwargs=%s", tool_name, _summarize_kwargs(kwargs))
+        if runtime is not None:
+            decision = runtime.review_tool_call(tool_name)
+            if decision is not None:
+                if runtime.should_block(decision, tool_name):
+                    elapsed = time.perf_counter() - started
+                    self.logger.warning(
+                        "tool gated name=%s verdict=%s reason=%s",
+                        tool_name, decision.verdict, decision.reason,
+                    )
+                    runtime.record_tool_call(
+                        tool_name, kwargs_summary=kwargs_summary, success=False,
+                        elapsed_time=elapsed, error_type="GatedActionError", gated=True,
+                    )
+                    return ToolResult(
+                        success=False,
+                        tool_name=tool_name,
+                        error={
+                            "type": "GatedActionError",
+                            "message": decision.reason,
+                            "verdict": decision.verdict,
+                            "required_capability": decision.required_capability,
+                        },
+                        elapsed_time=elapsed,
+                    )
+
+        self.logger.info("tool invoke start name=%s kwargs=%s", tool_name, kwargs_summary)
         try:
             raw = tool_obj.invoke(kwargs)
             result = self._normalizer(tool_name, raw)
@@ -144,10 +185,20 @@ class ToolExecutor:
                 result.elapsed_time,
                 result.success,
             )
+            if runtime is not None:
+                runtime.record_tool_call(
+                    tool_name, kwargs_summary=kwargs_summary, success=result.success,
+                    elapsed_time=result.elapsed_time,
+                )
             return result
         except Exception as exc:
             elapsed = time.perf_counter() - started
             self.logger.exception("tool invoke failed name=%s", tool_name)
+            if runtime is not None:
+                runtime.record_tool_call(
+                    tool_name, kwargs_summary=kwargs_summary, success=False,
+                    elapsed_time=elapsed, error_type=type(exc).__name__,
+                )
             return ToolResult(
                 success=False,
                 tool_name=tool_name,

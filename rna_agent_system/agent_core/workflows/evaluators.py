@@ -561,6 +561,67 @@ class CRISOTEvaluator(BaseEvaluator):
         return {"crisot_score": None}
 
 
+class CRISOTSpecificityEvaluator(BaseEvaluator):
+    """Aggregate CRISOT-Spec genome-context specificity (cached per run).
+
+    Consumes the workflow input's optional ``off_target_sequences`` list:
+    builds the upstream On/Off CSV (on-target rows against every listed
+    off-target) and invokes the CRISOT specificity microservice.  Absent
+    list, absent capability, or a failed call degrade to
+    ``crisot_specificity = None`` (scoring component skipped).
+    """
+
+    capability_name = "calculate_crispr_specificity_with_crisot"
+
+    def evaluate(
+        self, candidate: Candidate, context: dict[str, Any]
+    ) -> dict[str, Any]:
+        wf_inp = context.get("workflow_input")
+        if wf_inp is None:
+            return {"crisot_specificity": None}
+
+        guide_seq = getattr(wf_inp, "guide_sequence", None)
+        off_targets = [
+            str(s).strip().upper()
+            for s in (getattr(wf_inp, "off_target_sequences", None) or [])
+            if str(s).strip()
+        ]
+        if not guide_seq or not off_targets:
+            return {"crisot_specificity": None}
+
+        state = context.get("workflow_state", {}) or {}
+        cache_key = "_crisot_spec_cache"
+        if cache_key in state:
+            return {"crisot_specificity": state[cache_key]}
+
+        if not self.capabilities.has(self.capability_name):
+            return {"crisot_specificity": None}
+
+        try:
+            csv_path = save_text_file(
+                "On,Off\n"
+                + "".join(f"{str(guide_seq).strip().upper()},{off}\n" for off in off_targets),
+                prefix="crisot_on_off",
+                suffix=".csv",
+            )
+            args = {"csv_filepath": csv_path}
+            res = self.capabilities.get(self.capability_name).invoke(args, state=state)
+            if res.success:
+                crisot_spec = _pick_float(res.output, "crisot_spec")
+                state[cache_key] = crisot_spec
+                metrics = {"crisot_specificity": crisot_spec}
+                _trace_capability_call(
+                    candidate, self.capability_name, args, res, extra_metrics=metrics
+                )
+                return metrics
+            _LOGGER.warning("crisot_specificity_evaluator_failed error=%s", res.error)
+            _trace_capability_call(candidate, self.capability_name, args, res)
+        except Exception as exc:  # noqa: BLE001
+            _LOGGER.warning("crisot_specificity_evaluator_exception exc=%s", exc)
+
+        return {"crisot_specificity": None}
+
+
 class UTR5MrlEvaluator(BaseEvaluator):
     """Evaluate 5'UTR MRL via GEMORNA."""
 
@@ -924,68 +985,6 @@ class JunctionEvaluator(BaseEvaluator):
             extra_metrics={f"junction_5utr_cds_ddg_mfe_{tag}": mfe},
         )
         return mfe
-
-    @staticmethod
-    def _check_translation_start(
-        seq: str, structure: str, cds_start_offset: int | None = None
-    ) -> dict[str, Any]:
-        """Check whether the CDS-start AUG and its Kozak context are buried.
-
-        Retained for experiment-script reproducibility
-        (``experiments/junction_aware_codon_optimizer.py`` imports it); the
-        evaluator no longer emits burial booleans — they were replaced by the
-        full-length ddG report metric (see ``_evaluate_ddg_open``).
-
-        If `cds_start_offset` is provided, the AUG at exactly that position is
-        treated as the canonical start codon. This avoids false positives from
-        upstream AUGs (uAUGs) that may appear in the 5'UTR portion of the
-        junction. If the offset is omitted, the function falls back to scanning
-        for the first AUG in the junction sequence.
-
-        Returns flags indicating whether the AUG or its Kozak context are
-        base-paired (buried), which would impede ribosome scanning.
-        """
-        result: dict[str, Any] = {
-            "aug_found": False,
-            "aug_buried": False,
-            "aug_position": -1,
-            "kozak_buried": False,
-            "kozak_position_start": -1,
-        }
-
-        if len(structure) != len(seq):
-            return result
-
-        seq_upper = seq.upper()
-
-        if cds_start_offset is not None and 0 <= cds_start_offset <= len(seq) - 3:
-            # Use the canonical start codon at the CDS boundary
-            aug_pos = cds_start_offset
-            if seq_upper[aug_pos : aug_pos + 3] != "AUG":
-                return result
-        else:
-            # Fallback: scan for the first AUG (legacy behavior for short inputs)
-            aug_pos = seq_upper.find("AUG")
-            if aug_pos == -1:
-                return result
-
-        result["aug_found"] = True
-        result["aug_position"] = aug_pos
-
-        # Check if any of the 3 AUG nucleotides is paired
-        aug_struct = structure[aug_pos : aug_pos + 3]
-        result["aug_buried"] = any(c in "()" for c in aug_struct)
-
-        # Kozak region: 4 nt upstream + AUG + 1 nt downstream
-        # Consensus context spans approximately positions -6 to +4 around the A,
-        # but the junction window may truncate the upstream flank.
-        kozak_start = max(0, aug_pos - 4)
-        kozak_end = min(len(seq), aug_pos + 4)  # exclusive; covers AUG + 1 nt after G
-        kozak_struct = structure[kozak_start:kozak_end]
-        result["kozak_position_start"] = kozak_start
-        result["kozak_buried"] = any(c in "()" for c in kozak_struct)
-
-        return result
 
     @staticmethod
     def _gc_content(seq: str) -> float:

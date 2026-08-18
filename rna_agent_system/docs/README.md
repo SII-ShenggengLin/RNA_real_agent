@@ -37,8 +37,8 @@ An LLM-driven agent system for RNA bioinformatics design and analysis.
 ├──────────────────────────────────────────────┤
 │  Layer 4  Planning & Multi-Agent Execution   │
 │           PipelineAgent / SpecialistAgent    │
-│           CoordinatorAgent / QualityAgent    │
-│           SynthesisAgent (+ calibrated/)     │
+│           QualityAgent / SynthesisAgent      │
+│           (+ calibrated/ CapGate stack)      │
 ├──────────────────────────────────────────────┤
 │  Layer 3  Service Orchestration              │
 │           Health check & auto-start          │
@@ -68,11 +68,10 @@ rna_agent_system/
 │   ├── services/               #   Layer 3: microservice health/orchestration
 │   ├── agents/                 #   Layer 4: multi-agent execution
 │   │                           #     PipelineAgent, SpecialistAgent,
-│   │                           #     CoordinatorAgent, QualityAgent,
-│   │                           #     SynthesisAgent
+│   │                           #     QualityAgent, SynthesisAgent
 │   ├── pipeline/               #   Layer 4: PipelinePlan/Node/Edge models
-│   ├── calibrated/             #   Layer 4: calibrated strategy stack
-│   │                           #     (SelfModel, Profiler, Gates, CaseMemory)
+│   ├── calibrated/             #   Layer 4: CapGate strategy stack
+│   │                           #     (SelfModel, DecisionGate, ClaimGate)
 │   ├── tools.py                #   Layer 0: @tool wrappers (HTTP → microservices)
 │   ├── tool_specs.py           #   Pydantic output schemas & ToolSpec registry
 │   ├── llm_config.py           #   LLM client factory (get_llm_for_provider)
@@ -178,7 +177,6 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x
 | 8015 | LinearFold | Secondary structure (beam search) |
 | 8016 | Evitar | siRNA design |
 | 8017 | CRGPT | sgRNA handle design |
-| 8018 | codonw-slim | Codon metrics |
 | 8019 | BLAST+ | Nucleotide similarity |
 | 8020 | RNA metrics | GC / U content / unpaired fraction |
 | 8021 | RiboDiffusion | 3D → sequence (diffusion) |
@@ -214,7 +212,6 @@ For workflow deep-dives, see [`WORKFLOWS.md`](WORKFLOWS.md).
 | [`WORKFLOWS.md`](WORKFLOWS.md) | All domain workflows: pipelines, scoring formulas, critic design |
 | [`MANUSCRIPT.md`](MANUSCRIPT.md) | Experiment manual: benchmark/anchor assets, pilot-first protocol, data availability |
 | [`TOOLS.md`](TOOLS.md) | Per-tool specs, port registry, microservice deployment notes |
-| [`BMC_FRAMEWORK.md`](BMC_FRAMEWORK.md) | Bounded Multi-Module Coordination: Type-I/Type-II motivation and strategy |
 | [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) | Interface Lock Policy, canonical references, sync checklists |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Environment setup, testing recipes, curl examples |
 | [`CHANGELOG.md`](CHANGELOG.md) | Change logs for locked interfaces and major workflows |

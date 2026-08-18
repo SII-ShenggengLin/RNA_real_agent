@@ -29,8 +29,6 @@ case "${MODE}" in
       tests/test_workspace_manager.py \
       tests/test_workflow_models.py \
       tests/test_file_manager_session.py \
-      tests/test_partial_retry.py \
-      tests/test_shuffle_cds_junction_codons.py \
       tests/test_viennarna_wrapper_output.py \
       tests/test_mrna_workflow.py \
       tests/test_sirna_design_workflow.py \
@@ -38,7 +36,7 @@ case "${MODE}" in
     ;;
 
   medium)
-    # Core + selected workflow / mock BMC / aptamer / rhodesign interface
+    # Core + selected workflow / aptamer / rhodesign interface
     # Target: < 30 seconds
     echo "=== MEDIUM tests (fast + workflow mocks + interfaces) ==="
     python -m pytest \
@@ -49,17 +47,14 @@ case "${MODE}" in
       tests/test_workspace_manager.py \
       tests/test_workflow_models.py \
       tests/test_file_manager_session.py \
-      tests/test_partial_retry.py \
-      tests/test_shuffle_cds_junction_codons.py \
       tests/test_viennarna_wrapper_output.py \
       tests/test_mrna_workflow.py \
       tests/test_sirna_design_workflow.py \
       tests/test_rna_aptamer_design.py \
-      tests/test_bmc_workflow_e2e_mock.py \
-      tests/test_mrna_cds_design.py \
+      tests/test_mrna_cds_design_layer4.py \
       tests/test_full_length_mrna_design.py \
+      tests/test_full_length_mrna_evaluators.py \
       tests/test_workflow_baseline_eval.py \
-      tests/test_workflow_observability.py \
       tests/test_rhodesign_interface.py \
       -q --tb=short
     ;;

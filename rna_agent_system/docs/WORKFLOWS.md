@@ -129,25 +129,20 @@ total_score = combined_score
 
 > **File**: `workflows/full_length_mrna_design.py` | **QualityProfile**: `FULL_LENGTH_MRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §14
 
-**Purpose**: Design complete mRNA (5'UTR + CDS + 3'UTR). Reuses `MrnaCdsDesignWorkflow` for CDS, then appends UTR combinations and evaluates full-length metrics with BMC Type-I coordination.
+**Purpose**: Design complete mRNA (5'UTR + CDS + 3'UTR). Reuses `MrnaCdsDesignWorkflow` for CDS, then appends UTR combinations and evaluates full-length metrics, ranking by reference-point (ASF) optimization.
 
 **Pipeline**
 1. **Generate** — CDS via `MrnaCdsDesignWorkflow` × UTR presets (short/medium/long) → full-length candidates
 2. **Evaluate** — full-length MFE, 5'UTR MRL, 3'UTR stability, U content, **full-length GC content**, **junction MFE** (5'UTR–CDS, CDS–3'UTR), **junction GC diff**, **junction full-length ddG** (5'UTR–CDS, report-only; IRES potential and RNASTOP overall stability are computed by underlying tools but are not propagated into the coordinator metrics in the current implementation)
 3. **Score** — per-module raw scores are computed for reference-point optimization
 4. **Rank** — `rank_and_format()` sorts candidates by ASF distance to the reference point and returns a Pareto frontier on the user-facing objectives
-5. **BMC Phase** — `CoordinatorAgent` orchestrates the bounded loop. It calls the workflow's `run_initial` / `bmc_prepare` / `bmc_run_round` / `bmc_finalize` phases, while `ReferencePointCoordinator` performs the actual diagnosis and feedback broadcasting in normalized objective space. Configured for **1 regeneration round** (`bmc_max_rounds=1`, `bmc_improvement_threshold=0.05` in normalized ASF space). `bmc_mode` is retained for interface compatibility and only accepts `"rp"`. User-provided `reference_point` values are normalized against the initial candidate pool and **fixed across BMC rounds**; the auto-derived utopian point is re-derived each round from the current candidate pool.
 
-**Reference-point coordination**
+**Reference-point ranking**
 
-The coordinator uses the same normalized objective space as `best_candidate` selection:
+`best_candidate` selection uses a normalized objective space:
 
 - Each objective is converted to maximization space and min-max normalized within the candidate pool.
 - The reference point is user-provided (`reference_point`) or auto-derived as the utopian point (best observed value per dimension).
-- A gap (`reference − candidate`) > 0 produces an issue whose `violation` equals the gap.
-- **User-provided reference points** are normalized against the initial candidate pool once, before the first BMC round, and the normalized coordinates are kept fixed for diagnosis and ASF comparison across all BMC rounds. This guarantees that the user's aspiration level does not drift as new candidates are added.
-- **Auto-derived utopian points** are recomputed from the current candidate pool at the start of each BMC round, so the aspiration level can rise as better candidates are discovered.
-- Each `CoordinationRound` in `_bmc_trace` records `reference_point_mode` (`user` or `utopian`), the normalized `reference_point`, and the per-dimension `dim_bounds` used for that round.
 
 **User-facing score dimensions** (valid `reference_point` keys)
 
@@ -172,14 +167,9 @@ The junction GC-diff compares the GC content of the actual UTR and CDS fragments
 
 | Issue type | Meaning | Action |
 |------------|---------|--------|
-| `CDS_COMPONENT_BELOW_REFERENCE` | CDS quality below aspiration | Sub-diagnosis: increase λ by 2 if CAI weak, decrease λ by 2 if MFE weak |
-| `FULL_MFE_SCORE_BELOW_REFERENCE` | Full-length stability below aspiration | Sub-diagnosis: same as CDS_COMPONENT_BELOW_REFERENCE |
-| `UTR5_MRL_BELOW_REFERENCE` | 5'UTR translation efficiency below aspiration | Explore 5'UTR presets |
-| `UTR3_STABILITY_BELOW_REFERENCE` | 3'UTR stability below aspiration | Explore 3'UTR presets |
-| `JUNCTION_5UTR_CDS_SCORE_BELOW_REFERENCE` | 5'UTR–CDS junction below aspiration | Explore 5'UTR presets |
-| `JUNCTION_CDS_3UTR_SCORE_BELOW_REFERENCE` | CDS–3'UTR junction below aspiration | Explore 3'UTR presets |
-
-BMC convergence stops when the total violation reaches zero.
+(The BMC coordination layer that consumed these gap diagnoses was removed on
+2026-08-18 after triple falsification — DECISIONS.md (a), (m). The ASF
+reference-point ranking above is unaffected.)
 
 > **Note (v2.8.0)**: The fragment-fold AUG/Kozak burial booleans and the junction codon-shuffling repair path were removed after three pre-registered experiments (P1 v2, P2, Phase 0 ddG pilot) falsified fragment burial as a translation-initiation proxy. Translation-start openness at the 5'UTR–CDS junction is now reported as a full-length constrained-fold ddG (`junction_5utr_cds_ddg_open_w1/w2` = MFE_constrained − MFE_unconstrained on the full construct, W1 = CDS start −6..+9, W2 = 5'UTR tail 60 nt + CDS head 30 nt clipped to the actual UTR). ddG is a report/profile metric only — it never triggers automatic repair.
 
@@ -209,7 +199,7 @@ cds_component = (-target_cds_mfe + codons * log(target_cds_cai)) / cds_length_nt
 
 The non-dominated candidate set is always returned in `WorkflowResult.pareto_frontier`, computed on the four user-facing objectives. Each frontier member may carry `metadata["pareto_tag"]` indicating the dimension it leads in (e.g., `cds_component`, `full_mfe_score`, `balanced`). The frontier is capped at 10 members to keep responses manageable.
 
-**QualityAgent** (advisory by default): produces a `QualityReport` for every run. `CoordinatorAgent` drives the bounded iteration; `ReferencePointCoordinator` supplies the deterministic diagnosis and feedback. The `SpecialistAgent` decides workflow-level retry based on the `QualityReport`; retry is only triggered on hard failures (empty candidates, tool failures, sequence anomalies). Soft suggestions are reported to the user for confirmation.
+**QualityAgent** (advisory by default): produces a `QualityReport` for every run. The `SpecialistAgent` decides workflow-level retry based on the `QualityReport`; retry is only triggered on hard failures (empty candidates, tool failures, sequence anomalies). Soft suggestions are reported to the user for confirmation.
 
 **Required capabilities**
 ```python
@@ -356,11 +346,11 @@ total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component
 
 ## 10. RNA Aptamer Design
 
-> **File**: `workflows/rna_aptamer_design.py` | **QualityProfile**: `RNA_APTAMER_QUALITY_PROFILE` (BMC Type-II `AptamerCoordinator` is internal) | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §15
+> **File**: `workflows/rna_aptamer_design.py` | **QualityProfile**: `RNA_APTAMER_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §15
 
 **Purpose**: Design RNA aptamers targeting a protein using ODesign, then validate with ProteinX complex prediction, EGARPS scoring, and interface analysis.
 
-**Pipeline**: hotspot identification → `build_odesign_aptamer_input_json` → `run_odesign_inference` (8012) → hierarchical evaluate (light stage: GC + RhoFold 8005 on all candidates; full stage: ProteinX 8022 + EGARPS 8023 + interface analysis on top `max(5, int(n*0.5))` candidates; EGARPS gated by RhoFold ≥ 65 and GC ∈ [0.25, 0.85]) → score → `AptamerCoordinator` BMC Type-II reference-point diagnosis (representative candidate set)
+**Pipeline**: hotspot identification → `build_odesign_aptamer_input_json` → `run_odesign_inference` (8012) → hierarchical evaluate (light stage: GC + RhoFold 8005 on all candidates; full stage: ProteinX 8022 + EGARPS 8023 + interface analysis on top `max(5, int(n*0.5))` candidates; EGARPS gated by RhoFold ≥ 65 and GC ∈ [0.25, 0.85]) → score → ASF reference-point ranking
 
 **Required capabilities**
 
@@ -403,38 +393,12 @@ The candidate list in `WorkflowResult.all_candidates` is sorted by ASF distance 
 
 The non-dominated candidate set is always returned in `WorkflowResult.pareto_frontier`. Frontier members are tagged by their leading dimension and capped at 10 members.
 
-**BMC Type-II reference-point coordination (v1.4.0)**
+**QualityAgent** (advisory by default): produces a `QualityReport` for every run. The `QualityAgent` focuses on user-intent alignment and exploration strategy. Retry decisions are made by the `SpecialistAgent` based on the `QualityReport` and the `quality_auto_retry` setting; retry is triggered on hard failures (tool failures, empty candidates).
 
-The internal coordinator (`AptamerCoordinator`, BMC Type-II) is now reference-point driven. It no longer uses hard biological thresholds. Each BMC round:
-
-1. Builds a normalized reference point from the candidate pool (user-provided points are fixed across rounds; utopian points are re-derived each round).
-2. Builds a representative diagnosis set: the ASF best plus the per-objective leader for each key in `AptamerCoordinator.USER_FACING_OBJECTIVES` (`egarps_component`, `rhofold_component`, `iptm_component`).
-3. Diagnoses each candidate by comparing its normalized objective vector to the reference point; gaps produce `{dim}_BELOW_REFERENCE` issues.
-4. `_merge_issues_with_sources()` merges issues by type, keeping the worst violation and the source candidate's raw metrics bundle.
-5. `broadcast_feedback()` maps reference-point gaps to module-specific adjustments.
-
-This exposes trade-offs that the single best candidate may hide (e.g., a candidate with excellent binding but poor foldability).
-
-**Source-aware module adjustments (v1.4.0)**
-
-| Issue type | Affected module | Adjustment | Source-aware rule |
-|------------|-----------------|------------|-------------------|
-| `EGARPS_COMPONENT_BELOW_REFERENCE` | Target | `hotspot_expansion += 2` | Expand hotspot window |
-| `IPTM_COMPONENT_BELOW_REFERENCE` | Target | `hotspot_expansion += 2` | Expand hotspot window |
-| `RHOFOLD_COMPONENT_BELOW_REFERENCE` | Aptamer | `aptamer_length_delta` | 5 nt by default; **10 nt** if source `rhofold_mean_plddt < 60.0` |
-| `EGARPS_COMPONENT_BELOW_REFERENCE` | Aptamer | `n_samples_delta += 5`, `seed_change` | More samples + new seeds |
-| `IPTM_COMPONENT_BELOW_REFERENCE` | Aptamer | `n_samples_delta += 5`, `seed_change` | More samples + new seeds |
-
-The `aptamer_length_delta` is applied in `_regenerate_modules()` as `length_override = min(200, inp.aptamer_length + int(aptamer_length_delta))`.
-
-**BMC bounds**
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `bmc_max_rounds` | 1 | Maximum BMC rounds; 0 disables iteration |
-| `bmc_improvement_threshold` | 0.05 | Minimum normalized ASF improvement to continue |
-
-**QualityAgent** (advisory by default): produces a `QualityReport` for every run. The reference-point coordinator handles objective-space gaps deterministically. The `QualityAgent` focuses on user-intent alignment and exploration strategy. Retry decisions are made by the `SpecialistAgent` based on the `QualityReport` and the `quality_auto_retry` setting; retry is triggered on hard failures (tool failures, empty candidates).
+> **History**: the BMC Type-II coordination layer (`AptamerCoordinator` rounds:
+> hotspot expansion / length-seed-sample adjustments) was removed on
+> 2026-08-18 after the coordination-gain narrative was falsified
+> (DECISIONS.md (a), (m)); the ASF/Pareto ranking shown above is unchanged.
 
 ---
 

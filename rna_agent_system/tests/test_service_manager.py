@@ -61,7 +61,6 @@ def test_get_services_for_capabilities_returns_empty_for_local_tools():
     """Pure-Python tools have no microservice entry."""
     services = get_services_for_capabilities([
         "compute_cai_for_cds_sequence",
-        "shuffle_cds_junction_codons",
     ])
     assert services == []
 
@@ -442,7 +441,6 @@ def test_all_workflow_capabilities_have_service_or_are_local():
         "identify_protein_binding_hotspots",
         "score_structure_alignment",
         "compute_cai_for_cds_sequence",
-        "shuffle_cds_junction_codons",
         "workflow_demo_echo",
     }
 
@@ -496,43 +494,7 @@ def test_full_length_child_cds_workflow_inherits_auto_start():
     assert child.auto_start_services is True
 
 
-def test_full_length_bmc_run_round_runs_service_preflight():
-    """BMC rounds must re-check services so a crashed service is recovered."""
-    from agent_core.workflows.full_length_mrna_design import FullLengthMrnaDesignWorkflow
-    from agent_core.capabilities.base import CapabilityRegistry
-
-    registry = CapabilityRegistry({})
-    wf = FullLengthMrnaDesignWorkflow(registry)
-    wf.auto_start_services = True
-
-    with patch.object(
-        wf,
-        "_ensure_required_services",
-        return_value=(False, ["some_service: down"]),
-    ):
-        # Minimal BMC state required by bmc_run_round().
-        candidate = Candidate(sequence="AUG", source="dummy")
-        bmc_state = {
-            "coordinator": MagicMock(),
-            "max_rounds": 1,
-            "improvement_threshold": 0.05,
-            "inp": MagicMock(),
-            "best": candidate,
-            "best_asf": 0.0,
-        }
-        result, _, should_stop, reason = wf.bmc_run_round(
-            1,
-            WorkflowResult(success=True, task_id="", summary="", errors=[]),
-            bmc_state,
-        )
-
-    assert should_stop is True
-    assert reason == "service_preflight_failed"
-    assert result.success is False
-    assert "pre-flight failed" in result.summary
-
-
-def test_aptamer_run_initial_preflight_failure_returns_result():
+def test_aptamer_run_preflight_failure_returns_result():
     """Aptamer pre-flight failure must return a WorkflowResult, not raise."""
     from agent_core.workflows.rna_aptamer_design import RnaAptamerDesignWorkflow
     from agent_core.capabilities.base import CapabilityRegistry
@@ -546,7 +508,7 @@ def test_aptamer_run_initial_preflight_failure_returns_result():
         "_ensure_required_services",
         return_value=(False, ["run_odesign_inference: down"]),
     ):
-        result = wf.run_initial({"protein_sequence": "MLV", "aptamer_length": 30})
+        result = wf.run({"protein_sequence": "MLV", "aptamer_length": 30})
 
     assert isinstance(result, WorkflowResult)
     assert result.success is False

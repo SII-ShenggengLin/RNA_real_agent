@@ -1,7 +1,7 @@
 # Deployment & Testing Guide
 
 > **Scope**: environment setup, deployment procedures, testing recipes, and microservice curl examples.
-> **Last updated**: 2026-08-10
+> **Last updated**: 2026-08-18
 
 ---
 
@@ -22,7 +22,7 @@ Each microservice has its own Conda `environment.yml`; create and activate it be
 
 ### 1.4 Submodule initialization
 
-`external_repos/` holds **20 vendored external repos, 17 of them registered git submodules** (EGARPS, Protenix and RiboDiffusion are vendored as plain directories and are not in `.gitmodules`).
+`external_repos/` holds **20 vendored external repos, 16 of them registered git submodules** (EGARPS, Protenix and RiboDiffusion are vendored as plain directories and are not in `.gitmodules`).
 
 ```bash
 # Fresh clone
@@ -32,7 +32,7 @@ git clone --recurse-submodules <repo-url>
 git pull && git submodule update --init --recursive
 ```
 
-Registered submodules (17): GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RNAsmol, RNASTOP, CRISOT, ODesign, IRESfinder, LinearDesign, LinearFold, Evitar, ViennaRNA, sgrna_design, codonw-slim, InstructNA. Vendored (unregistered): EGARPS, Protenix, RiboDiffusion.
+Registered submodules (16): GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RNAsmol, RNASTOP, CRISOT, ODesign, IRESfinder, LinearDesign, LinearFold, Evitar, ViennaRNA, sgrna_design, InstructNA. Vendored (unregistered): EGARPS, Protenix, RiboDiffusion.
 
 ---
 
@@ -89,7 +89,6 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python cli/form_chat.py \
 |---------|------------|
 | LinearDesign | `cd external_repos/LinearDesign && make` |
 | LinearFold | `cd external_repos/LinearFold && make` |
-| codonw-slim | `bash microservices/codonw_slim_service/install_codonw_slim.sh` |
 | GerNA-Bind | `bash microservices/gernabind_service/install_pyg_gpu.sh` |
 | RiboDiffusion | `conda activate ribodiffusion_service_env && bash install_pyg_torch_extensions.sh` |
 
@@ -137,9 +136,9 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x
 | Category | Test files |
 |----------|------------|
 | Tool-level | `test_compute_rna_sequence_gc_content.py`, `test_compute_dot_bracket_unpaired_fraction.py`, `test_compute_rna_sequence_u_content.py`, `test_compute_cai_for_cds_sequence.py` |
-| Workflow (unit) | `test_mrna_workflow.py`, `test_sirna_design_workflow.py`, `test_sgrna_design_workflow.py`, `test_rna_secondary_structure_design.py`, `test_rna_tertiary_structure_design.py`, `test_rna_small_molecule_interaction.py`, `test_rna_aptamer_design.py`, `test_ires_prediction.py`, `test_aso_target_screening.py`, `test_full_length_mrna_design.py` |
+| Workflow (unit) | `test_mrna_workflow.py`, `test_sirna_design_workflow.py`, `test_sgrna_design_workflow.py`, `test_rna_secondary_structure_design.py`, `test_rna_tertiary_structure_design.py`, `test_rna_small_molecule_interaction.py`, `test_rna_aptamer_design.py`, `test_aso_target_screening.py`, `test_full_length_mrna_design.py` |
 | Layer 4 / integration | `test_runner_form.py`, `test_session_memory.py`, `test_mrna_cds_design_layer4.py`, `test_mrna_sequence_scoring_layer4.py`, `test_full_length_mrna_design_layer4.py`, `test_rna_secondary_structure_design_layer4.py`, `test_rna_tertiary_structure_design_layer4.py`, `test_integration_registry_smoke.py` |
-| BMC / infrastructure | `test_bmc_full_length_mrna.py`, `test_bmc_workflow_e2e_mock.py`, `test_shuffle_cds_junction_codons.py`, `test_tool_registry_executor.py` |
+| Infrastructure | `test_tool_registry_executor.py`, `test_full_length_mrna_evaluators.py` |
 | End-to-end (live microservices) | `test_full_length_mrna_e2e_live.py` — full-length mRNA design with real LinearDesign/GEMORNA/ViennaRNA/LinearFold/IRESfinder/RNASTOP/sequence-metrics services |
 
 ### 4.4 Form validation
@@ -174,11 +173,6 @@ curl -sS -X POST http://127.0.0.1:8005/predict \
 curl -sS -X POST http://127.0.0.1:8011/score \
   -H 'Content-Type: application/json' \
   -d '{"sgrna":"GAGTCCGAGCAGAAGAAGAANGG","target_sequence":"GAGTCCGAGGAGAAGACGAAGGG"}' | python3 -m json.tool
-
-# codonw-slim
-curl -sS -X POST http://127.0.0.1:8018/analyze/cds \
-  -H 'Content-Type: application/json' \
-  -d '{"sequence":"ATGAATATGCTCATTGTCGGTAGAGTTGTTGCTAGTGTTGGGGGAAGCGGACTTCAAACG"}' | python3 -m json.tool
 
 # RNA sequence metrics (GC)
 curl -sS -X POST http://127.0.0.1:8020/gc-content \
@@ -215,7 +209,7 @@ automatically on demand):
 PYTHONPATH="$(pwd):$PYTHONPATH" python tests/test_full_length_mrna_e2e_live.py
 ```
 
-> **Note**: The full-length workflow uses the deterministic `ReferencePointCoordinator` by default. No LLM API key is required for BMC coordination.
+> **Note**: the full-length workflow's ranking is deterministic (ASF reference-point optimization); no LLM API key is required for it.
 
 ---
 
@@ -224,7 +218,7 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python tests/test_full_length_mrna_e2e_live.py
 | Service | Port | Conda env | Key dependencies |
 |---------|------|-----------|------------------|
 | CRGPT | 8017 | `sgrna_design_service_env` | Weights (`crgen_small/pytorch_model.bin`); ViennaRNA for MCMC; GPU recommended |
-| CRISOT | 8011 | `crisot_service_env` | Weights (`crisot_score_param.pkl`); `cas-offinder` on PATH for genome-wide ops; ref genome for `/off-spec`; GPU recommended |
+| CRISOT | 8011 | `crisot_service_env` | Weights (`crisot_score_param.pkl`); `cas-offinder` on PATH for genome-wide ops; GPU recommended |
 | ProteinX | 8022 | `proteinx_service` | Weights (`Protenix/checkpoints/`); **GPU required** |
 | EGARPS | 8023 | `egarps_env` | Weights (`esm2_models/` + `rna_fm_models/`); **GPU required** |
 | ODesign | 8012 | `odesign_service_env` | Weights (`ckpt/*.pt`); **GPU required** |

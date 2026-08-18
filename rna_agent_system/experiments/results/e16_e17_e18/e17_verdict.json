@@ -1,0 +1,22 @@
+{
+ "campaign": "e17",
+ "oracle": "gernabind_probability",
+ "task_type": "rna_small_molecule",
+ "score_field": "probability_positive",
+ "graded_at": "2026-08-18T16:06:07.753177+00:00",
+ "cells": {
+  "pdb_pairs_perturbation": {
+   "n_binder": 4,
+   "n_negative": 13,
+   "auroc": 0.4615,
+   "auroc_ci": [
+    0.1538,
+    0.7885
+   ],
+   "screening_pass": false,
+   "all_gates_pass": false
+  }
+ },
+ "go": false,
+ "governance_flip": "pending -> enforce (record exists; grade whatever it is)"
+}

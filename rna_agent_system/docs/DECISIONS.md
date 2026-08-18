@@ -4,7 +4,7 @@
 > **not** pursue again (with the evidence that closed them), positive results that **are**
 > established (with their evidence pointers), and a one-line project timeline.
 > Before proposing any new experiment, optimization, or narrative claim, check Part 1 first.
-> **Last updated**: 2026-08-14
+> **Last updated**: 2026-08-18
 
 All evidence files live under `rna_agent_system/experiments/results/` unless noted.
 Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
@@ -128,6 +128,120 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   `e10_verdict_s2.json` (b=9/c=4/p=0.267); exact two-sided McNemar recomputation for the
   panel scenarios; `docs/FIX_2026-08-12_DUAL_GENERALIZATION.md` 附录 H (2026-08-13).
 
+### (j) Oracle-ontology boundary: learned outcome predictors gated; thermodynamic/algorithmic computation never gated (2026-08-18)
+
+- **Conclusion**: the CapGate managed-oracle set follows one boundary rule,
+  now encoded in the ToolSpec ontology (`ToolKind` / `OracleDescriptor`,
+  CHANGELOG 2026-08-18 (b)): a tool is a managed oracle **iff** it is a
+  learned predictor of a biological outcome **whose score a workflow consumes
+  as candidate-quality evidence** (ranking / screening / docking use).
+  Thermodynamic and algorithmic structure computation (ViennaRNA folding,
+  LinearFold, BLAST/Bowtie2, CAI, GC/metrics) is `compute` — established
+  conventions, deterministic, never gated. Generators produce candidates and
+  are never gated; their outputs are evaluated by the oracles above them.
+  Under this rule the **E16+ profiling backlog is fixed at five pending
+  oracles**: GerNA-Bind, RNASTOP, IRESfinder, CRGPT handle score, CRISOT
+  off-target score — all consumed as evidence in production workflows while
+  unprofiled; each is reviewed+audited (never blocked) until its campaign
+  delivers SelfModel records, then flips to `enforce`. Consequence accepted
+  by user decision (2026-08-18): any pending oracle that fails profiling will
+  be blocked in production, the affected workflow components zeroed equally,
+  and RNADesign-210 panels / fig2 numbers regenerated rather than the verdict
+  softened.
+- **Evidence**: `agent_core/tool_interface.py` (ontology schema);
+  `tests/test_tool_ontology.py` (pinned enforce/pending sets);
+  `experiments/results/tool_inventory.json` (54 tools: 40 production /
+  2 experiment-only / 11 reserved / 1 demo).
+
+### (k) Task-keyed gating + the microservice-internal oracle transparency boundary (2026-08-18)
+
+- **Conclusion (gating keying)**: DecisionGate reviews are keyed to the
+  **calling workflow's** task type, never to the oracle's registered default
+  alone (`task_context` contextvar set by `BaseDomainWorkflow`; W1.2,
+  CHANGELOG 2026-08-18 (c)). Cross-workflow oracle reuse is therefore
+  adjudicated honestly: RhoFold from `rna_tertiary_structure_design` gates as
+  unprofiled (no records for that task), not as an inherited E1-aptamer
+  failure. Flagship workflows keep byte-identical verdicts because their
+  `task_type` equals their SelfModel record keys (pinned in
+  `tests/test_task_context.py`).
+- **Registered boundary (audit transparency)**: oracle invocations that
+  happen **inside a microservice** (e.g. the GerNA-Bind service folding RNA
+  via RhoFold internally when no PDB is supplied) are not `ToolExecutor`
+  calls — they are neither gated nor recorded in the platform audit trail.
+  The paper's "every tool call is recorded" claim is accurate at the agent
+  tool-call layer only. Do **not** present service-internal hops as gated;
+  closing this gap (service-side audit write-back) is future platform work,
+  registered here so it is not rediscovered as a "bug".
+- **Evidence**: `agent_core/calibrated/runtime.py` (`task_context`,
+  `_TASK_TYPE_CONTEXT`); `agent_core/workflows/base.py` (`task_type`,
+  `_task_type_context`); `rna_aptamer_design.py` (contextvars thread
+  propagation); `tests/test_task_context.py` (5 tests incl. thread pattern).
+
+### (l) E16/E17/E18 verdicts: three pending oracles failed their declared-use gates; CRISOT-Score + CRGPT remain pending on a registered data gap (2026-08-18)
+
+- **Conclusion (graded, all enforce now)**: the first three E16+ profiling
+  campaigns returned **all-failed verdicts on the oracles' declared uses** —
+  IRESfinder (screening AUROC 0.679/0.731/0.762 across three upstream
+  held-out families, gate 0.8), GerNA-Bind (screening AUROC 0.462 on the
+  17-pair PDB panel — chance level; S0 sign inversion foreshadowed it:
+  binder mean 0.197 < negative mean 0.255), RNASTOP (screening verified
+  AUROC 0.908 [0.853, 0.956] but ranking ρ = 0.579 < 0.6 — its declared use
+  in the mRNA workflows is a ranking component). All three flipped
+  pending → enforce with SelfModel records (29 packaged records now):
+  under the default enforce policy these calls are gated in production.
+  Consequence per the standing user decision (row (j)): the affected
+  workflow components zero equally / the workflow degrades, and
+  **RNADesign-210 + fig2 panels are to be regenerated against the gated
+  platform** (registered next step; not softened).
+- **Registered data gap**: CRISOT-Score (`crisot_off_target_score`) and CRGPT
+  (`crgpt_handle_score`) stay governance=pending — no labeled anchor set
+  exists on disk (CRISOT ships an unlabeled On/Off example; the CRGPT repo
+  has no efficiency benchmark). Do not improvise self-referential anchors
+  (e.g. on-vs-off discrimination on CRISOT's own example.csv — trivially
+  biased, not a biological efficacy measurement); curating real GUIDE-seq /
+  CIRCLE-style datasets is the prerequisite for E19/E20.
+- **Evidence**: `experiments/results/e16_e17_e18/verdict.json` (+ per-campaign
+  verdicts, raw scoring caches, `self_model.json`); anchor sets
+  `data/benchmarks/external_anchors/{ires/e16_ires_anchor_set.json,
+  small_molecule/e17_gernabind_anchor_set.json,
+  mrna_stability/e18_rnastop_anchor_set.json}` (curator:
+  `experiments/curate_e16_e17_e18_anchor_sets.py`, assertion-checked,
+  deterministic).
+
+### (m) BMC framework removed from the system (2026-08-18)
+
+- **Conclusion**: the BMC implementation itself (not just the narrative) was
+  deleted from the codebase — `CoordinatorAgent`, `workflows/coordinator.py`,
+  the `run_initial`/`bmc_prepare`/`bmc_run_round`/`bmc_finalize` interface on
+  `full_length_mrna_design` and `rna_aptamer_design`, the `bmc_*` input
+  fields, and the `_bmc_trace` audit plumbing. Both workflows now run the
+  plain generate → evaluate → score → ASF/Pareto-rank path. Removal
+  condition satisfied: P0 (`p0_budget_matched_summary.json`) showed that
+  serial generation at equal evaluated-candidate budget is statistically
+  indistinguishable from BMC (δ = 0.278 < 0.3 gate, p = 0.129, BMC wins 9/12
+  cells NS), and Fig 3 showed no significant ASF difference at any BMC depth
+  on Type-I — so deleting the loop costs no measured performance. The
+  auditable ASF reference-point ranking and the per-run state/tool-trace
+  writeback are retained unchanged. Historical BMC-ablation evidence
+  (fig3/fig4/fig5, P0, P3) remains in `experiments/results/`.
+- **Evidence**: this register (a) + (f); `docs/CHANGELOG.md` 2026-08-18.
+
+### (n) Superseded/dead code is deleted, not archived in-tree (2026-08-18)
+
+- **Conclusion**: user-directed simplification policy — code is the source of
+  truth; once a strategy is superseded or falsified, its implementation is
+  deleted instead of accumulating compatibility layers. Applied 2026-08-18:
+  12 dead tools (junction-aware LinearDesign, junction codon shuffler, six
+  reserved CRISOT alternates, LinearFold evaluate/zuker, batch LinearDesign,
+  codonw-slim) with their service endpoints; the E1/E3-era calibrated
+  experiment machinery (profiler / experiment_planner / campaign_runner /
+  case_memory); all concluded E1–E15 experiment drivers, probes, one-off
+  repair scripts, analysis scripts (except `stats_utils.py`) and plot
+  scripts. The `experiments/results/` evidence tree is the durable audit
+  record and is never deleted. If a deleted strategy is ever needed again,
+  re-derive it from the results JSONs and the distilled cores kept in-tree
+  (e.g. `agent_core/generation/gennav_aptamer.py`).
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)
@@ -164,3 +278,4 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 - **2026-08-14** (E15 confirmatory replication): pre-registered dual-outcome run on 4 never-paneled targets — NO-GO (b=14/c=6/P=0.1153), the 40% branch: advantage is regime-specific (delivery-scarce panels), boundary disclosed; pooled E14+E15 28:9/P=0.0026 (heterogeneity acknowledged); E14 remains the positive headline.
 - **2026-08-14** (E14 aptamer GenNav — PRIMARY ENDPOINT GO): user adjudication — criteria revised to single-gate McNemar P<0.05 (e2e demoted to disclosure: absolute-delivery measure, jointly-infeasible cells at 48-raw); protocol addenda v1 cycling guarantee (b=14/c=6/0.115) and v2 4×n6 + n8-over-n2 (b=10/c=3/0.092), all pre-registered; final **GO b=14/c=3/P=0.0127, C e2e 0.50 vs A 0.00** — citable positive aptamer-side navigation result (row 13).
 - **2026-08-12 → 13** (dual-generalization campaign): E3-M mRNA-side gating GO (38.9% → 8.3%, TP retention 100%); aptamer GenNav E9 (re-anchored scarcity matrix, b=6/c=8, p = 0.79) and E10 (mechanized allocation, b=9/c=4, p = 0.267) — primary endpoint still NO-GO, boundary localized to budget structure; E11 pre-registration-gate simulation closed both escape routes (symmetric cap 64: A-arm strengthening erodes b, P ≥ 0.34; panel: 20-target two-sided p ≈ 0.11–0.13) → aptamer-side conclusion fixed as "mechanism transfer + structural budget boundary"; asymmetric A-48/C-64 rejected against the budget-matching iron rule.
+- **2026-08-18** (simplification pass): BMC framework removed after triple falsification (DECISIONS (a)/(m)); 12 dead tools + concluded E1–E15 drivers + legacy calibrated experiment machinery deleted (102,673 → ~51,000 LOC, 709 → 488 tests all green); PA_006–PA_024 end-to-end rerun. The packaged SelfModel (29 records) and CapGate runtime unchanged.

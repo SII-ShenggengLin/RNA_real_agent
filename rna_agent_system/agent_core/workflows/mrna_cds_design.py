@@ -37,7 +37,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Callable, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
@@ -45,14 +45,7 @@ from agent_core.sequence_utils import (
     _load_builtin_codon_tables,
     resolve_species_name,
 )
-from agent_core.constants.species import (
-    DEFAULT_CAI_SPECIES,
-    DEFAULT_RNARL_MODEL_TYPE,
-    RNARLModelType,
-    RNARL_MODEL_TYPES_LIST,
-    format_cai_species_aliases,
-    format_rnarl_model_types,
-)
+from agent_core.constants.species import DEFAULT_CAI_SPECIES, DEFAULT_RNARL_MODEL_TYPE, RNARLModelType, format_cai_species_aliases, format_rnarl_model_types
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
 from agent_core.sequence_utils import (
@@ -216,6 +209,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
     """Golden-path workflow: protein → multi-tool CDS → fold + GC + unpaired → score → rank."""
 
     name = "mrna_cds_design"
+    task_type = "mrna_cds_design"
     description = "Design mRNA CDS from protein sequence using multiple tools, evaluate, score, and rank candidates."
     input_model = MrnaCdsDesignInput
     required_capabilities = [

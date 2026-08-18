@@ -32,7 +32,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, List, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
@@ -142,6 +142,7 @@ class RnaSmallMoleculeInteractionWorkflow(
     """
 
     name = "rna_small_molecule_interaction"
+    task_type = "rna_small_molecule"
     description = (
         "Predict RNA-small molecule interaction propensity. "
         "Runs RNAsmol and/or GerNA-Bind on a given RNA sequence + SMILES, "

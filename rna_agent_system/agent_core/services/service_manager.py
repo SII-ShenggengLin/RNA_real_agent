@@ -4,7 +4,7 @@ This module maps each capability (tool name) to the local microservice it needs,
 provides health polling, and can launch missing services via their ``start.sh``
 scripts.  It is consumed by:
 
-* ``BaseDomainWorkflow`` — pre-flight check before ``run()`` / ``run_initial()``.
+* ``BaseDomainWorkflow`` — pre-flight check before ``run()``.
 * ``cli/service_orchestrator.py`` — CLI-level service orchestration.
 
 Keeping the mapping capability-driven means a workflow only needs to declare
@@ -197,30 +197,6 @@ CAPABILITY_SERVICE_MAP: dict[str, ToolServiceSpec] = {
         "calculate_crispr_specificity_with_crisot", "127.0.0.1", 8011, "/health",
         "microservices/crisot_service/start.sh",
     ),
-    "search_crispr_off_targets_with_crisot": ToolServiceSpec(
-        "search_crispr_off_targets_with_crisot", "127.0.0.1", 8011, "/health",
-        "microservices/crisot_service/start.sh",
-    ),
-    "optimize_sgrna_with_crisot": ToolServiceSpec(
-        "optimize_sgrna_with_crisot", "127.0.0.1", 8011, "/health",
-        "microservices/crisot_service/start.sh",
-    ),
-    "score_batch_crispr_off_targets_with_crisot": ToolServiceSpec(
-        "score_batch_crispr_off_targets_with_crisot", "127.0.0.1", 8011, "/health",
-        "microservices/crisot_service/start.sh",
-    ),
-    "rescore_sgrnas_with_crisot": ToolServiceSpec(
-        "rescore_sgrnas_with_crisot", "127.0.0.1", 8011, "/health",
-        "microservices/crisot_service/start.sh",
-    ),
-    "predict_crispr_off_target_with_crisot_fp": ToolServiceSpec(
-        "predict_crispr_off_target_with_crisot_fp", "127.0.0.1", 8011, "/health",
-        "microservices/crisot_service/start.sh",
-    ),
-    "generate_crispr_fingerprint_with_crisot": ToolServiceSpec(
-        "generate_crispr_fingerprint_with_crisot", "127.0.0.1", 8011, "/health",
-        "microservices/crisot_service/start.sh",
-    ),
     # ODesign service (port 8012)
     "run_odesign_inference": ToolServiceSpec(
         "run_odesign_inference", "127.0.0.1", 8012, "/health",
@@ -236,26 +212,10 @@ CAPABILITY_SERVICE_MAP: dict[str, ToolServiceSpec] = {
         "design_mrna_cds_with_lineardesign", "127.0.0.1", 8014, "/health",
         "microservices/lineardesign_service/start.sh",
     ),
-    "design_mrna_cds_batch_with_lineardesign": ToolServiceSpec(
-        "design_mrna_cds_batch_with_lineardesign", "127.0.0.1", 8014, "/health",
-        "microservices/lineardesign_service/start.sh",
-    ),
     # Junction-aware LinearDesign tool (2026-08): same service / port 8014.
-    "design_mrna_cds_junction_aware_with_lineardesign": ToolServiceSpec(
-        "design_mrna_cds_junction_aware_with_lineardesign", "127.0.0.1", 8014, "/health",
-        "microservices/lineardesign_service/start.sh",
-    ),
     # LinearFold service (port 8015)
     "predict_rna_secondary_structure_with_linearfold": ToolServiceSpec(
         "predict_rna_secondary_structure_with_linearfold", "127.0.0.1", 8015, "/health",
-        "microservices/linearfold_service/start.sh",
-    ),
-    "evaluate_rna_structure_with_linearfold": ToolServiceSpec(
-        "evaluate_rna_structure_with_linearfold", "127.0.0.1", 8015, "/health",
-        "microservices/linearfold_service/start.sh",
-    ),
-    "predict_rna_secondary_structure_with_linearfold_zuker": ToolServiceSpec(
-        "predict_rna_secondary_structure_with_linearfold_zuker", "127.0.0.1", 8015, "/health",
         "microservices/linearfold_service/start.sh",
     ),
     # Evitar service (port 8016)
@@ -271,12 +231,6 @@ CAPABILITY_SERVICE_MAP: dict[str, ToolServiceSpec] = {
     "score_sgrna_handle_with_crgpt": ToolServiceSpec(
         "score_sgrna_handle_with_crgpt", "127.0.0.1", 8017, "/health",
         "microservices/sgrna_design_service/start.sh",
-    ),
-    # CodonW slim service (port 8018) — currently not referenced by any workflow,
-    # but kept in the map for ad-hoc / future use.
-    "analyze_cds_codon_metrics_with_codonw_slim": ToolServiceSpec(
-        "analyze_cds_codon_metrics_with_codonw_slim", "127.0.0.1", 8018, "/health",
-        "microservices/codonw_slim_service/start.sh",
     ),
     # BLAST service (port 8019)
     "run_blastn_similarity_search": ToolServiceSpec(
@@ -332,7 +286,6 @@ KNOWN_LOCAL_CAPABILITIES: set[str] = {
     "identify_protein_binding_hotspots",
     "score_structure_alignment",
     "compute_cai_for_cds_sequence",
-    "shuffle_cds_junction_codons",
     "workflow_demo_echo",
 }
 

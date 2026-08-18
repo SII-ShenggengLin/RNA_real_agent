@@ -9,9 +9,7 @@ import threading
 from typing import Any, Iterator, Optional
 
 from langchain_core.messages import HumanMessage
-from pydantic import BaseModel
 
-from agent_core.agents.coordinator_agent import CoordinatorAgent
 from agent_core.agents.pipeline_agent import PipelineAgent
 from agent_core.agents.quality_agent import QualityAgent
 from agent_core.agents.specialist_agent import SpecialistAgent
@@ -84,6 +82,11 @@ class AgentRunner:
         for wf in self.workflow_registry.values():
             if hasattr(wf, "auto_start_services"):
                 wf.auto_start_services = True
+        # Platform CapGate: audit every tool call and gate managed oracle tools
+        # against the packaged SelfModel (RNADA_CAPGATE=off|advisory|enforce).
+        from agent_core.calibrated.runtime import runtime_from_env
+
+        self.calibrated_runtime = runtime_from_env()
         self.quality_agent = QualityAgent()
         self.synthesis_agent = SynthesisAgent()
         self.specialist_registry = self._build_specialist_registry()
@@ -102,8 +105,6 @@ class AgentRunner:
             if profile is None:
                 continue
             specialist = SpecialistAgent(workflow, profile)
-            if wf_name in ("full_length_mrna_design", "rna_aptamer_design"):
-                specialist.coordinator_agent = CoordinatorAgent(workflow)
             registry[wf_name] = specialist
         return registry
 
@@ -175,7 +176,6 @@ class AgentRunner:
             state.pop("workflow_result", None)
 
         state.pop("_diagnosis_history", None)
-        state.pop("_bmc_trace", None)
         return state
 
     def _sanitize_form_params(

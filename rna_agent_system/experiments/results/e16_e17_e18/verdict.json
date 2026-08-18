@@ -1,0 +1,101 @@
+{
+ "preregistration": "experiments/run_e16_e17_e18_oracle_profiling.py docstring (E16-E18 PRE-REGISTRATION, 2026-08-18)",
+ "graded_at": "2026-08-18T16:06:37.533345+00:00",
+ "campaigns": [
+  {
+   "campaign": "e16",
+   "oracle": "iresfinder_score",
+   "task_type": "ires_prediction",
+   "score_field": "max_score",
+   "graded_at": "2026-08-18T16:06:07.673068+00:00",
+   "cells": {
+    "independent_5utr_ires_vs_nonires": {
+     "n_binder": 13,
+     "n_negative": 12,
+     "auroc": 0.6795,
+     "auroc_ci": [
+      0.4487,
+      0.8846
+     ],
+     "screening_pass": false,
+     "all_gates_pass": false
+    },
+    "independent_core_ires_vs_nonires": {
+     "n_binder": 13,
+     "n_negative": 12,
+     "auroc": 0.7308,
+     "auroc_ci": [
+      0.5064,
+      0.9231
+     ],
+     "screening_pass": false,
+     "all_gates_pass": false
+    },
+    "upstream_testing_ires_vs_nonires": {
+     "n_binder": 40,
+     "n_negative": 40,
+     "auroc": 0.7619,
+     "auroc_ci": [
+      0.6525,
+      0.8569
+     ],
+     "screening_pass": false,
+     "all_gates_pass": false
+    }
+   },
+   "go": false,
+   "governance_flip": "pending -> enforce (record exists; grade whatever it is)"
+  },
+  {
+   "campaign": "e17",
+   "oracle": "gernabind_probability",
+   "task_type": "rna_small_molecule",
+   "score_field": "probability_positive",
+   "graded_at": "2026-08-18T16:06:07.753177+00:00",
+   "cells": {
+    "pdb_pairs_perturbation": {
+     "n_binder": 4,
+     "n_negative": 13,
+     "auroc": 0.4615,
+     "auroc_ci": [
+      0.1538,
+      0.7885
+     ],
+     "screening_pass": false,
+     "all_gates_pass": false
+    }
+   },
+   "go": false,
+   "governance_flip": "pending -> enforce (record exists; grade whatever it is)"
+  },
+  {
+   "campaign": "e18",
+   "oracle": "rnastop_stability",
+   "task_type": "full_length_mrna",
+   "score_field": "overall_stability",
+   "graded_at": "2026-08-18T16:06:37.531007+00:00",
+   "cells": {
+    "rnastop_public_test_107nt": {
+     "n_binder": 60,
+     "n_negative": 60,
+     "auroc": 0.9083,
+     "auroc_ci": [
+      0.8528,
+      0.9558
+     ],
+     "screening_pass": true,
+     "n_ranking": 120,
+     "spearman_rho": 0.5789,
+     "spearman_p": 4.3335445091226465e-12,
+     "ranking_pass": false,
+     "all_gates_pass": false
+    }
+   },
+   "go": false,
+   "governance_flip": "pending -> enforce (record exists; grade whatever it is)"
+  }
+ ],
+ "notes": [
+  "CRISOT-Score (crisot_off_target_score) and CRGPT (crgpt_handle_score) remain governance=pending: no labeled anchor set exists on disk (registered data gap, DECISIONS.md (l))."
+ ]
+}

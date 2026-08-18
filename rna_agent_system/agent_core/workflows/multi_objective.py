@@ -7,7 +7,6 @@ same dominance, scalarization, and normalization logic.
 
 from __future__ import annotations
 
-from typing import Any
 
 from agent_core.workflow_models import Candidate
 
@@ -45,7 +44,7 @@ def compute_utopian_reference_point(
     ANALYSIS CAVEAT (2026-07 experiment note): under a utopian reference the
     ASF-best candidate can have ``asf_distance == 0`` by construction (it *is*
     the reference when one candidate leads every objective). Cross-condition
-    comparisons (e.g. BMC vs Serial ablations) must therefore NOT compare raw
+    comparisons across pools of different sizes must therefore NOT compare raw
     utopian ASF distances; use a shared fixed reference point, per-objective
     raw components, or Pareto hypervolume instead.
     """
@@ -61,40 +60,6 @@ def compute_utopian_reference_point(
             continue
         ref[key] = max(values) if maximize.get(key, True) else min(values)
     return ref
-
-
-def compute_violation(
-    value: float,
-    target: float,
-    direction: str,
-    lower_bound: float | None = None,
-    upper_bound: float | None = None,
-) -> float:
-    """Compute continuous violation of a metric against a target or interval.
-
-    Args:
-        value: Observed metric value.
-        target: Target value (used for single-sided objectives).
-        direction: "maximize" (value should be >= target) or "minimize"
-            (value should be <= target). For interval constraints, use
-            "interval" and provide ``lower_bound``/``upper_bound``.
-        lower_bound: Lower bound for interval constraints.
-        upper_bound: Upper bound for interval constraints.
-
-    Returns:
-        Non-negative violation distance. Zero means the constraint is satisfied.
-    """
-    if direction == "maximize":
-        return max(0.0, target - value)
-    if direction == "minimize":
-        return max(0.0, value - target)
-    if direction == "interval":
-        if lower_bound is not None and value < lower_bound:
-            return lower_bound - value
-        if upper_bound is not None and value > upper_bound:
-            return value - upper_bound
-        return 0.0
-    raise ValueError(f"Unknown direction: {direction}")
 
 
 def _as_maximization(
@@ -241,78 +206,6 @@ def normalize_value(
     if span == 0:
         return 0.5
     return (value - min_val) / span
-
-
-def build_normalized_reference_point(
-    candidates: list[Candidate],
-    objectives: list[str],
-    maximize: dict[str, bool] | None = None,
-    user_reference_point: dict[str, float] | None = None,
-) -> tuple[dict[str, float], list[Candidate], dict[str, dict[str, float]]]:
-    """Build a normalized reference point and normalize candidate scores.
-
-    For each objective dimension:
-      - Collect raw values from ``candidate.scores`` across the candidate pool.
-      - Compute min/max bounds.
-      - Normalize each candidate's value to [0, 1] using those bounds.
-      - If the user provided a raw reference value, normalize it with the same
-        bounds; otherwise use the utopian point (best observed value).
-
-    Args:
-        candidates: Evaluated candidates with ``scores`` populated.
-        objectives: Objective dimension keys to consider.
-        maximize: Per-direction flag. Defaults to all ``True``.
-        user_reference_point: Optional user-provided raw reference values.
-
-    Returns:
-        A tuple of ``(norm_reference_point, norm_candidates, dim_bounds)``.
-        ``norm_candidates`` are the input candidates mutated in place with
-        additional ``{key}_norm`` entries in ``scores``. ``dim_bounds`` maps
-        each dimension to ``{"min": ..., "max": ...}`` for traceability.
-    """
-    maximize = maximize or {key: True for key in objectives}
-    user_reference_point = user_reference_point or {}
-
-    norm_reference_point: dict[str, float] = {}
-    dim_bounds: dict[str, dict[str, float]] = {}
-
-    for key in objectives:
-        raw_values = [
-            float(c.scores[key])
-            for c in candidates
-            if c.scores.get(key) is not None
-        ]
-        if not raw_values:
-            continue
-
-        # Convert minimization objectives to maximization space for uniform
-        # normalization, matching _as_maximization behavior.
-        if maximize.get(key, True):
-            converted_values = raw_values
-        else:
-            converted_values = [-v for v in raw_values]
-
-        min_val = min(converted_values)
-        max_val = max(converted_values)
-        dim_bounds[key] = {"min": min_val, "max": max_val}
-
-        span = max_val - min_val
-        for c in candidates:
-            raw = c.scores.get(key)
-            if raw is None:
-                continue
-            converted = float(raw) if maximize.get(key, True) else -float(raw)
-            c.scores[f"{key}_norm"] = 0.5 if span == 0 else (converted - min_val) / span
-
-        # Reference value: user-provided (converted + normalized) or utopian.
-        user_raw = user_reference_point.get(key)
-        if user_raw is not None:
-            user_converted = float(user_raw) if maximize.get(key, True) else -float(user_raw)
-            norm_reference_point[key] = 0.5 if span == 0 else (user_converted - min_val) / span
-        else:
-            norm_reference_point[key] = 1.0 if span != 0 else 0.5
-
-    return norm_reference_point, candidates, dim_bounds
 
 
 def achievement_scalarizing_function(

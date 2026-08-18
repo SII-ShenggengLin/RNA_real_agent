@@ -64,9 +64,10 @@ class SelfModel:
         """Look up a capability record.
 
         - Exact hit: returned as stored.
-        - No exact hit but the same (oracle, task_type) was profiled on another
-          target family: returned as ``transferred`` with decayed confidence and
-          the original family recorded as the source.
+        - No exact hit but the same (oracle, task_type) was profiled on other
+          target families: returned as ``transferred`` with decayed confidence,
+          inheriting the donors' *worst* grade per capability (a failed family
+          poisons the transfer; the donor family is recorded as the source).
         - Otherwise: an empty record with all cells ``unprofiled``.
         """
         exact = self._records.get((oracle, task_type, target_family))
@@ -79,13 +80,35 @@ class SelfModel:
         ]
         if donors:
             donors.sort(key=lambda r: r.target_family)
-            return self._transfer(donors[0], target_family)
+            # Conservative transfer: when profiled families disagree, the
+            # transferred grade is the worst one (a failed family poisons the
+            # transfer — a never-profiled family inherits the denial, not a
+            # cherry-picked pass).
+            return self._transfer_conservative(donors, target_family)
         return CapabilityRecord(oracle=oracle, task_type=task_type, target_family=target_family)
 
     @staticmethod
-    def _transfer(donor: CapabilityRecord, target_family: str) -> CapabilityRecord:
+    def _transfer_conservative(
+        donors: list[CapabilityRecord], target_family: str
+    ) -> "CapabilityRecord":
+        """Merge donor families into one transferred record, worst grade per cell.
+
+        A never-profiled family inherits the donors' *worst* grade for each
+        capability (failed > unprofiled > transferred > verified), so a denial
+        on any profiled family cannot be cherry-picked away by family choice.
+        """
+        kinds: set[str] = set()
+        for rec in donors:
+            kinds.update(rec.capabilities)
+        order = ("failed", "unprofiled", "transferred", "verified")
         cells: dict[str, CapabilityAssessment] = {}
-        for kind, cell in donor.capabilities.items():
+        for kind in sorted(kinds):
+            graded = [
+                (rec.capabilities.get(kind, CapabilityAssessment()), rec)
+                for rec in donors
+            ]
+            worst = next(g for g in order if any(c.grade == g for c, _ in graded))
+            cell, donor = next((c, r) for c, r in graded if c.grade == worst)
             cells[kind] = CapabilityAssessment(
                 grade="transferred",
                 confidence=round(cell.confidence * TRANSFER_CONFIDENCE_DECAY, 4),
@@ -93,11 +116,11 @@ class SelfModel:
                 evidence=list(cell.evidence),
                 profiled_at=cell.profiled_at,
                 source_case_id=f"{donor.oracle}:{donor.task_type}:{donor.target_family}",
-                transferred_from_grade=cell.grade,
+                transferred_from_grade=worst,
             )
         return CapabilityRecord(
-            oracle=donor.oracle,
-            task_type=donor.task_type,
+            oracle=donors[0].oracle,
+            task_type=donors[0].task_type,
             target_family=target_family,
             capabilities=cells,
         )

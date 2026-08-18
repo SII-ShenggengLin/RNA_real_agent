@@ -162,6 +162,9 @@ class AuditEvent(BaseModel):
         # E6 constraint-navigation experiment audit events (added 2026-08-09,
         # extend-only; existing types unchanged).
         "request_generate",
+        # Platform integration events (added 2026-08-18, extend-only): every
+        # ToolExecutor call recorded by CalibratedRuntime.
+        "tool_call",
     ]
     payload: dict[str, Any] = Field(default_factory=dict)
     timestamp: str = ""

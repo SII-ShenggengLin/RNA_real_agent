@@ -53,7 +53,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import resolve_project_path, save_sequence
@@ -170,6 +170,7 @@ class RnaTertiaryStructureDesignWorkflow(
     """Structure-driven RNA sequence design: 3D structure → inverse folding → evaluate → rank."""
 
     name = "rna_tertiary_structure_design"
+    task_type = "rna_tertiary_structure_design"
     description = (
         "Design RNA sequences from a tertiary structure using inverse-folding tools. "
         "Pipeline: RhoDesign / RiboDiffusion generation → GC + ViennaRNA fold + RhoFold + "
