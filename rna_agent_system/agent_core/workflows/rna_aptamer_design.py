@@ -16,7 +16,7 @@ Key design principles
    metrics rather than failing entirely.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaAptamerDesignWorkflow INTERFACE LOCK (v2.0.0) —— 禁止单方面变更         ║
+║  RnaAptamerDesignWorkflow INTERFACE LOCK (v2.1.0) —— 禁止单方面变更         ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_aptamer_design workflow 的权威实现。任何字段增删、            ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：║
@@ -34,6 +34,10 @@ Key design principles
 ║    - agent_core/tool_specs.py                                                 ║
 ║    - agent_core/tools.py                                                      ║
 ║    - tests/test_rna_aptamer_design.py                                         ║
+    - tests/test_rna_aptamer_gennav.py                                        ║
+║  v2.1.0 (2026-08-19): +navigation(bool, 默认 False) GenNav 生产导航路径    ║
+║  (E14 协议, 纯函数核心 agent_core/generation/gennav_aptamer.py);          ║
+║  required_capabilities 增补 LinearFold。无字段删除或语义变更。            ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -61,6 +65,16 @@ from agent_core.file_manager import (
     resolve_project_path,
     save_sequence,
     save_text_file,
+)
+from agent_core.generation.gennav_aptamer import (
+    AptamerNavConfig,
+    deliver_profile,
+    evaluate_matrix,
+    gc_fraction,
+    guarantee_round,
+    longest_stem_bp,
+    mechanized_proposals,
+    profile_gaps,
 )
 from agent_core.sequence_utils import _pick_float
 from agent_core.workflow_models import Candidate, WorkflowResult, ToolCallRecord
@@ -177,6 +191,19 @@ class RnaAptamerDesignInput(BaseModel):
             "from the candidate pool."
         ),
     )
+    navigation: bool = Field(
+        default=False,
+        description=(
+            "Enable GenNav constraint navigation (E14 protocol): probe the densified "
+            "17-length lattice (25-80 nt), allocate cycling guaranteed-repair "
+            "reinforcement rounds within a 48-raw generation budget, and deliver up to "
+            "5 candidates per length profile (compact 25-34 / standard 40-55 / "
+            "extended 61-80 nt) under the pre-registered constraint matrix v3 "
+            "(per-band GC window, homopolymer cap, stem cap, within-batch diversity). "
+            "When False (default), one static ODesign gear is used "
+            "(aptamer_length, odesign_seeds, n_odesign_samples)."
+        ),
+    )
 
     @field_validator("protein_sequence")
     @classmethod
@@ -233,6 +260,7 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         "build_odesign_aptamer_input_json",
         "run_odesign_inference",
         "compute_rna_sequence_gc_content",
+        "predict_rna_secondary_structure_with_linearfold",
         "predict_rna_tertiary_structure_with_rhofold",
         "score_rna_protein_complex_with_egarps",
         "extract_rna_sequence_from_cif",
@@ -342,15 +370,29 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 errors=["target_preparation_failed"],
             ))
 
-        candidates = self._generate_aptamer_module(
-            protein_path, hotspot, inp, protein_seq_len=protein_seq_len
-        )
+        if getattr(inp, "navigation", False):
+            candidates = self._generate_aptamer_navigation(
+                protein_path, hotspot, inp, protein_seq_len=protein_seq_len
+            )
+        else:
+            candidates = self._generate_aptamer_module(
+                protein_path, hotspot, inp, protein_seq_len=protein_seq_len
+            )
         if not candidates:
+            nav_degraded = bool(
+                getattr(inp, "navigation", False)
+                and self._workflow_state.get("_gennav_trace")
+            )
             return self._finalize_result(WorkflowResult(
                 success=False,
                 task_id="",
-                summary="Aptamer design failed during candidate generation.",
-                errors=["candidate_generation_failed"],
+                summary=(
+                    "Aptamer navigation completed but no candidate passed the "
+                    "constraint matrix in any profile (explicit degrade)."
+                    if nav_degraded
+                    else "Aptamer design failed during candidate generation."
+                ),
+                errors=["navigation_delivery_empty"] if nav_degraded else ["candidate_generation_failed"],
             ))
 
         # ── Two-stage concurrent evaluation (light on all, heavy on top-k) ──
@@ -511,11 +553,212 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         _LOGGER.info("candidates_generated total=%d unique=%d", len(sequences), len(candidates))
         return candidates
 
+    # ─────────────────────────────────────────────────────────────────────────
+    # GenNav navigation path (E14 protocol; production wiring 2026-08-19)
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _generate_aptamer_navigation(
+        self,
+        protein_path: str,
+        hotspot: str,
+        inp: RnaAptamerDesignInput,
+        *,
+        protein_seq_len: Optional[int] = None,
+    ) -> list[Candidate]:
+        """Module 2N: GenNav multi-profile constraint navigation (E14).
+
+        Deterministic, zero LLM: lattice probe → cycling guaranteed-repair
+        reinforcement within the 48-raw budget → per-profile mechanized
+        delivery. Every ODesign call and every LinearFold fold goes through
+        the capability layer (hence the CapGate audit trail), and the full
+        navigation trace is written to ``_workflow_state["_gennav_trace"]``.
+        """
+        config = AptamerNavConfig()
+        pool: list[dict] = []
+        gears: list[dict] = []
+        seen: set[str] = set()
+        raw_spent = 0
+        rounds: list[dict] = []
+        guaranteed_bands: set[str] = set()
+        fold_cache: dict[str, tuple[Optional[str], Optional[float]]] = {}
+
+        def _fold(seq: str) -> tuple[Optional[str], Optional[float]]:
+            """LinearFold structure + MFE (in-process cache per sequence)."""
+            if seq in fold_cache:
+                return fold_cache[seq]
+            filepath = save_sequence(seq, prefix="gennav_fold")
+            res = self._invoke_and_record(
+                "predict_rna_secondary_structure_with_linearfold",
+                {"filepath": filepath},
+                step_name="predict_rna_secondary_structure_with_linearfold",
+            )
+            value = (
+                (res.output.get("structure"), _pick_float(res.output, "mfe"))
+                if res.success else (None, None)
+            )
+            fold_cache[seq] = value
+            return value
+
+        def _odesign_request(length: int, seed: int, n: int) -> list[tuple[str, str]]:
+            """One ODesign gear request; returns (sequence, prediction_path) pairs."""
+            json_result = self._build_odesign_json(
+                protein_path=protein_path,
+                chain_id=inp.chain_id,
+                seq_len=protein_seq_len,
+                hotspot=hotspot,
+                aptamer_length=length,
+            )
+            if not json_result:
+                _LOGGER.error("odesign_json_build_failed length=%s", length)
+                return []
+            result = self._run_odesign_inference(
+                json_path=json_result.get("input_json_filepath", ""),
+                n_sample=n,
+                seeds=[seed],
+            )
+            if not result:
+                return []
+            pairs: list[tuple[str, str]] = []
+            for path in result.get("prediction_filepaths", []):
+                seqs = self._extract_sequences_from_predictions([path])
+                if seqs:
+                    pairs.append((seqs[0], path))
+            return pairs
+
+        def _add_to_pool(
+            pairs: list[tuple[str, str]], length: int, seed: int, n_requested: int
+        ) -> None:
+            nonlocal raw_spent
+            raw_spent += n_requested
+            gears.append({"aptamer_length": length, "seed": seed, "n_samples": n_requested})
+            for idx, (seq, pred_path) in enumerate(pairs):
+                if not seq or seq in seen:
+                    continue
+                seen.add(seq)
+                structure, mfe = _fold(seq)
+                gc = gc_fraction(seq)
+                stem = longest_stem_bp(structure) if structure else 0
+                pool.append({
+                    "id": f"nav:L{length}:s{seed}:i{idx}",
+                    "sequence": seq,
+                    "gear": {"aptamer_length": length, "seed": seed, "n_samples": n_requested},
+                    "gc": round(gc, 4),
+                    "longest_stem_bp": stem,
+                    "mfe": mfe,
+                    "odesign_prediction_path": pred_path,
+                    "matrix_pass": evaluate_matrix(seq, gc, stem, config),
+                })
+
+        # ── Phase 1: lattice probe — one sample at every length (probe seed) ──
+        for length in config.lattice_lengths:
+            n = min(1, config.raw_budget_per_target - raw_spent)
+            if n <= 0:
+                break
+            _add_to_pool(
+                _odesign_request(length, config.probe_seed, n),
+                length, config.probe_seed, n,
+            )
+        _LOGGER.info(
+            "gennav_probe_done lengths=%d raw_spent=%d pool=%d",
+            len(config.lattice_lengths), raw_spent, len(pool),
+        )
+
+        # ── Phase 2: reinforcement — guarantee rounds first, mechanized fill ──
+        while raw_spent < config.raw_budget_per_target:
+            gaps = profile_gaps(pool, config)
+            if all(g == 0 for g in gaps.values()):
+                break  # every band already deliverable — stop early, save budget
+            gear, guaranteed_bands = guarantee_round(
+                pool, gears, raw_spent, config, guaranteed_bands=guaranteed_bands
+            )
+            kind = "guarantee"
+            if gear is None:
+                proposals, _ = mechanized_proposals(pool, gears, raw_spent, config)
+                if not proposals:
+                    break
+                gear = proposals[0]
+                kind = "mechanized"
+            n = min(int(gear["n_samples"]), config.raw_budget_per_target - raw_spent)
+            if n <= 0:
+                break
+            round_rec = {
+                "kind": kind,
+                "length": gear["length"],
+                "seed": gear["seed"],
+                "n_samples": n,
+                "gaps_before": gaps,
+            }
+            _add_to_pool(_odesign_request(gear["length"], gear["seed"], n),
+                         gear["length"], gear["seed"], n)
+            rounds.append(round_rec)
+            _LOGGER.info(
+                "gennav_round kind=%s length=%s seed=%s n=%d raw_spent=%d",
+                kind, gear["length"], gear["seed"], n, raw_spent,
+            )
+
+        # ── Phase 3: per-profile mechanized delivery ──
+        deliveries = {
+            prof: deliver_profile(pool, prof, config)
+            for prof in config.profile_order
+        }
+        self._workflow_state["_gennav_trace"] = {
+            "protocol": "e14_production_v1",
+            "raw_budget": config.raw_budget_per_target,
+            "raw_spent": raw_spent,
+            "probe": {"n_lengths": len(config.lattice_lengths), "seed": config.probe_seed},
+            "rounds": rounds,
+            "final_gaps": profile_gaps(pool, config),
+            "pool_size": len(pool),
+            "deliveries": deliveries,
+        }
+
+        by_id = {c["id"]: c for c in pool}
+        delivered: list[Candidate] = []
+        chosen: set[str] = set()
+        for prof in config.profile_order:
+            for rank, rec in enumerate(deliveries[prof]["candidates"], start=1):
+                if rec["id"] in chosen:
+                    for cand in delivered:
+                        if cand.metadata.get("nav_id") == rec["id"]:
+                            cand.metadata["nav_bands"].append(prof)
+                    continue
+                chosen.add(rec["id"])
+                src = by_id[rec["id"]]
+                delivered.append(Candidate(
+                    sequence=src["sequence"],
+                    sequence_type="rna_aptamer",
+                    source=f"odesign_gennav:L{src['gear']['aptamer_length']}:s{src['gear']['seed']}",
+                    metadata={
+                        "protein_structure_path": protein_path,
+                        "protein_chain_id": inp.chain_id,
+                        "hotspot_residues": hotspot,
+                        "aptamer_length": src["gear"]["aptamer_length"],
+                        "odesign_prediction_path": src["odesign_prediction_path"],
+                        "nav_id": rec["id"],
+                        "nav_bands": [prof],
+                        "nav_delivery_rank": rank,
+                        "nav_gear": dict(src["gear"]),
+                        "nav_matrix_pass": dict(src["matrix_pass"]),
+                        "gc_content": src["gc"],
+                        "longest_stem_bp": src["longest_stem_bp"],
+                    },
+                ))
+        _LOGGER.info(
+            "gennav_delivery raw_spent=%d pool=%d delivered=%d degraded=%s",
+            raw_spent, len(pool), len(delivered),
+            {p: deliveries[p]["degraded"] for p in config.profile_order},
+        )
+        return delivered
+
     def generate_candidates(self, inp: RnaAptamerDesignInput) -> list[Candidate]:
         """Generate aptamer candidates via ODesign structure-guided generation."""
         protein_path, hotspot, protein_seq_len = self._prepare_target_module(inp)
         if not protein_path or not hotspot:
             return []
+        if getattr(inp, "navigation", False):
+            return self._generate_aptamer_navigation(
+                protein_path, hotspot, inp, protein_seq_len=protein_seq_len
+            )
         return self._generate_aptamer_module(
             protein_path, hotspot, inp, protein_seq_len=protein_seq_len
         )
@@ -1023,6 +1266,17 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
             f"best_candidate_source=reference_point_optimization",
         ]
+        nav_trace = self._workflow_state.get("_gennav_trace")
+        if nav_trace:
+            summary_parts.append(
+                f"[GenNav] raw_spent={nav_trace['raw_spent']}/{nav_trace['raw_budget']} "
+                f"pool={nav_trace['pool_size']} rounds={len(nav_trace['rounds'])}"
+            )
+            for prof, delivery in nav_trace["deliveries"].items():
+                summary_parts.append(
+                    f"[GenNav] {prof}: delivered={len(delivery['ids'])} "
+                    f"d1_min={delivery['d1_min_dist']} degraded={delivery['degraded']}"
+                )
         if raw_ref_point is not None:
             summary_parts.append(f"reference_point={raw_ref_point}")
         if pareto_frontier:

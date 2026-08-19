@@ -230,15 +230,13 @@ class CalibratedRuntime:
         )
         return decisions[0]
 
-    def should_block(self, decision: GateDecision, tool_name: Optional[str] = None) -> bool:
+    def should_block(self, decision: GateDecision, tool_name: str) -> bool:
         """A tool call is blocked only in enforce policy on missing evidence.
 
         Pending-governance oracles (profiling campaign not yet run, E16+) are
         reviewed and audited but never blocked regardless of verdict.
-        ``tool_name`` is optional for backward compatibility; without it the
-        verdict alone decides (pending callers must pass the name).
         """
-        if tool_name is not None and ORACLE_GOVERNANCE.get(tool_name) == "pending":
+        if ORACLE_GOVERNANCE.get(tool_name) == "pending":
             return False
         return self.policy == "enforce" and decision.verdict in ("reject", "require_profiling")
 
@@ -252,8 +250,15 @@ class CalibratedRuntime:
         error_type: str | None = None,
         gated: bool = False,
     ) -> None:
-        """Best-effort audit record of one tool call; never raises."""
+        """Best-effort audit record of one tool call; never raises.
+
+        The record is stamped with the context-propagated session id and
+        calling workflow task type so every audit line is attributable to the
+        run that produced it (empty strings outside a workflow run).
+        """
         try:
+            from agent_core.file_manager import current_session_id
+
             self.audit.record(
                 "tool_call",
                 {
@@ -263,6 +268,8 @@ class CalibratedRuntime:
                     "elapsed_time": round(elapsed_time, 4),
                     "error_type": error_type,
                     "gated": gated,
+                    "session_id": current_session_id(),
+                    "task_type": current_task_type() or "",
                 },
             )
         except Exception:  # noqa: BLE001 - audit must never fail a run

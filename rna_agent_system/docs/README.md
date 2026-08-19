@@ -154,7 +154,7 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x
 | **siRNA / ASO** | siRNA design (Evitar), duplex energy, ASO target screening | ✅ Available |
 | **CRISPR / sgRNA** | sgRNA handle design (CRGPT), CRISOT off-target scoring / optimization | ✅ Available |
 | **RNA–ligand** | RNAsmol + GerNA-Bind scoring | ✅ Available |
-| **RNA–protein** | Aptamer design (ODesign + ProteinX), complex scoring (EGARPS), interface analysis | ✅ Available |
+| **RNA–protein** | Aptamer design (ODesign + ProteinX; opt-in GenNav navigation mode), complex scoring (EGARPS), interface analysis | ✅ Available |
 | **IRES / stability** | IRES prediction, mRNA stability (RNASTOP) | ✅ Available |
 | **Homology** | BLASTn similarity search | ✅ Available |
 

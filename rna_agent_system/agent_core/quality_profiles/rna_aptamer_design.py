@@ -37,6 +37,10 @@ RNA_APTAMER_QUALITY_PROFILE = QualityProfile(
             "type": "list",
             "hint": "Random seeds for ODesign inference. Change to explore different sequence space.",
         },
+        "navigation": {
+            "type": "bool",
+            "hint": "GenNav multi-profile constraint navigation (E14 protocol). Enable when a delivery batch across length profiles (compact/standard/extended) under the pre-registered constraint matrix is wanted instead of a single static gear.",
+        },
         "reference_point": {
             "type": "dict",
             "hint": "Optional per-objective aspiration point for ASF selection. Keys: egarps_component, rhofold_component, iptm_component.",

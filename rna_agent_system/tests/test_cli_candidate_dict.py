@@ -1,6 +1,7 @@
 """Tests for CLI Candidate JSON serialization helpers."""
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -91,3 +92,30 @@ def test_candidate_to_dict_handles_empty_metadata():
     d = form_chat._candidate_to_dict(c)
     assert d["scores"] == {"total_score": 0.3}
     assert d["metrics"] == {}
+
+
+def test_save_workflow_results_persists_gennav_trace(tmp_path, monkeypatch):
+    """Navigation-mode runs persist ``_gennav_trace`` in the CLI JSON artifact."""
+    from agent_core.workflow_models import WorkflowResult
+
+    wf = WorkflowResult(
+        success=True,
+        task_id="aptamer_test",
+        summary="candidates=1",
+        best_candidate=Candidate(id="c1", sequence="AUGCGCAUGCUGCAUGCUAGC"),
+        all_candidates=[Candidate(id="c1", sequence="AUGCGCAUGCUGCAUGCUAGC")],
+    )
+    wf._state_writeback = {
+        "_workflow_params": {"navigation": True},
+        "_gennav_trace": {"raw_spent": 41, "raw_budget": 48, "rounds": []},
+    }
+
+    saved = {}
+    monkeypatch.setattr(
+        form_chat, "save_text_file",
+        lambda content, **kw: saved.update(json.loads(content)) or "workflow_results_x.json",
+    )
+    out = form_chat._save_workflow_results({"workflow_result": wf}, "sess_test")
+    assert out is not None
+    assert saved["_gennav_trace"]["raw_spent"] == 41
+    assert saved["workflow_input"] == {"navigation": True}

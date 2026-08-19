@@ -42,6 +42,7 @@ and were removed in this edition; the drivers themselves remain under
 | RNA-BioBench-FullLength-mRNA | `RNA-BioBench-FullLength-mRNA/targets/*.json` (+`sequences/*.fa`) | 20 targets | Fig 3/7A (legacy); P0–P3, E4, E5, E6 |
 | RNA-BioBench-Aptamer | `RNA-BioBench-Aptamer/targets/*.json` (+`structures/*.pdb`) | 20 targets | Fig 4/7B (legacy); P2, E1 |
 | RNA-BioBench-ProcessAware | `RNA-BioBench-ProcessAware/task_set_for_llm_comparison.json` | 19 tasks on disk (PA_006–024) | Fig 6 (legacy), CLI regression (`run_pa_test.py`) |
+| PA batch-B registry | `pa_benchmarks.json` entries 025–036 | 12 fresh-data benchmarks (all 11 workflows + GenNav `navigation=true`) | CLI regression batch-B, 2026-08-19 (`experiments/results/pa_regression_batchB_2026-08-19/`) |
 
 Platform task JSON → the `input` object is passed verbatim as the CLI params
 file; `evaluation_rubric` defines pass thresholds; `expected_tool_chain` is
@@ -169,8 +170,10 @@ serve it), never a model-quality result. See `DECISIONS.md` Part 1(d).
   `experiments/run_e16_e17_e18_oracle_profiling.py` (profiling) and
   `experiments/analysis/stats_utils.py` (Wilcoxon / Cliff's δ / BH-FDR /
   bootstrap AUROC).
-- CLI regression: `run_pa_test.py <006..024>` over `pa_benchmarks.json`.
+- CLI regression: `run_pa_test.py <006..036>` over `pa_benchmarks.json`
+  (006–024: original batch; 025–036: batch-B fresh-data batch incl. GenNav
+  navigation runs).
 - Agent-core suite: `PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x`
-  (baseline 488 passed).
+  (baseline 496 passed).
 - Conventions: JSONL = one record per run; analysis never reads session logs
   directly — only the JSONLs/summaries above.

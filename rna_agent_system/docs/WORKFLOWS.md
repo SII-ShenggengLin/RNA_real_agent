@@ -360,6 +360,7 @@ total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component
     "build_odesign_aptamer_input_json",
     "run_odesign_inference",
     "compute_rna_sequence_gc_content",
+    "predict_rna_secondary_structure_with_linearfold",  # navigation-mode constraint matrix folding
     "predict_rna_tertiary_structure_with_rhofold",
     "score_rna_protein_complex_with_egarps",
     "extract_rna_sequence_from_cif",
@@ -393,12 +394,25 @@ The candidate list in `WorkflowResult.all_candidates` is sorted by ASF distance 
 
 The non-dominated candidate set is always returned in `WorkflowResult.pareto_frontier`. Frontier members are tagged by their leading dimension and capped at 10 members.
 
+**GenNav navigation mode (opt-in, v2.1.0)**
+
+Setting `navigation: true` replaces the single static ODesign gear with the E14-validated generation-layer constraint navigation (pure-function core: `agent_core/generation/gennav_aptamer.py`):
+
+1. **Lattice probe** — one ODesign sample at each of the 17 densified lattice lengths (25–80 nt, seed 42), each candidate folded with LinearFold (8015) and graded against the pre-registered constraint matrix v3 (per-profile length band, GC window, homopolymer cap, stem cap).
+2. **Guaranteed-repair reinforcement** — cycling allocation (one round per repairable delivery band before any band's second) of ODesign requests (≤ 6 samples, seeds 7/99) chosen by Laplace-smoothed per-length pass rates; mechanized band-gap-first proposals fill any remaining budget. Deterministic — zero LLM calls.
+3. **Per-profile delivery** — matrix-pass filter → fixed utility order (stem asc, |GC−0.55| asc) → D1 greedy top-5 (pairwise normalized edit distance ≥ 0.15) per profile (compact 25–34 / standard 40–55 / extended 61–80 nt). Shortfalls are explicit degrades.
+
+The generation budget is capped at 48 raw candidates per run; the loop stops early once every profile is deliverable. Every ODesign/LinearFold call goes through the capability layer (CapGate audit trail), and the full navigation trace (probe, rounds, gaps, deliveries) is written to `_state_writeback["_gennav_trace"]`. Delivered candidates then enter the standard two-stage evaluation and ASF ranking with `nav_bands` / `nav_gear` / `nav_matrix_pass` metadata. A run where no candidate passes any profile fails with the dedicated `navigation_delivery_empty` error (explicit degrade, not a silent empty result).
+
 **QualityAgent** (advisory by default): produces a `QualityReport` for every run. The `QualityAgent` focuses on user-intent alignment and exploration strategy. Retry decisions are made by the `SpecialistAgent` based on the `QualityReport` and the `quality_auto_retry` setting; retry is triggered on hard failures (tool failures, empty candidates).
 
 > **History**: the BMC Type-II coordination layer (`AptamerCoordinator` rounds:
 > hotspot expansion / length-seed-sample adjustments) was removed on
 > 2026-08-18 after the coordination-gain narrative was falsified
 > (DECISIONS.md (a), (m)); the ASF/Pareto ranking shown above is unchanged.
+> The E6 mRNA-side λ-lattice navigation remains validated campaign machinery
+> (evidence under `experiments/results/`); the distilled production core is
+> the aptamer-side module above.
 
 ---
 

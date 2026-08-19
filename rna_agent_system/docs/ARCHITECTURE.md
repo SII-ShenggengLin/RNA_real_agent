@@ -137,6 +137,8 @@ class BaseDomainWorkflow(ABC, Generic[WorkflowInputT, WorkflowResultT]):
 
 The `SpecialistAgent` (Layer 4) invokes a workflow just like a single tool. The caller (CLI menu, `--workflow`, or a `PipelinePlan`) decides **what** to do; the Workflow decides **how** to do it well.
 
+**Generation-layer navigation (GenNav)**: `RnaAptamerDesignWorkflow` exposes an opt-in `navigation` mode (v2.1.0) that replaces single-gear generation with the E14-validated constraint navigation — lattice probe, cycling guaranteed-repair allocation, per-profile delivery — implemented as pure functions in `agent_core/generation/gennav_aptamer.py` and fully audited through the normal capability path (see [`WORKFLOWS.md`](WORKFLOWS.md) §10).
+
 ### 2.4 Layer 3 — Service Orchestration
 
 **Files**: `services/service_manager.py`

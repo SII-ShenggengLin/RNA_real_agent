@@ -1,11 +1,13 @@
 # Agent Guidelines for RNA_real_agent
 
 > **Consolidated index.** Authoritative documentation lives in `rna_agent_system/docs/`.
-> **Last updated**: 2026-08-18 (post-simplification)
+> **Last updated**: 2026-08-19 (batch-B fresh-data re-verification)
 
 ## What's New
 
-- **System simplification pass — BMC removed, dead tools and concluded experiment drivers purged** (2026-08-18, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-18): the BMC framework (`CoordinatorAgent`, `workflows/coordinator.py`, the `bmc_*` interface) was removed after its coordination-gain narrative was triple-falsified (DECISIONS.md (a), (m)) — both coupled workflows now run the plain generate → evaluate → ASF/Pareto-rank path with unchanged audit writeback; 12 dead tools deleted (54 → 42 specs: junction-aware LinearDesign, junction codon shuffler, 6 reserved CRISOT alternates, LinearFold eval/zuker, batch LinearDesign, codonw-slim) together with their service endpoints and the whole codonw_slim_service; the E1/E3-era calibrated experiment machinery (profiler / experiment_planner / campaign_runner / case_memory) and all concluded E1–E15 drivers/probes/plots scripts were deleted (evidence JSONs under `experiments/results/` remain the audit trail). The E14 GenNav strategy survives as the pure-function core `agent_core/generation/gennav_aptamer.py`. Bug fix: `bowtie2_ma` int/str type mismatch. Test baseline: **488 passed** (post-purge; the ~220 removed tests covered deleted features).
+- **Batch-B fresh-data re-verification + session-stamped audit trail** (2026-08-19, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-19 batch-B): a second full-platform pass on **entirely fresh data** — 12 new PA benchmarks (PA_025–PA_036, all 11 workflows + two GenNav `navigation=true` campaigns on 1CA2/3CNA) — **12/12 passed, 0 failed turns** (evidence: `experiments/results/pa_regression_batchB_2026-08-19/`). Both navigation campaigns delivered 5/5 in all three profiles with no degrade, exercising both the budget-capped path (1CA2, 47/48, 5 cycling guarantee rounds) and the early-stop path (3CNA, 35/48). Every `tool_call` audit record now carries `session_id` + `task_type` (audit lines are attributable to the run that produced them); enabling fix: `AgentRunner.stream_form` copies contextvars into its pipeline worker thread. New fixtures: `emcv_5utr.fa` / `poliovirus_5utr.fa` (first authentic IRES-positive PA inputs — mode-0 scans reproduced the fig2i literature scores).
+- **GenNav production wiring + full-platform end-to-end verification** (2026-08-19, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-19): the E14-validated GenNav constraint navigation is now a user-reachable production path — `RnaAptamerDesignWorkflow` v2.1.0 gains the opt-in `navigation` input field (default `False`; static gear unchanged). The navigation runs deterministically (zero LLM): 17-length lattice probe → cycling guaranteed-repair reinforcement (48-raw cap, early stop) → per-profile matrix-v3 + D1 delivery, with every ODesign/LinearFold call audited and the full trace in `_state_writeback["_gennav_trace"]`; empty delivery is the dedicated `navigation_delivery_empty` degrade. Core: `agent_core/generation/gennav_aptamer.py` (+ matrix/delivery pure functions); tests: `tests/test_rna_aptamer_gennav.py`. First verification pass: 496 tests green, PA_006–PA_024 rerun, live CapGate audit trail inspected. mRNA-side λ navigation (E6) remains evidence-only campaign machinery.
+- **System simplification pass — BMC removed, dead tools and concluded experiment drivers purged** (2026-08-18, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-18): the BMC framework (`CoordinatorAgent`, `workflows/coordinator.py`, the `bmc_*` interface) was removed after its coordination-gain narrative was triple-falsified (DECISIONS.md (a), (m)) — both coupled workflows now run the plain generate → evaluate → ASF/Pareto-rank path with unchanged audit writeback; 12 dead tools deleted (54 → 42 specs) together with their service endpoints and the whole codonw_slim_service; the E1/E3-era calibrated experiment machinery (profiler / experiment_planner / campaign_runner / case_memory) and all concluded E1–E15 drivers/probes/plots scripts were deleted (evidence JSONs under `experiments/results/` remain the audit trail). The E14 GenNav strategy survives as the pure-function core `agent_core/generation/gennav_aptamer.py`. Bug fix: `bowtie2_ma` int/str type mismatch.
 
 ## Standing facts (keep in mind before proposing work)
 
@@ -129,21 +131,21 @@ This project uses INTERFACE LOCK comments to prevent accidental breaking changes
 
 ## Testing
 
-Run the agent-core test suite before committing (current baseline: **488 passed**):
+Run the agent-core test suite before committing (current baseline: **496 passed**):
 
 ```bash
 cd rna_agent_system
 PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x
 ```
 
-For locked CLI regressions, run the PA_006–PA_024 end-to-end inputs (all 11 workflows, user-input → final design result) using the consolidated driver:
+For locked CLI regressions, run the PA_006–PA_036 end-to-end inputs (all 11 workflows, user-input → final design result; 006–024 original batch, 025–036 the 2026-08-19 fresh-data batch including two GenNav `navigation=true` runs) using the consolidated driver:
 
 ```bash
 cd rna_agent_system
 PYTHONPATH="$(pwd):$PYTHONPATH" python run_pa_test.py 006
 ```
 
-Benchmark configurations live in `rna_agent_system/pa_benchmarks.json`; pass any PA number `006`–`024` to the driver. The driver defaults its subprocesses to `RNADA_CAPGATE=advisory` (PA runs are process-aware CLI regressions; enforce-mode oracle gating — the registered E16–E18 consequence, DECISIONS.md (j)/(l)) would otherwise fail whole workflows whose scoring oracles are legitimately blocked in production). Set `RNADA_CAPGATE` explicitly to override. Static input fixtures live git-tracked under `data/benchmarks/RNA-BioBench-ProcessAware/fixtures/` (provenance in `data/benchmarks/README.md`).
+Benchmark configurations live in `rna_agent_system/pa_benchmarks.json`; pass any PA number `006`–`036` to the driver. The driver defaults its subprocesses to `RNADA_CAPGATE=advisory` (PA runs are process-aware CLI regressions; enforce-mode oracle gating — the registered E16–E18 consequence, DECISIONS.md (j)/(l)) would otherwise fail whole workflows whose scoring oracles are legitimately blocked in production). Set `RNADA_CAPGATE` explicitly to override. Static input fixtures live git-tracked under `data/benchmarks/RNA-BioBench-ProcessAware/fixtures/` (provenance in `data/benchmarks/README.md`).
 
 For live microservice end-to-end smoke tests, no manual service startup is needed — the CLI / `AgentRunner` pre-flight auto-starts the services each workflow requires:
 

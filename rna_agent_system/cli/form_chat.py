@@ -175,6 +175,10 @@ def _save_workflow_results(state: dict[str, Any], session_id: str) -> Optional[P
             )
             if wf_input:
                 data["workflow_input"] = wf_input
+            # GenNav navigation trace (rounds, gaps, per-profile deliveries) —
+            # persisted for full navigation auditability when present.
+            if "_gennav_trace" in wf_state:
+                data["_gennav_trace"] = wf_state["_gennav_trace"]
         trace = getattr(wf, "trace", [])
         if trace:
             data["trace"] = [rec.model_dump(mode="json") for rec in trace]

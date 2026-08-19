@@ -170,3 +170,5 @@ now git-tracked:
 | `sarscov2_nsp12_strains.fasta` | SARS-CoV-2 nsp12 (RdRp) CDS, Wuhan-Hu-1 + 7 early-2020 isolates + the PA_016 query | `NC_045512.2` genome 13442..16236 (2795 nt, direct ORF1ab slice — the GenBank mat_peptide join overlaps 1 nt at the frameshift and must not be used verbatim); isolates from `external_repos/Evitar/test/strains.fa` extracted at the conserved nsp12 start anchor |
 | `epo_mrna.fa` | Human EPO mRNA (1340 nt) | `NM_000799.3`, efetch 2026-08-18 |
 | `ttr_mrna.fa` | Human TTR mRNA (616 nt) | `NM_000371.4`, efetch 2026-08-18 |
+| `emcv_5utr.fa` | EMCV 5'UTR (840 nt, IRES-positive) | batch-B fixture (2026-08-19), single record extracted from `external_anchors/ires/ires_positive.fa` (`NC_001479.1:1-840`) |
+| `poliovirus_5utr.fa` | Poliovirus type 1 5'UTR (742 nt, IRES-positive) | batch-B fixture (2026-08-19), single record extracted from `external_anchors/ires/ires_positive.fa` (`NC_002058.3:1-742`) |

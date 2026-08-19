@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextvars
 import copy
 import logging
 import queue
@@ -458,7 +459,12 @@ class AgentRunner:
                 except Exception as exc:
                     progress_q.put({"__done__": True, "success": False, "error": str(exc)})
 
-            thread = threading.Thread(target=_execute_in_thread, daemon=True)
+            # Run the pipeline with a copy of the current context so
+            # context-propagated state (session id, CapGate task type) stays
+            # visible inside the worker thread.
+            thread = threading.Thread(
+                target=contextvars.copy_context().run, args=(_execute_in_thread,), daemon=True
+            )
             thread.start()
 
             while True:

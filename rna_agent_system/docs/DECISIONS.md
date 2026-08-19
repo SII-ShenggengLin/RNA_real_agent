@@ -4,7 +4,7 @@
 > **not** pursue again (with the evidence that closed them), positive results that **are**
 > established (with their evidence pointers), and a one-line project timeline.
 > Before proposing any new experiment, optimization, or narrative claim, check Part 1 first.
-> **Last updated**: 2026-08-18
+> **Last updated**: 2026-08-19
 
 All evidence files live under `rna_agent_system/experiments/results/` unless noted.
 Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
@@ -279,3 +279,18 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 - **2026-08-14** (E14 aptamer GenNav — PRIMARY ENDPOINT GO): user adjudication — criteria revised to single-gate McNemar P<0.05 (e2e demoted to disclosure: absolute-delivery measure, jointly-infeasible cells at 48-raw); protocol addenda v1 cycling guarantee (b=14/c=6/0.115) and v2 4×n6 + n8-over-n2 (b=10/c=3/0.092), all pre-registered; final **GO b=14/c=3/P=0.0127, C e2e 0.50 vs A 0.00** — citable positive aptamer-side navigation result (row 13).
 - **2026-08-12 → 13** (dual-generalization campaign): E3-M mRNA-side gating GO (38.9% → 8.3%, TP retention 100%); aptamer GenNav E9 (re-anchored scarcity matrix, b=6/c=8, p = 0.79) and E10 (mechanized allocation, b=9/c=4, p = 0.267) — primary endpoint still NO-GO, boundary localized to budget structure; E11 pre-registration-gate simulation closed both escape routes (symmetric cap 64: A-arm strengthening erodes b, P ≥ 0.34; panel: 20-target two-sided p ≈ 0.11–0.13) → aptamer-side conclusion fixed as "mechanism transfer + structural budget boundary"; asymmetric A-48/C-64 rejected against the budget-matching iron rule.
 - **2026-08-18** (simplification pass): BMC framework removed after triple falsification (DECISIONS (a)/(m)); 12 dead tools + concluded E1–E15 drivers + legacy calibrated experiment machinery deleted (102,673 → ~51,000 LOC, 709 → 488 tests all green); PA_006–PA_024 end-to-end rerun. The packaged SelfModel (29 records) and CapGate runtime unchanged.
+- **2026-08-19** (GenNav production wiring + verification pass): the E14 GenNav
+  strategy became a user-reachable production path — `RnaAptamerDesignWorkflow`
+  v2.1.0 opt-in `navigation` mode running the E14 protocol deterministically
+  (zero LLM) through the audited capability layer; the pure-function core in
+  `agent_core/generation/gennav_aptamer.py` gained the matrix-v3 constraint and
+  delivery functions. Full-platform re-verification: 496 tests green,
+  PA_006–PA_024 rerun, CapGate audit trail checked on live runs. The E6
+  mRNA-side λ navigation stays campaign machinery (evidence-only).
+- **2026-08-19** (batch-B fresh-data re-verification): second user-directed
+  platform pass on entirely new inputs — PA_025–PA_036 (12 benchmarks, all 11
+  workflows + two GenNav navigation campaigns) **12/12, 0 failed turns**;
+  navigation delivered 5/5 × 3 profiles on both fresh targets (1CA2 47/48
+  budget-capped, 3CNA 35/48 early-stop). `tool_call` audit records gained
+  `session_id`/`task_type` attribution (stream_form thread-context fix).
+  Evidence: `experiments/results/pa_regression_batchB_2026-08-19/`.

@@ -59,12 +59,12 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x -q
 | `AsoTargetScreeningWorkflow` | v1.0.0 | `workflows/aso_target_screening.py` |
 | `IresPredictionWorkflow` | v1.1.0 | `workflows/ires_prediction.py` |
 | `FullLengthMrnaDesignWorkflow` | v3.0.0 | `workflows/full_length_mrna_design.py` |
-| `RnaAptamerDesignWorkflow` | v2.0.0 | `workflows/rna_aptamer_design.py` |
+| `RnaAptamerDesignWorkflow` | v2.1.0 | `workflows/rna_aptamer_design.py` |
 | `RnaSecondaryStructureDesignWorkflow` | v1.0.0 | `workflows/rna_secondary_structure_design.py` |
 | `RnaTertiaryStructureDesignWorkflow` | v1.0.0 | `workflows/rna_tertiary_structure_design.py` |
 | `MrnaSequenceScoringWorkflow` | v1.1.0 | `workflows/mrna_sequence_scoring.py` |
 | `AgentRunner` | v3.4.0 | `agent_core/runner.py` |
-| `CLI End-to-End Execution Flow` | v2.3.0 | `cli/form_chat.py` |
+| `CLI End-to-End Execution Flow` | v2.4.0 | `cli/form_chat.py` |
 
 Removed locks (2026-08-18, deleted with their code): the junction-aware
 LinearDesign tool (§21, P2 NO-GO), `shuffle_cds_junction_codons`, and the six
@@ -112,12 +112,15 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
   (synthesized into the internal `cds_component`). Junction ddG
   (`junction_5utr_cds_ddg_open_w1/w2`) is a report-only metric. Junction
   scores are internal diagnostics, never user-facing ranking keys.
-- **`RnaAptamerDesignWorkflow` (§15, v2.0.0)**: two-stage hierarchical
+- **`RnaAptamerDesignWorkflow` (§15, v2.1.0)**: two-stage hierarchical
   evaluation (light GC+RhoFold on all; full ProteinX+EGARPS+interface on
   top-k); EGARPS gated by RhoFold ≥ 65 and GC ∈ [0.25, 0.85]; ASF ranking on
-  `egarps_component` / `rhofold_component` / `iptm_component` (BMC interface
-  removed 2026-08-18). Zero-sequence targets (e.g. Ferritin/1FHA) are a
-  target-side boundary — do not "fix" by retrying.
+  `egarps_component` / `rhofold_component` / `iptm_component`. Opt-in
+  `navigation=True` (2026-08-19) routes generation through the GenNav
+  E14-protocol navigation (core `agent_core/generation/gennav_aptamer.py`;
+  trace in `_state_writeback["_gennav_trace"]`; empty delivery fails with
+  `navigation_delivery_empty`). Zero-sequence targets (e.g. Ferritin/1FHA)
+  are a target-side boundary — do not "fix" by retrying.
 - **`MrnaSequenceScoringWorkflow` (§18)**: takes a `CapabilityRegistry` like
   every other workflow; `run_mrna_sequence_scoring()` convenience default
   `auto_start_services=True`.
@@ -140,7 +143,7 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
 
 ---
 
-## 5. CLI end-to-end lock (§20, v2.3.0) essentials
+## 5. CLI end-to-end lock (§20, v2.4.0) essentials
 
 - CLI arguments: `--workflow`, `--params-file`, `--session-id`.
 - `AgentRunner.run_form()` / `.stream_form()` signatures and event names.
@@ -148,8 +151,10 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
   and `report_<timestamp>_<hash>.md`; the JSON artifact keeps the locked key
   set (`task_id`, `success`, `candidates`, `best_candidate`, `summary`,
   `errors`, `tool_results`, `_diagnosis_history`, `_quality_auto_retry`,
-  `retry_count`, `workflow_input`, `trace`, `_tool_timings`). The former
-  `_bmc_trace` field is gone (2026-08-18).
+  `retry_count`, `workflow_input`, `trace`, `_tool_timings`), plus the
+  optional `_gennav_trace` navigation audit record (v2.4.0, present only on
+  navigation-mode aptamer runs). The former `_bmc_trace` field is gone
+  (2026-08-18).
 - Workflow numbers 1–11 in `_WORKFLOW_LIST` must not be reassigned.
 - Regression: `pytest tests/test_form_schema_builder.py
   tests/test_form_validator.py tests/test_tui_form_renderer.py

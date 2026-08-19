@@ -43,6 +43,11 @@ def _resolve_session_id(session_id: str) -> str:
     return session_id
 
 
+def current_session_id() -> str:
+    """The context-propagated session id (empty string outside a run)."""
+    return _SESSION_ID_CTX.get()
+
+
 def _workspace_path(prefix: str, suffix: str, *, session_id: str = "") -> Path:
     """Return an unused absolute Path under the resolved workspace directory."""
     dir_path = _resolve_dir(session_id=_resolve_session_id(session_id))

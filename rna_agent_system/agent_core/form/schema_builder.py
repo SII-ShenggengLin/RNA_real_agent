@@ -123,6 +123,7 @@ class FormSchemaBuilder:
             "aptamer_length",
             "n_odesign_samples",
             "odesign_seeds",
+            "navigation",
             "n_samples",
             "n_samples_per_tool",
             "candidate_count",

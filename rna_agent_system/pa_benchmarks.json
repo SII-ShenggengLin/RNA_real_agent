@@ -702,5 +702,424 @@
     "constants": {
       "A1AT_PROTEIN": "MPSSVSWGILLLAGLCCLVPVSLAEDPQGDAAQKTDTSHHDQDHPTFNKITPNLAEFAFSLYRQLAHQSNSTNIFFSPVSIATAFAMLSLGTKADTHDEILEGLNFNLTEIPEAQIHEGFQELLRTLNQPDSQLQLTTGNGLFLSEGLKLVDKFLEDVKKLYHSEAFTVNFGDTEEAKKQINDYVEKGTQGKIVDLVKELDRDTVFALVNYIFFKGKWERPFEVKDTEEEDFHVDQVTTVKVPMMKRLGMFNIQHCKKLSSWVLLMKYLGNATAIFFLPDEGKLQHLENELTHDIITKFLENEDRRSASLHLPKLSITGTYDLKSVLGQLGITKVFSNGADLSGVTEEAPLKLSKAVHKAVLTIDEKGTEAAGAMFLEAIPMSIPPEVKFNKPFVFLMIEQNTKSPLFMGKVVNPTQK"
     }
+  },
+  "025": {
+    "workflow": "sirna_design",
+    "params_by_turn": [
+      {
+        "mode": "antiviral",
+        "target_sequence": "GCCAGCCCCCTGATGGGGGCGACACTCCACCATGAATCACTCCCCTGTGAGGAACTACTGTCTTCACGCAGAAAGCGTCTAGCCATGGCGTTAGTATGAGTGTCGTGCAGCCTCCAGGACCCCCCCTCCCGGGAGAGCCATAGTGGTCTGCGGAACCGGTGAGTACACCGGAATTGCCAGGACGACCGGGTCCTTTCTTGGATAAACCCGCTCAATGCCTGGAGATTTGGGCGTGCCCCCGCAAGACTGCTAGCCGAGTAGTGTTGGGTCGCGAAAGGCCTTGTGGTACTGCCTGATAGGGTGCTTGCGAGTGCCCCGGGAGGTCTCGTAGACCGTGCACC",
+        "candidate_count": 5,
+        "evitar_mode": "existing",
+        "evitar_predict": "predsi",
+        "alignment_tool": "bowtie2",
+        "bowtie2_score_min": "G,10,4",
+        "species": "homo_sapiens",
+        "off_target_scan": true
+      },
+      {
+        "mode": "antiviral",
+        "target_sequence": "TTAAAACAGCTCTGGGGTTGTACCCACCCCAGAGGCCCACGTGGCGGCTAGTACTCCGGTATTGCGGTACCCTTGTACGCCTGTTTTATACTCCCTTCCCGTAACTTAGACGCACAAAACCAAGTTCAATAGAAGGGGGTACAAACCAGTACCACCACGAACAAGCACTTCTGTTTCCCCGGTGATGTCGTATAGACTGCTTGCGTGGTTGAAAGCGACGGATCCGTTATCCGCTTATGTACTTCGAGAAGCCCAGTACCACCTCGGAATCTTCGATGCGTTGCGCTCAGCACTCAACCCCAGAGTGTAGCTTAGGCTGATGAGTCTGGACATCCCTCACCGGTGACGGTGGTCCAGGCTGCGTTGGCGGCCTACCTATGGCTAACGCCATGGGACGCTA",
+        "candidate_count": 8,
+        "evitar_mode": "existing",
+        "evitar_predict": "rnaxs",
+        "alignment_tool": "bowtie2",
+        "bowtie2_score_min": "G,20,8",
+        "species": "homo_sapiens",
+        "off_target_scan": true
+      },
+      {
+        "mode": "antiviral",
+        "target_sequence": "AACCCAGATATATTACGCGTATACGCCAACTTAGGTGAACGTGTACGCCAAGCTTTGTTAAAAACAGTACAATTCTGTGATGCCATGCGAAATGCTGGTATTGTTGGTGTACTGACATTAGATAATCAAGATCTCAATGGTAACTGGTATGATTTCGGTGATTTCATACAAACCACGCCAGGTAGTGGAGTTCCTGTTGTAGATTCTTATTATTCATTGTTAATGCCTATATTAACCTTGACCAGGGCTTTAACTGCAGAGTCACATGTTGACACTGACTTAACAAAGCCTTACATTAAGTGGGATTTGTTAAAATATGACTTCACGGAAGAGAGGTTAAAACTCTTTGACCGTTATTTTAAATATTGGGATCAGACATACCACCCAAATTGTGTTAACTGTTTGGATGACAGATGCATTCTGCATTGTGCAAACTTTAATGTTTTATTC",
+        "candidate_count": 10,
+        "evitar_mode": "predesign",
+        "evitar_predict": "multifapredsi",
+        "strains_path": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/sarscov2_nsp12_strains.fasta",
+        "alignment_tool": "bowtie2",
+        "bowtie2_score_min": "G,20,8",
+        "maxgc": 0.55,
+        "mingc": 0.3,
+        "species": "homo_sapiens",
+        "off_target_scan": true
+      }
+    ],
+    "constants": {
+      "HCV_5UTR": "GCCAGCCCCCTGATGGGGGCGACACTCCACCATGAATCACTCCCCTGTGAGGAACTACTGTCTTCACGCAGAAAGCGTCTAGCCATGGCGTTAGTATGAGTGTCGTGCAGCCTCCAGGACCCCCCCTCCCGGGAGAGCCATAGTGGTCTGCGGAACCGGTGAGTACACCGGAATTGCCAGGACGACCGGGTCCTTTCTTGGATAAACCCGCTCAATGCCTGGAGATTTGGGCGTGCCCCCGCAAGACTGCTAGCCGAGTAGTGTTGGGTCGCGAAAGGCCTTGTGGTACTGCCTGATAGGGTGCTTGCGAGTGCCCCGGGAGGTCTCGTAGACCGTGCACC",
+      "POLIO_5UTR_400": "TTAAAACAGCTCTGGGGTTGTACCCACCCCAGAGGCCCACGTGGCGGCTAGTACTCCGGTATTGCGGTACCCTTGTACGCCTGTTTTATACTCCCTTCCCGTAACTTAGACGCACAAAACCAAGTTCAATAGAAGGGGGTACAAACCAGTACCACCACGAACAAGCACTTCTGTTTCCCCGGTGATGTCGTATAGACTGCTTGCGTGGTTGAAAGCGACGGATCCGTTATCCGCTTATGTACTTCGAGAAGCCCAGTACCACCTCGGAATCTTCGATGCGTTGCGCTCAGCACTCAACCCCAGAGTGTAGCTTAGGCTGATGAGTCTGGACATCCCTCACCGGTGACGGTGGTCCAGGCTGCGTTGGCGGCCTACCTATGGCTAACGCCATGGGACGCTA",
+      "NSP12_WINDOW_500_950": "AACCCAGATATATTACGCGTATACGCCAACTTAGGTGAACGTGTACGCCAAGCTTTGTTAAAAACAGTACAATTCTGTGATGCCATGCGAAATGCTGGTATTGTTGGTGTACTGACATTAGATAATCAAGATCTCAATGGTAACTGGTATGATTTCGGTGATTTCATACAAACCACGCCAGGTAGTGGAGTTCCTGTTGTAGATTCTTATTATTCATTGTTAATGCCTATATTAACCTTGACCAGGGCTTTAACTGCAGAGTCACATGTTGACACTGACTTAACAAAGCCTTACATTAAGTGGGATTTGTTAAAATATGACTTCACGGAAGAGAGGTTAAAACTCTTTGACCGTTATTTTAAATATTGGGATCAGACATACCACCCAAATTGTGTTAACTGTTTGGATGACAGATGCATTCTGCATTGTGCAAACTTTAATGTTTTATTC",
+      "PROVENANCE": "batch-B (2026-08-19): HCV 5'UTR NC_004102.1:1-341 and poliovirus 5'UTR NC_002058.3:1-400 (first 400 nt) from external_anchors/ires/ires_positive.fa; nsp12 window nt 500-950 of the Wuhan-Hu-1 record in fixtures/sarscov2_nsp12_strains.fasta"
+    }
+  },
+  "026": {
+    "workflow": "sgrna_design",
+    "params_by_turn": [
+      {
+        "guide_sequence": "GGCAGGATGGCTTCTCATCGTCT",
+        "target_sequence": "GGCAGGATGGCTTCTCATCGTCT",
+        "seed_sequence": "CGTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTGCG",
+        "n_samples": 5,
+        "mutation_number": 3,
+        "weight_nn_score": 0.5,
+        "weight_crisot": 0.5,
+        "evaluate_crisot": true
+      },
+      {
+        "guide_sequence": "GGACTGGTATTTGTGTCTGAGGC",
+        "target_sequence": "GGACTGGTATTTGTGTCTGAGGC",
+        "seed_sequence": "CGTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTGCG",
+        "n_samples": 10,
+        "mutation_number": 3,
+        "weight_nn_score": 0.2,
+        "weight_crisot": 0.8,
+        "evaluate_crisot": true
+      },
+      {
+        "guide_sequence": "GGAGCCGGACCGGGGCCACCGCG",
+        "target_sequence": "GGAGCCGGACCGGGGCCACCGCG",
+        "seed_sequence": "CGTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCAACTTGAAAAAGTGGC",
+        "n_samples": 10,
+        "mutation_number": 5,
+        "weight_nn_score": 0.3,
+        "weight_crisot": 0.7,
+        "evaluate_crisot": true
+      }
+    ],
+    "constants": {
+      "TTR_GUIDE_1": "GGCAGGATGGCTTCTCATCGTCT (TTR NM_000371.4 nt 21-43)",
+      "TTR_GUIDE_2": "GGACTGGTATTTGTGTCTGAGGC (TTR NM_000371.4 nt 63-85)",
+      "EPO_GUIDE": "GGAGCCGGACCGGGGCCACCGCG (EPO NM_000799.3 nt 4-26)",
+      "PROVENANCE": "batch-B (2026-08-19): 23-mer GG-leading windows from fixtures/ttr_mrna.fa and fixtures/epo_mrna.fa"
+    }
+  },
+  "027": {
+    "workflow": "rna_aptamer_design",
+    "params_by_turn": [
+      {
+        "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1mbo.pdb",
+        "chain_id": "A",
+        "aptamer_length": 30,
+        "n_odesign_samples": 5,
+        "reference_point": {
+          "egarps_component": 0.5,
+          "rhofold_component": 0.5,
+          "iptm_component": 0.5
+        }
+      },
+      {
+        "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/6lyz.pdb",
+        "chain_id": "A",
+        "aptamer_length": 35,
+        "n_odesign_samples": 10,
+        "reference_point": {
+          "egarps_component": 0.7,
+          "rhofold_component": 0.3,
+          "iptm_component": 0.5
+        }
+      },
+      {
+        "protein_structure_path": "",
+        "protein_sequence": "MKALIVLGLVLLSVTVQGKVFERCELARTLKRLGMDGYRGISLANWMCLAKWESGYNTRATNYNAGDRSTDYGIFQINSRYWCNDGKTPGAVNACHLSCSALLQDNIADAVACAKRVVRDPQGIRAWVAWRNRCQNRDVRQYVQGCGV",
+        "chain_id": "A",
+        "aptamer_length": 25,
+        "n_odesign_samples": 10,
+        "reference_point": {
+          "egarps_component": 0.7,
+          "rhofold_component": 0.3,
+          "iptm_component": 0.5
+        }
+      },
+      {
+        "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1hao.pdb",
+        "chain_id": "H",
+        "hotspot_residues": "H/46,H/67,H/70,H/72,H/97",
+        "aptamer_length": 15,
+        "n_odesign_samples": 5,
+        "reference_point": {
+          "egarps_component": 0.3,
+          "rhofold_component": 0.7,
+          "iptm_component": 0.5
+        }
+      }
+    ],
+    "constants": {
+      "STRUCT_1MBO": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1mbo.pdb (myoglobin, chain A)",
+      "STRUCT_6LYZ": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/6lyz.pdb (hen egg-white lysozyme, chain A)",
+      "STRUCT_1HAO": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1hao.pdb (human alpha-thrombin, chain H, exosite I/II hotspots — TBA aptamer target, Kd 25 nM)",
+      "PROVENANCE": "batch-B (2026-08-19): three aptamer targets unused by PA_009/PA_020 (RNA-BioBench-Aptamer)"
+    }
+  },
+  "028": {
+    "workflow": "rna_aptamer_design",
+    "params_by_turn": [
+      {
+        "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1ca2.pdb",
+        "chain_id": "A",
+        "navigation": true,
+        "reference_point": {
+          "egarps_component": 0.5,
+          "rhofold_component": 0.5,
+          "iptm_component": 0.5
+        }
+      },
+      {
+        "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/3cna.pdb",
+        "chain_id": "A",
+        "navigation": true,
+        "reference_point": {
+          "egarps_component": 0.3,
+          "rhofold_component": 0.7,
+          "iptm_component": 0.5
+        }
+      }
+    ],
+    "constants": {
+      "STRUCT_1CA2": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1ca2.pdb (carbonic anhydrase II, chain A)",
+      "STRUCT_3CNA": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/3cna.pdb (concanavalin A, chain A)",
+      "PROVENANCE": "batch-B (2026-08-19): GenNav navigation=True production path (workflow v2.1.0) on two fresh targets; PA_020/PA_027 cover navigation=False"
+    }
+  },
+  "029": {
+    "workflow": "rna_small_molecule_interaction",
+    "params_by_turn": [
+      {
+        "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+        "smiles": "CN1C=NC2=C1C(=O)NC(=O)N2C",
+        "scoring_tools": [
+          "rnasmol",
+          "gernabind"
+        ]
+      },
+      {
+        "rna_sequence": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC",
+        "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+        "scoring_tools": [
+          "rnasmol",
+          "gernabind"
+        ]
+      },
+      {
+        "rna_sequence": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC",
+        "smiles": "Nc1nc2[nH]cnc2c1=O",
+        "scoring_tools": [
+          "rnasmol",
+          "gernabind"
+        ]
+      }
+    ],
+    "constants": {
+      "THEO_APTAMER": "GGCGAUACCAGCCGAAAGGCCCUUGGCAGCGUC (PDB 1O15)",
+      "GUANINE_RIBOSWITCH": "GGAUCAUAUAAUCGCGUGGAUAUGGCACGCAAGUUUCUACCGGGCACCGUAAAUGUCCGACUAUGGUC (PDB 1Y27)",
+      "PROVENANCE": "batch-B (2026-08-19): pairs 1/2/6 from external_anchors/small_molecule/pairs.json (theophylline aptamer x theophylline [binder] / caffeine [non-binder], guanine riboswitch x guanine [binder, Kd ~5 nM])"
+    }
+  },
+  "030": {
+    "workflow": "aso_target_screening",
+    "params_by_turn": [
+      {
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",
+        "aso_length": 20,
+        "window_step": 1,
+        "top_n_windows": 10,
+        "binding_evaluation_tool": "rnaup"
+      },
+      {
+        "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",
+        "aso_length": 18,
+        "window_step": 1,
+        "top_n_windows": 10,
+        "binding_evaluation_tool": "rnacofold"
+      },
+      {
+        "target_mrna_filepath": "data/benchmarks/external_anchors/vaccine_mrna/bnt162b2_full.fa",
+        "aso_length": 25,
+        "window_step": 3,
+        "top_n_windows": 20,
+        "binding_evaluation_tool": "rnacofold"
+      }
+    ],
+    "constants": {
+      "TARGET_MRNA": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa (ENST00000397262.5, 639 nt)",
+      "VACCINE_MRNA": "data/benchmarks/external_anchors/vaccine_mrna/bnt162b2_full.fa (BNT162b2 contig, 4175 nt)",
+      "PROVENANCE": "batch-B (2026-08-19)"
+    }
+  },
+  "031": {
+    "workflow": "ires_prediction",
+    "params_by_turn": [
+      {
+        "sequence_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/emcv_5utr.fa",
+        "iresfinder_mode": 2,
+        "window_size": 174,
+        "step_size": 50,
+        "probability_threshold": 0.5,
+        "top_n_candidates": 5,
+        "run_structural_validation": true
+      },
+      {
+        "sequence_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/poliovirus_5utr.fa",
+        "iresfinder_mode": 2,
+        "window_size": 150,
+        "step_size": 30,
+        "probability_threshold": 0.6,
+        "top_n_candidates": 5,
+        "run_structural_validation": true
+      },
+      {
+        "sequence_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/emcv_5utr.fa",
+        "iresfinder_mode": 0,
+        "probability_threshold": 0.5
+      }
+    ],
+    "constants": {
+      "EMCV_5UTR": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/emcv_5utr.fa (840 nt)",
+      "POLIOVIRUS_5UTR": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/poliovirus_5utr.fa (742 nt)",
+      "PROVENANCE": "batch-B (2026-08-19): single-record fixtures extracted from external_anchors/ires/ires_positive.fa — authentic IRES-positive 5'UTRs (first IRES-positive inputs in the PA registry)"
+    }
+  },
+  "032": {
+    "workflow": "rna_tertiary_structure_design",
+    "params_by_turn": [
+      {
+        "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1y26_clean.pdb",
+        "design_tools": "rhodesign",
+        "n_samples_per_tool": 3
+      },
+      {
+        "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1y26_clean.pdb",
+        "secondary_structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1y26_contact_map.npy",
+        "design_tools": "all",
+        "n_samples_per_tool": 5
+      },
+      {
+        "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1mme_clean.pdb",
+        "design_tools": "all",
+        "n_samples_per_tool": 5
+      }
+    ],
+    "constants": {
+      "STRUCT_1Y26": "1y26_clean.pdb (chain X, 71 nt)",
+      "STRUCT_1MME": "1mme_clean.pdb (82 nt)",
+      "PROVENANCE": "batch-B (2026-08-19): structures unused by PA_013 (RNA-BioBench-Platform task 07 set)"
+    }
+  },
+  "033": {
+    "workflow": "mrna_sequence_scoring",
+    "params_by_turn": [
+      {
+        "sequence": "AUGGCCCUGUGGAUGCGCCUCCUGCCCCUGCUGGCGCUGCUGGCCCUCUGGGGACCUGACCCAGCCGCAGCCUUUGUGAACCAACACCUGUGCGGCUCACACCUGGUGGAAGCUCUCUACCUAGUGUGCGGGGAACGAGGCUUCUUCUACACACCCAAGACCCGCCGGGAGGCAGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGCGGGGGCCCUGGUGCAGGCAGCCUGCAGCCCUUGGCCCUGGAGGGGUCCCUGCAGAAGCGUGGCAUUGUGGAACAAUGCUGUACCAGCAUCUGCUCCCUCUACCAGCUGGAGAACUACUGCAACUAG",
+        "fold_tool_name": "predict_rna_secondary_structure",
+        "cai_species": "Homo sapiens"
+      },
+      {
+        "sequences": [
+          "AUGGCCCUGUGGAUGCGCCUCCUGCCCCUGCUGGCGCUGCUGGCCCUCUGGGGACCUGACCCAGCCGCAGCCUUUGUGAACCAACACCUGUGCGGCUCACACCUGGUGGAAGCUCUCUACCUAGUGUGCGGGGAACGAGGCUUCUUCUACACACCCAAGACCCGCCGGGAGGCAGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGCGGGGGCCCUGGUGCAGGCAGCCUGCAGCCCUUGGCCCUGGAGGGGUCCCUGCAGAAGCGUGGCAUUGUGGAACAAUGCUGUACCAGCAUCUGCUCCCUCUACCAGCUGGAGAACUACUGCAACUAG",
+          "AUGAGUAAAGGAGAAGAACUUUUCACUGGAGUUGUCCCAAUUCUUGUUGAAUUAGAUGGCGAUGUUAAUGGGCAAAAAUUCUCUGUCAGUGGAGAGGGUGAAGGUGAUGCAACAUACGGAAAACUUACCCUUAAAUUUAUUUGCACUACUGGGAAGCUACCUGUUCCAUGGCCAACACUUGUCACUACUUUCUCUUAUGGUGUUCAAUGCUUUUCAAGAUACCCAGAUCAUAUGAAACAGCAUGACUUUUUCAAGAGUGCCAUGCCCGAAGGUUAUGUACAGGAAAGAACUAUAUUUUACAAAGAUGACGGGAACUACAAGACACGUGCUGAAGUCAAGUUUGAAGGUGAUACCCUUGUUAAUAGAAUCGAGUUAAAAGGUAUUGAUUUUAAAGAAGAUGGAAACAUUCUUGGACACAAAAUGGAAUACAACUAUAACUCACAUAAUGUAUACAUCAUGGCAGACAAACCAAAGAAUGGAAUCAAAGUUAACUUCAAAAUUAGACACAACAUUAAAGAUGGAAGCGUUCAAUUAGCAGACCAUUAUCAACAAAAUACUCCAAUUGGCGAUGGCCCUGUCCUUUUACCAGACAACCAUUACCUGUCCACACAAUCUGCCCUUUCCAAAGAUCCCAACGAAAAGAGAGAUCACAUGAUCCUUCUUGAGUUUGUAACAGCUGCUGGGAUUACACAUGGCAUGGAUGAACUAUACAAAUAA"
+        ],
+        "fold_tool_name": "predict_rna_secondary_structure",
+        "cai_species": "Mus musculus"
+      },
+      {
+        "sequences": [
+          "AUGGCCCUGUGGAUGCGCCUCCUGCCCCUGCUGGCGCUGCUGGCCCUCUGGGGACCUGACCCAGCCGCAGCCUUUGUGAACCAACACCUGUGCGGCUCACACCUGGUGGAAGCUCUCUACCUAGUGUGCGGGGAACGAGGCUUCUUCUACACACCCAAGACCCGCCGGGAGGCAGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGCGGGGGCCCUGGUGCAGGCAGCCUGCAGCCCUUGGCCCUGGAGGGGUCCCUGCAGAAGCGUGGCAUUGUGGAACAAUGCUGUACCAGCAUCUGCUCCCUCUACCAGCUGGAGAACUACUGCAACUAG",
+          "AUGAGUAAAGGAGAAGAACUUUUCACUGGAGUUGUCCCAAUUCUUGUUGAAUUAGAUGGCGAUGUUAAUGGGCAAAAAUUCUCUGUCAGUGGAGAGGGUGAAGGUGAUGCAACAUACGGAAAACUUACCCUUAAAUUUAUUUGCACUACUGGGAAGCUACCUGUUCCAUGGCCAACACUUGUCACUACUUUCUCUUAUGGUGUUCAAUGCUUUUCAAGAUACCCAGAUCAUAUGAAACAGCAUGACUUUUUCAAGAGUGCCAUGCCCGAAGGUUAUGUACAGGAAAGAACUAUAUUUUACAAAGAUGACGGGAACUACAAGACACGUGCUGAAGUCAAGUUUGAAGGUGAUACCCUUGUUAAUAGAAUCGAGUUAAAAGGUAUUGAUUUUAAAGAAGAUGGAAACAUUCUUGGACACAAAAUGGAAUACAACUAUAACUCACAUAAUGUAUACAUCAUGGCAGACAAACCAAAGAAUGGAAUCAAAGUUAACUUCAAAAUUAGACACAACAUUAAAGAUGGAAGCGUUCAAUUAGCAGACCAUUAUCAACAAAAUACUCCAAUUGGCGAUGGCCCUGUCCUUUUACCAGACAACCAUUACCUGUCCACACAAUCUGCCCUUUCCAAAGAUCCCAACGAAAAGAGAGAUCACAUGAUCCUUCUUGAGUUUGUAACAGCUGCUGGGAUUACACAUGGCAUGGAUGAACUAUACAAAUAA"
+        ],
+        "fold_tool_name": "predict_rna_secondary_structure_with_linearfold",
+        "cai_species": "Homo sapiens"
+      }
+    ],
+    "constants": {
+      "INSULIN_WT_CDS_RNA": "AUGGCCCUGUGGAUGCGCCUCCUGCCCCUGCUGGCGCUGCUGGCCCUCUGGGGACCUGAC... (333 nt)",
+      "GFP_WT_CDS_RNA": "AUGAGUAAAGGAGAAGAACUUUUCACUGGAGUUGUCCCAAUUCUUGUUGAAUUAGAUGGC... (717 nt)",
+      "PROVENANCE": "batch-B (2026-08-19): wild-type CDS (T->U transcribed) from external_anchors/wt_cds/Insulin.fa and GFP.fa"
+    }
+  },
+  "034": {
+    "workflow": "mrna_cds_design",
+    "params_by_turn": [
+      {
+        "protein_sequence": "MYRMQLLSCIALSLALVTNSAPTSSSTKKTQLQLEHLLLDLQMILNGINNYKNPKLTRMLTFKFYMPKKATELKHLQCLEEELKPLEEVLNLAQSKNFHLRPRDLISNINVIVLELKGSETTFMCEYADETATIVEFLNRWITFCQSIISTLT",
+        "design_tool": "lineardesign",
+        "lambda_value": 1.0,
+        "cai_species": "Homo sapiens"
+      },
+      {
+        "protein_sequence": "MALTFALLVALLVLSCKSSCSVGCDLPQTHSLGSRRTLMLLAQMRRISLFSCLKDRHDFGFPQEEFGNQFQKAETIPVLHEMIQQIFNLFSTKDSSAAWDETLLDKFYTELYQQLNDLEACVIQGVGVTETPLMKEDSILAVRKYFQRITLYLKEKKYSPCAWEVVRAEIMRSFSLSTNLQESLRSKE",
+        "design_tool": "all",
+        "lambda_value": 4.0,
+        "cai_species": "Homo sapiens"
+      },
+      {
+        "protein_sequence": "MYRMQLLSCIALSLALVTNSAPTSSSTKKTQLQLEHLLLDLQMILNGINNYKNPKLTRMLTFKFYMPKKATELKHLQCLEEELKPLEEVLNLAQSKNFHLRPRDLISNINVIVLELKGSETTFMCEYADETATIVEFLNRWITFCQSIISTLT",
+        "design_tool": "lineardesign",
+        "lambda_value": 2.0,
+        "cai_species": "Escherichia coli K-12"
+      }
+    ],
+    "constants": {
+      "IL2_PROTEIN": "MYRMQLLSCIALSLALVTNSAPTSSSTKKTQLQLEHLLLDLQMILNGINNYKNPKLTRMLTFKFYMPKKATELKHLQCLEEELKPLEEVLNLAQSKNFHLRPRDLISNINVIVLELKGSETTFMCEYADETATIVEFLNRWITFCQSIISTLT",
+      "IFNA2_PROTEIN": "MALTFALLVALLVLSCKSSCSVGCDLPQTHSLGSRRTLMLLAQMRRISLFSCLKDRHDFGFPQEEFGNQFQKAETIPVLHEMIQQIFNLFSTKDSSAAWDETLLDKFYTELYQQLNDLEACVIQGVGVTETPLMKEDSILAVRKYFQRITLYLKEKKYSPCAWEVVRAEIMRSFSLSTNLQESLRSKE",
+      "PROVENANCE": "batch-B (2026-08-19): IL-2 (153 aa) and IFN-alpha-2a (188 aa) from RNA-BioBench-FullLength-mRNA; first PA appearance of an E. coli K-12 CAI species"
+    }
+  },
+  "035": {
+    "workflow": "rna_secondary_structure_design",
+    "params_by_turn": [
+      {
+        "target_structure": "..((((((((....)))))))).",
+        "temp_c": 37.0,
+        "repeats": 10,
+        "num_invocations": 3
+      },
+      {
+        "target_structure": "..((((((((....)))))))).",
+        "start_sequence": "NNGGGGGGGGNNNNCCCCCCCCN",
+        "temp_c": 37.0,
+        "repeats": 10,
+        "num_invocations": 5
+      },
+      {
+        "target_structure": "(((....)))..(((....)))",
+        "temp_c": 42.0,
+        "repeats": 10,
+        "num_invocations": 5
+      }
+    ],
+    "constants": {
+      "TARGET_STEM8": "..((((((((....)))))))). (22 nt, 8-bp stem)",
+      "TARGET_TWO_HAIRPIN": "(((....)))..(((....))) (22 nt, two hairpins)",
+      "PROVENANCE": "batch-B (2026-08-19)"
+    }
+  },
+  "036": {
+    "workflow": "full_length_mrna_design",
+    "params_by_turn": [
+      {
+        "protein_sequence": "MATGSRTSLLLAFGLLCLPWLQEGSAFPTIPLSRLFDNAMLRAHRLHQLAFDTYQEFEEAYIPKEQKYSFLQNPQTSLCFSESIPTPSNREETQQKSNLELLRISLLLIQSWLEPVQFLRSVFANSLVYGASDSNVYDLLKDLEEGIQTLMGRLEDGSPRTGQIFKQTYSKFDTNSHNDDALLKNYGLLYCFRKDMDKVETFLRIVQCRSVEGSCGF",
+        "design_tool": "lineardesign",
+        "lambda_value": 3.0,
+        "cai_species": "Homo sapiens",
+        "utr_mode": "long"
+      },
+      {
+        "protein_sequence": "MEDAKNIKKGPAPFYPLEDGTAGEQLHKAMKRYALVPGTIAFTDAHIEVNITYAEYFEMSVRLAEAMKRYGLNTNHRIVVCSENSLQFFMPVLGALFIGVAVAPANDIYNERELLNSMNISQPTVVFVSKKGLQKILNVQKKLPIIQKIIIMDSKTDYQGFQSMYTFVTSHLPPGFNEYDFVPESFDRDKTIALIMNSSGSTGLPKGVALPHRTACVRFSHARDPIFGNQIIPDTAILSVVPFHHGFGMFTTLGYLICGFRVVLMYRFEEELFLRSLQDYKIQSALLVPTLFSFFAKSTLIDKYDLSNLHEIASGGAPLSKEVGEAVAKRFHLPGIRQGYGLTETTSAILITPEGDDKPGAVGKVVPFFEAKVVDLDTGKTLGVNQRGELCVRGPMIMSGYVNNPEATNALIDKDGWLHSGDIAYWDEDEHFFIVDRLKSLIKYKGYQVAPAELESILLQHPNIFDAGVAGLPDDDAGELPAAVVVLEHGKTMTEKEIVDYVASQVTTAKKLRGGVVFVDEVPKGLTGKLDARKIREILIKAKKGGKSKL",
+        "design_tool": "lineardesign",
+        "lambda_value": 4.0,
+        "cai_species": "Homo sapiens",
+        "utr_mode": "short"
+      },
+      {
+        "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+        "design_tool": "all",
+        "lambda_value": 2.0,
+        "cai_species": "Mus musculus",
+        "utr_mode": "short"
+      }
+    ],
+    "constants": {
+      "GH_PROTEIN": "MATGSRTSLLLAFGLLCLPWLQEGSAFPTIPLSRLFDNAMLRAHRLHQLAFDTYQEFEEAYIPKEQKYSFLQNPQTSLCFSESIPTPSNREETQQKSNLELLRISLLLIQSWLEPVQFLRSVFANSLVYGASDSNVYDLLKDLEEGIQTLMGRLEDGSPRTGQIFKQTYSKFDTNSHNDDALLKNYGLLYCFRKDMDKVETFLRIVQCRSVEGSCGF",
+      "LUC_PROTEIN": "MEDAKNIKKGPAPFYPLEDGTAGEQLHKAMKRYALVPGTIAFTDAHIEVNITYAEYFEMSVRLAEAMKRYGLNTNHRIVVCSENSLQFFMPVLGALFIGVAVAPANDIYNERELLNSMNISQPTVVFVSKKGLQKILNVQKKLPIIQKIIIMDSKTDYQGFQSMYTFVTSHLPPGFNEYDFVPESFDRDKTIALIMNSSGSTGLPKGVALPHRTACVRFSHARDPIFGNQIIPDTAILSVVPFHHGFGMFTTLGYLICGFRVVLMYRFEEELFLRSLQDYKIQSALLVPTLFSFFAKSTLIDKYDLSNLHEIASGGAPLSKEVGEAVAKRFHLPGIRQGYGLTETTSAILITPEGDDKPGAVGKVVPFFEAKVVDLDTGKTLGVNQRGELCVRGPMIMSGYVNNPEATNALIDKDGWLHSGDIAYWDEDEHFFIVDRLKSLIKYKGYQVAPAELESILLQHPNIFDAGVAGLPDDDAGELPAAVVVLEHGKTMTEKEIVDYVASQVTTAKKLRGGVVFVDEVPKGLTGKLDARKIREILIKAKKGGKSKL",
+      "INSULIN_PROTEIN": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+      "PROVENANCE": "batch-B (2026-08-19): growth hormone (217 aa), firefly luciferase (550 aa), insulin (110 aa) from RNA-BioBench-FullLength-mRNA"
+    }
   }
 }

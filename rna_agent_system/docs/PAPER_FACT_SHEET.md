@@ -22,7 +22,8 @@
 | 21 microservices, ports 8003–8024 | `microservices/` contains 21 service directories (recounted 2026-08-18; 22 before the codonw-slim service removal) | VERIFIED |
 | 11 workflows | `docs/ARCHITECTURE.md` §Layer 2 ("All 11 workflows"); `agent_core/workflows/` has 11 workflow classes (mrna_cds_design, full_length_mrna_design, mrna_sequence_scoring, sirna_design, sgrna_design, aso_target_screening, ires_prediction, rna_aptamer_design, rna_secondary_structure_design, rna_tertiary_structure_design, rna_small_molecule_interaction) | VERIFIED |
 | "20 external-repo **submodules**" | `rna_agent_system/external_repos/` contains **20 directories**, but `.gitmodules` registers only **17 submodule paths** (EGARPS, Protenix, RiboDiffusion are plain directories, not registered submodules) | **MISMATCH → correct to "20 external repos vendored under `external_repos/`, 17 of them registered git submodules"** |
-| PA regression 19 tasks (006–024) | `rna_agent_system/pa_benchmarks.json` keys: '006'…'024' = 19 tasks | VERIFIED |
+| PA regression 31 tasks (006–036) | `rna_agent_system/pa_benchmarks.json` keys: '006'…'036' = 31 tasks (006–024 original batch; 025–036 the 2026-08-19 fresh-data batch B incl. two GenNav `navigation=true` entries) | VERIFIED |
+| Batch-B fresh-data regression 12/12 | `experiments/results/pa_regression_batchB_2026-08-19/summary.tsv`: 12 rows, exit_code 0, failed_turns 0 (PA_035 row = post-fix rerun, first attempt documented in `VERIFICATION.md`); audit trail 4,106 → 5,747 events; both navigation runs 5/5 × 3 profiles no-degrade (`gennav_{1ca2,3cna}_navigation_result.json`: raw_spent 47/48 and 35/48 early-stop) | VERIFIED |
 
 ---
 
