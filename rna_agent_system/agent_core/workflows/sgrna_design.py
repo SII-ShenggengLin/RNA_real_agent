@@ -4,7 +4,7 @@ Pipeline: CRGPT handle design → CRGPT re-score + optional CRISOT off-target
 score → scoring (nn_score + crisot_score) → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SgRnaDesignWorkflow INTERFACE LOCK (v1.2.0; v1.1.0 + optional off_target_sequences / weight_crisot_specificity input fields and the crisot_specificity scoring component — additive, default-off) —— 禁止单方面变更              ║
+║  SgRnaDesignWorkflow INTERFACE LOCK (v1.3.0; v1.2.0 ASF reference-point ranking over nn/crisot/crisot_specificity components (weight_* renormalized as ASF weights), total_score becomes a diagnostic; v1.2.0; v1.1.0 + optional off_target_sequences / weight_crisot_specificity input fields and the crisot_specificity scoring component — additive, default-off) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sgrna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
@@ -47,6 +47,7 @@ from agent_core.file_manager import read_sequence, save_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflow_run_storage import build_public_summary
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.multi_objective import apply_reference_point_ranking
 from agent_core.workflows.evaluators import (
     CRGPTEvaluator,
     CRISOTEvaluator,
@@ -461,7 +462,46 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
         if not candidates:
             return self._empty_result("No sgRNA handle candidates produced.")
 
-        ranked = sort_candidates_by_score(candidates, score_key="total_score", descending=True)
+        # ASF reference-point ranking over the per-objective components
+        # (replaces the weighted-sum ordering; total_score stays as a reported
+        # diagnostic — ASF audit 2026-08-20). 0.0-filled components whose
+        # source metric is absent are re-marked None so the shared layer
+        # imputes pool-worst instead of distorting the normalization.
+        _OBJECTIVES = ("nn_component", "crisot_component", "crisot_specificity_component")
+        _METRIC_OF = {
+            "nn_component": ("nn_score", "design_nn_score"),
+            "crisot_component": ("crisot_score",),
+            "crisot_specificity_component": ("crisot_specificity",),
+        }
+        for c in candidates:
+            mb = c.metadata.get("metrics_bundle", {})
+            for comp, metric_keys in _METRIC_OF.items():
+                if c.scores.get(comp) is not None and all(mb.get(k) is None for k in metric_keys):
+                    c.scores[comp] = None
+        inp = self._workflow_state.get("_sgrna_input")
+        asf_weights = {
+            "nn_component": float(getattr(inp, "weight_nn_score", 0.5)) if inp else 0.5,
+            "crisot_component": float(getattr(inp, "weight_crisot", 0.5)) if inp else 0.5,
+            "crisot_specificity_component": (
+                float(getattr(inp, "weight_crisot_specificity", 0.3)) if inp else 0.3
+            ),
+        }
+        ranking = apply_reference_point_ranking(
+            candidates, list(_OBJECTIVES), None,
+            maximize={key: True for key in _OBJECTIVES},
+            weights=asf_weights,
+        )
+        if ranking.dropped_dims:
+            _LOGGER.info(
+                "sgrna_asf_ranking_note dropped_dims(unmeasured)=%s", ranking.dropped_dims
+            )
+
+        ranked = sorted(
+            candidates, key=lambda c: ranking.asf_map.get(c.id, float("inf"))
+        )
+        for i, c in enumerate(ranked, start=1):
+            c.rank = i
+            c.scores["asf_distance"] = ranking.asf_map.get(c.id)
         best = ranked[0] if ranked else None
 
         detail_lines: list[str] = []
@@ -484,11 +524,13 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
             else:
                 parts.append("CRISOT=N/A")
             parts.append(f"total_score={scores.get('total_score', 0.0):.4f}")
+            asf = scores.get("asf_distance")
+            parts.append(f"asf={asf:.4f}" if asf is not None else "asf=N/A")
             detail_lines.append(" | ".join(parts))
 
         summary_parts = [
             f"candidates={len(ranked)}",
-            f"best_total_score={best.scores.get('total_score') if best else None}",
+            f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
             "---",
             *detail_lines,
         ]

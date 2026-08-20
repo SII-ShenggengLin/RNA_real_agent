@@ -392,7 +392,8 @@ def test_score_candidate():
     scores = wf.score(metrics)
     assert scores["rhofold_component"] == pytest.approx(0.80)
     assert scores["rmsd_component"] == pytest.approx(1.0 - 1.5 / 5.0)
-    expected_total = 0.5 * 0.80 + 0.5 * (1.0 - 1.5 / 5.0)
+    # Defaults since v1.2.0: weight_rhofold 0.3, weight_rmsd 0.5.
+    expected_total = 0.3 * 0.80 + 0.5 * (1.0 - 1.5 / 5.0)
     assert scores["total_score"] == pytest.approx(expected_total, abs=1e-6)
     # Other components should not exist in scores dict
     assert "tm_score_component" not in scores
@@ -480,3 +481,99 @@ def test_full_pipeline_mocked():
     assert result.best_candidate is not None
     assert len(result.all_candidates) >= 1
     assert result.best_candidate.scores.get("total_score", 0.0) > 0.0
+
+
+def _tm_scenario_candidates():
+    """Audit flip scenario: X has the highest pLDDT with mediocre native
+    closeness; Z has pool-worst pLDDT but the best RMSD and TM-score."""
+
+    def _mk(source, plddt, rmsd, tm):
+        return Candidate(
+            sequence="AUGCGCAUGCGCAUGCGCAUGCGCAUGCGC",
+            sequence_type="rna",
+            source=source,
+            scores={
+                "rhofold_component": plddt / 100.0,
+                "rmsd_component": max(0.0, 1.0 - rmsd / 5.0),
+                "tm_component": tm,
+            },
+            metadata={
+                "metrics_bundle": {
+                    "gc_content": 0.5,
+                    "rhofold_mean_plddt": plddt,
+                    "alignment_rmsd": rmsd,
+                    "alignment_tm_score": tm,
+                }
+            },
+        )
+
+    return [
+        _mk("X_high_plddt", plddt=78.0, rmsd=4.0, tm=0.30),
+        _mk("Y_saturated", plddt=75.0, rmsd=6.0, tm=0.20),
+        _mk("Z_native_close", plddt=60.0, rmsd=1.0, tm=0.70),
+    ]
+
+
+def test_rank_and_format_tm_dimension_breaks_ties():
+    """With pLDDT and RMSD uninformative (ties), the TM dimension decides."""
+    from agent_core.workflow_models import Candidate
+
+    reg = _make_registry_for_evaluation()
+    wf = RnaTertiaryStructureDesignWorkflow(reg)
+
+    def _mk(source, plddt, rmsd, tm):
+        return Candidate(
+            sequence="AUGCGCAUGCGCAUGCGCAUGCGCAUGCGC",
+            sequence_type="rna",
+            source=source,
+            scores={
+                "rhofold_component": plddt / 100.0,
+                "rmsd_component": max(0.0, 1.0 - rmsd / 5.0),
+                "tm_component": tm,
+            },
+            metadata={
+                "metrics_bundle": {
+                    "gc_content": 0.5,
+                    "rhofold_mean_plddt": plddt,
+                    "alignment_rmsd": rmsd,
+                    "alignment_tm_score": tm,
+                }
+            },
+        )
+
+    candidates = [
+        _mk("A_tm_low", plddt=75.0, rmsd=3.0, tm=0.30),
+        _mk("B_tm_high", plddt=75.0, rmsd=3.0, tm=0.60),
+    ]
+    result = wf.rank_and_format(candidates)
+    assert result.best_candidate is not None
+    assert result.best_candidate.source == "B_tm_high"
+
+
+def test_rank_and_format_default_closeness_weights_favor_native_closest():
+    """The audit flip scenario under the production defaults: the default
+    weights (0.3/0.5/0.5 since v1.2.0) put the two reference-based
+    closeness dimensions above model self-confidence, so the native-closest
+    candidate Z wins. Forcing uniform weights (0.5/0.5/0.5) reproduces the
+    documented flip — pool-relative min-max makes pool-worst pLDDT a full
+    Chebyshev deficit that overwhelms two closeness votes at equal weight."""
+    from types import SimpleNamespace
+
+    reg = _make_registry_for_evaluation()
+
+    # Production defaults (weight_rhofold=0.3 < 0.5/0.5): Z wins.
+    wf = RnaTertiaryStructureDesignWorkflow(reg)
+    result = wf.rank_and_format(_tm_scenario_candidates())
+    assert result.best_candidate is not None
+    assert result.best_candidate.source == "Z_native_close"
+    asf = {c.source: c.scores["asf_distance"] for c in result.all_candidates}
+    assert asf["Z_native_close"] < asf["X_high_plddt"]
+
+    # Uniform thirds (explicit 0.5/0.5/0.5): the flip returns — documented.
+    wf2 = RnaTertiaryStructureDesignWorkflow(reg)
+    wf2._workflow_state["_tertiary_design_input"] = SimpleNamespace(
+        weight_rhofold=0.5, weight_rmsd=0.5, weight_tm_score=0.5
+    )
+    result2 = wf2.rank_and_format(_tm_scenario_candidates())
+    assert result2.best_candidate is not None
+    assert result2.best_candidate.source == "X_high_plddt"

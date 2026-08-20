@@ -780,7 +780,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         kind=ToolKind.compute,
 
         display_name="ViennaRNA duplex cofold (siRNA sense/antisense)",
-        version="0.4.0-port8003",
+        version="0.5.0-port8003",
         source="https://github.com/ViennaRNA/ViennaRNA",
         transport=ToolTransport.http,
         endpoint="http://127.0.0.1:8003/sirna-duplex",

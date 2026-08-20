@@ -1,7 +1,7 @@
 # Change Log
 
 > **Scope**: locked interface changes and major workflow introductions.
-> **Last updated**: 2026-08-19
+> **Last updated**: 2026-08-20
 
 > **History policy (2026-08-18)**: this log now records only the current
 > interface state and the most recent change era. The detailed per-day ledger
@@ -9,6 +9,97 @@
 > experimental arc (what was tried, what was falsified, with evidence
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
+
+## 2026-08-20 (b) — ASF audit fixes + shared ranking layer generalized to five workflows
+
+User-directed audit of the Achievement Scalarizing Function (ASF) ranking
+strategy (the ordering mechanism of the flagship workflows) found four
+defects; all fixed, and the (now single) implementation promoted to the
+default ranking layer of every genuinely multi-objective workflow. Full
+rationale and policy: [`DECISIONS.md`](DECISIONS.md) (n).
+
+- **Fixed (ranking-fairness)**: a per-candidate *missing* objective used to
+  be omitted from that candidate's Chebyshev max — omission can only lower
+  ASF, so per-candidate evaluation failures were *rewarded* (extreme case: a
+  candidate measured on only its champion dimension could win with ASF 0).
+  Missing dimensions now impute at the measured pool-worst value; imputation
+  uses the measured minimum so it no longer distorts the min-max
+  normalization of measured candidates. The aptamer/siRNA 0.0-literal fills
+  were replaced by `None` + the same imputation.
+- **Fixed (semantics)**: a partial user `reference_point` silently collapsed
+  the ranking onto the supplied subset; it still restricts the ranking but is
+  now flagged (`asf_ranking_note` in the summary + warning log). Pool-wide
+  unmeasured dimensions (CapGate-enforced oracle blocks, optional evaluators
+  off) drop for everyone equally and are reported the same way.
+- **Deduplicated**: the ~100-line ASF loop existed twice (full-length mRNA +
+  aptamer, line-identical); both now call
+  `workflows/multi_objective.py::apply_reference_point_ranking`.
+- **Generalized**: `SirnaDesignWorkflow` (v1.2.0; ASF over
+  efficiency/specificity, Borda ranks become diagnostics),
+  `SgRnaDesignWorkflow` (v1.3.0; ASF over nn/crisot/crisot_specificity,
+  existing `weight_*` inputs renormalized as ASF weights),
+  `RnaTertiaryStructureDesignWorkflow` (v1.1.0; ASF over
+  rhofold/rmsd; RMSD drops pool-wide in de-novo runs). Score functions and
+  all output keys unchanged (`total_score` etc. remain reported diagnostics);
+  single-objective / n=1 / domain-formula workflows intentionally not
+  converted (cds combined score, sequence scoring, IRES, ASO, secondary
+  structure, small molecule).
+- **Tests**: 10 new shared-layer regression tests (imputation parity with
+  measured pool-worst, partial-ref flagging, pool-wide dim drop, weight
+  renormalization, utopian balanced-preference, degradation edges); suite
+  506 passed (baseline 496), all existing pins green.
+- **Docs**: WORKFLOWS.md §2 shared ASF ranking policy + per-workflow ranking
+  notes; INTERFACE_LOCKS.md §10/§11/§12/§14/§15 updated with bumped versions;
+  PAPER_DRAFT.md Methods gains the ASF description.
+- **Follow-up (same day, post-audit of the three new ASF workflows)**:
+  (i) siRNA now **ranks the full passing pool before truncating** to
+  `candidate_count` — the pre-existing truncate-then-rank order could drop
+  the pool's best window beyond position N in generation order before it was
+  ever ranked (regression test pins the surfacing case);
+  (ii) tertiary structure gains the **TM-score ranking dimension**
+  (`tm_component`, injected at ranking time from the alignment TM-score;
+  new additive `weight_tm_score` input; lock v1.2.0) — TM stays
+  informative where RMSD saturates ≥ 5 Å;
+  (iii) tertiary **default weights rebalanced to 0.3/0.5/0.5**
+  (`weight_rhofold` below the closeness weights) — the audit experiment
+  showed uniform thirds let a pLDDT champion bury the native-closest
+  candidate under pool-relative min-max; the defaults now implement the
+  documented guidance;
+  (iv) **siRNA thermodynamic end asymmetry** (Khvorova 2003 / Schwarz 2003):
+  the sirna-duplex service endpoint (v0.5.0) now also returns the terminal
+  5-bp nearest-neighbour end stabilities and
+  `asymmetry = ΔG(antisense 5′) − ΔG(sense 5′)` (higher = preferential
+  guide loading; RNAlib path with RNAeval CLI fallback, zero additional
+  folding), the tool wrapper passes the additive keys through
+  (older-service tolerant), and `asymmetry_component` joins the siRNA ASF as
+  a third dimension (lock v1.3.0; linear map −3→0 / 0→0.5 / +3→1; drops
+  pool-wide without measurements).
+
+## 2026-08-20 — paper_v5 figure rebuild (Nature Methods conventions, survey-driven)
+
+User-directed figure programme for the manuscript. A systematic survey of
+seven Nature/Science agent-system papers (`relevant_references/`; inventory in
+[`REFERENCE_FIGURE_SURVEY.md`](REFERENCE_FIGURE_SURVEY.md)) fixed the design
+vocabulary: Fig 1 architecture + five results figures of 9 panels each, muted
+Morandi palette with a strict arm-to-colour code, Arial throughout, per-paper
+recurring panel types (capability heatmaps with printed values, paired
+discordance mosaics, delivery maps, audit telemetry, annotated iteration arcs).
+
+- **New figure set**: `experiments/plots/paper_v5/` — one script per panel
+  (51 panels) + shared `style.py` / `data.py` / `schematic.py`; `assemble.py`
+  composes vector PDFs + 450-dpi PNG proofs and draws panel letters at
+  assembly time only. Plan: [`FIGURE_PLAN_V5.md`](FIGURE_PLAN_V5.md); build
+  and QA recipes in the directory `README.md`.
+- **Objective QA gate**: `qa_bounds.py` asserts every text/tick/title artist
+  sits inside its figure (catches clipping deterministically); all 51 panels
+  pass, plus per-figure vision-model checks (overlap, palette, letters).
+- **Panels re-derive numbers from retained evidence** — every quantitative
+  panel reads `experiments/results/` verdict files or the live
+  `workspace/audit/platform_audit.jsonl` (5,747 events: 4,530 tool calls +
+  1,217 gate decisions). Two documented exceptions carry provenance comments
+  (RNAsmol pre-fix AUROCs; E11 simulation P values).
+- `docs/PAPER_DRAFT.md` bumped to v4.4: panel references updated to the v5
+  lettering (Fig 2g→h/2h→i, 3f→h, 3g→f, 3h→i, 4g→h, Fig 1b/c remapped).
 
 ## 2026-08-19 (batch-B) — fresh-data full-platform re-verification + session-stamped audit trail
 

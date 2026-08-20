@@ -43,6 +43,7 @@ _RNAFOLD_EXE = shutil.which("RNAfold")
 _RNACOFOLD_EXE = shutil.which("RNAcofold")
 _RNAUP_EXE = shutil.which("RNAup")
 _RNAPLFOLD_EXE = shutil.which("RNAplfold")
+_RNAEVAL_EXE = shutil.which("RNAeval")
 _RNAINVERSE_EXE = shutil.which("RNAinverse")
 
 # Regex for RNAfold / RNAcofold stdout structure line.
@@ -134,6 +135,12 @@ class SirnaDuplexResponse(BaseModel):
     model: str = "ViennaRNA-RNAcofold"
     ensemble_free_energy: Optional[float] = None
     equilibrium_concentrations: Optional[Dict[str, float]] = None
+    # End-thermodynamic asymmetry (additive, v0.5.0); None when no evaluation
+    # backend is available (older service instances simply omit these keys).
+    dg_sense_5p_end_kcal_per_mol: Optional[float] = None
+    dg_antisense_5p_end_kcal_per_mol: Optional[float] = None
+    asymmetry_kcal_per_mol: Optional[float] = None
+    asymmetry_convention: Optional[str] = None
 
 
 class RnaUpRequest(BaseModel):
@@ -620,6 +627,61 @@ def _cofold_duplex(sense: str, antisense: str, params: ViennaModelParams, constr
     return _cofold_duplex_cli(sense, antisense, params, constraint, shape_file, shape_method, concentrations, partfunc, conc_A, conc_B)
 
 
+def _eval_miniduplex_kcal(seq_a: str, seq_b: str, params: ViennaModelParams) -> Optional[float]:
+    """Energy (kcal/mol) of the fully paired mini-duplex ``seq_a&seq_b``.
+
+    Nearest-neighbour table evaluation only (no folding). Both termini of an
+    end-stability comparison are evaluated with this identical method, so the
+    systematic initiation terms cancel in the difference. RNAlib first,
+    RNAeval CLI fallback, ``None`` when neither backend is available.
+    """
+    k = len(seq_a)
+    seq = f"{seq_a}&{seq_b}"
+    struct = "(" * k + "&" + ")" * k
+    if _HAS_RNALIB:
+        try:
+            return float(RNA.eval_structure_simple(seq, struct, temperature=params.temp_c))
+        except Exception:
+            pass
+    if _RNAEVAL_EXE:
+        try:
+            out, _err, rc = _run_cli(
+                [_RNAEVAL_EXE, "--temp", str(params.temp_c)],
+                stdin=f"{seq}\n{struct}\n",
+            )
+            if rc == 0:
+                m = re.search(r"\(\s*(-?\d+\.?\d*(?:[eE][+-]?\d+)?)\s*\)", out)
+                if m:
+                    return float(m.group(1))
+        except Exception:
+            return None
+    return None
+
+
+def _duplex_end_asymmetry(
+    sense: str, antisense: str, params: ViennaModelParams, end_nt: int = 5
+) -> Tuple[Optional[float], Optional[float], Optional[float]]:
+    """Thermodynamic end asymmetry of a (near-fully-paired) siRNA duplex.
+
+    Classical RISC-loading criterion (Khvorova et al. 2003; Schwarz et al.
+    2003): the strand whose 5' end is less stable is preferentially loaded as
+    the guide. Returns ``(dg_sense_5p, dg_antisense_5p, asymmetry)`` where
+    each end dG is the NN evaluation of the terminal ``end_nt`` base pairs
+    (5 nt of each strand, antiparallel) and
+    ``asymmetry = dg_antisense_5p - dg_sense_5p``; **higher = better** (the
+    antisense 5' end is the less stable one, so the antisense strand wins
+    strand selection). ``None`` components when the strands are shorter than
+    ``end_nt`` or no evaluation backend is available.
+    """
+    if len(sense) < end_nt or len(antisense) < end_nt:
+        return None, None, None
+    dg_sense_5p = _eval_miniduplex_kcal(sense[:end_nt], antisense[-end_nt:], params)
+    dg_anti_5p = _eval_miniduplex_kcal(antisense[:end_nt], sense[-end_nt:], params)
+    if dg_sense_5p is None or dg_anti_5p is None:
+        return None, None, None
+    return dg_sense_5p, dg_anti_5p, round(dg_anti_5p - dg_sense_5p, 4)
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # RNAup
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -919,6 +981,7 @@ def sirna_duplex(payload: SirnaDuplexRequest) -> SirnaDuplexResponse:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"Duplex cofold failed: {exc}") from exc
+    dg_sense_5p, dg_anti_5p, asymmetry = _duplex_end_asymmetry(sense, anti, payload.params)
     return SirnaDuplexResponse(
         sense=sense,
         antisense=anti,
@@ -928,6 +991,13 @@ def sirna_duplex(payload: SirnaDuplexRequest) -> SirnaDuplexResponse:
         backend=result["backend"],
         ensemble_free_energy=result.get("ensemble_free_energy"),
         equilibrium_concentrations=result.get("equilibrium_concentrations"),
+        dg_sense_5p_end_kcal_per_mol=dg_sense_5p,
+        dg_antisense_5p_end_kcal_per_mol=dg_anti_5p,
+        asymmetry_kcal_per_mol=asymmetry,
+        asymmetry_convention=(
+            "asymmetry = dg_antisense_5p - dg_sense_5p (terminal 5 bp, NN eval); higher = better"
+            if asymmetry is not None else None
+        ),
     )
 
 

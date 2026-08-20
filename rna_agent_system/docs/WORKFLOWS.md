@@ -187,6 +187,31 @@ ASF = max_i { w_i * (r_i - s_i) } + rho * sum_i { w_i * |r_i - s_i| }
 
 User-facing valid `reference_point` keys: `utr5_mrl`, `utr3_stability`, `full_mfe_score`. The CDS objective is supplied via `target_cds_mfe` and `target_cds_cai`. Weights default to equal over the specified dimensions.
 
+**Shared ASF ranking policy (2026-08-20 audit)**
+
+All ASF-ranking workflows share one implementation
+(`workflows/multi_objective.py::apply_reference_point_ranking`) with these
+semantics:
+
+- **Per-candidate missing dimension → pool-worst imputation.** Omitting a
+  dimension from a candidate's Chebyshev max can only lower its ASF, so the
+  pre-2026-08-20 omission semantics rewarded evaluation failures; a missing
+  measurement now ranks exactly like the measured pool-worst value and no
+  longer distorts the min-max normalization of measured candidates.
+- **Pool-wide unmeasured dimension → dropped for everyone.** An oracle gated
+  off by CapGate (e.g. `utr3_stability` in enforce mode) or a disabled
+  optional evaluator disappears from the ranking for the whole pool equally
+  and is reported via `asf_ranking_note` in the summary.
+- **Partial user reference point → loud restriction.** A `reference_point`
+  covering only a subset of the measurable dimensions restricts the ranking
+  to that subset; this is flagged (`asf_ranking_note`, logged warning) rather
+  than applied silently.
+- **Weights** are renormalized to sum 1 over the ranking dimensions; uniform
+  by default.
+- The Pareto frontier is always computed on raw measured values with
+  conservative dominance (a candidate missing a dimension cannot dominate one
+  that has it).
+
 **User-friendly CDS targets**
 
 Users must specify CDS objectives via `target_cds_mfe` (kcal/mol) and `target_cds_cai`; the internal `cds_component` is no longer accepted as a user-facing `reference_point` key. When both `target_cds_mfe` and `target_cds_cai` are supplied, the workflow converts them:
@@ -230,10 +255,29 @@ The non-dominated candidate set is always returned in `WorkflowResult.pareto_fro
 **Scoring**
 
 ```python
-total_rank = rank(duplex_mfe) + rank(off_target_count)   # smaller = better
+total_rank = rank(duplex_mfe) + rank(off_target_count)   # smaller = better; diagnostics only
 ```
 
 The legacy weighted formula is not used for ranking.
+
+**Ranking (ASF, 2026-08-20; asymmetry dimension added same day)**:
+candidates are ordered by ASF reference-point distance over the three
+heterogeneous objectives `efficiency_component` (−duplex MFE / 40, clamped
+[0, 1]), `specificity_component` (1 / (1 + off_target_count)) and
+`asymmetry_component` (thermodynamic end asymmetry from the sirna-duplex
+service: terminal 5-bp nearest-neighbour evaluation,
+`asymmetry = ΔG(antisense 5′ end) − ΔG(sense 5′ end)`, higher = antisense
+5′ end less stable = preferential guide loading — Khvorova 2003 / Schwarz
+2003; mapped linearly −3→0, 0→0.5, +3→1 kcal/mol), utopian reference,
+uniform weights. On service instances without the v0.5.0 asymmetry keys the
+dimension drops pool-wide. The Borda
+`total_rank` is retained as a reported diagnostic but no longer drives the
+ordering. Missing measurements impute at pool-worst (shared
+`apply_reference_point_ranking` policy, see §2). The full passing pool is
+ranked first and only then truncated to `candidate_count` — the returned
+top-N are the globally best-N (the pre-2026-08-20 truncate-then-rank order
+could drop a window beyond position N in generation order before it was
+ever ranked).
 
 **Required capabilities**
 ```python
@@ -253,14 +297,23 @@ The legacy weighted formula is not used for ranking.
 
 **Purpose**: Optimize sgRNA handle sequences using CRGPT, with optional CRISOT off-target scoring.
 
-**Pipeline**: seed handle → CRGPT design (mcmc/naive) → CRGPT re-score → optional CRISOT → weighted scoring → rank
+**Pipeline**: seed handle → CRGPT design (mcmc/naive) → CRGPT re-score → optional CRISOT → component scoring → ASF rank
 
 **Scoring**
 ```python
 nn_component = 1.0 / nn_score  # clamped [0, 1]
 crisot_component = clamp(crisot_score, 0.0, 1.0)
-total_score = (weight_nn * nn_component + weight_crisot * crisot_component) / active_weights
+total_score = (weight_nn * nn_component + weight_crisot * crisot_component) / active_weights  # diagnostic
 ```
+
+**Ranking (ASF, 2026-08-20)**: candidates are ordered by ASF reference-point
+distance over `nn_component` / `crisot_component` /
+`crisot_specificity_component` (utopian reference; `weight_nn_score`,
+`weight_crisot`, `weight_crisot_specificity` are renormalized as ASF weights
+over the measurable dimensions). The weighted `total_score` is retained as a
+reported diagnostic. Components whose source metric is absent are treated as
+unmeasured (pool-worst imputation; a dimension absent pool-wide — e.g. CRISOT
+off — drops for everyone).
 
 **QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures. Adjustable params: `n_samples`, `mutation_number`, `temperature`, `sampling_mode`, `max_overlap`, `evaluate_crgpt_score`, `evaluate_crisot`, `weight_nn_score`, `weight_crisot`.
 
@@ -315,14 +368,32 @@ total_score = (weight_nn * nn_component + weight_crisot * crisot_component) / ac
 ```python
 rhofold_component = pLDDT / 100
 rmsd_component    = max(0, 1 - RMSD / 5.0)
-total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component
+total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component   # diagnostic
 ```
+
+**Ranking (ASF, 2026-08-20)**: candidates are ordered by ASF reference-point
+distance over `rhofold_component` / `rmsd_component` / `tm_component`
+(utopian reference; `weight_rhofold` / `weight_rmsd` / `weight_tm_score` are
+renormalized as ASF weights). The TM-score dimension is injected at ranking
+time from the already-computed alignment TM-score — it stays informative
+where RMSD saturates (≥ 5 Å clamps to 0). The weighted `total_score` is
+retained as a reported diagnostic. In de-novo runs without a reference
+structure both native-closeness dimensions are unmeasured pool-wide and drop
+out for everyone; per-candidate misses impute at pool-worst.
+
+**Weight guidance (audit follow-up)**: with the default 0.5/0.5/0.5 weights
+the pool-relative min-max normalization can let a pLDDT champion outrank the
+native-closest candidate when the latter has pool-worst pLDDT. RMSD and
+TM-score are measured against the actual reference structure while pLDDT is
+model self-confidence; when a reference exists, lower `weight_rhofold`
+below the closeness weights (e.g. 0.3 vs 0.5/0.5) so the two reference-based
+dimensions outvote the confidence dimension.
 
 **QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures.
 
 **Input notes**
 - `structure_filepath` accepts a repo-relative path, absolute path, or PDB ID (resolved against `data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/`).
-- `weight_rhofold` and `weight_rmsd` control the final scoring blend (defaults 0.5 each).
+- `weight_rhofold` and `weight_rmsd` act as the ASF dimension weights (defaults 0.5 each); the blend they previously controlled survives only as the reported `total_score` diagnostic.
 
 **Known third-party limitations on tRNA-Phe 1EHZ**
 - RiboDiffusion can collapse to wild-type-like sequences for this target.
@@ -383,6 +454,8 @@ total_score       = 0.5 * rhofold_component + 0.5 * rmsd_component
 ```
 
 There is no weighted-sum `total_score`. Ranking is performed by Achievement Scalarizing Function (ASF) distance to a reference point.
+
+An unavailable oracle measurement yields a `None` component (not 0.0): the shared ASF layer imputes pool-worst for per-candidate misses and drops pool-wide unmeasured dimensions for everyone (see the shared ASF ranking policy in §2; previously a 0.0 literal both penalized skipped candidates as if measured and distorted the min-max normalization of the measured ones).
 
 **Reference-point optimization (default, v1.4.0)**
 

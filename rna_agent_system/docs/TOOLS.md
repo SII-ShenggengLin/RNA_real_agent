@@ -67,7 +67,7 @@
 | Tool | Input | Output |
 |------|-------|--------|
 | `predict_rna_secondary_structure` | `filepath` | `structure`, `mfe_kcal_per_mol` |
-| `compute_sirna_duplex_binding_vienna` | `filepath` (2 FASTA records) | `structure` (with `&`), `mfe_kcal_per_mol` |
+| `compute_sirna_duplex_binding_vienna` | `filepath` (2 FASTA records) | `structure` (with `&`), `mfe_kcal_per_mol`; optional `dg_sense_5p_end_kcal_per_mol` / `dg_antisense_5p_end_kcal_per_mol` / `asymmetry_kcal_per_mol` (terminal 5-bp NN end asymmetry, higher = antisense 5′ end less stable = better guide loading) |
 | `compute_rna_rna_interaction_vienna` | `filepath1`, `filepath2` | `interaction_energy`, `interaction_structure`, `raw_stdout`, `sequence1`, `sequence2` |
 | `compute_aso_target_accessibility_vienna` | `filepath`, `region_start`, `region_end` | `mean_unpaired_prob_single_nt`, `joint_unpaired_prob_stretch_ending_at_region_end` |
 | `predict_rna_local_accessibility_profile_vienna` | `filepath` | per-position unpaired probs |

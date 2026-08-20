@@ -54,14 +54,14 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x -q
 | `score_structure_alignment` | v0.1.0 | `agent_core/tools.py` + `tool_specs.py` |
 | `MrnaCdsDesignWorkflow` | v1.1.0 | `workflows/mrna_cds_design.py` lock header |
 | `RnaSmallMoleculeInteractionWorkflow` | v1.1.0 | `workflows/rna_small_molecule_interaction.py` |
-| `SirnaDesignWorkflow` | v1.1.1 | `workflows/sirna_design.py` |
-| `SgRnaDesignWorkflow` | v1.2.0 | `workflows/sgrna_design.py` |
+| `SirnaDesignWorkflow` | v1.3.0 | `workflows/sirna_design.py` |
+| `SgRnaDesignWorkflow` | v1.3.0 | `workflows/sgrna_design.py` |
 | `AsoTargetScreeningWorkflow` | v1.0.0 | `workflows/aso_target_screening.py` |
 | `IresPredictionWorkflow` | v1.1.0 | `workflows/ires_prediction.py` |
 | `FullLengthMrnaDesignWorkflow` | v3.0.0 | `workflows/full_length_mrna_design.py` |
 | `RnaAptamerDesignWorkflow` | v2.1.0 | `workflows/rna_aptamer_design.py` |
 | `RnaSecondaryStructureDesignWorkflow` | v1.0.0 | `workflows/rna_secondary_structure_design.py` |
-| `RnaTertiaryStructureDesignWorkflow` | v1.0.0 | `workflows/rna_tertiary_structure_design.py` |
+| `RnaTertiaryStructureDesignWorkflow` | v1.2.0 | `workflows/rna_tertiary_structure_design.py` |
 | `MrnaSequenceScoringWorkflow` | v1.1.0 | `workflows/mrna_sequence_scoring.py` |
 | `AgentRunner` | v3.4.0 | `agent_core/runner.py` |
 | `CLI End-to-End Execution Flow` | v2.4.0 | `cli/form_chat.py` |
@@ -96,12 +96,30 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
 - **`MrnaCdsDesignWorkflow` (§8)**: `truncate_n_terminal` /
   `truncate_c_terminal` are mutually exclusive; species/model enums come from
   `agent_core/constants/species.py`.
-- **`SirnaDesignWorkflow` (§10)**: antiviral mode (Evitar) vs generic mode
+- **`SirnaDesignWorkflow` (§10, v1.3.0)**: antiviral mode (Evitar) vs generic mode
   (sliding window); off-target via BLAST+ and Bowtie2; `bowtie2_i` /
   `bowtie2_ma` upstream-only fields are strings (`'mode-dependent'`).
-- **`SgRnaDesignWorkflow` (§11, v1.2.0)**: optional `off_target_sequences`
+  Ranking is ASF reference-point over `efficiency_component` /
+  `specificity_component` / `asymmetry_component` (terminal 5-bp NN end
+  asymmetry via `compute_sirna_duplex_binding_vienna` v0.5.0; absent on
+  older services → dimension drops pool-wide); the full passing pool is
+  ranked before truncating to `candidate_count`; Borda `rank_*` /
+  `total_rank` keys remain as reported diagnostics.
+- **`SgRnaDesignWorkflow` (§11, v1.3.0)**: optional `off_target_sequences`
   input + `CRISOTSpecificityEvaluator` + `crisot_specificity_component`
-  (default-off, PA-safe).
+  (default-off, PA-safe). Ranking is ASF reference-point over the component
+  dimensions with `weight_nn_score` / `weight_crisot` /
+  `weight_crisot_specificity` renormalized as ASF weights (2026-08-20);
+  `total_score` remains a reported diagnostic.
+- **`RnaTertiaryStructureDesignWorkflow` (§12, v1.2.0)**: ranking is ASF
+  reference-point over `rhofold_component` / `rmsd_component` /
+  `tm_component` (TM injected at ranking time from the alignment TM-score)
+  with `weight_rhofold` / `weight_rmsd` / `weight_tm_score` (new additive
+  field, default 0.5) renormalized as ASF weights (2026-08-20); the previous
+  0.5/0.5 blend survives only as the reported `total_score` diagnostic.
+  Without a reference structure both closeness dimensions drop pool-wide.
+  Audit guidance: lower `weight_rhofold` below the closeness weights when a
+  reference structure exists (see WORKFLOWS.md §8 weight guidance).
 - **`IresPredictionWorkflow` (§13)**: mode 0/1/2 semantics locked to upstream
   IRESfinder; PA_023's negative round-3 outcome (max_score 0.4986 < 0.5
   threshold) is an expected third-party model limitation, not a bug.
@@ -111,11 +129,19 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
   `full_mfe_score`; CDS objectives via `target_cds_mfe` + `target_cds_cai`
   (synthesized into the internal `cds_component`). Junction ddG
   (`junction_5utr_cds_ddg_open_w1/w2`) is a report-only metric. Junction
-  scores are internal diagnostics, never user-facing ranking keys.
+  scores are internal diagnostics, never user-facing ranking keys. Since
+  2026-08-20 the ASF ranking runs on the shared
+  `apply_reference_point_ranking` layer: per-candidate missing dimensions
+  impute at pool-worst, pool-wide unmeasured dimensions drop for everyone,
+  and a partial user reference point restricts the ranking loudly
+  (`asf_ranking_note`).
 - **`RnaAptamerDesignWorkflow` (§15, v2.1.0)**: two-stage hierarchical
   evaluation (light GC+RhoFold on all; full ProteinX+EGARPS+interface on
   top-k); EGARPS gated by RhoFold ≥ 65 and GC ∈ [0.25, 0.85]; ASF ranking on
-  `egarps_component` / `rhofold_component` / `iptm_component`. Opt-in
+  `egarps_component` / `rhofold_component` / `iptm_component` (shared
+  `apply_reference_point_ranking` layer since 2026-08-20: missing
+  measurements impute at pool-worst, pool-wide unmeasured dimensions drop
+  for everyone). Opt-in
   `navigation=True` (2026-08-19) routes generation through the GenNav
   E14-protocol navigation (core `agent_core/generation/gennav_aptamer.py`;
   trace in `_state_writeback["_gennav_trace"]`; empty delivery fails with

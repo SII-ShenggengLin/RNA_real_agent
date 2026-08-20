@@ -1,12 +1,31 @@
 """Multi-objective utilities for reference-point optimization and Pareto frontiers.
 
-These helpers are intentionally decoupled from any specific workflow so that both
-``FullLengthMrnaDesignWorkflow`` and ``RnaAptamerDesignWorkflow`` can reuse the
-same dominance, scalarization, and normalization logic.
+These helpers are intentionally decoupled from any specific workflow so every
+workflow with heterogeneous multi-objective candidate pools
+(``FullLengthMrnaDesignWorkflow``, ``RnaAptamerDesignWorkflow``,
+``SirnaDesignWorkflow``, ``SgRnaDesignWorkflow``,
+``RnaTertiaryStructureDesignWorkflow``) can reuse the same dominance,
+scalarization, and normalization logic through
+:func:`apply_reference_point_ranking`.
+
+Ranking-policy notes (2026-08-20 ASF audit, DECISIONS.md (n)):
+
+- A dimension missing for *one* candidate is imputed at the pool-worst
+  normalized value (0.0), never omitted: dropping a term from the Chebyshev
+  max can only lower a candidate's ASF, so omission rewarded evaluation
+  failures.
+- A dimension missing for the *whole pool* (e.g. an oracle gated off by
+  CapGate enforce, or an optional evaluator disabled) drops out of the
+  ranking for everyone equally and is reported in ``dropped_dims``.
+- A user reference point covering only a subset of the pool dimensions
+  restricts the ranking to that subset (``partial_reference=True``); callers
+  must surface the warning instead of silently re-weighting.
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
+from typing import Optional
 
 from agent_core.workflow_models import Candidate
 
@@ -318,3 +337,173 @@ def cap_pareto_frontier(
 
     combined = tagged + untagged
     return combined[:max_size]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Shared reference-point ranking (single implementation for every ASF workflow)
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+@dataclass
+class ReferencePointRanking:
+    """Outcome of :func:`apply_reference_point_ranking`.
+
+    ``dropped_dims`` lists objectives with no measurement anywhere in the pool
+    (they cannot rank); ``partial_reference`` flags a user reference point that
+    covers only a subset of the measurable dimensions, which restricts the
+    ranking to that subset.
+    """
+
+    best: Optional[Candidate] = None
+    pareto_frontier: list[Candidate] = field(default_factory=list)
+    raw_reference_point: Optional[dict[str, float]] = None
+    asf_map: dict[str, float] = field(default_factory=dict)
+    ranking_dims: list[str] = field(default_factory=list)
+    dropped_dims: list[str] = field(default_factory=list)
+    partial_reference: bool = False
+
+
+def apply_reference_point_ranking(
+    candidates: list[Candidate],
+    objectives: list[str],
+    reference_point: Optional[dict[str, float]] = None,
+    *,
+    maximize: Optional[dict[str, bool]] = None,
+    weights: Optional[dict[str, float]] = None,
+    rho: float = 1e-3,
+    pareto_max_size: int = 10,
+) -> ReferencePointRanking:
+    """Rank ``candidates`` by augmented-Chebyshev ASF distance to a reference point.
+
+    Policy (see module docstring): per-candidate missing dimensions are imputed
+    at the pool-worst normalized value; dimensions unmeasured across the whole
+    pool drop out for everyone; a partial user reference point restricts the
+    ranking to its dimensions and is flagged. The Pareto frontier is always
+    computed on raw measured values with conservative dominance.
+
+    Args:
+        candidates: Candidate pool (ranking happens over measured scores).
+        objectives: Ordered objective dimension keys.
+        reference_point: Optional user reference point in raw units; when
+            omitted a utopian point (pool-best per dimension) is derived.
+        maximize: Per-dimension direction flag (default all-True).
+        weights: Optional per-dimension ASF weights (raw, renormalized to sum
+            1 over the ranking dimensions); default uniform. If a ranking
+            dimension lacks a weight, the uniform default is used for all.
+        rho: Augmentation coefficient of the ASF.
+        pareto_max_size: Frontier size cap.
+
+    Returns:
+        A :class:`ReferencePointRanking`; ``asf_map`` covers every candidate
+        with at least one measurable ranking dimension (imputation may still
+        assign it the worst value), so callers can sort by
+        ``asf_map.get(candidate.id, inf)``.
+    """
+    result = ReferencePointRanking()
+    if not candidates:
+        return result
+
+    maximize = maximize or {key: True for key in objectives}
+
+    # Measured vectors in maximization space (missing dims omitted here; the
+    # imputation step below fills them with the pool-worst normalized value).
+    measured: list[dict[str, float]] = [
+        _as_maximization(extract_objective_vector(c, objectives), maximize)
+        for c in candidates
+    ]
+
+    # Dimensions measurable anywhere in the pool; the rest cannot rank.
+    pool_dims = [
+        key for key in objectives if any(key in vec for vec in measured)
+    ]
+    result.dropped_dims = [key for key in objectives if key not in pool_dims]
+
+    # Reference point: user-provided (restricted to measurable dims) or the
+    # pool utopian point.
+    if reference_point is not None:
+        raw_ref = {
+            key: float(value)
+            for key, value in reference_point.items()
+            if key in pool_dims
+        }
+    else:
+        raw_ref = compute_utopian_reference_point(candidates, pool_dims, maximize)
+    result.raw_reference_point = raw_ref or None
+
+    # Ranking dimensions follow the reference point; a user reference point
+    # that skips measurable dims restricts the ranking (flagged, not silent).
+    ranking_dims = [key for key in pool_dims if key in raw_ref]
+    result.ranking_dims = ranking_dims
+    result.partial_reference = bool(
+        reference_point is not None and len(ranking_dims) < len(pool_dims)
+    )
+    if not ranking_dims:
+        result.best = candidates[0]
+        return result
+
+    # Per-dimension normalization over *measured* values only, so imputed
+    # pool-worst entries do not extend the observed range and compress the
+    # spread of the measured candidates.
+    dim_measured: dict[str, list[float]] = {key: [] for key in ranking_dims}
+    for vec in measured:
+        for key in ranking_dims:
+            if key in vec:
+                dim_measured[key].append(vec[key])
+
+    dim_min: dict[str, float] = {}
+    dim_span: dict[str, float] = {}
+    for key in ranking_dims:
+        values = dim_measured[key]
+        dim_min[key] = min(values)
+        span = max(values) - dim_min[key]
+        dim_span[key] = span if span > 0 else 0.0
+
+    def _norm(key: str, value: float) -> float:
+        if dim_span[key] == 0.0:
+            return 0.5
+        return (value - dim_min[key]) / dim_span[key]
+
+    norm_ref = {key: _norm(key, raw_ref[key]) for key in ranking_dims}
+
+    # Weights: uniform by default; provided weights are renormalized over the
+    # ranking dimensions. A missing weight for any ranking dim falls back to
+    # uniform for all (mixed semantics would be arbitrary).
+    if weights is not None and all(key in weights for key in ranking_dims):
+        total = sum(float(weights[key]) for key in ranking_dims)
+        asf_weights = (
+            {key: float(weights[key]) / total for key in ranking_dims}
+            if total > 0
+            else {key: 1.0 / len(ranking_dims) for key in ranking_dims}
+        )
+    else:
+        asf_weights = {key: 1.0 / len(ranking_dims) for key in ranking_dims}
+
+    best: Optional[Candidate] = None
+    best_asf = float("inf")
+    for candidate, vec in zip(candidates, measured):
+        norm_vec = {
+            key: (_norm(key, vec[key]) if key in vec else 0.0)
+            for key in ranking_dims
+        }
+        asf = achievement_scalarizing_function(
+            norm_vec, norm_ref, asf_weights, rho=rho
+        )
+        result.asf_map[candidate.id] = asf
+        if asf < best_asf:
+            best_asf = asf
+            best = candidate
+    result.best = best if best is not None else candidates[0]
+
+    # Pareto frontier on raw measured values (conservative dominance; a
+    # candidate with no measured dimension at all stays off the frontier).
+    pareto_pool = [c for c, vec in zip(candidates, measured) if vec]
+    result.pareto_frontier = cap_pareto_frontier(
+        compute_pareto_frontier(pareto_pool, objectives, maximize)
+        if pareto_pool
+        else [],
+        max_size=pareto_max_size,
+    )
+    if result.pareto_frontier:
+        assign_pareto_tags(result.pareto_frontier, objectives, maximize)
+
+    return result

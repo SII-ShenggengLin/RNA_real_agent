@@ -242,6 +242,59 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   re-derive it from the results JSONs and the distilled cores kept in-tree
   (e.g. `agent_core/generation/gennav_aptamer.py`).
 
+### (o) ASF audit fixes + shared ranking layer is the single multi-objective ranking mechanism (2026-08-20)
+
+- **Conclusion**: the 2026-08-20 audit of the ASF ranking strategy (user-
+  directed) found the augmented-Chebyshev skeleton correct (formula,
+  normalization discipline, Pareto companion, documented utopian-caveat) but
+  four defects, all fixed the same day. (1) A per-candidate *missing*
+  objective was omitted from that candidate's Chebyshev max — omission can
+  only lower ASF, so per-candidate evaluation failures were **rewarded**
+  (extreme case: a candidate measured only on its champion dimension could
+  win with ASF 0); missing dimensions now impute at the measured pool-worst
+  value, and the aptamer/siRNA 0.0-literal fills became `None` + imputation
+  (the 0.0 fills had also distorted the min-max normalization of measured
+  candidates). (2) A partial user `reference_point` silently collapsed the
+  ranking onto the supplied subset; still restricts, but now flagged
+  (`asf_ranking_note`). (3) Pool-wide unmeasured dimensions (CapGate
+  enforce blocks, optional evaluators off) drop for everyone equally and are
+  reported. (4) The ~100-line implementation existed twice, line-identical;
+  both flagship workflows now call
+  `workflows/multi_objective.py::apply_reference_point_ranking`.
+- **Generalization policy**: ASF reference-point ranking is the **only**
+  multi-objective ranking mechanism in the system. It is the default for
+  every workflow whose candidate pool carries ≥2 heterogeneous objectives:
+  full-length mRNA (cds/MRL/stability/MFE), aptamer (EGARPS/RhoFold/ipTM),
+  siRNA v1.3.0 (efficiency/specificity/end-asymmetry — the terminal 5-bp
+  NN end asymmetry of Khvorova 2003 / Schwarz 2003 computed additively by
+  the sirna-duplex service v0.5.0, zero additional folding; Borda ranks
+  demoted to diagnostics),
+  sgRNA v1.3.0 (nn/crisot/crisot_specificity; `weight_*` inputs renormalized
+  as ASF weights), tertiary-structure v1.2.0 (rhofold/rmsd/tm; TM-score
+  injected at ranking time from the alignment TM-score with the additive
+  `weight_tm_score` input — both closeness dims drop pool-wide in de-novo
+  runs; audit guidance: closeness weights above `weight_rhofold` when a
+  reference exists, since pool-relative min-max otherwise lets a pLDDT
+  champion bury the native-closest candidate). siRNA ranks the full passing
+  pool before truncating to `candidate_count` (the inherited
+  truncate-then-rank order could drop the pool's best window before it was
+  ever ranked). Single-objective, n=1, or domain-formula tasks
+  (CDS combined score, sequence scoring, IRES, ASO, secondary structure,
+  small molecule) are **intentionally not converted** — ASF there is
+  vacuous. Score functions and output keys unchanged; `total_score`-style
+  keys remain reported diagnostics, preserving every consumer.
+- **Standing boundary**: ASF values remain pool-relative — min-max
+  normalization makes ranks non-monotonic under pool composition and the
+  utopian reference can be attained (ASF 0); cross-pool/cross-condition
+  comparisons must not compare raw ASF distances (use shared fixed
+  reference points, per-objective components, or Pareto hypervolume — the
+  in-code ANALYSIS CAVEAT stands).
+- **Evidence**: `tests/test_multi_objective_utils.py` (10 new regression
+  tests: imputation parity, partial-ref flagging, pool-wide drop, weight
+  renormalization); full suite 506 passed (baseline 496);
+  `docs/CHANGELOG.md` 2026-08-20 (b); `docs/WORKFLOWS.md` §2 shared ASF
+  ranking policy.
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)

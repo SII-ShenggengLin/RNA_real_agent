@@ -277,3 +277,47 @@ def test_score_sirna_candidate_formula():
 
 
 
+
+
+def test_rank_and_format_ranks_full_pool_before_truncation():
+    """Rank-then-truncate (2026-08-20 follow-up): a candidate beyond position
+    ``candidate_count`` in generation order must still surface as #1 when it
+    is the pool's best — the pre-fix truncate-then-rank order silently
+    dropped it."""
+    from types import SimpleNamespace
+
+    from agent_core.workflow_models import Candidate
+
+    wf = _build_workflow()
+    inp = SimpleNamespace(candidate_count=10, mingc=0.0, maxgc=1.0)
+    wf._workflow_state["_sirna_input"] = inp
+
+    candidates = []
+    for i in range(15):
+        is_best = i == 11  # pool champion sits beyond the truncation point
+        candidates.append(
+            Candidate(
+                sequence=f"ACGUACGUACGUACGUACG{i:02d}",
+                sequence_type="sirna",
+                source=f"window_{i}",
+                scores={},
+                metadata={
+                    "metrics_bundle": {
+                        "gc_content": 0.5,
+                        # duplex MFE: the best (most negative) is at window 11
+                        "duplex_mfe": -41.0 if is_best else -20.0 - (i % 5),
+                        "off_target_count": 0 if is_best else 1 + (i % 3),
+                    }
+                },
+            )
+        )
+
+    result = wf.rank_and_format(candidates)
+
+    assert result.success
+    assert len(result.all_candidates) == inp.candidate_count
+    # The pool champion (window 11, both dimensions best) must rank #1.
+    assert result.best_candidate is not None
+    assert result.best_candidate.source == "window_11"
+    assert result.all_candidates[0].source == "window_11"
+    assert result.best_candidate.scores.get("asf_distance") == 0.0

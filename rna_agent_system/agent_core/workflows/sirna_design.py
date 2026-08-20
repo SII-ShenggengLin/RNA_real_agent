@@ -7,7 +7,7 @@ Generic mode: target sequence → sliding window (19–21 nt) → local filter �
     duplex evaluation → BLAST off-target → score → rank.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SirnaDesignWorkflow INTERFACE LOCK (v1.1.1) —— 禁止单方面变更              ║
+║  SirnaDesignWorkflow INTERFACE LOCK (v1.3.0; v1.2.0 + asymmetry_component ranking dimension (terminal 5-bp NN end asymmetry via sirna-duplex v0.5.0; absent on older services → dimension drops pool-wide); v1.2.0 = ASF reference-point ranking over efficiency/specificity components — Borda rank_* / total_rank become diagnostics) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sirna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
@@ -51,6 +51,7 @@ from agent_core.file_manager import PROJECT_ROOT, read_sequence, save_sequence
 from agent_core.sequence_utils import normalize_rna_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.multi_objective import apply_reference_point_ranking
 from agent_core.workflows.evaluators import (
     CompositeEvaluator,
     DuplexBindingEvaluator,
@@ -343,33 +344,48 @@ def compute_sirna_rank_scores(candidates: list[Candidate]) -> None:
         total = rank_mfe + rank_off
         mb = candidate.metadata.get("metrics_bundle", {})
         off_target = mb.get("off_target_count", 0)
-        candidate.scores = {
+        # Merge rank diagnostics alongside the per-objective components; the
+        # ASF ranking layer consumes the components (ASF audit 2026-08-20).
+        candidate.scores.update({
             "rank_mfe": float(rank_mfe),
             "rank_offtarget": float(rank_off),
             "total_rank": float(total),
             "off_target_count": float(off_target) if off_target is not None else 999.0,
-        }
+        })
 
 
-def score_sirna_candidate(metrics: dict[str, Any]) -> dict[str, float]:
+def score_sirna_candidate(metrics: dict[str, Any]) -> dict[str, Any]:
     """Legacy per-candidate scoring (kept for API compatibility).
 
     New workflows should call ``compute_sirna_rank_scores`` on the full
-    candidate list for rank-based scoring.
+    candidate list for rank-based scoring. An unavailable duplex MFE yields
+    ``None`` (ASF pool-worst imputation downstream), not 0.0 — ASF audit
+    2026-08-20.
     """
     duplex_mfe = metrics.get("duplex_mfe")
     off_target = metrics.get("off_target_count", 0)
 
-    scores: dict[str, float] = {}
+    scores: dict[str, Any] = {}
 
     # Efficiency: duplex MFE more negative = better; map [-40, 0] -> [0, 1]
     if duplex_mfe is not None:
         scores["efficiency_component"] = min(1.0, max(0.0, -float(duplex_mfe) / 40.0))
     else:
-        scores["efficiency_component"] = 0.0
+        scores["efficiency_component"] = None
 
     scores["off_target_count"] = float(off_target)
     scores["specificity_component"] = 1.0 / (1.0 + float(off_target))
+
+    # Thermodynamic end asymmetry (kcal/mol, higher = antisense 5' end less
+    # stable = preferential guide loading; Khvorova 2003 / Schwarz 2003).
+    # Typical duplex end differences span roughly +/-3 kcal/mol; mapped
+    # linearly so -3 -> 0, 0 -> 0.5, +3 -> 1. Absent -> None (the ASF layer
+    # drops the dimension pool-wide on older service instances).
+    asymmetry = metrics.get("duplex_asymmetry")
+    if asymmetry is not None:
+        scores["asymmetry_component"] = max(0.0, min(1.0, (float(asymmetry) + 3.0) / 6.0))
+    else:
+        scores["asymmetry_component"] = None
     # Legacy total_score kept for API compatibility; rank-based scoring
     # via compute_sirna_rank_scores is preferred.
     scores["total_score"] = scores["efficiency_component"]
@@ -511,16 +527,41 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
                 errors=["all_candidates_gc_rejected"],
             )
 
-        # Rank-based scoring across passing candidates only.
+        # Rank-based diagnostics across passing candidates only.
         compute_sirna_rank_scores(passing)
         _LOGGER.info("workflow_evaluation_complete count=%d workflow=%s", len(passing), self.name)
 
-        if inp is not None and len(passing) > inp.candidate_count:
-            passing = passing[:inp.candidate_count]
-
-        ranked = sort_candidates_by_score(
-            passing, score_key="total_rank", descending=False
+        # ASF reference-point ranking over the three heterogeneous objectives
+        # (duplex efficiency, specificity, thermodynamic end asymmetry); the
+        # Borda rank diagnostics above are retained but no longer drive the
+        # ordering (ASF audit 2026-08-20; asymmetry dimension added the same
+        # day via the sirna-duplex end-thermodynamics extension).
+        _ASF_OBJECTIVES = ("efficiency_component", "specificity_component", "asymmetry_component")
+        for c in passing:
+            if c.scores.get("efficiency_component") is None or c.scores.get("specificity_component") is None:
+                c.scores.update(score_sirna_candidate(c.metadata.get("metrics_bundle", {})))
+        ranking = apply_reference_point_ranking(
+            passing, list(_ASF_OBJECTIVES), None,
+            maximize={key: True for key in _ASF_OBJECTIVES},
         )
+        if ranking.dropped_dims:
+            _LOGGER.warning(
+                "sirna_asf_ranking_note dropped_dims(unmeasured)=%s", ranking.dropped_dims
+            )
+
+        # Rank the FULL passing pool first, then truncate to candidate_count:
+        # the returned top-N are the globally best-N candidates (the earlier
+        # truncate-then-rank order could drop a window beyond position N in
+        # generation order before it was ever ranked — ASF audit follow-up,
+        # 2026-08-20).
+        ranked = sorted(
+            passing, key=lambda c: ranking.asf_map.get(c.id, float("inf"))
+        )
+        if inp is not None and len(ranked) > inp.candidate_count:
+            ranked = ranked[:inp.candidate_count]
+        for i, c in enumerate(ranked, start=1):
+            c.rank = i
+            c.scores["asf_distance"] = ranking.asf_map.get(c.id)
         best = ranked[0] if ranked else None
 
         detail_lines: list[str] = []
@@ -532,10 +573,12 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
                 f"source={c.source}",
                 f"len={len(c.sequence)}nt",
                 f"GC={mb.get('gc_content'):.3f}" if mb.get("gc_content") is not None else "GC=N/A",
-                f"duplexMFE={mb.get('duplex_mfe'):.2f}" if mb.get("duplex_mfe") is not None else "duplexMFE=N/A",
+                f"duplexMFE={mb.get('duplex_mfe'):.2f}" if mb.get('duplex_mfe') is not None else "duplexMFE=N/A",
                 f"offTarget={mb.get('off_target_count', 0)}",
                 f"spec={mb.get('specificity_score', 0):.3f}",
+                f"asy={mb['duplex_asymmetry']:+.2f}" if mb.get("duplex_asymmetry") is not None else "asy=N/A",
                 f"total_rank={scores.get('total_rank', 0.0):.3f}",
+                f"asf={scores['asf_distance']:.4f}" if scores.get("asf_distance") is not None else "asf=N/A",
             ]
             # Generic mode extra info
             if "window_start" in c.metadata:
@@ -544,7 +587,7 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
 
         summary_parts = [
             f"candidates={len(ranked)}",
-            f"best_total_rank={best.scores.get('total_rank') if best else None}",
+            f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
             "---",
             *detail_lines,
         ]

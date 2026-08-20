@@ -2519,11 +2519,16 @@ def compute_sirna_duplex_binding_vienna(
     service_url: str = "http://127.0.0.1:8003/sirna-duplex",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.4.0)
+    INTERFACE LOCK (v0.5.0; v0.4.0 + additive optional end-asymmetry return
+    keys dg_sense_5p_end_kcal_per_mol / dg_antisense_5p_end_kcal_per_mol /
+    asymmetry_kcal_per_mol / asymmetry_convention)
     Do NOT modify any function signature, Pydantic field, return dict key, or state field
     without updating all files listed in the lock comment and re-running the full test suite.
 
-    Compute siRNA sense/antisense duplex MFE via ViennaRNA RNAcofold.
+    Compute siRNA sense/antisense duplex MFE via ViennaRNA RNAcofold, plus the
+    thermodynamic end asymmetry (terminal 5-bp NN evaluation; higher
+    asymmetry = antisense 5' end less stable = preferential guide loading,
+    Khvorova 2003 / Schwarz 2003).
 
     Supports concentration-dependent equilibrium analysis (-c) and partition function (-p).
     """
@@ -2555,6 +2560,15 @@ def compute_sirna_duplex_binding_vienna(
     body = _post_json(service_url, payload, 120, "ViennaRNA duplex")
     if "mfe" not in body or "structure" not in body:
         raise ValueError("Invalid duplex response: expected `mfe` and `structure`.")
+    def _opt_float(key: str) -> Optional[float]:
+        value = body.get(key)
+        if value is None:
+            return None
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
     return {
         "input_filepath": filepath,
         "sense": str(body.get("sense", sense)),
@@ -2566,6 +2580,13 @@ def compute_sirna_duplex_binding_vienna(
         "model": str(body.get("model", "ViennaRNA-RNAcofold")),
         "ensemble_free_energy": body.get("ensemble_free_energy"),
         "equilibrium_concentrations": body.get("equilibrium_concentrations"),
+        # End-asymmetry keys are additive and optional: older service
+        # instances omit them and both sides degrade to None (the ASF layer
+        # then drops the asymmetry dimension pool-wide).
+        "dg_sense_5p_end_kcal_per_mol": _opt_float("dg_sense_5p_end_kcal_per_mol"),
+        "dg_antisense_5p_end_kcal_per_mol": _opt_float("dg_antisense_5p_end_kcal_per_mol"),
+        "asymmetry_kcal_per_mol": _opt_float("asymmetry_kcal_per_mol"),
+        "asymmetry_convention": body.get("asymmetry_convention"),
     }
 
 

@@ -79,15 +79,7 @@ from agent_core.generation.gennav_aptamer import (
 from agent_core.sequence_utils import _pick_float
 from agent_core.workflow_models import Candidate, WorkflowResult, ToolCallRecord
 from agent_core.workflows.base import BaseDomainWorkflow
-from agent_core.workflows.multi_objective import (
-    achievement_scalarizing_function,
-    assign_pareto_tags,
-    cap_pareto_frontier,
-    compute_pareto_frontier,
-    compute_utopian_reference_point,
-    extract_objective_vector,
-    normalize_to_unit_range,
-)
+from agent_core.workflows.multi_objective import apply_reference_point_ranking
 
 _LOGGER = logging.getLogger("agent_core.workflows.rna_aptamer_design")
 
@@ -1105,101 +1097,37 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
     ) -> tuple[Candidate | None, list[Candidate], dict[str, float] | None, dict[str, float]]:
         """Reference-point optimization + Pareto frontier (default behaviour).
 
-        The best candidate is always selected via the Achievement Scalarizing
-        Function (ASF).  If the user does not supply a ``reference_point``, a
-        utopian point is derived from the candidate pool.  The Pareto-optimal
-        frontier is always computed and returned.
+        Thin wrapper over the shared ``apply_reference_point_ranking`` layer
+        (ASF audit 2026-08-20): per-candidate missing dimensions are imputed
+        at pool-worst, pool-wide unmeasured dimensions drop for everyone, and
+        a partial user reference point restricts the ranking loudly.
 
         Returns ``(best_candidate, pareto_frontier, raw_reference_point, candidate_asf_map)``.
         """
         objectives = ["egarps_component", "rhofold_component", "iptm_component"]
-        maximize = {key: True for key in objectives}
-
-        dim_values: dict[str, list[float]] = {key: [] for key in objectives}
-        candidate_vectors: list[tuple[Candidate, dict[str, float]]] = []
-        for candidate in candidates:
-            vec = extract_objective_vector(candidate, objectives)
-            if not vec:
-                continue
-            candidate_vectors.append((candidate, vec))
-            for key, value in vec.items():
-                dim_values[key].append(value)
-
-        candidate_asf_map: dict[str, float] = {}
-        if not candidate_vectors:
-            best = candidates[0] if candidates else None
-            return best, [], None, candidate_asf_map
-
-        normalized_dim_values: dict[str, list[float]] = {}
-        for key, values in dim_values.items():
-            normalized_dim_values[key] = normalize_to_unit_range(values)
-
-        normalized_vectors: list[tuple[Candidate, dict[str, float]]] = []
-        dim_index: dict[str, int] = {key: 0 for key in objectives}
-        for candidate, vec in candidate_vectors:
-            norm_vec: dict[str, float] = {}
-            for key, value in vec.items():
-                norm_vec[key] = normalized_dim_values[key][dim_index[key]]
-                dim_index[key] += 1
-            normalized_vectors.append((candidate, norm_vec))
-
-        all_candidates_for_pareto = [c for c, _ in normalized_vectors]
-        pareto_frontier = compute_pareto_frontier(
-            all_candidates_for_pareto, objectives, maximize
+        ranking = apply_reference_point_ranking(
+            candidates,
+            objectives,
+            inp.reference_point,
+            maximize={key: True for key in objectives},
         )
-        if pareto_frontier:
-            assign_pareto_tags(pareto_frontier, objectives, maximize)
-            pareto_frontier = cap_pareto_frontier(pareto_frontier, max_size=10)
-
-        # Reference point: user-provided or auto-derived utopian point.
-        raw_ref_point: dict[str, float]
-        if inp.reference_point is not None:
-            raw_ref_point = dict(inp.reference_point)
-        else:
-            raw_ref_point = compute_utopian_reference_point(
-                all_candidates_for_pareto, objectives, maximize
+        notes: list[str] = []
+        if ranking.dropped_dims:
+            notes.append(f"dropped_dims(unmeasured)={ranking.dropped_dims}")
+        if ranking.partial_reference:
+            notes.append(
+                f"partial_reference_point: ranking restricted to "
+                f"{ranking.ranking_dims} of measurable {objectives}"
             )
-
-        # Normalize the reference point with the same min/max as candidates.
-        norm_ref_point: dict[str, float] = {}
-        for key in objectives:
-            if key not in raw_ref_point or key not in dim_values:
-                continue
-            user_val = float(raw_ref_point[key])
-            values = dim_values[key]
-            min_val = min(values)
-            max_val = max(values)
-            span = max_val - min_val
-            if span == 0:
-                norm_ref_point[key] = 0.5
-            else:
-                norm_ref_point[key] = (user_val - min_val) / span
-
-        if not norm_ref_point:
-            best = candidates[0] if candidates else None
-            return best, pareto_frontier, raw_ref_point or None, candidate_asf_map
-
-        default_weight = 1.0 / len(norm_ref_point)
-        weights = {key: default_weight for key in norm_ref_point}
-
-        best_candidate: Candidate | None = None
-        best_asf = float("inf")
-        for candidate, norm_vec in normalized_vectors:
-            common_vec = {k: v for k, v in norm_vec.items() if k in norm_ref_point}
-            if not common_vec:
-                continue
-            asf = achievement_scalarizing_function(
-                common_vec, norm_ref_point, weights, rho=1e-3
-            )
-            candidate_asf_map[candidate.id] = asf
-            if asf < best_asf:
-                best_asf = asf
-                best_candidate = candidate
-
-        if best_candidate is None:
-            best_candidate = candidates[0] if candidates else None
-
-        return best_candidate, pareto_frontier, raw_ref_point, candidate_asf_map
+        if notes:
+            _LOGGER.warning("aptamer_asf_ranking_notes %s", "; ".join(notes))
+            self._workflow_state["_asf_ranking_note"] = "; ".join(notes)
+        return (
+            ranking.best,
+            ranking.pareto_frontier,
+            ranking.raw_reference_point,
+            ranking.asf_map,
+        )
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
         if not candidates:
@@ -1279,6 +1207,9 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 )
         if raw_ref_point is not None:
             summary_parts.append(f"reference_point={raw_ref_point}")
+        asf_note = self._workflow_state.get("_asf_ranking_note")
+        if asf_note:
+            summary_parts.append(f"asf_ranking_note={asf_note}")
         if pareto_frontier:
             summary_parts.append(f"pareto_frontier_size={len(pareto_frontier)}")
         summary_parts.append("---")
@@ -2061,7 +1992,7 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 # Aptamer-specific scoring helpers
 
 
-def score_aptamer_candidate(metrics: dict[str, Any]) -> dict[str, float]:
+def score_aptamer_candidate(metrics: dict[str, Any]) -> dict[str, float | None]:
     """Standalone scoring function for aptamer candidates (reusable outside the workflow).
 
     Returns per-objective raw scores for ASF-based reference-point ranking.
@@ -2069,26 +2000,31 @@ def score_aptamer_candidate(metrics: dict[str, Any]) -> dict[str, float]:
     normalised to [0, 1]. The workflow does not compute a weighted-sum
     total_score; ranking is performed via Achievement Scalarizing Function
     distance to a reference point.
+
+    An unavailable measurement yields ``None`` (not 0.0): the shared ASF layer
+    imputes pool-worst for per-candidate misses, so a skipped or failed oracle
+    call no longer distorts the min-max normalization of the measured
+    candidates (ASF audit 2026-08-20).
     """
     egarps_prob = metrics.get("egarps_native_probability")
     rhofold_plddt = metrics.get("rhofold_mean_plddt")
     iptm = metrics.get("proteinx_ipTM")
 
-    scores: dict[str, float] = {}
+    scores: dict[str, float | None] = {}
 
     if egarps_prob is not None:
         scores["egarps_component"] = max(0.0, min(1.0, float(egarps_prob)))
     else:
-        scores["egarps_component"] = 0.0
+        scores["egarps_component"] = None
 
     if rhofold_plddt is not None:
         scores["rhofold_component"] = max(0.0, min(1.0, float(rhofold_plddt) / 100.0))
     else:
-        scores["rhofold_component"] = 0.0
+        scores["rhofold_component"] = None
 
     if iptm is not None:
         scores["iptm_component"] = max(0.0, min(1.0, float(iptm)))
     else:
-        scores["iptm_component"] = 0.0
+        scores["iptm_component"] = None
 
     return scores

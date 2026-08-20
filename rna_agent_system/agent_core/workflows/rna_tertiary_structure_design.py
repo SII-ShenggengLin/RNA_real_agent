@@ -5,7 +5,7 @@ GC + fold (ViennaRNA) + RhoFold evaluation + structure alignment (RMSD/TM-score)
 scoring → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaTertiaryStructureDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更 ║
+║  RnaTertiaryStructureDesignWorkflow INTERFACE LOCK (v1.2.0; v1.1.0 + additive weight_tm_score input field and tm_component ranking dimension; v1.1.0 = ASF reference-point ranking over rhofold/rmsd components — total_score becomes a diagnostic) —— 禁止单方面变更 ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_tertiary_structure_design workflow 的权威实现。任何字段增删、   ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
@@ -60,6 +60,7 @@ from agent_core.file_manager import resolve_project_path, save_sequence
 from agent_core.sequence_utils import _pick_float
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.multi_objective import apply_reference_point_ranking
 
 _LOGGER = logging.getLogger("agent_core.workflows.rna_tertiary_structure_design")
 
@@ -160,8 +161,15 @@ class RnaTertiaryStructureDesignInput(BaseModel):
     ribodiffusion_checkpoint_name: str = Field(
         default="exp_inf", description="RiboDiffusion checkpoint basename."
     )
-    weight_rhofold: float = Field(default=0.50, description="Weight for RhoFold pLDDT component.")
+    weight_rhofold: float = Field(
+        default=0.30,
+        description="Weight for the RhoFold pLDDT component (model self-confidence; defaults below the closeness weights — 2026-08-20 audit: pool-relative min-max otherwise lets a pLDDT champion bury the native-closest candidate).",
+    )
     weight_rmsd: float = Field(default=0.50, description="Weight for RMSD component.")
+    weight_tm_score: float = Field(
+        default=0.50,
+        description="Weight for the TM-score component (alignment TM-score; only measurable when a reference structure exists).",
+    )
 
 class RnaTertiaryStructureDesignWorkflow(
     BaseDomainWorkflow[RnaTertiaryStructureDesignInput, WorkflowResult]
@@ -652,11 +660,57 @@ class RnaTertiaryStructureDesignWorkflow(
         return scores
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
-        """Sort candidates by total score and build a ``WorkflowResult``."""
+        """Rank candidates by ASF reference-point distance and build a ``WorkflowResult``."""
         if not candidates:
             return self._empty_result("No RNA sequence candidates produced from the tertiary structure.")
 
-        ranked = sort_candidates_by_score(candidates, score_key="total_score", descending=True)
+        # ASF reference-point ranking over the heterogeneous objectives
+        # (predicted fold confidence vs native-closeness via RMSD and TM-score;
+        # the 0.5/0.5 weighted blend stays available as the reported
+        # ``total_score`` diagnostic). The TM-score dimension is injected at
+        # ranking time from the already-computed alignment TM-score — it is
+        # length/outline-robust where RMSD saturates, and restores the
+        # native-closest candidate's standing when pLDDT spread would
+        # otherwise dominate (ASF audit follow-up, 2026-08-20). 0.0-filled
+        # components whose source metric is absent are re-marked None so the
+        # shared layer imputes pool-worst; in de-novo runs (no reference
+        # structure) both native-closeness dimensions are unmeasured pool-wide
+        # and drop for everyone.
+        _OBJECTIVES = ("rhofold_component", "rmsd_component", "tm_component")
+        for c in candidates:
+            mb = c.metadata.get("metrics_bundle", {})
+            if c.scores.get("rhofold_component") is not None and mb.get("rhofold_mean_plddt") is None:
+                c.scores["rhofold_component"] = None
+            if c.scores.get("rmsd_component") is not None and mb.get("alignment_rmsd") is None:
+                c.scores["rmsd_component"] = None
+            tm_score = mb.get("alignment_tm_score")
+            if tm_score is not None:
+                c.scores["tm_component"] = max(0.0, min(1.0, float(tm_score)))
+        inp = self._workflow_state.get("_tertiary_design_input")
+        # Fallbacks mirror the RnaTertiaryStructureDesignInput defaults
+        # (weight_rhofold 0.3 < closeness weights 0.5/0.5 — 2026-08-20 audit).
+        asf_weights = {
+            "rhofold_component": float(getattr(inp, "weight_rhofold", 0.3)) if inp else 0.3,
+            "rmsd_component": float(getattr(inp, "weight_rmsd", 0.5)) if inp else 0.5,
+            "tm_component": float(getattr(inp, "weight_tm_score", 0.5)) if inp else 0.5,
+        }
+        ranking = apply_reference_point_ranking(
+            candidates, list(_OBJECTIVES), None,
+            maximize={key: True for key in _OBJECTIVES},
+            weights=asf_weights,
+        )
+        if ranking.dropped_dims:
+            _LOGGER.info(
+                "tertiary_asf_ranking_note dropped_dims(unmeasured)=%s",
+                ranking.dropped_dims,
+            )
+
+        ranked = sorted(
+            candidates, key=lambda c: ranking.asf_map.get(c.id, float("inf"))
+        )
+        for i, c in enumerate(ranked, start=1):
+            c.rank = i
+            c.scores["asf_distance"] = ranking.asf_map.get(c.id)
         best = ranked[0] if ranked else None
 
         detail_lines: list[str] = []
@@ -684,12 +738,15 @@ class RnaTertiaryStructureDesignWorkflow(
                 if mb.get("recovery_rate") is not None
                 else "recovery=N/A",
                 f"total_score={scores.get('total_score', 0.0):.4f}",
+                f"asf={scores['asf_distance']:.4f}"
+                if scores.get("asf_distance") is not None
+                else "asf=N/A",
             ]
             detail_lines.append(" | ".join(line_parts))
 
         summary_parts = [
             f"candidates={len(ranked)}",
-            f"best_total_score={best.scores.get('total_score') if best else None}",
+            f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
             "---",
             *detail_lines,
         ]

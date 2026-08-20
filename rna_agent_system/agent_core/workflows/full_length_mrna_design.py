@@ -56,15 +56,7 @@ from agent_core.workflows.evaluators import (
     UTR5MrlEvaluator,
 )
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
-from agent_core.workflows.multi_objective import (
-    achievement_scalarizing_function,
-    assign_pareto_tags,
-    cap_pareto_frontier,
-    compute_pareto_frontier,
-    compute_utopian_reference_point,
-    extract_objective_vector,
-    normalize_to_unit_range,
-)
+from agent_core.workflows.multi_objective import apply_reference_point_ranking
 from agent_core.workflows.scoring import FullLengthScoringFunction
 from agent_core.sequence_utils import score_mrna_candidate
 
@@ -693,109 +685,37 @@ class FullLengthMrnaDesignWorkflow(
     ) -> tuple[Candidate | None, list[Candidate], dict[str, float] | None, dict[str, float]]:
         """Reference-point optimization + Pareto frontier (default behaviour).
 
-        The best candidate is always selected via the Achievement Scalarizing
-        Function (ASF).  If the user does not supply a ``reference_point``, a
-        utopian point is derived from the candidate pool.  The Pareto-optimal
-        frontier is always computed and returned.
-
-        Only user-facing objectives are used for reference-point selection and
-        the Pareto frontier; junction scores remain internal diagnostics.
+        Thin wrapper over the shared ``apply_reference_point_ranking`` layer
+        (ASF audit 2026-08-20): per-candidate missing dimensions are imputed
+        at pool-worst, pool-wide unmeasured dimensions drop for everyone, and
+        a partial user reference point restricts the ranking loudly.
 
         Returns ``(best_candidate, pareto_frontier, raw_reference_point, candidate_asf_map)``.
         """
         objectives = list(_USER_FACING_OBJECTIVES)
-        maximize = {key: True for key in objectives}
-
-        # Build per-dimension value tables, skipping candidates with missing dims.
-        dim_values: dict[str, list[float]] = {key: [] for key in objectives}
-        candidate_vectors: list[tuple[Candidate, dict[str, float]]] = []
-        for candidate in candidates:
-            vec = extract_objective_vector(candidate, objectives)
-            if not vec:
-                continue
-            candidate_vectors.append((candidate, vec))
-            for key, value in vec.items():
-                dim_values[key].append(value)
-
-        candidate_asf_map: dict[str, float] = {}
-        if not candidate_vectors:
-            best = candidates[0] if candidates else None
-            return best, [], None, candidate_asf_map
-
-        # Normalize each dimension to [0, 1] based on the candidate pool.
-        normalized_dim_values: dict[str, list[float]] = {}
-        for key, values in dim_values.items():
-            normalized_dim_values[key] = normalize_to_unit_range(values)
-
-        # Map each candidate to its normalized vector.
-        normalized_vectors: list[tuple[Candidate, dict[str, float]]] = []
-        dim_index: dict[str, int] = {key: 0 for key in objectives}
-        for candidate, vec in candidate_vectors:
-            norm_vec: dict[str, float] = {}
-            for key, value in vec.items():
-                norm_vec[key] = normalized_dim_values[key][dim_index[key]]
-                dim_index[key] += 1
-            normalized_vectors.append((candidate, norm_vec))
-
-        # Pareto frontier (computed on raw objective values for interpretability).
-        all_candidates_for_pareto = [c for c, _ in normalized_vectors]
-        pareto_frontier = compute_pareto_frontier(
-            all_candidates_for_pareto, objectives, maximize
+        ranking = apply_reference_point_ranking(
+            candidates,
+            objectives,
+            inp.reference_point,
+            maximize={key: True for key in objectives},
         )
-        if pareto_frontier:
-            assign_pareto_tags(pareto_frontier, objectives, maximize)
-            pareto_frontier = cap_pareto_frontier(pareto_frontier, max_size=10)
-
-        # Reference point: user-provided or auto-derived utopian point.
-        raw_ref_point: dict[str, float]
-        if inp.reference_point is not None:
-            raw_ref_point = dict(inp.reference_point)
-        else:
-            raw_ref_point = compute_utopian_reference_point(
-                all_candidates_for_pareto, objectives, maximize
+        notes: list[str] = []
+        if ranking.dropped_dims:
+            notes.append(f"dropped_dims(unmeasured)={ranking.dropped_dims}")
+        if ranking.partial_reference:
+            notes.append(
+                f"partial_reference_point: ranking restricted to "
+                f"{ranking.ranking_dims} of measurable {objectives}"
             )
-
-        # Normalize the reference point with the same min/max as candidates.
-        norm_ref_point: dict[str, float] = {}
-        for key in objectives:
-            if key not in raw_ref_point or key not in dim_values:
-                continue
-            user_val = float(raw_ref_point[key])
-            values = dim_values[key]
-            min_val = min(values)
-            max_val = max(values)
-            span = max_val - min_val
-            if span == 0:
-                norm_ref_point[key] = 0.5
-            else:
-                norm_ref_point[key] = (user_val - min_val) / span
-
-        if not norm_ref_point:
-            best = candidates[0] if candidates else None
-            return best, pareto_frontier, raw_ref_point or None, candidate_asf_map
-
-        default_weight = 1.0 / len(norm_ref_point)
-        weights = {key: default_weight for key in norm_ref_point}
-
-        best_candidate: Candidate | None = None
-        best_asf = float("inf")
-        for candidate, norm_vec in normalized_vectors:
-            # Only consider objectives present in both candidate and reference point.
-            common_vec = {k: v for k, v in norm_vec.items() if k in norm_ref_point}
-            if not common_vec:
-                continue
-            asf = achievement_scalarizing_function(
-                common_vec, norm_ref_point, weights, rho=1e-3
-            )
-            candidate_asf_map[candidate.id] = asf
-            if asf < best_asf:
-                best_asf = asf
-                best_candidate = candidate
-
-        if best_candidate is None:
-            best_candidate = candidates[0] if candidates else None
-
-        return best_candidate, pareto_frontier, raw_ref_point, candidate_asf_map
+        if notes:
+            _LOGGER.warning("full_length_asf_ranking_notes %s", "; ".join(notes))
+            self._workflow_state["_asf_ranking_note"] = "; ".join(notes)
+        return (
+            ranking.best,
+            ranking.pareto_frontier,
+            ranking.raw_reference_point,
+            ranking.asf_map,
+        )
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
         if not candidates:
@@ -865,6 +785,9 @@ class FullLengthMrnaDesignWorkflow(
         ]
         if raw_ref_point is not None:
             summary_parts.append(f"reference_point={raw_ref_point}")
+        asf_note = self._workflow_state.get("_asf_ranking_note")
+        if asf_note:
+            summary_parts.append(f"asf_ranking_note={asf_note}")
         if pareto_frontier:
             summary_parts.append(f"pareto_frontier_size={len(pareto_frontier)}")
         summary_parts.append("---")

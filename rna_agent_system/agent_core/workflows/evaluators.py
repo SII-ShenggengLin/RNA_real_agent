@@ -385,6 +385,17 @@ class DuplexBindingEvaluator(BaseEvaluator):
         res = self.capabilities.get(self.capability_name).invoke(args, state=state)
         if res.success:
             metrics = {"duplex_mfe": _pick_float(res.output, "mfe_kcal_per_mol")}
+            # End-thermodynamic asymmetry (additive; absent on older service
+            # instances — the ASF layer drops the dimension pool-wide).
+            asym = _pick_float(res.output, "asymmetry_kcal_per_mol")
+            if asym is not None:
+                metrics["duplex_asymmetry"] = asym
+                metrics["duplex_dg_sense_5p_end"] = _pick_float(
+                    res.output, "dg_sense_5p_end_kcal_per_mol"
+                )
+                metrics["duplex_dg_antisense_5p_end"] = _pick_float(
+                    res.output, "dg_antisense_5p_end_kcal_per_mol"
+                )
             _trace_capability_call(
                 candidate, self.capability_name, args, res, extra_metrics=metrics
             )
