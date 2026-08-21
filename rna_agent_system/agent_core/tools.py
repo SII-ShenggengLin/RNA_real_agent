@@ -3852,6 +3852,10 @@ def score_rna_protein_complex_with_egarps(
 
     Args:
         filepath: Path to a PDB file containing the RNA-protein complex structure.
+            Workspace-relative paths are resolved to absolute before the
+            request (the EGARPS+ service checks existence against its own
+            working directory, so a raw relative path 404s — fixed 2026-08-21
+            Layer-1 fresh-data audit).
             WARNING (2026-07-27 campaign): this must be a REAL `.pdb` file.
             (a) The EGARPS pipeline (external_repos/EGARPS/scripts/ins.py)
             derives cache paths via `pdb.replace('.pdb', ...)` — a no-op for
@@ -3879,8 +3883,9 @@ def score_rna_protein_complex_with_egarps(
         ValueError: If the EGARPS+ service is unreachable or returns an invalid payload.
     """
     try:
+        resolved_filepath = _absolute_path_under_project(filepath)
         request_payload: dict[str, Any] = {
-            "pdb_path": filepath,
+            "pdb_path": resolved_filepath,
             "academic": academic,
         }
         response = requests.post(

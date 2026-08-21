@@ -10,6 +10,55 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-21 (b) — Layer-1 fresh-data audit: 252 checks green, one EGARPS path defect fixed
+
+First dedicated audit of the atomic-capability layer
+(`agent_core/capabilities/base.py`, 179 lines — previously covered only
+indirectly via workflow tests) on **entirely fresh real data**: sequences
+fetched live from NCBI (SARS-CoV-2 Wuhan-Hu-1 Spike/N CDS, human GAPDH
+UTRs+CDS, HCV 5'UTR IRES, P42212 GFP protein, J01369 yeast tRNA-Phe
+mature splice) and structures from RCSB (1EHZ mmCIF/PDB, 1CVJ complex) —
+nothing reused from fixtures or the earlier Layer-0 audit. Driver +
+manifest: `workspace/layer1_fresh_audit_2026-08-21/` (fetch script, audit
+driver, `audit_report.json`).
+
+Coverage: 39 real tool invocations through `Capability.invoke` alone
+(spans ViennaRNA ×7, CDS design ×4 incl. LinearDesign λ∈{1.0, 0.5, 1.0
+repeat}, GEMORNA ×3, IRESfinder ×2 modes, CAI ×2 species, blastn/bowtie2,
+CRISOT ×2, CRGPT, RNASTOP, Evitar, RhoFold, RNAsmol, GerNA-Bind, CIF
+extract, interface/hotspots, EGARPS, structure alignment) plus registry
+semantics, state-writeback key uniqueness (λ/species/mode-distinguished
+and numeric keys, no clobber of unique payloads, plain-key latest-wins),
+output_model validation fidelity (no dropped/renamed/corrupted keys, JSON
+serializable), and error paths (unknown tool, bad path, non-dict
+artifacts, non-serializable error payloads, enforce-mode gated call never
+raises). Final state **252 pass / 0 fail**; both residual warnings were
+audit-input usage errors, resolved by retry (EGARPS `academic=True`
+requires DSSR/NACCESS licenses; RhoFold PDB output uses chain `0`, so
+`score_structure_alignment` needs `chain_id=None` auto-detection).
+
+Defect found and fixed:
+
+- **`score_rna_protein_complex_with_egarps` did not resolve
+  workspace-relative paths** (`agent_core/tools.py`): the wrapper posted
+  `filepath` verbatim and the EGARPS+ service checks existence against its
+  own working directory, so the canonical workspace-relative form 404'd
+  ("PDB file not found") while blast/GC wrappers resolve client-side
+  (`_absolute_path_under_project`). The wrapper now resolves before the
+  POST; `input_filepath` still echoes the original argument and no locked
+  return key changes. Verified live on the fresh 1CVJ complex
+  (relative-path call now succeeds end-to-end through Layer 1);
+  regression pinned in `tests/test_egarps_wrapper_path.py` (2 tests).
+  Suite after: **541 passed, 1 skipped**.
+
+Documented observations (behavior by design, no change): failed calls also
+land in `state["tool_results"][tool_name]` (plain key is latest-wins by
+design — consumers should read `CapabilityResult`/unique keys); unknown
+kwargs are silently dropped by LangChain args_schema `extra=ignore`
+(typo'd parameter names run with defaults — a Layer-0 schema-wide
+property); enforce-mode gating is verdict-driven and context-dependent, so
+a context-free gated-tool invocation may legitimately run.
+
 ## 2026-08-21 — Layer-0 fresh-data tool audit: four defects fixed, all 42 registered tools (41 scientific + 1 demo) verified callable
 
 Full Layer-0 sweep on **entirely fresh inputs** (nothing reused from
