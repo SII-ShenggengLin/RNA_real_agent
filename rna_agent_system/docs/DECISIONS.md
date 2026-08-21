@@ -295,6 +295,51 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   `docs/CHANGELOG.md` 2026-08-20 (b); `docs/WORKFLOWS.md` §2 shared ASF
   ranking policy.
 
+### (p) Ranking governance: ASF objectives are assembled from CapGate verdicts (2026-08-21)
+
+- **Conclusion**: the shared ASF ranking layer consumes the DecisionGate
+  verdict as a first-class input (`agent_core/calibrated/objective_assembly.py`,
+  design doc [`RANKING_GOVERNANCE.md`](RANKING_GOVERNANCE.md)). Dimensions
+  backed by oracles without verified (or transferred-verified) ranking power
+  are demoted to `scoring_annotation` — excluded from ranking pool-wide
+  equally — *before* `apply_reference_point_ranking` runs. Assembly is
+  **mode-independent** (never reads `RNADA_CAPGATE`): advisory and enforce
+  produce identical rankings wherever SelfModel records exist, differing only
+  in whether annotation values were computed (enforce blocks demoted calls →
+  annotation `gated`; recognized via `GatedActionError`, never an evaluation
+  failure). Verdict→action mapping: verified → keep; transferred-verified →
+  keep + flag; failed (direct or transferred) → demote; unprofiled-pending
+  (CRISOT-Score / CRGPT, registered data gap (l)) → keep + `pending` flag;
+  unprofiled-enforce (gemorna_3utr_stability, RhoFold under the tertiary task
+  key per (k)) → keep + `unprofiled` flag — no punishment without a verdict.
+  Deterministic compute dims (DECISIONS (j)) never enter the mechanism.
+- **Degrade state**: a workflow whose ranking dims are fully demoted — with
+  the packaged SelfModel, only `rna_aptamer_design` (all three components
+  failed E1 on every family) — returns `ranking_evidence_unavailable`:
+  success=True, generation order, annotations intact, no fabricated
+  `asf_distance`, marker in summary/extras/`_state_writeback` (never in
+  `errors` — a non-empty errors list is a hard failure). The light-stage
+  RhoFold pLDDT top-k filter degrades to deterministic pool order when the
+  screening profile is failed (a falsified oracle must not arbitrate
+  selection).
+- **Relation to (j)/(l)**: verdicts and the zeroed-equally consequence are
+  unchanged; this entry supersedes only the *"fail whole workflows"*
+  presentation of the accepted degradation. The regenerate-rather-than-soften
+  stance is preserved — RNADesign-210 / fig2 regeneration runs against the
+  platform *including* this mechanism. **Accepted divergence**: unprofiled-
+  enforce dims are kept by assembly but still dropped at measurement time
+  under enforce (blocked calls) — advisory ranks on more dims than enforce
+  there; closes when those oracles gain records.
+- **Deferred**: continuous profile-derived ASF weights (reliability factor
+  over verified dims) — requires SelfModel coverage improvement and
+  cross-family validation against circularity; the binary vocabulary here is
+  the slot it slots into.
+- **Evidence**: `tests/test_ranking_governance.py` (15 tests: per-workflow
+  assembly pinning against the packaged SelfModel, mode independence, off
+  escape hatch, aptamer degrade path, gated-error recognition, no-op
+  regression for sirna/sgrna/tertiary/full-length); full suite 534 passed;
+  `docs/CHANGELOG.md` 2026-08-21.
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)

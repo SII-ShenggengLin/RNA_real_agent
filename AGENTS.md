@@ -1,9 +1,11 @@
 # Agent Guidelines for RNA_real_agent
 
 > **Consolidated index.** Authoritative documentation lives in `rna_agent_system/docs/`.
-> **Last updated**: 2026-08-19 (batch-B fresh-data re-verification)
+> **Last updated**: 2026-08-21 (ranking governance)
 
 ## What's New
+
+- **Ranking governance — ASF objectives assembled from CapGate verdicts** (2026-08-21, user-directed; full detail in `docs/RANKING_GOVERNANCE.md` + DECISIONS.md (p)): the shared ASF ranking layer now consumes DecisionGate verdicts as a first-class input (`agent_core/calibrated/objective_assembly.py`; deterministic, zero LLM, **mode-independent** — advisory and enforce produce the same ranking wherever SelfModel records exist). A dimension backed by an oracle without verified (or transferred-verified) ranking power is demoted to `scoring_annotation` pool-wide equally; pending (CRISOT/CRGPT) and unprofiled dims are kept + flagged; deterministic compute dims never enter the mechanism; `RNADA_CAPGATE=off` disables it entirely. Under the packaged SelfModel `rna_aptamer_design` (v2.2.0) delivers the `ranking_evidence_unavailable` degrade (success=True, generation order, annotations intact, marker never in `errors` — non-empty errors is a hard failure) and its light-stage RhoFold pLDDT top-k filter degrades to deterministic pool order; gated calls (`GatedActionError`) are expected-missing annotations (gated ProteinX no longer raises). `full_length_mrna_design` v3.1.0 + siRNA/sgRNA/tertiary: flags and `_state_writeback["_ranking_governance"]` only. Deferred (registered): continuous profile-derived ASF weights. Tests: `tests/test_ranking_governance.py` (15); suite 534 passed.
 
 - **paper_v5 figure rebuild — survey-driven Nature Methods figure programme** (2026-08-20, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-20): all six main figures regenerated at `experiments/plots/paper_v5/` after a systematic survey of seven Nature/Science agent-system papers (`docs/REFERENCE_FIGURE_SURVEY.md`; plan in `docs/FIGURE_PLAN_V5.md`). One script per panel (51 panels) sharing a Morandi/Arial `style.py`; `assemble.py` composes vector PDF + PNG and draws panel letters; `qa_bounds.py` is the objective clipping audit (all panels pass). Fig 1 = architecture (6 panels); Figs 2–6 = five results figures × 9 panels, every number re-derived from the retained verdict files or the live audit trail. `PAPER_DRAFT.md` is at v4.4 with panel references updated.
 
@@ -31,6 +33,7 @@
 | [`rna_agent_system/docs/DEPLOYMENT.md`](rna_agent_system/docs/DEPLOYMENT.md) | Environment setup, testing recipes, curl examples |
 | [`rna_agent_system/docs/CHANGELOG.md`](rna_agent_system/docs/CHANGELOG.md) | Current interface state + recent change era |
 | [`rna_agent_system/docs/DECISIONS.md`](rna_agent_system/docs/DECISIONS.md) | Decisions, concluded directions and do-not-repeat register |
+| [`rna_agent_system/docs/RANKING_GOVERNANCE.md`](rna_agent_system/docs/RANKING_GOVERNANCE.md) | Ranking governance design: verdict-driven ASF objective assembly (DECISIONS (p)) |
 | [`rna_agent_system/docs/CONTRIBUTING.md`](rna_agent_system/docs/CONTRIBUTING.md) | Coding standards, new-tool procedure, commit conventions |
 | [`rna_agent_system/docs/ANCHORS.md`](rna_agent_system/docs/ANCHORS.md) | External-anchor directory spec, anchor-set JSON schema, assertion-first curation pattern |
 | [`rna_agent_system/docs/CLAUDE_CODE_PLATFORM_SIGKILL.md`](rna_agent_system/docs/CLAUDE_CODE_PLATFORM_SIGKILL.md) | 平台按名查杀 claude 进程（SIGKILL）的根因、验证方法与终端/扩展修复手册 |

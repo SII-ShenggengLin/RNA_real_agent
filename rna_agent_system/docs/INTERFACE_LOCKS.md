@@ -104,13 +104,19 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
   asymmetry via `compute_sirna_duplex_binding_vienna` v0.5.0; absent on
   older services → dimension drops pool-wide); the full passing pool is
   ranked before truncating to `candidate_count`; Borda `rank_*` /
-  `total_rank` keys remain as reported diagnostics.
+  `total_rank` keys remain as reported diagnostics. 2026-08-21 ranking
+  governance (DECISIONS (p)): no siRNA objective is oracle-backed, so
+  assembly is a structural no-op that only adds the additive
+  `_state_writeback["_ranking_governance"]` field.
 - **`SgRnaDesignWorkflow` (§11, v1.3.0)**: optional `off_target_sequences`
   input + `CRISOTSpecificityEvaluator` + `crisot_specificity_component`
   (default-off, PA-safe). Ranking is ASF reference-point over the component
   dimensions with `weight_nn_score` / `weight_crisot` /
   `weight_crisot_specificity` renormalized as ASF weights (2026-08-20);
-  `total_score` remains a reported diagnostic.
+  `total_score` remains a reported diagnostic. 2026-08-21 ranking governance
+  (DECISIONS (p)): nn/crisot are pending-governance oracles (kept +
+  `pending` flag, DECISIONS (l)); `crisot_specificity_component` is aggregate
+  compute and never gated; additive `_state_writeback["_ranking_governance"]`.
 - **`RnaTertiaryStructureDesignWorkflow` (§12, v1.2.0)**: ranking is ASF
   reference-point over `rhofold_component` / `rmsd_component` /
   `tm_component` (TM injected at ranking time from the alignment TM-score)
@@ -119,11 +125,14 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
   0.5/0.5 blend survives only as the reported `total_score` diagnostic.
   Without a reference structure both closeness dimensions drop pool-wide.
   Audit guidance: lower `weight_rhofold` below the closeness weights when a
-  reference structure exists (see WORKFLOWS.md §8 weight guidance).
+  reference structure exists (see WORKFLOWS.md §8 weight guidance). 2026-08-21
+  ranking governance (DECISIONS (p)): `rhofold_component` is unprofiled under
+  this task key (DECISIONS (k)) — kept + `unprofiled` flag, no inheritance of
+  the E1 aptamer failure; additive `_state_writeback["_ranking_governance"]`.
 - **`IresPredictionWorkflow` (§13)**: mode 0/1/2 semantics locked to upstream
   IRESfinder; PA_023's negative round-3 outcome (max_score 0.4986 < 0.5
   threshold) is an expected third-party model limitation, not a bug.
-- **`FullLengthMrnaDesignWorkflow` (§14, v3.0.0)**: plain
+- **`FullLengthMrnaDesignWorkflow` (§14, v3.1.0)**: plain
   generate→evaluate→ASF/Pareto-rank run (BMC interface removed 2026-08-18).
   `reference_point` user-facing keys: `utr5_mrl`, `utr3_stability`,
   `full_mfe_score`; CDS objectives via `target_cds_mfe` + `target_cds_cai`
@@ -134,14 +143,28 @@ header and [`WORKFLOWS.md`](WORKFLOWS.md)):
   `apply_reference_point_ranking` layer: per-candidate missing dimensions
   impute at pool-worst, pool-wide unmeasured dimensions drop for everyone,
   and a partial user reference point restricts the ranking loudly
-  (`asf_ranking_note`).
-- **`RnaAptamerDesignWorkflow` (§15, v2.1.0)**: two-stage hierarchical
+  (`asf_ranking_note`). v3.1.0 (2026-08-21) adds ranking governance
+  (DECISIONS (p)): the objective set is first assembled from CapGate
+  verdicts (`objective_assembly.py`, mode-independent); demoted dims drop
+  pool-wide equally, reference-point keys naming them are explained in the
+  note, and `_state_writeback` gains `_ranking_governance`. No input field
+  removed or narrowed.
+- **`RnaAptamerDesignWorkflow` (§15, v2.2.0)**: two-stage hierarchical
   evaluation (light GC+RhoFold on all; full ProteinX+EGARPS+interface on
   top-k); EGARPS gated by RhoFold ≥ 65 and GC ∈ [0.25, 0.85]; ASF ranking on
   `egarps_component` / `rhofold_component` / `iptm_component` (shared
   `apply_reference_point_ranking` layer since 2026-08-20: missing
   measurements impute at pool-worst, pool-wide unmeasured dimensions drop
-  for everyone). Opt-in
+  for everyone). v2.2.0 (2026-08-21) adds ranking governance (DECISIONS (p)):
+  all three objectives are assembled from CapGate verdicts; when every dim is
+  demoted (the packaged-SelfModel state) the workflow returns the
+  `ranking_evidence_unavailable` degrade — success=True, generation order,
+  annotations intact, no fabricated `asf_distance`, marker in
+  summary/extras/`_state_writeback` and never in `errors` (non-empty errors
+  is a hard failure); the light-stage RhoFold pLDDT top-k filter degrades to
+  deterministic pool order when the screening profile is failed; gated oracle
+  calls (`GatedActionError`) are expected-missing annotations, and gated
+  ProteinX no longer raises. Opt-in
   `navigation=True` (2026-08-19) routes generation through the GenNav
   E14-protocol navigation (core `agent_core/generation/gennav_aptamer.py`;
   trace in `_state_writeback["_gennav_trace"]`; empty delivery fails with

@@ -51,6 +51,7 @@ from agent_core.file_manager import PROJECT_ROOT, read_sequence, save_sequence
 from agent_core.sequence_utils import normalize_rna_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.calibrated.objective_assembly import assemble_for_workflow
 from agent_core.workflows.multi_objective import apply_reference_point_ranking
 from agent_core.workflows.evaluators import (
     CompositeEvaluator,
@@ -540,9 +541,14 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
         for c in passing:
             if c.scores.get("efficiency_component") is None or c.scores.get("specificity_component") is None:
                 c.scores.update(score_sirna_candidate(c.metadata.get("metrics_bundle", {})))
+        # Ranking governance (DECISIONS (p)): no siRNA objective is oracle-
+        # backed (all deterministic compute per DECISIONS (j)), so assembly
+        # always keeps everything — the state field records that fact.
+        assembly = assemble_for_workflow(list(_ASF_OBJECTIVES), {}, self.task_type)
+        self._workflow_state["_ranking_governance"] = assembly.to_state()
         ranking = apply_reference_point_ranking(
-            passing, list(_ASF_OBJECTIVES), None,
-            maximize={key: True for key in _ASF_OBJECTIVES},
+            passing, assembly.ranking_dims, None,
+            maximize={key: True for key in assembly.ranking_dims},
         )
         if ranking.dropped_dims:
             _LOGGER.warning(

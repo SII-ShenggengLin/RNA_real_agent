@@ -47,6 +47,10 @@ from agent_core.file_manager import read_sequence, save_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflow_run_storage import build_public_summary
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.calibrated.objective_assembly import (
+    ObjectiveRef,
+    assemble_for_workflow,
+)
 from agent_core.workflows.multi_objective import apply_reference_point_ranking
 from agent_core.workflows.evaluators import (
     CRGPTEvaluator,
@@ -56,6 +60,22 @@ from agent_core.workflows.evaluators import (
 )
 
 _LOGGER = logging.getLogger("agent_core.workflows.sgrna_design")
+
+# Ranking governance (DECISIONS (p)): oracle-backed objectives.
+# ``crisot_specificity_component`` comes from the aggregate CRISOT
+# specificity service (ToolKind.compute), so it never enters the mechanism.
+_ORACLE_BACKED_OBJECTIVES: dict[str, ObjectiveRef] = {
+    "nn_component": ObjectiveRef(
+        dim="nn_component",
+        tool_name="score_sgrna_handle_with_crgpt",
+        oracle_id="crgpt_handle_score",
+    ),
+    "crisot_component": ObjectiveRef(
+        dim="crisot_component",
+        tool_name="score_crispr_off_target_with_crisot",
+        oracle_id="crisot_off_target_score",
+    ),
+}
 
 # Input model
 
@@ -486,9 +506,16 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
                 float(getattr(inp, "weight_crisot_specificity", 0.3)) if inp else 0.3
             ),
         }
+        # Ranking governance (DECISIONS (p)): nn/crisot are pending-governance
+        # oracles (registered data gap, DECISIONS (l)) — kept with a
+        # ``pending`` flag; crisot_specificity is aggregate compute, never in
+        # the mechanism. The shared layer renormalizes asf_weights over the
+        # surviving ranking dims.
+        assembly = assemble_for_workflow(list(_OBJECTIVES), _ORACLE_BACKED_OBJECTIVES, self.task_type)
+        self._workflow_state["_ranking_governance"] = assembly.to_state()
         ranking = apply_reference_point_ranking(
-            candidates, list(_OBJECTIVES), None,
-            maximize={key: True for key in _OBJECTIVES},
+            candidates, assembly.ranking_dims, None,
+            maximize={key: True for key in assembly.ranking_dims},
             weights=asf_weights,
         )
         if ranking.dropped_dims:

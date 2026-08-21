@@ -16,7 +16,7 @@ Key design principles
    metrics rather than failing entirely.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaAptamerDesignWorkflow INTERFACE LOCK (v2.1.0) —— 禁止单方面变更         ║
+║  RnaAptamerDesignWorkflow INTERFACE LOCK (v2.2.0) —— 禁止单方面变更         ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_aptamer_design workflow 的权威实现。任何字段增删、            ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：║
@@ -38,6 +38,11 @@ Key design principles
 ║  v2.1.0 (2026-08-19): +navigation(bool, 默认 False) GenNav 生产导航路径    ║
 ║  (E14 协议, 纯函数核心 agent_core/generation/gennav_aptamer.py);          ║
 ║  required_capabilities 增补 LinearFold。无字段删除或语义变更。            ║
+║  v2.2.0 (2026-08-21): 排序治理 (DECISIONS (p)) — 三个 ASF 目标全部经      ║
+║  CapGate 判决组装 (模式无关); 全部降级时交付 ranking_evidence_unavailable ║
+║  降级态 (success=True, 生成序, 注释保留, 标记不进 errors — errors 非空    ║
+║  即硬失败); 轻评估 RhoFold pLDDT top-k 筛选在 screening 画像 failed 时   ║
+║  降级为确定性池序; _state_writeback 增补 _ranking_governance。           ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -79,9 +84,38 @@ from agent_core.generation.gennav_aptamer import (
 from agent_core.sequence_utils import _pick_float
 from agent_core.workflow_models import Candidate, WorkflowResult, ToolCallRecord
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.calibrated.objective_assembly import (
+    ObjectiveRef,
+    assemble_for_workflow,
+    is_gated_error,
+    screening_filter_demoted,
+)
 from agent_core.workflows.multi_objective import apply_reference_point_ranking
 
 _LOGGER = logging.getLogger("agent_core.workflows.rna_aptamer_design")
+
+# Ranking governance (DECISIONS (p)): all three ASF objectives are oracle-
+# backed. Under the packaged SelfModel every component failed E1 profiling on
+# every family, so assembly demotes all three and the workflow delivers the
+# ``ranking_evidence_unavailable`` degrade (annotations intact, generation
+# order, no fabricated asf_distance).
+_ORACLE_BACKED_OBJECTIVES: dict[str, ObjectiveRef] = {
+    "egarps_component": ObjectiveRef(
+        dim="egarps_component",
+        tool_name="score_rna_protein_complex_with_egarps",
+        oracle_id="egarps_native_probability",
+    ),
+    "rhofold_component": ObjectiveRef(
+        dim="rhofold_component",
+        tool_name="predict_rna_tertiary_structure_with_rhofold",
+        oracle_id="rhofold_mean_plddt",
+    ),
+    "iptm_component": ObjectiveRef(
+        dim="iptm_component",
+        tool_name="predict_rna_protein_complex_with_proteinx",
+        oracle_id="proteinx_ipTM",
+    ),
+}
 
 # Input model
 
@@ -796,6 +830,12 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             if rh_res.success:
                 rhofold_plddt = _pick_float(rh_res.output, "mean_plddt")
                 rhofold_pdb = rh_res.output.get("pdb_filepath", "")
+            elif is_gated_error(rh_res.error):
+                _LOGGER.info(
+                    "aptamer_rhofold_gated (expected: demoted annotation) reason=%s",
+                    rh_res.error.get("message"),
+                )
+                metrics.setdefault("gated_annotations", []).append("rhofold_mean_plddt")
             else:
                 _LOGGER.warning("aptamer_rhofold_failed error=%s", rh_res.error)
         metrics["rhofold_mean_plddt"] = rhofold_plddt
@@ -854,6 +894,14 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 iptm = _pick_float(px_res.output, "ipTM")
                 proteinx_plddt = _pick_float(px_res.output, "mean_plddt")
                 proteinx_pdb = px_res.output.get("pdb_filepath", "")
+            elif is_gated_error(px_res.error):
+                # Expected missing under ranking governance (demoted
+                # annotation): not an evaluation failure.
+                _LOGGER.info(
+                    "aptamer_proteinx_gated (expected: demoted annotation) reason=%s",
+                    px_res.error.get("message"),
+                )
+                metrics.setdefault("gated_annotations", []).append("proteinx_ipTM")
             else:
                 raise RuntimeError(
                     f"ProteinX complex prediction failed: {px_res.error}"
@@ -948,6 +996,12 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             if rh_res.success:
                 rhofold_plddt = _pick_float(rh_res.output, "mean_plddt")
                 rhofold_pdb = rh_res.output.get("pdb_filepath", "")
+            elif is_gated_error(rh_res.error):
+                _LOGGER.info(
+                    "aptamer_rhofold_gated (expected: demoted annotation) reason=%s",
+                    rh_res.error.get("message"),
+                )
+                metrics.setdefault("gated_annotations", []).append("rhofold_mean_plddt")
             else:
                 _LOGGER.warning("aptamer_rhofold_failed error=%s", rh_res.error)
         metrics["rhofold_mean_plddt"] = rhofold_plddt
@@ -961,11 +1015,28 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
 
         Uses RhoFold pLDDT as the primary fast filter; foldability is the
         strongest predictor of whether full complex evaluation is worthwhile.
+        When RhoFold's screening profile is failed the caller degrades to
+        deterministic pool order instead (ranking governance §3.5) — this
+        score then no longer arbitrates selection.
         """
         plddt = metrics.get("rhofold_mean_plddt")
         if plddt is not None:
             return float(plddt)
         return 0.0
+
+    def _rhofold_screening_demoted(self) -> bool:
+        """Whether RhoFold's screening verdict forbids pLDDT top-k arbitration.
+
+        Cached per run in workflow state (the SelfModel is static during a
+        run). Mode-independent; ``False`` when governance is off.
+        """
+        cached = self._workflow_state.get("_rhofold_screening_demoted")
+        if cached is None:
+            cached = screening_filter_demoted(
+                "predict_rna_tertiary_structure_with_rhofold", self.task_type
+            )
+            self._workflow_state["_rhofold_screening_demoted"] = cached
+        return bool(cached)
 
     def _evaluate_candidates_concurrent(
         self,
@@ -988,6 +1059,16 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         total = len(candidates)
         top_k = max(top_k_base, int(total * 0.5))
         top_k = min(top_k, total)
+
+        # Ranking governance §3.5: RhoFold pLDDT must not arbitrate top-k
+        # selection when its screening profile is failed — degrade to
+        # deterministic pool order (identical in advisory and enforce).
+        coarse_demoted = self._rhofold_screening_demoted()
+        if coarse_demoted:
+            self._workflow_state["_screening_governance"] = {
+                "rhofold_topk_filter": "demoted-pool-order"
+            }
+            _LOGGER.info("hierarchical_filter_screening_demoted tool=rhofold")
 
         _LOGGER.info(
             "hierarchical_filter_start total=%d top_k=%d event=%s",
@@ -1031,8 +1112,14 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                         payload.update(progress_extra)
                     progress_callback(payload)
 
-        # Select top-k by coarse score
-        light_results.sort(key=lambda x: x[2], reverse=True)
+        # Select top-k by coarse score; when the screening oracle is demoted,
+        # deterministic pool order replaces pLDDT arbitration (the as_completed
+        # insertion order alone would be nondeterministic).
+        if coarse_demoted:
+            pool_order = {c.id: i for i, c in enumerate(candidates)}
+            light_results.sort(key=lambda x: pool_order[x[0].id])
+        else:
+            light_results.sort(key=lambda x: x[2], reverse=True)
         selected = light_results[:top_k]
         selected_ids = {c.id for c, _, _ in selected}
 
@@ -1105,11 +1192,24 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         Returns ``(best_candidate, pareto_frontier, raw_reference_point, candidate_asf_map)``.
         """
         objectives = ["egarps_component", "rhofold_component", "iptm_component"]
+        # Ranking governance (DECISIONS (p)): assemble the objective set from
+        # CapGate verdicts — mode-independent. When every dim is demoted the
+        # ranking has no evidence basis and the caller delivers the
+        # ``ranking_evidence_unavailable` degrade instead of a fabricated ASF.
+        assembly = assemble_for_workflow(
+            objectives, _ORACLE_BACKED_OBJECTIVES, self.task_type
+        )
+        self._workflow_state["_ranking_governance"] = assembly.to_state()
+        if assembly.degrade_reason:
+            _LOGGER.warning(
+                "aptamer_ranking_evidence_unavailable demoted=%s", sorted(assembly.demoted)
+            )
+            return candidates[0], [], None, {}
         ranking = apply_reference_point_ranking(
             candidates,
-            objectives,
+            assembly.ranking_dims,
             inp.reference_point,
-            maximize={key: True for key in objectives},
+            maximize={key: True for key in assembly.ranking_dims},
         )
         notes: list[str] = []
         if ranking.dropped_dims:
@@ -1117,8 +1217,16 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         if ranking.partial_reference:
             notes.append(
                 f"partial_reference_point: ranking restricted to "
-                f"{ranking.ranking_dims} of measurable {objectives}"
+                f"{ranking.ranking_dims} of measurable {assembly.ranking_dims}"
             )
+        for key in (inp.reference_point or {}):
+            if key in assembly.demoted:
+                notes.append(
+                    f"reference_point key '{key}' ignored: demoted by ranking "
+                    f"governance ({assembly.demoted[key]})"
+                )
+        if assembly.kept_flags:
+            notes.append(f"objective_flags={assembly.kept_flags}")
         if notes:
             _LOGGER.warning("aptamer_asf_ranking_notes %s", "; ".join(notes))
             self._workflow_state["_asf_ranking_note"] = "; ".join(notes)
@@ -1189,11 +1297,26 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             ]
             detail_lines.append(" | ".join(line_parts))
 
+        governance = self._workflow_state.get("_ranking_governance") or {}
+        ranking_degraded = bool(governance.get("degrade_reason"))
+
         summary_parts = [
             f"candidates={len(ranked)}",
             f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
-            f"best_candidate_source=reference_point_optimization",
+            (
+                "best_candidate_source=generation_order_no_evidence"
+                if ranking_degraded
+                else "best_candidate_source=reference_point_optimization"
+            ),
         ]
+        if ranking_degraded:
+            summary_parts.insert(
+                0, f"ranking_evidence_unavailable: {governance.get('degrade_reason')}"
+            )
+            summary_parts.append(
+                "ranking_note=all objectives demoted to scoring_annotation; "
+                "order is generation order, component scores are annotations only"
+            )
         nav_trace = self._workflow_state.get("_gennav_trace")
         if nav_trace:
             summary_parts.append(
@@ -1216,8 +1339,17 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         summary_parts.extend(detail_lines)
 
         extras: dict[str, Any] = {
-            "best_candidate_source": "reference_point_optimization",
+            "best_candidate_source": (
+                "generation_order_no_evidence" if ranking_degraded
+                else "reference_point_optimization"
+            ),
         }
+        if ranking_degraded:
+            # success stays True (candidates were generated and evaluated;
+            # retry cannot restore falsified oracles) and the marker never
+            # enters ``errors`` — a non-empty errors list is a hard failure
+            # under WorkflowResult.is_hard_failure.
+            extras["ranking_evidence_unavailable"] = True
         if pareto_frontier:
             extras["pareto_frontier"] = pareto_frontier
         if raw_ref_point is not None:

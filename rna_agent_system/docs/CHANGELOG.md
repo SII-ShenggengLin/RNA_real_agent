@@ -1,7 +1,7 @@
 # Change Log
 
 > **Scope**: locked interface changes and major workflow introductions.
-> **Last updated**: 2026-08-20
+> **Last updated**: 2026-08-21
 
 > **History policy (2026-08-18)**: this log now records only the current
 > interface state and the most recent change era. The detailed per-day ledger
@@ -9,6 +9,44 @@
 > experimental arc (what was tried, what was falsified, with evidence
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
+
+## 2026-08-21 — Ranking governance: ASF objectives assembled from CapGate verdicts
+
+Implements [`RANKING_GOVERNANCE.md`](RANKING_GOVERNANCE.md) (DECISIONS (p)):
+the shared ASF ranking layer now consumes the DecisionGate verdict as a
+first-class input, closing the pre-existing gap where advisory mode ranked by
+metrics CapGate had falsified while enforce mode crashed workflows (or
+silently returned generation order).
+
+- **New module**: `agent_core/calibrated/objective_assembly.py` — pure,
+  deterministic verdict→action mapping (verified → keep;
+  transferred-verified → keep + flag; failed → demote to
+  `scoring_annotation` pool-wide equally; pending → keep + flag;
+  unprofiled-enforce → keep + flag; deterministic compute never enters).
+  Assembly is **mode-independent** (never reads `RNADA_CAPGATE`);
+  `RNADA_CAPGATE=off` disables the whole mechanism. One
+  `ranking_objective_assembly` audit event per run; state in
+  `_state_writeback["_ranking_governance"]`.
+- **`RnaAptamerDesignWorkflow` v2.2.0**: all three ASF objectives are
+  demoted under the packaged SelfModel → new
+  `ranking_evidence_unavailable` degrade (success=True, generation order,
+  annotations intact, no fabricated `asf_distance`; marker never enters
+  `errors` since non-empty errors is a hard failure). Light-stage RhoFold
+  pLDDT top-k filter degrades to deterministic pool order when the screening
+  profile is failed; gated oracle calls (`GatedActionError`) are
+  expected-missing annotations (gated ProteinX no longer raises).
+- **`FullLengthMrnaDesignWorkflow` v3.1.0**: objectives assembled before
+  ranking (`utr5_mrl` transferred-verified flag, `utr3_stability`
+  unprofiled — its source is `gemorna_3utr_stability`, which has no records;
+  RNASTOP's `overall_stability` is a diagnostic, not an ASF dim); reference
+  points naming demoted keys are explained in `asf_ranking_note`.
+- **siRNA / sgRNA / tertiary**: structural no-ops (all-compute / pending /
+  unprofiled-under-task-key) — additive `_ranking_governance` state only.
+- **Deferred (registered)**: continuous profile-derived ASF weights —
+  blocked on SelfModel coverage and cross-family validation.
+- **Tests**: `tests/test_ranking_governance.py` (15 tests: per-workflow
+  assembly pinning, mode independence, off escape hatch, aptamer degrade
+  path, gated-error recognition, no-op regression); full suite 534 passed.
 
 ## 2026-08-20 (b) — ASF audit fixes + shared ranking layer generalized to five workflows
 

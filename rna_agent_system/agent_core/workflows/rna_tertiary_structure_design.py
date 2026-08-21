@@ -60,9 +60,26 @@ from agent_core.file_manager import resolve_project_path, save_sequence
 from agent_core.sequence_utils import _pick_float
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.calibrated.objective_assembly import (
+    ObjectiveRef,
+    assemble_for_workflow,
+)
 from agent_core.workflows.multi_objective import apply_reference_point_ranking
 
 _LOGGER = logging.getLogger("agent_core.workflows.rna_tertiary_structure_design")
+
+# Ranking governance (DECISIONS (p)): only the RhoFold component is oracle-
+# backed; under this workflow's task key the SelfModel holds no records
+# (DECISIONS (k) task-keyed gating), so it stays with an ``unprofiled`` flag
+# rather than inheriting the E1 aptamer failure. The closeness dimensions are
+# deterministic geometric compute (DECISIONS (j)).
+_ORACLE_BACKED_OBJECTIVES: dict[str, ObjectiveRef] = {
+    "rhofold_component": ObjectiveRef(
+        dim="rhofold_component",
+        tool_name="predict_rna_tertiary_structure_with_rhofold",
+        oracle_id="rhofold_mean_plddt",
+    ),
+}
 
 # Input model
 
@@ -694,9 +711,14 @@ class RnaTertiaryStructureDesignWorkflow(
             "rmsd_component": float(getattr(inp, "weight_rmsd", 0.5)) if inp else 0.5,
             "tm_component": float(getattr(inp, "weight_tm_score", 0.5)) if inp else 0.5,
         }
+        # Ranking governance (DECISIONS (p)): RhoFold is unprofiled under this
+        # task key (kept + flag); the shared layer renormalizes asf_weights
+        # over the surviving ranking dims.
+        assembly = assemble_for_workflow(list(_OBJECTIVES), _ORACLE_BACKED_OBJECTIVES, self.task_type)
+        self._workflow_state["_ranking_governance"] = assembly.to_state()
         ranking = apply_reference_point_ranking(
-            candidates, list(_OBJECTIVES), None,
-            maximize={key: True for key in _OBJECTIVES},
+            candidates, assembly.ranking_dims, None,
+            maximize={key: True for key in assembly.ranking_dims},
             weights=asf_weights,
         )
         if ranking.dropped_dims:

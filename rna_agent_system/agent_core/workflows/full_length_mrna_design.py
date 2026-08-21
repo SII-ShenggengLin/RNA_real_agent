@@ -8,7 +8,7 @@ Architecture: Full-length workflow reuses MrnaCdsDesignWorkflow for CDS
 generation and evaluation; only full-length and UTR metrics are computed here.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v3.0.0) —— 禁止单方面变更       ║
+║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v3.1.0) —— 禁止单方面变更       ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 full_length_mrna_design workflow 的权威实现。任何字段增删、         ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
@@ -22,6 +22,11 @@ generation and evaluation; only full-length and UTR metrics are computed here.
 ║    - agent_core/runner.py                                                     ║
 ║    - tests/test_full_length_mrna_design.py                                    ║
 ║    - tests/test_full_length_mrna_e2e_live.py                                  ║
+║                                                                               ║
+║  v3.1.0 (2026-08-21): 排序治理 (DECISIONS (p)) — ASF 目标集先经 CapGate      ║
+║  判决组装 (agent_core/calibrated/objective_assembly.py, 模式无关);           ║
+║  _state_writeback 增补 _ranking_governance; 被降级维度对全池同等剔除,        ║
+║  参考点中被降级的键在 asf_ranking_note 显式说明。无输入字段删除。            ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -55,6 +60,10 @@ from agent_core.workflows.evaluators import (
     UTR3StabilityEvaluator,
     UTR5MrlEvaluator,
 )
+from agent_core.calibrated.objective_assembly import (
+    ObjectiveRef,
+    assemble_for_workflow,
+)
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
 from agent_core.workflows.multi_objective import apply_reference_point_ranking
 from agent_core.workflows.scoring import FullLengthScoringFunction
@@ -73,6 +82,26 @@ _USER_FACING_OBJECTIVES: tuple[str, ...] = (
     "utr3_stability",
     "full_mfe_score",
 )
+
+# Ranking governance (DECISIONS (p)): oracle-backed objectives and their
+# evidence sources. ``cds_component`` / ``full_mfe_score`` are deterministic
+# compute (DECISIONS (j)) and never enter the mechanism. RNASTOP's
+# ``overall_stability`` is a report-only diagnostic, not an ASF dimension, so
+# its E18 ranking failure demotes nothing here — its blocked enforce calls
+# cost a diagnostic metric only.
+_ORACLE_BACKED_OBJECTIVES: dict[str, ObjectiveRef] = {
+    "utr5_mrl": ObjectiveRef(
+        dim="utr5_mrl",
+        tool_name="predict_5utr_mrl_with_gemorna",
+        oracle_id="gemorna_5utr_mrl",
+    ),
+    "utr3_stability": ObjectiveRef(
+        dim="utr3_stability",
+        tool_name="predict_3utr_stability_with_gemorna",
+        oracle_id="gemorna_3utr_stability",
+    ),
+}
+
 
 
 class FullLengthMrnaDesignInput(BaseModel):
@@ -693,11 +722,18 @@ class FullLengthMrnaDesignWorkflow(
         Returns ``(best_candidate, pareto_frontier, raw_reference_point, candidate_asf_map)``.
         """
         objectives = list(_USER_FACING_OBJECTIVES)
+        # Ranking governance (DECISIONS (p)): assemble the objective set from
+        # CapGate verdicts before ranking — mode-independent; demoted dims
+        # drop for the whole pool equally and survive as annotations.
+        assembly = assemble_for_workflow(
+            objectives, _ORACLE_BACKED_OBJECTIVES, self.task_type
+        )
+        self._workflow_state["_ranking_governance"] = assembly.to_state()
         ranking = apply_reference_point_ranking(
             candidates,
-            objectives,
+            assembly.ranking_dims,
             inp.reference_point,
-            maximize={key: True for key in objectives},
+            maximize={key: True for key in assembly.ranking_dims},
         )
         notes: list[str] = []
         if ranking.dropped_dims:
@@ -705,8 +741,18 @@ class FullLengthMrnaDesignWorkflow(
         if ranking.partial_reference:
             notes.append(
                 f"partial_reference_point: ranking restricted to "
-                f"{ranking.ranking_dims} of measurable {objectives}"
+                f"{ranking.ranking_dims} of measurable {assembly.ranking_dims}"
             )
+        # A user reference point naming a demoted dim must be told why the
+        # key no longer ranks (loud, not silent — DECISIONS (o) semantics).
+        for key in (inp.reference_point or {}):
+            if key in assembly.demoted:
+                notes.append(
+                    f"reference_point key '{key}' ignored: demoted by ranking "
+                    f"governance ({assembly.demoted[key]})"
+                )
+        if assembly.kept_flags:
+            notes.append(f"objective_flags={assembly.kept_flags}")
         if notes:
             _LOGGER.warning("full_length_asf_ranking_notes %s", "; ".join(notes))
             self._workflow_state["_asf_ranking_note"] = "; ".join(notes)

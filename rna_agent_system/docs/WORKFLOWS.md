@@ -212,6 +212,32 @@ semantics:
   conservative dominance (a candidate missing a dimension cannot dominate one
   that has it).
 
+**Ranking governance (2026-08-21, DECISIONS (p))**
+
+Before ranking, every ASF workflow assembles its objective set from CapGate
+verdicts (`agent_core/calibrated/objective_assembly.py`, design doc
+[`RANKING_GOVERNANCE.md`](RANKING_GOVERNANCE.md)):
+
+- verified oracle → dimension kept; transferred-verified → kept + flag;
+  failed (direct or transferred) → **demoted to `scoring_annotation`**
+  (excluded from ranking pool-wide equally; value/gated marker still
+  reported); pending oracles (CRISOT-Score / CRGPT) → kept + `pending` flag;
+  unprofiled-enforce → kept + `unprofiled` flag; deterministic compute
+  metrics never enter the mechanism.
+- Assembly is **mode-independent**: advisory and enforce produce the same
+  ranking wherever SelfModel records exist — this resolves the pre-2026-08-21
+  state where advisory ranked by falsified metrics while enforce crashed or
+  silently returned generation order.
+- Under the packaged SelfModel the aptamer trio (EGARPS/RhoFold/ipTM) is
+  fully demoted: `rna_aptamer_design` returns the
+  `ranking_evidence_unavailable` degrade (success=True, generation order,
+  annotations intact, no fabricated `asf_distance`), and the light-stage
+  RhoFold pLDDT top-k filter degrades to deterministic pool order.
+- Every run records `_state_writeback["_ranking_governance"]`
+  (ranking_dims / kept_flags / demoted / degrade_reason) and one
+  `ranking_objective_assembly` audit event.
+
+
 **User-friendly CDS targets**
 
 Users must specify CDS objectives via `target_cds_mfe` (kcal/mol) and `target_cds_cai`; the internal `cds_component` is no longer accepted as a user-facing `reference_point` key. When both `target_cds_mfe` and `target_cds_cai` are supplied, the workflow converts them:
