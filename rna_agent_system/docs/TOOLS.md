@@ -103,7 +103,7 @@
 
 ### 3.1 LinearDesign (Port 8014)
 
-| Upstream | [LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign.git) |
+| Upstream | [LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign.git) — pinned to fork [SII-ShenggengLin/LinearDesign](https://github.com/SII-ShenggengLin/LinearDesign.git) @ `ef10882` (junction-aware C++ patch + memory-guard wrapper; see DEPLOYMENT §1.4) |
 | Endpoints | `GET /health`, `POST /generate/cds` |
 
 **Agent tools**
@@ -168,7 +168,7 @@
 
 ### 4.1 RhoFold (Port 8005)
 
-| Upstream | [ml4bio/RhoFold](https://github.com/ml4bio/RhoFold) |
+| Upstream | [ml4bio/RhoFold](https://github.com/ml4bio/RhoFold) — pinned to fork [SII-ShenggengLin/RhoFold](https://github.com/SII-ShenggengLin/RhoFold.git) @ `6761653` (local-checkpoint-first inference patch; see DEPLOYMENT §1.4) |
 | Endpoint | `POST /predict` |
 
 **Agent tool**: `predict_rna_tertiary_structure_with_rhofold(filepath, relax_steps=0, ...)`
@@ -179,7 +179,7 @@
 
 ### 4.2 RhoDesign (Port 8006)
 
-| Upstream | [ml4bio/RhoDesign](https://github.com/ml4bio/RhoDesign) |
+| Upstream | [ml4bio/RhoDesign](https://github.com/ml4bio/RhoDesign) — pinned to fork [SII-ShenggengLin/RhoDesign](https://github.com/SII-ShenggengLin/RhoDesign.git) @ `0dc7c54` (reproducible-seed inference patch; see DEPLOYMENT §1.4) |
 | Endpoint | `POST /design/from-structure` |
 
 **Agent tool**: `design_rna_sequence_with_rhodesign(pdb_filepath, ...)`

@@ -22,7 +22,7 @@ Each microservice has its own Conda `environment.yml`; create and activate it be
 
 ### 1.4 Submodule initialization
 
-`external_repos/` holds **20 vendored external repos, 16 of them registered git submodules** (EGARPS, Protenix and RiboDiffusion are vendored as plain directories and are not in `.gitmodules`).
+`external_repos/` holds **20 vendored external repos, 17 of them registered git submodules** (EGARPS, Protenix and RiboDiffusion are vendored as plain directories and are not in `.gitmodules`).
 
 ```bash
 # Fresh clone
@@ -32,7 +32,19 @@ git clone --recurse-submodules <repo-url>
 git pull && git submodule update --init --recursive
 ```
 
-Registered submodules (16): GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RNAsmol, RNASTOP, CRISOT, ODesign, IRESfinder, LinearDesign, LinearFold, Evitar, ViennaRNA, sgrna_design, InstructNA. Vendored (unregistered): EGARPS, Protenix, RiboDiffusion.
+Registered submodules (17): GEMORNA, GerNA-Bind, RNARL, RhoFold, RhoDesign, RNAsmol, RNASTOP, CRISOT, ODesign, IRESfinder, LinearDesign, LinearFold, Evitar, ViennaRNA, sgrna_design, InstructNA, codonw-slim (legacy: its service was removed 2026-08-18; the submodule stays registered). Vendored (unregistered): EGARPS, Protenix, RiboDiffusion.
+
+#### Pinned forks with local patches (read before first run)
+
+Three submodules do **not** point at the original upstream repositories: `.gitmodules` pins them to public forks under `SII-ShenggengLin/` that carry **one local patch commit on top of upstream**. A `--recurse-submodules` clone fetches the patched code automatically (the forks are public and the pinned SHAs are their `main` tips), but if you compare behaviour against the originals, know that these differ:
+
+| Submodule | `.gitmodules` URL (what you get) | Original upstream | Pinned patch | What the patch changes |
+|---|---|---|---|---|
+| LinearDesign | `SII-ShenggengLin/LinearDesign` @ `ef10882` | [LinearDesignSoftware/LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign) | 2026-08-10 "junction-aware design patch + memory guard wrapper" | (a) C++ junction-aware objective in `src/linear_design.cpp` + beam-CKY parser/backtrace — the junction-aware *tool* was retired 2026-08-18 on a P2 NO-GO, but the patched source stays pinned and the standard `/generate/cds` build comes from it; (b) `bin/LinearDesign_2D` becomes a memory-guard wrapper (address-space cap + `oom_score_adj`) that `exec`s the compiled `bin/LinearDesign_2D.real` — the compile-and-rename sequence in §3.1 is **mandatory** |
+| RhoDesign | `SII-ShenggengLin/RhoDesign` @ `0dc7c54` | [ml4bio/RhoDesign](https://github.com/ml4bio/RhoDesign) | 2026-08-10 "local deployment patches for the RNADesignAgent microservice" | `src/inference.py` / `src/inference_without2d.py`: drops the hard-coded `random.seed(1)` at import and adds a `--seed` CLI flag seeding python/numpy/torch/CUDA, so the microservice can offer reproducible sampling |
+| RhoFold | `SII-ShenggengLin/RhoFold` @ `6761653` | [ml4bio/RhoFold](https://github.com/ml4bio/RhoFold) | 2026-08-10 "local inference patch + local weights path notes" | `inference.py`: skips the HuggingFace `snapshot_download` when the local checkpoint already exists (offline / air-gapped servers); `pretrained/README.md` notes on local weights; drops two `.DS_Store` |
+
+The remaining 14 registered submodules are pinned to unmodified upstream commits; RNARL and RNASTOP are lab-original repositories (not forks).
 
 ---
 
@@ -87,7 +99,7 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python cli/form_chat.py \
 
 | Service | Extra step |
 |---------|------------|
-| LinearDesign | `cd external_repos/LinearDesign && make` |
+| LinearDesign | `cd external_repos/LinearDesign && make` then **rename + restore the wrapper** (the compiled binary is NOT tracked and `make` overwrites it): `mv bin/LinearDesign_2D bin/LinearDesign_2D.real && git checkout -- bin/LinearDesign_2D`. The tracked `bin/LinearDesign_2D` is a memory-guard wrapper that `exec`s `LinearDesign_2D.real` (see §1.4 patch table) |
 | LinearFold | `cd external_repos/LinearFold && make` |
 | GerNA-Bind | `bash microservices/gernabind_service/install_pyg_gpu.sh` |
 | RiboDiffusion | `conda activate ribodiffusion_service_env && bash install_pyg_torch_extensions.sh` |

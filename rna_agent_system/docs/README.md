@@ -21,7 +21,7 @@ A tool-first, calibrated multi-agent system for RNA bioinformatics design and an
 | Sequences never go in prompts | Long sequences travel via `workspace/` file paths, never inside chat context |
 | Environment isolation | Every tool has its own Conda environment + FastAPI microservice |
 | HTTP decoupling | Agent layer calls tools only through HTTP APIs, never by direct imports |
-| Source independence | 20 vendored external repos under `external_repos/` (17 registered git submodules) |
+| Source independence | 20 vendored external repos under `external_repos/` (17 registered git submodules; 3 of them pinned to patched forks — see DEPLOYMENT §1.4) |
 
 ---
 
@@ -93,6 +93,8 @@ rna_agent_system/
 ---
 
 ## 4. Quick Start
+
+> **Vendored repos note (read before first run).** Clone with `--recurse-submodules`. Three submodules (LinearDesign, RhoDesign, RhoFold) are pinned to public forks carrying one local patch each on top of upstream — the clone gets the patched code automatically, but LinearDesign additionally **requires compiling** (`make` + wrapper restore, DEPLOYMENT §3.1), and several services need manually placed model weights (DEPLOYMENT §3.2). Full patch table and rationale: [`DEPLOYMENT.md` §1.4](DEPLOYMENT.md).
 
 ### 4.1 Install main agent environment
 
