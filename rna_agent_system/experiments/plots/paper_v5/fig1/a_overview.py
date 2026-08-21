@@ -28,7 +28,7 @@ layers = [
     ("L3", "service manager (health, auto-start)"),
     ("L2", "11 domain workflows: generate \u2192 evaluate \u2192 score \u2192 rank"),
     ("L1", "capability wrappers + audit records"),
-    ("L0", "42 tools / 21 local services (Fig 1f)"),
+    ("L0", "41 scientific tools / 21 local services (Fig 1f)"),
 ]
 y = 78.0
 for tag, txt in layers:

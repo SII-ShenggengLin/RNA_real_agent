@@ -8,11 +8,11 @@
 
 ## 1. What is this?
 
-An LLM-driven agent system for RNA bioinformatics design and analysis.
+A tool-first, calibrated multi-agent system for RNA bioinformatics design and analysis (paper positioning: the LLM orchestrates, reviews and reports but never writes sequences — every molecule traces to a deterministic generator call).
 
 - **Input**: structured workflow parameters via TUI form or JSON file; RNA/protein sequences and structure files are provided as parameter values
 - **Output**: designed sequences, predictions, scores, and structured reports
-- **Mechanism**: The user explicitly selects a workflow and fills a structured form; `AgentRunner` executes the workflow directly. Routing is explicit-only — LLM calls exist only at two advisory points (quality review, multi-node synthesis).
+- **Mechanism**: The user explicitly selects a workflow and fills a structured form; `AgentRunner` executes the workflow directly. Routing is explicit-only — LLM calls exist only at the advisory/review points (quality review, multi-node synthesis + ClaimGate claim checking).
 
 **Core principles**
 

@@ -13,7 +13,7 @@ fig = plt.figure(figsize=(W * S.MM, H * S.MM))
 gs = fig.add_gridspec(2, 3, left=0.05, right=0.98, top=0.80, bottom=0.10,
                       hspace=0.9, wspace=0.25)
 
-kpis = [("42", "tools"), ("21", "local services"), ("11", "workflows"),
+kpis = [("41", "scientific tools"), ("21", "local services"), ("11", "workflows"),
         ("210", "benchmark tasks"), (f"{st['n_tool_calls'] + st['n_gate_decisions']:,}",
          "audit events"), ("5,747", "lines, append-only")]
 for i, (big, small) in enumerate(kpis):

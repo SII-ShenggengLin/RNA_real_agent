@@ -26,7 +26,7 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 |---|---|---|---|---|
 | a | End-to-end cycle: user goal → tool-first platform (LLM never writes sequences; every call audited) → candidates + audit trail; seven-layer stack L0–L6 drawn as the platform spine | schematic | colspan 3, 50 | ARCHITECTURE.md facts |
 | b | Multi-agent execution layer (L4): PipelineAgent / SpecialistAgent / QualityAgent (advisory) / SynthesisAgent with measured contributions | schematic | colspan 2, 46 | PAPER_DRAFT Methods |
-| c | Platform at a glance: 42 tools · 21 services · 11 workflows · 210 tasks · 5,747 audit events · 12 sessions | KPI tile + donut (tool_call vs gate_decision) | 55 × 46 | `workspace/audit/platform_audit.jsonl`, tool_specs |
+| c | Platform at a glance: 41 scientific tools · 21 services · 11 workflows · 210 tasks · 5,747 audit events · 12 sessions | KPI tile + donut (tool_call vs gate_decision) | 55 × 46 | `workspace/audit/platform_audit.jsonl`, tool_specs |
 | d | CapGate: anchor sets → capability profiling → SelfModel grades → DecisionGate / ClaimGate → append-only trail; scope ladder | schematic | colspan 2, 46 | CapGate Methods |
 | e | GenNav: gear-lattice feasibility probe → budget allocation (guarantee rounds) → per-profile delivery or declared degrade | schematic | 55 × 46 | GenNav Methods |
 | f | RNADesign-210 composition: tasks per workflow (11 bars) + null models + literature anchors annotation | horizontal bar + annotations | colspan 3, 34 | `fig2_summary.json` coverage |

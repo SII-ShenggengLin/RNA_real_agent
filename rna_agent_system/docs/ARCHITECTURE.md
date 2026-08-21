@@ -343,7 +343,7 @@ Minimal name-based registry for LangChain-compatible tools.
 
 ## 4. Routing Strategy
 
-Routing is **explicit-only**: every run selects its workflow(s) up front. There is no automatic router and no LLM-driven planner.
+Routing is **explicit-only**: every run selects its workflow(s) up front. There is no automatic router and no LLM planner.
 
 ### 4.1 Explicit Workflow Selection
 
@@ -409,7 +409,7 @@ When a `QualityProfile` *is* used, its pass/fail criteria must be derivable from
 
 | Workflow | QualityProfile | Strategy |
 |----------|----------------|----------|
-| `mrna_cds_design` | `MRNA_CDS_QUALITY_PROFILE` | LLM-driven review (CAI, MFE, GC, RNASTOP) |
+| `mrna_cds_design` | `MRNA_CDS_QUALITY_PROFILE` | Advisory LLM review (CAI, MFE, GC, RNASTOP) |
 | `sirna_design` | `SIRNA_QUALITY_PROFILE` | Safety review: off-target, specificity, GC |
 | `sgrna_design` | `SGRNA_QUALITY_PROFILE` | Quality review: `nn_score` and on-target metrics |
 | `rna_aptamer_design` | `RNA_APTAMER_QUALITY_PROFILE` | Reference-point-aware quality review |
