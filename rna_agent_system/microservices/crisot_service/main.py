@@ -350,6 +350,34 @@ def calculate_spec(payload: CrisotSpecRequest) -> CrisotSpecResponse:
             detail=f"CSV is missing required columns: {sorted(missing_columns)}",
         )
 
+    # Row-level validation, mirroring /score: every On/Off sequence must be
+    # 23 nt (spacer + NGG PAM) after normalization. Without this check a
+    # 20-nt spacer CSV is silently scored (upstream CRISOT reads only the
+    # first 20 positions) instead of being rejected.
+    for idx, row in dataframe.iterrows():
+        for column, field_name in ((payload.on_item, "On"), (payload.off_item, "Off")):
+            sequence = "".join(
+                ch for ch in str(row[column]).upper().replace("U", "T") if ch.isalpha()
+            )
+            invalid_chars = sorted(set(ch for ch in sequence if ch not in {"A", "C", "G", "T", "N"}))
+            if invalid_chars:
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"`{field_name}` sequence at CSV row {idx + 2} (column {column!r}) supports "
+                        f"only A/C/G/T/U/N characters. Unsupported: {''.join(invalid_chars)}"
+                    ),
+                )
+            if len(sequence) != 23:
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"`{field_name}` sequence at CSV row {idx + 2} (column {column!r}) must be "
+                        f"23 nt long including NGG PAM after normalization; got {len(sequence)} nt."
+                    ),
+                )
+            dataframe.loc[idx, column] = sequence
+
     model = _load_model(_default_ref_genome())
     try:
         spec, scored_dataframe = model.spec(

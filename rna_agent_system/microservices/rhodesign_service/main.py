@@ -154,6 +154,60 @@ def _read_predicted_sequence(fasta_path: Path) -> str:
     return "".join(lines).upper().replace("T", "U")
 
 
+# Modified-nucleotide residue names (PDB 3-letter codes) mapped to their parent
+# bases. Upstream RhoDesign compares the residue count from the raw PDB against
+# its coordinate-group count; crystal PDBs with waters/ions/modified residues
+# make the two disagree and crash the inference with a bare length assertion.
+_MOD_RESIDUE_TO_PARENT = {
+    "PSU": "U", "H2U": "U", "5MU": "U", "OMU": "U", "4SU": "U", "1HU": "U",
+    "5MC": "C", "OMC": "C", "3MC": "C", "M5C": "C", "C4S": "C",
+    "2MG": "G", "M2G": "G", "OMG": "G", "7MG": "G", "1MG": "G",
+    "YYG": "G", "YG ": "G", "2OM": "G",
+    "1MA": "A", "2MA": "A", "M6A": "A", "MA6": "A", "M1A": "A",
+    "GTP": "G", "ATP": "A", "CTP": "C", "UTP": "U",
+    "DA": "A", "DC": "C", "DG": "G", "DT": "U", "DU": "U",
+}
+_STANDARD_RNA_RESIDUES = {"A", "C", "G", "U"}
+
+
+def _sanitize_pdb_for_rhodesign(pdb_path: Path, run_dir: Path) -> Path:
+    """Rewrite the input PDB keeping only nucleotide residues.
+
+    Drops waters/ions/ligands and alternate conformers, and renames modified
+    nucleotides to their parent bases (atom names of the shared core are
+    unchanged by these modifications). Returns the cleaned file path inside
+    *run_dir*; raises 400 when nothing nucleotide-shaped survives.
+    """
+    kept_lines: list[str] = []
+    for line in pdb_path.read_text(encoding="utf-8").splitlines():
+        record = line[:6].strip()
+        if record in ("ATOM", "HETATM"):
+            if line[16] not in (" ", "A"):
+                continue  # alternate conformer B/C/...
+            resname = line[17:20].strip()
+            if resname in _STANDARD_RNA_RESIDUES:
+                kept_lines.append("ATOM  " + line[6:] if record == "HETATM" else line)
+            elif resname in _MOD_RESIDUE_TO_PARENT:
+                parent = _MOD_RESIDUE_TO_PARENT[resname]
+                kept_lines.append("ATOM  " + line[6:17] + f"{parent:>3}" + line[20:])
+        elif record in ("TER", "END", "ENDMDL"):
+            continue
+        else:
+            kept_lines.append(line)
+    if not any(ln[:6].strip() in ("ATOM", "HETATM") for ln in kept_lines):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "PDB input contains no standard or modified nucleotide residues "
+                "recognizable by the sanitizer; RhoDesign designs RNA only."
+            ),
+        )
+    kept_lines.extend(["TER", "END"])
+    cleaned_path = run_dir / "input_sanitized.pdb"
+    cleaned_path.write_text("\n".join(kept_lines) + "\n", encoding="utf-8")
+    return cleaned_path
+
+
 def _locate_output_fasta(output_dir: Path) -> Path:
     fasta_files = sorted(output_dir.glob("*.fasta"))
     if not fasta_files:
@@ -198,6 +252,8 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
     output_dir = run_dir / "output"
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    inference_pdb_path = _sanitize_pdb_for_rhodesign(pdb_path, run_dir)
+
     if payload.temperature is not None:
         temperature = payload.temperature
     else:
@@ -210,7 +266,7 @@ def design_from_structure(payload: RhoDesignRequest) -> RhoDesignResponse:
         sys.executable,
         script_name,
         "-pdb",
-        str(pdb_path),
+        str(inference_pdb_path),
         "-save",
         str(output_dir),
         "-device",

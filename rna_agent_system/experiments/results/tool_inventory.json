@@ -559,6 +559,7 @@
         "agent_core/workflows/ires_prediction.py",
         "agent_core/workflows/mrna_cds_design.py",
         "agent_core/workflows/mrna_sequence_scoring.py",
+        "agent_core/workflows/rna_aptamer_design.py",
         "agent_core/workflows/sirna_design.py"
       ],
       "experiment_callers": []

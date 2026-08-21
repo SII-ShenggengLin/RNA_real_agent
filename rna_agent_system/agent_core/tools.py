@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
+import tempfile
 from pathlib import Path
 from typing import Any, Optional
 
@@ -4416,7 +4418,12 @@ def extract_rna_sequence_from_cif(
     non_standard_warnings = []
     residue_count = 0
     for residue in selected_chain:
-        if residue.id[0].strip():  # Skip hetero / water
+        atom_names = {atom.name for atom in residue}
+        if residue.id[0].strip() and "O2'" not in atom_names:
+            # Hetero water / ion / ligand: skip. Modified nucleotides are
+            # hetero-flagged in mmCIF but must be kept — dropping them would
+            # silently shorten and shift the extracted sequence; they are
+            # rendered via base_map (typically 'N') with a warning below.
             continue
         residue_count += 1
         resname = residue.resname.strip()
@@ -4706,8 +4713,8 @@ def predict_rna_protein_complex_with_proteinx(
         response = requests.post(
             service_url,
             json={
-                "protein_sequence": read_sequence(protein_abs).strip().split("\n")[-1],
-                "rna_sequence": read_sequence(rna_abs).strip().split("\n")[-1],
+                "protein_sequence": _extract_sequence(read_sequence(protein_abs)),
+                "rna_sequence": _extract_sequence(read_sequence(rna_abs)),
                 "num_models": num_models,
                 "num_recycles": num_recycles,
                 "msa_mode": msa_mode,
@@ -4831,16 +4838,15 @@ def analyze_rna_protein_interface(
 
     # Hydrogen bonds and salt bridges (simplified geometric criteria)
     hydrogen_bonds = 0
-    salt_bridges = 0
+    salt_pairs: set[tuple[str, str]] = set()
     hbdonor = {"N", "O", "S", "F"}
     acceptor = {"N", "O", "S"}
     charged_positive = {"ARG", "LYS", "HIS"}
-    charged_negative = {"ASP", "GLU"}
 
     for patom in protein_atoms:
         for ratom in rna_atoms:
             dist = patom - ratom
-            if dist > 3.5:
+            if dist > 4.0:
                 continue
             # H-bond: donor-acceptor distance 2.5-3.5 Å
             if 2.5 <= dist <= 3.5:
@@ -4848,42 +4854,64 @@ def analyze_rna_protein_interface(
                 relem = ratom.element.strip().upper()
                 if (pelem in hbdonor and relem in acceptor) or (pelem in acceptor and relem in hbdonor):
                     hydrogen_bonds += 1
-            # Salt bridge: charged residues within 4.0 Å
-            if dist <= 4.0:
-                pres = patom.get_parent()
-                rres = ratom.get_parent()
-                if pres is not None and rres is not None:
-                    pname = pres.resname.strip().upper()
-                    rname = rres.resname.strip().upper()
-                    if (pname in charged_positive and rname in charged_negative) or \
-                       (pname in charged_negative and rname in charged_positive):
-                        salt_bridges += 1
+            # Salt bridge: basic protein residue (Arg/Lys/His) nitrogen within
+            # 4.0 Å of an RNA phosphate oxygen (OP1/OP2), counted once per
+            # residue pair. Protein Asp/Glu never occurs on the RNA side, so
+            # protein-protein pairing logic cannot fire across this interface.
+            pres = patom.get_parent()
+            rres = ratom.get_parent()
+            if pres is not None and rres is not None:
+                pname = pres.resname.strip().upper()
+                if (
+                    pname in charged_positive
+                    and patom.element.strip().upper() == "N"
+                    and ratom.get_name().strip() in ("OP1", "OP2")
+                ):
+                    pair = (f"{pname}/{pres.id[1]}", f"{rres.resname.strip()}/{rres.id[1]}")
+                    salt_pairs.add(pair)
+    salt_bridges = len(salt_pairs)
 
-    # Buried SASA using freesasa
+    # Buried SASA using freesasa on the two selected chains only.
+    # The input file may contain additional chains (crystal neighbours,
+    # symmetry copies, other copies of the same complex); comparing the SASA
+    # of the WHOLE file against the two selected chains would force
+    # buried_sasa <= 0 for every multi-chain entry, so the comparison is done
+    # on extracted single-chain / two-chain temporary PDBs.
     buried_sasa = 0.0
     protein_surface_area = 0.0
     rna_surface_area = 0.0
     try:
         import freesasa
-        # Compute SASA for the whole complex
-        complex_structure = freesasa.Structure(complex_pdb_filepath)
-        complex_result = freesasa.calc(complex_structure)
-        complex_area = complex_result.totalArea()
+        from Bio.PDB import PDBIO, Select
 
-        # Build temporary PDBs for individual chains and compute SASA
-        # Use a simplified approach: sum chain areas from residue areas
-        prot_area = 0.0
-        rna_area = 0.0
-        areas = complex_result.residueAreas()
-        for chain_id_val, res_areas in areas.items():
-            for resnum, ra in res_areas.items():
-                if chain_id_val == protein_chain_id:
-                    prot_area += ra.total
-                elif chain_id_val == rna_chain_id:
-                    rna_area += ra.total
-        protein_surface_area = prot_area
-        rna_surface_area = rna_area
-        buried_sasa = max(0.0, prot_area + rna_area - complex_area)
+        class _ChainSelect(Select):
+            def __init__(self, keep: set[str]) -> None:
+                self._keep = keep
+
+            def accept_chain(self, chain: Any) -> bool:
+                return chain.id in self._keep
+
+            def accept_residue(self, residue: Any) -> bool:
+                return not residue.id[0].strip()  # skip HETATM / waters
+
+        first_model = next(iter(structure))
+        io = PDBIO()
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            areas: dict[frozenset[str], float] = {}
+            keep_sets = (
+                frozenset({protein_chain_id}),
+                frozenset({rna_chain_id}),
+                frozenset({protein_chain_id, rna_chain_id}),
+            )
+            for keep in keep_sets:
+                tmp_path = str(Path(tmp_dir) / ("chains_" + "_".join(sorted(keep)) + ".pdb"))
+                io.set_structure(first_model)
+                io.save(tmp_path, _ChainSelect(keep))
+                areas[keep] = freesasa.calc(freesasa.Structure(tmp_path)).totalArea()
+        protein_surface_area = areas[frozenset({protein_chain_id})]
+        rna_surface_area = areas[frozenset({rna_chain_id})]
+        both_area = areas[frozenset({protein_chain_id, rna_chain_id})]
+        buried_sasa = max(0.0, protein_surface_area + rna_surface_area - both_area)
     except ImportError:
         pass
     except Exception as exc:

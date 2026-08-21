@@ -283,9 +283,9 @@
 | Metric | Method |
 |--------|--------|
 | `interface_contacts` | Residue pairs with any atom ≤ 5.0 Å |
-| `buried_sasa` | ΔSASA via freesasa |
+| `buried_sasa` | ΔSASA via freesasa, computed on the two selected chains only (extra chains/waters in the file are excluded; 2026-08-21 fix — the old whole-file formula returned 0.0 for any multi-chain PDB) |
 | `hydrogen_bonds` | Donor-acceptor atoms 2.5–3.5 Å |
-| `salt_bridges` | Charged residues ≤ 4.0 Å |
+| `salt_bridges` | Protein Arg/Lys/His nitrogen ≤ 4.0 Å from an RNA phosphate oxygen (OP1/OP2), unique residue pairs (2026-08-21 fix — the old protein Asp/Glu pairing never fires across a protein-RNA interface) |
 
 ---
 

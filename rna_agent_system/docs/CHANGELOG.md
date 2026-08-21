@@ -10,6 +10,65 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-21 — Layer-0 fresh-data tool audit: four defects fixed, all 42 registered tools (41 scientific + 1 demo) verified callable
+
+Full Layer-0 sweep on **entirely fresh inputs** (nothing reused from
+fixtures/benchmarks; sequences typed from canonical knowledge or seeded
+back-translations of real proteins, structures downloaded live from RCSB —
+1EHZ/1HEL/1URN, none previously in the repo). Phase 1 exercised all 42
+registered tools through the real `ToolExecutor` path with all 21
+microservices up; phase 2 re-verified the fixes. Evidence:
+`experiments/results/tool_layer_audit_2026-08-21/` (final state 42/42
+callable; drivers + fresh inputs under `workspace/tool_layer_audit_2026-08-21/`
+— deliberately outside `experiments/` so the tool-inventory AST scan keeps
+classifying `workflow_demo_echo` as demo). Final suite 539 passed.
+
+Defects found and fixed (no interface/signature/return-key changes — the
+locked contracts hold; the computations inside became correct):
+
+- **`analyze_rna_protein_interface` buried SASA always 0 on multi-chain PDBs**
+  (`agent_core/tools.py`): the formula subtracted the *whole-file* SASA from
+  the sum of the two selected chains, ≤ 0 whenever waters/ions/crystal copies
+  are present — a real 3-copy complex (1URN, 58 contacts, 32 H-bonds) reported
+  `buried_sasa=0.0`. Now computed on extracted single-chain/two-chain temp
+  PDBs (1URN A+P: 1771.6 Å²). **Salt bridges were structurally always 0**: the
+  detector paired protein ARG/LYS/HIS against protein ASP/GLU, which never
+  occurs across a protein-RNA interface; now counts basic-residue nitrogen ≤
+  4.0 Å from RNA phosphate OP1/OP2 per unique residue pair (also fixes the
+  comment-vs-code 3.5/4.0 Å cutoff mismatch). The exception handler also
+  referenced `logging` without an import (NameError-on-error); fixed.
+- **`extract_rna_sequence_from_cif` silently dropped modified nucleotides**
+  (`agent_core/tools.py`): mmCIF flags modified nucleotides as hetero, and the
+  hetero skip made the documented "render as N with warning" path unreachable
+  — real structures (1EHZ: 14 mod residues) came back shortened and
+  position-shifted with zero warnings. Hetero residues carrying O2' are now
+  kept and rendered via the base map (1EHZ: 76 nt, N at mod positions,
+  warnings complete).
+- **`predict_rna_protein_complex_with_proteinx` truncated multi-line FASTA**
+  (`agent_core/tools.py`): only the last FASTA line was sent, so any sequence
+  wrapped past 60 columns reached the service as a ~16-nt fragment
+  (silently). Now joined via `_extract_sequence` (76 aa + 76 nt verified
+  reaching the service; mean pLDDT 79.6→81.9).
+- **CRISOT `/spec` accepted sequences of any length**
+  (`microservices/crisot_service/main.py`): 20-nt spacer rows were silently
+  scored while `/score` enforces 23 nt (upstream reads only positions 1–20,
+  so the result *looked* plausible). `/spec` now validates and normalizes
+  every On/Off row to the same 23-nt (spacer+NGG PAM) rule with a row-numbered
+  400 on violation; 23-nt results are bit-identical to before (upstream
+  ignores positions 21–23). The sgRNA workflow degrades to
+  `crisot_specificity=None` + warning on short rows (verified by test data +
+  negative control).
+
+Also: **RhoDesign service gains a PDB sanitizer**
+(`microservices/rhodesign_service/main.py`) — upstream RhoDesign crashes with
+a bare length assertion on any crystal PDB containing waters/ions/modified
+residues (biotite counts 602 residues vs 245 coordinate groups for 1EHZ). The
+service now rewrites the input keeping nucleotide residues only (drops
+waters/ions/ligands/altlocs, maps modified nucleotides to parent bases) before
+inference; 1EHZ now designs a 76-nt sequence recovering the native tRNA^Phe
+almost exactly. Tests: `tests/test_tool_layer_fixes_2026_08_21.py` (5).
+`docs/TOOLS.md` interface-analysis metric table updated.
+
 ## 2026-08-21 — Ranking governance: ASF objectives assembled from CapGate verdicts
 
 Implements [`RANKING_GOVERNANCE.md`](RANKING_GOVERNANCE.md) (DECISIONS (p)):
