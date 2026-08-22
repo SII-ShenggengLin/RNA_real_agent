@@ -378,7 +378,7 @@ class QualityAgent:
                 continue
             if not self._validate_override_value(k, v, profile):
                 continue
-            filtered[k] = v
+            filtered[k] = self._coerce_enum_value(k, v, profile)
         return filtered
 
     def _validate_override_value(self, name: str, value: Any, profile: QualityProfile) -> bool:
@@ -406,10 +406,34 @@ class QualityAgent:
 
         if ptype == "enum":
             allowed = spec.get("values", [])
-            if allowed and value not in allowed:
+            if allowed and value not in allowed and self._coerce_enum_value(name, value, profile) not in allowed:
                 return False
 
         return True
+
+    @staticmethod
+    def _coerce_enum_value(name: str, value: Any, profile: QualityProfile) -> Any:
+        """Coerce numeric strings for integer-valued enum parameters.
+
+        LLM diagnoses frequently quote enum values (e.g. ``"iresfinder_mode":
+        "2"``); dropping them silently wastes a retry the advisor clearly
+        intended. Only all-``int`` value lists are coerced — string enums are
+        returned unchanged.
+        """
+        spec = profile.adjustable_params.get(name)
+        if not spec or spec.get("type") != "enum":
+            return value
+        allowed = spec.get("values", [])
+        if not allowed or value in allowed:
+            return value
+        if all(isinstance(v, int) and not isinstance(v, bool) for v in allowed):
+            try:
+                coerced = int(value)
+            except (TypeError, ValueError):
+                return value
+            if coerced in allowed:
+                return coerced
+        return value
 
     @staticmethod
     def _parse_report_from_text(content: str) -> QualityReport:

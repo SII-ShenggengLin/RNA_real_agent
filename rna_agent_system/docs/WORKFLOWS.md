@@ -545,6 +545,8 @@ Structural metrics (MFE, unpaired fraction, RNAplfold) are reported in candidate
 
 **QualityAgent** (advisory by default): produces a `QualityReport`. The `SpecialistAgent` decides retry only on hard failures.
 
+**Empty-result contract** (2026-08-22, Layer-4 audit): a scan that *ran* and found nothing returns `success=True` with `"No IRES candidate regions found."` (benchmark rubric `min_candidates=0`). A *generation tool failure* (e.g. IRESfinder erroring on a missing input file) is a hard failure: `success=False` with the tool error surfaced via `_generation_errors` — never mistaken for a legitimate no-hit. Pinned by `tests/test_layer4_fresh_audit_regressions.py`.
+
 **Confidence assignment**
 
 | IRES probability | Unpaired fraction | Confidence |

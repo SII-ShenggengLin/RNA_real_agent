@@ -105,6 +105,10 @@ class SpecialistAgent(BaseAgent):
 
             merged_params = self._apply_overrides(params, report.parameter_overrides, state)
             if merged_params == params:
+                # All suggested overrides were protected as user-explicit, so
+                # this attempt never re-runs anything. Drop it from the retry
+                # count so the reported count reflects real re-executions.
+                retry_count -= 1
                 _LOGGER.info(
                     "specialist_no_actionable_overrides node=%s workflow=%s; stopping retries",
                     node_id,

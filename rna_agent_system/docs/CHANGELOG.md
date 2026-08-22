@@ -10,6 +10,78 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-22 (c) — Layer-4 fresh-data audit: multi-agent + CapGate + ranking governance verified; five defects fixed
+
+First dedicated fresh-data audit of Layer 4 — the multi-agent execution stack
+(`PipelineAgent` / `SpecialistAgent` / `QualityAgent` / `SynthesisAgent`), the
+calibrated CapGate stack (`CalibratedRuntime`, `DecisionGate`, `SelfModel`,
+`ClaimGate`, audit trail) and the ranking governance
+(`objective_assembly`) — on data fetched live during the audit (EPO mRNA
+NM_000799 + CDS + protein, EV71 5'UTR NC_001612 + EV71-derived sgRNA spacer,
+B2M CDS NM_004048, a live-esearched Xenopus laevis 5S rRNA record, RCSB 1AKI
+lysozyme). Nothing reused from prior audits, PA fixtures or benchmark inputs.
+Evidence: `workspace/layer4_fresh_audit_2026-08-22/` (fetch script, driver,
+pass-2/2b re-verification drivers, per-phase audit JSONLs,
+`audit_report.json` + `audit_report_pass2.json` + `audit_report_pass2b.json`).
+
+What was exercised for real: real-LLM QualityAgent reviews on real workflow
+results (EV71 IRES, B2M siRNA, EPO CDS — fenced/prose JSON parsing, override
+filtering, state markers); the deterministic-profile LLM bypass (zero LLM
+calls); the `review_unavailable` governance path (injected LLM failure);
+hard-failure pass→retry conversion on a genuinely failing run; evaluator-only
+partial rerun (`run_gc=False` keeps candidates, CAI recomputed, GC falls back
+to the local deterministic compute by design); user-explicit parameter
+protection; a real 2-node pipeline (EV71 IRES → mRNA scoring with a bound
+input) through real-LLM multi-node synthesis **with ClaimGate gating** (4
+claim verdicts, REJECTED lines appended to the report, `claim_verdict` audit
+events); single-node synthesis passthrough (zero LLM); CapGate enforce blocks
+a failed aptamer oracle pre-invoke while allowing a *verified* GEMORNA call
+through (real service response), pending-governance CRISOT never blocked,
+`oracle_use("scoring_annotation")` lifts the block; ranking governance on
+real runs — siRNA identical ranking under advisory/enforce/off (fresh B2M),
+full-length EPO (utr5 kept/transferred, utr3 kept/unprofiled, nothing
+demoted), sgrna with pending flags, aptamer on 1AKI delivering the
+`ranking_evidence_unavailable` degrade with success intact and the
+light-stage RhoFold filter demoted to pool order; ClaimGate scope-ladder
+downgrade on a transferred-verified grade.
+
+**Five defects found and fixed** (regressions:
+`tests/test_layer4_fresh_audit_regressions.py`, 11 tests; suite 591 passed):
+
+1. **Ranking-governance audit events were silently dropped** (the big one):
+   `ranking_objective_assembly` was not in the `AuditEvent.event_type`
+   Literal, so pydantic rejected every event and the best-effort writer in
+   `assemble_for_workflow` swallowed the `ValidationError` — the DECISIONS
+   (p) mechanism's audit trail was empty. The type is now registered
+   (extend-only) and events verified in the live sirna/full-length runs.
+2. **`PipelineAgent` crashed on a runtime-dangling input binding**: a plan
+   that passes construction-time validation can still bind against an
+   upstream node that was *skipped* (non-critical, no specialist) or produced
+   no result; the unhandled `BindingResolutionError` took down the whole
+   pipeline. Binding-resolution failures now degrade to a per-node failure
+   with the error recorded and `critical` semantics respected.
+3. **`ires_prediction` swallowed generation tool failures as "no candidates
+   found"**: an IRESfinder error (e.g. missing input file) returned
+   `success=True, errors=[]` — indistinguishable from a legitimate no-hit.
+   Generation errors are now collected (`_generation_errors`) and surfaced as
+   a hard failure; the legitimate empty-scan success=True contract (benchmark
+   rubric `min_candidates=0`) is preserved and pinned by test.
+4. **`SpecialistAgent` counted abandoned retry attempts**: when every
+   suggested override was protected as user-explicit, `retry_count` was
+   incremented although nothing re-ran. The counter now reflects real
+   re-executions only.
+5. **`QualityAgent` dropped quoted int-enum overrides**: LLM diagnoses
+   returning `"iresfinder_mode": "2"` (string) failed the strict enum
+   membership check and the retry was silently lost. All-int enum value
+   lists now coerce numeric strings; string enums are untouched.
+
+Also recorded (not defects): the packaged SelfModel has no *scoring*
+capability cells (E1 profiled screening/ranking/docking only), so claims
+declaring a `scoring` dependency on a profiled oracle reject as
+"never profiled" — conservative and consistent with DECISIONS (e); the
+`mrna_sequence_scoring` CAI annotation records a non-fatal tool warning for
+non-CDS-length inputs (745-nt IRES region) while folding/GC still score.
+
 ## 2026-08-22 (b) — Layer-3 fresh-data audit: service orchestration verified on live services, degraded-service pre-flight hole fixed
 
 First dedicated audit of Layer 3 (`agent_core/services/service_manager.py` +

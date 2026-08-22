@@ -1,9 +1,11 @@
 # Agent Guidelines for RNA_real_agent
 
 > **Consolidated index.** Authoritative documentation lives in `rna_agent_system/docs/`.
-> **Last updated**: 2026-08-22 (Layer-3 fresh-data audit + degraded-service pre-flight fix)
+> **Last updated**: 2026-08-22 (Layer-4 fresh-data audit + five fixes)
 
 ## What's New
+
+- **Layer-4 fresh-data audit — multi-agent + CapGate + ranking governance verified on live-fetched data, five defects fixed** (2026-08-22, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-22 (c); evidence `workspace/layer4_fresh_audit_2026-08-22/`): first dedicated audit of the Layer-4 agents (`PipelineAgent`/`SpecialistAgent`/`QualityAgent`/`SynthesisAgent`), the calibrated CapGate stack and the ranking governance on data fetched live during the audit (EPO NM_000799 + CDS + protein, EV71 5'UTR NC_001612 + EV71-derived sgRNA spacer, B2M CDS NM_004048, live-esearched Xenopus 5S rRNA, RCSB 1AKI — nothing reused). Real-LLM quality reviews on real workflow results, a real 2-node pipeline through ClaimGate-gated synthesis (4 verdicts, REJECTED lines in report), CapGate enforce-blocks-failed / allows-verified / pending-never-blocked / `scoring_annotation`-override semantics on live services, and ranking governance on real runs (siRNA advisory/enforce/off identical ranking; full-length EPO transferred/unprofiled flags; aptamer 1AKI `ranking_evidence_unavailable` degrade with success intact). **Five defects fixed**: (1) `ranking_objective_assembly` missing from `AuditEvent.event_type` — every ranking-governance audit event was silently dropped (the DECISIONS (p) audit trail was empty); (2) `PipelineAgent` crashed the whole pipeline on a runtime-dangling input binding (upstream node skipped → unhandled `BindingResolutionError`; now a graceful per-node failure respecting `critical`); (3) `ires_prediction` swallowed generation tool failures as `success=True` "No IRES candidate regions found" (now `_generation_errors` → hard failure; legitimate empty-scan success contract kept and pinned); (4) `SpecialistAgent.retry_count` counted abandoned attempts (all overrides user-protected); (5) `QualityAgent` dropped LLM overrides quoting int enums (`"iresfinder_mode": "2"`) — numeric strings now coerced for all-int enums. Regressions in `tests/test_layer4_fresh_audit_regressions.py` (11); suite **591 passed**.
 
 - **Layer-3 fresh-data audit — service orchestration verified on live services, degraded-service pre-flight hole fixed** (2026-08-22, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-22 (b) + DECISIONS.md (r); evidence `workspace/layer3_fresh_audit_2026-08-22/`): first live audit of `agent_core/services/service_manager.py` + `cli/service_orchestrator.py` on data fetched live from NCBI during the audit (INS mRNA NM_000207.3 + CDS, human 5S rRNA, INS-derived CRISPR pair — nothing reused). **45 checks / 0 failures post-fix**: health sweep of all 21 mapped services, a real CRISOT cold-start through `ensure_services_ready` (down → auto-start → healthy in 5 s) followed by a real CRISOT-Score call on the fresh pair (0.831), concurrent flock contention (exactly one start, both callers ready), busy-port proceed-anyway preserved (no restart), real workflow pre-flight chain (`run_mrna_sequence_scoring` on INS CDS: GC 64.6%, MFE −50.25). Three defects fixed: (1) a *listening* service answering `/health` with `status:"degraded"` (or an HTTP error) passed pre-flight via the busy-port branch — the busy branch now classifies first (`_classify_service_health`): answering-but-unhealthy fails with a clear error, only genuinely unresponsive (starved) endpoints proceed anyway (2026-07-22 no-double-start guarantee unchanged); (2) `cli/service_orchestrator.__all__` exported `check_service_health`/`start_service` without importing them (ImportError on use); (3) `bowtie2_service/start.sh` shipped without the exec bit. Regressions in `tests/test_service_manager.py` (+4); suite 580 passed.
 
@@ -144,7 +146,7 @@ This project uses INTERFACE LOCK comments to prevent accidental breaking changes
 
 ## Testing
 
-Run the agent-core test suite before committing (current baseline: **580 passed**):
+Run the agent-core test suite before committing (current baseline: **591 passed**):
 
 ```bash
 cd rna_agent_system

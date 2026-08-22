@@ -351,6 +351,11 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
     def __init__(self, capability_registry: CapabilityRegistry):
         self.capabilities = capability_registry
         self._workflow_state: dict[str, Any] = {}
+        # Tool-level failures during candidate generation (e.g. IRESfinder
+        # erroring on a missing input file) — surfaced through
+        # rank_and_format so a failed scan is never mistaken for a
+        # legitimate no-hit (Layer-4 fresh audit, 2026-08-22).
+        self._generation_errors: list[str] = []
 
     # ───────────────────────────────────────────────────────────────────────
     # BaseDomainWorkflow interface
@@ -366,6 +371,7 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
         if isinstance(inp, dict):
             inp = IresPredictionInput(**inp)
         self._workflow_state = {}
+        self._generation_errors = []
         result = super().run(inp, progress_callback=progress_callback)
         merged_wb = dict(self._workflow_state)
         merged_wb["_workflow_params"] = inp.model_dump()
@@ -413,6 +419,9 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
         )
         if not ires_res.success:
             _LOGGER.error("IRESfinder failed: %s", ires_res.error)
+            self._generation_errors.append(
+                f"iresfinder tool failed: {ires_res.error}"
+            )
             return []
 
         predictions = list(ires_res.output.get("predictions", []))
@@ -659,6 +668,21 @@ class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowRes
 
     def rank_and_format(self, candidates: list[Candidate]) -> WorkflowResult:
         if not candidates:
+            if self._generation_errors:
+                # The scan itself failed (tool error) — the result is
+                # unusable, not a legitimate no-hit. Report it as a hard
+                # failure so callers and the retry machinery can react.
+                return WorkflowResult(
+                    success=False,
+                    task_id=f"ires_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
+                    best_candidate=None,
+                    all_candidates=[],
+                    summary=(
+                        "IRES prediction failed during generation: "
+                        + "; ".join(self._generation_errors[:3])
+                    ),
+                    errors=["empty_candidate_list", *self._generation_errors],
+                )
             # Empty result is a valid scientific outcome (e.g. high threshold
             # intentionally filters everything, or the sequence truly lacks
             # IRES-like features).  We return success=True so that callers

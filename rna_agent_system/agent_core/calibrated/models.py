@@ -165,6 +165,11 @@ class AuditEvent(BaseModel):
         # Platform integration events (added 2026-08-18, extend-only): every
         # ToolExecutor call recorded by CalibratedRuntime.
         "tool_call",
+        # Ranking-governance assembly events (added 2026-08-22, extend-only):
+        # one per assemble_for_workflow call (DECISIONS (p)). These were
+        # silently dropped before the type was registered — pydantic rejected
+        # the Literal and the best-effort writer swallowed the error.
+        "ranking_objective_assembly",
     ]
     payload: dict[str, Any] = Field(default_factory=dict)
     timestamp: str = ""

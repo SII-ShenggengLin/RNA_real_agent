@@ -66,7 +66,27 @@ class PipelineAgent(BaseAgent):
                     break
                 continue
 
-            resolved = self._resolve_inputs(node, node_results, alias_to_node_id)
+            try:
+                resolved = self._resolve_inputs(node, node_results, alias_to_node_id)
+            except Exception as exc:
+                # A binding can dangle at runtime even on a plan that passed
+                # construction-time validation — e.g. an upstream node was
+                # skipped (no SpecialistAgent registered, non-critical) so it
+                # never produced a result to bind against. That is a node
+                # failure like any other, not a reason to crash the whole
+                # pipeline with an unhandled BindingResolutionError.
+                error = f"Node {node_id}: input binding resolution failed: {type(exc).__name__}: {exc}"
+                errors.append(error)
+                node_results[node_id] = AgentResult(
+                    node_id=node_id,
+                    workflow=node.workflow,
+                    success=False,
+                    errors=[error],
+                )
+                if node.critical:
+                    break
+                continue
+
             node_state = dict(state)
             node_state["_user_explicit_params"] = sorted(node.static_params.keys())
 

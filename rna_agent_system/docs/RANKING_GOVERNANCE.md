@@ -191,7 +191,10 @@ supports, which is exactly what DecisionGate's `scoring_annotation` substitute p
 
 - One `AuditTrail` event per assembly: `ranking_objective_assembly`
   `{task_type, family, kept, flags, demoted, degrade_reason}` — attributable via the
-  existing session/task stamping.
+  existing session/task stamping. (The event type was registered in
+  `AuditEvent.event_type` on 2026-08-22 — audit files written before that date
+  legitimately contain no `ranking_objective_assembly` lines because every event
+  was rejected by the Literal and silently swallowed; see DECISIONS (s).)
 - `_state_writeback["_ranking_governance"]` (additive field):
   `{"ranking_dims": [...], "kept_flags": {...}, "demoted": {...}, "degrade_reason": ...}`.
 - The `asf_ranking_note` convention extends to name demoted dims.

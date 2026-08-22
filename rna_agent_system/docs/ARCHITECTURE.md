@@ -162,7 +162,7 @@ class PipelinePlan(BaseModel):
     edges: list[PipelineEdge]   # execution dependencies
 ```
 
-> **Binding/edge rule**: `input_bindings` can only reference node outputs that are reachable as ancestors through explicit `edges`. A data binding alone does **not** create an execution dependency. If node B consumes `$A.some_field`, the plan must also include `PipelineEdge(source="A", target="B")`.
+> **Binding/edge rule**: `input_bindings` can only reference node outputs that are reachable as ancestors through explicit `edges`. A data binding alone does **not** create an execution dependency. If node B consumes `$A.some_field`, the plan must also include `PipelineEdge(source="A", target="B")`. At *runtime* a binding can still dangle when the upstream node was skipped (non-critical, no specialist registered) or produced no result — since 2026-08-22 that degrades to a per-node failure with the error recorded and `critical` semantics respected, instead of crashing the pipeline (regression in `tests/test_layer4_fresh_audit_regressions.py`).
 
 **Routing is explicit and form-driven**. There is no planner and no natural-language parameter extraction: callers provide `explicit_workflow` and structured `form_params`:
 

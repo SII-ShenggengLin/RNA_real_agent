@@ -439,6 +439,51 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 
 ---
 
+### (s) Layer-4 boundaries: QualityAgent output stays outside ClaimGate; ranking-governance audit events are a registered event type (2026-08-22)
+
+- **Conclusion (user-directed audit)**: the QualityAgent's `QualityReport` is
+  an **internal control signal, not a publication claim**, and is
+  deliberately *not* routed through ClaimGate. ClaimGate gates conclusions
+  about candidate quality that will be written into final reports
+  (`ClaimGate` mounts only on `SynthesisAgent` multi-node synthesis); the
+  QualityReport's only execution-relevant channel is
+  `parameter_overrides`, and that channel is already deterministically
+  constrained — profile-declared adjustable params only, type/range/enum
+  validation, user-explicit parameter protection, advisory `abort` can never
+  flip a successful run. Wrapping every diagnosis round in claim
+  extraction + adjudication would add LLM latency inside the control loop
+  without changing any outcome-affecting path. Verified on live data in the
+  2026-08-22 Layer-4 audit; revisit only if QualityReport text ever becomes
+  a headline scientific statement in user-facing reports.
+- **Audit's negative-space finding (keep in mind)**: the packaged SelfModel
+  has **no `scoring` capability cells** (E1 profiled screening/ranking/
+  docking only), so any claim declaring a `scoring` dependency on a
+  profiled oracle rejects as "never profiled" even when the oracle's
+  screening/ranking cells exist. Conservative and consistent with (e); not
+  a defect. Do not "fix" this by inventing scoring grades without an
+  anchor-set profiling campaign.
+- **Mechanism fixes carried by the same audit** (details in CHANGELOG
+  2026-08-22 (c)): `ranking_objective_assembly` added to the
+  `AuditEvent.event_type` Literal (extend-only) — before this, *every*
+  ranking-governance assembly event was rejected by pydantic and silently
+  swallowed by the best-effort writer, so the (p) mechanism's audit trail
+  was empty; `PipelineAgent` degrades a runtime-dangling input binding to a
+  per-node failure instead of crashing the pipeline;
+  `ires_prediction` surfaces generation tool failures as hard failures
+  (`_generation_errors`) while keeping the legitimate empty-scan
+  `success=True` contract (benchmark rubric `min_candidates=0`);
+  `SpecialistAgent.retry_count` counts only real re-executions;
+  `QualityAgent` coerces quoted int-enum override values.
+- **Evidence**: fresh-data audit `workspace/layer4_fresh_audit_2026-08-22/`
+  (37 checks across pass 1 + pass 2/2b re-verification, live NCBI
+  EPO/EV71/B2M/Xenopus-5S + RCSB 1AKI, real-LLM reviews, real 2-node
+  pipeline through ClaimGate-gated synthesis, CapGate enforce/advisory/off
+  semantics on live services); regressions
+  `tests/test_layer4_fresh_audit_regressions.py` (11 tests); suite 591
+  passed; `docs/CHANGELOG.md` 2026-08-22 (c).
+
+---
+
 ## Part 2 — Confirmed Positive Results (established, citable)
 
 | # | Result | Evidence |
@@ -490,3 +535,4 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   `session_id`/`task_type` attribution (stream_form thread-context fix).
   Evidence: `experiments/results/pa_regression_batchB_2026-08-19/`.
 - **2026-08-22 (b)** (Layer-3 fresh-data audit, user-directed): first live audit of the service-orchestration layer — 21 services swept (10 up / 11 down all classified correctly), real CRISOT cold-start via `ensure_services_ready` + fresh INS-derived CRISPR scoring, concurrent flock contention (exactly one start), busy-port proceed-anyway preserved; **45 checks / 0 failures post-fix**, live NCBI INS/5S data. Three defects fixed: degraded-but-answering services passed pre-flight (now fail with a clear error — decision (r)), `cli/service_orchestrator.__all__` exported unimported names, bowtie2 `start.sh` missing the exec bit. Evidence: `workspace/layer3_fresh_audit_2026-08-22/`.
+- **2026-08-22 (c)** (Layer-4 fresh-data audit, user-directed): first live audit of the multi-agent + CapGate + ranking-governance stack — 37 checks across pass 1 + pass 2/2b re-verification on live NCBI EPO/EV71/B2M/Xenopus-5S and RCSB 1AKI (real-LLM quality reviews, real 2-node pipeline through ClaimGate-gated synthesis, CapGate enforce/advisory/off on live services, ranking-governance three-mode comparison). **Five defects fixed** (decision (s)): `ranking_objective_assembly` audit events silently dropped (unregistered Literal type — the (p) audit trail was empty), `PipelineAgent` crash on runtime-dangling bindings, `ires_prediction` swallowing generation tool failures as "no candidates found", `SpecialistAgent.retry_count` counting abandoned attempts, `QualityAgent` dropping quoted int-enum overrides. Regressions `tests/test_layer4_fresh_audit_regressions.py` (11); suite 591. Evidence: `workspace/layer4_fresh_audit_2026-08-22/`.
