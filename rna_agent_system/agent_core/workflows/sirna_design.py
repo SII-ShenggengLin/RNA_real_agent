@@ -7,7 +7,7 @@ Generic mode: target sequence → sliding window (19–21 nt) → local filter �
     duplex evaluation → BLAST off-target → score → rank.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SirnaDesignWorkflow INTERFACE LOCK (v1.3.0; v1.2.0 + asymmetry_component ranking dimension (terminal 5-bp NN end asymmetry via sirna-duplex v0.5.0; absent on older services → dimension drops pool-wide); v1.2.0 = ASF reference-point ranking over efficiency/specificity components — Borda rank_* / total_rank become diagnostics) —— 禁止单方面变更              ║
+║  SirnaDesignWorkflow INTERFACE LOCK (v1.3.1 (2026-08-22 +pareto_frontier extras 呈现, 排序不变; 前沿与 candidate_count 截断后的交付集取交, 不引用未交付候选); v1.3.0; v1.2.0 + asymmetry_component ranking dimension (terminal 5-bp NN end asymmetry via sirna-duplex v0.5.0; absent on older services → dimension drops pool-wide); v1.2.0 = ASF reference-point ranking over efficiency/specificity components — Borda rank_* / total_rank become diagnostics) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sirna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
@@ -569,6 +569,14 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
             c.rank = i
             c.scores["asf_distance"] = ranking.asf_map.get(c.id)
         best = ranked[0] if ranked else None
+        # Pareto frontier surfacing (consistency across every ASF workflow,
+        # 2026-08-22): the shared layer already computes it — surface it.
+        # siRNA truncates the pool to candidate_count AFTER ranking, so the
+        # frontier is intersected with the delivered set: a surfaced member
+        # that is not in all_candidates would dangle in consumer iteration.
+        pareto_frontier = ranking.pareto_frontier
+        delivered_ids = {c.id for c in ranked}
+        pareto_frontier = [c for c in pareto_frontier if c.id in delivered_ids]
 
         detail_lines: list[str] = []
         for i, c in enumerate(ranked, start=1):
@@ -594,6 +602,7 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
         summary_parts = [
             f"candidates={len(ranked)}",
             f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
+            f"pareto_frontier_size={len(pareto_frontier)}",
             "---",
             *detail_lines,
         ]
@@ -604,6 +613,7 @@ class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):
             all_candidates=ranked,
             summary="\n".join(summary_parts),
             errors=[],
+            pareto_frontier=pareto_frontier,
         )
         # Workflow-level trace records come first; base.run() appends per-candidate
         # tool records after rank_and_format returns.

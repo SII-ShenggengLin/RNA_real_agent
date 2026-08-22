@@ -84,7 +84,9 @@ The authoritative `required_capabilities` list for each workflow is the class at
 1. **Generate** — LinearDesign (λ = 0, 1, 4, 10), RNARL (1, only when the expression species has a supported RNARL checkpoint), GEMORNA (1); up to 6 candidates, deduplicated
 2. **Evaluate** — GC content, U content (reference only), LinearFold MFE (ViennaRNA fallback), unpaired fraction, RNASTOP stability, CAI
 3. **Score** — `total_score = -mfe + codon_count * log(CAI)`
-4. **Rank** — by `total_score` descending
+4. **Rank** — by `total_score` descending; a **Pareto frontier annotation** (CAI max × MFE/nt min, the classic LinearDesign trade-off view) is attached as `pareto_frontier` extras + `pareto_frontier_size` in the summary — ranking itself is unchanged
+
+**GenNav-λ navigation (opt-in, v1.2.0)**: set `navigation=True` to replace the static LinearDesign λ grid with the deterministic, zero-LLM constraint navigation (E6 evidence promoted to production; E8–E14 levers; pure core `agent_core/generation/gennav_mrna_lambda.py`): λ-curve probe {0, 1, 2, 4, 8, 10, 20, 50} → band-gap-first interstitial reinforcement (refinement λ set, 16-raw budget, cycling guarantee) → per-profile matrix delivery (expression/stability/balanced, 5 each, D1 diversity ≥ 0.15). Every LinearDesign/CAI/LinearFold call is audited; the full trace is written to `_state_writeback["_gennav_trace"]`; an empty delivery is the dedicated `navigation_delivery_empty` degrade. On the navigation path RNARL/GEMORNA are not called and `design_tool` is ignored for generation; evaluation/scoring/ranking are unchanged.
 
 **Truncation support**: Set `truncate_n_terminal=N` to design only for the first N amino acids, or `truncate_c_terminal=N` for the last N. The original `protein_sequence` is preserved in the audit trail; the workflow saves and uses the truncated region.
 
@@ -187,7 +189,7 @@ ASF = max_i { w_i * (r_i - s_i) } + rho * sum_i { w_i * |r_i - s_i| }
 
 User-facing valid `reference_point` keys: `utr5_mrl`, `utr3_stability`, `full_mfe_score`. The CDS objective is supplied via `target_cds_mfe` and `target_cds_cai`. Weights default to equal over the specified dimensions.
 
-**Shared ASF ranking policy (2026-08-20 audit)**
+**Shared ASF ranking policy (2026-08-20 audit; 2026-08-22 every ASF workflow surfaces the Pareto frontier)**
 
 All ASF-ranking workflows share one implementation
 (`workflows/multi_objective.py::apply_reference_point_ranking`) with these
@@ -303,7 +305,9 @@ ordering. Missing measurements impute at pool-worst (shared
 ranked first and only then truncated to `candidate_count` — the returned
 top-N are the globally best-N (the pre-2026-08-20 truncate-then-rank order
 could drop a window beyond position N in generation order before it was
-ever ranked).
+ever ranked). Since v1.3.1 (2026-08-22) the Pareto frontier is surfaced as
+`pareto_frontier` extras + `pareto_frontier_size` (shared-layer consistency
+across every ASF workflow).
 
 **Required capabilities**
 ```python
@@ -323,7 +327,7 @@ ever ranked).
 
 **Purpose**: Optimize sgRNA handle sequences using CRGPT, with optional CRISOT off-target scoring.
 
-**Pipeline**: seed handle → CRGPT design (mcmc/naive) → CRGPT re-score → optional CRISOT → component scoring → ASF rank
+**Pipeline**: seed handle → CRGPT design (mcmc/naive) → CRGPT re-score → optional CRISOT → component scoring → ASF rank (+ `pareto_frontier` extras surfacing, v1.3.1)
 
 **Scoring**
 ```python
@@ -374,7 +378,7 @@ off — drops for everyone).
 
 **Prerequisites**: RhoDesign (8006), RiboDiffusion (8021), RhoFold (8005), biopython
 
-**Pipeline**: resolve structure path (PDB ID fallback) → RhoDesign + RiboDiffusion generation → deduplication → evaluate (GC + MFE + RhoFold pLDDT + RMSD/TM-score) → score → rank
+**Pipeline**: resolve structure path (PDB ID fallback) → RhoDesign + RiboDiffusion generation → deduplication → evaluate (GC + MFE + RhoFold pLDDT + RMSD/TM-score) → score → ASF rank (+ `pareto_frontier` extras surfacing, v1.2.1)
 
 **Structure-path resolution**
 - `structure_filepath` accepts a repo-relative path, absolute path, or PDB ID.
@@ -560,9 +564,9 @@ Without structural data: downgrade one tier.
 
 **Purpose**: Screen a full-length mRNA to identify the most accessible regions for ASO binding.
 
-**Pipeline**: RNAplfold accessibility profile (8003) → sliding-window scan (15–20 nt) → reverse-complement ASO design → binding evaluation (RNAup or RNAcofold, 8003) → Borda-count ranking
+**Pipeline**: RNAplfold accessibility profile (8003) → sliding-window scan (15–20 nt) → reverse-complement ASO design → binding evaluation (RNAup or RNAcofold, 8003) → ASF reference-point ranking (Borda ranks retained as diagnostics)
 
-**Scoring**: `sum_rank = accessibility_rank + binding_rank` (smaller = better)
+**Scoring (v1.1.0, 2026-08-22)**: candidates are ordered by augmented-Chebyshev ASF distance over `accessibility_component` (mean unpaired prob, max) and `binding_component` (−ΔG, max) via the shared `apply_reference_point_ranking` layer (utopian reference, uniform weights); missing measurements impute at the measured pool-worst value (never 0.0-literal fills). The Borda `sum_rank = accessibility_rank + binding_rank` is retained as a reported diagnostic but no longer drives the ordering (the siRNA v1.3.0 precedent). `composite_score` keeps its meaning (final rank, 1 = best); `asf_distance` is added to candidate scores and `AsoSite`; the Pareto frontier is attached as extras + `pareto_frontier_size`.
 
 ---
 

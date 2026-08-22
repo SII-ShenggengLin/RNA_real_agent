@@ -4,7 +4,7 @@ Pipeline: CRGPT handle design → CRGPT re-score + optional CRISOT off-target
 score → scoring (nn_score + crisot_score) → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SgRnaDesignWorkflow INTERFACE LOCK (v1.3.0; v1.2.0 ASF reference-point ranking over nn/crisot/crisot_specificity components (weight_* renormalized as ASF weights), total_score becomes a diagnostic; v1.2.0; v1.1.0 + optional off_target_sequences / weight_crisot_specificity input fields and the crisot_specificity scoring component — additive, default-off) —— 禁止单方面变更              ║
+║  SgRnaDesignWorkflow INTERFACE LOCK (v1.3.1 (2026-08-22 +pareto_frontier extras 呈现, 排序不变); v1.3.0; v1.2.0 ASF reference-point ranking over nn/crisot/crisot_specificity components (weight_* renormalized as ASF weights), total_score becomes a diagnostic; v1.2.0; v1.1.0 + optional off_target_sequences / weight_crisot_specificity input fields and the crisot_specificity scoring component — additive, default-off) —— 禁止单方面变更              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 sgrna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
@@ -530,6 +530,9 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
             c.rank = i
             c.scores["asf_distance"] = ranking.asf_map.get(c.id)
         best = ranked[0] if ranked else None
+        # Pareto frontier surfacing (consistency across every ASF workflow,
+        # 2026-08-22): the shared layer already computes it — surface it.
+        pareto_frontier = ranking.pareto_frontier
 
         detail_lines: list[str] = []
         for i, c in enumerate(ranked, start=1):
@@ -558,6 +561,7 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
         summary_parts = [
             f"candidates={len(ranked)}",
             f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
+            f"pareto_frontier_size={len(pareto_frontier)}",
             "---",
             *detail_lines,
         ]
@@ -568,5 +572,6 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
             all_candidates=ranked,
             summary="\n".join(summary_parts),
             errors=[],
+            pareto_frontier=pareto_frontier,
         )
 

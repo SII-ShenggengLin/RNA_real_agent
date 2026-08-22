@@ -42,6 +42,10 @@ MRNA_CDS_QUALITY_PROFILE = QualityProfile(
             "type": "str",
             "hint": f"Species for CAI computation. Built-in: {format_cai_species_aliases()}. For other species, provide a custom codon usage table JSON.",
         },
+        "navigation": {
+            "type": "bool",
+            "hint": "GenNav-λ constraint navigation (v1.2.0): replaces the static LinearDesign lambda grid with an adaptive lambda-curve probe and per-profile matrix delivery (expression/stability/balanced). Zero LLM; empty delivery degrades explicitly.",
+        },
         "run_fold": {
             "type": "bool",
             "hint": "Whether to run secondary structure folding (ViennaRNA/LinearFold). Disabling skips the fold evaluator — a fast partial retry when fold results look suspicious.",

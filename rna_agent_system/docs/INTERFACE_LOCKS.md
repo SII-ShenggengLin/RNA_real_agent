@@ -52,16 +52,16 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x -q
 | `identify_protein_binding_hotspots` | v0.1.0 | `agent_core/tools.py` + `tool_specs.py` |
 | `analyze_rna_protein_interface` | v0.1.0 | `agent_core/tools.py` + `tool_specs.py` |
 | `score_structure_alignment` | v0.1.0 | `agent_core/tools.py` + `tool_specs.py` |
-| `MrnaCdsDesignWorkflow` | v1.1.0 | `workflows/mrna_cds_design.py` lock header |
+| `MrnaCdsDesignWorkflow` | v1.2.0 | `workflows/mrna_cds_design.py` lock header |
 | `RnaSmallMoleculeInteractionWorkflow` | v1.1.0 | `workflows/rna_small_molecule_interaction.py` |
-| `SirnaDesignWorkflow` | v1.3.0 | `workflows/sirna_design.py` |
-| `SgRnaDesignWorkflow` | v1.3.0 | `workflows/sgrna_design.py` |
-| `AsoTargetScreeningWorkflow` | v1.0.0 | `workflows/aso_target_screening.py` |
+| `SirnaDesignWorkflow` | v1.3.1 | `workflows/sirna_design.py` |
+| `SgRnaDesignWorkflow` | v1.3.1 | `workflows/sgrna_design.py` |
+| `AsoTargetScreeningWorkflow` | v1.1.0 | `workflows/aso_target_screening.py` |
 | `IresPredictionWorkflow` | v1.1.0 | `workflows/ires_prediction.py` |
-| `FullLengthMrnaDesignWorkflow` | v3.0.0 | `workflows/full_length_mrna_design.py` |
+| `FullLengthMrnaDesignWorkflow` | v3.1.0 | `workflows/full_length_mrna_design.py` |
 | `RnaAptamerDesignWorkflow` | v2.1.0 | `workflows/rna_aptamer_design.py` |
 | `RnaSecondaryStructureDesignWorkflow` | v1.0.0 | `workflows/rna_secondary_structure_design.py` |
-| `RnaTertiaryStructureDesignWorkflow` | v1.2.0 | `workflows/rna_tertiary_structure_design.py` |
+| `RnaTertiaryStructureDesignWorkflow` | v1.2.1 | `workflows/rna_tertiary_structure_design.py` |
 | `MrnaSequenceScoringWorkflow` | v1.1.0 | `workflows/mrna_sequence_scoring.py` |
 | `AgentRunner` | v3.4.0 | `agent_core/runner.py` |
 | `CLI End-to-End Execution Flow` | v2.4.0 | `cli/form_chat.py` |

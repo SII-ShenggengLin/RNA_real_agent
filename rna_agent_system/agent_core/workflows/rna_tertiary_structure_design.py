@@ -5,7 +5,7 @@ GC + fold (ViennaRNA) + RhoFold evaluation + structure alignment (RMSD/TM-score)
 scoring → ranking → WorkflowResult.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaTertiaryStructureDesignWorkflow INTERFACE LOCK (v1.2.0; v1.1.0 + additive weight_tm_score input field and tm_component ranking dimension; v1.1.0 = ASF reference-point ranking over rhofold/rmsd components — total_score becomes a diagnostic) —— 禁止单方面变更 ║
+║  RnaTertiaryStructureDesignWorkflow INTERFACE LOCK (v1.2.1 (2026-08-22 +pareto_frontier extras 呈现, 排序不变); v1.2.0; v1.1.0 + additive weight_tm_score input field and tm_component ranking dimension; v1.1.0 = ASF reference-point ranking over rhofold/rmsd components — total_score becomes a diagnostic) —— 禁止单方面变更 ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 rna_tertiary_structure_design workflow 的权威实现。任何字段增删、   ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
@@ -734,6 +734,9 @@ class RnaTertiaryStructureDesignWorkflow(
             c.rank = i
             c.scores["asf_distance"] = ranking.asf_map.get(c.id)
         best = ranked[0] if ranked else None
+        # Pareto frontier surfacing (consistency across every ASF workflow,
+        # 2026-08-22): the shared layer already computes it — surface it.
+        pareto_frontier = ranking.pareto_frontier
 
         detail_lines: list[str] = []
         for i, c in enumerate(ranked, start=1):
@@ -769,6 +772,7 @@ class RnaTertiaryStructureDesignWorkflow(
         summary_parts = [
             f"candidates={len(ranked)}",
             f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
+            f"pareto_frontier_size={len(pareto_frontier)}",
             "---",
             *detail_lines,
         ]
@@ -779,6 +783,7 @@ class RnaTertiaryStructureDesignWorkflow(
             all_candidates=ranked,
             summary="\n".join(summary_parts),
             errors=[],
+            pareto_frontier=pareto_frontier,
         )
 
 

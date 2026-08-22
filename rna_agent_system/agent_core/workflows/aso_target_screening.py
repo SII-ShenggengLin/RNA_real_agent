@@ -2,13 +2,14 @@
 
 Target mRNA → full-length accessibility profiling (RNAplfold) →
 sliding-window ranking → ASO design (reverse complement) →
-binding evaluation (RNAup / RNAcofold) → rank-based scoring → ranking → WorkflowResult.
+binding evaluation (RNAup / RNAcofold) → ASF reference-point ranking
+(Borda ranks retained as diagnostics) → WorkflowResult.
 
 This is an **evaluation-only workflow**; it does not generate novel sequences
 but instead screens a target transcript for the most accessible binding sites.
 
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  AsoTargetScreeningWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更       ║
+║  AsoTargetScreeningWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更       ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 aso_target_screening workflow 的权威实现。任何字段增删、            ║
 ║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
@@ -26,6 +27,15 @@ but instead screens a target transcript for the most accessible binding sites.
 ║    - tests/test_aso_target_screening.py                                       ║
 ║    - docs/INTERFACE_LOCKS.md                                                  ║
 ║    - docs/WORKFLOWS.md                                                        ║
+║    - AGENTS.md                                                                ║
+║                                                                               ║
+║  v1.1.0 (2026-08-22): 排名机制由 Borda 名次和转为 ASF 参考点排名             ║
+║  (DECISIONS (o) 统一策略修订; siRNA v1.3.0 同款先例) — 经共享                ║
+║  apply_reference_point_ranking (utopian 参考, accessibility × binding        ║
+║  双维 maximize); Borda 名次 (accessibility_rank / binding_rank /             ║
+║  sum_rank) 降级为诊断量保留; 缺失度量 impute 池最差 (不再 0.0 字面填充);     ║
+║  增补 pareto_frontier extras 与 asf_distance; composite_score 语义不变       ║
+║  (最终名次, 1 = 最佳)。AsoSite 增补 asf_distance 字段 (additive)。          ║
 ║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -40,11 +50,13 @@ from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from agent_core.calibrated.objective_assembly import assemble_for_workflow
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import read_sequence, save_sequence, save_text_file
 from agent_core.sequence_utils import _pick_float, normalize_rna_sequence
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.multi_objective import apply_reference_point_ranking
 
 _LOGGER = logging.getLogger("agent_core.workflows.aso_target_screening")
 
@@ -201,6 +213,7 @@ class AsoSite(BaseModel):
     accessibility_rank: Optional[int] = None
     binding_rank: Optional[int] = None
     sum_rank: Optional[int] = None
+    asf_distance: Optional[float] = None
 
 
 # Scoring helpers
@@ -557,25 +570,26 @@ class AsoTargetScreeningWorkflow(
         candidate.metadata["metrics_bundle"] = metrics
         return metrics
 
-    def score(self, metrics: dict[str, Any]) -> dict[str, float]:
-        """Return raw score components for later rank-based aggregation.
+    def score(self, metrics: dict[str, Any]) -> dict[str, Any]:
+        """Return raw score components for ASF ranking.
 
         Accessibility is the mean unpaired probability [0, 1].
         Binding is the negative thermodynamic ΔG (more negative = stronger binding).
-        Both values are used only for ordering (rank-based), so no normalization
-        to [0, 1] is required.
+        Missing measurements are ``None`` (never 0.0) so the shared ASF layer
+        imputes them at the measured pool-worst value (DECISIONS (o) policy —
+        evaluation failure must not be rewarded).
         """
         mean_unpaired = metrics.get("mean_unpaired_prob")
         binding_dg = metrics.get("binding_dg_kcal_per_mol")
 
-        acc_score = float(mean_unpaired) if mean_unpaired is not None else 0.0
+        acc_score = float(mean_unpaired) if mean_unpaired is not None else None
 
-        bind_score = 0.0
+        bind_score = None
         if binding_dg is not None:
             try:
                 bind_score = -float(binding_dg)
             except (TypeError, ValueError):
-                pass
+                bind_score = None
 
         return {
             "accessibility_component": acc_score,
@@ -586,38 +600,50 @@ class AsoTargetScreeningWorkflow(
         if not candidates:
             return self._empty_result("No ASO candidate sites produced.")
 
-        # ── Rank-based scoring ──
-        # Step 1: rank by accessibility (descending) → 1 = best
-        by_acc = sorted(
-            candidates,
-            key=lambda c: c.scores.get("accessibility_component", 0.0),
-            reverse=True,
-        )
+        # ── Borda ranks (diagnostics; no longer drive the ordering) ──
+        def _acc_key(c: Candidate) -> float:
+            v = c.scores.get("accessibility_component")
+            return v if v is not None else float("-inf")
+
+        def _bind_key(c: Candidate) -> float:
+            v = c.scores.get("binding_component")
+            return v if v is not None else float("-inf")
+
+        by_acc = sorted(candidates, key=_acc_key, reverse=True)
         acc_rank_map = {id(c): r for r, c in enumerate(by_acc, start=1)}
-
-        # Step 2: rank by binding (descending) → 1 = best
-        by_bind = sorted(
-            candidates,
-            key=lambda c: c.scores.get("binding_component", 0.0),
-            reverse=True,
-        )
+        by_bind = sorted(candidates, key=_bind_key, reverse=True)
         bind_rank_map = {id(c): r for r, c in enumerate(by_bind, start=1)}
-
-        # Step 3: sum ranks and final sort (ascending) → 1 = best
         for c in candidates:
             c.scores["accessibility_rank"] = float(acc_rank_map[id(c)])
             c.scores["binding_rank"] = float(bind_rank_map[id(c)])
             c.scores["sum_rank"] = float(acc_rank_map[id(c)] + bind_rank_map[id(c)])
 
+        # ── ASF reference-point ranking (v1.1.0 ordering mechanism) ──
+        # Deterministic Vienna computes carry no oracle verdicts, so the
+        # governance assembly is bookkeeping-only here (no demotions).
+        objectives = ["accessibility_component", "binding_component"]
+        assembly = assemble_for_workflow(objectives, {}, self.task_type)
+        self._workflow_state["_ranking_governance"] = assembly.to_state()
+        ranking = apply_reference_point_ranking(
+            candidates, assembly.ranking_dims, None,
+            maximize={key: True for key in assembly.ranking_dims},
+        )
+        if ranking.dropped_dims:
+            _LOGGER.info(
+                "aso_asf_ranking_note dropped_dims(unmeasured)=%s", ranking.dropped_dims
+            )
+
         ranked = sorted(
             candidates,
-            key=lambda c: c.scores.get("sum_rank", float("inf")),
+            key=lambda c: ranking.asf_map.get(c.id, float("inf")),
         )
         for idx, c in enumerate(ranked, start=1):
             c.rank = idx
-            c.scores["composite_score"] = float(idx)  # 1 = best
+            c.scores["asf_distance"] = ranking.asf_map.get(c.id)
+            c.scores["composite_score"] = float(idx)  # 1 = best (final rank)
 
         best = ranked[0] if ranked else None
+        pareto_frontier = ranking.pareto_frontier
 
         # Build per-site detail lines
         detail_lines: list[str] = []
@@ -646,6 +672,7 @@ class AsoTargetScreeningWorkflow(
                 accessibility_rank=int(scores["accessibility_rank"]),
                 binding_rank=int(scores["binding_rank"]),
                 sum_rank=int(scores["sum_rank"]),
+                asf_distance=scores.get("asf_distance"),
             )
             sites.append(site)
 
@@ -659,6 +686,7 @@ class AsoTargetScreeningWorkflow(
                 f"acc_rank={int(scores['accessibility_rank'])}",
                 f"bind_rank={int(scores['binding_rank'])}",
                 f"sum_rank={int(scores['sum_rank'])}",
+                f"asf={scores['asf_distance']:.4f}" if scores.get("asf_distance") is not None else "asf=N/A",
                 f"composite={scores.get('composite_score', 0.0):.1f}",
             ]
             detail_lines.append(" | ".join(parts))
@@ -674,7 +702,9 @@ class AsoTargetScreeningWorkflow(
 
         summary_parts = [
             f"candidates={len(ranked)}",
-            f"best_composite_score={best.scores.get('composite_score') if best else None}",
+            f"best_asf_distance={best.scores.get('asf_distance') if best else None}",
+            f"best_candidate_source=asf_reference_point_ranking",
+            f"pareto_frontier_size={len(pareto_frontier)}",
             f"profile_tsv={self._workflow_state.get('profile_tsv', 'N/A')}",
             "---",
             *detail_lines,
@@ -686,6 +716,7 @@ class AsoTargetScreeningWorkflow(
             all_candidates=ranked,
             summary="\n".join(summary_parts),
             errors=[],
+            pareto_frontier=pareto_frontier,
         )
 
     # ─────────────────────────────────────────────────────────────────────────

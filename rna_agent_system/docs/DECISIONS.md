@@ -275,13 +275,16 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   `weight_tm_score` input — both closeness dims drop pool-wide in de-novo
   runs; audit guidance: closeness weights above `weight_rhofold` when a
   reference exists, since pool-relative min-max otherwise lets a pLDDT
-  champion bury the native-closest candidate). siRNA ranks the full passing
+  champion bury the native-closest candidate), and ASO v1.1.0 (2026-08-22,
+  (q): accessibility × binding, Borda ranks demoted to diagnostics — the
+  2026-08-20 classification of ASO under "intentionally not converted" is
+  revised by (q); single-objective/n=1/domain-formula tasks remain
+  unconverted: CDS combined score, sequence scoring, IRES, secondary
+  structure, small molecule). siRNA ranks the full passing
   pool before truncating to `candidate_count` (the inherited
   truncate-then-rank order could drop the pool's best window before it was
-  ever ranked). Single-objective, n=1, or domain-formula tasks
-  (CDS combined score, sequence scoring, IRES, ASO, secondary structure,
-  small molecule) are **intentionally not converted** — ASF there is
-  vacuous. Score functions and output keys unchanged; `total_score`-style
+  ever ranked). For the remaining single-objective/n=1/domain-formula tasks
+  ASF is vacuous. Score functions and output keys unchanged; `total_score`-style
   keys remain reported diagnostics, preserving every consumer.
 - **Standing boundary**: ASF values remain pool-relative — min-max
   normalization makes ranks non-monotonic under pool composition and the
@@ -339,6 +342,67 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   escape hatch, aptamer degrade path, gated-error recognition, no-op
   regression for sirna/sgrna/tertiary/full-length); full suite 534 passed;
   `docs/CHANGELOG.md` 2026-08-21.
+
+### (q) GenNav-λ production wiring + ASO converts to ASF; E6 evidence promoted from evidence-only (2026-08-22)
+
+- **Conclusion (user-directed)**: two ranking/navigation consistency
+  changes, both on the heels of the 2026-08-21/22 Layer-2 fresh-data audit
+  (12/12 workflows, 875 audited tool calls, 0 failures;
+  `workspace/layer2_fresh_audit_2026-08-21/`).
+- **GenNav-λ (mrna_cds_design v1.2.0)**: the static LinearDesign λ=[0,1,4,10]
+  grid is now *replaced on the opt-in `navigation=True` path* by the
+  deterministic zero-LLM λ navigation (pure core
+  `agent_core/generation/gennav_mrna_lambda.py`): E6's λ-curve probe
+  {0,1,2,4,8,10,20,50} → band-gap-first interstitial reinforcement (refinement
+  λ set, 16-raw budget, E14 cycling guarantee) → per-profile matrix delivery
+  (expression/stability/balanced × 5, D1 ≥ 0.05). The E6 "evidence-only"
+  status is thereby superseded **for the production wiring** — the E6 campaign
+  machinery (U-scores, codon-table direction axes, LLM arbitration) stays
+  deleted per (n); the production core reuses the E8–E14 levers on the
+  platform's own metrics. Constraint bands are documented production
+  defaults (CAI floor 0.85 anchored to E6's A1AT λ-curve boundary
+  0.8377-fail / 0.8717-pass; MFE-per-nt bands from the platform's LinearFold
+  metrics), **not** campaign-validated matrices — no navigation-advantage
+  claim is made for the mRNA side beyond E6's registered result. Static
+  path unchanged; `full_length_mrna_design` keeps the static grid (λ×UTR
+  GenNav composition is a registered follow-up, not silently wired).
+- **ASO → ASF (aso_target_screening v1.1.0)**: ordering is now the shared
+  ASF reference-point ranking over accessibility × binding (utopian
+  reference, uniform weights); Borda ranks demoted to diagnostics — same
+  precedent as siRNA v1.3.0, revising (o)'s classification of ASO. Missing
+  measurements impute at the measured pool-worst (0.0-literal fills
+  removed). Pareto frontier + `asf_distance` attached; `composite_score`
+  semantics unchanged (final rank, 1 = best).
+- **Pareto annotation (mrna_cds_design v1.2.0)**: successful runs attach the
+  CAI × MFE/nt Pareto frontier as extras (`pareto_frontier`,
+  `pareto_frontier_size`) with per-candidate `pareto_tag` — an annotation
+  only; `total_score` ordering is untouched (CDS stays a domain-formula task
+  under (o)). Workflows where Pareto is vacuous (single candidate or single
+  objective: sequence scoring, IRES, secondary structure, small molecule)
+  are intentionally not annotated. Same-day consistency completion:
+  sirna v1.3.1 / sgrna v1.3.1 / tertiary v1.2.1 now also *surface* the
+  frontier the shared layer computes (previously only full-length/aptamer
+  surfaced it) — every ASF workflow reports `pareto_frontier` extras +
+  `pareto_frontier_size` uniformly. Adversarial tests of the surfacing
+  found one defect, fixed same-day: siRNA's post-ranking truncation to
+  `candidate_count` could leave undelivered candidates in the surfaced
+  frontier — the frontier is now intersected with the delivered set
+  (`tests/test_asf_pareto_surfacing_adversarial.py`).
+- **Evidence**: `tests/test_gennav_mrna_core.py` (17),
+  `tests/test_mrna_cds_gennav.py` (4: early-stop full delivery + audited
+  calls, Pareto annotation + unchanged order, dedicated
+  `navigation_delivery_empty` degrade, static path regression),
+  `tests/test_aso_target_screening.py` (+4: ASF ordering + Borda
+  diagnostics, missing-binding not rewarded, scale invariance); fresh-data
+  e2e verification on live services (IFN-γ navigation run + ASO ASF rerun).
+  The first live IFN-γ run domain-calibrated the delivery floor: adjacent-λ
+  LinearDesign designs are near-clones (1–5% edit distance), so
+  `d1_min_pairwise` = 0.05 for the CDS domain (≈25 nt of a ~500-nt CDS,
+  proportionally the aptamer-side 0.15); post-calibration delivery
+  expression 4/5, balanced 4/5, stability 2/5 with explicit degrade
+  reasons (within-band diversity at low λ is structurally limited — the
+  same λ-gear-separation saturation E5/E6 diagnosed).
+  `docs/CHANGELOG.md` 2026-08-22; `docs/WORKFLOWS.md` §2/§12.
 
 ---
 

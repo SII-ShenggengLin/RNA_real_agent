@@ -2,7 +2,7 @@
 
 Uses stub capabilities to avoid needing live ViennaRNA microservices.
 
-AsoTargetScreeningWorkflow INTERFACE LOCK (v1.0.0):
+AsoTargetScreeningWorkflow INTERFACE LOCK (v1.1.0):
 关联文件清单见 agent_core/workflows/aso_target_screening.py 顶部的
 INTERFACE LOCK 注释。修改 workflow 接口必须同步更新全部关联文件并重新跑通测试。
 """
@@ -327,3 +327,109 @@ def test_pipeline_agent_aso_dict_input(target_fasta_path: str):
     assert node_result.workflow_result is not None
     assert node_result.workflow_result.success is True
     assert len(node_result.workflow_result.all_candidates) <= 3
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ASF reference-point ranking (v1.1.0) — ordering mechanism + Borda diagnostics
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def _mk_aso_candidate(cid: str, acc, bind, metadata_start: int) -> "Candidate":  # noqa: F821
+    from agent_core.workflow_models import Candidate as _C
+
+    cand = _C(
+        sequence="ACGU" * 5 + cid[0],
+        sequence_type="aso",
+        source=f"window:{metadata_start}-{metadata_start + 19}",
+        metadata={
+            "metrics_bundle": {
+                "target_start": metadata_start,
+                "target_end": metadata_start + 19,
+                "aso_sequence": "ACGUACGUACGUACGUACGU",
+                "target_sequence": "ACGUACGUACGUACGUACGU",
+                "mean_unpaired_prob": acc,
+                "binding_dg_kcal_per_mol": -bind if bind is not None else None,
+            }
+        },
+    )
+    cand.scores = {
+        "accessibility_component": acc,
+        "binding_component": bind,
+    }
+    return cand
+
+
+def _rank_via_workflow(cands):
+    wf = AsoTargetScreeningWorkflow(None)
+    return wf.rank_and_format(cands)
+
+
+def test_aso_asf_orders_candidates_and_keeps_borda_diagnostics():
+    cands = [
+        _mk_aso_candidate("a", 0.90, 30.0, 10),
+        _mk_aso_candidate("b", 0.80, 35.0, 50),
+        _mk_aso_candidate("c", 0.85, 25.0, 100),
+    ]
+    result = _rank_via_workflow(cands)
+    assert result.success is True
+    # ASF values assigned and order is ascending asf → composite 1..N
+    asfs = [c.scores["asf_distance"] for c in result.all_candidates]
+    assert asfs == sorted(asfs)
+    assert [c.scores["composite_score"] for c in result.all_candidates] == [1.0, 2.0, 3.0]
+    # Borda ranks retained as diagnostics
+    for c in result.all_candidates:
+        assert "accessibility_rank" in c.scores
+        assert "binding_rank" in c.scores
+        assert "sum_rank" in c.scores
+    # summary + extras
+    assert "best_asf_distance" in result.summary
+    assert "pareto_frontier_size" in result.summary
+    assert getattr(result, "pareto_frontier", None) is not None
+
+
+def test_aso_asf_missing_binding_is_not_rewarded():
+    # 'c' has the best accessibility but no binding measurement (RNAup failed):
+    # imputation at the measured pool-worst must keep it out of the top slot.
+    cands = [
+        _mk_aso_candidate("a", 0.90, 30.0, 10),
+        _mk_aso_candidate("b", 0.80, 35.0, 50),
+        _mk_aso_candidate("c", 0.95, None, 100),
+    ]
+    result = _rank_via_workflow(cands)
+    best = result.best_candidate
+    assert best.scores["binding_component"] is not None
+    worst = result.all_candidates[-1]
+    assert worst.scores["binding_component"] is None or worst.scores["asf_distance"] >= best.scores["asf_distance"]
+
+
+def test_aso_asf_scale_invariant():
+    # An affine stretch of the binding axis (kcal → arbitrary units) must not
+    # change the ordering: min-max normalization makes ASF scale-free.
+    base = [
+        _mk_aso_candidate("a", 0.90, 30.0, 10),
+        _mk_aso_candidate("b", 0.80, 35.0, 50),
+        _mk_aso_candidate("c", 0.85, 25.0, 100),
+    ]
+    r1 = _rank_via_workflow([_clone(base[0]), _clone(base[1]), _clone(base[2])])
+    scaled = []
+    for c in base:
+        c2 = _clone(c)
+        c2.scores["binding_component"] = c.scores["binding_component"] * 7.5
+        scaled.append(c2)
+    r2 = _rank_via_workflow(scaled)
+    ids1 = [c.source for c in r1.all_candidates]
+    ids2 = [c.source for c in r2.all_candidates]
+    assert ids1 == ids2
+
+
+def _clone(cand):
+    from agent_core.workflow_models import Candidate as _C
+
+    c2 = _C(
+        sequence=cand.sequence,
+        sequence_type=cand.sequence_type,
+        source=cand.source,
+        metadata=dict(cand.metadata),
+    )
+    c2.scores = dict(cand.scores)
+    return c2

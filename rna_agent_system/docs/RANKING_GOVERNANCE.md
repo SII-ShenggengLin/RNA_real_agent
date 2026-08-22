@@ -129,6 +129,7 @@ tuple and filters before calling `apply_reference_point_ranking`:
 - `full_length_mrna_design.py:695` — refs for `utr5_mrl`, `utr3_stability`
 - `rna_aptamer_design.py:1108` — refs for all three components
 - `sirna_design.py:543` — no oracle-backed dims (all compute); empty ref list, zero behavior change
+- `aso_target_screening.py` (v1.1.0, 2026-08-22) — same shape as siRNA: accessibility/binding are deterministic Vienna computes; empty ref list, zero demotions
 - `sgrna_design.py:489` — refs pending-governance; kept + flagged
 - `rna_tertiary_structure_design.py:697` — `rhofold_component` ref; unprofiled under this task key, kept + flagged
 

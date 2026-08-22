@@ -3,8 +3,15 @@
 Protein sequence → CDS design (LinearDesign λ=[0,1,4,10] where λ∈[0,+∞), typically ≤10 + RNARL + GEMORNA) →
 fold + GC + unpaired-fraction evaluation → scoring → ranking → WorkflowResult.
 
+With ``navigation=True`` (v1.2.0) the static LinearDesign λ grid is replaced
+by the deterministic GenNav-λ constraint navigation (E6 evidence, E8–E14
+levers; see ``agent_core/generation/gennav_mrna_lambda.py``): λ-curve probe →
+band-gap-first interstitial reinforcement under a raw budget → per-profile
+matrix delivery (expression / stability / balanced). RNARL/GEMORNA are not
+called on the navigation path.
+
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MrnaCdsDesignWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更            ║
+║  MrnaCdsDesignWorkflow INTERFACE LOCK (v1.2.0) —— 禁止单方面变更            ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║  本文件为 mrna_cds_design workflow 的权威实现。任何字段增删、函数签名变动、  ║
 ║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
@@ -26,6 +33,12 @@ fold + GC + unpaired-fraction evaluation → scoring → ranking → WorkflowRes
 ║    - docs/WORKFLOWS.md                                                        ║
 ║    - AGENTS.md                                                                ║
 ║                                                                               ║
+║  v1.2.0 (2026-08-22): +navigation(bool, 默认 False) GenNav-λ 生产导航路径    ║
+║  (E6 证据升级为生产; 纯函数核心                                               ║
+║  agent_core/generation/gennav_mrna_lambda.py); 排名仍为 total_score,        ║
+║  增补 Pareto 前沿注解 (cai_score × mfe_per_nt, extras.pareto_frontier)。     ║
+║  静态路径 (navigation=False) 行为不变。无输入字段删除。                      ║
+║                                                                               ║
 ║  规则：违反此规则的提交将被回退。                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """
@@ -43,11 +56,26 @@ from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
 from agent_core.sequence_utils import (
     _load_builtin_codon_tables,
+    _pick_float,
     resolve_species_name,
 )
 from agent_core.constants.species import DEFAULT_CAI_SPECIES, DEFAULT_RNARL_MODEL_TYPE, RNARLModelType, format_cai_species_aliases, format_rnarl_model_types
+from agent_core.generation.gennav_mrna_lambda import (
+    MrnaNavConfig,
+    deliver_profile,
+    evaluate_matrix,
+    gc_fraction,
+    guarantee_round,
+    max_homopolymer_run,
+    mechanized_proposals,
+    profile_gaps,
+)
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
 from agent_core.workflows.base import BaseDomainWorkflow
+from agent_core.workflows.multi_objective import (
+    assign_pareto_tags,
+    compute_pareto_frontier,
+)
 from agent_core.sequence_utils import (
     compute_mrna_metric_bundle,
     score_mrna_candidate,
@@ -154,6 +182,18 @@ class MrnaCdsDesignInput(BaseModel):
         description="If set, keep only the last N amino acids of protein_sequence before design.",
     )
     design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = Field(default="all", description="CDS design engine(s) to run. 'lineardesign' uses LinearDesign; 'rnarl' uses RNARL; 'gemorna' uses GEMORNA; 'all' runs all three and merges candidates.")
+    navigation: bool = Field(
+        default=False,
+        description=(
+            "Enable GenNav-λ constraint navigation (E6 evidence, E8–E14 levers): "
+            "replace the static LinearDesign λ=[0,1,4,10] grid with an adaptive "
+            "λ-curve probe → band-gap-first interstitial reinforcement under a "
+            "16-raw budget → per-profile matrix delivery (expression/stability/"
+            "balanced, 5 each, D1 diversity). Deterministic, zero LLM. When True, "
+            "RNARL/GEMORNA are not called and design_tool is ignored for "
+            "generation (evaluation/scoring/ranking unchanged)."
+        ),
+    )
     lambda_value: Optional[float] = Field(
         default=None,
         description="LinearDesign MFE/CAI balance (0-20). Required when design_tool='lineardesign'; ignored otherwise.",
@@ -327,6 +367,9 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             len(protein_sequence),
         )
 
+        if getattr(inp, "navigation", False):
+            return self._generate_cds_navigation(inp, protein_fp)
+
         design_configs: list[tuple[str, dict[str, Any]]] = []
 
         def _ld_args(lam: float) -> dict[str, Any]:
@@ -437,6 +480,215 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         )
         return unique
 
+    # ─────────────────────────────────────────────────────────────────────────
+    # GenNav-λ navigation path (E6 evidence; production wiring 2026-08-22)
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _nav_invoke(
+        self,
+        cap_name: str,
+        args: dict[str, Any],
+        records: list[ToolCallRecord],
+        step_name: str,
+    ) -> Any:
+        """One capability call through the audit layer, recorded into *records*."""
+        cap = self.capabilities.get(cap_name)
+        res = cap.invoke(args, state=self._workflow_state)
+        records.append(ToolCallRecord(
+            step_name=step_name,
+            tool_name=cap_name,
+            input_summary=json.dumps(args, default=str),
+            output_summary=json.dumps(res.output, default=str)[:500],
+            success=res.success,
+            error=res.error,
+            elapsed_time=res.elapsed_time,
+            artifacts=dict(res.output) if res.success else {},
+            metrics={},
+        ))
+        return res
+
+    def _generate_cds_navigation(
+        self,
+        inp: MrnaCdsDesignInput,
+        protein_fp: str,
+    ) -> list[Candidate]:
+        """GenNav-λ: probe → reinforce → deliver, deterministic and zero-LLM.
+
+        Every LinearDesign / CAI / LinearFold call goes through the capability
+        layer (hence the CapGate audit trail); the full navigation trace is
+        written to ``_workflow_state["_gennav_trace"]``.
+        """
+        config = MrnaNavConfig()
+        pool: list[dict] = []
+        gears: list[dict] = []
+        seen: set[str] = set()
+        raw_spent = 0
+        rounds: list[dict] = []
+        guaranteed_bands: set[str] = set()
+        records_by_lam: dict[float, list[ToolCallRecord]] = {}
+        fold_cache: dict[str, Optional[float]] = {}
+        cai_cache: dict[str, Optional[float]] = {}
+        gear_lam: float = 0.0
+
+        def _mfe_per_nt(seq: str) -> Optional[float]:
+            if seq in fold_cache:
+                return fold_cache[seq]
+            fp = save_sequence(seq, prefix="gennav_mrna_fold")
+            res = self._nav_invoke(
+                "predict_rna_secondary_structure_with_linearfold",
+                {"filepath": fp},
+                records_by_lam.setdefault(gear_lam, []),
+                step_name="gennav_linearfold",
+            )
+            mfe = _pick_float(res.output, "mfe") if res.success else None
+            value = (mfe / len(seq)) if mfe is not None else None
+            fold_cache[seq] = value
+            return value
+
+        def _cai(seq: str) -> Optional[float]:
+            if seq in cai_cache:
+                return cai_cache[seq]
+            fp = save_sequence(seq, prefix="gennav_mrna_cai")
+            res = self._nav_invoke(
+                "compute_cai_for_cds_sequence",
+                {"filepath": fp, "species": inp.cai_species},
+                records_by_lam.setdefault(gear_lam, []),
+                step_name="gennav_cai",
+            )
+            value = _pick_float(res.output, "cai_score") if res.success else None
+            cai_cache[seq] = value
+            return value
+
+        def _probe_or_reinforce(lam: float) -> None:
+            """One LinearDesign gear call at λ; adds a matrix-evaluated entry."""
+            nonlocal raw_spent, gear_lam
+            gear_lam = lam
+            records = records_by_lam.setdefault(lam, [])
+            args: dict[str, Any] = {"filepath": protein_fp, "lambda_value": lam}
+            if inp.lineardesign_codon_usage_path:
+                args["codon_usage_path"] = str(inp.lineardesign_codon_usage_path)
+            res = self._nav_invoke(
+                "design_mrna_cds_with_lineardesign", args, records,
+                step_name=f"gennav_lineardesign:lambda{lam:g}",
+            )
+            raw_spent += 1
+            gears.append({"lambda": lam})
+            if not res.success:
+                return
+            seq = str(res.output.get("generated_sequence", ""))
+            if not seq or seq in seen:
+                return
+            seen.add(seq)
+            gc = gc_fraction(seq)
+            homo = max_homopolymer_run(seq)
+            cai = _cai(seq)
+            mfe_per_nt = _mfe_per_nt(seq)
+            pool.append({
+                "id": f"nav:lambda{lam:g}",
+                "sequence": seq,
+                "gear": {"lambda": lam},
+                "cai": cai,
+                "mfe_per_nt": round(mfe_per_nt, 6) if mfe_per_nt is not None else None,
+                "gc": round(gc, 4),
+                "max_homopolymer_run": homo,
+                "matrix_pass": evaluate_matrix(cai, mfe_per_nt, gc, homo, config),
+            })
+
+        # ── Phase 1: λ-curve probe (E6 lattice) ──
+        for lam in config.probe_lambdas:
+            if raw_spent >= config.raw_budget:
+                break
+            _probe_or_reinforce(lam)
+        _LOGGER.info(
+            "gennav_mrna_probe_done lambdas=%d raw_spent=%d pool=%d",
+            len(config.probe_lambdas), raw_spent, len(pool),
+        )
+
+        # ── Phase 2: reinforcement — guarantee rounds first, mechanized fill ──
+        while raw_spent < config.raw_budget:
+            gaps = profile_gaps(pool, config)
+            if all(g == 0 for g in gaps.values()):
+                break  # every band already deliverable — stop early, save budget
+            gear, guaranteed_bands = guarantee_round(
+                pool, gears, raw_spent, config, guaranteed_bands=guaranteed_bands
+            )
+            kind = "guarantee"
+            if gear is None:
+                proposals, _ = mechanized_proposals(pool, gears, raw_spent, config)
+                if not proposals:
+                    break
+                gear = proposals[0]
+                kind = "mechanized"
+            rounds.append({
+                "kind": kind,
+                "lambda": gear["lambda"],
+                "region": gear.get("region"),
+                "gaps_before": gaps,
+            })
+            _probe_or_reinforce(gear["lambda"])
+            _LOGGER.info(
+                "gennav_mrna_round kind=%s lambda=%s raw_spent=%d",
+                kind, gear["lambda"], raw_spent,
+            )
+
+        # ── Phase 3: per-profile mechanized delivery ──
+        deliveries = {
+            prof: deliver_profile(pool, prof, config)
+            for prof in config.profile_order
+        }
+        self._workflow_state["_gennav_trace"] = {
+            "protocol": "gennav_lambda_production_v1",
+            "raw_budget": config.raw_budget,
+            "raw_spent": raw_spent,
+            "probe": {"lambdas": list(config.probe_lambdas)},
+            "rounds": rounds,
+            "final_gaps": profile_gaps(pool, config),
+            "pool_size": len(pool),
+            "deliveries": deliveries,
+        }
+
+        by_id = {c["id"]: c for c in pool}
+        delivered: list[Candidate] = []
+        chosen: set[str] = set()
+        for prof in config.profile_order:
+            for rank, rec in enumerate(deliveries[prof]["candidates"], start=1):
+                if rec["id"] in chosen:
+                    for cand in delivered:
+                        if cand.metadata.get("nav_id") == rec["id"]:
+                            cand.metadata["nav_bands"].append(prof)
+                    continue
+                chosen.add(rec["id"])
+                src = by_id[rec["id"]]
+                lam = src["gear"]["lambda"]
+                cand = Candidate(
+                    sequence=src["sequence"],
+                    sequence_type="mrna",
+                    source=f"cds_design_gennav:lambda{lam:g}",
+                    metadata={
+                        "design_tool": "lineardesign",
+                        "design_params": {"lambda_value": lam},
+                        "protein_sequence": inp.protein_sequence,
+                        "protein_filepath": protein_fp,
+                        "cai_species": inp.cai_species,
+                        "nav_id": rec["id"],
+                        "nav_bands": [prof],
+                        "nav_delivery_rank": rank,
+                        "nav_gear": dict(src["gear"]),
+                        "nav_matrix_pass": dict(src["matrix_pass"]),
+                        "nav_cai": src["cai"],
+                        "nav_mfe_per_nt": src["mfe_per_nt"],
+                    },
+                )
+                for record in records_by_lam.get(lam, []):
+                    cand.add_tool_record(record)
+                delivered.append(cand)
+        _LOGGER.info(
+            "gennav_mrna_delivery raw_spent=%d pool=%d delivered=%d degraded=%s",
+            raw_spent, len(pool), len(delivered),
+            {p: deliveries[p]["degraded"] for p in config.profile_order},
+        )
+        return delivered
+
     def evaluate(self, candidate: Candidate) -> dict[str, Any]:
         """Run GC + fold (+ unpaired fraction) on the candidate sequence."""
         filepath = save_sequence(candidate.sequence, prefix="mrna_cds")
@@ -507,16 +759,34 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             errors = ["empty_candidate_list"]
             if self._generation_errors:
                 errors.extend(self._generation_errors)
+            # Navigation empties are the dedicated degrade (delivery matrix
+            # empty in every profile), mirroring the aptamer GenNav semantics.
+            if self._workflow_state.get("_gennav_trace") and not self._generation_errors:
+                errors = ["navigation_delivery_empty"]
             return WorkflowResult(
                 success=False,
                 task_id="",
-                summary="No candidates produced.",
+                summary=(
+                    "CDS navigation completed but no candidate passed the "
+                    "constraint matrix in any profile (explicit degrade)."
+                    if "navigation_delivery_empty" in errors
+                    else "No candidates produced."
+                ),
                 errors=errors,
             )
 
         ranked = sort_candidates_by_score(
             candidates, score_key="total_score", descending=True
         )
+
+        # Pareto annotation (v1.2.0): CAI (max) × MFE/nt (min) frontier over the
+        # measured pool — the classic LinearDesign trade-off view. Ranking stays
+        # total_score; the frontier is an extras annotation for consumers.
+        pareto_objectives = ["cai_score", "mfe_per_nt"]
+        pareto_maximize = {"cai_score": True, "mfe_per_nt": False}
+        frontier = compute_pareto_frontier(ranked, pareto_objectives, pareto_maximize)
+        assign_pareto_tags(frontier, pareto_objectives, pareto_maximize)
+
         best = ranked[0] if ranked else None
 
         # Build rich per-candidate summary lines
@@ -542,6 +812,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         summary_parts = [
             f"candidates={len(ranked)}",
             f"best_total_score={best.scores.get('total_score') if best else None}",
+            f"pareto_frontier_size={len(frontier)}",
             "---",
             *detail_lines,
         ]
@@ -552,6 +823,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             all_candidates=ranked,
             summary="\n".join(summary_parts),
             errors=[],
+            pareto_frontier=frontier,
         )
 
 

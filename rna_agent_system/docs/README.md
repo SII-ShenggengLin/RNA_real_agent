@@ -151,7 +151,7 @@ PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x
 
 | Domain | Workflows | Status |
 |--------|-----------|--------|
-| **mRNA design** | CDS design, full-length mRNA design, sequence scoring | ✅ Available |
+| **mRNA design** | CDS design (opt-in GenNav-λ navigation), full-length mRNA design, sequence scoring | ✅ Available |
 | **RNA structure** | 2° structure prediction (ViennaRNA / LinearFold), 2°→sequence design, 3° structure prediction, 3°→sequence design | ✅ Available |
 | **siRNA / ASO** | siRNA design (Evitar), duplex energy, ASO target screening | ✅ Available |
 | **CRISPR / sgRNA** | sgRNA handle design (CRGPT), CRISOT off-target scoring / optimization | ✅ Available |

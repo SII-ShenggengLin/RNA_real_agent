@@ -1,7 +1,7 @@
 # Change Log
 
 > **Scope**: locked interface changes and major workflow introductions.
-> **Last updated**: 2026-08-21
+> **Last updated**: 2026-08-22
 
 > **History policy (2026-08-18)**: this log now records only the current
 > interface state and the most recent change era. The detailed per-day ledger
@@ -9,6 +9,61 @@
 > experimental arc (what was tried, what was falsified, with evidence
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
+
+## 2026-08-22 — GenNav-λ production wiring (CDS v1.2.0), ASO → ASF (v1.1.0), CDS Pareto annotation
+
+User-directed consistency pass, following the 2026-08-21/22 Layer-2
+fresh-data audit (12/12 workflows green on live-fetched inputs — NCBI
+IL-6/GM-CSF/Zika/HBB/TNF/HBA2/FMDV/rCRS + RCSB 1UBQ/430D/1NTA + PubChem;
+875 audited tool calls, 0 failures; evidence
+`workspace/layer2_fresh_audit_2026-08-21/`).
+
+- **`MrnaCdsDesignWorkflow` v1.2.0**: new opt-in `navigation` input field
+  (default `False`). `navigation=True` replaces the static LinearDesign
+  λ=[0,1,4,10] grid with the deterministic zero-LLM GenNav-λ constraint
+  navigation — pure core `agent_core/generation/gennav_mrna_lambda.py`
+  (E6 λ-curve probe {0,1,2,4,8,10,20,50} → band-gap-first interstitial
+  reinforcement, 16-raw budget, E14 cycling guarantee → expression /
+  stability / balanced matrix delivery ×5 with D1 ≥ 0.05, domain-calibrated). Full trace in
+  `_state_writeback["_gennav_trace"]`; empty delivery is the dedicated
+  `navigation_delivery_empty` degrade. RNARL/GEMORNA are not called on the
+  navigation path; `full_length_mrna_design` keeps the static grid
+  (λ×UTR composition registered as follow-up, DECISIONS (q)). Successful
+  runs now also attach the CAI × MFE/nt **Pareto frontier annotation**
+  (`pareto_frontier` extras, `pareto_frontier_size` in summary,
+  per-candidate `pareto_tag`) — ranking stays `total_score`.
+- **`AsoTargetScreeningWorkflow` v1.1.0**: ordering mechanism converted from
+  Borda rank-sum to the shared ASF reference-point ranking
+  (`apply_reference_point_ranking`, accessibility × binding, utopian
+  reference, uniform weights; DECISIONS (o)/(q) revision). Borda ranks
+  (`accessibility_rank`/`binding_rank`/`sum_rank`) retained as diagnostics;
+  missing measurements impute at pool-worst (0.0-literal fills removed);
+  `asf_distance` added to scores and `AsoSite`; `pareto_frontier` extras
+  attached; `composite_score` semantics unchanged (final rank, 1 = best).
+- **Docs**: `DECISIONS.md` new entry (q) + (o) amendment;
+  `INTERFACE_LOCKS.md` version bumps (mrna_cds v1.2.0, aso v1.1.0,
+  full-length v3.1.0 lag fix); `WORKFLOWS.md` §2/§12; `AGENTS.md` ranking
+  count fixed (six ASF workflows) + What's New.
+- **Tests**: `tests/test_gennav_mrna_core.py` (17), new navigation wiring
+  tests in `tests/test_mrna_cds_gennav.py` (4), ASO ASF tests (+4 in
+  `tests/test_aso_target_screening.py`); fresh-data e2e verification on
+  live services.
+- **Pareto frontier consistency pass (same day)**: `sirna_design` v1.3.1,
+  `sgrna_design` v1.3.1, `rna_tertiary_structure_design` v1.2.1 now surface
+  the Pareto frontier the shared layer already computes (`pareto_frontier`
+  extras + `pareto_frontier_size`; ordering unchanged) — previously only
+  full-length/aptamer surfaced it. Adversarial testing of the surfacing
+  found and fixed one defect: siRNA truncates to `candidate_count` after
+  ranking, so the surfaced frontier could reference undelivered candidates
+  — it is now intersected with the delivered set
+  (`tests/test_asf_pareto_surfacing_adversarial.py`, 8 cases: empty pool,
+  single candidate, unmeasured pool, identical candidates, dominated
+  exclusion, partial measurement, truncation consistency, tertiary RMSD
+  direction). Doc lags fixed: `ARCHITECTURE.md` GenNav
+  paragraph (was aptamer-only), `README.md` mRNA capability row (GenNav-λ),
+  `RANKING_GOVERNANCE.md` ObjectiveRef list (+ASO), ASO test-file lock header.
+  Every ASF workflow now surfaces the frontier uniformly; single-objective
+  workflows remain intentionally unannotated.
 
 ## 2026-08-21 (b) — Layer-1 fresh-data audit: 252 checks green, one EGARPS path defect fixed
 
