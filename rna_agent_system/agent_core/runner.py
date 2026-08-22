@@ -59,8 +59,6 @@ class AgentRunner:
         quality_auto_retry: bool = False,
         persist_run: bool = False,
     ):
-        # INTERFACE LOCK (v3.4.0) — AgentRunner public API
-        # Sync with docs/INTERFACE_LOCKS.md §19, AGENTS.md, cli/form_chat.py.
         self.executor = executor
         self.quality_review_enabled = quality_review_enabled
         self.quality_auto_retry = quality_auto_retry

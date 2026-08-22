@@ -460,7 +460,7 @@ When adding a new task type:
 
 ## 6. How to Extend
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full new-tool procedure, interface lock annotations, and commit conventions.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full new-tool procedure and commit conventions.
 
 Quick reference:
 

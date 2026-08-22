@@ -10,37 +10,6 @@ band-gap-first interstitial reinforcement under a raw budget → per-profile
 matrix delivery (expression / stability / balanced). RNARL/GEMORNA are not
 called on the navigation path.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MrnaCdsDesignWorkflow INTERFACE LOCK (v1.2.0) —— 禁止单方面变更            ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 mrna_cds_design workflow 的权威实现。任何字段增删、函数签名变动、  ║
-║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
-║                                                                               ║
-║    - agent_core/workflows/mrna_cds_design.py  ← 本文件                       ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/mrna_cds_design.py                           ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - tests/test_mrna_cds_design_workflow.py                                   ║
-║    - docs/INTERFACE_LOCKS.md                                                  ║
-║    - docs/WORKFLOWS.md                                                        ║
-║    - AGENTS.md                                                                ║
-║                                                                               ║
-║  v1.2.0 (2026-08-22): +navigation(bool, 默认 False) GenNav-λ 生产导航路径    ║
-║  (E6 证据升级为生产; 纯函数核心                                               ║
-║  agent_core/generation/gennav_mrna_lambda.py); 排名仍为 total_score,        ║
-║  增补 Pareto 前沿注解 (cai_score × mfe_per_nt, extras.pareto_frontier)。     ║
-║  静态路径 (navigation=False) 行为不变。无输入字段删除。                      ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations
@@ -93,8 +62,6 @@ from agent_core.workflows.evaluators import (
 _LOGGER = logging.getLogger("agent_core.workflows.mrna_cds_design")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Input model — INTERFACE LOCKED (v1.0.0)
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -240,8 +207,6 @@ class MrnaCdsDesignInput(BaseModel):
             raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
         return self
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Workflow — INTERFACE LOCKED (v1.0.0)
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -747,8 +712,6 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             candidate.metadata["structure"] = metrics.get("structure")
         return bundle
 
-    # ─────────────────────────────────────────────────────────────────────────
-    # Scoring — INTERFACE LOCKED (v1.0.0)
     # ─────────────────────────────────────────────────────────────────────────
 
     def score(self, metrics: dict[str, Any]) -> dict[str, Any]:

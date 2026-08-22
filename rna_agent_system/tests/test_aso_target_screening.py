@@ -2,9 +2,6 @@
 
 Uses stub capabilities to avoid needing live ViennaRNA microservices.
 
-AsoTargetScreeningWorkflow INTERFACE LOCK (v1.1.0):
-关联文件清单见 agent_core/workflows/aso_target_screening.py 顶部的
-INTERFACE LOCK 注释。修改 workflow 接口必须同步更新全部关联文件并重新跑通测试。
 """
 
 from __future__ import annotations

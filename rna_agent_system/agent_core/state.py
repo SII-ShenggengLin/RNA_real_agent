@@ -4,14 +4,6 @@ from langchain_core.messages import HumanMessage
 
 class AgentState(TypedDict, total=False):
     """Shared state — framework fields only; tool results live in ``tool_results``."""
-    # ═══════════════════════════════════════════════════════════════════════════════
-    # CLI END-TO-END INTERFACE LOCK (v2.0.0) — 禁止单方面变更
-    # The CLI (cli/form_chat.py) consumes the fields below. Renaming, removing,
-    # or narrowing their types will break audit report generation and multi-turn
-    # form prefilling. `_workflow_result_history` enables explicit cross-turn
-    # references (e.g. "与第一轮对比") covered by PA_015–PA_024. See
-    # docs/INTERFACE_LOCKS.md §20.
-    # ═══════════════════════════════════════════════════════════════════════════════
     # User / session
     messages: list[Any]
     current_task: str

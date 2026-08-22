@@ -4,32 +4,6 @@ Input sequence → IRESfinder (3 modes) → merge positive windows →
 structural validation (ViennaRNA fold + RNAplfold + dot-bracket) →
 scoring → ranking → confidence annotation via QualityAgent.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  IresPredictionWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更           ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 ires_prediction workflow 的权威实现。任何字段增删、函数签名变动、   ║
-║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
-║                                                                               ║
-║    - agent_core/workflows/ires_prediction.py  ← 本文件                       ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/ires_prediction.py                           ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - microservices/iresfinder_service/main.py                                 ║
-║    - tests/test_ires_prediction.py                                            ║
-║    - docs/INTERFACE_LOCKS.md                                                  ║
-║    - docs/WORKFLOWS.md                                                        ║
-║    - AGENTS.md                                                                ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations
@@ -167,11 +141,6 @@ def _merge_overlapping_windows(
         )
 
     return merged
-
-
-# Input model — INTERFACE LOCKED (v1.0.0)
-# Do NOT rename, remove, or change types of these fields without updating
-# all files listed in the INTERFACE LOCK header and re-running the full test suite.
 
 
 class IresPredictionInput(BaseModel):
@@ -327,10 +296,6 @@ def assign_confidence(ires_probability: float, mean_unpaired_fraction: float | N
 class IresPredictionWorkflow(BaseDomainWorkflow[IresPredictionInput, WorkflowResult]):
     """IRES screening workflow: predict → merge windows → structural validation → score → rank.
 
-    INTERFACE LOCKED (v1.0.0):
-    - Do NOT change pipeline order (generate → evaluate → score → rank)
-    - Do NOT rename or remove required_capabilities entries
-    - Do NOT change _state_writeback structure
     """
 
     name = "ires_prediction"

@@ -218,7 +218,7 @@
   (`rnasmol_service_gpu_env`, torch 2.1) with `RNASMOL_DEVICE=cuda:0`.
 - The default checkpoint is preloaded at service startup, so a passed health
   check means scoring is immediately ready.
-- 2026-08-11 preprocessing-fidelity fix (INTERFACE LOCK v0.2.0 → v0.3.0): the
+- 2026-08-11 preprocessing-fidelity fix: the
   service now preserves the case-sensitive RNA vocab (lowercase `a/c/g/u` =
   modified bases, vocab tokens 5-8) and replicates upstream
   `rnasmol/preprocessing.py` verbatim, including its adjacency / top-k slicing

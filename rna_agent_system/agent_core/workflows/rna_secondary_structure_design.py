@@ -13,36 +13,6 @@ Key design principles
    workflow can invoke it multiple times (``num_invocations``) to explore
    different local optima and produce a diverse candidate set.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaSecondaryStructureDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更 ║
-║  锁定日期: 2026-05-15 | 测试通过: 67/67 (含 live LLM)                          ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 rna_secondary_structure_design workflow 的权威实现。任何字段增删、  ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
-║                                                                               ║
-║    - agent_core/workflows/rna_secondary_structure_design.py  ← 本文件        ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/rna_secondary_structure_design.py            ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - agent_core/tool_executor.py                                              ║
-║    - agent_core/tool_registry.py                                              ║
-║    - agent_core/file_manager.py                                               ║
-║    - agent_core/sequence_utils.py                                             ║
-║    - agent_core/workflow_models.py                                            ║
-║    - tests/test_rna_secondary_structure_design.py                             ║
-║    - tests/test_rna_secondary_structure_design_layer3.py                      ║
-║                                                                               ║
-║  当前测试状态：全部 67 个 pytest 用例通过（含 1 个 live LLM 测试）。           ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

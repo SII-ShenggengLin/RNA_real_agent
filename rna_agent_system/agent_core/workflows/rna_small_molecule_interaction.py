@@ -3,26 +3,6 @@
 Given an RNA sequence and a ligand SMILES, predict binding propensity
 using RNAsmol and/or GerNA-Bind, evaluate, score, and rank.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaSmallMoleculeInteractionWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更 ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 rna_small_molecule_interaction workflow 的权威实现。任何字段增删、   ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：  ║
-║                                                                               ║
-║    - agent_core/workflows/rna_small_molecule_interaction.py  ← 本文件         ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - tests/test_rna_small_molecule_interaction.py                             ║
-║    - docs/INTERFACE_LOCKS.md                                                  ║
-║    - docs/WORKFLOWS.md                                                        ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

@@ -1,6 +1,6 @@
 # Change Log
 
-> **Scope**: locked interface changes and major workflow introductions.
+> **Scope**: interface changes and major workflow introductions.
 > **Last updated**: 2026-08-22
 
 > **History policy (2026-08-18)**: this log now records only the current
@@ -9,6 +9,40 @@
 > experimental arc (what was tried, what was falsified, with evidence
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
+
+## 2026-08-22 (f) — Interface Lock Policy removed (DECISIONS (v))
+
+User-directed retirement of the INTERFACE LOCK policy (it predated the
+Layer-0–Layer-6 fresh-data audit programme and had drifted stale — e.g. the
+lock table still listed `cli/form_chat.py` as the §20 anchor although that
+file carried no lock block). Removed:
+
+- **Policy document**: `docs/INTERFACE_LOCKS.md` deleted (its still-true
+  behavioural content — pipeline order, scoring formulas, state writeback,
+  ASF ranking keys — remains documented in `WORKFLOWS.md` /
+  `RANKING_GOVERNANCE.md`).
+- **Lock comment blocks**: every INTERFACE LOCK banner, boxed workflow
+  header, `# ═══`-fenced freeze declaration and docstring lock paragraph
+  stripped from `agent_core/tools.py`, `tool_specs.py`, `state.py`,
+  `runner.py`, `sequence_utils.py`, `workflows/__init__.py`, all 11
+  workflow modules, 20 microservice `main.py` files, and two test-file
+  docstrings — a **pure-deletion source diff (~1,250 lines, zero added
+  lines, zero functional changes; suite 621 passed unchanged)**. Plain
+  `# ═══` section-divider comments (the house style) are untouched.
+- **Doc references**: README index row + CHANGELOG scope line;
+  `ARCHITECTURE.md` §6; `CONTRIBUTING.md` §5 (section deleted, later
+  sections renumbered) + simplicity-rule exception (a) + new-tool step 7;
+  `WORKFLOWS.md` per-workflow `**Lock**` column; `RANKING_GOVERNANCE.md`
+  related-docs line; `TOOLS.md` RNAsmol fix note; the `## 8. Interface Lock`
+  sections of `docs/tools/score_rna_ligand_binding_with_rnasmol.md` and
+  `score_rna_protein_complex_with_egarps.md`; `MODEL_API_USAGE.md` §6 rule
+  3; `tests/test_layer6_fresh_audit_regressions.py` docstring (dead §19
+  pointer); `DECISIONS.md` (g) evidence pointer.
+
+Interface changes are now governed by the ordinary test-first rules:
+full suite + the PA_006–PA_036 end-to-end drivers before commit
+(`CONTRIBUTING.md`). Retirement rationale registered in
+`DECISIONS.md` (v) with a do-not-reintroduce note.
 
 ## 2026-08-22 (e) — Layer-6 fresh-data audit: AgentRunner façade + CLI + FastAPI verified; six defects fixed
 
@@ -732,8 +766,8 @@ SelfModel now 29 records); CRISOT-Spec wiring (`SgRnaDesignWorkflow` v1.2.0,
 `calculate_crispr_specificity_with_crisot` production); GenNav aptamer core
 extraction (`agent_core/generation/gennav_aptamer.py`).
 
-## Current locked-interface state
+## Current interface state
 
-See [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) for the canonical table. Tool
+Tool
 count: 42 registered specs (41 production + 1 demo). Workflows: 11, all
 plain `BaseDomainWorkflow` implementations (no BMC interface anywhere).

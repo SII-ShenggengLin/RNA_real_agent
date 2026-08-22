@@ -15,37 +15,6 @@ Key design principles
    or the file format does not match, the workflow continues with the remaining
    metrics rather than failing entirely.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaAptamerDesignWorkflow INTERFACE LOCK (v2.2.0) —— 禁止单方面变更         ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 rna_aptamer_design workflow 的权威实现。任何字段增删、            ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：║
-║                                                                               ║
-║    - agent_core/workflows/rna_aptamer_design.py  ← 本文件                   ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/rna_aptamer_design.py                        ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - tests/test_rna_aptamer_design.py                                         ║
-    - tests/test_rna_aptamer_gennav.py                                        ║
-║  v2.1.0 (2026-08-19): +navigation(bool, 默认 False) GenNav 生产导航路径    ║
-║  (E14 协议, 纯函数核心 agent_core/generation/gennav_aptamer.py);          ║
-║  required_capabilities 增补 LinearFold。无字段删除或语义变更。            ║
-║  v2.2.0 (2026-08-21): 排序治理 (DECISIONS (p)) — 三个 ASF 目标全部经      ║
-║  CapGate 判决组装 (模式无关); 全部降级时交付 ranking_evidence_unavailable ║
-║  降级态 (success=True, 生成序, 注释保留, 标记不进 errors — errors 非空    ║
-║  即硬失败); 轻评估 RhoFold pLDDT top-k 筛选在 screening 画像 failed 时   ║
-║  降级为确定性池序; _state_writeback 增补 _ranking_governance。           ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

@@ -1,17 +1,5 @@
 """CRISOT microservice for CRISPR off-target scoring, specificity, optimization, and fingerprinting.
 
-INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-关联文件清单（修改时必须全部同步）：
-  - microservices/crisot_service/main.py  ← 本文件
-  - agent_core/tools.py
-  - agent_core/tool_specs.py
-  - agent_core/state.py
-  - cli/ entrypoints
-  - docs/RNA_AGENT_SYSTEM_GUIDE.md
-规则：任何字段增删、端点路径变更、Request/Response 模型变动、
-      返回值结构调整，必须同时更新上述全部文件并重新跑通端到端测试。
-      违反此规则的提交将被回退。
-本次修改的基准日期：2026-04-24。
 """
 
 from __future__ import annotations

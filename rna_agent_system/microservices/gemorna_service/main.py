@@ -31,9 +31,6 @@ app = FastAPI(
 class CdsDesignRequest(BaseModel):
     """GEMORNA CDS generation request.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
-    - agent_core/tools.py :: GemornaCdsInput + design_mrna_cds_with_gemorna wrapper
-    - agent_core/tool_specs.py :: GemornaCdsOutput
     """
 
     protein_sequence: str = Field(
@@ -59,9 +56,6 @@ class CdsDesignRequest(BaseModel):
 class CdsDesignResponse(BaseModel):
     """GEMORNA CDS generation response.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
-    - agent_core/tool_specs.py :: GemornaCdsOutput
-    - agent_core/tools.py :: design_mrna_cds_with_gemorna wrapper return dict
     """
 
     protein_sequence: str
@@ -73,9 +67,6 @@ class CdsDesignResponse(BaseModel):
 class UtrDesignRequest(BaseModel):
     """GEMORNA UTR generation request (5'UTR / 3'UTR).
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
-    - agent_core/tools.py :: Gemorna5UtrInput / Gemorna3UtrInput + design_5utr_with_gemorna / design_3utr_with_gemorna wrappers
-    - agent_core/tool_specs.py :: Gemorna5UtrOutput / Gemorna3UtrOutput
     """
 
     utr_length: str = Field(
@@ -96,9 +87,6 @@ class UtrDesignRequest(BaseModel):
 class UtrDesignResponse(BaseModel):
     """GEMORNA UTR generation response (5'UTR / 3'UTR).
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Field changes must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna5UtrOutput / Gemorna3UtrOutput
-    - agent_core/tools.py :: design_5utr_with_gemorna / design_3utr_with_gemorna wrapper return dicts
     """
 
     mode: str
@@ -111,9 +99,6 @@ class UtrDesignResponse(BaseModel):
 class UtrPredictionRequest(BaseModel):
     """GEMORNA UTR prediction request (5'UTR MRL / 3'UTR stability).
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Field changes must stay synchronized with:
-    - agent_core/tools.py :: Gemorna5UtrPredictionInput / Gemorna3UtrPredictionInput
-    - agent_core/tool_specs.py :: predict_5utr_mrl_with_gemorna / predict_3utr_stability_with_gemorna ToolSpec
     """
 
     sequence: str = Field(
@@ -138,9 +123,6 @@ class UtrPredictionRequest(BaseModel):
 class Utr5MrlPredictionResponse(BaseModel):
     """GEMORNA 5'UTR MRL prediction response.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna5UtrMrlPredictionOutput
-    - agent_core/tools.py :: predict_5utr_mrl_with_gemorna wrapper return dict
     """
 
     input_sequence: str
@@ -151,9 +133,6 @@ class Utr5MrlPredictionResponse(BaseModel):
 class Utr3StabilityPredictionResponse(BaseModel):
     """GEMORNA 3'UTR stability prediction response.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna3UtrStabilityPredictionOutput
-    - agent_core/tools.py :: predict_3utr_stability_with_gemorna wrapper return dict
     """
 
     input_sequence: str
@@ -292,8 +271,6 @@ def health() -> dict[str, str]:
 def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
     """GEMORNA CDS generation endpoint.
 
-    INTERFACE LOCK (v0.2.0): The CLI invocation (--mode cds --protein_seq ...) and
-    response schema are canonical. Do not change without updating wrapper + tool spec.
     """
     _require_runtime_assets("cds")
     command = [
@@ -334,8 +311,6 @@ def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
 def generate_5utr(payload: UtrDesignRequest) -> UtrDesignResponse:
     """GEMORNA 5'UTR generation endpoint.
 
-    INTERFACE LOCK (v0.2.0): The CLI invocation (--mode 5utr --utr_length ...) and
-    response schema are canonical. Do not change without updating wrapper + tool spec.
     """
     return _run_gemorna_utr("5utr", payload.utr_length)
 
@@ -344,8 +319,6 @@ def generate_5utr(payload: UtrDesignRequest) -> UtrDesignResponse:
 def generate_3utr(payload: UtrDesignRequest) -> UtrDesignResponse:
     """GEMORNA 3'UTR generation endpoint.
 
-    INTERFACE LOCK (v0.2.0): The CLI invocation (--mode 3utr --utr_length ...) and
-    response schema are canonical. Do not change without updating wrapper + tool spec.
     """
     return _run_gemorna_utr("3utr", payload.utr_length)
 
@@ -414,8 +387,6 @@ def _run_gemorna_prediction(mode: str, sequence: str) -> float:
 def predict_5utr_mrl(payload: UtrPredictionRequest) -> Utr5MrlPredictionResponse:
     """GEMORNA 5'UTR MRL prediction endpoint.
 
-    INTERFACE LOCK (v0.1.0): The CLI invocation (--sequence ...) and
-    response schema are canonical. Do not change without updating wrapper + tool spec.
     """
     predicted_mrl = _run_gemorna_prediction("5utr", payload.sequence)
     return Utr5MrlPredictionResponse(
@@ -428,8 +399,6 @@ def predict_5utr_mrl(payload: UtrPredictionRequest) -> Utr5MrlPredictionResponse
 def predict_3utr_stability(payload: UtrPredictionRequest) -> Utr3StabilityPredictionResponse:
     """GEMORNA 3'UTR stability prediction endpoint.
 
-    INTERFACE LOCK (v0.1.0): The CLI invocation (--sequence ...) and
-    response schema are canonical. Do not change without updating wrapper + tool spec.
     """
     predicted_stability = _run_gemorna_prediction("3utr", payload.sequence)
     return Utr3StabilityPredictionResponse(

@@ -123,19 +123,3 @@ Other preprocessing facts:
 - PPR matrix uses `alpha=0.1`; top-k sparsification uses `k=5`.
 
 **Verified parity (2026-08-11)**: post-fix the service reproduces the official upstream `test.py` reference metrics exactly — `robin_molperturbation` test AUROC **0.9744**, `pdb_molperturbation` test AUROC **0.9828**; decoy case studies rank the true binder at 2/1601 (FMN_ribocil) and 7/265 (MALAT1_furamidine). Boundary panel: `experiments/results/rnasmol_boundary_panel.json`.
-
----
-
-## 8. Interface Lock
-
-> **v0.3.0** — Any field addition/removal must be synchronized with:
-> - `microservices/rnasmol_service/main.py` :: `ScoreRequest` / `ScoreResponse`
-> - `agent_core/tools.py` :: `RNAsmolScoreInput` / `score_rna_ligand_binding_with_rnasmol`
-> - `agent_core/tool_specs.py` :: `score_rna_ligand_binding_with_rnasmol` ToolSpec + `RNAsmolScoreOutput`
-> - `agent_core/state.py` :: `rnasmol_*` fields
-> - `agent_core/workflows/rna_small_molecule_interaction.py` :: `evaluate()` consumption
-> - `docs/TOOLS.md` §5.1
->
-> **Changelog**
-> - **v0.3.0 (2026-08-11)**: preprocessing-fidelity fix — case-sensitive RNA vocab preserved, upstream adjacency / top-k slicing semantics replicated verbatim; official `test.py` parity verified (robin 0.9744 / pdb 0.9828 AUROC). Request/response schema unchanged.
-> - **v0.2.0 (2026-04-23)**: interface frozen after line-by-line upstream review and end-to-end tests.

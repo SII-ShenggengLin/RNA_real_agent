@@ -296,8 +296,6 @@ def list_models() -> dict[str, Any]:
 def generate_cds(payload: CdsDesignRequest) -> CdsDesignResponse:
     """RNARL actor inference endpoint.
 
-    INTERFACE LOCK (v0.2.0): The request/response schema is canonical.
-    Do not change keys without updating the wrapper and documentation.
     """
     protein_sequence = _normalize_protein_sequence(payload.protein_sequence)
     model_type = _normalize_model_type(payload.model_type)

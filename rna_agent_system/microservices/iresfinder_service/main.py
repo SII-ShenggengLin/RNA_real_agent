@@ -1,12 +1,5 @@
 """IRESfinder microservice rebuilt for Python 3 deployment.
 
-INTERFACE LOCK (v0.2.0): Locked implementation. The canonical reference for this
-service's behaviour is the state after the 2026-04-23 refactor. Any change to
-feature engineering, preprocessing, or IO schemas must be synchronized with:
-- agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
-- agent_core/tool_specs.py :: IRESfinderPredictionOutput / TOOL_SPECS
-- agent_core/state.py :: iresfinder_* fields
-- docs/tools/predict_putative_ires_with_iresfinder.md
 """
 
 from __future__ import annotations

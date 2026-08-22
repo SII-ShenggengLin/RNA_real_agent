@@ -3,34 +3,6 @@
 Pipeline: CRGPT handle design → CRGPT re-score + optional CRISOT off-target
 score → scoring (nn_score + crisot_score) → ranking → WorkflowResult.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SgRnaDesignWorkflow INTERFACE LOCK (v1.3.1 (2026-08-22 +pareto_frontier extras 呈现, 排序不变); v1.3.0; v1.2.0 ASF reference-point ranking over nn/crisot/crisot_specificity components (weight_* renormalized as ASF weights), total_score becomes a diagnostic; v1.2.0; v1.1.0 + optional off_target_sequences / weight_crisot_specificity input fields and the crisot_specificity scoring component — additive, default-off) —— 禁止单方面变更              ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 sgrna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
-║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
-║                                                                               ║
-║    - agent_core/workflows/sgrna_design.py  ← 本文件                          ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/sgrna_design.py                              ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - microservices/sgrna_design_service/main.py                               ║
-║    - microservices/crisot_service/main.py                                     ║
-║    - tests/test_sgrna_design_workflow.py                                      ║
-║    - tests/test_sgrna_design_e2e.py                                           ║
-║    - docs/INTERFACE_LOCKS.md                                                  ║
-║    - docs/WORKFLOWS.md                                                        ║
-║    - AGENTS.md                                                                ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

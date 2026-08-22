@@ -4,7 +4,7 @@
 > `agent_core/calibrated/objective_assembly.py`; registered as DECISIONS (p);
 > tests `tests/test_ranking_governance.py`, suite 534 passed)
 > **Scope**: the cooperation between CapGate (DecisionGate / SelfModel / CalibratedRuntime) and the shared ASF ranking layer (`agent_core/workflows/multi_objective.py`)
-> **Related**: [`DECISIONS.md`](DECISIONS.md) (e), (j), (k), (l), (o), (p) · [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §10–§15 · [`WORKFLOWS.md`](WORKFLOWS.md)
+> **Related**: [`DECISIONS.md`](DECISIONS.md) (e), (j), (k), (l), (o), (p) · [`WORKFLOWS.md`](WORKFLOWS.md)
 > **Governing principle**: the verdicts in (e)/(j)/(l) are *preserved unchanged* — this design changes only how the ranking layer *consumes* them.
 >
 > **Implementation corrections (2026-08-21)**: three facts established while

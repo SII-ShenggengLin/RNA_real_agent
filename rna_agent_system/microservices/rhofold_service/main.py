@@ -32,10 +32,6 @@ app = FastAPI(
 class RhoFoldPredictRequest(BaseModel):
     """RhoFold prediction request schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: RhoFoldInput / predict_rna_tertiary_structure_with_rhofold
-    - agent_core/tool_specs.py :: RhoFoldOutput / predict_rna_tertiary_structure_with_rhofold ToolSpec
-    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     """
 
     sequence: str = Field(..., min_length=1, description="RNA sequence (A/U/G/C).")
@@ -71,10 +67,6 @@ class RhoFoldPredictRequest(BaseModel):
 class RhoFoldPredictResponse(BaseModel):
     """RhoFold prediction response schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (reads these keys)
-    - agent_core/tool_specs.py :: RhoFoldOutput
-    - docs/tools/predict_rna_tertiary_structure_with_rhofold.md
     """
 
     sequence: str

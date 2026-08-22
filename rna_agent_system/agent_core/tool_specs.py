@@ -37,10 +37,6 @@ class _OutBase(BaseModel):
 class BlastnSearchOutput(_OutBase):
     """BLAST+ blastn search output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: run_blastn_similarity_search (wrapper return dict)
-    - microservices/blast_service/main.py :: BlastnResponse
-    - agent_core/state.py :: blast_* fields
     """
 
     hit_count: int
@@ -61,9 +57,6 @@ class BlastnSearchOutput(_OutBase):
 class Bowtie2AlignOutput(_OutBase):
     """Bowtie2 short-alignment output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: run_bowtie2_short_alignment (wrapper return dict)
-    - microservices/bowtie2_service/main.py :: Bowtie2AlignResponse
     """
 
     hit_count: int
@@ -199,7 +192,6 @@ class LinearFoldOutput(_OutBase):
     model: str
 
 
-
 class CrisotScoreOutput(_OutBase):
     input_filepath: str
     sgrna: str
@@ -246,9 +238,6 @@ class SgRNADesignScoreOutput(_OutBase):
 class GemornaCdsOutput(_OutBase):
     """GEMORNA CDS design output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: design_mrna_cds_with_gemorna (wrapper return dict)
-    - microservices/gemorna_service/main.py :: CdsDesignResponse
     """
 
     input_filepath: str
@@ -261,9 +250,6 @@ class GemornaCdsOutput(_OutBase):
 class Gemorna5UtrOutput(_OutBase):
     """GEMORNA 5'UTR design output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: design_5utr_with_gemorna (wrapper return dict)
-    - microservices/gemorna_service/main.py :: UtrDesignResponse
     """
 
     output_filepath: str
@@ -276,9 +262,6 @@ class Gemorna5UtrOutput(_OutBase):
 class Gemorna3UtrOutput(_OutBase):
     """GEMORNA 3'UTR design output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: design_3utr_with_gemorna (wrapper return dict)
-    - microservices/gemorna_service/main.py :: UtrDesignResponse
     """
 
     output_filepath: str
@@ -291,9 +274,6 @@ class Gemorna3UtrOutput(_OutBase):
 class Gemorna5UtrMrlPredictionOutput(_OutBase):
     """GEMORNA 5'UTR MRL prediction output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: predict_5utr_mrl_with_gemorna (wrapper return dict)
-    - microservices/gemorna_service/main.py :: Utr5MrlPredictionResponse
     """
 
     input_filepath: str
@@ -305,9 +285,6 @@ class Gemorna5UtrMrlPredictionOutput(_OutBase):
 class Gemorna3UtrStabilityPredictionOutput(_OutBase):
     """GEMORNA 3'UTR stability prediction output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: predict_3utr_stability_with_gemorna (wrapper return dict)
-    - microservices/gemorna_service/main.py :: Utr3StabilityPredictionResponse
     """
 
     input_filepath: str
@@ -316,16 +293,9 @@ class Gemorna3UtrStabilityPredictionOutput(_OutBase):
     model: str
 
 
-# LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-
-
 class LinearDesignCdsOutput(_OutBase):
     """LinearDesign single-sequence CDS design output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: design_mrna_cds_with_lineardesign return dict
-    - microservices/lineardesign_service/main.py :: LinearDesignResponse
-    - agent_core/state.py :: lineardesign_* fields
     """
 
     input_filepath: str
@@ -339,8 +309,6 @@ class LinearDesignCdsOutput(_OutBase):
     raw_output: str
     stderr: str = ""
     model: str
-
-
 
 
 # Junction-aware LinearDesign tool (2026-08, additive; v0.2.0 locked schemas above
@@ -370,9 +338,6 @@ class RNARLCdsOutput(_OutBase):
 class RhoFoldOutput(_OutBase):
     """RhoFold tertiary structure prediction output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: predict_rna_tertiary_structure_with_rhofold (wrapper return dict)
-    - microservices/rhofold_service/main.py :: RhoFoldPredictResponse
     """
 
     input_filepath: str
@@ -388,10 +353,6 @@ class RhoFoldOutput(_OutBase):
 class RhoDesignOutput(_OutBase):
     """RhoDesign structure→sequence design output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: design_rna_sequence_with_rhodesign (wrapper return dict)
-    - microservices/rhodesign_service/main.py :: RhoDesignResponse
-    - docs/tools/design_rna_sequence_with_rhodesign.md
     """
 
     input_pdb_filepath: str
@@ -402,15 +363,9 @@ class RhoDesignOutput(_OutBase):
     model: str
 
 
-# RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-
 class RiboDiffusionOutput(_OutBase):
     """RiboDiffusion tertiary inverse folding output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: design_rna_inverse_fold_with_ribodiffusion (wrapper return dict)
-    - microservices/ribodiffusion_service/main.py :: RiboDiffusionResponse
-    - agent_core/state.py :: ribodiffusion_* fields
     """
 
     input_pdb_filepath: str
@@ -423,22 +378,9 @@ class RiboDiffusionOutput(_OutBase):
     model: str
 
 
-# RNAsmOL 接口冻结声明 (v0.3.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/rnasmol_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-
 class RNAsmolScoreOutput(_OutBase):
     """RNAsmol scoring output schema.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
-    - microservices/rnasmol_service/main.py :: ScoreResponse
-    - agent_core/state.py :: rnasmol_* fields
     """
     input_filepath: str
     smiles: str
@@ -456,10 +398,6 @@ class RNAsmolScoreOutput(_OutBase):
 class GerNABindScoreOutput(_OutBase):
     """GerNA-Bind scoring output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind (wrapper return dict)
-    - microservices/gernabind_service/main.py :: ScoreResponse
-    - agent_core/state.py :: gernabind_* fields
     """
     input_filepath: str
     smiles: str
@@ -473,10 +411,6 @@ class GerNABindScoreOutput(_OutBase):
 class EGARPSOutput(_OutBase):
     """EGARPS+ RNA-protein complex scoring output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: score_rna_protein_complex_with_egarps (wrapper return dict)
-    - microservices/egarps_service/main.py :: EGARPSResponse
-    - agent_core/state.py :: egarps_* fields
     """
     complex_id: str
     native_probability: float
@@ -488,11 +422,6 @@ class EGARPSOutput(_OutBase):
 class RNASTOPPredictionOutput(_OutBase):
     """RNASTOP prediction output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
-    synchronized with:
-    - microservices/rnastop_service/main.py :: StabilityPredictionResponse
-    - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    - agent_core/state.py :: rnastop_* fields
     """
 
     input_filepath: str
@@ -514,25 +443,9 @@ class RNASTOPPredictionOutput(_OutBase):
     model: str
 
 
-# IRESfinder 接口冻结声明 (v0.2.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/iresfinder_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py  ← 本文件
-#   - agent_core/state.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# 本次修改的基准日期：2026-04-23。
-
 class IRESfinderPredictionOutput(_OutBase):
     """IRESfinder prediction output schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema — the canonical contract is the
-    state after the 2026-04-23 refactor. Any field addition/removal must be
-    synchronized with:
-    - agent_core/tools.py :: predict_putative_ires_with_iresfinder return dict
-    - microservices/iresfinder_service/main.py :: IRESfinderPredictResponse
-    - agent_core/state.py :: iresfinder_* fields
     """
 
     input_filepath: str
@@ -554,10 +467,6 @@ class IRESfinderPredictionOutput(_OutBase):
 class ODesignInferenceOutput(_OutBase):
     """ODesign inference output schema.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: run_odesign_inference (wrapper return dict)
-    - microservices/odesign_service/main.py :: ODesignInferenceResponse
-    - docs/tools/run_odesign_inference.md
     """
     input_json_filepath: str
     infer_model_name: str
@@ -580,9 +489,6 @@ class ODesignInferenceOutput(_OutBase):
 class BuildOdesignAptamerOutput(_OutBase):
     """ODesign aptamer input JSON builder output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: build_odesign_aptamer_input_json (wrapper return dict)
-    - agent_core/state.py :: odesign_aptamer_input_* fields
     """
     input_json_filepath: str
     design_config: Dict[str, Any]
@@ -592,9 +498,6 @@ class BuildOdesignAptamerOutput(_OutBase):
 class ExtractRnaFromCifOutput(_OutBase):
     """Extract RNA from CIF output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: extract_rna_sequence_from_cif (wrapper return dict)
-    - agent_core/state.py :: extract_rna_from_cif_* fields
     """
     sequence: str
     chain_id: str
@@ -608,9 +511,6 @@ class ExtractRnaFromCifOutput(_OutBase):
 class ProteinXProteinOutput(_OutBase):
     """ProteinX protein structure prediction output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: predict_protein_structure_with_proteinx (wrapper return dict)
-    - agent_core/state.py :: protein_structure_* fields
     """
     pdb_filepath: str = ""
     mean_pae: float = 0.0
@@ -649,9 +549,6 @@ class RnaProteinInterfaceOutput(_OutBase):
 class IdentifyProteinBindingHotspotsOutput(_OutBase):
     """Protein binding hotspot identification output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: identify_protein_binding_hotspots (wrapper return dict)
-    - agent_core/state.py :: hotspot_* fields
     """
     hotspot_residues: str
     hotspot_patch_size: int
@@ -666,9 +563,6 @@ class IdentifyProteinBindingHotspotsOutput(_OutBase):
 class StructureAlignmentOutput(_OutBase):
     """Structure alignment (RMSD + TM-score) output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: score_structure_alignment (wrapper return dict)
-    - agent_core/state.py :: structure_rmsd / structure_tm_score fields
     """
     rmsd: float
     tm_score: float
@@ -682,15 +576,9 @@ class StructureAlignmentOutput(_OutBase):
     model: str
 
 
-# RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class RnaGcContentOutput(_OutBase):
     """GC content output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: compute_rna_sequence_gc_content (wrapper return dict)
-    - microservices/rna_sequence_metrics_service/main.py :: GcContentResponse
-    - agent_core/state.py :: sequence_gc_* fields
     """
 
     input_filepath: str
@@ -706,10 +594,6 @@ class RnaGcContentOutput(_OutBase):
 class DotBracketUnpairedFractionOutput(_OutBase):
     """Dot-bracket unpaired fraction output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: compute_dot_bracket_unpaired_fraction (wrapper return dict)
-    - microservices/rna_sequence_metrics_service/main.py :: UnpairedFractionResponse
-    - agent_core/state.py :: dot_bracket_* fields
     """
 
     input_filepath: str
@@ -720,15 +604,9 @@ class DotBracketUnpairedFractionOutput(_OutBase):
     model: str
 
 
-# RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class RnaUContentOutput(_OutBase):
     """U content output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: compute_rna_sequence_u_content (wrapper return dict)
-    - microservices/rna_sequence_metrics_service/main.py :: UContentResponse
-    - agent_core/state.py :: sequence_u_* fields
     """
 
     input_filepath: str
@@ -739,14 +617,9 @@ class RnaUContentOutput(_OutBase):
     model: str
 
 
-# CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class CaiForCdsOutput(_OutBase):
     """CAI output schema for CDS sequences.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - agent_core/tools.py :: compute_cai_for_cds_sequence (wrapper return dict)
-    - agent_core/state.py :: cai_for_cds_* fields
     """
 
     input_filepath: str
@@ -763,16 +636,12 @@ class CaiForCdsOutput(_OutBase):
 class WorkflowDemoEchoOutput(_OutBase):
     """Workflow demo echo output schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: workflow_demo_echo (wrapper return dict)
     """
 
     echo: str
     length: int
     model: str
 
-
-# ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
 
 TOOL_SPECS: Dict[str, ToolSpec] = {
     "compute_sirna_duplex_binding_vienna": ToolSpec(
@@ -805,15 +674,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # Evitar 接口冻结声明 (v0.2.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/evitar_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-    # 本次修改的基准日期：2026-04-24。
     "design_sirna_with_evitar": ToolSpec(
         identity="design_sirna_with_evitar",
         kind=ToolKind.generator,
@@ -849,14 +709,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=EvitarDesignOutput,
         status=ToolStatus.partial,
     ),
-    # BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/blast_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     "run_blastn_similarity_search": ToolSpec(
         identity="run_blastn_similarity_search",
         kind=ToolKind.compute,
@@ -1005,14 +857,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=ViennaInverseFoldOutput,
         status=ToolStatus.available,
     ),
-    # LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/linearfold_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - docs/tools/predict_rna_secondary_structure_with_linearfold.md
-    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
     "predict_rna_secondary_structure_with_linearfold": ToolSpec(
         identity="predict_rna_secondary_structure_with_linearfold",
         kind=ToolKind.compute,
@@ -1034,17 +878,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearFoldOutput,
         status=ToolStatus.available,
     ),
-    # LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/lineardesign_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - workflow_api/mrna_handler.py
-    #   - workflow_api/mrna_schemas.py
-    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-    # 本次修改的基准日期：2026-04-24。
     "design_mrna_cds_with_lineardesign": ToolSpec(
         identity="design_mrna_cds_with_lineardesign",
         kind=ToolKind.generator,
@@ -1072,8 +905,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=LinearDesignCdsOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): RNARL tool spec. See docs/tools/design_mrna_cds_with_rnarl.md
-    # for the canonical contract. Modify only in sync with wrapper + microservice.
     "design_mrna_cds_with_rnarl": ToolSpec(
         identity="design_mrna_cds_with_rnarl",
         kind=ToolKind.generator,
@@ -1092,9 +923,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RNARLCdsOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): GEMORNA CDS tool spec. Modify only in sync with:
-    # - agent_core/tools.py :: design_mrna_cds_with_gemorna
-    # - microservices/gemorna_service/main.py :: CdsDesignRequest / CdsDesignResponse
     "design_mrna_cds_with_gemorna": ToolSpec(
         identity="design_mrna_cds_with_gemorna",
         kind=ToolKind.generator,
@@ -1113,9 +941,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=GemornaCdsOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): GEMORNA 5'UTR tool spec. Modify only in sync with:
-    # - agent_core/tools.py :: design_5utr_with_gemorna
-    # - microservices/gemorna_service/main.py :: UtrDesignRequest / UtrDesignResponse
     "design_5utr_with_gemorna": ToolSpec(
         identity="design_5utr_with_gemorna",
         kind=ToolKind.generator,
@@ -1134,9 +959,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=Gemorna5UtrOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): GEMORNA 3'UTR tool spec. Modify only in sync with:
-    # - agent_core/tools.py :: design_3utr_with_gemorna
-    # - microservices/gemorna_service/main.py :: UtrDesignRequest / UtrDesignResponse
     "design_3utr_with_gemorna": ToolSpec(
         identity="design_3utr_with_gemorna",
         kind=ToolKind.generator,
@@ -1155,9 +977,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=Gemorna3UtrOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.1.0): GEMORNA 5'UTR MRL prediction tool spec. Modify only in sync with:
-    # - agent_core/tools.py :: predict_5utr_mrl_with_gemorna
-    # - microservices/gemorna_service/main.py :: UtrPredictionRequest / Utr5MrlPredictionResponse
     "predict_5utr_mrl_with_gemorna": ToolSpec(
         identity="predict_5utr_mrl_with_gemorna",
         kind=ToolKind.predictor,
@@ -1182,9 +1001,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=Gemorna5UtrMrlPredictionOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.1.0): GEMORNA 3'UTR stability prediction tool spec. Modify only in sync with:
-    # - agent_core/tools.py :: predict_3utr_stability_with_gemorna
-    # - microservices/gemorna_service/main.py :: UtrPredictionRequest / Utr3StabilityPredictionResponse
     "predict_3utr_stability_with_gemorna": ToolSpec(
         identity="predict_3utr_stability_with_gemorna",
         kind=ToolKind.predictor,
@@ -1209,10 +1025,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=Gemorna3UtrStabilityPredictionOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): RhoFold tool spec. Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: RhoFoldInput / predict_rna_tertiary_structure_with_rhofold
-    # - agent_core/tool_specs.py :: RhoFoldOutput
-    # - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
     "predict_rna_tertiary_structure_with_rhofold": ToolSpec(
         identity="predict_rna_tertiary_structure_with_rhofold",
         kind=ToolKind.predictor,
@@ -1237,10 +1049,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RhoFoldOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): RhoDesign tool spec. Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: RhoDesignInput / design_rna_sequence_with_rhodesign
-    # - microservices/rhodesign_service/main.py :: RhoDesignRequest / RhoDesignResponse
-    # - docs/tools/design_rna_sequence_with_rhodesign.md
     "design_rna_sequence_with_rhodesign": ToolSpec(
         identity="design_rna_sequence_with_rhodesign",
         kind=ToolKind.generator,
@@ -1259,10 +1067,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RhoDesignOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): RiboDiffusion tool spec. Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: RiboDiffusionInput / design_rna_inverse_fold_with_ribodiffusion
-    # - microservices/ribodiffusion_service/main.py :: RiboDiffusionRequest / RiboDiffusionResponse
-    # - agent_core/workflows/rna_tertiary_structure_design.py
     "design_rna_inverse_fold_with_ribodiffusion": ToolSpec(
         identity="design_rna_inverse_fold_with_ribodiffusion",
         kind=ToolKind.generator,
@@ -1290,13 +1094,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RiboDiffusionOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.3.0) — RNAsmol scoring tool spec
-    # Any field addition/removal must be synchronized with:
-    # - microservices/rnasmol_service/main.py :: ScoreRequest / ScoreResponse
-    # - agent_core/tools.py :: RNAsmolScoreInput / score_rna_ligand_binding_with_rnasmol
-    # - agent_core/tool_specs.py :: RNAsmolScoreOutput
-    # - agent_core/state.py :: rnasmol_* fields
-    # - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
     "score_rna_ligand_binding_with_rnasmol": ToolSpec(
         identity="score_rna_ligand_binding_with_rnasmol",
         kind=ToolKind.predictor,
@@ -1321,13 +1118,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RNAsmolScoreOutput,
         status=ToolStatus.available,
     ),
-    # INTERFACE LOCK (v0.1.0) — GerNA-Bind scoring tool spec
-    # Any field addition/removal must be synchronized with:
-    # - microservices/gernabind_service/main.py :: ScoreRequest / ScoreResponse
-    # - agent_core/tools.py :: GerNABindScoreInput / score_rna_ligand_binding_with_gernabind
-    # - agent_core/tool_specs.py :: GerNABindScoreOutput
-    # - agent_core/state.py :: gernabind_* fields
-    # - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
     "score_rna_ligand_binding_with_gernabind": ToolSpec(
         identity="score_rna_ligand_binding_with_gernabind",
         kind=ToolKind.predictor,
@@ -1352,12 +1142,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=GerNABindScoreOutput,
         status=ToolStatus.available,
     ),
-    # INTERFACE LOCK (v0.1.0) — score_rna_protein_complex_with_egarps
-    # Any field addition/removal must be synchronized with:
-    # - microservices/egarps_service/main.py :: EGARPSRequest / EGARPSResponse
-    # - agent_core/tools.py :: EGARPSInput / score_rna_protein_complex_with_egarps
-    # - agent_core/tool_specs.py :: EGARPSOutput
-    # - agent_core/state.py :: egarps_* fields
     "score_rna_protein_complex_with_egarps": ToolSpec(
         identity="score_rna_protein_complex_with_egarps",
         kind=ToolKind.predictor,
@@ -1382,12 +1166,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=EGARPSOutput,
         status=ToolStatus.available,
     ),
-    # INTERFACE LOCK (v0.1.0) — predict_mrna_stability_with_rnastop
-    # Any field addition/removal in produces[] or capability strings must be
-    # synchronized with:
-    # - microservices/rnastop_service/main.py :: StabilityPredictionResponse
-    # - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    # - agent_core/state.py :: rnastop_* fields
     "predict_mrna_stability_with_rnastop": ToolSpec(
         identity="predict_mrna_stability_with_rnastop",
         kind=ToolKind.predictor,
@@ -1426,11 +1204,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=RNASTOPPredictionOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.2.0): IRESfinder tool spec. Locked contract.
-    # Modify only in sync with:
-    # - agent_core/tools.py :: IRESfinderPredictionInput / predict_putative_ires_with_iresfinder
-    # - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest / IRESfinderPredictResponse
-    # - agent_core/state.py :: iresfinder_* fields
     "predict_putative_ires_with_iresfinder": ToolSpec(
         identity="predict_putative_ires_with_iresfinder",
         kind=ToolKind.predictor,
@@ -1473,16 +1246,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=IRESfinderPredictionOutput,
         status=ToolStatus.available,
     ),
-    # CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/crisot_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - cli/ entrypoints
-    # 规则：任何字段增删、端点路径变更、输入/输出模型变动、返回值结构调整，
-    #      必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-    # 本次修改的基准日期：2026-04-24。
     "score_crispr_off_target_with_crisot": ToolSpec(
         identity="score_crispr_off_target_with_crisot",
         kind=ToolKind.predictor,
@@ -1525,16 +1288,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=CrisotSpecOutput,
         status=ToolStatus.partial,
     ),
-    # sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/sgrna_design_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - docs/tools/design_sgrna_handle_with_crgpt.md
-    # 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-    # 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-    # 本次修改的基准日期：2026-04-24。
     "design_sgrna_handle_with_crgpt": ToolSpec(
         identity="design_sgrna_handle_with_crgpt",
         kind=ToolKind.generator,
@@ -1583,10 +1336,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=SgRNADesignScoreOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.3.0): ODesign tool spec. Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: ODesignInferenceInput / run_odesign_inference
-    # - microservices/odesign_service/main.py :: ODesignInferenceRequest / ODesignInferenceResponse
-    # - docs/tools/run_odesign_inference.md
     "run_odesign_inference": ToolSpec(
         identity="run_odesign_inference",
         kind=ToolKind.generator,
@@ -1605,10 +1354,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=ODesignInferenceOutput,
         status=ToolStatus.partial,
     ),
-    # INTERFACE LOCK (v0.1.0): ODesign aptamer input JSON builder tool spec.
-    # Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: BuildOdesignAptamerInput / build_odesign_aptamer_input_json
-    # - agent_core/state.py :: odesign_aptamer_input_* fields
     "build_odesign_aptamer_input_json": ToolSpec(
         identity="build_odesign_aptamer_input_json",
         kind=ToolKind.utility,
@@ -1640,10 +1385,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (v0.1.0): Extract RNA from CIF tool spec.
-    # Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: ExtractRnaFromCifInput / extract_rna_sequence_from_cif
-    # - agent_core/state.py :: extract_rna_from_cif_* fields
     "extract_rna_sequence_from_cif": ToolSpec(
         identity="extract_rna_sequence_from_cif",
         kind=ToolKind.utility,
@@ -1669,11 +1410,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (v0.1.0): ProteinX protein structure prediction tool spec.
-    # Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: ProteinXProteinInput / predict_protein_structure_with_proteinx
-    # - microservices/proteinx_service/main.py
-    # - agent_core/state.py :: protein_structure_* fields
     "predict_protein_structure_with_proteinx": ToolSpec(
         identity="predict_protein_structure_with_proteinx",
         kind=ToolKind.predictor,
@@ -1704,8 +1440,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (predict_rna_protein_complex_with_proteinx v0.1.0)
-    # Do NOT modify output fields, types, or descriptions without updating tools.py, state.py, writebacks.py
     "predict_rna_protein_complex_with_proteinx": ToolSpec(
         identity="predict_rna_protein_complex_with_proteinx",
         kind=ToolKind.predictor,
@@ -1740,8 +1474,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (analyze_rna_protein_interface v0.1.0)
-    # Do NOT modify output fields, types, or descriptions without updating tools.py, state.py, writebacks.py
     "analyze_rna_protein_interface": ToolSpec(
         identity="analyze_rna_protein_interface",
         kind=ToolKind.compute,
@@ -1770,10 +1502,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (v0.1.0): Protein binding hotspot identification tool spec.
-    # Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: IdentifyProteinBindingHotspotsInput / identify_protein_binding_hotspots
-    # - agent_core/state.py :: hotspot_* fields
     "identify_protein_binding_hotspots": ToolSpec(
         identity="identify_protein_binding_hotspots",
         kind=ToolKind.compute,
@@ -1808,10 +1536,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # INTERFACE LOCK (v0.1.0): Structure alignment tool spec.
-    # Locked contract. Modify only in sync with:
-    # - agent_core/tools.py :: StructureAlignmentInput / score_structure_alignment
-    # - agent_core/state.py :: structure_rmsd / structure_tm_score fields
     "score_structure_alignment": ToolSpec(
         identity="score_structure_alignment",
         kind=ToolKind.compute,
@@ -1842,16 +1566,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/rna_sequence_metrics_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - agent_core/workflows/mrna_sequence_scoring.py
-    #   - agent_core/sequence_utils.py
-    #   - agent_core/workflow_baseline_eval.py
-    #   - tests/test_compute_rna_sequence_gc_content.py
     "compute_rna_sequence_gc_content": ToolSpec(
         identity="compute_rna_sequence_gc_content",
         kind=ToolKind.compute,
@@ -1895,15 +1609,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         output_model=DotBracketUnpairedFractionOutput,
         status=ToolStatus.available,
     ),
-    # RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - microservices/rna_sequence_metrics_service/main.py
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - agent_core/sequence_utils.py
-    #   - tests/test_compute_rna_sequence_u_content.py
-    #   - rna_agent_system/docs/CONTRIBUTING.md
     "compute_rna_sequence_u_content": ToolSpec(
         identity="compute_rna_sequence_u_content",
         kind=ToolKind.compute,
@@ -1929,15 +1634,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             )
         ],
     ),
-    # CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-    # 关联文件清单（修改时必须全部同步）：
-    #   - agent_core/tools.py
-    #   - agent_core/tool_specs.py  ← 本文件
-    #   - agent_core/state.py
-    #   - agent_core/sequence_utils.py
-    #   - agent_core/data/codon_usage_kazusa.json
-    #   - tests/test_compute_cai_for_cds_sequence.py
-    #   - rna_agent_system/docs/CONTRIBUTING.md
     "compute_cai_for_cds_sequence": ToolSpec(
         identity="compute_cai_for_cds_sequence",
         kind=ToolKind.compute,

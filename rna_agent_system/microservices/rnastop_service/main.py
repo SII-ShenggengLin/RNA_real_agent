@@ -56,11 +56,6 @@ _CACHE_LOCK = Lock()
 class StabilityPredictionRequest(BaseModel):
     """RNASTOP prediction request schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
-    synchronized with:
-    - agent_core/tools.py :: RNASTOPPredictionInput
-    - agent_core/tool_specs.py :: predict_mrna_stability_with_rnastop ToolSpec
-    - docs/tools/predict_mrna_stability_with_rnastop.md
     """
 
     sequence: str = Field(
@@ -96,13 +91,6 @@ class StabilityPredictionRequest(BaseModel):
 
 class StabilityPredictionResponse(BaseModel):
     """RNASTOP prediction response schema.
-
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
-    synchronized with:
-    - agent_core/tools.py :: predict_mrna_stability_with_rnastop return dict
-    - agent_core/tool_specs.py :: RNASTOPPredictionOutput
-    - agent_core/state.py :: rnastop_* fields
-    - docs/tools/predict_mrna_stability_with_rnastop.md
 
     Fields:
         sequence: Original (possibly truncated) input sequence.

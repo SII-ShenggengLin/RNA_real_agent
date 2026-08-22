@@ -28,10 +28,6 @@ from agent_core.sequence_utils import (
 )
 from agent_core.constants.species import DEFAULT_CAI_SPECIES, format_cai_species_aliases, DEFAULT_RNARL_MODEL_TYPE, format_rnarl_model_types
 
-# LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# 关联文件清单见 microservices/linearfold_service/main.py 顶部的
-# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-
 
 def _extract_sequence(raw_text: str, *, u_to_t: bool = False) -> str:
     """Parse FASTA-like input, uppercase, and optionally map U→T."""
@@ -95,7 +91,6 @@ def _normalize_sgrna_design_sequence(raw_text: str) -> str:
     return seq
 
 
-
 def _raise_service_error(exc: requests.RequestException, service_name: str) -> None:
     """Extract response detail from a requests exception and raise ValueError."""
     detail = ""
@@ -151,11 +146,6 @@ def _attach_service_logs(
         )
 
 
-# BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/tool_specs.py 中 run_blastn_similarity_search 的
-# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-
-
 class BlastnSearchInput(BaseModel):
     """Input schema for NCBI BLAST+ blastn (microservice on port 8019)."""
 
@@ -196,11 +186,6 @@ class BlastnSearchInput(BaseModel):
     )
 
 
-# Bowtie2 INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/tool_specs.py 中 run_bowtie2_short_alignment 的
-# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-
-
 class Bowtie2AlignInput(BaseModel):
     """Input schema for Bowtie2 short-sequence alignment (microservice on port 8024)."""
 
@@ -230,10 +215,6 @@ class Bowtie2AlignInput(BaseModel):
         description="URL for the bowtie2_service POST /align endpoint.",
     )
 
-
-# Evitar INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/tool_specs.py 中 design_sirna_with_evitar 的
-# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
 
 class EvitarDesignInput(BaseModel):
     """Input schema for Evitar siRNA/Cas13 design tool.
@@ -351,10 +332,6 @@ class EvitarDesignInput(BaseModel):
     )
 
 
-# CRISOT INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/tool_specs.py 中 CRISOT ToolSpec 注册区域的
-# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-
 class CrisotScoreInput(BaseModel):
     """Input schema for CRISOT score prediction."""
 
@@ -393,18 +370,9 @@ class CrisotSpecInput(BaseModel):
     )
 
 
-# sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/tool_specs.py 中 design_sgrna_handle_with_crgpt 的
-# INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
-
 class SgRNADesignInput(BaseModel):
     """Input schema for sgRNA handle design via sgrna_design_service.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Modify only in sync with:
-    - microservices/sgrna_design_service/main.py :: DesignRequest
-    - agent_core/tool_specs.py :: design_sgrna_handle_with_crgpt ToolSpec
-    - agent_core/state.py :: sgrna_design_* fields
-    - docs/tools/design_sgrna_handle_with_crgpt.md
     """
 
     seed_sequence: Optional[str] = Field(
@@ -491,12 +459,6 @@ def run_blastn_similarity_search(
     service_url: str = "http://127.0.0.1:8019/blastn",
 ) -> dict[str, Any]:
     """Run NCBI blastn against a subject FASTA or an existing nucleotide BLAST database.
-
-    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: BlastnSearchOutput / run_blastn_similarity_search ToolSpec
-    - agent_core/state.py :: blast_* fields
-    - microservices/blast_service/main.py :: BlastnRequest / BlastnResponse
 
     Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
     Provide exactly one of ``subject_fasta_path`` or ``subject_db``. The query is read from
@@ -588,11 +550,6 @@ def run_bowtie2_short_alignment(
 ) -> dict[str, Any]:
     """Run Bowtie2 for fast short-sequence alignment against a subject FASTA or pre-built index.
 
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: Bowtie2AlignOutput / run_bowtie2_short_alignment ToolSpec
-    - microservices/bowtie2_service/main.py :: Bowtie2AlignRequest / Bowtie2AlignResponse
-
     Requires the ``bowtie2_service`` microservice (port 8024) and bowtie2 on the server PATH.
     Provide exactly one of ``subject_fasta_path`` or ``subject_index``. The query is read from
     ``filepath`` (plain sequence or FASTA); nucleotides are normalized to DNA for bowtie2.
@@ -660,8 +617,6 @@ def run_bowtie2_short_alignment(
     return meta
 
 
-# RNA sequence metrics (GC content) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class RnaGcContentInput(BaseModel):
     """Input schema for RNA/DNA GC fraction (microservice on port 8020)."""
 
@@ -700,8 +655,6 @@ class DotBracketUnpairedFractionInput(BaseModel):
     )
 
 
-# RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class RnaUContentInput(BaseModel):
     """Input schema for RNA/DNA U fraction (microservice on port 8020)."""
 
@@ -728,12 +681,6 @@ def compute_rna_sequence_gc_content(
     timeout_seconds: float = 120.0,
 ) -> dict[str, Any]:
     """Compute (G+C)/N for an RNA or DNA sequence file (N = count of A/U/G/C after normalization).
-
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: RnaGcContentOutput / compute_rna_sequence_gc_content ToolSpec
-    - agent_core/state.py :: sequence_gc_* fields
-    - microservices/rna_sequence_metrics_service/main.py :: GcContentRequest / GcContentResponse
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
@@ -781,15 +728,6 @@ def compute_dot_bracket_unpaired_fraction(
 ) -> dict[str, Any]:
     """Fraction of unpaired bases in a dot-bracket RNA secondary structure: count('.')/length.
 
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: DotBracketUnpairedFractionOutput /
-      compute_dot_bracket_unpaired_fraction ToolSpec
-    - agent_core/state.py :: dot_bracket_unpaired_fraction / dot_bracket_structure_length /
-      dot_bracket_dot_count fields
-    - microservices/rna_sequence_metrics_service/main.py ::
-      UnpairedFractionRequest / UnpairedFractionResponse
-
     The structure string must use only ``. ( ) [ ] { } < >`` as in ViennaRNA / LinearFold dot-bracket
     notation. Requires ``rna_sequence_metrics_service`` on port 8020.
 
@@ -833,13 +771,6 @@ def compute_rna_sequence_u_content(
 ) -> dict[str, Any]:
     """Compute U/N for an RNA or DNA sequence file (N = count of A/U/G/C after normalization).
 
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: RnaUContentOutput / compute_rna_sequence_u_content ToolSpec
-    - agent_core/state.py :: sequence_u_* fields
-    - microservices/rna_sequence_metrics_service/main.py :: UContentRequest / UContentResponse
-    - rna_agent_system/docs/CONTRIBUTING.md
-
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
 
@@ -876,8 +807,6 @@ def compute_rna_sequence_u_content(
     }
 
 
-# CAI for CDS INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class CaiForCdsInput(BaseModel):
     """Input schema for CDS CAI computation using Kazusa codon usage tables."""
 
@@ -913,13 +842,6 @@ def compute_cai_for_cds_sequence(
 
     Uses Kazusa codon usage tables (Sharp & Li weights) by default.
     Supports built-in tables for common species plus custom JSON tables.
-
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: CaiForCdsOutput / compute_cai_for_cds_sequence ToolSpec
-    - agent_core/state.py :: cai_for_cds_* fields
-    - agent_core/sequence_utils.py :: normalize_cds_sequence / build_cai_weights / compute_cai
-    - rna_agent_system/docs/CONTRIBUTING.md
 
     The input sequence is validated as CDS (length multiple of 3, AUGC only).
     Stop codons (UAA/UAG/UGA) are excluded from the CAI calculation.
@@ -1003,12 +925,6 @@ def design_sirna_with_evitar(
     service_url: str = "http://127.0.0.1:8016/design",
 ) -> dict[str, Any]:
     """Design siRNAs/Cas13 guides via the Evitar microservice.
-
-    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
-    - agent_core/state.py :: evitar_* fields
-    - microservices/evitar_service/main.py :: EvitarDesignRequest / EvitarDesignResponse
 
     Args:
         filepath: Path to an input FASTA file.
@@ -1143,9 +1059,6 @@ def score_crispr_off_target_with_crisot(
     service_url: str = "http://127.0.0.1:8011/score",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.2.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Score one sgRNA-target pair with CRISOT.
 
@@ -1189,9 +1102,6 @@ def calculate_crispr_specificity_with_crisot(
     service_url: str = "http://127.0.0.1:8011/spec",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.2.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Calculate CRISOT specificity from a CSV of one sgRNA and its candidate off-targets.
 
@@ -1257,11 +1167,6 @@ def design_sgrna_handle_with_crgpt(
     service_url: str = "http://127.0.0.1:8017/design",
 ) -> dict[str, Any]:
     """Design sgRNA handle candidates through sgrna_design microservice.
-
-    INTERFACE LOCK (v0.3.0): This wrapper's return dict keys are the canonical
-    interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: SgRNADesignOutput
-    - agent_core/state.py :: sgrna_design_* fields
 
     Args:
         seed_sequence: Inline seed/wildtype sgRNA handle sequence (DNA/RNA).
@@ -1411,10 +1316,6 @@ def design_sgrna_handle_with_crgpt(
 class SgRNADesignScoreInput(BaseModel):
     """Input schema for sgRNA handle scoring via sgrna_design_service.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Modify only in sync with:
-    - microservices/sgrna_design_service/main.py :: ScoreRequest
-    - agent_core/tool_specs.py :: score_sgrna_handle_with_crgpt ToolSpec
-    - agent_core/state.py :: sgrna_design_score_* fields
     """
 
     sequence: str = Field(
@@ -1443,9 +1344,6 @@ def score_sgrna_handle_with_crgpt(
     service_url: str = "http://127.0.0.1:8017/score",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.3.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Score a single sgRNA handle sequence using the CRGPT model.
 
@@ -1492,9 +1390,6 @@ def score_sgrna_handle_with_crgpt(
         _raise_service_error(exc, "sgRNA score")
 
 
-# ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更
-
-
 class FoldViennaInput(BaseModel):
     """Input for ViennaRNA RNAfold (MFE + optional partition function / centroid / MEA)."""
 
@@ -1520,8 +1415,6 @@ class FoldViennaInput(BaseModel):
     gquad: bool = Field(default=False, description="Include G-quadruplex formation.")
     service_url: str = Field(default="http://127.0.0.1:8003/fold", description="ViennaRNA fold endpoint.")
 
-
-# 的 INTERFACE LOCK 注释。任何修改必须全部同步并重新跑通端到端测试。
 
 class LinearFoldSecondaryInput(BaseModel):
     """Input schema for LinearFold secondary-structure prediction."""
@@ -1568,9 +1461,6 @@ class LinearFoldSecondaryInput(BaseModel):
 class GemornaCdsInput(BaseModel):
     """Input schema for GEMORNA CDS design tool.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - microservices/gemorna_service/main.py :: CdsDesignRequest
-    - agent_core/tool_specs.py :: design_mrna_cds_with_gemorna ToolSpec
     """
 
     filepath: str = Field(
@@ -1589,9 +1479,6 @@ class GemornaCdsInput(BaseModel):
 class Gemorna5UtrInput(BaseModel):
     """Input schema for GEMORNA 5'UTR design tool.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - microservices/gemorna_service/main.py :: UtrDesignRequest
-    - agent_core/tool_specs.py :: design_5utr_with_gemorna ToolSpec
     """
 
     utr_length: str = Field(
@@ -1607,9 +1494,6 @@ class Gemorna5UtrInput(BaseModel):
 class Gemorna3UtrInput(BaseModel):
     """Input schema for GEMORNA 3'UTR design tool.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - microservices/gemorna_service/main.py :: UtrDesignRequest
-    - agent_core/tool_specs.py :: design_3utr_with_gemorna ToolSpec
     """
 
     utr_length: str = Field(
@@ -1625,9 +1509,6 @@ class Gemorna3UtrInput(BaseModel):
 class Gemorna5UtrPredictionInput(BaseModel):
     """Input schema for GEMORNA 5'UTR MRL prediction tool.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - microservices/gemorna_service/main.py :: UtrPredictionRequest
-    - agent_core/tool_specs.py :: predict_5utr_mrl_with_gemorna ToolSpec
     """
 
     filepath: str = Field(
@@ -1646,9 +1527,6 @@ class Gemorna5UtrPredictionInput(BaseModel):
 class Gemorna3UtrPredictionInput(BaseModel):
     """Input schema for GEMORNA 3'UTR stability prediction tool.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Modify only in sync with:
-    - microservices/gemorna_service/main.py :: UtrPredictionRequest
-    - agent_core/tool_specs.py :: predict_3utr_stability_with_gemorna ToolSpec
     """
 
     filepath: str = Field(
@@ -1664,16 +1542,9 @@ class Gemorna3UtrPredictionInput(BaseModel):
     )
 
 
-# LinearDesign INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-
-
 class LinearDesignCdsInput(BaseModel):
     """Input schema for LinearDesign CDS design tool (single sequence).
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Modify only in sync with:
-    - microservices/lineardesign_service/main.py :: LinearDesignRequest
-    - agent_core/tool_specs.py :: design_mrna_cds_with_lineardesign ToolSpec
-    - agent_core/state.py :: lineardesign_* fields
     """
 
     filepath: str = Field(
@@ -1747,10 +1618,6 @@ class RNARLCdsInput(BaseModel):
 class RhoFoldInput(BaseModel):
     """Input schema for RhoFold tertiary structure prediction.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: RhoFoldOutput / predict_rna_tertiary_structure_with_rhofold ToolSpec
-    - microservices/rhofold_service/main.py :: RhoFoldPredictRequest / RhoFoldPredictResponse
-
     This wrapper exposes the single-sequence prediction mode only.
     MSA-based prediction is not exposed because local MSA databases
     (~900 GB) are not deployed in this environment.
@@ -1788,10 +1655,6 @@ class RhoFoldInput(BaseModel):
 class RhoDesignInput(BaseModel):
     """Input schema for RhoDesign structure-to-sequence design.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: RhoDesignOutput
-    - microservices/rhodesign_service/main.py :: RhoDesignRequest / RhoDesignResponse
-    - docs/tools/design_rna_sequence_with_rhodesign.md
     """
 
     pdb_filepath: str = Field(
@@ -1834,8 +1697,6 @@ class RhoDesignInput(BaseModel):
     )
 
 
-# RiboDiffusion INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-
 class RiboDiffusionInput(BaseModel):
     """Input schema for RiboDiffusion tertiary inverse folding."""
 
@@ -1866,21 +1727,9 @@ class RiboDiffusionInput(BaseModel):
     device: int = Field(default=0, ge=0, description="CUDA device index for the subprocess.")
 
 
-# RNAsmOL 接口冻结声明 (v0.3.0) —— 禁止单方面变更
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/rnasmol_service/main.py
-#   - agent_core/tools.py  ← 本文件
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-
 class RNAsmolScoreInput(BaseModel):
     """Input schema for RNAsmol RNA-ligand scoring.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - microservices/rnasmol_service/main.py :: ScoreRequest
-    - agent_core/tool_specs.py :: score_rna_ligand_binding_with_rnasmol ToolSpec
     """
 
     filepath: str = Field(
@@ -1931,9 +1780,6 @@ class RNAsmolScoreInput(BaseModel):
 class GerNABindScoreInput(BaseModel):
     """Input schema for GerNA-Bind RNA-ligand scoring.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - microservices/gernabind_service/main.py :: ScoreRequest
-    - agent_core/tool_specs.py :: score_rna_ligand_binding_with_gernabind ToolSpec
     """
 
     filepath: str = Field(
@@ -1993,9 +1839,6 @@ class GerNABindScoreInput(BaseModel):
 class EGARPSInput(BaseModel):
     """Input schema for EGARPS+ RNA-protein complex scoring.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - microservices/egarps_service/main.py :: EGARPSRequest
-    - agent_core/tool_specs.py :: score_rna_protein_complex_with_egarps ToolSpec
     """
 
     filepath: str = Field(
@@ -2017,11 +1860,6 @@ class EGARPSInput(BaseModel):
 
 class RNASTOPPredictionInput(BaseModel):
     """Input schema for RNASTOP stability prediction.
-
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be
-    synchronized with:
-    - microservices/rnastop_service/main.py :: StabilityPredictionRequest
-    - agent_core/tool_specs.py :: predict_mrna_stability_with_rnastop ToolSpec
 
     RNASTOP predicts per-nucleotide degradation profiles (reactivity, deg_Mg_pH10,
     deg_Mg_50C).  The caller may supply a pre-computed secondary structure and/or
@@ -2069,12 +1907,6 @@ class RNASTOPPredictionInput(BaseModel):
 class IRESfinderPredictionInput(BaseModel):
     """Input schema for IRESfinder putative IRES scoring.
 
-    INTERFACE LOCK (v0.2.0): Locked schema — the canonical contract is the
-    state after the 2026-04-23 refactor. Any field addition/removal must be
-    synchronized with:
-    - agent_core/tool_specs.py :: predict_putative_ires_with_iresfinder ToolSpec
-    - microservices/iresfinder_service/main.py :: IRESfinderPredictRequest
-    - agent_core/state.py :: iresfinder_* fields
     """
 
     filepath: str = Field(
@@ -2122,10 +1954,6 @@ class IRESfinderPredictionInput(BaseModel):
 class ODesignInferenceInput(BaseModel):
     """Input schema for ODesign inference.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: run_odesign_inference ToolSpec
-    - microservices/odesign_service/main.py :: ODesignInferenceRequest
-    - docs/tools/run_odesign_inference.md
     """
 
 
@@ -2238,9 +2066,6 @@ def predict_rna_secondary_structure(
     service_url: str = "http://127.0.0.1:8003/fold",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.4.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Predict RNA secondary structure and MFE using ViennaRNA RNAfold.
 
@@ -2521,11 +2346,6 @@ def compute_sirna_duplex_binding_vienna(
     service_url: str = "http://127.0.0.1:8003/sirna-duplex",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.5.0; v0.4.0 + additive optional end-asymmetry return
-    keys dg_sense_5p_end_kcal_per_mol / dg_antisense_5p_end_kcal_per_mol /
-    asymmetry_kcal_per_mol / asymmetry_convention)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Compute siRNA sense/antisense duplex MFE via ViennaRNA RNAcofold, plus the
     thermodynamic end asymmetry (terminal 5-bp NN evaluation; higher
@@ -2615,9 +2435,6 @@ def compute_rna_rna_interaction_vienna(
     service_url: str = "http://127.0.0.1:8003/rnaup",
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.4.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Compute RNA-RNA interaction thermodynamics via ViennaRNA RNAup.
 
@@ -2685,9 +2502,6 @@ def compute_aso_target_accessibility_vienna(
     opening_energies: bool = False,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.4.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Estimate target mRNA local accessibility (RNAplfold) for an ASO binding region.
 
@@ -2768,9 +2582,6 @@ def predict_rna_local_accessibility_profile_vienna(
     opening_energies: bool = False,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.4.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Run ViennaRNA ``RNAplfold`` for local single-nucleotide unpaired probabilities (accessibility curve).
 
@@ -2863,9 +2674,6 @@ def inverse_fold_rna_secondary_structure_vienna(
     alphabet: Optional[str] = None,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.4.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Inverse-fold an RNA secondary structure to a sequence (ViennaRNA RNAinverse).
 
@@ -2933,9 +2741,6 @@ def predict_rna_secondary_structure_with_linearfold(
     shape_file_path: Optional[str] = None,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.2.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Predict RNA secondary structure and MFE using the LinearFold service.
 
@@ -2992,10 +2797,6 @@ def design_mrna_cds_with_gemorna(
     filepath: str, service_url: str = "http://127.0.0.1:8004/generate/cds"
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using GEMORNA.
-
-    INTERFACE LOCK (v0.2.0): The return dict keys must stay synchronized with:
-    - agent_core/tool_specs.py :: GemornaCdsOutput
-    - microservices/gemorna_service/main.py :: CdsDesignResponse
 
     Args:
         filepath: Workspace file path containing the input protein sequence.
@@ -3070,10 +2871,6 @@ def design_5utr_with_gemorna(
 ) -> dict[str, Any]:
     """Design a 5'UTR sequence using GEMORNA.
 
-    INTERFACE LOCK (v0.2.0): The return dict keys must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna5UtrOutput
-    - microservices/gemorna_service/main.py :: UtrDesignResponse
-
     Args:
         utr_length: UTR length category — `short`, `medium`, or `long`.
         service_url: REST endpoint for the GEMORNA 5'UTR microservice.
@@ -3093,10 +2890,6 @@ def design_3utr_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/generate/3utr",
 ) -> dict[str, Any]:
     """Design a 3'UTR sequence using GEMORNA.
-
-    INTERFACE LOCK (v0.2.0): The return dict keys must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna3UtrOutput
-    - microservices/gemorna_service/main.py :: UtrDesignResponse
 
     Args:
         utr_length: UTR length category — `short`, `medium`, or `long`.
@@ -3149,10 +2942,6 @@ def predict_5utr_mrl_with_gemorna(
 ) -> dict[str, Any]:
     """Predict 5'UTR Mean Ribosomal Load (MRL) using GEMORNA.
 
-    INTERFACE LOCK (v0.1.0): The return dict keys must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna5UtrMrlPredictionOutput
-    - microservices/gemorna_service/main.py :: Utr5MrlPredictionResponse
-
     Args:
         filepath: Path to a file containing the 5'UTR RNA sequence.
             IMPORTANT: pass a filepath rather than long inline sequence text.
@@ -3177,10 +2966,6 @@ def predict_3utr_stability_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/predict/3utr_stability",
 ) -> dict[str, Any]:
     """Predict 3'UTR stability using GEMORNA.
-
-    INTERFACE LOCK (v0.1.0): The return dict keys must stay synchronized with:
-    - agent_core/tool_specs.py :: Gemorna3UtrStabilityPredictionOutput
-    - microservices/gemorna_service/main.py :: Utr3StabilityPredictionResponse
 
     Args:
         filepath: Path to a file containing the 3'UTR RNA sequence.
@@ -3243,12 +3028,6 @@ def design_mrna_cds_with_lineardesign(
     verbose: bool = False,
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using LinearDesign.
-
-    INTERFACE LOCK (v0.2.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - microservices/lineardesign_service/main.py
-    - agent_core/tool_specs.py :: LinearDesignCdsOutput / ToolSpec
-    - agent_core/state.py :: lineardesign_* fields
 
     OPERATIONAL ENVELOPE (2026-07 experiment finding): the upstream LinearDesign
     C++ binary is OOM-killed (returncode=-9/SIGKILL, surfaced as a 500 from the
@@ -3326,7 +3105,6 @@ def design_mrna_cds_with_rnarl(
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using RNARL.
 
-    INTERFACE LOCK (v0.2.0): This wrapper's IO contract is synchronized with
     microservices/rnarl_service/main.py :: generate_cds().
     Any payload key change must be mirrored there and documented in
     docs/tools/design_mrna_cds_with_rnarl.md.
@@ -3406,9 +3184,6 @@ def predict_rna_tertiary_structure_with_rhofold(
     device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Predict RNA tertiary structure using the RhoFold microservice.
-
-    INTERFACE LOCK (v0.2.0): Locked return dict keys. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: RhoFoldOutput
 
     Args:
         filepath: Workspace file path containing the input RNA sequence.
@@ -3504,11 +3279,6 @@ def design_rna_sequence_with_rhodesign(
 ) -> dict[str, Any]:
     """Design an RNA sequence from a structure file using the RhoDesign microservice.
 
-    INTERFACE LOCK (v0.2.0): Locked return dict keys. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: RhoDesignOutput
-    - microservices/rhodesign_service/main.py :: RhoDesignResponse
-    - docs/tools/design_rna_sequence_with_rhodesign.md
-
     Args:
         pdb_filepath: Path to the input PDB/CIF structure file.
         secondary_structure_filepath: Optional `.npy` contact-map path for the 2D-assisted mode.
@@ -3589,9 +3359,6 @@ def design_rna_inverse_fold_with_ribodiffusion(
     device: int = 0,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.2.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Generate RNA sequence(s) from a PDB structure using the RiboDiffusion microservice.
 
@@ -3682,13 +3449,6 @@ def score_rna_ligand_binding_with_rnasmol(
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the RNAsmol microservice.
 
-    INTERFACE LOCK (v0.3.0): The return dict keys below are the canonical interface.
-    Any addition/removal must be synchronized with:
-    - microservices/rnasmol_service/main.py :: ScoreResponse
-    - agent_core/tool_specs.py :: RNAsmolScoreOutput
-    - agent_core/state.py :: rnasmol_* fields
-    - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
-
     Args:
         filepath: Path to a file containing the RNA sequence.
             IMPORTANT: pass a filepath rather than long inline sequence text.
@@ -3700,7 +3460,6 @@ def score_rna_ligand_binding_with_rnasmol(
         device: Optional PyTorch device string such as `cuda:0` or `cpu`.
 
     Returns:
-        Dict with the following canonical keys (INTERFACE LOCK):
             probability_positive (float): Positive-class binding probability.
             predicted_label (int): Predicted binary label (0 or 1).
             raw_logits (List[float]): Raw model logits [logit_0, logit_1].
@@ -3761,13 +3520,6 @@ def score_rna_ligand_binding_with_gernabind(
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the GerNA-Bind microservice.
 
-    INTERFACE LOCK (v0.1.0): The return dict keys below are the canonical interface.
-    Any addition/removal must be synchronized with:
-    - microservices/gernabind_service/main.py :: ScoreResponse
-    - agent_core/tool_specs.py :: GerNABindScoreOutput
-    - agent_core/state.py :: gernabind_* fields
-    - agent_core/workflows/rna_small_molecule_interaction.py :: evaluate() consumption
-
     Args:
         filepath: Path to a file containing the RNA sequence.
             IMPORTANT: pass a filepath rather than long inline sequence text.
@@ -3781,7 +3533,6 @@ def score_rna_ligand_binding_with_gernabind(
         split_method: Optional split-method hint (random, RNA, mol, both) for checkpoint selection.
 
     Returns:
-        Dict with the following canonical keys (INTERFACE LOCK):
             probability_positive (float): Positive-class binding probability.
             predicted_label (int): Predicted binary label (0 or 1).
             raw_alpha (List[float]): Evidential alpha parameters [alpha_0, alpha_1].
@@ -3844,12 +3595,6 @@ def score_rna_protein_complex_with_egarps(
 ) -> dict[str, Any]:
     """Score RNA-protein complex structure using the EGARPS+ microservice.
 
-    INTERFACE LOCK (v0.1.0): The return dict keys below are the canonical interface.
-    Any addition/removal must be synchronized with:
-    - microservices/egarps_service/main.py :: EGARPSResponse
-    - agent_core/tool_specs.py :: EGARPSOutput
-    - agent_core/state.py :: egarps_* fields
-
     Args:
         filepath: Path to a PDB file containing the RNA-protein complex structure.
             Workspace-relative paths are resolved to absolute before the
@@ -3872,7 +3617,6 @@ def score_rna_protein_complex_with_egarps(
         service_url: REST endpoint for the EGARPS+ microservice.
 
     Returns:
-        Dict with the following canonical keys (INTERFACE LOCK):
             complex_id (str): Identifier of the RNA-protein complex.
             native_probability (float): Probability of being a native structure (0-1).
             academic (bool): Whether academic mode was used.
@@ -3916,12 +3660,6 @@ def predict_mrna_stability_with_rnastop(
 ) -> dict[str, Any]:
     """Predict mRNA degradation and stability summaries using the RNASTOP microservice.
 
-    INTERFACE LOCK (v0.1.0): The return dict keys below are the canonical interface.
-    Any addition/removal must be synchronized with:
-    - microservices/rnastop_service/main.py :: StabilityPredictionResponse
-    - agent_core/tool_specs.py :: RNASTOPPredictionOutput
-    - agent_core/state.py :: rnastop_* fields
-
     Args:
         filepath: Path to a file containing the RNA sequence.
             IMPORTANT: pass a filepath rather than long inline sequence text.
@@ -3932,7 +3670,6 @@ def predict_mrna_stability_with_rnastop(
         device: Optional torch device override such as `cuda:0` or `cpu`.
 
     Returns:
-        Dict with the following canonical keys (INTERFACE LOCK):
             input_filepath (str): Original filepath passed in.
             prediction_filepath (str): Workspace path to the saved per-position JSON.
             sequence (str): Original sequence from service (or local fallback).
@@ -4036,9 +3773,6 @@ def predict_putative_ires_with_iresfinder(
     decision_threshold: float = 0.5,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.2.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Score RNA sequence fragments for putative internal ribosome entry sites (IRES) via IRESfinder.
 
@@ -4147,11 +3881,6 @@ def run_odesign_inference(
     invfold_use_beam: bool = True,
 ) -> dict[str, Any]:
     """Run ODesign inference from an input JSON file via the ODesign microservice.
-
-    INTERFACE LOCK (v0.3.0): Locked return dict keys. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: ODesignInferenceOutput
-    - microservices/odesign_service/main.py :: ODesignInferenceResponse
-    - docs/tools/run_odesign_inference.md
 
     Args:
         input_json_filepath: Path to an ODesign input JSON file.
@@ -4275,9 +4004,6 @@ def run_odesign_inference(
         _raise_service_error(exc, "ODesign")
 
 
-# Extract RNA from CIF INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
-
 class ExtractRnaFromCifInput(BaseModel):
     """Input schema for extracting RNA sequence from a CIF/MMCIF file."""
 
@@ -4350,11 +4076,6 @@ def extract_rna_sequence_from_cif(
 
     Detects RNA vs DNA vs protein by checking for the O2' atom.
     Non-standard nucleotides are represented as 'N' with a warning recorded.
-
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: ExtractRnaFromCifOutput / ToolSpec
-    - agent_core/state.py :: extract_rna_from_cif_* fields
 
     Args:
         cif_filepath: CIF/MMCIF file path.
@@ -4457,9 +4178,6 @@ def extract_rna_sequence_from_cif(
     }
 
 
-# ODesign aptamer input JSON builder INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
-
 class BuildOdesignAptamerInput(BaseModel):
     """Input schema for building ODesign aptamer design JSON."""
 
@@ -4504,11 +4222,6 @@ def build_odesign_aptamer_input_json(
 
     Constructs the JSON structure for ODesign ``odesign_base_na_rigid`` + ``rna`` modality.
 
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: BuildOdesignAptamerOutput / ToolSpec
-    - agent_core/state.py :: odesign_aptamer_input_* fields
-
     Args:
         protein_structure_path: Protein structure file path.
         protein_chain_id: Protein chain ID.
@@ -4552,9 +4265,6 @@ def build_odesign_aptamer_input_json(
         "design_config": design_config,
         "model": "odesign-aptamer-input-builder",
     }
-
-
-# ProteinX protein structure prediction INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
 
 
 class ProteinXProteinInput(BaseModel):
@@ -4611,12 +4321,6 @@ def predict_protein_structure_with_proteinx(
 
     Requires the ``proteinx_service`` microservice on port 8022.
     Pass a filepath under ``workspace/`` or an absolute server path.
-
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - microservices/proteinx_service/main.py
-    - agent_core/tool_specs.py :: ProteinXProteinOutput / ToolSpec
-    - agent_core/state.py :: protein_structure_* fields
 
     Args:
         filepath: FASTA file with protein sequence.
@@ -4693,9 +4397,6 @@ def predict_rna_protein_complex_with_proteinx(
     timeout_seconds: int = 7200,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.1.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Predict RNA-protein complex structure using ProteinX (Protenix).
 
@@ -4768,9 +4469,6 @@ def analyze_rna_protein_interface(
     contact_cutoff: float = 5.0,
 ) -> dict[str, Any]:
     """
-    INTERFACE LOCK (v0.1.0)
-    Do NOT modify any function signature, Pydantic field, return dict key, or state field
-    without updating all files listed in the lock comment and re-running the full test suite.
 
     Analyze RNA-protein interface from a complex structure.
 
@@ -4935,9 +4633,6 @@ def analyze_rna_protein_interface(
     }
 
 
-# Protein binding hotspot identification INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
-
 class IdentifyProteinBindingHotspotsInput(BaseModel):
     """Input schema for protein binding hotspot identification."""
 
@@ -4965,11 +4660,6 @@ def identify_protein_binding_hotspots(
       4. Filter basic residues (Arg/Lys/His).
       5. Spatial clustering of exposed basic residues with DBSCAN (eps=10 A, min_samples=2).
       6. Select largest patch and output its center residues as hotspots.
-
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: IdentifyProteinBindingHotspotsOutput / ToolSpec
-    - agent_core/state.py :: hotspot_* fields
 
     Args:
         protein_structure_path: Path to the protein structure file (PDB or CIF).
@@ -5134,9 +4824,6 @@ def identify_protein_binding_hotspots(
     }
 
 
-# Structure alignment (RMSD + TM-score) INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
-
 class StructureAlignmentInput(BaseModel):
     """Input schema for RNA 3D structure alignment scoring."""
 
@@ -5170,11 +4857,6 @@ def score_structure_alignment(
     Uses biopython PDBParser and SVDSuperimposer for alignment.
     If residue counts differ, aligns the shorter length and records a warning.
     Missing atoms are skipped with a warning.
-
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: StructureAlignmentOutput / ToolSpec
-    - agent_core/state.py :: structure_rmsd / structure_tm_score fields
 
     Args:
         reference_pdb_filepath: Reference structure PDB path.
@@ -5317,8 +4999,6 @@ def score_structure_alignment(
 # ---------------------------------------------------------------------------
 
 
-# Workflow Demo Echo INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-
 class WorkflowDemoEchoInput(BaseModel):
     """Input for the optional registry/executor smoke-test tool."""
 
@@ -5329,10 +5009,6 @@ class WorkflowDemoEchoInput(BaseModel):
 def workflow_demo_echo(text: str) -> dict[str, Any]:
     """Minimal demo tool: echo string and length. Not used by production routing by default.
 
-    INTERFACE LOCK (v0.1.0): This wrapper's schema and return dict keys are the
-    canonical interface. Any addition/removal must be synchronized with:
-    - agent_core/tool_specs.py :: WorkflowDemoEchoOutput / workflow_demo_echo ToolSpec
-    - agent_core/state.py :: workflow_demo_echo_* fields (if any)
     """
 
     return {"echo": text, "length": len(text), "model": "workflow_demo_echo"}

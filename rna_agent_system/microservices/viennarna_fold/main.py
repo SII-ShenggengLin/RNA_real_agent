@@ -3,20 +3,6 @@
 Exposes the five core ViennaRNA tools with parameter parity to the upstream CLI.
 Uses Python RNAlib when available, otherwise falls back to ViennaRNA CLI binaries.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  ViennaRNA INTERFACE LOCK (v0.4.0) —— 禁止单方面变更                        ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 ViennaRNA 微服务的权威接口实现。任何字段增删、函数签名变动、      ║
-║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
-║                                                                               ║
-║    - microservices/viennarna_fold/main.py  ← 本文件                          ║
-║    - agent_core/tools.py                                                      ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/state.py                                                      ║
-║    - docs/tools/viennarna_rna_tools.md                                        ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

@@ -8,37 +8,6 @@ binding evaluation (RNAup / RNAcofold) → ASF reference-point ranking
 This is an **evaluation-only workflow**; it does not generate novel sequences
 but instead screens a target transcript for the most accessible binding sites.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  AsoTargetScreeningWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更       ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 aso_target_screening workflow 的权威实现。任何字段增删、            ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
-║                                                                               ║
-║    - agent_core/workflows/aso_target_screening.py  ← 本文件                  ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - agent_core/sequence_utils.py                                             ║
-║    - tests/test_aso_target_screening.py                                       ║
-║    - docs/INTERFACE_LOCKS.md                                                  ║
-║    - docs/WORKFLOWS.md                                                        ║
-║    - AGENTS.md                                                                ║
-║                                                                               ║
-║  v1.1.0 (2026-08-22): 排名机制由 Borda 名次和转为 ASF 参考点排名             ║
-║  (DECISIONS (o) 统一策略修订; siRNA v1.3.0 同款先例) — 经共享                ║
-║  apply_reference_point_ranking (utopian 参考, accessibility × binding        ║
-║  双维 maximize); Borda 名次 (accessibility_rank / binding_rank /             ║
-║  sum_rank) 降级为诊断量保留; 缺失度量 impute 池最差 (不再 0.0 字面填充);     ║
-║  增补 pareto_frontier extras 与 asf_distance; composite_score 语义不变       ║
-║  (最终名次, 1 = 最佳)。AsoSite 增补 asf_distance 字段 (additive)。          ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

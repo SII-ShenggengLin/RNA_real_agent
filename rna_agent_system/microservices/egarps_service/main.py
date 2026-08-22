@@ -1,10 +1,5 @@
 """EGARPS+ microservice for scoring RNA-protein complex structures.
 
-INTERFACE LOCK (v0.1.0)
-关联文件清单：
-  - microservices/egarps_service/main.py  ← 本文件
-  - agent_core/tools.py :: score_rna_protein_complex_with_egarps
-  - agent_core/tool_specs.py :: EGARPSOutput / score_rna_protein_complex_with_egarps ToolSpec
 """
 
 from __future__ import annotations

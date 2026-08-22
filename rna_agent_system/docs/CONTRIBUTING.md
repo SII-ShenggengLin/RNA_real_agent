@@ -1,7 +1,7 @@
 # Contributing Guide
 
-> **Scope**: coding standards, new-tool procedure, interface lock annotations, and commit conventions.
-> **Last updated**: 2026-08-04
+> **Scope**: coding standards, new-tool procedure, and commit conventions.
+> **Last updated**: 2026-08-22 (Interface Lock Policy removed)
 
 ---
 
@@ -10,7 +10,7 @@
 - **No backward-compatibility burden**: when modifying code, do NOT preserve compatibility shims for superseded strategies. Prioritize code simplicity.
 - **Delete superseded code**: once a better/newer strategy lands, delete the old strategy's code and its documentation — do not let dead code accumulate.
 - **Delete superseded docs**: same rule for documentation — remove content describing abandoned strategies to keep docs concise.
-- **Exceptions**: (a) INTERFACE LOCK blocks still follow §5 lock procedure (deletion of a locked interface requires the same synchronized update); (b) code/data explicitly retained as experimental baselines (e.g., the legacy agent stack serving as the E3 control arm, per `docs/REDESIGN_2026-08-03_CALIBRATED_AGENT.md` §7) stays until the experiment that needs it is done.
+- **Exceptions**: code/data explicitly retained as experimental baselines (e.g., the legacy agent stack serving as the E3 control arm, per `docs/REDESIGN_2026-08-03_CALIBRATED_AGENT.md` §7) stays until the experiment that needs it is done.
 
 ---
 
@@ -60,34 +60,12 @@
 4. Add ToolSpec in agent_core/tool_specs.py
 5. Register in ALL_LANGCHAIN_AGENT_TOOLS
 6. If the tool publishes derived/aliased fields, consume them directly in the calling workflow / capability; no separate writeback registry is needed
-7. Add an INTERFACE LOCK block in the affected files if the tool changes agent state
-8. Test order: raw command → microservice endpoint → Agent invocation → CLI
+7. Test order: raw command → microservice endpoint → Agent invocation → CLI
 ```
 
-## 5. Interface Lock Annotations
+## 5. How to Extend
 
-When locking a new tool interface, add a comment block like this in **all** affected files:
-
-```python
-# ═══════════════════════════════════════════════════════════════════════════════
-# <Tool name> INTERFACE LOCK (vX.Y.Z) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# Synchronized files (must all be updated together):
-#   - microservices/<tool>_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-
-#   - tests/test_<tool>.py
-#   - rna_agent_system/docs/INTERFACE_LOCKS.md
-# ═══════════════════════════════════════════════════════════════════════════════
-```
-
-**Rule**: Do NOT modify any function signature, Pydantic field, return dict key, or state field inside an INTERFACE LOCK block without updating **all** files listed in the lock comment and re-running the full test suite.
-
-## 6. How to Extend
-
-### 6.2 Add a new workflow
+### 5.2 Add a new workflow
 
 1. Build the workflow module (`workflows/{name}.py`) inheriting from `BaseDomainWorkflow`.
 2. Export it from `workflows/__init__.py`.
@@ -101,20 +79,20 @@ When locking a new tool interface, add a comment block like this in **all** affe
 
 > **Note**: Workflow exposure is **explicit** — there is no automatic routing. Users select the workflow in the CLI or pass `explicit_workflow` to `run_form()` / `stream_form()` programmatically.
 
-### 6.3 Add a new workflow tool wrapper
+### 5.3 Add a new workflow tool wrapper
 
 1. Add a normal `@tool` wrapper in `agent_core/tools.py` if the wrapper calls a microservice.
 2. For pure-Python helpers (e.g. sequence parsing, JSON builders), implement the function in `agent_core/tools.py` and add a `ToolSpec` with `transport="python_api"`.
 3. Ensure HTTP delegation goes through `agent_core/tools.py`, not direct `requests.post`.
 
-### 6.4 Add a new CLI module
+### 5.4 Add a new CLI module
 
 If you add a new file under `cli/`:
 1. Ensure it is importable both when `cli/form_chat.py` is run directly and when imported.
 2. Add `sys.path` guards if the module imports other `cli/` local files (see `cli/form_chat.py` for the pattern).
 3. Document the module in `docs/ARCHITECTURE.md` §2.6 and `docs/DEPLOYMENT.md` §2.
 
-### 6.5 Form validation
+### 5.5 Form validation
 
 If a workflow has required parameters:
 1. Define them as required Pydantic fields in the workflow's `input_model`.

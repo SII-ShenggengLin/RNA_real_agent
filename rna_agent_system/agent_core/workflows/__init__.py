@@ -1,13 +1,5 @@
 """Reusable workflow orchestration (mRNA ranking and future UTR/circRNA variants).
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v3.0.0) —— 禁止单方面变更       ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件导出了 full_length_mrna_design workflow 的公开 API。                   ║
-║  增删导出项必须同步更新全部关联文件并重新跑通端到端测试。                       ║
-║  关联文件清单见 agent_core/workflows/full_length_mrna_design.py 顶部的         ║
-║  INTERFACE LOCK 注释。                                                        ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 # Evaluator and scoring framework
@@ -30,9 +22,6 @@ from agent_core.workflows.evaluators import (
 )
 from agent_core.workflows.scoring import FullLengthScoringFunction
 
-# AsoTargetScreeningWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/workflows/aso_target_screening.py 顶部的
-# INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from agent_core.workflows.aso_target_screening import (
     AsoScreeningInput,
     AsoTargetScreeningWorkflow,
@@ -48,17 +37,11 @@ from agent_core.workflows.full_length_mrna_design import (
     score_full_length_mrna_candidate,
 )
 from agent_core.workflows.mrna_cds_design import MrnaCdsDesignInput, MrnaCdsDesignWorkflow
-# RnaAptamerDesignWorkflow INTERFACE LOCK (v1.4.2) —— 禁止单方面变更
-# 关联文件清单见 agent_core/workflows/rna_aptamer_design.py 顶部的
-# INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from agent_core.workflows.rna_aptamer_design import (
     RnaAptamerDesignInput,
     RnaAptamerDesignWorkflow,
     score_aptamer_candidate,
 )
-# RnaSecondaryStructureDesignWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/workflows/rna_secondary_structure_design.py 顶部的
-# INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from agent_core.workflows.rna_secondary_structure_design import (
     RnaSecondaryStructureDesignInput,
     RnaSecondaryStructureDesignWorkflow,
@@ -69,9 +52,6 @@ from agent_core.workflows.rna_tertiary_structure_design import (
     RnaTertiaryStructureDesignWorkflow,
     score_tertiary_structure_design_candidate,
 )
-# RnaSmallMoleculeInteractionWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/workflows/rna_small_molecule_interaction.py 顶部的
-# INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from agent_core.workflows.rna_small_molecule_interaction import (
     RnaSmallMoleculeInteractionInput,
     RnaSmallMoleculeInteractionWorkflow,
@@ -87,9 +67,6 @@ from agent_core.workflows.sirna_design import (
     SirnaDesignWorkflow,
     score_sirna_candidate,
 )
-# MrnaSequenceScoringWorkflow INTERFACE LOCK (v1.0.0) —— 禁止单方面变更
-# 关联文件清单见 agent_core/workflows/mrna_sequence_scoring.py 顶部的
-# INTERFACE LOCK 注释。增删导出项必须同步更新全部关联文件。
 from .mrna_sequence_scoring import (
     MrnaSequenceScoringInput,
     MrnaSequenceScoringWorkflow,

@@ -18,20 +18,6 @@ from pydantic import BaseModel, Field
 from transformers import AutoModelForCausalLM, GPT2Tokenizer
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# sgrna_design INTERFACE LOCK (v0.3.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/sgrna_design_service/main.py  ← 本文件
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - docs/tools/design_sgrna_handle_with_crgpt.md
-# 规则：任何 Pydantic 模型字段增删、端点路径/签名变动、返回值结构调整，
-# 必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# 本次修改的基准日期：2026-04-24。
-# ═══════════════════════════════════════════════════════════════════════════════
-
 APP_DIR = Path(__file__).resolve().parent
 _RNA_AGENT_SYSTEM_ROOT = APP_DIR.parents[1]
 _DEFAULT_UPSTREAM_ROOT = (_RNA_AGENT_SYSTEM_ROOT / "external_repos" / "sgrna_design").resolve()

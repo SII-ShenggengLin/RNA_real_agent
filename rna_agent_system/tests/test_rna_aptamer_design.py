@@ -9,18 +9,6 @@ Coverage:
 Run:
   cd rna_agent_system && python -m pytest tests/test_rna_aptamer_design.py -v
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaAptamerDesignWorkflow INTERFACE LOCK (v1.4.0) —— 禁止单方面变更         ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 rna_aptamer_design 的端到端测试。任何测试增删、断言变更、         ║
-║  mock 数据结构调整，必须同步更新以下文件并重新跑通全部测试：                  ║
-║                                                                               ║
-║    - agent_core/workflows/rna_aptamer_design.py  ← 权威实现                   ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - tests/test_rna_aptamer_design.py  ← 本文件                             ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

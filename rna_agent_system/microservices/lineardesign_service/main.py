@@ -1,21 +1,5 @@
 """LinearDesign microservice for protein-to-mRNA CDS design.
 
-INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-关联文件清单（修改时必须全部同步）：
-  - microservices/lineardesign_service/main.py  ← 本文件
-  - agent_core/tools.py :: design_mrna_cds_with_lineardesign /
-                          design_mrna_cds_batch_with_lineardesign
-  - agent_core/tool_specs.py :: LinearDesignCdsOutput /
-                                LinearDesignCdsBatchOutput /
-                                design_mrna_cds_with_lineardesign ToolSpec
-  - agent_core/state.py :: lineardesign_* fields
-  - docs/tools/design_mrna_cds_with_lineardesign.md
-  - docs/change_logs/lineardesign_interface_v0.2.0.md
-  - workflow_api/mrna_handler.py
-  - workflow_api/mrna_schemas.py
-规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-本次修改的基准日期：2026-04-24。
 """
 
 from __future__ import annotations

@@ -121,15 +121,3 @@ python scripts/predict.py -non-academic /path/to/complex.pdb
 3. **GHECOM stub** — Pocketness features are all zeros because the official GHECOM binary is no longer publicly downloadable.
 4. **CUDA compatibility** — Requires CUDA driver ≥ 11.6. Tested on RTX 4090 with CUDA 12.8 driver (backward-compatible).
 5. **Long runtime** — First-run ESM2/RNA-FM embedding generation is slow (~minutes per complex) even on fast GPUs.
-
----
-
-## 8. Interface Lock
-
-> **v0.1.0** — Any field addition/removal must be synchronized with:
-> - `microservices/egarps_service/main.py` :: `EGARPSRequest` / `EGARPSResponse`
-> - `agent_core/tools.py` :: `EGARPSInput` / `score_rna_protein_complex_with_egarps`
-> - `agent_core/tool_specs.py` :: `EGARPSOutput`
-> - `agent_core/state.py` :: `egarps_*` fields (if present)
-> - `agent_core/runner.py` :: `_build_final_report()` (or current report builder)
-> - `docs/TOOLS.md`

@@ -47,10 +47,6 @@ app = FastAPI(
 class ODesignInferenceRequest(BaseModel):
     """ODesign inference request schema.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: ODesignInferenceInput
-    - agent_core/tool_specs.py :: run_odesign_inference ToolSpec
-    - docs/tools/run_odesign_inference.md
     """
     input_json_path: str = Field(
         ...,
@@ -141,10 +137,6 @@ class ODesignInferenceRequest(BaseModel):
 class ODesignInferenceResponse(BaseModel):
     """ODesign inference response schema.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: run_odesign_inference (wrapper return dict)
-    - agent_core/tool_specs.py :: ODesignInferenceOutput
-    - docs/tools/run_odesign_inference.md
     """
     input_json_path: str
     infer_model_name: str

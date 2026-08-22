@@ -64,17 +64,6 @@ def compute_gc_content(normalized_seq: str) -> dict[str, float | int]:
     }
 
 
-# RNA sequence U content INTERFACE LOCK (v0.1.0) —— 禁止单方面变更
-# Synchronized files (must all be updated together):
-#   - microservices/rna_sequence_metrics_service/main.py
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - agent_core/sequence_utils.py  ← 本文件
-#   - tests/test_compute_rna_sequence_u_content.py
-#   - rna_agent_system/docs/CONTRIBUTING.md
-
-
 def compute_u_content(normalized_seq: str) -> dict[str, float | int]:
     """Return U metrics for an already-normalized AUGC string.
 

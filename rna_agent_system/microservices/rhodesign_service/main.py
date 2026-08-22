@@ -43,10 +43,6 @@ app = FastAPI(
 class RhoDesignRequest(BaseModel):
     """RhoDesign microservice request schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: RhoDesignInput / design_rna_sequence_with_rhodesign
-    - agent_core/tool_specs.py :: design_rna_sequence_with_rhodesign ToolSpec
-    - docs/tools/design_rna_sequence_with_rhodesign.md
     """
 
     pdb_path: str = Field(
@@ -95,10 +91,6 @@ class RhoDesignRequest(BaseModel):
 class RhoDesignResponse(BaseModel):
     """RhoDesign microservice response schema.
 
-    INTERFACE LOCK (v0.2.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: design_rna_sequence_with_rhodesign (wrapper return dict)
-    - agent_core/tool_specs.py :: RhoDesignOutput
-    - docs/tools/design_rna_sequence_with_rhodesign.md
     """
 
     input_pdb_path: str

@@ -65,5 +65,5 @@
 
 1. **任何产生论文数据的实验，其驱动必须在运行记录中写明每个 LLM 调用的 provider / model / endpoint**（参照 `run_llm_backend_comparison.py` 的 `provider`/`model` 记录字段）；启用 token usage 采集（LangChain `response_metadata["token_usage"]` / `usage_metadata`），采集不到时在记录里写 `usage_available=false` 并用 §1 剖面估算。
 2. 每个实验完成（或换模型/换端点）后，**当天更新本文件**：在 §2 表加行、在 §3 更新实测 token。
-3. 切换 provider/model 只能经 `llm_config` 的环境变量或构造注入（INTERFACE_LOCKS §19），禁止在代码里硬编码模型名；换模型后按 §2 重跑受影响实验并更新本文件。
+3. 切换 provider/model 只能经 `llm_config` 的环境变量或构造注入，禁止在代码里硬编码模型名；换模型后按 §2 重跑受影响实验并更新本文件。
 4. 名义臂与实际端点不一致时（如 relay 不服务该模型），**禁止把 relay 模型标记为名目后端**；失败记录须注明"端点错配"（先例：2026-07-27 claude 臂 404，见 `run_llm_backend_comparison.py::BACKENDS` NOTE）。

@@ -6,33 +6,6 @@ Antiviral mode: target FASTA → Evitar → candidate siRNAs → duplex evaluati
 Generic mode: target sequence → sliding window (19–21 nt) → local filter →
     duplex evaluation → BLAST off-target → score → rank.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SirnaDesignWorkflow INTERFACE LOCK (v1.3.1 (2026-08-22 +pareto_frontier extras 呈现, 排序不变; 前沿与 candidate_count 截断后的交付集取交, 不引用未交付候选); v1.3.0; v1.2.0 + asymmetry_component ranking dimension (terminal 5-bp NN end asymmetry via sirna-duplex v0.5.0; absent on older services → dimension drops pool-wide); v1.2.0 = ASF reference-point ranking over efficiency/specificity components — Borda rank_* / total_rank become diagnostics) —— 禁止单方面变更              ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 sirna_design workflow 的权威实现。任何字段增删、函数签名变动、      ║
-║  返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试：               ║
-║                                                                               ║
-║    - agent_core/workflows/sirna_design.py  ← 本文件                          ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/sirna_design.py                              ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - tests/test_sirna_design_workflow.py                                      ║
-║    - tests/test_sirna_workflow_api.py                                         ║
-║    - tests/test_cli_sirna_entry.py                                            ║
-║    - docs/INTERFACE_LOCKS.md                                                  ║
-║    - docs/WORKFLOWS.md                                                        ║
-║    - AGENTS.md                                                                ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations
@@ -96,12 +69,6 @@ def _local_gc_content(seq: str) -> float:
         return 0.0
     gc = seq.count("G") + seq.count("C")
     return gc / len(seq)
-
-
-# Input model — INTERFACE LOCKED (v1.0.0)
-#
-# Do NOT rename, remove, or narrow the type of any field without updating
-# INTERFACE_LOCKS.md §10 and re-running the full test suite.
 
 
 class SirnaDesignInput(BaseModel):
@@ -391,13 +358,6 @@ def score_sirna_candidate(metrics: dict[str, Any]) -> dict[str, Any]:
     # via compute_sirna_rank_scores is preferred.
     scores["total_score"] = scores["efficiency_component"]
     return scores
-
-
-# Workflow — INTERFACE LOCKED (v1.0.0)
-#
-# Pipeline order: generate → evaluate → score → rank → WorkflowResult
-# Do NOT change execution order, remove required_capabilities, or alter
-# _state_writeback structure without updating INTERFACE_LOCKS.md §10.
 
 
 class SirnaDesignWorkflow(BaseDomainWorkflow[SirnaDesignInput, WorkflowResult]):

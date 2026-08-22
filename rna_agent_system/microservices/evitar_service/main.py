@@ -1,12 +1,5 @@
 """Evitar microservice wrapper for siRNA/Cas13 design.
 
-INTERFACE LOCK (v0.2.0): This microservice's request/response schemas are the
-canonical contract. Any addition/removal must be synchronized with:
-- agent_core/tools.py :: EvitarDesignInput / design_sirna_with_evitar
-- agent_core/tool_specs.py :: EvitarDesignOutput / design_sirna_with_evitar ToolSpec
-- agent_core/state.py :: evitar_* fields
-- docs/tools/design_sirna_with_evitar.md
-
 Deployment notes:
     - CRISPR mode (--predict CRISPR) requires R (>=3.4) runtime on server.
     - Off-target analysis requires user-provided transcriptome / 3'UTR FASTA.

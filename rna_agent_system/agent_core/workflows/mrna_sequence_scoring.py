@@ -2,29 +2,6 @@
 
 Existing mRNA sequences → GC + fold + CAI → scoring → ranking → WorkflowResult.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MrnaSequenceScoringWorkflow INTERFACE LOCK (v1.1.0) —— 禁止单方面变更       ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 mrna_sequence_scoring workflow 的权威实现。任何字段增删、           ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
-║                                                                               ║
-║    - agent_core/workflows/mrna_sequence_scoring.py  ← 本文件                 ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/workflows/__init__.py                                         ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - agent_core/sequence_utils.py                                             ║
-║    - agent_core/workflow_models.py                                            ║
-║    - agent_core/tool_executor.py                                              ║
-║    - agent_core/tool_registry.py                                              ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - agent_core/file_manager.py                                               ║
-║    - tests/test_mrna_sequence_scoring_layer3.py                               ║
-║    - tests/test_mrna_workflow.py                                              ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 
 v1.1.0: the constructor now takes ``CapabilityRegistry`` like every other
 workflow (previously ``ToolExecutor``); the registry's executor is still used

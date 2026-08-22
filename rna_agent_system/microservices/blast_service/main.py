@@ -1,17 +1,5 @@
 """FastAPI microservice wrapping NCBI BLAST+ blastn (and makeblastdb for FASTA subjects).
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# BLAST+ INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 关联文件清单（修改时必须全部同步）：
-#   - microservices/blast_service/main.py  ← 本文件
-#   - agent_core/tools.py
-#   - agent_core/tool_specs.py
-#   - agent_core/state.py
-#   - docs/RNA_AGENT_SYSTEM_GUIDE.md
-# 规则：任何字段增删、函数签名变动、返回值结构调整，必须同时更新上
-# 述全部文件并重新跑通端到端测试。违反此规则的提交将被回退。
-# ═══════════════════════════════════════════════════════════════════════════════
 """
 
 from __future__ import annotations

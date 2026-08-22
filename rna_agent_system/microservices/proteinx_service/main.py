@@ -1,8 +1,5 @@
 """ProteinX (Protenix) microservice for protein tertiary structure prediction.
 
-INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-- agent_core/tools.py :: ProteinXProteinInput / predict_protein_structure_with_proteinx
-- agent_core/tool_specs.py :: ProteinXProteinOutput / ToolSpec
 """
 
 from __future__ import annotations
@@ -88,7 +85,6 @@ def _fasta_to_sequences(filepath: str) -> List[Dict[str, Any]]:
 class ProteinXPredictRequest(BaseModel):
     """ProteinX prediction request schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema.
     """
 
     sequence_filepath: str = Field(
@@ -128,8 +124,6 @@ class ProteinXPredictRequest(BaseModel):
 
 class ProteinXPredictResponse(BaseModel):
     """ProteinX prediction response schema.
-
-    INTERFACE LOCK (v0.1.0): Locked schema.
 
     NOTE (2026-07-27 campaign): despite the name, ``pdb_filepath`` points at
     Protenix's raw mmCIF output (``*_sample_0.cif``). It contains OP3 atoms

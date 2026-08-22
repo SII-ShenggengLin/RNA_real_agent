@@ -7,29 +7,6 @@ evaluation → full-length scoring → ranking → WorkflowResult.
 Architecture: Full-length workflow reuses MrnaCdsDesignWorkflow for CDS
 generation and evaluation; only full-length and UTR metrics are computed here.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  FullLengthMrnaDesignWorkflow INTERFACE LOCK (v3.1.0) —— 禁止单方面变更       ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 full_length_mrna_design workflow 的权威实现。任何字段增删、         ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
-║                                                                               ║
-║    - agent_core/workflows/full_length_mrna_design.py  ← 本文件               ║
-║    - agent_core/workflows/mrna_cds_design.py                                  ║
-║    - agent_core/workflows/evaluators.py                                       ║
-║    - agent_core/workflows/scoring.py                                          ║
-║    - agent_core/sequence_utils.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/runner.py                                                     ║
-║    - tests/test_full_length_mrna_design.py                                    ║
-║    - tests/test_full_length_mrna_e2e_live.py                                  ║
-║                                                                               ║
-║  v3.1.0 (2026-08-21): 排序治理 (DECISIONS (p)) — ASF 目标集先经 CapGate      ║
-║  判决组装 (agent_core/calibrated/objective_assembly.py, 模式无关);           ║
-║  _state_writeback 增补 _ranking_governance; 被降级维度对全池同等剔除,        ║
-║  参考点中被降级的键在 asf_ranking_note 显式说明。无输入字段删除。            ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from __future__ import annotations

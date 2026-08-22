@@ -5,33 +5,6 @@ This service directly invokes the upstream C++ binaries
 (``bin/linearfold_c`` and ``bin/linearfold_v``) to avoid being limited by the
 thin Python wrapper script, thereby exposing the full upstream capability set.
 
-═══════════════════════════════════════════════════════════════════════════════
-LinearFold INTERFACE LOCK (v0.2.0) —— 禁止单方面变更
-═══════════════════════════════════════════════════════════════════════════════
-关联文件清单（修改时必须全部同步）：
-  - microservices/linearfold_service/main.py  ← 本文件
-  - agent_core/tools.py :: LinearFoldSecondaryInput / LinearFoldEvalInput /
-                           LinearFoldZukerSuboptInput /
-                           predict_rna_secondary_structure_with_linearfold /
-                           evaluate_rna_structure_with_linearfold /
-                           predict_rna_secondary_structure_with_linearfold_zuker
-  - agent_core/tool_specs.py :: LinearFoldOutput / LinearFoldEvalOutput /
-                                LinearFoldZukerSuboptOutput /
-                                predict_rna_secondary_structure_with_linearfold /
-                                evaluate_rna_structure_with_linearfold /
-                                predict_rna_secondary_structure_with_linearfold_zuker
-                                ToolSpec entries
-                           _build_linearfold_eval_tool_args /
-                           _build_linearfold_zuker_tool_args
-  - docs/tools/predict_rna_secondary_structure_with_linearfold.md
-  - docs/workflows/rna_secondary_structure_linearfold_workflow.md
-  - docs/tasks/rna_secondary_structure_linearfold.md
-  - rna_agent_system/docs/RNA_AGENT_SYSTEM_GUIDE.md
-规则：任何字段增删、端点路径/签名变动、返回值结构调整、C++ 二进制调用方式
-      变更，必须同时更新上述全部文件并重新跑通端到端测试。违反此规则的提交
-      将被回退。
-本次修改的基准日期：2026-04-25。
-═══════════════════════════════════════════════════════════════════════════════
 """
 
 from __future__ import annotations

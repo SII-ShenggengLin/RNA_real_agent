@@ -18,8 +18,8 @@ fixed the same day:
    fresh unrelated uuid; ``state.get("task_id")`` was dead code).
 4. ``MrnaSequenceScoringWorkflow.run`` accepted ``progress_callback`` but
    never called it, so the locked ``stream_form`` event sequence
-   (INTERFACE_LOCKS §19: ``router, plan, progress…, tool_execution,
-   runner``) carried no progress events for this workflow and the CLI
+   (``router, plan, progress…, tool_execution, runner``) carried no
+   progress events for this workflow and the CLI
    progress lines stayed silent.
 5. Nobody emitted ``step_start``/``step_done`` progress events — the CLI
    handlers for them were dead code.

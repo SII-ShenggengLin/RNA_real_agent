@@ -2,7 +2,7 @@
 
 > **Project root**: `rna_agent_system/`  
 > **Readers**: human developers / AI agents  
-> **Last updated**: 2026-08-10
+> **Last updated**: 2026-08-22 (Interface Lock Policy removed)
 
 ---
 
@@ -214,8 +214,7 @@ For workflow deep-dives, see [`WORKFLOWS.md`](WORKFLOWS.md).
 | [`WORKFLOWS.md`](WORKFLOWS.md) | All domain workflows: pipelines, scoring formulas, critic design |
 | [`MANUSCRIPT.md`](MANUSCRIPT.md) | Experiment manual: benchmark/anchor assets, pilot-first protocol, data availability |
 | [`TOOLS.md`](TOOLS.md) | Per-tool specs, port registry, microservice deployment notes |
-| [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) | Interface Lock Policy, canonical references, sync checklists |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Environment setup, testing recipes, curl examples |
-| [`CHANGELOG.md`](CHANGELOG.md) | Change logs for locked interfaces and major workflows |
+| [`CHANGELOG.md`](CHANGELOG.md) | Change logs for interfaces and major workflows |
 | [`DECISIONS.md`](DECISIONS.md) | Decisions, concluded directions and do-not-repeat register |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Coding standards, new-tool procedure, commit conventions |

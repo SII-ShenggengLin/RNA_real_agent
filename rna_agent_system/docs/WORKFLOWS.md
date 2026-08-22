@@ -76,7 +76,7 @@ The authoritative `required_capabilities` list for each workflow is the class at
 
 ## 2. mRNA CDS Design
 
-> **File**: `workflows/mrna_cds_design.py` | **QualityProfile**: `MRNA_CDS_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §8
+> **File**: `workflows/mrna_cds_design.py` | **QualityProfile**: `MRNA_CDS_QUALITY_PROFILE`
 
 **Purpose**: Design optimal coding sequences from a protein sequence using LinearDesign, RNARL, and GEMORNA.
 
@@ -107,7 +107,7 @@ The authoritative `required_capabilities` list for each workflow is the class at
 
 ## 3. mRNA Sequence Scoring
 
-> **File**: `workflows/mrna_sequence_scoring.py` | **QualityProfile**: **None** (deterministic ranking-only) | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §18
+> **File**: `workflows/mrna_sequence_scoring.py` | **QualityProfile**: **None** (deterministic ranking-only)
 
 **Purpose**: Evaluate existing mRNA sequences with GC content, secondary-structure MFE, and CAI — no generation step.
 
@@ -129,7 +129,7 @@ total_score = combined_score
 
 ## 4. Full-Length mRNA Design
 
-> **File**: `workflows/full_length_mrna_design.py` | **QualityProfile**: `FULL_LENGTH_MRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §14
+> **File**: `workflows/full_length_mrna_design.py` | **QualityProfile**: `FULL_LENGTH_MRNA_QUALITY_PROFILE`
 
 **Purpose**: Design complete mRNA (5'UTR + CDS + 3'UTR). Reuses `MrnaCdsDesignWorkflow` for CDS, then appends UTR combinations and evaluates full-length metrics, ranking by reference-point (ASF) optimization.
 
@@ -270,7 +270,7 @@ The non-dominated candidate set is always returned in `WorkflowResult.pareto_fro
 
 ## 5. siRNA Design
 
-> **File**: `workflows/sirna_design.py` | **QualityProfile**: `SIRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §10
+> **File**: `workflows/sirna_design.py` | **QualityProfile**: `SIRNA_QUALITY_PROFILE`
 
 **Purpose**: Design siRNA guides with safety gating on off-target count and specificity.
 
@@ -323,7 +323,7 @@ across every ASF workflow).
 
 ## 6. sgRNA Handle Design
 
-> **File**: `workflows/sgrna_design.py` | **QualityProfile**: `SGRNA_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §11
+> **File**: `workflows/sgrna_design.py` | **QualityProfile**: `SGRNA_QUALITY_PROFILE`
 
 **Purpose**: Optimize sgRNA handle sequences using CRGPT, with optional CRISOT off-target scoring.
 
@@ -351,7 +351,7 @@ off — drops for everyone).
 
 ## 7. RNA Secondary Structure → Sequence Design
 
-> **File**: `workflows/rna_secondary_structure_design.py` | **QualityProfile**: `RNA_SECONDARY_STRUCTURE_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §16
+> **File**: `workflows/rna_secondary_structure_design.py` | **QualityProfile**: `RNA_SECONDARY_STRUCTURE_QUALITY_PROFILE`
 
 **Purpose**: Design RNA sequences from a target secondary structure (dot-bracket) using ViennaRNA `RNAinverse`. No PDB or GPU required.
 
@@ -372,7 +372,7 @@ off — drops for everyone).
 
 ## 8. RNA Tertiary Structure → Sequence Design
 
-> **File**: `workflows/rna_tertiary_structure_design.py` | **QualityProfile**: `RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §17
+> **File**: `workflows/rna_tertiary_structure_design.py` | **QualityProfile**: `RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE`
 
 **Purpose**: Design RNA sequences from a 3D structure (PDB/CIF) using RhoDesign and/or RiboDiffusion, validated with RhoFold and structure alignment.
 
@@ -433,7 +433,7 @@ dimensions outvote the confidence dimension.
 
 ## 9. RNA–Small Molecule Interaction
 
-> **File**: `workflows/rna_small_molecule_interaction.py` | **QualityProfile**: **None** | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §9
+> **File**: `workflows/rna_small_molecule_interaction.py` | **QualityProfile**: **None**
 
 **Purpose**: Predict RNA-small molecule binding propensity for a given RNA sequence and ligand SMILES. Runs RNAsmol and/or GerNA-Bind, averages their probability scores.
 
@@ -447,7 +447,7 @@ dimensions outvote the confidence dimension.
 
 ## 10. RNA Aptamer Design
 
-> **File**: `workflows/rna_aptamer_design.py` | **QualityProfile**: `RNA_APTAMER_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §15
+> **File**: `workflows/rna_aptamer_design.py` | **QualityProfile**: `RNA_APTAMER_QUALITY_PROFILE`
 
 **Purpose**: Design RNA aptamers targeting a protein using ODesign, then validate with ProteinX complex prediction, EGARPS scoring, and interface analysis.
 
@@ -521,7 +521,7 @@ The generation budget is capped at 48 raw candidates per run; the loop stops ear
 
 ## 11. IRES Prediction & Validation
 
-> **File**: `workflows/ires_prediction.py` | **QualityProfile**: `IRES_QUALITY_PROFILE` | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §13
+> **File**: `workflows/ires_prediction.py` | **QualityProfile**: `IRES_QUALITY_PROFILE`
 
 **Purpose**: Identify potential IRES elements within a 5'UTR or candidate sequence, with structural validation.
 
@@ -562,7 +562,7 @@ Without structural data: downgrade one tier.
 
 ## 12. ASO Target Screening
 
-> **File**: `workflows/aso_target_screening.py` | **QualityProfile**: **None** (deterministic) | **Lock**: [`INTERFACE_LOCKS.md`](INTERFACE_LOCKS.md) §12
+> **File**: `workflows/aso_target_screening.py` | **QualityProfile**: **None** (deterministic)
 
 **Purpose**: Screen a full-length mRNA to identify the most accessible regions for ASO binding.
 

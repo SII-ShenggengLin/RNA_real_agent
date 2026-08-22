@@ -1,31 +1,5 @@
 """RNAsmol microservice for RNA-ligand binding scoring."""
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# RNAsmOL 接口冻结声明 (v0.3.0) —— 禁止单方面变更
-# ═══════════════════════════════════════════════════════════════════════════════
-# 以下代码已经过与原始仓库 https://github.com/hongli-ma/RNAsmol 的逐行对照
-# 验证，并通过端到端测试确认可运行。自 2026-04-23 起，此接口冻结为正式
-# 版本。任何后续修改必须同步更新全部关联文件并重新跑通测试。
-#
-# 接口变更必须遵守的三条规则：
-#   1. 同步修改以下 6 个文件中的对应定义（禁止遗漏任何一处）：
-#        - microservices/rnasmol_service/main.py  ← 本文件
-#        - agent_core/tools.py
-#        - agent_core/tool_specs.py
-#        - agent_core/state.py
-#        - docs/tools/score_rna_ligand_binding_with_rnasmol.md
-#   2. 修改后必须重新运行 RNAsmol 端到端测试（curl / invoke），
-#      覆盖：基本推理、权重智能选择、device 切换、错误边界。
-#   3. 同步提升 INTERFACE LOCK 版本号（如 v0.2.0 → v0.3.0）。
-#
-# 版本记录：
-#   - 2026-08-11 (v0.3.0)：预处理保真修复（保留大小写敏感词表、逐字复刻上游
-#     邻接矩阵/top-k 切片语义），修复后服务复现上游官方 test.py 参考指标
-#     （robin 0.9744 / pdb 0.9828 AUROC）；请求/响应 schema 未变。
-#
-# 违反上述规则的代码提交将被视为破坏性变更并回退。
-# ═══════════════════════════════════════════════════════════════════════════════
-
 from __future__ import annotations
 
 import os
@@ -118,9 +92,6 @@ VOCAB_PROTEIN = {
 class ScoreRequest(BaseModel):
     """RNAsmol scoring request schema.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: RNAsmolScoreInput
-    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     """
     rna_sequence: str = Field(
         ...,
@@ -161,10 +132,6 @@ class ScoreRequest(BaseModel):
 class ScoreResponse(BaseModel):
     """RNAsmol scoring response schema.
 
-    INTERFACE LOCK (v0.3.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: score_rna_ligand_binding_with_rnasmol (wrapper return dict)
-    - agent_core/tool_specs.py :: RNAsmolScoreOutput
-    - docs/tools/score_rna_ligand_binding_with_rnasmol.md
     """
     rna_sequence: str
     smiles: str
@@ -524,9 +491,6 @@ def health() -> Dict[str, object]:
 def score(payload: ScoreRequest) -> ScoreResponse:
     """RNAsmol scoring endpoint.
 
-    INTERFACE LOCK (v0.3.0): The request/response schema and inference pipeline
-    (SMILES → molecular graph + PPR + RNA sequence encoding → MCNN_GCN) are canonical.
-    Do not change without updating the wrapper, tool spec, and documentation.
     """
     checkpoint = _resolve_checkpoint_path(
         payload.checkpoint_path,

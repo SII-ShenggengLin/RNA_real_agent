@@ -4,34 +4,6 @@ Input PDB/CIF structure → inverse folding (RhoDesign / RiboDiffusion) →
 GC + fold (ViennaRNA) + RhoFold evaluation + structure alignment (RMSD/TM-score) →
 scoring → ranking → WorkflowResult.
 
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  RnaTertiaryStructureDesignWorkflow INTERFACE LOCK (v1.2.1 (2026-08-22 +pareto_frontier extras 呈现, 排序不变); v1.2.0; v1.1.0 + additive weight_tm_score input field and tm_component ranking dimension; v1.1.0 = ASF reference-point ranking over rhofold/rmsd components — total_score becomes a diagnostic) —— 禁止单方面变更 ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  本文件为 rna_tertiary_structure_design workflow 的权威实现。任何字段增删、   ║
-║  函数签名变动、返回值结构调整，必须同时更新以下全部文件并重新跑通端到端测试： ║
-║                                                                               ║
-║    - agent_core/workflows/rna_tertiary_structure_design.py  ← 本文件         ║
-║    - agent_core/workflows/base.py                                             ║
-║    - agent_core/quality_profiles/__init__.py                                  ║
-║    - agent_core/state.py                                                      ║
-║    - agent_core/capabilities/base.py                                          ║
-║    - agent_core/agents/quality_agent.py                                       ║
-║    - agent_core/agents/specialist_agent.py                                    ║
-║    - agent_core/agents/pipeline_agent.py                                      ║
-║    - agent_core/quality_profiles/rna_tertiary_structure_design.py             ║
-║    - agent_core/tool_specs.py                                                 ║
-║    - agent_core/tools.py                                                      ║
-║    - agent_core/llm_config.py                                                 ║
-║    - microservices/rhofold_service/main.py                                    ║
-║    - microservices/rhodesign_service/main.py                                  ║
-║    - microservices/ribodiffusion_service/main.py                              ║
-║    - microservices/rna_sequence_metrics_service/main.py                       ║
-║    - microservices/viennarna_service/main.py                                  ║
-║    - tests/test_rna_tertiary_structure_design.py                              ║
-║    - tests/test_rna_tertiary_structure_design_layer3.py                       ║
-║                                                                               ║
-║  规则：违反此规则的提交将被回退。                                             ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
 
 Key design principles
 ---------------------

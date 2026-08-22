@@ -72,9 +72,6 @@ ATOM_ID = {
 class ScoreRequest(BaseModel):
     """GerNA-Bind affinity scoring request schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: GerNABindScoreInput
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
     """
     rna_sequence: str = Field(..., min_length=1, description="RNA sequence or FASTA-like text.")
     smiles: str = Field(..., min_length=1, description="Ligand SMILES string.")
@@ -117,10 +114,6 @@ class ScoreRequest(BaseModel):
 class ScoreResponse(BaseModel):
     """GerNA-Bind affinity scoring response schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py :: score_rna_ligand_binding_with_gernabind (wrapper return dict)
-    - agent_core/tool_specs.py :: GerNABindScoreOutput
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
     """
     rna_sequence: str
     smiles: str
@@ -137,9 +130,6 @@ class ScoreResponse(BaseModel):
 class BindingSiteRequest(BaseModel):
     """GerNA-Bind binding-site prediction request schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tools.py (if a wrapper is added later)
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
     """
     rna_sequence: str = Field(..., min_length=1, description="RNA sequence or FASTA-like text.")
     smiles: str = Field(..., min_length=1, description="Ligand SMILES string.")
@@ -168,9 +158,6 @@ class BindingSiteRequest(BaseModel):
 class BindingSiteResponse(BaseModel):
     """GerNA-Bind binding-site prediction response schema.
 
-    INTERFACE LOCK (v0.1.0): Locked schema. Any field addition/removal must be synchronized with:
-    - agent_core/tool_specs.py (if an output model is added later)
-    - docs/tools/score_rna_ligand_binding_with_gernabind.md
     """
     rna_sequence: str
     smiles: str
@@ -759,9 +746,6 @@ def health() -> Dict[str, object]:
 def score(payload: ScoreRequest) -> ScoreResponse:
     """GerNA-Bind affinity scoring endpoint.
 
-    INTERFACE LOCK (v0.1.0): The request/response schema and inference pipeline
-    (RNA-FM + RNAfold + RhoFold + GerNA model) are canonical.
-    Do not change without updating the wrapper, tool spec, and documentation.
     """
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
     checkpoint = _resolve_affinity_checkpoint(
@@ -808,9 +792,6 @@ def score(payload: ScoreRequest) -> ScoreResponse:
 def predict_binding_site(payload: BindingSiteRequest) -> BindingSiteResponse:
     """GerNA-Bind binding-site prediction endpoint.
 
-    INTERFACE LOCK (v0.1.0): The request/response schema and inference pipeline
-    (RNA-FM + RNAfold + RhoFold + GerNA binding-site model) are canonical.
-    Do not change without updating the wrapper, tool spec, and documentation.
     """
     rna_sequence = _normalize_rna_sequence(payload.rna_sequence)
     checkpoint = _resolve_binding_checkpoint(payload.checkpoint_path)

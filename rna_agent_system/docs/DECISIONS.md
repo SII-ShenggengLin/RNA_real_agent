@@ -4,7 +4,7 @@
 > **not** pursue again (with the evidence that closed them), positive results that **are**
 > established (with their evidence pointers), and a one-line project timeline.
 > Before proposing any new experiment, optimization, or narrative claim, check Part 1 first.
-> **Last updated**: 2026-08-19
+> **Last updated**: 2026-08-22
 
 All evidence files live under `rna_agent_system/experiments/results/` unless noted.
 Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
@@ -94,7 +94,7 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   only. Hard-failure retry is decided solely by `WorkflowResult.is_hard_failure`.
 - **Evidence**: governance fix 2026-08-10 after two incidents (DeepSeek-402 review failure
   returned a destructive abort; a hallucinated LLM abort downgraded a good run, 2026-07).
-  See `CHANGELOG.md` 2026-08-10 (§19 v3.4.0 entry) and `INTERFACE_LOCKS.md` §19.
+  See `CHANGELOG.md` 2026-08-10 (§19 v3.4.0 entry).
 
 ### (h) Do not launch E5-S2 (18 targets) without a generation-method-layer change
 
@@ -565,6 +565,28 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   `tests/test_layer6_fresh_audit_regressions.py` (15 tests); suite 621
   passed; `docs/CHANGELOG.md` 2026-08-22 (e).
 
+### (v) Interface Lock Policy retired (2026-08-22)
+
+- **Decision (user-directed)**: the INTERFACE LOCK policy is removed. Every
+  lock comment block (tool wrappers, tool specs, state, runner,
+  sequence_utils, the 11 workflow headers, 20 microservice mains, two test
+  docstrings), the policy document `docs/INTERFACE_LOCKS.md`, and its
+  references across the documentation were deleted — a pure-deletion source
+  diff (~1,250 lines, zero functional changes; suite 621 passed unchanged).
+- **Why**: the policy predated the Layer-0–Layer-6 fresh-data audit
+  programme and had drifted stale — e.g. the §20 lock table still listed
+  `cli/form_chat.py` as a lock anchor although that file carried no lock
+  block, and version numbers lagged the audited state. The maintenance cost
+  of the sync lists exceeded their protective value once every layer was
+  regression-pinned by the test suite and the PA_006–PA_036 drivers.
+- **Kept**: the behavioural contracts themselves — workflow pipeline order,
+  scoring formulas, `_state_writeback` structure, the `stream_form` event
+  sequence, artifact key set — are unchanged and remain pinned by
+  `docs/WORKFLOWS.md`, the regression suite, and the PA drivers. Do not
+  reintroduce lock annotations; interface changes follow the normal
+  test-first rules (`CONTRIBUTING.md`).
+- **Evidence**: `docs/CHANGELOG.md` 2026-08-22 (f).
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)
@@ -620,3 +642,4 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 - **2026-08-22 (b)** (Layer-3 fresh-data audit, user-directed): first live audit of the service-orchestration layer — 21 services swept (10 up / 11 down all classified correctly), real CRISOT cold-start via `ensure_services_ready` + fresh INS-derived CRISPR scoring, concurrent flock contention (exactly one start), busy-port proceed-anyway preserved; **45 checks / 0 failures post-fix**, live NCBI INS/5S data. Three defects fixed: degraded-but-answering services passed pre-flight (now fail with a clear error — decision (r)), `cli/service_orchestrator.__all__` exported unimported names, bowtie2 `start.sh` missing the exec bit. Evidence: `workspace/layer3_fresh_audit_2026-08-22/`.
 - **2026-08-22 (c)** (Layer-4 fresh-data audit, user-directed): first live audit of the multi-agent + CapGate + ranking-governance stack — 37 checks across pass 1 + pass 2/2b re-verification on live NCBI EPO/EV71/B2M/Xenopus-5S and RCSB 1AKI (real-LLM quality reviews, real 2-node pipeline through ClaimGate-gated synthesis, CapGate enforce/advisory/off on live services, ranking-governance three-mode comparison). **Five defects fixed** (decision (s)): `ranking_objective_assembly` audit events silently dropped (unregistered Literal type — the (p) audit trail was empty), `PipelineAgent` crash on runtime-dangling bindings, `ires_prediction` swallowing generation tool failures as "no candidates found", `SpecialistAgent.retry_count` counting abandoned attempts, `QualityAgent` dropping quoted int-enum overrides. Regressions `tests/test_layer4_fresh_audit_regressions.py` (11); suite 591. Evidence: `workspace/layer4_fresh_audit_2026-08-22/`.
 - **2026-08-22 (e)** (Layer-6 fresh-data audit, user-directed): first live audit of the entry-point layer — `AgentRunner` façade + `cli/form_chat.py` (incl. the `--pipeline-file` path) + FastAPI `workflow_api` on live NCBI PRL/IL10/HAV data — **31 checks / 0 failures post-fix**. **Six defects fixed** (decision (u)): pipeline runs leaked tool artifacts to the global workspace root (`run_pipeline` never set the session context), `/v1/agent/run` misreported a crashed node as `success: true`, the API `task_id` echo did not identify the artifact session, `MrnaSequenceScoringWorkflow.run` dropped `progress_callback` (locked §19 stream sequence carried no progress events), no component ever emitted `step_start`/`step_done` (dead CLI handlers), and the CLI `--pipeline-file` branch still had the bare non-tty-crashing `input()`. Fresh HAV 5'UTR IRES scan: region 1-734, prob 0.835, confidence high (advisory CapGate — IRESfinder gated per (j)). Regressions `tests/test_layer6_fresh_audit_regressions.py` (15); suite 621. Evidence: `workspace/layer6_fresh_audit_2026-08-22/`.
+- **2026-08-22 (f)** (Interface Lock Policy retired, user-directed): all INTERFACE LOCK comment blocks, the `docs/INTERFACE_LOCKS.md` policy document and every doc reference removed (decision (v)) — pure-deletion source diff (~1,250 lines), zero functional changes, suite 621 passed unchanged; behavioural contracts stay pinned by `WORKFLOWS.md` + the regression suite + the PA drivers.
