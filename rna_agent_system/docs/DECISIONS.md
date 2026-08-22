@@ -484,6 +484,45 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 
 ---
 
+### (t) Layer-5 workspace isolation: session ids are untrusted single path components, validated before any filesystem effect (2026-08-22)
+
+- **Decision (user-directed audit)**: `WorkspaceManager` treats a session id
+  as an **untrusted, single path-safe component**. Every public method
+  resolves it through `_session_dir_path`, which rejects empty/whitespace ids
+  and ids containing `/`, `\`, `.` or `..` with `ValueError`
+  (`delete_session` returns `False` instead, mirroring `SessionMemory`'s
+  empty-id guard). Session ids reach Layer 5 from two front doors — the CLI
+  `--session-id` and the FastAPI `/v1/agent/run` `task_id` (client-controlled,
+  mapped verbatim to `session_id` by `workflow_api/app.py`) — so validation
+  belongs at the Layer-5 chokepoint, not per-caller.
+- **Why (defects demonstrated on live data)**: (1) joining an empty path
+  component is a no-op, so `delete_session("")` aliased the `sessions/` root
+  and rmtree'd **every** session workspace while returning `True`; (2)
+  unvalidated joins let `get_session_dir("../x")` create directories outside
+  `sessions/`, and an absolute id discards the base entirely — a per-session
+  isolation break; (3) `list_files` created the session directory as a side
+  effect of a pure listing (its `exists()` guard was dead code). All three
+  fixed; legitimate id shapes in the codebase (uuid4,
+  `pa020_20260716_120000`) are unaffected — PA regressions PA_006–PA_036 use
+  exactly these shapes.
+- **Verified clean on fresh data** (no defects found):
+  `SessionMemory` (multi-turn `_previous_workflow_result` /
+  `_workflow_result_history` / `_last_form_params_by_workflow` prefill,
+  session isolation, deepcopy isolation, explicit-state non-persistence,
+  delete semantics) and `file_manager` (round-trips, context-propagated
+  session scoping — run artifacts land under `workspace/sessions/<sid>/` with
+  zero global-root leaks, CapGate `tool_call` audit lines carry the session
+  id). Known non-fixed wart, accepted: `SessionMemory` keeps
+  `_workflow_result_history` unbounded per session (documented cross-turn
+  design, CLI sessions are short-lived).
+- **Evidence**: fresh-data audit `workspace/layer5_fresh_audit_2026-08-22/`
+  (37 checks post-fix, live NCBI TTR NM_000371 + IFNA2 NM_000605, three real
+  `mrna_sequence_scoring` runs through real services); regressions
+  `tests/test_layer5_fresh_audit_regressions.py` (15 tests); suite 606
+  passed; `docs/CHANGELOG.md` 2026-08-22 (d).
+
+---
+
 ## Part 2 — Confirmed Positive Results (established, citable)
 
 | # | Result | Evidence |

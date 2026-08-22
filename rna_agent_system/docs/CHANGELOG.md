@@ -10,6 +10,58 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-22 (d) — Layer-5 fresh-data audit: session/workspace persistence verified; three WorkspaceManager defects fixed
+
+First dedicated fresh-data audit of Layer 5 — `SessionMemory` +
+`WorkspaceManager` + `file_manager` — on data fetched live during the audit
+(human TTR mRNA NM_000371 with its annotated CDS, 444 nt / 147 aa; human
+IFNA2 mRNA NM_000605 with its annotated CDS, 567 nt / 188 aa; CDS coordinates
+taken from the GenBank FEATURES block and cross-checked against the annotated
+`/translation` — nothing reused from prior audits, PA fixtures or benchmark
+inputs). Evidence: `workspace/layer5_fresh_audit_2026-08-22/` (fetch script,
+audit driver, `fresh_inputs/` + manifest, `audit_report.json`).
+
+What was exercised for real — **37 checks, all green post-fix**:
+`file_manager` round-trips on the fetched sequences (`save_sequence` /
+`save_text_file` / `copy_file_to_workspace` / `resolve_project_path` /
+`read_sequence`, relative and absolute, with and without the
+context-propagated session id); three live `AgentRunner.run_form` turns of
+`mrna_sequence_scoring` (real GC + LinearFold microservice calls, services
+auto-started by the runner pre-flight) through a real `SessionMemory` — the
+multi-turn contract on real results (`_previous_workflow_result` holds the
+turn-1 result with a different task id, `_workflow_result_history` grows to
+exactly one entry, `_last_form_params_by_workflow` feeds the CLI prefill path
+with the latest params), session isolation, deepcopy isolation against caller
+mutation, explicit-state turns leaving memory untouched, delete semantics;
+run artifacts landing under `workspace/sessions/<sid>/` with **zero leaks to
+the global workspace root**; CapGate `tool_call` audit lines stamped with the
+fresh session ids; CLI-equivalent `workflow_results` JSON persistence visible
+to `WorkspaceManager.list_files`.
+
+**Three defects found and fixed** in `agent_core/workspace_manager.py`
+(regressions: `tests/test_layer5_fresh_audit_regressions.py`, 15 tests; suite
+**606 passed**):
+
+1. **`delete_session("")` deleted the entire `sessions/` tree.** Joining an
+   empty path component is a no-op, so the empty id aliased the sessions root
+   itself and `rmtree` removed *every* session workspace while returning
+   `True` as if one session had gone. Invalid ids are now rejected up front;
+   `delete_session` returns `False` for them, matching the `SessionMemory`
+   empty-id guard the class was missing.
+2. **Session ids were joined into filesystem paths unvalidated.**
+   `get_session_dir("../x")` created directories outside `sessions/`, and an
+   absolute id discards the base path entirely (`Path / "/abs"` replaces the
+   left side) — a per-session isolation break reachable from the
+   client-controlled workflow-API `task_id`. All public methods now validate
+   through `_session_dir_path`: empty/whitespace ids and ids containing `/`,
+   `\`, `.` or `..` raise `ValueError` (`delete_session`: `False`). Every
+   legitimate id shape in the codebase (uuid4, `pa020_20260716_120000`) is
+   unaffected.
+3. **`list_files` mutated the filesystem on a pure read.** It called
+   `get_session_dir` (which creates the directory), making its own
+   `exists()` guard dead code — merely listing a session created it. It is
+   now a pure read: missing sessions yield `[]` without touching disk.
+
 ## 2026-08-22 (c) — Layer-4 fresh-data audit: multi-agent + CapGate + ranking governance verified; five defects fixed
 
 First dedicated fresh-data audit of Layer 4 — the multi-agent execution stack

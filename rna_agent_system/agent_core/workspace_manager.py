@@ -12,15 +12,31 @@ class WorkspaceManager:
     """Manage per-session workspace directories.
 
     Each session receives its own sub-directory under
-    ``{base_dir}/sessions/{session_id}/``.
+    ``{base_dir}/sessions/{session_id}/``. Session ids are validated before
+    any filesystem effect: an empty id would alias the ``sessions/`` root
+    itself (``Path(...) / ""`` is a no-op, which previously let
+    ``delete_session("")`` rmtree the whole sessions tree), and ids carrying
+    path separators or ``.``/``..`` components would resolve outside
+    ``sessions/`` — reachable from client-controlled ids such as the
+    workflow-API ``task_id``.
     """
 
     def __init__(self, base_dir: str = "workspace") -> None:
         self.base_dir = PROJECT_ROOT / base_dir
 
+    def _session_dir_path(self, session_id: str) -> Path:
+        """Return the validated (not yet created) directory for *session_id*."""
+        if not session_id or not session_id.strip():
+            raise ValueError("session_id must be a non-empty string")
+        if "/" in session_id or "\\" in session_id or session_id in (".", ".."):
+            raise ValueError(
+                f"session_id must be a single path-safe component, got {session_id!r}"
+            )
+        return self.base_dir / "sessions" / session_id
+
     def get_session_dir(self, session_id: str) -> Path:
         """Return the absolute ``Path`` for *session_id*, creating it if necessary."""
-        session_dir = self.base_dir / "sessions" / session_id
+        session_dir = self._session_dir_path(session_id)
         session_dir.mkdir(parents=True, exist_ok=True)
         return session_dir
 
@@ -43,8 +59,12 @@ class WorkspaceManager:
         return str(target).replace("\\", "/")
 
     def list_files(self, session_id: str) -> list[str]:
-        """List all files in the session workspace as project-relative paths."""
-        session_dir = self.get_session_dir(session_id)
+        """List all files in the session workspace as project-relative paths.
+
+        Pure read: a session whose directory does not exist yet yields an
+        empty list without creating anything on disk.
+        """
+        session_dir = self._session_dir_path(session_id)
         if not session_dir.exists():
             return []
         paths: list[str] = []
@@ -63,9 +83,14 @@ class WorkspaceManager:
         Returns
         -------
         bool
-            ``True`` if the directory existed and was removed, ``False`` otherwise.
+            ``True`` if the directory existed and was removed, ``False``
+            otherwise — including for invalid ids (empty or path-escaping),
+            which never touch the filesystem.
         """
-        session_dir = self.base_dir / "sessions" / session_id
+        try:
+            session_dir = self._session_dir_path(session_id)
+        except ValueError:
+            return False
         if session_dir.exists():
             shutil.rmtree(session_dir)
             return True
