@@ -292,8 +292,15 @@ class SgRnaDesignWorkflow(BaseDomainWorkflow[SgRnaDesignInput, WorkflowResult]):
         elif inp.seed_filepath:
             args["filepath"] = inp.seed_filepath
         else:
-            _LOGGER.error("sgrna_design_no_seed")
-            return []
+            # Documented XOR contract ("exactly one of seed_sequence or
+            # filepath must be provided") — fail with a clear message instead
+            # of the generic empty-candidate failure, which hides the cause.
+            raise ValueError(
+                "seed_sequence or seed_filepath is required for CRGPT sgRNA "
+                "design: provide the wild-type sgRNA handle (DNA or RNA "
+                "letters, ~20 nt upstream of an NGG PAM) as seed_sequence, "
+                "or a file containing it as seed_filepath"
+            )
         if inp.temperature is not None:
             args["temperature"] = inp.temperature
         if inp.max_length is not None:

@@ -266,7 +266,11 @@ def test_design_no_seed_error():
     inp = SgRnaDesignInput(n_samples=5)
     result = wf.run(inp)
     assert result.success is False
-    assert "empty_candidate_list" in result.errors
+    # 2026-08-22 E2E audit: a missing seed now fails with a clear ValueError
+    # naming the required input (was: opaque empty_candidate_list).
+    assert "seed_sequence or seed_filepath is required" in result.summary
+    assert any("seed_sequence or seed_filepath is required" in e for e in result.errors)
+    assert "empty_candidate_list" not in result.errors
 
 
 def test_tool_failure_graceful():

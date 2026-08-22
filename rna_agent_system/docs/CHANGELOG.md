@@ -10,6 +10,66 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-22 (h) — Full-platform E2E fresh-data audit — whole stack on live-fetched data, three defects fixed (DECISIONS (x))
+
+First **whole-stack** end-to-end pass (previous audits were layer-by-layer):
+all three Layer-6 entry points (FastAPI `/v1/agent/run` + `/v1/agent/pipeline`,
+`cli/form_chat.py` incl. `--pipeline-file`, in-process
+`AgentRunner.stream_form`) driving **every one of the 11 workflows** on live
+microservices (auto-started), live CapGate audit trail, live DeepSeek
+`QualityAgent` review and ClaimGate-gated synthesis — on **entirely fresh
+data fetched live for this audit** (grep-verified unused before fetching):
+IL4 NM_000589.4 mRNA+CDS+protein, CXCL8 NM_000584.4 mRNA+CDS, CSFV
+NC_002657.1 5'UTR (373 nt, first-CDS boundary), Rfam RF00059 TPP-riboswitch
+consensus (105 nt; SS_cons projected to pseudoknot-free dot-bracket), RCSB
+**1PGB** (aptamer target), RCSB **12CI** (fresh RNA-only X-ray structure,
+82 nt), PubChem **kanamycin A** SMILES. **56 checks / 0 failures post-fix**
+(evidence: `workspace/e2e_fresh_audit_2026-08-22/` — fetch/audit/retry/fixup
+drivers + `audit_report.json`): batch scoring with independent GC
+cross-check, IRES scan on the CSFV 5'UTR, TPP inverse folding
+(`struc_dist ≤ 5`), RNAsmol×kanamycin, ASO screening, seeded sgRNA design
+(CRGPT + CRISOT), siRNA design with live off-target scan, CDS design whose
+top candidate **translates back to exactly the annotated IL4 protein**,
+full-length mRNA design, tertiary inverse folding against 12CI, aptamer
+design against 1PGB, **multi-node pipelines with real `input_bindings`**
+(`$alias.all_candidates[0].sequence`; n2's scored input verified
+byte-identical to n1's top candidate on both API and CLI paths),
+`stream_form` event order, two-turn `SessionMemory` contract, live quality
+review, session-scoped artifacts, session-stamped CapGate audit lines, and
+**zero new workspace-root leaks** across the whole audit.
+
+**Three defects fixed:**
+
+1. `sgrna_design` hid a missing seed behind the generic empty-candidate
+   failure — the documented XOR contract ("exactly one of
+   `seed_sequence`/`seed_filepath`") now raises a clear `ValueError` naming
+   the missing input, which survives `base.run()` into the WorkflowResult
+   summary/errors (`workflows/sgrna_design.py`).
+2. `AgentRunner.stream_form` raised `RuntimeError` out of the stream when
+   the workflow hard-failed (e.g. empty candidates) while `run_form`
+   degrades gracefully — the stream now yields a final `runner` event
+   carrying the failed state (`state["_stream_pipeline_error"]` records the
+   pipeline errors); only worker-thread crashes still raise
+   (`agent_core/runner.py`).
+3. The ViennaRNA **inverse-fold service** accepted pseudoknot brackets
+   (`[]{}<>`) at charset validation, but RNAinverse cannot parse them — in
+   the packaged service env the binary crashed with **SIGSEGV (exit −11)**,
+   surfacing as an opaque 503. The endpoint now rejects them up-front with
+   an actionable message (`microservices/viennarna_fold/main.py`;
+   service-side, no workflow change — Rfam-derived targets must be
+   normalised to pseudoknot-free dot-bracket upstream, pinned in DECISIONS
+   (x)).
+
+Input contracts verified along the way (not defects): binding expressions
+use `all_candidates` (`$n.all_candidates[0].sequence`, as documented in
+`binding_resolver.py`); the CRGPT seed is a ≥40-nt sgRNA **handle**
+(scaffold), not a 20-nt spacer; Rfam `SS_cons` needs normalisation before
+use (context-unpaired chars `, _ ~` → `.`; multilevel brackets →
+pseudoknot-free projection). Tests:
+`tests/test_e2e_fresh_audit_regressions.py` (8) +
+`tests/test_sgrna_design_workflow.py::test_design_no_seed_error` updated to
+the new contract; suite **636 passed** (was 628).
+
 ## 2026-08-22 (g) — Oracle version stamps: profiling-time drift detection, pure additive (DECISIONS (w))
 
 Version stamps tying SelfModel grades to the deployed oracle artifact:

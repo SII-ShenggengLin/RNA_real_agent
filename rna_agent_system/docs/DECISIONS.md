@@ -622,6 +622,49 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 - **Evidence**: `docs/CHANGELOG.md` 2026-08-22 (g); tests
   `tests/test_oracle_version_stamps.py` (7); suite **628 passed** (was 621).
 
+### (x) Whole-platform E2E contracts: stream failures are events, RNAinverse takes pseudoknot-free targets only, CRGPT seeds are handles (2026-08-22)
+
+- **Decision (user-directed)**: the first whole-stack E2E audit (all three
+  Layer-6 entry points × all 11 workflows on live-fetched fresh data —
+  IL4/CXCL8/CSFV/Rfam RF00059/1PGB/12CI/kanamycin A) established three
+  standing interface contracts after fixing the defects that violated them:
+  1. **`stream_form` upholds `run_form`'s graceful-failure contract**: a
+     workflow hard failure (empty candidates, failed evaluation) is delivered
+     as a final `runner` event carrying the failed state
+     (`state["_stream_pipeline_error"]`); it never raises out of the stream.
+     Only worker-thread crashes (infrastructure errors with no state to
+     deliver) raise `RuntimeError`. Pre-fix, a failed streamed workflow
+     escaped as `RuntimeError('执行失败: empty_candidate_list')` and the
+     caller lost the final event entirely.
+  2. **The ViennaRNA inverse-fold endpoint takes pseudoknot-free dot-bracket
+     only** (`.` and `()`): RNAinverse cannot parse `[]{}<>`; in the packaged
+     service env the binary crashed with SIGSEGV (exit −11) behind an opaque
+     503. The endpoint now rejects them up-front. Consequence for data
+     curation: Rfam `SS_cons` (and any multilevel-bracket consensus) must be
+     normalised **upstream** — context-unpaired chars (`, _ ~`) to `.` and
+     multilevel brackets to a pseudoknot-free projection (relabel when pairs
+     never cross; drop crossing pairs otherwise). Do **not** teach the
+     workflow to silently rewrite user structures — silent intent change is
+     worse than a loud rejection.
+  3. **CRGPT's seed is an sgRNA *handle* (≥40 nt), not a 20-nt spacer**: a
+     missing seed now fails fast with a `ValueError` naming
+     `seed_sequence`/`seed_filepath` (documented XOR contract enforced at
+     generation; the message survives into the WorkflowResult
+     summary/errors). The universal SpCas9 scaffold is a reagent constant,
+     not per-experiment data — guide/target pairs are the experiment inputs.
+- **Verified-not-defects** (documented for the next audit): pipeline
+  `input_bindings` reference `all_candidates`
+  (`$alias.all_candidates[0].sequence` — `WorkflowResult.candidates` does
+  not exist; the resolver's docstring was always right); the ~2.5k prefixed
+  files sitting at the `workspace/` root are pre-2026-08-22 accumulation
+  from before the Layer-5 session-scoping fix — leak checks must be
+  window-based (new files during the audit), not prefix-any.
+- **Evidence**: `docs/CHANGELOG.md` 2026-08-22 (h); drivers + report under
+  `workspace/e2e_fresh_audit_2026-08-22/` (56/56 checks, 0 failures
+  post-fix); tests `tests/test_e2e_fresh_audit_regressions.py` (8);
+  `tests/test_sgrna_design_workflow.py::test_design_no_seed_error` updated;
+  suite **636 passed** (was 628).
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)

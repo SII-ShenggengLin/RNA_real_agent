@@ -817,6 +817,15 @@ def _inverse_fold_cli(structure: str, start_sequence: str, params: ViennaModelPa
     allowed = set(".()[]{}<>")
     if any(ch not in allowed for ch in struct):
         raise ValueError("structure contains characters outside dot-bracket notation.")
+    if any(ch not in ".()" for ch in struct):
+        # RNAinverse cannot parse pseudoknot brackets: depending on the
+        # ViennaRNA build it either exits with "Junk in structure" or crashes
+        # outright (observed exit -11 in the packaged service env). Reject
+        # up-front with an actionable message instead.
+        raise ValueError(
+            "RNAinverse does not support pseudoknot brackets ([]{}<>); "
+            "provide a pseudoknot-free dot-bracket target (only '.' and '()')."
+        )
     start = start_sequence.strip() if start_sequence else ""
     if not start:
         start = "N" * len(struct)

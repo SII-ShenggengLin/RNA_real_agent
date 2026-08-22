@@ -475,9 +475,15 @@ class AgentRunner:
                         # driver/console log and the workflow's own logger output —
                         # the real error is almost always there, not here.
                         done_error = "; ".join(pipeline_result.errors) or "pipeline failed without recorded errors"
+                        # A completed-but-failed pipeline (e.g. a workflow hard
+                        # failure such as empty candidates) must surface as a
+                        # final runner event carrying the failed state — the
+                        # same graceful contract run_form upholds. Only thread
+                        # exceptions raise out of the stream.
+                        state["_stream_pipeline_error"] = done_error
                     progress_q.put({"__done__": True, "success": pipeline_result.success, "error": done_error})
                 except Exception as exc:
-                    progress_q.put({"__done__": True, "success": False, "error": str(exc)})
+                    progress_q.put({"__done__": True, "success": False, "error": str(exc), "exception": True})
 
             # Run the pipeline with a copy of the current context so
             # context-propagated state (session id, CapGate task type) stays
@@ -490,7 +496,9 @@ class AgentRunner:
             while True:
                 item = progress_q.get()
                 if item.get("__done__"):
-                    if not item.get("success", True):
+                    if item.get("exception"):
+                        # Worker-thread crash (infrastructure error) — no state
+                        # was produced, so the stream cannot continue.
                         raise RuntimeError(f"执行失败: {item.get('error', 'Unknown error')}")
                     break
                 yield {"progress": item}
