@@ -286,7 +286,7 @@ def _run_pipeline(
         node = plan.get_node(node_id)
         print(f"  → 节点 {idx}: {node_id} ({node.workflow})")
 
-    pipeline_result = runner.run_pipeline(plan)
+    pipeline_result = runner.run_pipeline(plan, state={"session_id": session_id})
 
     print(f"\n{'=' * 60}")
     print("📋 Pipeline 综合报告")
@@ -458,9 +458,17 @@ def main() -> int:
             print("  ! 部分微服务启动失败:")
             for err in svc_errors:
                 print(f"    - {err}")
-            cont = input("\n是否继续? (y/n): ").strip().lower()
-            if cont != "y":
-                return 1
+            # Same non-tty rule as the --workflow branch below (2026-07
+            # incident): a bare input() crashes with EOFError when stdin is
+            # not a TTY (batch drivers, nohup, CI). Only prompt on a real
+            # terminal; the workflow-level pre-flight re-validates services
+            # at run time.
+            if sys.stdin.isatty():
+                cont = input("\n是否继续? (y/n): ").strip().lower()
+                if cont != "y":
+                    return 1
+            else:
+                print("  ! 非交互模式，自动继续（工作流级预检会在运行时再次校验服务）")
 
         _run_pipeline(runner, session_id, plan, save_file=True)
         return 0

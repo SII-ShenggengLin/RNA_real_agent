@@ -90,6 +90,12 @@ class PipelineAgent(BaseAgent):
             node_state = dict(state)
             node_state["_user_explicit_params"] = sorted(node.static_params.keys())
 
+            if progress_callback:
+                progress_callback({
+                    "event": "step_start",
+                    "target": node_id,
+                    "workflow": node.workflow,
+                })
             try:
                 result = specialist.run(
                     node_id,
@@ -107,6 +113,13 @@ class PipelineAgent(BaseAgent):
                     success=False,
                     errors=[error],
                 )
+            finally:
+                if progress_callback:
+                    progress_callback({
+                        "event": "step_done",
+                        "target": node_id,
+                        "success": bool(result.success),
+                    })
 
             node_results[node_id] = result
 

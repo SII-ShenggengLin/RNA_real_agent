@@ -72,16 +72,17 @@ def post_agent_run(req: AgentRunRequest) -> dict[str, Any]:
             detail=f"Unknown workflow: {req.workflow}. Available: {list(_agent_runner.workflow_registry.keys())}",
         )
 
+    session_id = req.task_id or str(uuid.uuid4())
     try:
         state = _agent_runner.run_form(
             req.params,
-            session_id=req.task_id or str(uuid.uuid4()),
+            session_id=session_id,
             explicit_workflow=req.workflow,
         )
     except Exception as exc:
         return {
             "success": False,
-            "task_id": req.task_id or "",
+            "task_id": session_id,
             "summary": f"Agent execution failed: {exc}",
             "error": str(exc),
         }
@@ -90,7 +91,9 @@ def post_agent_run(req: AgentRunRequest) -> dict[str, Any]:
     if wf_result is not None:
         response: dict[str, Any] = {
             "success": wf_result.success,
-            "task_id": req.task_id or state.get("task_id", "") or str(uuid.uuid4()),
+            # Echo the session id the run actually used so clients can locate
+            # the artifacts under workspace/sessions/<task_id>/.
+            "task_id": req.task_id or state.get("session_id", "") or session_id,
             "summary": wf_result.summary if hasattr(wf_result, "summary") else "",
             "best_candidate": wf_result.best_candidate.model_dump(mode="json") if wf_result.best_candidate else None,
             "all_candidates": [c.model_dump(mode="json") for c in wf_result.all_candidates],
@@ -107,11 +110,15 @@ def post_agent_run(req: AgentRunRequest) -> dict[str, Any]:
             response["best_candidate_source"] = wf_result.best_candidate_source
         return response
 
+    pipeline_payload = state.get("pipeline_result") or {}
     return {
-        "success": True,
-        "task_id": req.task_id or str(uuid.uuid4()),
+        # A node that crashed without producing a WorkflowResult must not be
+        # reported as a success — derive the verdict from the pipeline result.
+        "success": bool(pipeline_payload.get("success", True)),
+        "task_id": session_id,
         "summary": state.get("final_report", ""),
         "route": state.get("_routing_method", ""),
+        "errors": pipeline_payload.get("errors", []),
         "tool_results": {k: str(v)[:200] for k, v in state.get("tool_results", {}).items()},
     }
 
@@ -127,8 +134,11 @@ def post_agent_pipeline(req: AgentPipelineRequest) -> dict[str, Any]:
             detail=f"Invalid pipeline plan: {exc}",
         )
 
+    session_id = req.task_id or str(uuid.uuid4())
     try:
-        pipeline_result = _agent_runner.run_pipeline(plan)
+        # Scope tool-level artifacts to workspace/sessions/<session_id>/ (the
+        # same no-global-root-leak contract as /v1/agent/run).
+        pipeline_result = _agent_runner.run_pipeline(plan, state={"session_id": session_id})
     except Exception as exc:
         error_detail = str(exc)
         if req.debug:
@@ -136,7 +146,7 @@ def post_agent_pipeline(req: AgentPipelineRequest) -> dict[str, Any]:
             error_detail = f"{error_detail}\n{traceback.format_exc()}"
         return {
             "success": False,
-            "task_id": req.task_id or "",
+            "task_id": session_id,
             "summary": f"Pipeline execution failed: {exc}",
             "error": error_detail,
         }
@@ -154,7 +164,7 @@ def post_agent_pipeline(req: AgentPipelineRequest) -> dict[str, Any]:
 
     return {
         "success": pipeline_result.success,
-        "task_id": req.task_id or str(uuid.uuid4()),
+        "task_id": session_id,
         "plan_id": pipeline_result.plan_id,
         "final_report": pipeline_result.final_report,
         "errors": pipeline_result.errors,

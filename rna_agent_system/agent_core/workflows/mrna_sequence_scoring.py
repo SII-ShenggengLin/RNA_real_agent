@@ -274,6 +274,12 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
             return preflight
 
         candidates = self.generate_candidates(inp)
+        if progress_callback:
+            progress_callback({
+                "event": "generate_complete",
+                "candidate_count": len(candidates),
+                "workflow": self.name,
+            })
 
         task_kwargs: dict[str, Any] = {
             "task_type": "mrna_ranking_minimal",
@@ -315,6 +321,14 @@ class MrnaSequenceScoringWorkflow(BaseDomainWorkflow[MrnaSequenceScoringInput, W
             metrics = self.evaluate(candidate)
             candidate.scores = self.score(metrics)
             candidate.status = "evaluated"
+            if progress_callback:
+                progress_callback({
+                    "event": "evaluate_progress",
+                    "current": i + 1,
+                    "total": len(candidates),
+                    "candidate_id": candidate.id,
+                    "workflow": self.name,
+                })
 
             # Attach extra score keys for backward compatibility
             candidate.scores["gc_content"] = metrics.get("gc_content", 0.0)

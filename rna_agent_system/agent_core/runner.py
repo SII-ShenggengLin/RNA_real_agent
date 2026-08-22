@@ -114,8 +114,21 @@ class AgentRunner:
         plan: PipelinePlan,
         state: Optional[dict[str, Any]] = None,
     ) -> PipelineResult:
-        """Execute a PipelinePlan through the multi-agent pipeline engine."""
-        return self.pipeline_agent.execute(plan, state=state)
+        """Execute a PipelinePlan through the multi-agent pipeline engine.
+
+        When *state* carries a ``session_id``, tool-level artifacts are scoped
+        to ``workspace/sessions/<session_id>/`` — the same no-global-root-leak
+        contract ``run_form``/``stream_form`` already uphold. Callers that pass
+        no session keep the legacy global-workspace behaviour.
+        """
+        session_id = ""
+        if state is not None:
+            session_id = str(state.get("session_id", "") or "")
+        token = _SESSION_ID_CTX.set(session_id)
+        try:
+            return self.pipeline_agent.execute(plan, state=state)
+        finally:
+            _SESSION_ID_CTX.reset(token)
 
     def _prepare_state(
         self,
@@ -307,6 +320,15 @@ class AgentRunner:
 
             lines.append("\n详细结果已保存，请查看结果文件获取完整序列及所有指标。")
             return "\n".join(lines)
+
+        # A pipeline node that crashed without producing a WorkflowResult
+        # (node_result.workflow_result is None) used to fall through to the
+        # generic "Execution completed" text — report the recorded pipeline
+        # errors instead so callers see the failure.
+        pipeline_payload = state.get("pipeline_result") or {}
+        if pipeline_payload and not pipeline_payload.get("success", True):
+            errors = pipeline_payload.get("errors") or ["pipeline failed without recorded errors"]
+            return "Workflow failed: " + "; ".join(str(e) for e in errors)
 
         tool_results = state.get("tool_results", {})
         if tool_results:

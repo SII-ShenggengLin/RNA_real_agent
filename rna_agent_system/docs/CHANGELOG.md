@@ -10,6 +10,82 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-22 (e) — Layer-6 fresh-data audit: AgentRunner façade + CLI + FastAPI verified; six defects fixed
+
+First dedicated fresh-data audit of Layer 6 — the `AgentRunner` unified
+façade (`run_form` / `stream_form` / `run_pipeline`), the FastAPI
+`workflow_api/app.py` endpoints and the `cli/form_chat.py` CLI (including the
+`--pipeline-file` path no PA driver ever exercises) — on data fetched live
+during the audit (human PRL mRNA NM_000948.6 with annotated CDS 684 nt /
+227 aa; human IL10 mRNA NM_000572.3 with annotated CDS 537 nt / 178 aa;
+HAV genome NC_001489.1 5'UTR 734 nt cut at the annotated first-CDS boundary;
+CDS translations cross-checked against the GenBank `/translation` — nothing
+reused; growth hormone was found in the batch-B provenance and deliberately
+excluded). Evidence: `workspace/layer6_fresh_audit_2026-08-22/` (fetch
+script with codon-table self-check, audit driver, `fresh_inputs/` +
+manifest, `audit_report.json`, CLI logs).
+
+What was exercised for real — **31 checks, all green post-fix**: live
+`/v1/agent/run` scoring of the fresh PRL mRNA through real GC + LinearFold
+services with the returned GC matching an independently computed value;
+`top_k` slicing; invented-param sanitization; missing-required-param
+failure surfacing (`ires_prediction` without `sequence_filepath`);
+`/v1/agent/pipeline` on a fresh 2-node plan (PRL → IL10) with synthesis;
+a fresh HAV 5'UTR IRES scan (mode 0, advisory CapGate — IRESfinder is a
+gated oracle by DECISIONS (j)/(e); whole-UTR region 1-734,
+prob 0.835 / confidence high / MFE −67.93, the expected outcome for a
+genuine type-III IRES); CLI `--workflow --params-file` and `--pipeline-file`
+subprocess runs with artifact checks; CapGate `tool_call` audit lines
+stamped with the fresh session ids; `stream_form` event sequence + a real
+two-turn `SessionMemory` contract; `FormSchemaBuilder`/`FormValidator`
+consistency across all 11 workflow input models.
+
+**Six defects found and fixed** (regressions:
+`tests/test_layer6_fresh_audit_regressions.py`, 15 tests; suite
+**621 passed**):
+
+1. **Pipeline runs leaked tool artifacts into the global workspace root.**
+   `AgentRunner.run_pipeline` never set `_SESSION_ID_CTX`, so every
+   tool-level file written by a pipeline run (CLI `--pipeline-file`,
+   `/v1/agent/pipeline`) landed in `workspace/` instead of
+   `workspace/sessions/<session_id>/` — violating the no-global-root-leak
+   contract `run_form`/`stream_form` uphold (DECISIONS (t)). `run_pipeline`
+   now scopes the session context from `state["session_id"]`; the CLI
+   pipeline path and the API pipeline endpoint pass it.
+2. **`/v1/agent/run` misreported a crashed node as success.** When a node
+   raised (`workflow_result` absent, `pipeline_result.success=False` — e.g.
+   a path-unsafe `task_id` rejected by the Layer-5 validation), the endpoint
+   fell through to the generic fallback branch and returned
+   `"success": True`. The fallback now derives success/errors from the
+   recorded `pipeline_result` (new `errors` key in that response shape).
+3. **`/v1/agent/run` echoed a `task_id` that did not identify the session.**
+   With `task_id` omitted the response carried a fresh unrelated uuid while
+   the artifacts sat under a different session directory
+   (`state.get("task_id")` was dead code — the state key is `session_id`).
+   The response now echoes the session id actually used; the pipeline
+   endpoint gained the same echo.
+4. **`MrnaSequenceScoringWorkflow.run` dropped `progress_callback`.** The
+   custom `run()` override accepted the callback but never called it, so the
+   locked `stream_form` event sequence (INTERFACE_LOCKS §19: `router, plan,
+   progress…, tool_execution, runner`) carried no progress events for this
+   workflow and the CLI progress lines stayed silent. It now emits
+   `generate_complete` / `evaluate_progress` exactly like the base class.
+5. **Nobody emitted `step_start`/`step_done`** — the CLI handlers for them
+   were dead code. `PipelineAgent.execute` now emits one `step_start` /
+   `step_done` (with `target` + `success`) pair per node through the
+   progress callback.
+6. **`cli/form_chat.py --pipeline-file` still had the bare `input()`** on
+   service-start failure — the exact 2026-07 EOFError incident pattern; the
+   isatty guard had been added only to the `--workflow` branch. The
+   pipeline branch now follows the same non-tty rule (tty prompts are
+   unchanged).
+
+Also verified clean on fresh data: traversal `task_id="../l6_escape_probe"`
+fails the run with the recorded `ValueError` and writes nothing outside
+`sessions/` (the Layer-5 fix holds through the real API surface); the
+form layer builds complete, consistent schemas for all 11 workflows and
+coerces string-typed values ("0"/"0.5"/JSON lists/"false") correctly.
+
 ## 2026-08-22 (d) — Layer-5 fresh-data audit: session/workspace persistence verified; three WorkspaceManager defects fixed
 
 First dedicated fresh-data audit of Layer 5 — `SessionMemory` +

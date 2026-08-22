@@ -521,6 +521,50 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   `tests/test_layer5_fresh_audit_regressions.py` (15 tests); suite 606
   passed; `docs/CHANGELOG.md` 2026-08-22 (d).
 
+### (u) Layer-6 entry-point contracts: pipeline runs are session-scoped; the API never reports a crashed run as success; progress events are part of the delivered stream (2026-08-22)
+
+- **Decision (user-directed audit)**: the three Layer-6 front doors
+  (`run_form`/`stream_form`, CLI `form_chat.py`, FastAPI `workflow_api`)
+  now uphold the same contracts Layer 5 established for single runs:
+  (1) `AgentRunner.run_pipeline` scopes `_SESSION_ID_CTX` from
+  `state["session_id"]`, and both pipeline callers (CLI `--pipeline-file`,
+  `/v1/agent/pipeline`) pass one — tool artifacts of pipeline runs land
+  under `workspace/sessions/<session_id>/`, never the global root;
+  (2) `/v1/agent/run` derives its fallback-branch `success`/`errors` from
+  the recorded `pipeline_result`, so a node that crashed without producing
+  a `WorkflowResult` is reported as a failure (pre-fix: `"success": true`
+  with "Execution completed but no structured result was produced");
+  (3) the API `task_id` echo always identifies the session directory the
+  artifacts were written under (`state["session_id"]`; the old
+  `state.get("task_id")` read was dead code); (4) the locked §19
+  `stream_form` event sequence actually carries progress events —
+  `PipelineAgent` emits `step_start`/`step_done` per node and
+  `MrnaSequenceScoringWorkflow.run` emits `generate_complete`/
+  `evaluate_progress` like the base class (the override had silently
+  dropped the callback); (5) the CLI `--pipeline-file` branch follows the
+  same non-tty `input()` rule as `--workflow` (2026-07 EOFError incident).
+- **Why (defects demonstrated on live data)**: pre-fix audit — 2-node
+  pipeline runs on fresh PRL/IL10 wrote `mrna_wf_*.fasta` into the global
+  `workspace/` root with the session dir empty; a path-unsafe API
+  `task_id="../l6_escape_probe"` crashed the node, was rejected by the
+  Layer-5 validation (decision (t) holds — nothing escaped `sessions/`),
+  yet the endpoint answered `"success": true`; `stream_form` on
+  `mrna_sequence_scoring` yielded zero progress events (violating the
+  §19-locked sequence); the CLI pipeline branch crashed with EOFError on
+  non-tty stdin when a service failed to start.
+- **Verified clean on fresh data** (31 checks post-fix): live PRL mRNA
+  scoring through real services with independently recomputed GC; fresh
+  2-node PRL→IL10 pipeline (API + CLI) with session-scoped artifacts; HAV
+  NC_001489 5'UTR IRES scan (region 1-734, prob 0.835, confidence high —
+  advisory CapGate, since IRESfinder is a gated oracle per (j)/(e));
+  CapGate audit lines stamped with fresh session ids; two-turn
+  `SessionMemory` contract; all-11-workflow form schema/validator
+  consistency.
+- **Evidence**: fresh-data audit `workspace/layer6_fresh_audit_2026-08-22/`
+  (live NCBI PRL NM_000948 + IL10 NM_000572 + HAV NC_001489); regressions
+  `tests/test_layer6_fresh_audit_regressions.py` (15 tests); suite 621
+  passed; `docs/CHANGELOG.md` 2026-08-22 (e).
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)
@@ -575,3 +619,4 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   Evidence: `experiments/results/pa_regression_batchB_2026-08-19/`.
 - **2026-08-22 (b)** (Layer-3 fresh-data audit, user-directed): first live audit of the service-orchestration layer — 21 services swept (10 up / 11 down all classified correctly), real CRISOT cold-start via `ensure_services_ready` + fresh INS-derived CRISPR scoring, concurrent flock contention (exactly one start), busy-port proceed-anyway preserved; **45 checks / 0 failures post-fix**, live NCBI INS/5S data. Three defects fixed: degraded-but-answering services passed pre-flight (now fail with a clear error — decision (r)), `cli/service_orchestrator.__all__` exported unimported names, bowtie2 `start.sh` missing the exec bit. Evidence: `workspace/layer3_fresh_audit_2026-08-22/`.
 - **2026-08-22 (c)** (Layer-4 fresh-data audit, user-directed): first live audit of the multi-agent + CapGate + ranking-governance stack — 37 checks across pass 1 + pass 2/2b re-verification on live NCBI EPO/EV71/B2M/Xenopus-5S and RCSB 1AKI (real-LLM quality reviews, real 2-node pipeline through ClaimGate-gated synthesis, CapGate enforce/advisory/off on live services, ranking-governance three-mode comparison). **Five defects fixed** (decision (s)): `ranking_objective_assembly` audit events silently dropped (unregistered Literal type — the (p) audit trail was empty), `PipelineAgent` crash on runtime-dangling bindings, `ires_prediction` swallowing generation tool failures as "no candidates found", `SpecialistAgent.retry_count` counting abandoned attempts, `QualityAgent` dropping quoted int-enum overrides. Regressions `tests/test_layer4_fresh_audit_regressions.py` (11); suite 591. Evidence: `workspace/layer4_fresh_audit_2026-08-22/`.
+- **2026-08-22 (e)** (Layer-6 fresh-data audit, user-directed): first live audit of the entry-point layer — `AgentRunner` façade + `cli/form_chat.py` (incl. the `--pipeline-file` path) + FastAPI `workflow_api` on live NCBI PRL/IL10/HAV data — **31 checks / 0 failures post-fix**. **Six defects fixed** (decision (u)): pipeline runs leaked tool artifacts to the global workspace root (`run_pipeline` never set the session context), `/v1/agent/run` misreported a crashed node as `success: true`, the API `task_id` echo did not identify the artifact session, `MrnaSequenceScoringWorkflow.run` dropped `progress_callback` (locked §19 stream sequence carried no progress events), no component ever emitted `step_start`/`step_done` (dead CLI handlers), and the CLI `--pipeline-file` branch still had the bare non-tty-crashing `input()`. Fresh HAV 5'UTR IRES scan: region 1-734, prob 0.835, confidence high (advisory CapGate — IRESfinder gated per (j)). Regressions `tests/test_layer6_fresh_audit_regressions.py` (15); suite 621. Evidence: `workspace/layer6_fresh_audit_2026-08-22/`.
