@@ -10,6 +10,22 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-22 (g) — Oracle version stamps: profiling-time drift detection, pure additive (DECISIONS (w))
+
+Version stamps tying SelfModel grades to the deployed oracle artifact:
+`OracleDescriptor.oracle_version` (all 11 managed-oracle descriptors,
+= microservice FastAPI app version), record-level
+`CapabilityRecord.oracle_version` on the packaged SelfModel (regenerated via
+`experiments/build_default_self_model.py` with git-verified profiling-time
+literals — additive-only rebuild, field-level equality asserted), and a
+`CalibratedRuntime.configure` drift check (`oracle_version_drift()`): a
+descriptor-vs-record mismatch logs a `WARNING` and writes an
+`oracle_version_mismatch` audit event (new registered `AuditEvent` type).
+Semantics unchanged — a drifted record gates exactly like an aligned one;
+nothing blocks. Registered follow-up: service-side `/health` artifact
+identity (only `rnasmol_service` reports `checkpoint_path` today). Tests:
+`tests/test_oracle_version_stamps.py` (7); suite 628 passed (was 621).
+
 ## 2026-08-22 (f) — Interface Lock Policy removed (DECISIONS (v))
 
 User-directed retirement of the INTERFACE LOCK policy (it predated the

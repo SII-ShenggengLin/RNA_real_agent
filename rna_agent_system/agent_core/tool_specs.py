@@ -985,6 +985,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.enforce,
             default_task_type="full_length_mrna",
+            oracle_version="0.2.0",
         ),
 
         display_name="GEMORNA 5'UTR MRL prediction",
@@ -1009,6 +1010,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.enforce,
             default_task_type="full_length_mrna",
+            oracle_version="0.2.0",
         ),
 
         display_name="GEMORNA 3'UTR stability prediction",
@@ -1033,6 +1035,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.enforce,
             default_task_type="rna_aptamer_design",
+            oracle_version="0.1.0",
         ),
 
         display_name="RhoFold tertiary structure prediction",
@@ -1102,6 +1105,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.screening_evaluation,
             governance=OracleGovernance.enforce,
             default_task_type="rna_small_molecule",
+            oracle_version="0.1.0",
         ),
 
         display_name="RNAsmol RNA-ligand scoring",
@@ -1126,6 +1130,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.screening_evaluation,
             governance=OracleGovernance.enforce,
             default_task_type="rna_small_molecule",
+            oracle_version="0.1.0",
         ),
 
         display_name="GerNA-Bind RNA-ligand scoring",
@@ -1150,6 +1155,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.enforce,
             default_task_type="rna_aptamer_design",
+            oracle_version="0.1.0",
         ),
 
         display_name="EGARPS+ RNA-protein complex scoring",
@@ -1174,6 +1180,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.enforce,
             default_task_type="full_length_mrna",
+            oracle_version="0.1.0",
         ),
 
         display_name="RNASTOP stability/degradation prediction",
@@ -1212,6 +1219,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.screening_evaluation,
             governance=OracleGovernance.enforce,
             default_task_type="ires_prediction",
+            oracle_version="0.1.0",
         ),
 
         display_name="IRESfinder prediction",
@@ -1254,6 +1262,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.pending,
             default_task_type="sgrna_design",
+            oracle_version="0.2.0",
         ),
 
         display_name="CRISOT score (single pair)",
@@ -1317,6 +1326,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.pending,
             default_task_type="sgrna_design",
+            oracle_version="0.1.0-port8017",
         ),
 
         display_name="CRGPT sgRNA handle scoring",
@@ -1448,6 +1458,7 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
             evidence_use=OracleEvidenceUse.ranking_objective,
             governance=OracleGovernance.enforce,
             default_task_type="rna_aptamer_design",
+            oracle_version="0.1.0",
         ),
 
         display_name="ProteinX RNA-protein complex prediction",

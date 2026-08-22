@@ -84,6 +84,16 @@ class OracleDescriptor(BaseModel):
     evidence_use: OracleEvidenceUse = Field(..., description="How calling workflows consume the output.")
     governance: OracleGovernance = Field(..., description="enforce (block on missing evidence) or pending (audit only).")
     default_task_type: str = Field(..., description="Fallback task_type for SelfModel queries.")
+    oracle_version: Optional[str] = Field(
+        default=None,
+        description=(
+            "Version of the deployed oracle artifact (microservice) this "
+            "descriptor currently pins. Compared against the profiling-time "
+            "oracle_version stamped on SelfModel records: a mismatch means the "
+            "grades describe a different artifact than the one declared "
+            "(warn + audit, never block; DECISIONS (w))."
+        ),
+    )
 
 
 class ToolDependency(BaseModel):

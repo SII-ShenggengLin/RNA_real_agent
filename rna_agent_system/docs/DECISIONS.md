@@ -587,6 +587,41 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   test-first rules (`CONTRIBUTING.md`).
 - **Evidence**: `docs/CHANGELOG.md` 2026-08-22 (f).
 
+### (w) Oracle version stamps: SelfModel records carry the profiling-time artifact version; drift is warned + audited, never blocking (2026-08-22)
+
+- **Decision (user-directed)**: pure-additive drift hardening of the CapGate
+  evidence chain. (1) `OracleDescriptor` gains `oracle_version` — the
+  deployed oracle artifact (microservice FastAPI app version) the descriptor
+  currently pins — stamped on all 11 managed-oracle descriptors in
+  `tool_specs.py`. (2) `CapabilityRecord` gains record-level `oracle_version`
+  (profiling-time stamp; `None` on legacy records — they load unchanged and
+  never fabricate drift). (3) `CalibratedRuntime.configure` compares the two:
+  a mismatch emits a `WARNING` log plus an `oracle_version_mismatch` audit
+  event (type registered in the `AuditEvent` Literal — the DECISIONS (s)
+  silent-drop defect class) via the public `oracle_version_drift()`
+  inspection method. **Semantics unchanged**: a drifted record gates exactly
+  like an aligned one (pinned by test); nothing is blocked, no verdict moves.
+- **Why**: SelfModel grades describe "the artifact profiled on
+  2026-08-04/11/18", but nothing tied records to the deployed artifact — a
+  checkpoint/service upgrade would silently invalidate the evidence chain.
+  The RNAsmol boundary panel already caught one silent deployment divergence
+  (Part 2 row 8); this makes such drift structurally detectable.
+- **Stamp anchoring**: the generator (`experiments/build_default_self_model.py`)
+  pins **literals** — never copied from live `TOOL_SPECS` (otherwise an
+  upgrade + rebuild would silently re-anchor old grades to the new artifact
+  and defeat the mechanism). Backfill validity: every oracle microservice's
+  version string has been unchanged in git since service introduction
+  (2026-04/05), which predates all profiling campaigns, so current strings
+  equal profiling-time strings. The generator asserts every packaged oracle
+  has a registered stamp and fails loudly otherwise.
+- **Registered follow-up (not done)**: the stamp anchors to the microservice
+  app version, not the model checkpoint; a service-side startup assertion
+  needs the oracle microservices to expose their artifact identity in
+  `/health` (only `rnasmol_service` reports `checkpoint_path` today). When
+  that lands, extend the comparison to the health-reported identity.
+- **Evidence**: `docs/CHANGELOG.md` 2026-08-22 (g); tests
+  `tests/test_oracle_version_stamps.py` (7); suite **628 passed** (was 621).
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)

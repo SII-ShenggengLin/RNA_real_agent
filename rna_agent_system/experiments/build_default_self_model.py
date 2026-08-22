@@ -32,6 +32,26 @@ E7_EVIDENCE = "experiments/results/e7_selfmodel/self_model.json"
 RNASMOL_EVIDENCE = "experiments/results/rnasmol_boundary_panel.json"
 E16_18_EVIDENCE = "experiments/results/e16_e17_e18/verdict.json"
 
+# Profiling-time oracle artifact versions (DECISIONS (w) drift stamps).  These
+# are LITERALS pinned to what was deployed when each campaign ran — never copy
+# them from the current ToolSpec descriptors, or a service upgrade + rebuild
+# would silently re-anchor old grades to the new artifact and defeat drift
+# detection.  Anchoring evidence: every microservice's FastAPI app version
+# string has been unchanged in git since the service was introduced
+# (2026-04/05), which predates all profiling campaigns below (E1 2026-08-04,
+# E7/RNAsmol 2026-08-11, E16-E18 2026-08-18), so the strings below equal the
+# profiling-time deployment.  gemorna_3utr_stability has no records (unprofiled).
+ORACLE_VERSION_AT_PROFILING = {
+    "gemorna_5utr_mrl": "0.2.0",          # E7, gemorna_service
+    "egarps_native_probability": "0.1.0",  # E1, egarps_service
+    "proteinx_ipTM": "0.1.0",              # E1, proteinx_service
+    "rhofold_mean_plddt": "0.1.0",         # E1, rhofold_service
+    "rnasmol": "0.1.0",                    # boundary panel, rnasmol_service
+    "gernabind_probability": "0.1.0",      # E17, gernabind_service
+    "iresfinder_score": "0.1.0",           # E16, iresfinder_service
+    "rnastop_stability": "0.1.0",          # E18, rnastop_service
+}
+
 
 def _assessment(grade: str, metrics: dict, note: str) -> dict:
     def _num(v):
@@ -156,6 +176,19 @@ def build() -> dict:
     # pointers reference the per-campaign scoring caches + verdict).
     e16_18 = json.loads((RESULTS / "e16_e17_e18" / "self_model.json").read_text())
     records.extend(e16_18.get("records", []))
+
+    # --- Profiling-time version stamps (DECISIONS (w)).  Every oracle with
+    # packaged records must be stamped; the assert fails loudly if a new
+    # campaign adds records without registering its profiling-time version.
+    for rec in records:
+        version = ORACLE_VERSION_AT_PROFILING.get(rec["oracle"])
+        if version is None:
+            raise AssertionError(
+                f"oracle {rec['oracle']!r} has records but no entry in "
+                "ORACLE_VERSION_AT_PROFILING — pin the deployed artifact "
+                "version the campaign ran against before rebuilding"
+            )
+        rec["oracle_version"] = version
 
     return {"schema_version": "calibrated_v1", "records": records}
 

@@ -54,6 +54,12 @@ class CapabilityRecord(BaseModel):
     task_type: str
     target_family: str
     capabilities: dict[str, CapabilityAssessment] = Field(default_factory=dict)
+    # Version of the deployed oracle artifact (microservice) the profiling
+    # campaign ran against.  Pure-additive drift stamp (DECISIONS (w)): when a
+    # ToolSpec oracle descriptor declares a different version than the stamped
+    # records, the runtime warns and audits but never blocks — grades describe
+    # the stamped version, not whatever is currently deployed.
+    oracle_version: str | None = None
 
     def key(self) -> tuple[str, str, str]:
         return (self.oracle, self.task_type, self.target_family)
@@ -170,6 +176,10 @@ class AuditEvent(BaseModel):
         # silently dropped before the type was registered — pydantic rejected
         # the Literal and the best-effort writer swallowed the error.
         "ranking_objective_assembly",
+        # Oracle version-drift events (added 2026-08-22, extend-only; DECISIONS
+        # (w)): a packaged SelfModel record's oracle_version no longer matches
+        # the version declared by the ToolSpec oracle descriptor.
+        "oracle_version_mismatch",
     ]
     payload: dict[str, Any] = Field(default_factory=dict)
     timestamp: str = ""

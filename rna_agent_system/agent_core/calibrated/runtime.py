@@ -69,6 +69,15 @@ def _oracle_tables_from_specs() -> tuple[dict[str, tuple[str, str, str]], dict[s
     return managed, governance
 
 
+def _iter_oracle_specs():
+    """Yield every ToolSpec carrying an OracleDescriptor (import-lazy)."""
+    from agent_core.tool_specs import TOOL_SPECS
+
+    for spec in TOOL_SPECS.values():
+        if spec.oracle is not None:
+            yield spec
+
+
 # Tool name -> (oracle, task_type, default use).  The default use is the use
 # the calling workflows make of the tool's output; it is what the DecisionGate
 # checks unless a caller overrides it via ``oracle_use``.  Derived from the
@@ -79,6 +88,15 @@ MANAGED_ORACLE_TOOLS: dict[str, tuple[str, str, str]] = _oracle_tables_from_spec
 # like enforced ones but never blocked: their profiling campaigns (E16+) have
 # not yet delivered a SelfModel verdict.
 ORACLE_GOVERNANCE: dict[str, str] = _oracle_tables_from_specs()[1]
+
+# Oracle id -> the artifact version currently declared by the ToolSpec oracle
+# descriptor (None when undeclared).  Compared at runtime configuration against
+# the profiling-time oracle_version stamped on SelfModel records; a mismatch
+# warns and audits but never blocks (DECISIONS (w)).
+ORACLE_VERSIONS: dict[str, Optional[str]] = {
+    spec.oracle.oracle_id: spec.oracle.oracle_version
+    for spec in _iter_oracle_specs()
+}
 
 # Context override for the current oracle use (profiling / annotation callers).
 _USE_OVERRIDE: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
@@ -190,6 +208,15 @@ class CalibratedRuntime:
             "calibrated_runtime_configured policy=%s records=%d audit=%s",
             policy, len(self_model.records()), audit.path,
         )
+        for item in cls._instance.oracle_version_drift():
+            _LOGGER.warning(
+                "oracle_version_drift oracle=%s declared=%s records=%s — the "
+                "packaged grades were profiled on a different artifact "
+                "version than the one now declared; re-profile or explicitly "
+                "re-anchor before trusting the grades",
+                item["oracle"], item["declared_version"], item["record_version"],
+            )
+            cls._instance.audit.record("oracle_version_mismatch", item)
         return cls._instance
 
     @classmethod
@@ -200,6 +227,39 @@ class CalibratedRuntime:
     def clear(cls) -> None:
         """Remove the process-wide runtime (tests, explicit opt-out)."""
         cls._instance = None
+
+    def oracle_version_drift(self) -> list[dict[str, str]]:
+        """Descriptor-vs-record version drift for stamped managed oracles.
+
+        Pure-additive drift detection (DECISIONS (w)): compares the
+        ``oracle_version`` declared by each ToolSpec oracle descriptor against
+        the profiling-time ``oracle_version`` stamped on this SelfModel's
+        records for the same oracle.  A mismatch means the packaged grades
+        describe a different artifact version than the one currently declared
+        (e.g. a service upgrade happened without re-profiling).  Records
+        without a stamp and undeclared descriptors are skipped — legacy data
+        never fabricates drift.  Informational only: callers warn and audit;
+        nothing is blocked and no gate verdict changes.
+        """
+        stamped: dict[str, set[str]] = {}
+        for rec in self.self_model.records():
+            if rec.oracle_version is not None:
+                stamped.setdefault(rec.oracle, set()).add(rec.oracle_version)
+        drift: list[dict[str, str]] = []
+        for oracle_id in sorted(ORACLE_VERSIONS):
+            declared = ORACLE_VERSIONS[oracle_id]
+            if declared is None or oracle_id not in stamped:
+                continue
+            for record_version in sorted(stamped[oracle_id]):
+                if record_version != declared:
+                    drift.append(
+                        {
+                            "oracle": oracle_id,
+                            "declared_version": declared,
+                            "record_version": record_version,
+                        }
+                    )
+        return drift
 
     # ------------------------------------------------------------- tool calls
 
