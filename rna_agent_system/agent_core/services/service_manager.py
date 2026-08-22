@@ -22,6 +22,7 @@ import socket
 import subprocess
 import tempfile
 import time
+import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
@@ -212,7 +213,6 @@ CAPABILITY_SERVICE_MAP: dict[str, ToolServiceSpec] = {
         "design_mrna_cds_with_lineardesign", "127.0.0.1", 8014, "/health",
         "microservices/lineardesign_service/start.sh",
     ),
-    # Junction-aware LinearDesign tool (2026-08): same service / port 8014.
     # LinearFold service (port 8015)
     "predict_rna_secondary_structure_with_linearfold": ToolServiceSpec(
         "predict_rna_secondary_structure_with_linearfold", "127.0.0.1", 8015, "/health",
@@ -317,6 +317,42 @@ def get_services_for_capabilities(
     return services
 
 
+def _classify_service_health(url: str, timeout: int = 5) -> str:
+    """Probe a health endpoint and classify the outcome.
+
+    Returns one of:
+
+    * ``"ok"`` — 2xx and (per the legacy contract) no non-ok ``status`` field:
+      empty body, non-JSON body, missing status field, or ``status == "ok"``.
+    * ``"degraded"`` — 2xx with an explicit non-ok ``status`` field (e.g. a
+      missing checkpoint reported by the service itself).
+    * ``"http_error"`` — the endpoint *answered* with a non-2xx status.
+    * ``"unresponsive"`` — no HTTP answer at all (timeout / connection
+      refused / reset).  For a listening port this means the worker is
+      starved-busy, not that it is degraded.
+    """
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:
+            status_code = resp.status
+            body = resp.read()
+    except urllib.error.HTTPError:
+        return "http_error"
+    except Exception:
+        return "unresponsive"
+    if not (200 <= status_code < 300):
+        return "http_error"
+    if not body:
+        return "ok"
+    try:
+        data = json.loads(body.decode("utf-8", errors="replace"))
+    except Exception:
+        return "ok"
+    status_field = data.get("status") if isinstance(data, dict) else None
+    if status_field is None:
+        return "ok"
+    return "ok" if status_field == "ok" else "degraded"
+
+
 def check_service_health(url: str, timeout: int = 5) -> bool:
     """HTTP GET check on a service health endpoint.
 
@@ -325,27 +361,7 @@ def check_service_health(url: str, timeout: int = 5) -> bool:
     catches services that return HTTP 200 with ``{"status": "degraded"}``
     because a runtime dependency is missing.
     """
-    try:
-        with urllib.request.urlopen(url, timeout=timeout) as resp:
-            if not (200 <= resp.status < 300):
-                return False
-            body = resp.read()
-            if not body:
-                # Empty body with a 2xx status is treated as healthy for
-                # backward compatibility with simple health endpoints.
-                return True
-            try:
-                data = json.loads(body.decode("utf-8", errors="replace"))
-            except Exception:
-                # Non-JSON 2xx response: preserve legacy 2xx-is-healthy behavior.
-                return True
-            status = data.get("status") if isinstance(data, dict) else None
-            if status is None:
-                # No status field: preserve legacy 2xx-is-healthy behavior.
-                return True
-            return status == "ok"
-    except Exception:
-        return False
+    return _classify_service_health(url, timeout=timeout) == "ok"
 
 
 def _tail_text_file(path: Path, max_bytes: int = 4096, max_lines: int = 20) -> str:
@@ -577,7 +593,30 @@ def ensure_services_ready(
             # health within the remaining budget; if the busy spell outlasts
             # it, proceed anyway — the tool's own HTTP calls carry their own
             # long timeouts and will simply queue on the busy service.
+            #
+            # NOTE (2026-08-22): a listening port whose /health *answers* with
+            # an explicit non-ok status ("degraded", e.g. a missing checkpoint)
+            # or an HTTP error is NOT busy — it is running and broken. Such a
+            # service must fail pre-flight with a clear error instead of being
+            # waved through and failing later at tool-call time.
             if _port_listening(svc.host, svc.port):
+                verdict = _classify_service_health(
+                    svc.health_url, timeout=min(health_timeout, 5.0)
+                )
+                if verdict == "ok":
+                    _LOGGER.debug("service_ready cap=%s url=%s", svc.capability, svc.health_url)
+                    lock.release()
+                    del locks[svc.service_key]
+                    continue
+                if verdict in ("degraded", "http_error"):
+                    errors.append(
+                        f"{svc.capability}: service on {svc.host}:{svc.port} is listening "
+                        f"but its health endpoint reports degraded status ({verdict}): "
+                        f"{svc.health_url}"
+                    )
+                    lock.release()
+                    del locks[svc.service_key]
+                    continue
                 _LOGGER.warning(
                     "service_busy_health_starved cap=%s url=%s; waiting instead of restarting",
                     svc.capability,

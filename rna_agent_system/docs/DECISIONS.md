@@ -406,6 +406,39 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
 
 ---
 
+### (r) Layer-3 pre-flight: an *answering* degraded health endpoint fails; only an *unresponsive* one proceeds anyway (2026-08-22)
+
+- **Conclusion (user-directed audit)**: the 2026-07-22 busy-port fix conflated
+  two different failures. A listening port whose `/health` **answers** —
+  200 with `status: "degraded"` (e.g. RNAsmol reporting a missing
+  checkpoint) or any HTTP error — is running and *broken*, and
+  `ensure_services_ready` must fail pre-flight with an error naming the
+  service. A listening port whose `/health` is **unresponsive** (timeout /
+  connection refused — the starved single-worker EGARPS case) keeps the
+  2026-07-22 wait-then-proceed-anyway behaviour: no duplicate start, the
+  tool's own long HTTP timeouts queue on the busy service. Before this
+  split, `check_service_health`'s degraded-status detection was dead code on
+  the `ensure_services_ready` path — every running degraded service was
+  waved through pre-flight and failed later at tool-call time with a
+  confusing error.
+- **Mechanism**: `_classify_service_health` returns
+  `ok | degraded | http_error | unresponsive`; `check_service_health` is
+  `== "ok"` (legacy 2xx semantics — empty body, non-JSON body, missing
+  status field — unchanged); the busy branch classifies once with a short
+  timeout before waiting.
+- **Do not** "fix" a degraded-service pre-flight failure by restarting the
+  service: it is listening, a duplicate dies on "address already in use"
+  (the 2026-07-22 restart-loop failure mode). The error message is the
+  deliverable; the operator resolves the missing runtime dependency.
+- **Evidence**: fresh-data audit `workspace/layer3_fresh_audit_2026-08-22/`
+  (45 checks / 0 failures post-fix, live NCBI INS/5S data, real CRISOT
+  cold-start + concurrent flock contention); regressions
+  `tests/test_service_manager.py` (listening-degraded fails with a clear
+  error, listening-http-error likewise, starved raw listener still passes —
+  the 2026-07-22 test unchanged); `docs/CHANGELOG.md` 2026-08-22 (b).
+
+---
+
 ## Part 2 — Confirmed Positive Results (established, citable)
 
 | # | Result | Evidence |
@@ -456,3 +489,4 @@ Exact numbers are fact-checked in [`PAPER_FACT_SHEET.md`](PAPER_FACT_SHEET.md).
   budget-capped, 3CNA 35/48 early-stop). `tool_call` audit records gained
   `session_id`/`task_type` attribution (stream_form thread-context fix).
   Evidence: `experiments/results/pa_regression_batchB_2026-08-19/`.
+- **2026-08-22 (b)** (Layer-3 fresh-data audit, user-directed): first live audit of the service-orchestration layer — 21 services swept (10 up / 11 down all classified correctly), real CRISOT cold-start via `ensure_services_ready` + fresh INS-derived CRISPR scoring, concurrent flock contention (exactly one start), busy-port proceed-anyway preserved; **45 checks / 0 failures post-fix**, live NCBI INS/5S data. Three defects fixed: degraded-but-answering services passed pre-flight (now fail with a clear error — decision (r)), `cli/service_orchestrator.__all__` exported unimported names, bowtie2 `start.sh` missing the exec bit. Evidence: `workspace/layer3_fresh_audit_2026-08-22/`.

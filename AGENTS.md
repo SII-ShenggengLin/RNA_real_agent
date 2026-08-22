@@ -1,9 +1,11 @@
 # Agent Guidelines for RNA_real_agent
 
 > **Consolidated index.** Authoritative documentation lives in `rna_agent_system/docs/`.
-> **Last updated**: 2026-08-22 (GenNav-λ production wiring + ASO→ASF + Layer-2 fresh-data audit)
+> **Last updated**: 2026-08-22 (Layer-3 fresh-data audit + degraded-service pre-flight fix)
 
 ## What's New
+
+- **Layer-3 fresh-data audit — service orchestration verified on live services, degraded-service pre-flight hole fixed** (2026-08-22, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-22 (b) + DECISIONS.md (r); evidence `workspace/layer3_fresh_audit_2026-08-22/`): first live audit of `agent_core/services/service_manager.py` + `cli/service_orchestrator.py` on data fetched live from NCBI during the audit (INS mRNA NM_000207.3 + CDS, human 5S rRNA, INS-derived CRISPR pair — nothing reused). **45 checks / 0 failures post-fix**: health sweep of all 21 mapped services, a real CRISOT cold-start through `ensure_services_ready` (down → auto-start → healthy in 5 s) followed by a real CRISOT-Score call on the fresh pair (0.831), concurrent flock contention (exactly one start, both callers ready), busy-port proceed-anyway preserved (no restart), real workflow pre-flight chain (`run_mrna_sequence_scoring` on INS CDS: GC 64.6%, MFE −50.25). Three defects fixed: (1) a *listening* service answering `/health` with `status:"degraded"` (or an HTTP error) passed pre-flight via the busy-port branch — the busy branch now classifies first (`_classify_service_health`): answering-but-unhealthy fails with a clear error, only genuinely unresponsive (starved) endpoints proceed anyway (2026-07-22 no-double-start guarantee unchanged); (2) `cli/service_orchestrator.__all__` exported `check_service_health`/`start_service` without importing them (ImportError on use); (3) `bowtie2_service/start.sh` shipped without the exec bit. Regressions in `tests/test_service_manager.py` (+4); suite 580 passed.
 
 - **GenNav-λ production wiring + ASO→ASF + CDS Pareto annotation** (2026-08-22, user-directed; full detail in `docs/CHANGELOG.md` 2026-08-22 + DECISIONS.md (q)): (1) `MrnaCdsDesignWorkflow` v1.2.0 gains the opt-in `navigation` field — the static LinearDesign λ=[0,1,4,10] grid is replaced on that path by the deterministic zero-LLM GenNav-λ constraint navigation (pure core `agent_core/generation/gennav_mrna_lambda.py`: E6 λ-curve probe {0,1,2,4,8,10,20,50} → band-gap-first interstitial reinforcement, 16-raw budget, E14 cycling guarantee → expression/stability/balanced matrix delivery ×5, D1 ≥ 0.05 domain-calibrated; trace in `_state_writeback["_gennav_trace"]`; empty delivery = dedicated `navigation_delivery_empty` degrade). The E6 "evidence-only" status is superseded for the production wiring; `full_length_mrna_design` keeps the static grid (λ×UTR composition = registered follow-up). (2) `AsoTargetScreeningWorkflow` v1.1.0: ordering converted from Borda rank-sum to the shared ASF ranking (accessibility × binding; Borda demoted to diagnostics; missing imputes at pool-worst; `asf_distance` + `pareto_frontier` added) — six ASF workflows now. (3) CDS runs attach the CAI × MFE/nt Pareto frontier annotation (`total_score` ordering unchanged). Tests: `tests/test_gennav_mrna_core.py` (17) + `tests/test_mrna_cds_gennav.py` (4) + ASO (+4).
 
@@ -142,7 +144,7 @@ This project uses INTERFACE LOCK comments to prevent accidental breaking changes
 
 ## Testing
 
-Run the agent-core test suite before committing (current baseline: **496 passed**):
+Run the agent-core test suite before committing (current baseline: **580 passed**):
 
 ```bash
 cd rna_agent_system

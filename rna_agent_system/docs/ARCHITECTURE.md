@@ -145,6 +145,12 @@ The `SpecialistAgent` (Layer 4) invokes a workflow just like a single tool. The 
 
 Maps each workflow's `required_capabilities` to the local HTTP microservices it needs (`CAPABILITY_SERVICE_MAP`), probes `/health`, and auto-starts missing services before execution. `AgentRunner` enables this pre-flight (`auto_start_services=True`) on every workflow it owns; direct workflow instantiation defaults to `auto_start_services=False`. When pre-flight fails, the workflow returns `WorkflowResult(success=False, ...)` with actionable error messages instead of crashing mid-execution.
 
+An unhealthy probe is triaged before anything is started (2026-08-22, DECISIONS (r)):
+
+- **port free** — genuinely down: launch `start.sh` (per-port `flock` guarantees concurrent callers never double-start the same service) and poll until healthy;
+- **port listening, `/health` answers** with a non-ok status (`status:"degraded"`, e.g. a missing checkpoint) or an HTTP error — the service is running and *broken*: pre-flight fails with an error naming the service; no restart is attempted (a duplicate would die on "address already in use");
+- **port listening, `/health` unresponsive** (timeout — a starved single-worker service under load) — wait within the remaining budget, then proceed anyway: the tool's own long HTTP timeouts simply queue on the busy service (the 2026-07-22 no-restart-loop guarantee).
+
 ### 2.5 Layer 4 — Planning & Multi-Agent Execution
 
 **Files**: `pipeline/models.py`, `agents/*.py`, `calibrated/` (additive strategy stack), `llm_config.py` (LLM client factory)

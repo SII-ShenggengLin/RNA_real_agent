@@ -640,3 +640,120 @@ def test_ensure_services_ready_starts_when_port_free():
     assert ready is True
     assert errors == []
     mock_start.assert_called_once()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 2026-08-22 Layer-3 fresh-data audit regressions
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _serve_status_body(port: int, status: int, body: bytes):
+    """Start a real local HTTP server answering /health with a fixed payload."""
+    import threading
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):  # noqa: N802
+            self.send_response(status)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *args):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server
+
+
+def test_ensure_services_ready_fails_on_listening_degraded_service():
+    """A listening service whose /health *answers* with degraded status must
+    fail pre-flight with a clear error instead of being waved through via the
+    busy-port proceed-anyway path (2026-08-22 Layer-3 audit fix)."""
+    import socket
+
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    port = listener.getsockname()[1]
+    listener.close()  # free the port; ThreadingHTTPServer will rebind it
+
+    server = _serve_status_body(port, 200, b'{"status": "degraded", "missing": ["checkpoint"]}')
+    try:
+        svc = ToolServiceSpec(
+            capability="degraded_service",
+            host="127.0.0.1",
+            port=port,
+            health_path="/health",
+            start_script="microservices/definitely_missing/start.sh",
+        )
+        ready, errors = ensure_services_ready(
+            [svc], timeout=3, poll_interval=0, health_timeout=1
+        )
+    finally:
+        server.shutdown()
+        server.server_close()
+
+    assert ready is False
+    assert any("degraded status" in e for e in errors)
+    # The degraded service is running: no restart must be attempted (the
+    # missing start script would have raised if the start path ran).
+
+
+def test_ensure_services_ready_fails_on_listening_http_error_service():
+    """A listening service answering /health with HTTP 500 fails pre-flight."""
+    import socket
+
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    port = listener.getsockname()[1]
+    listener.close()
+
+    server = _serve_status_body(port, 500, b"boom")
+    try:
+        svc = ToolServiceSpec(
+            capability="http_error_service",
+            host="127.0.0.1",
+            port=port,
+            health_path="/health",
+            start_script=None,
+        )
+        ready, errors = ensure_services_ready(
+            [svc], timeout=3, poll_interval=0, health_timeout=1
+        )
+    finally:
+        server.shutdown()
+        server.server_close()
+
+    assert ready is False
+    assert any("degraded status (http_error)" in e for e in errors)
+
+
+def test_all_mapped_start_scripts_are_executable():
+    """Every registered start.sh must carry the executable bit.
+
+    Regression for bowtie2_service/start.sh shipping as 100644 (all other
+    services are 100755)."""
+    import os
+
+    project_root = Path(__file__).resolve().parents[1]
+    for cap, svc in CAPABILITY_SERVICE_MAP.items():
+        if not svc.start_script:
+            continue
+        script = project_root / svc.start_script
+        assert script.exists(), f"{cap}: missing start script {svc.start_script}"
+        assert os.access(script, os.X_OK), f"{cap}: {svc.start_script} not executable"
+
+
+def test_cli_orchestrator_all_exports_resolvable():
+    """Every name in cli.service_orchestrator.__all__ must be importable.
+
+    Regression: ``check_service_health`` / ``start_service`` were listed in
+    ``__all__`` but never imported, so ``from cli.service_orchestrator import
+    check_service_health`` raised ImportError."""
+    import cli.service_orchestrator as so
+
+    for name in so.__all__:
+        assert hasattr(so, name), f"cli.service_orchestrator.__all__ lists unimported {name!r}"
+
+    from cli.service_orchestrator import check_service_health, start_service  # noqa: F401

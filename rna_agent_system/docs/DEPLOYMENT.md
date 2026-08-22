@@ -70,9 +70,12 @@ The CLI lists all 11 workflows. The user selects by number; multi-select is supp
 
 `cli/service_orchestrator.py` derives the union of all microservices required by the selected workflows from each workflow's `required_capabilities` (via `agent_core.services.service_manager.CAPABILITY_SERVICE_MAP`). For each service:
 
-1. **Health probe** — `GET /health` (5 s timeout)
-2. **Start if unhealthy** — `subprocess.Popen(["bash", "start.sh"], ...)` with `start_new_session=True`
-3. **Poll until ready** — Retry every 5 s up to 300 s total
+1. **Health probe** — `GET /health`
+2. **Triage if unhealthy** (2026-08-22, DECISIONS (r)):
+   - port free → **auto-start**: `subprocess.Popen(["bash", "start.sh"], ...)` with `start_new_session=True` (per-port `flock`: concurrent callers start a service exactly once);
+   - port listening but `/health` *answers* degraded/HTTP-error → pre-flight **fails with a clear error** (the service is running and broken — e.g. a missing checkpoint; it is never restarted);
+   - port listening but `/health` *unresponsive* (starved worker) → wait, then **proceed anyway** (no restart loop);
+3. **Poll until ready** — retry every 5 s up to 300 s total
 
 Services shared across workflows (e.g. ViennaRNA) are started only once.
 

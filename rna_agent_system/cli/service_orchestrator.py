@@ -14,7 +14,13 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from agent_core.services.service_manager import ToolServiceSpec, ensure_services_ready, get_services_for_capabilities
+from agent_core.services.service_manager import (
+    ToolServiceSpec,
+    check_service_health,
+    ensure_services_ready,
+    get_services_for_capabilities,
+    start_service,
+)
 from agent_core.workflows import (
     AsoTargetScreeningWorkflow,
     FullLengthMrnaDesignWorkflow,

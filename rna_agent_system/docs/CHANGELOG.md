@@ -10,6 +10,61 @@
 > pointers) lives in [`DECISIONS.md`](DECISIONS.md), and every experiment's
 > raw verdicts live under `experiments/results/`.
 
+## 2026-08-22 (b) — Layer-3 fresh-data audit: service orchestration verified on live services, degraded-service pre-flight hole fixed
+
+First dedicated audit of Layer 3 (`agent_core/services/service_manager.py` +
+`cli/service_orchestrator.py` + the `BaseDomainWorkflow` pre-flight hook) on
+**live microservices and fresh real data** — sequences fetched live from NCBI
+during the audit (human insulin INS mRNA NM_000207.3 + CDS, human 5S rRNA
+NR_023363; CRISPR on/off-target pair derived from the INS CDS itself), nothing
+reused from prior audits or fixtures. Evidence:
+`workspace/layer3_fresh_audit_2026-08-22/` (fetch script, audit driver,
+helper services, `audit_report.json`). **45 checks / 0 failures** post-fix;
+full suite 580 passed.
+
+What was exercised for real: health sweep over all 21 mapped services (10 up
+→ all healthy, 11 down → correctly unhealthy); a genuine **cold-start** of
+CRISOT (port 8011 down → `ensure_services_ready` auto-start via `start.sh` →
+healthy in 5 s) followed by a real capability-layer CRISOT-Score call on the
+fresh INS-derived single-mismatch pair (score 0.831); concurrent
+`ensure_services_ready` from two processes on a fresh slow-start service
+(real flock contention — exactly one start, both callers ready); busy-port
+proceed-anyway semantics preserved with **no** restart attempt; a real
+workflow pre-flight chain (`run_mrna_sequence_scoring` on the fresh INS CDS:
+GC 64.6 %, MFE −50.25 kcal/mol, length 333 — biologically sane); CLI
+multi-workflow orchestration.
+
+Three defects found and fixed:
+
+- **Degraded services passed pre-flight** (the real one): a *listening*
+  service whose `/health` answers 200 with `status: "degraded"` (e.g.
+  RNAsmol reporting a missing checkpoint) fell into the 2026-07-22
+  busy-port proceed-anyway branch — `ensure_services_ready` returned ready
+  and the workflow failed later at tool-call time with a confusing error.
+  The busy branch now classifies the endpoint first
+  (`_classify_service_health`): an endpoint that **answers** with a non-ok
+  status (`degraded`) or an HTTP error fails pre-flight with a clear error
+  naming the service; only a genuinely **unresponsive** endpoint (starved
+  worker, connection refused/timeout) keeps the wait-then-proceed-anyway
+  behaviour. The 2026-07-22 no-double-start guarantee is unchanged (raw
+  starved listener still passes; regression-tested both ways). See
+  DECISIONS.md (r).
+- **`cli/service_orchestrator.__all__` listed unimported names**:
+  `check_service_health` / `start_service` were exported but never imported,
+  so `from cli.service_orchestrator import check_service_health` raised
+  ImportError. Both now imported (re-export restored as the `__all__`
+  comment intended).
+- **`microservices/bowtie2_service/start.sh` shipped 100644** (all other 20
+  services are 100755). Exec bit restored; a repo-state regression test now
+  asserts every mapped start script exists and is executable. A stale
+  orphan comment referencing the deleted junction-aware LinearDesign tool
+  was also removed.
+
+New regression tests in `tests/test_service_manager.py`: listening-degraded
+service fails ensure with a `degraded status` error, listening-http-error
+service likewise, all mapped start scripts executable, `__all__` exports
+resolvable (36 passed in-module).
+
 ## 2026-08-22 — GenNav-λ production wiring (CDS v1.2.0), ASO → ASF (v1.1.0), CDS Pareto annotation
 
 User-directed consistency pass, following the 2026-08-21/22 Layer-2
