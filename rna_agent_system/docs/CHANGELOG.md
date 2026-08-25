@@ -44,10 +44,13 @@ gated-platform boundary as data: IRES tasks refuse with an explicit
 `GatedActionError`, small-molecule tasks fail cleanly with both oracles gated
 (`enforce_probe.jsonl`). **Fig 2a** rendered (per-task tile carpet + horizontal
 bar summary) from the new **unified palette**
-(`experiments/plots/palette.py`, the twelve mandated colours; every experiment
-figure draws from it exclusively). Palette rev 2 (same day): the initial
-10-colour set was replaced by the user's 12-colour scheme — each of the 11
-workflows now owns a distinct colour, grey reserved for neutral semantics.
+(`experiments/plots/palette.py`). Palette history: rev 1 = the ten mandated
+colours; rev 2 = the user's 12-colour replacement (same-day withdrawn as
+aesthetically unsatisfying); **rev 3 (current)** = the ten mandated colours
+extended with two coordinated in-family mid-tones — `#F5A49E` (mid coral,
+the coral family's missing mid lightness) and `#98A4EE` (mid periwinkle,
+pale periwinkle deepened toward the royal blues) — each of the 11 workflows
+owns one distinct colour.
 
 ## 2026-08-25 — Paper figure-lettering unification (doc-only)
 
