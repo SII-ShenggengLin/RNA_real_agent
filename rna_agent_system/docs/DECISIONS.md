@@ -311,11 +311,13 @@ a 4-task enforce probe documents the refusal signatures (IRESfinder
 **Result (Exp 1, Fig 2a)**: 210/210 across the 11 workflows
 (`experiments/results/exp1_rnadesign210/summary.json`; driver
 `experiments/exp1_rnadesign210.py`, services GPU-pinned 0/1/2 via
-`experiments/exp1_bring_up_services.sh`). **Unified figure palette** locked to
-the ten user-specified colours plus two coordinated in-family extensions
-(`experiments/plots/palette.py` rev 3: `#F5A49E` mid coral, `#98A4EE` mid
-periwinkle); the eleven workflows each own one distinct colour, and every
-experiment figure draws from the palette exclusively.
+`experiments/exp1_bring_up_services.sh`). **Unified figure palette** locked to the
+twelve colours of the user's reference figure, extracted pixel-level
+(`experiments/plots/palette.py` rev 4: `#7AACE1 #A6D08E #FAA775 #F1AC83
+#FBA9A9 #F3B0A5 #EDD8B9 #C1B298 #CAF3FA #A4BEBF #FAD8B3 #FBDEBB`); the
+eleven workflows each own one distinct colour (#FBDEBB held out as the
+nearest neighbour of #FAD8B3), and every experiment figure draws from the
+palette exclusively.
 
 ---
 

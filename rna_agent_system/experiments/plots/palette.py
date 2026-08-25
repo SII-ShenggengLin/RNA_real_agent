@@ -1,47 +1,47 @@
-"""Unified experiment-figure palette (user-specified, 2026-08-25 reset; rev 3).
+"""Unified experiment-figure palette (user-specified, 2026-08-25 reset; rev 4).
 
 Every experiment figure draws its colours exclusively from PALETTE below.
-Base: the ten user-specified colours. Two coordinated extensions (2026-08-25,
-rev 3): #F5A49E (mid coral — the coral family's missing mid lightness) and
-#98A4EE (mid periwinkle — the pale periwinkle #C9CEFE deepened toward the
-royal blues). Twelve colours for eleven workflows — each workflow owns one
-distinct colour; no workflow is identified by a neutral grey.
+Rev 4: the twelve colours extracted (pixel-level, line-core modal values) from
+the user-supplied reference image — two solid bars (blue, green) plus five
+top/bottom line pairs in the orange–rose–sand–cyan families. Eleven of the
+twelve identify the workflows (the most redundant cream #FBDEBB is held out);
+no workflow is identified by a neutral grey.
 """
 from __future__ import annotations
 
-# The mandated palette: ten user-specified colours + two coordinated
-# extensions (marked NEW), used verbatim.
+# The mandated palette: twelve colours from the user's reference image,
+# used verbatim.
 PALETTE: list[str] = [
-    "#FCE8E6",  # pale rose
-    "#FFC6BC",  # light coral
-    "#F8B9B8",  # rose
-    "#F5A49E",  # NEW mid coral (extension)
-    "#D6DFEF",  # pale blue
-    "#A5CDE2",  # light blue
-    "#5FA3CB",  # blue
-    "#668FCA",  # royal blue
-    "#C9CEFE",  # pale periwinkle
-    "#98A4EE",  # NEW mid periwinkle (extension)
-    "#66A8CD",  # steel blue
-    "#006BAD",  # deep blue
+    "#7AACE1",  # blue
+    "#A6D08E",  # green
+    "#FAA775",  # orange
+    "#F1AC83",  # light orange
+    "#FBA9A9",  # rose
+    "#F3B0A5",  # light rose
+    "#EDD8B9",  # sand
+    "#C1B298",  # grey sand
+    "#CAF3FA",  # pale cyan
+    "#A4BEBF",  # grey cyan
+    "#FAD8B3",  # cream
+    "#FBDEBB",  # light cream (held out: nearest neighbour of #FAD8B3)
 ]
 
 PALETTE_BY_NAME: dict[str, str] = {
-    "pale_rose": "#FCE8E6",
-    "light_coral": "#FFC6BC",
-    "rose": "#F8B9B8",
-    "mid_coral": "#F5A49E",
-    "pale_blue": "#D6DFEF",
-    "light_blue": "#A5CDE2",
-    "blue": "#5FA3CB",
-    "royal_blue": "#668FCA",
-    "periwinkle": "#C9CEFE",
-    "mid_periwinkle": "#98A4EE",
-    "steel_blue": "#66A8CD",
-    "deep_blue": "#006BAD",
+    "blue": "#7AACE1",
+    "green": "#A6D08E",
+    "orange": "#FAA775",
+    "light_orange": "#F1AC83",
+    "rose": "#FBA9A9",
+    "light_rose": "#F3B0A5",
+    "sand": "#EDD8B9",
+    "grey_sand": "#C1B298",
+    "pale_cyan": "#CAF3FA",
+    "grey_cyan": "#A4BEBF",
+    "cream": "#FAD8B3",
+    "light_cream": "#FBDEBB",
 }
 
-# Semantic accents reused across figures (fixed slots of the palette).
+# Semantic accents reused across figures.
 NEUTRAL_GRID = "#D9D9D9"     # gridlines / tile borders (non-data grey)
 TEXT = "#1A1A1A"
 
@@ -74,19 +74,18 @@ WORKFLOW_LABELS: dict[str, str] = {
     "ires_prediction": "IRES prediction",
 }
 
-# Workflow → palette colour (one distinct colour per workflow; warm shades
-# mark the sequence-design workflows, blues the structure/prediction/screening
-# workflows; the two extensions cover aptamer and IRES).
+# Workflow → palette colour (one distinct colour per workflow; adjacent carpet
+# rows pairwise separable; the two near-identical pale sands sit 8 rows apart).
 WORKFLOW_COLORS: dict[str, str] = {
-    "mrna_cds_design": "#FFC6BC",                 # light coral
-    "full_length_mrna_design": "#F8B9B8",         # rose
-    "mrna_sequence_scoring": "#FCE8E6",           # pale rose
-    "sirna_design": "#006BAD",                    # deep blue
-    "sgrna_design": "#668FCA",                    # royal blue
-    "rna_secondary_structure_design": "#A5CDE2",  # light blue
-    "rna_tertiary_structure_design": "#5FA3CB",   # blue
-    "rna_aptamer_design": "#F5A49E",              # NEW mid coral
-    "rna_small_molecule_interaction": "#C9CEFE",  # pale periwinkle
-    "aso_target_screening": "#D6DFEF",            # pale blue
-    "ires_prediction": "#98A4EE",                 # NEW mid periwinkle
+    "mrna_cds_design": "#FAA775",                 # orange
+    "full_length_mrna_design": "#FBA9A9",         # rose
+    "mrna_sequence_scoring": "#EDD8B9",           # sand
+    "sirna_design": "#7AACE1",                    # blue
+    "sgrna_design": "#A6D08E",                    # green
+    "rna_secondary_structure_design": "#CAF3FA",  # pale cyan
+    "rna_tertiary_structure_design": "#F1AC83",   # light orange
+    "rna_aptamer_design": "#C1B298",              # grey sand
+    "rna_small_molecule_interaction": "#F3B0A5",  # light rose
+    "aso_target_screening": "#A4BEBF",            # grey cyan
+    "ires_prediction": "#FAD8B3",                 # cream
 }

@@ -45,12 +45,12 @@ gated-platform boundary as data: IRES tasks refuse with an explicit
 (`enforce_probe.jsonl`). **Fig 2a** rendered (per-task tile carpet + horizontal
 bar summary) from the new **unified palette**
 (`experiments/plots/palette.py`). Palette history: rev 1 = the ten mandated
-colours; rev 2 = the user's 12-colour replacement (same-day withdrawn as
-aesthetically unsatisfying); **rev 3 (current)** = the ten mandated colours
-extended with two coordinated in-family mid-tones — `#F5A49E` (mid coral,
-the coral family's missing mid lightness) and `#98A4EE` (mid periwinkle,
-pale periwinkle deepened toward the royal blues) — each of the 11 workflows
-owns one distinct colour.
+colours; rev 2 = the user's 12-colour replacement (withdrawn same day);
+rev 3 = ten colours + two in-family extensions (withdrawn same day);
+**rev 4 (current)** = the twelve colours extracted pixel-level from the
+user's reference figure (line-core modal values: `#7AACE1 #A6D08E #FAA775
+#F1AC83 #FBA9A9 #F3B0A5 #EDD8B9 #C1B298 #CAF3FA #A4BEBF #FAD8B3 #FBDEBB`)
+— eleven identify the workflows (the most redundant cream #FBDEBB held out).
 
 ## 2026-08-25 — Paper figure-lettering unification (doc-only)
 
