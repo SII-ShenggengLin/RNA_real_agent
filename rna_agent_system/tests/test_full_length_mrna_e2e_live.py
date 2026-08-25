@@ -131,10 +131,6 @@ def _build_stub_registry(
             "predict_putative_ires_with_iresfinder",
             {"max_score": ires_score, "has_putative_ires": ires_score > 0.5},
         ),
-        "analyze_cds_codon_metrics_with_codonw_slim": _make_stub_capability(
-            "analyze_cds_codon_metrics_with_codonw_slim",
-            {"cai_score": 0.80, "mfe_kcal_per_mol": -20.0},
-        ),
     }
 
     # Wire UTR invokers

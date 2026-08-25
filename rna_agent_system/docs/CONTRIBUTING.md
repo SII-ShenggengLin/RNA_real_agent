@@ -1,7 +1,7 @@
 # Contributing Guide
 
 > **Scope**: coding standards, new-tool procedure, and commit conventions.
-> **Last updated**: 2026-08-22 (Interface Lock Policy removed)
+> **Last updated**: 2026-08-22 (repo-wide simplification pass)
 
 ---
 
@@ -10,7 +10,7 @@
 - **No backward-compatibility burden**: when modifying code, do NOT preserve compatibility shims for superseded strategies. Prioritize code simplicity.
 - **Delete superseded code**: once a better/newer strategy lands, delete the old strategy's code and its documentation — do not let dead code accumulate.
 - **Delete superseded docs**: same rule for documentation — remove content describing abandoned strategies to keep docs concise.
-- **Exceptions**: code/data explicitly retained as experimental baselines (e.g., the legacy agent stack serving as the E3 control arm, per `docs/REDESIGN_2026-08-03_CALIBRATED_AGENT.md` §7) stays until the experiment that needs it is done.
+- **Exceptions**: the `experiments/results/` evidence tree and the CapGate audit trail (`workspace/audit/`, `workspace/sessions/`) are the durable audit record and are never deleted (DECISIONS (n)/(y)).
 
 ---
 

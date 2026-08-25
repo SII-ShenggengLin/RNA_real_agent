@@ -7,7 +7,7 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from agent_core.file_manager import PROJECT_ROOT
+from agent_core.file_manager import PROJECT_ROOT, _GLOBAL_WM
 from agent_core.sequence_utils import (
     compute_dot_bracket_unpaired_fraction,
     extract_dot_bracket,
@@ -74,11 +74,10 @@ def test_compute_dot_bracket_unpaired_fraction_all_unpaired():
 
 @pytest.fixture()
 def dotbracket_sample_filepath():
-    ws = PROJECT_ROOT / "workspace"
-    ws.mkdir(parents=True, exist_ok=True)
+    ws = _GLOBAL_WM.base_dir
     name = "test_unpaired_fraction_demo.ss"
     (ws / name).write_text(">demo\n..((..))..\n", encoding="utf-8")
-    return f"workspace/{name}"
+    return str((ws / name).relative_to(PROJECT_ROOT))
 
 
 def test_compute_unpaired_fraction_returns_dict(dotbracket_sample_filepath):

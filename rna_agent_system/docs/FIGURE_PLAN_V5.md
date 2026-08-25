@@ -1,9 +1,8 @@
 # Figure Plan v5 — Six Main Figures for the Nature Methods Submission
 
 > Owner doc for the `experiments/plots/paper_v5/` rebuild (2026-08-20).
-> Design inputs: `docs/REFERENCE_FIGURE_SURVEY.md` (seven Nature/Science agent
-> papers), `docs/PAPER_DRAFT.md` v4.3 (section structure), `docs/PAPER_FACT_SHEET.md`
-> (every number's evidence file).
+> Design inputs: `docs/PAPER_DRAFT.md` (section structure) and
+> `docs/PAPER_FACT_SHEET.md` (every number's evidence file).
 > Style: shared `style.py` — Morandi palette, Arial, white background, strict
 > arm→colour code (blue = gated/navigation/designed, terracotta = ungated/rule,
 > sage = wild-type/certified, grey = random/null/baseline). One script per

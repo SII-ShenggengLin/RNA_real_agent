@@ -433,7 +433,7 @@ def main() -> int:
         return 1
 
     runner = AgentRunner(
-        executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+        executor=ToolExecutor(build_default_tool_registry()),
         session_memory=SessionMemory(),
         quality_review_enabled=True,
         quality_auto_retry=False,

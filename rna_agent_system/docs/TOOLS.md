@@ -1,7 +1,7 @@
 # Tools Reference
 
 > **Scope**: per-tool specs, microservice deployment notes, and port registry.
-> **Last updated**: 2026-07-06
+> **Last updated**: 2026-08-22 (41 tools, all production)
 
 ---
 

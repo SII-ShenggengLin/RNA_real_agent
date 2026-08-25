@@ -216,9 +216,10 @@ automatically — no code change. Conversely, a newly failed record auto-demotes
 
 ## 5. Interface-lock impact and migration checklist (completed 2026-08-21)
 
-`apply_reference_point_ranking` itself is untouched. Lock updates applied
-(additive state fields + ranking-dim documentation; `INTERFACE_LOCKS.md` and
-the source lock headers updated in the same change):
+`apply_reference_point_ranking` itself is untouched. State fields are purely
+additive; ranking dimensions are documented per workflow (the lock banners
+were retired 2026-08-22, DECISIONS (v) — the contracts stay pinned by
+`WORKFLOWS.md` and the regression suite):
 
 1. **`FullLengthMrnaDesignWorkflow` §14 (v3.0.0 → v3.1.0)** — objectives
    assembled from verdicts; reference-point interaction documented (§3.4).

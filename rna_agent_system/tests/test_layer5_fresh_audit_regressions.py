@@ -145,7 +145,7 @@ def test_file_manager_session_context_scoping(tmp_path: Path) -> None:
     finally:
         _SESSION_ID_CTX.reset(token)
 
-    assert rel.startswith(f"workspace/sessions/{sid}/")
+    assert f"sessions/{sid}/" in rel
     assert read_sequence(rel).strip() == "AUGCAUGCAUGCAUGCAUGC"
 
     # cleanup through the (now hardened) default manager

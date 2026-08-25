@@ -343,7 +343,7 @@ def run_mrna_sequence_scoring(
     ``auto_start_services=False`` to skip the service pre-flight.
     """
     if capability_registry is None:
-        executor = ToolExecutor(build_default_tool_registry(include_demo=False))
+        executor = ToolExecutor(build_default_tool_registry())
         capability_registry = build_default_capability_registry(executor)
     wf = MrnaSequenceScoringWorkflow(capability_registry)
     wf.auto_start_services = auto_start_services

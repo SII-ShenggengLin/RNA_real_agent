@@ -521,7 +521,7 @@ def test_mrna_sequence_scoring_preflight_runs_before_evaluate():
     from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
     from agent_core.workflows.mrna_sequence_scoring import MrnaSequenceScoringWorkflow
 
-    registry = build_default_tool_registry(include_demo=False)
+    registry = build_default_tool_registry()
     executor = ToolExecutor(registry)
     wf = MrnaSequenceScoringWorkflow(CapabilityRegistry(executor))
     wf.auto_start_services = True

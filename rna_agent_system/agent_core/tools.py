@@ -463,26 +463,7 @@ def run_blastn_similarity_search(
     Requires the ``blast_service`` microservice (port 8019) and BLAST+ on the server PATH.
     Provide exactly one of ``subject_fasta_path`` or ``subject_db``. The query is read from
     ``filepath`` (plain sequence or FASTA); nucleotides are normalized to DNA for blastn.
-
-    Args:
-        filepath: Query sequence file (typically under ``workspace/``).
-        subject_fasta_path: Path to subject FASTA on the server (makeblastdb run in the service).
-        subject_db: Prefix path of an existing BLAST nucleotide database.
-        task: blastn task name (short oligos default ``blastn-short``).
-        evalue: Expect value threshold.
-        word_size: Optional word size.
-        max_target_seqs: Maximum aligned subject sequences to report.
-        perc_identity: Optional percent identity cutoff.
-        strand: Query/subject strand option.
-        outfmt: Optional blastn -outfmt override (default tabular format 6).
-        service_url: POST endpoint for the blast microservice.
-
-    Returns:
-        Dict with hit counts, preview, paths to saved tabular output under ``workspace/``, and commands.
-
-    Raises:
-        ValueError: If arguments are inconsistent or the HTTP call fails.
-    """
+"""
     if bool(subject_fasta_path) == bool(subject_db):
         raise ValueError("Provide exactly one of subject_fasta_path or subject_db.")
     read_sequence(filepath)  # validate readable before calling remote service
@@ -553,22 +534,7 @@ def run_bowtie2_short_alignment(
     Requires the ``bowtie2_service`` microservice (port 8024) and bowtie2 on the server PATH.
     Provide exactly one of ``subject_fasta_path`` or ``subject_index``. The query is read from
     ``filepath`` (plain sequence or FASTA); nucleotides are normalized to DNA for bowtie2.
-
-    Args:
-        filepath: Query sequence file (typically under ``workspace/``).
-        subject_fasta_path: Path to subject FASTA on the server (bowtie2-build run in the service).
-        subject_index: Prefix path of an existing bowtie2 index.
-        mode: ``local`` (allows soft-clipping, preferred for short oligos) or ``end-to-end``.
-        k: Maximum alignments to report per query.
-        score_min: bowtie2 ``--score-min`` function string.
-        service_url: POST endpoint for the bowtie2 microservice.
-
-    Returns:
-        Dict with hit counts, preview, paths to saved tabular output under ``workspace/``, and commands.
-
-    Raises:
-        ValueError: If arguments are inconsistent or the HTTP call fails.
-    """
+"""
     if bool(subject_fasta_path) == bool(subject_index):
         raise ValueError("Provide exactly one of subject_fasta_path or subject_index.")
     read_sequence(filepath)  # validate readable before calling remote service
@@ -684,18 +650,7 @@ def compute_rna_sequence_gc_content(
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
-
-    Args:
-        filepath: Sequence file (plain or FASTA); T is treated as U, non-letters removed.
-        service_url: POST ``/gc-content`` endpoint.
-        timeout_seconds: HTTP request timeout in seconds.
-
-    Returns:
-        Dict with ``gc_content``, counts, and resolved paths.
-
-    Raises:
-        ValueError: If the HTTP call fails or the service reports an error.
-    """
+"""
     read_sequence(filepath)
     seq_abs = _absolute_path_under_project(filepath)
     try:
@@ -730,18 +685,7 @@ def compute_dot_bracket_unpaired_fraction(
 
     The structure string must use only ``. ( ) [ ] { } < >`` as in ViennaRNA / LinearFold dot-bracket
     notation. Requires ``rna_sequence_metrics_service`` on port 8020.
-
-    Args:
-        filepath: Text file containing the structure (FASTA with structure on sequence line is ok).
-        service_url: POST ``/unpaired-fraction`` endpoint.
-        timeout_seconds: HTTP request timeout in seconds.
-
-    Returns:
-        Dict with ``unpaired_fraction``, ``dot_count``, ``structure_length``, and paths.
-
-    Raises:
-        ValueError: If the HTTP call fails or the structure contains invalid characters.
-    """
+"""
     struct_abs = _absolute_path_under_project(filepath)
     try:
         response = requests.post(
@@ -773,18 +717,7 @@ def compute_rna_sequence_u_content(
 
     Requires ``rna_sequence_metrics_service`` on port 8020. Pass a filepath under ``workspace/`` or an
     absolute server path; long sequences should not be pasted into the chat.
-
-    Args:
-        filepath: Sequence file (plain or FASTA); T is treated as U, non-letters removed.
-        service_url: POST ``/u-content`` endpoint.
-        timeout_seconds: HTTP request timeout in seconds.
-
-    Returns:
-        Dict with ``u_fraction``, counts, and resolved paths.
-
-    Raises:
-        ValueError: If the HTTP call fails or the service reports an error.
-    """
+"""
     read_sequence(filepath)
     seq_abs = _absolute_path_under_project(filepath)
     try:
@@ -845,18 +778,7 @@ def compute_cai_for_cds_sequence(
 
     The input sequence is validated as CDS (length multiple of 3, AUGC only).
     Stop codons (UAA/UAG/UGA) are excluded from the CAI calculation.
-
-    Args:
-        filepath: CDS sequence file (plain or FASTA); T is treated as U.
-        species: Reference species for built-in codon table.
-        custom_codon_table_path: Optional custom codon usage JSON path.
-
-    Returns:
-        Dict with ``cai_score``, species, codon counts, and validity metrics.
-
-    Raises:
-        ValueError: If the file is unreadable, not a valid CDS, or no codon table found.
-    """
+"""
     raw = read_sequence(filepath)
     cds_seq = normalize_cds_sequence(raw)
 
@@ -925,41 +847,7 @@ def design_sirna_with_evitar(
     service_url: str = "http://127.0.0.1:8016/design",
 ) -> dict[str, Any]:
     """Design siRNAs/Cas13 guides via the Evitar microservice.
-
-    Args:
-        filepath: Path to an input FASTA file.
-            IMPORTANT: pass a filepath rather than embedding long sequence text.
-        mode: `existing` (single/few-virus) or `predesign` (future-virus).
-        predict: Evitar predictor: `predsi`, `rnaxs`, `CRISPR`, or `multifapredsi`.
-            NOTE: `CRISPR` requires R (>=3.4) installed on the server.
-        strains_path: FASTA path with multiple strains (optional for single-virus existing mode).
-        off_target: Enable Evitar off-target analysis.
-            NOTE: meaningful results require real transcriptome / 3'UTR FASTA files.
-        ncores: Number of threads passed through to Evitar.
-        p3utr_path: 3'UTR FASTA for off-target evaluation.
-        transcriptome_path: Transcriptome FASTA for off-target evaluation.
-        weight_path: Gene-weight file for tissue-specific off-target scoring.
-            NOTE: run GenomeData.sh to generate transcripts.fa / utrs.fa if missing.
-        sumtype: Selection algorithm for predesign: `SGAR` or `greedy`.
-        limitnum: Max siRNAs/Cas13 gRNAs to output in predesign mode.
-        repeatnum: Multi-siRNA penalty factor for predesign mode.
-        pmcuff: Perfect-match off-target cutoff.
-        umcuff: Imperfect-match off-target score cutoff.
-        mircuff: miRNA-like off-target score cutoff.
-        maxgc: Maximal GC-content cutoff.
-        mingc: Minimal GC-content cutoff.
-        middlegc: Middle GC-content cutoff (suboptimal threshold).
-        allow_path: File of verified siRNAs to force-include.
-        ban_path: File of siRNAs to exclude.
-        service_url: REST endpoint for the Evitar microservice.
-
-    Returns:
-        Dict containing output filepath, candidate count, top rows, and echoed
-        upstream parameters for auditability.
-
-    Raises:
-        ValueError: If Evitar service request fails or returns invalid fields.
-    """
+"""
     request_payload: dict[str, Any] = {
         "input_path": filepath,
         "mode": mode,
@@ -1061,19 +949,7 @@ def score_crispr_off_target_with_crisot(
     """
 
     Score one sgRNA-target pair with CRISOT.
-
-    Args:
-        filepath: Path to a file containing the sgRNA sequence.
-            IMPORTANT: pass a filepath rather than inline guide sequence text.
-        target_sequence: Target DNA sequence paired with the sgRNA.
-        service_url: REST endpoint for the CRISOT score microservice.
-
-    Returns:
-        Dict with normalized sgRNA/target sequences and the CRISOT score.
-
-    Raises:
-        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
-    """
+"""
     sgrna = _normalize_crisot_sequence(read_sequence(filepath))
     normalized_target = _normalize_crisot_sequence(target_sequence)
     try:
@@ -1104,19 +980,7 @@ def calculate_crispr_specificity_with_crisot(
     """
 
     Calculate CRISOT specificity from a CSV of one sgRNA and its candidate off-targets.
-
-    Args:
-        csv_filepath: Path to the input CSV. On-target row should appear first.
-        on_item: Input column name for sgRNA/on-target sequences.
-        off_item: Input column name for off-target sequences.
-        service_url: REST endpoint for the CRISOT specificity microservice.
-
-    Returns:
-        Dict with CRISOT-Spec and an optional scored CSV copied into workspace.
-
-    Raises:
-        ValueError: If the CRISOT service is unreachable or returns an invalid payload.
-    """
+"""
     try:
         response = requests.post(
             service_url,
@@ -1167,28 +1031,7 @@ def design_sgrna_handle_with_crgpt(
     service_url: str = "http://127.0.0.1:8017/design",
 ) -> dict[str, Any]:
     """Design sgRNA handle candidates through sgrna_design microservice.
-
-    Args:
-        seed_sequence: Inline seed/wildtype sgRNA handle sequence (DNA/RNA).
-            Either this or filepath must be provided.
-        filepath: Path to a file containing the seed sgRNA handle sequence.
-            Either this or seed_sequence must be provided.
-        n_samples: Number of designed candidates to request.
-        mutation_number: Maximum mutation count relative to seed sequence.
-        temperature: MCMC annealing temperature (mcmc mode) or transformer sampling temperature (naive mode).
-        max_overlap: Maximum overlap constraint among candidates.
-        sampling_mode: Sampling strategy: 'mcmc' (original MCMC/annealing) or 'naive' (direct model.generate).
-        path_to_model: Optional model directory (relative to sgrna_design root or absolute path).
-        device: Optional torch device override such as `cuda:0` or `cpu`.
-        output_dir: Optional output directory override for the microservice.
-        service_url: REST endpoint for the sgrna_design microservice.
-
-    Returns:
-        Dict containing best candidate summary and artifact filepaths copied into workspace.
-
-    Raises:
-        ValueError: If service request fails or response payload is invalid.
-    """
+"""
     if seed_sequence:
         resolved_seed = _normalize_sgrna_design_sequence(seed_sequence)
     elif filepath:
@@ -1349,17 +1192,7 @@ def score_sgrna_handle_with_crgpt(
 
     Computes nn_score (exp(loss)), log_likelihood (negative cross-entropy),
     ViennaRNA structure distance / MFE, and constraint mutation count.
-
-    Args:
-        sequence: sgRNA handle sequence to score (DNA/RNA).
-        path_to_model: Optional model directory override.
-        device: Optional torch device such as `cuda:0` or `cpu`.
-        service_url: REST endpoint for the sgrna_design scoring endpoint.
-
-    Returns:
-        Dict with normalized sequence, nn_score, log_likelihood, structure_distance,
-        mfe, and constraint_mutation_count.
-    """
+"""
     normalized = _normalize_sgrna_design_sequence(sequence)
     payload: dict[str, Any] = {"sequence": normalized}
     if path_to_model:
@@ -2071,22 +1904,7 @@ def predict_rna_secondary_structure(
 
     Supports partition function (-p), constraints (-C), SHAPE-guided folding,
     circular RNA (--circ), G-quadruplexes (--gquad), and full energy-model tuning.
-
-    Args:
-        filepath: Workspace file path containing RNA sequence.
-        temp_c, dangles, no_lp, no_gu, no_closing_gu, salt, no_tetra,
-        energy_model, nsp, param_file: Energy-model parameters.
-        constraint: Hard constraint dot-bracket string.
-        shape_file: Path to SHAPE reactivity data file.
-        shape_method: SHAPE method (D/Z/W).
-        partfunc: Compute partition function and centroid structure.
-        circ: Assume circular RNA.
-        gquad: Include G-quadruplex formation.
-        service_url: REST endpoint for ViennaRNA fold microservice.
-
-    Returns:
-        Dict containing structure, mfe, and optional ensemble/centroid/MEA fields.
-    """
+"""
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     payload: dict[str, Any] = {
         "sequence": sequence,
@@ -2504,20 +2322,7 @@ def compute_aso_target_accessibility_vienna(
     """
 
     Estimate target mRNA local accessibility (RNAplfold) for an ASO binding region.
-
-    Args:
-        filepath: Full-length target RNA sequence file (plain or FASTA).
-        region_start: 1-based inclusive start of the binding site on the target.
-        region_end: 1-based inclusive end.
-        service_url: ViennaRNA microservice accessibility endpoint.
-        aso_oligo_length: ASO length used for joint unpaired probability at region end.
-        winsize, span, unpaired_ulength: RNAplfold parameters (-W, -L, -u).
-        temp_c: Folding temperature (Celsius).
-
-    Returns:
-        Summary dict including mean single-nucleotide unpaired probabilities in the region
-        and joint unpaired probability for a contiguous stretch (when computable).
-    """
+"""
     sequence_text = read_sequence(filepath)
     payload: dict[str, Any] = {
         "sequence": sequence_text,
@@ -2588,19 +2393,7 @@ def predict_rna_local_accessibility_profile_vienna(
     Uses the same sliding-window local folding model as ASO accessibility, but returns a **full-sequence**
     profile (lunp first column: probability each base is unpaired in the local context). Writes a TSV
     under ``workspace/`` with columns ``position`` and ``unpaired_prob_1nt`` for downstream plotting.
-
-    Args:
-        filepath: RNA sequence file (workspace path or absolute on the server).
-        service_url: ViennaRNA microservice ``POST /plfold-profiles`` URL.
-        winsize, span, unpaired_ulength: RNAplfold parameters (-W, -L, -u).
-        temp_c: Folding temperature (Celsius).
-
-    Returns:
-        Summary statistics, array lengths, and ``lunp_profile_tsv_filepath`` for the saved curve.
-
-    Raises:
-        ValueError: If the service request fails or the response is invalid.
-    """
+"""
     sequence_text = read_sequence(filepath)
     payload: dict[str, Any] = {
         "sequence": sequence_text,
@@ -2676,17 +2469,7 @@ def inverse_fold_rna_secondary_structure_vienna(
     """
 
     Inverse-fold an RNA secondary structure to a sequence (ViennaRNA RNAinverse).
-
-    Args:
-        filepath: First non-empty line: target dot-bracket; optional second line: IUPAC start (N = random).
-        service_url: ViennaRNA inverse-fold endpoint.
-        repeats: Number of RNAinverse search repeats.
-        temp_c: Temperature in Celsius.
-        function_mode: RNAinverse objective: m, p, or mp.
-
-    Returns:
-        Dict with best_sequence, optional hamming_distance, structure, backend.
-    """
+"""
     raw = read_sequence(filepath)
     lines = [ln.strip() for ln in raw.splitlines() if ln.strip()]
     if not lines:
@@ -2743,23 +2526,7 @@ def predict_rna_secondary_structure_with_linearfold(
     """
 
     Predict RNA secondary structure and MFE using the LinearFold service.
-
-    Args:
-        filepath: Workspace file path containing RNA sequence content.
-        service_url: REST endpoint for the LinearFold fold microservice.
-        beam_size: LinearFold beam size (default 100).
-        use_vienna: Use LinearFold-V (Vienna parameters) when True.
-        dangles: 0 or 2 for dangling-end treatment.
-        sharpturn: Enable sharpturn in prediction.
-        constraints: Optional constraint string (? . ( ) ) for constrained prediction.
-        shape_file_path: Optional path to SHAPE reactivity data file.
-
-    Returns:
-        Dict with sequence, structure, mfe, backend, model, and input filepath.
-
-    Raises:
-        ValueError: If the LinearFold request fails or the response is invalid.
-    """
+"""
     sequence = read_sequence(filepath).strip()
     if dangles not in (0, 2):
         raise ValueError("LinearFold dangles must be 0 or 2.")
@@ -2797,18 +2564,7 @@ def design_mrna_cds_with_gemorna(
     filepath: str, service_url: str = "http://127.0.0.1:8004/generate/cds"
 ) -> dict[str, Any]:
     """Design an mRNA CDS sequence from a protein sequence using GEMORNA.
-
-    Args:
-        filepath: Workspace file path containing the input protein sequence.
-            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
-        service_url: REST endpoint for the GEMORNA microservice.
-
-    Returns:
-        Dict containing the generated CDS sequence, raw GEMORNA stdout, and a new workspace filepath.
-
-    Raises:
-        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
-    """
+"""
     sequences = _parse_fasta_protein_sequences(read_sequence(filepath))
     if not sequences:
         raise ValueError(f"No protein sequences found in file: {filepath}")
@@ -2870,17 +2626,7 @@ def design_5utr_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/generate/5utr",
 ) -> dict[str, Any]:
     """Design a 5'UTR sequence using GEMORNA.
-
-    Args:
-        utr_length: UTR length category — `short`, `medium`, or `long`.
-        service_url: REST endpoint for the GEMORNA 5'UTR microservice.
-
-    Returns:
-        Dict containing the generated 5'UTR sequence and a new workspace filepath.
-
-    Raises:
-        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
-    """
+"""
     return _call_gemorna_utr(service_url, utr_length, "gemorna_5utr", "GEMORNA-5utr")
 
 
@@ -2890,17 +2636,7 @@ def design_3utr_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/generate/3utr",
 ) -> dict[str, Any]:
     """Design a 3'UTR sequence using GEMORNA.
-
-    Args:
-        utr_length: UTR length category — `short`, `medium`, or `long`.
-        service_url: REST endpoint for the GEMORNA 3'UTR microservice.
-
-    Returns:
-        Dict containing the generated 3'UTR sequence and a new workspace filepath.
-
-    Raises:
-        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
-    """
+"""
     return _call_gemorna_utr(service_url, utr_length, "gemorna_3utr", "GEMORNA-3utr")
 
 
@@ -2941,22 +2677,7 @@ def predict_5utr_mrl_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/predict/5utr_mrl",
 ) -> dict[str, Any]:
     """Predict 5'UTR Mean Ribosomal Load (MRL) using GEMORNA.
-
-    Args:
-        filepath: Path to a file containing the 5'UTR RNA sequence.
-            IMPORTANT: pass a filepath rather than long inline sequence text.
-        service_url: REST endpoint for the GEMORNA 5'UTR MRL prediction microservice.
-
-    Returns:
-        Dict containing:
-            input_filepath (str): Original filepath passed in.
-            input_sequence (str): Normalized RNA sequence evaluated.
-            predicted_mrl (float): Predicted Mean Ribosomal Load score.
-            model (str): Model identifier.
-
-    Raises:
-        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
-    """
+"""
     return _call_gemorna_prediction(service_url, filepath, "GEMORNA-5utr-mrl")
 
 
@@ -2966,22 +2687,7 @@ def predict_3utr_stability_with_gemorna(
     service_url: str = "http://127.0.0.1:8004/predict/3utr_stability",
 ) -> dict[str, Any]:
     """Predict 3'UTR stability using GEMORNA.
-
-    Args:
-        filepath: Path to a file containing the 3'UTR RNA sequence.
-            IMPORTANT: pass a filepath rather than long inline sequence text.
-        service_url: REST endpoint for the GEMORNA 3'UTR stability prediction microservice.
-
-    Returns:
-        Dict containing:
-            input_filepath (str): Original filepath passed in.
-            input_sequence (str): Normalized RNA sequence evaluated.
-            predicted_stability (float): Predicted stability score.
-            model (str): Model identifier.
-
-    Raises:
-        ValueError: If the GEMORNA service is unreachable or returns an invalid payload.
-    """
+"""
     return _call_gemorna_prediction(service_url, filepath, "GEMORNA-3utr-stability")
 
 
@@ -3036,22 +2742,7 @@ def design_mrna_cds_with_lineardesign(
     fine. Do not treat this as transient — it is a hard capacity boundary of the
     tool; long targets must use RNARL/GEMORNA instead (workflow `design_tool`
     parameter), and the boundary belongs in the manuscript's limitations.
-
-    Args:
-        filepath: Workspace file path containing the input protein sequence.
-            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
-        service_url: REST endpoint for the LinearDesign microservice.
-        lambda_value: LinearDesign lambda hyperparameter balancing MFE and CAI.
-        codon_usage_path: Optional codon usage table path.
-        verbose: Whether to enable verbose output in the LinearDesign backend.
-
-    Returns:
-        Dict containing the generated CDS sequence, structure/MFE/CAI summaries,
-        workspace filepath, raw stdout, and stderr.
-
-    Raises:
-        ValueError: If the LinearDesign service is unreachable or returns an invalid payload.
-    """
+"""
     protein_sequence = read_sequence(filepath).strip()
     try:
         request_payload: dict[str, Any] = {
@@ -3108,26 +2799,7 @@ def design_mrna_cds_with_rnarl(
     microservices/rnarl_service/main.py :: generate_cds().
     Any payload key change must be mirrored there and documented in
     docs/tools/design_mrna_cds_with_rnarl.md.
-
-    Args:
-        filepath: Workspace file path containing the input protein sequence.
-            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
-        service_url: REST endpoint for the RNARL microservice.
-        model_type: RNARL trained model variant (species / RNA type).
-            Supported: `Homo sapiens mRNA` (default), `Homo sapiens circular RNA`,
-            `Arabidopsis thaliana mRNA`, `Escherichia coli mRNA`,
-            `Penicillium chrysogenum mRNA`, `Chlamydomonas reinhardtii mRNA`,
-            `Thermococcus kodakarensis KOD1 mRNA`.
-        checkpoint_path: Optional actor checkpoint override for the RNARL service.
-        esm2_model_path: Optional local ESM-2 model directory override.
-        device: Optional torch device override passed to the RNARL service.
-
-    Returns:
-        Dict containing the generated CDS sequence, runtime metadata, and a new workspace filepath.
-
-    Raises:
-        ValueError: If the input protein sequence contains invalid characters or the RNARL service is unreachable.
-    """
+"""
     sequences = _parse_fasta_protein_sequences(read_sequence(filepath))
     if not sequences:
         raise ValueError(f"No protein sequences found in file: {filepath}")
@@ -3184,22 +2856,7 @@ def predict_rna_tertiary_structure_with_rhofold(
     device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Predict RNA tertiary structure using the RhoFold microservice.
-
-    Args:
-        filepath: Workspace file path containing the input RNA sequence.
-            IMPORTANT: You must pass a workspace filepath, not the sequence itself.
-        service_url: REST endpoint for the RhoFold microservice.
-        relax_steps: Amber relaxation iterations. Default 0 keeps inference lighter.
-        checkpoint_path: Optional path to a custom RhoFold checkpoint.
-            If omitted, the microservice searches standard pretrained paths.
-        device: Optional compute device such as ``cpu``, ``cuda``, or ``cuda:0``.
-
-    Returns:
-        Dict containing workspace paths for generated artifacts and a mean pLDDT summary.
-
-    Raises:
-        ValueError: If the RhoFold service is unreachable or returns an invalid payload.
-    """
+"""
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     request_body: dict[str, Any] = {
         "sequence": sequence,
@@ -3278,22 +2935,7 @@ def design_rna_sequence_with_rhodesign(
     timeout_seconds: int = 3600,
 ) -> dict[str, Any]:
     """Design an RNA sequence from a structure file using the RhoDesign microservice.
-
-    Args:
-        pdb_filepath: Path to the input PDB/CIF structure file.
-        secondary_structure_filepath: Optional `.npy` contact-map path for the 2D-assisted mode.
-        service_url: REST endpoint for the RhoDesign microservice.
-        temperature: Sampling temperature for sequence generation.
-        seed: Random seed for reproducible sampling.
-        device: CUDA device index used by the upstream RhoDesign script.
-
-    Returns:
-        Dict containing the designed RNA sequence, a new workspace sequence filepath,
-        copied FASTA/log artifacts when available, and summary metadata.
-
-    Raises:
-        ValueError: If the RhoDesign service is unreachable or returns an invalid payload.
-    """
+"""
     try:
         payload: dict[str, Any] = {
             "pdb_path": pdb_filepath,
@@ -3361,21 +3003,7 @@ def design_rna_inverse_fold_with_ribodiffusion(
     """
 
     Generate RNA sequence(s) from a PDB structure using the RiboDiffusion microservice.
-
-    Args:
-        pdb_filepath: Path to the input PDB file (workspace or repo-relative path).
-        service_url: REST endpoint for RiboDiffusion.
-        n_samples: Count of independent samples (upstream `config.eval.n_samples`).
-        sampling_steps: Number of diffusion sampling steps.
-        cond_scale: Optional classifier-free guidance scale; -1 keeps upstream default.
-        dynamic_threshold: Whether to enable dynamic thresholding during sampling.
-        deterministic: Whether upstream fixes the RNG seed.
-        checkpoint_name: Checkpoint basename without extension (`exp_inf` or `exp_inf_large`).
-        device: CUDA device index passed via CUDA_VISIBLE_DEVICES.
-
-    Returns:
-        Dict with primary `predicted_sequence`, optional multi-sample lists, paths copied into workspace.
-    """
+"""
     try:
         response = requests.post(
             service_url,
@@ -3448,30 +3076,7 @@ def score_rna_ligand_binding_with_rnasmol(
     device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the RNAsmol microservice.
-
-    Args:
-        filepath: Path to a file containing the RNA sequence.
-            IMPORTANT: pass a filepath rather than long inline sequence text.
-        smiles: Ligand SMILES string to score against the RNA sequence.
-        service_url: REST endpoint for the RNAsmol microservice.
-        checkpoint_path: Optional checkpoint override for the RNAsmol service.
-        dataset: Training dataset source hint (e.g. `pdb`, `robin`) for checkpoint selection.
-        perturbation_type: Data-perturbation strategy hint (e.g. `rnaperturbation`) for checkpoint selection.
-        device: Optional PyTorch device string such as `cuda:0` or `cpu`.
-
-    Returns:
-            probability_positive (float): Positive-class binding probability.
-            predicted_label (int): Predicted binary label (0 or 1).
-            raw_logits (List[float]): Raw model logits [logit_0, logit_1].
-            checkpoint_path (str): Path to the loaded model checkpoint.
-            device (str): Device used for inference.
-            dataset (Optional[str]): Dataset hint reflected back from the service.
-            perturbation_type (Optional[str]): Perturbation hint reflected back from the service.
-            model (str): Model identifier.
-
-    Raises:
-        ValueError: If the RNAsmol service is unreachable or returns an invalid payload.
-    """
+"""
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     try:
         request_payload: dict[str, Any] = {
@@ -3519,32 +3124,7 @@ def score_rna_ligand_binding_with_gernabind(
     split_method: Optional[str] = None,
 ) -> dict[str, Any]:
     """Score RNA-ligand binding probability using the GerNA-Bind microservice.
-
-    Args:
-        filepath: Path to a file containing the RNA sequence.
-            IMPORTANT: pass a filepath rather than long inline sequence text.
-        smiles: Ligand SMILES string to score against the RNA sequence.
-        service_url: REST endpoint for the GerNA-Bind microservice.
-        checkpoint_path: Optional checkpoint override for the GerNA-Bind service.
-        pdb_path: Optional precomputed RNA structure path passed through to GerNA-Bind.
-        secondary_structure: Optional dot-bracket secondary structure passed through to GerNA-Bind.
-        device: Optional torch device override such as `cuda:0` or `cpu`.
-        dataset: Optional dataset hint (Robin or Biosensor) for selecting the default checkpoint.
-        split_method: Optional split-method hint (random, RNA, mol, both) for checkpoint selection.
-
-    Returns:
-            probability_positive (float): Positive-class binding probability.
-            predicted_label (int): Predicted binary label (0 or 1).
-            raw_alpha (List[float]): Evidential alpha parameters [alpha_0, alpha_1].
-            checkpoint_path (str): Path to the loaded model checkpoint.
-            preprocessing_pdb_path (str): PDB file used for feature generation.
-            secondary_structure (str): Dot-bracket structure used for the run.
-            device (str): Device used for inference.
-            model (str): Model identifier.
-
-    Raises:
-        ValueError: If the GerNA-Bind service is unreachable or returns an invalid payload.
-    """
+"""
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     try:
         request_payload: dict[str, Any] = {
@@ -3594,38 +3174,7 @@ def score_rna_protein_complex_with_egarps(
     service_url: str = "http://127.0.0.1:8023/score",
 ) -> dict[str, Any]:
     """Score RNA-protein complex structure using the EGARPS+ microservice.
-
-    Args:
-        filepath: Path to a PDB file containing the RNA-protein complex structure.
-            Workspace-relative paths are resolved to absolute before the
-            request (the EGARPS+ service checks existence against its own
-            working directory, so a raw relative path 404s — fixed 2026-08-21
-            Layer-1 fresh-data audit).
-            WARNING (2026-07-27 campaign): this must be a REAL `.pdb` file.
-            (a) The EGARPS pipeline (external_repos/EGARPS/scripts/ins.py)
-            derives cache paths via `pdb.replace('.pdb', ...)` — a no-op for
-            non-`.pdb` inputs — and dumps its pickle caches OVER the input
-            file itself. (b) Its CIF reader rejects the OP3 atoms Protenix
-            writes (`OP3 not in STD_ATOM_NAMES`). (c) Its chain typing keys on
-            `re.search('protein', basename+...)` — basenames containing
-            'protein' (e.g. 'proteinx') misroute RNA chains into the protein
-            feature path. Convert mmCIF via gemmi into a sanitized `.pdb`
-            copy first (see experiments/run_known_aptamer_validation.py::
-            _proteinx_cif_to_pdb).
-        academic: If True, use full academic mode (requires DSSR and NACCESS licenses).
-            If False (default), use non-academic mode with reduced features.
-        service_url: REST endpoint for the EGARPS+ microservice.
-
-    Returns:
-            complex_id (str): Identifier of the RNA-protein complex.
-            native_probability (float): Probability of being a native structure (0-1).
-            academic (bool): Whether academic mode was used.
-            model (str): Model identifier.
-            pdb_path (str): Path to the input PDB file.
-
-    Raises:
-        ValueError: If the EGARPS+ service is unreachable or returns an invalid payload.
-    """
+"""
     try:
         resolved_filepath = _absolute_path_under_project(filepath)
         request_payload: dict[str, Any] = {
@@ -3659,39 +3208,7 @@ def predict_mrna_stability_with_rnastop(
     device: Optional[str] = None,
 ) -> dict[str, Any]:
     """Predict mRNA degradation and stability summaries using the RNASTOP microservice.
-
-    Args:
-        filepath: Path to a file containing the RNA sequence.
-            IMPORTANT: pass a filepath rather than long inline sequence text.
-        service_url: REST endpoint for the RNASTOP microservice.
-        structure: Optional dot-bracket secondary structure (must match sequence length).
-        loop_type: Optional loop-type annotation string.
-        checkpoint_path: Optional checkpoint override for the RNASTOP service.
-        device: Optional torch device override such as `cuda:0` or `cpu`.
-
-    Returns:
-            input_filepath (str): Original filepath passed in.
-            prediction_filepath (str): Workspace path to the saved per-position JSON.
-            sequence (str): Original sequence from service (or local fallback).
-            used_sequence (str): Sequence actually evaluated (may be truncated).
-            sequence_length (int): len(sequence).
-            used_length (int): len(used_sequence).
-            truncated (bool): Whether truncation occurred.
-            structure (str): Dot-bracket structure.
-            loop_type (str): Loop-type annotation.
-            mfe (float): Minimum free energy.
-            mean_reactivity (float): Mean reactivity score.
-            mean_deg_mg_ph10 (float): Mean deg_Mg_pH10 score.
-            mean_deg_mg_50c (float): Mean deg_Mg_50C score.
-            overall_stability (float): Global mean of the three metrics above.
-                Backwards-compatible: computed locally if service omits it.
-            checkpoint_path (str): Checkpoint path used.
-            device (str): Device used for inference.
-            model (str): Fixed to "RNASTOP".
-
-    Raises:
-        ValueError: If the RNASTOP service is unreachable or returns an invalid payload.
-    """
+"""
     sequence = _normalize_nucleic_sequence(read_sequence(filepath))
     try:
         request_payload: dict[str, Any] = {"sequence": sequence}
@@ -3775,21 +3292,7 @@ def predict_putative_ires_with_iresfinder(
     """
 
     Score RNA sequence fragments for putative internal ribosome entry sites (IRES) via IRESfinder.
-
-    Args:
-        filepath: Path to a file containing plain sequence or FASTA records.
-        service_url: REST endpoint for the IRESfinder microservice.
-        mode: IRESfinder mode (0=full sequence, 1=coordinate header, 2=sliding window).
-        window_size: Window length when ``mode`` is 2.
-        step_size: Step size when ``mode`` is 2.
-        decision_threshold: Probability cutoff for IRES vs non-IRES labels.
-
-    Returns:
-        Summary metrics, a bounded list of per-fragment scores, and a workspace copy of the TSV.
-
-    Raises:
-        ValueError: If the service is unreachable or returns an invalid payload.
-    """
+"""
     fasta_content = read_sequence(filepath).strip()
     if not fasta_content:
         raise ValueError("IRESfinder input file is empty.")
@@ -3881,34 +3384,7 @@ def run_odesign_inference(
     invfold_use_beam: bool = True,
 ) -> dict[str, Any]:
     """Run ODesign inference from an input JSON file via the ODesign microservice.
-
-    Args:
-        input_json_filepath: Path to an ODesign input JSON file.
-            IMPORTANT: pass a filepath rather than embedding long JSON content inline.
-        service_url: REST endpoint for the ODesign microservice.
-        infer_model_name: ODesign model name such as `odesign_base_na_rigid`.
-        design_modality: ODesign modality such as `rna`, `dna`, `protein`, or `ligand`.
-        exp_name: Optional experiment name override.
-        seeds_json: JSON list string of seeds.
-        n_sample: Number of generated samples per seed.
-        use_msa: Whether to enable MSA mode.
-        num_workers: Dataloader worker count.
-        cuda_visible_devices: Optional CUDA_VISIBLE_DEVICES override.
-        enable_partial_diff: Whether to enable ODesign partial diffusion mode.
-        snr: Partial diffusion signal-to-noise ratio.
-        ckpt_root_dir: Optional checkpoint root directory override for the service.
-        data_root_dir: Optional data root directory override for the service.
-        timeout_seconds: Subprocess timeout for one ODesign inference request.
-        invfold_topk: Number of designed sequences per backbone structure.
-        invfold_temp: Inverse folding sampling temperature.
-        invfold_use_beam: Whether to use beam search in inverse folding.
-
-    Returns:
-        Dict with copied workspace artifacts, output metadata, and ODesign runtime info.
-
-    Raises:
-        ValueError: If arguments are invalid or the ODesign service is unreachable.
-    """
+"""
     if design_modality not in {"protein", "ligand", "dna", "rna"}:
         raise ValueError("design_modality must be one of: protein, ligand, dna, rna.")
     try:
@@ -4076,19 +3552,7 @@ def extract_rna_sequence_from_cif(
 
     Detects RNA vs DNA vs protein by checking for the O2' atom.
     Non-standard nucleotides are represented as 'N' with a warning recorded.
-
-    Args:
-        cif_filepath: CIF/MMCIF file path.
-        chain_id: Optional chain ID; if omitted the first RNA chain is selected.
-
-    Returns:
-        Dict with ``sequence``, ``chain_id``, ``residue_count``, ``is_rna``,
-        ``warnings``, and paths.
-
-    Raises:
-        ValueError: If no RNA chain is found or the specified chain does not exist.
-        ImportError: If biopython is not installed.
-    """
+"""
     try:
         from Bio.PDB.MMCIFParser import MMCIFParser
     except ImportError as exc:
@@ -4221,18 +3685,7 @@ def build_odesign_aptamer_input_json(
     """Build an ODesign input JSON for RNA aptamer design against a protein target.
 
     Constructs the JSON structure for ODesign ``odesign_base_na_rigid`` + ``rna`` modality.
-
-    Args:
-        protein_structure_path: Protein structure file path.
-        protein_chain_id: Protein chain ID.
-        protein_sequence_length: Length of the protein sequence.
-        hotspot_residues: Comma-separated hotspot residues.
-        aptamer_length: Target aptamer length in nt.
-        output_prefix: Optional filename prefix for the generated JSON.
-
-    Returns:
-        Dict with ``input_json_filepath`` and ``design_config``.
-    """
+"""
     prefix = output_prefix or "odesign_aptamer_input"
     design_config = [
         {
@@ -4321,23 +3774,7 @@ def predict_protein_structure_with_proteinx(
 
     Requires the ``proteinx_service`` microservice on port 8022.
     Pass a filepath under ``workspace/`` or an absolute server path.
-
-    Args:
-        filepath: FASTA file with protein sequence.
-        num_models: Number of inference samples to generate.
-        num_recycles: Pairformer cycles (ignored when Protenix use_default_params is true).
-        stop_at_score: pLDDT early-stop threshold (interface compat, not enforced).
-        msa_mode: MSA mode. 'none' disables MSA; 'protenix' enables Protenix MSA server.
-        service_url: ProteinX microservice URL.
-        timeout_seconds: HTTP timeout (default 7200 s = 2 h).
-
-    Returns:
-        Dict with ``pdb_filepath``, ``mean_pae``, ``mean_plddt``,
-        ``ranking_confidence``, ``model_scores``.
-
-    Raises:
-        ValueError: If the HTTP call fails or the service reports an error.
-    """
+"""
     seq_abs = _absolute_path_under_project(filepath)
     try:
         response = requests.post(
@@ -4399,19 +3836,7 @@ def predict_rna_protein_complex_with_proteinx(
     """
 
     Predict RNA-protein complex structure using ProteinX (Protenix).
-
-    Args:
-        protein_filepath: FASTA file with protein sequence.
-        rna_filepath: FASTA file with RNA sequence.
-        num_models: Number of inference samples.
-        num_recycles: Pairformer cycles.
-        msa_mode: MSA mode ('none' disables MSA).
-        service_url: ProteinX complex prediction endpoint.
-        timeout_seconds: HTTP timeout in seconds.
-
-    Returns:
-        Dict with pdb_filepath, mean_plddt, ipTM, ranking_confidence, model_scores.
-    """
+"""
     protein_abs = _absolute_path_under_project(protein_filepath)
     rna_abs = _absolute_path_under_project(rna_filepath)
 
@@ -4473,17 +3898,7 @@ def analyze_rna_protein_interface(
     Analyze RNA-protein interface from a complex structure.
 
     Computes interface contacts, buried SASA, hydrogen bonds, and salt bridges.
-
-    Args:
-        complex_pdb_filepath: Path to complex PDB/CIF.
-        protein_chain_id: Protein chain ID.
-        rna_chain_id: RNA chain ID.
-        contact_cutoff: Distance cutoff in Angstroms.
-
-    Returns:
-        Dict with interface_contacts, buried_sasa, hydrogen_bonds, salt_bridges,
-        interface_area, protein_surface_area, rna_surface_area.
-    """
+"""
     try:
         from Bio.PDB import PDBParser, MMCIFParser
     except ImportError as exc:
@@ -4660,19 +4075,7 @@ def identify_protein_binding_hotspots(
       4. Filter basic residues (Arg/Lys/His).
       5. Spatial clustering of exposed basic residues with DBSCAN (eps=10 A, min_samples=2).
       6. Select largest patch and output its center residues as hotspots.
-
-    Args:
-        protein_structure_path: Path to the protein structure file (PDB or CIF).
-        chain_id: Chain ID to analyze; if omitted the first chain is used.
-
-    Returns:
-        Dict with ``hotspot_residues``, ``hotspot_patch_size``,
-        ``patch_center_coords``, ``exposed_basic_count``.
-
-    Raises:
-        ValueError: If the file is unreadable, chain not found, or no suitable residues.
-        ImportError: If biopython, freesasa, or scikit-learn is not installed.
-    """
+"""
     try:
         from Bio.PDB import PDBParser, PDBIO, MMCIFParser
         from Bio.PDB.PDBExceptions import PDBConstructionException
@@ -4857,21 +4260,7 @@ def score_structure_alignment(
     Uses biopython PDBParser and SVDSuperimposer for alignment.
     If residue counts differ, aligns the shorter length and records a warning.
     Missing atoms are skipped with a warning.
-
-    Args:
-        reference_pdb_filepath: Reference structure PDB path.
-        predicted_pdb_filepath: Predicted structure PDB path.
-        chain_id: Optional chain ID; auto-detects first chain if omitted.
-        atom_type: Atom name used for superposition (default C1' for RNA).
-
-    Returns:
-        Dict with ``rmsd``, ``tm_score``, ``aligned_residue_count``,
-        ``superposition_matrix``, ``warning``.
-
-    Raises:
-        ValueError: If chain not found, atom missing, or parsing fails.
-        ImportError: If biopython is not installed.
-    """
+"""
     try:
         from Bio.PDB import PDBParser
         from Bio.PDB.PDBExceptions import PDBConstructionException
@@ -4999,21 +4388,6 @@ def score_structure_alignment(
 # ---------------------------------------------------------------------------
 
 
-class WorkflowDemoEchoInput(BaseModel):
-    """Input for the optional registry/executor smoke-test tool."""
-
-    text: str = Field(..., min_length=1, description="Short text for workflow demo invocations.")
-
-
-@tool(args_schema=WorkflowDemoEchoInput)
-def workflow_demo_echo(text: str) -> dict[str, Any]:
-    """Minimal demo tool: echo string and length. Not used by production routing by default.
-
-    """
-
-    return {"echo": text, "length": len(text), "model": "workflow_demo_echo"}
-
-
 SIRNA_LANGCHAIN_TOOLS: list[Any] = [
     design_sirna_with_evitar,
     compute_sirna_duplex_binding_vienna,
@@ -5067,5 +4441,3 @@ GENERAL_LANGCHAIN_TOOLS: list[Any] = [
 ALL_LANGCHAIN_AGENT_TOOLS: list[Any] = (
     SIRNA_LANGCHAIN_TOOLS + CRISPR_LANGCHAIN_TOOLS + GENERAL_LANGCHAIN_TOOLS
 )
-
-WORKFLOW_DEMO_LANGCHAIN_TOOLS: list[Any] = [workflow_demo_echo]

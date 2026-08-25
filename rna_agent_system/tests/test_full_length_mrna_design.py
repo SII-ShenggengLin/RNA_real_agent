@@ -364,13 +364,6 @@ def _make_registry_for_eval() -> MagicMock:
             output={"cai_score": 0.85},
         )
 
-    def _codonw_invoke(args, state=None):
-        return CapabilityResult(
-            success=True,
-            tool_name="analyze_cds_codon_metrics_with_codonw_slim",
-            output={"cai_score": 0.80, "mfe_kcal_per_mol": -20.0},
-        )
-
     def _ires_invoke(args, state=None):
         return CapabilityResult(
             success=True,
@@ -404,7 +397,6 @@ def _make_registry_for_eval() -> MagicMock:
         "predict_rna_secondary_structure_with_linearfold": MagicMock(),
         "compute_rna_sequence_gc_content": MagicMock(),
         "compute_cai_for_cds_sequence": MagicMock(),
-        "analyze_cds_codon_metrics_with_codonw_slim": MagicMock(),
         "predict_putative_ires_with_iresfinder": MagicMock(),
         "predict_mrna_stability_with_rnastop": MagicMock(),
         "predict_5utr_mrl_with_gemorna": MagicMock(),
@@ -418,7 +410,6 @@ def _make_registry_for_eval() -> MagicMock:
     )
     caps["compute_rna_sequence_gc_content"].invoke = _gc_invoke
     caps["compute_cai_for_cds_sequence"].invoke = _cai_invoke
-    caps["analyze_cds_codon_metrics_with_codonw_slim"].invoke = _codonw_invoke
     caps["predict_putative_ires_with_iresfinder"].invoke = _ires_invoke
     caps["predict_mrna_stability_with_rnastop"].invoke = _rnastop_invoke
     caps["predict_5utr_mrl_with_gemorna"].invoke = _mrl_invoke

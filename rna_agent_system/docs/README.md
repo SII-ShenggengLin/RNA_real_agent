@@ -2,7 +2,7 @@
 
 > **Project root**: `rna_agent_system/`  
 > **Readers**: human developers / AI agents  
-> **Last updated**: 2026-08-22 (Interface Lock Policy removed)
+> **Last updated**: 2026-08-22 (repo-wide simplification pass)
 
 ---
 
@@ -215,6 +215,6 @@ For workflow deep-dives, see [`WORKFLOWS.md`](WORKFLOWS.md).
 | [`MANUSCRIPT.md`](MANUSCRIPT.md) | Experiment manual: benchmark/anchor assets, pilot-first protocol, data availability |
 | [`TOOLS.md`](TOOLS.md) | Per-tool specs, port registry, microservice deployment notes |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Environment setup, testing recipes, curl examples |
-| [`CHANGELOG.md`](CHANGELOG.md) | Change logs for interfaces and major workflows |
-| [`DECISIONS.md`](DECISIONS.md) | Decisions, concluded directions and do-not-repeat register |
+| [`CHANGELOG.md`](CHANGELOG.md) | Current interface state + condensed change-era register |
+| [`DECISIONS.md`](DECISIONS.md) | Do-not-repeat register, established results, timeline |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Coding standards, new-tool procedure, commit conventions |

@@ -1,9 +1,11 @@
 # Paper Fact Sheet — Verified Numbers from `experiments/results/`
 
-> **Provenance note (2026-08-18)**: the experiment drivers named below
-> were deleted in the system simplification pass (DECISIONS.md (n)); every
-> number cited here is backed by the retained verdict/run files under
-> `experiments/results/`.
+> **Provenance note (2026-08-18, extended 2026-08-22)**: the experiment
+> drivers, one-off repair scripts and HANDOFF notes named below
+> (`run_e*_gennav_aptamer.py`, `swap_fig2a_targets.py`, `e3_adjudicate.py`,
+> `HANDOFF_2026-08-10_*.md`, …) were deleted in the simplification passes
+> (DECISIONS.md (n)/(y)); every number cited here is backed by the retained
+> verdict/run files under `experiments/results/`.
 
 > **Purpose**: fact-check table for manuscript writing. Every number below was copied verbatim from
 > the named result file (JSON field path given); nothing was recomputed. Claims listed in the
@@ -18,7 +20,7 @@
 
 | Claim | File evidence | Status |
 |---|---|---|
-| 41 scientific tools | `agent_core/tool_specs.py`: `len(TOOL_SPECS) == 42` = 41 scientific + 1 demo (`workflow_demo_echo`); `agent_core/tool_inventory.py` manifest: `scientific_tools: 41` (recounted 2026-08-18 after the simplification pass removed 12 dead tools; pre-cleanup 54 verified 2026-08-10). Paper convention: "41 scientific tools"; registered total incl. demo is 42 | VERIFIED |
+| 41 scientific tools | `agent_core/tool_specs.py`: `len(TOOL_SPECS) == 41`, all production (demo tool retired 2026-08-22); `agent_core/tool_inventory.py` manifest: `scientific_tools: 41` (recounted 2026-08-18 after the simplification pass removed 12 dead tools — pre-cleanup 54 verified 2026-08-10). Paper convention: "41 scientific tools" = registered total | VERIFIED |
 | 21 microservices, ports 8003–8024 | `microservices/` contains 21 service directories (recounted 2026-08-18; 22 before the codonw-slim service removal) | VERIFIED |
 | 11 workflows | `docs/ARCHITECTURE.md` §Layer 2 ("All 11 workflows"); `agent_core/workflows/` has 11 workflow classes (mrna_cds_design, full_length_mrna_design, mrna_sequence_scoring, sirna_design, sgrna_design, aso_target_screening, ires_prediction, rna_aptamer_design, rna_secondary_structure_design, rna_tertiary_structure_design, rna_small_molecule_interaction) | VERIFIED |
 | "20 external-repo **submodules**" | `rna_agent_system/external_repos/` contains **20 directories**, but `.gitmodules` registers only **17 submodule paths** (EGARPS, Protenix, RiboDiffusion are plain directories, not registered submodules) | **MISMATCH → correct to "20 external repos vendored under `external_repos/`, 17 of them registered git submodules"** |
@@ -332,7 +334,7 @@
 
 ## 6. Top-20 key numbers the paper can cite directly
 
-1. Platform coverage: **210/210** benchmark tasks succeed across **11 workflows, 54 tools, 22 local microservices (ports 8003–8024)** (`fig2_summary.json` total, refreshed 2026-08-11; TOOLS.md §1). *Scale as of that refresh; the 2026-08-18 simplification pass later reduced the platform to 42 registered tools (41 scientific + 1 demo) / 21 services with the 210/210 workflow set unchanged — the registered next step regenerates these panels against the gated platform.*
+1. Platform coverage: **210/210** benchmark tasks succeed across **11 workflows, 54 tools, 22 local microservices (ports 8003–8024)** (`fig2_summary.json` total, refreshed 2026-08-11; TOOLS.md §1). *Scale as of that refresh; the 2026-08-18 simplification pass later reduced the platform to 41 registered tools / 21 services with the 210/210 workflow set unchanged — the registered next step regenerates these panels against the gated platform.*
 2. Designed CDS CAI median **0.7454** vs WT **0.7286** vs random-synonymous **0.6723** (n = 20/20/200; OTC/PDGFB replaced the two oversized targets 2026-08-11); WT > random p = **4.02e-07**, δ = 0.688 (`fig2_summary.json` fig2a_cds_nulls).
 3. Secondary-structure inverse folding exact match **22/25 (0.88)** (`fig2_summary.json` fig2e).
 4. IRES AUROC **0.762** (95% CI [0.429, 0.98], 3 pos / 49 neg) (`fig2_summary.json` fig2i).

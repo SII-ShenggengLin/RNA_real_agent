@@ -91,7 +91,7 @@ power — driven by E14, heterogeneity acknowledged (E15: b=14/c=6).
 - Verdicts: `experiments/results/e{12,13,14,15}_verdict_s{0,1,2}.json`
 - Append-only run records: `experiments/results/e{12,13,14,15}_runs_s{0,1,2}.jsonl`
 - Audit trails: `experiments/results/e{12,13,14,15}_audit/`
-- Iteration-path evidence: `experiments/results/e14_runs_s{0,2}_v{1,2}.jsonl`, `e14_audit_v{1,2}/`
-- Closure analyses: `docs/FIX_2026-08-12_DUAL_GENERALIZATION.md` appendices I–N
+- Closure analyses: registered in `docs/DECISIONS.md` Part 1 (i) and Part 3
+  (E11–E13 entries); the appendix document was deleted with its era (2026-08-18)
 - Fact-check table: `docs/PAPER_FACT_SHEET.md`
 - Decisions register: `docs/DECISIONS.md` rows 9–14, Part 1 (f), Part 3 timeline

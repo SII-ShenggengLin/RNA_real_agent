@@ -39,7 +39,7 @@ EXPECTED_PENDING_ORACLES = {
     "score_crispr_off_target_with_crisot": ("crisot_off_target_score", "ranking_objective", "sgrna_design"),
 }
 
-EXPECTED_STATUS_COUNTS = {"production": 41, "experiment_only": 0, "reserved": 0, "demo": 1}
+EXPECTED_STATUS_COUNTS = {"production": 41, "experiment_only": 0, "reserved": 0}
 
 
 def _langchain_tool_names() -> set[str]:
@@ -57,7 +57,7 @@ def test_every_langchain_tool_has_a_spec_with_kind() -> None:
     from agent_core.tool_specs import TOOL_SPECS
 
     tool_names = _langchain_tool_names()
-    assert len(tool_names) == 42
+    assert len(tool_names) == 41
     assert set(TOOL_SPECS) == tool_names, "tools.py @tool set and TOOL_SPECS keys drifted"
     for name, spec in TOOL_SPECS.items():
         assert isinstance(spec.kind, ToolKind), f"{name}: kind not set"
@@ -117,17 +117,16 @@ def test_pending_oracles_reviewed_but_never_blocked(tmp_path: Path) -> None:
 
 
 def test_inventory_statuses_complete_and_pinned() -> None:
-    from agent_core.tool_inventory import DEMO_TOOLS, RESERVED_TOOLS, build_inventory
+    from agent_core.tool_inventory import RESERVED_TOOLS, build_inventory
 
     manifest = build_inventory()  # raises InventoryError on unclassified tools
-    assert manifest["summary"]["total_tools"] == 42
+    assert manifest["summary"]["total_tools"] == 41
     assert manifest["summary"]["status"] == EXPECTED_STATUS_COUNTS
 
     by_status: dict[str, set[str]] = {}
     for tool in manifest["tools"]:
         by_status.setdefault(tool["status"], set()).add(tool["name"])
 
-    assert by_status["demo"] == set(DEMO_TOOLS)
     assert by_status.get("reserved", set()) == set(RESERVED_TOOLS)
     assert by_status.get("experiment_only", set()) == set()
     # Every reserved tool genuinely lacks a production caller.

@@ -1,7 +1,7 @@
 # Deployment & Testing Guide
 
 > **Scope**: environment setup, deployment procedures, testing recipes, and microservice curl examples.
-> **Last updated**: 2026-08-18
+> **Last updated**: 2026-08-22
 
 ---
 

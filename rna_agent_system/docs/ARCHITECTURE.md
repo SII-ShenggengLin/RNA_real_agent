@@ -1,7 +1,7 @@
 # Architecture & Core Interfaces
 
 > **Scope**: design principles, seven-layer architecture, core module APIs, routing strategy, and workflow–quality co-design.  
-> **Last updated**: 2026-08-18 (BMC framework removed — see DECISIONS.md (m))
+> **Last updated**: 2026-08-22 (repo-wide simplification pass — see DECISIONS.md (y))
 
 ---
 

@@ -57,7 +57,7 @@ def test_all_workflow_models_build():
     from agent_core.tool_executor import build_default_tool_registry
 
     runner = AgentRunner(
-        executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+        executor=ToolExecutor(build_default_tool_registry()),
     )
     for wf_name, wf in runner.workflow_registry.items():
         if not hasattr(wf, "input_model") or wf.input_model is None:

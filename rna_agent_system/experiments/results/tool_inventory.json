@@ -1,17 +1,16 @@
 {
   "schema_version": "tool_inventory_v1",
   "summary": {
-    "total_tools": 42,
+    "total_tools": 41,
     "scientific_tools": 41,
     "status": {
       "production": 41,
       "experiment_only": 0,
-      "reserved": 0,
-      "demo": 1
+      "reserved": 0
     },
     "kind": {
       "compute": 16,
-      "utility": 3,
+      "utility": 2,
       "generator": 11,
       "predictor": 12
     },
@@ -753,17 +752,6 @@
       "production_callers": [
         "agent_core/workflows/rna_tertiary_structure_design.py"
       ],
-      "experiment_callers": []
-    },
-    {
-      "name": "workflow_demo_echo",
-      "display_name": "Workflow Demo Echo",
-      "kind": "utility",
-      "oracle": null,
-      "service": null,
-      "status": "demo",
-      "reserved_reason": null,
-      "production_callers": [],
       "experiment_callers": []
     }
   ]

@@ -12,7 +12,7 @@ from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
 @pytest.fixture
 def runner() -> AgentRunner:
     return AgentRunner(
-        executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+        executor=ToolExecutor(build_default_tool_registry()),
     )
 
 
@@ -172,7 +172,7 @@ def test_run_form_preserves_previous_workflow_result():
             )
 
     runner = AgentRunner(
-        executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+        executor=ToolExecutor(build_default_tool_registry()),
         session_memory=SessionMemory(),
     )
     runner.specialist_registry["mock_workflow"] = SpecialistAgent(

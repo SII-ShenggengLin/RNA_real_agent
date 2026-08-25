@@ -720,8 +720,7 @@ class IRESEvaluator(BaseEvaluator):
         return {}
 
 
-# Full-length ddG window definitions for the 5'UTR-CDS junction (report-only
-# metric; aligned with experiments/junction_ddg_pilot_eval.py, Phase 0 pilot).
+# Full-length ddG window definitions for the 5'UTR-CDS junction (report-only metric).
 _DDG_W1_UPSTREAM_NT = 6
 _DDG_W1_DOWNSTREAM_NT = 9   # from CDS start -> 15 nt AUG/Kozak context
 _DDG_W2_UTR_NT = 60

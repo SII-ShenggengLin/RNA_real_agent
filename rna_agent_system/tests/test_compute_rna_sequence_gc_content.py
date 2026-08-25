@@ -5,17 +5,16 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from agent_core.file_manager import PROJECT_ROOT
+from agent_core.file_manager import PROJECT_ROOT, _GLOBAL_WM
 from agent_core.tools import compute_rna_sequence_gc_content
 
 
 @pytest.fixture()
 def gc_sample_filepath():
-    ws = PROJECT_ROOT / "workspace"
-    ws.mkdir(parents=True, exist_ok=True)
+    ws = _GLOBAL_WM.base_dir
     name = "test_gc_langchain_demo.fasta"
     (ws / name).write_text(">demo\nAUGCAUAUGCAU\n", encoding="utf-8")
-    return f"workspace/{name}"
+    return str((ws / name).relative_to(PROJECT_ROOT))
 
 
 def test_compute_rna_sequence_gc_content_returns_dict(gc_sample_filepath):

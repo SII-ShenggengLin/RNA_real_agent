@@ -55,20 +55,12 @@ def _summarize_payload(payload: Any) -> str:
     return _truncate(text, limit=600)
 
 
-def build_default_tool_registry(*, include_demo: bool = False) -> ToolRegistry:
-    """Populate registry with LangChain tools from ``agent_core.tools``.
-
-    Parameters
-    ----------
-    include_demo:
-        When True, also registers ``workflow_demo_echo`` for smoke tests.
-    """
+def build_default_tool_registry() -> ToolRegistry:
+    """Populate registry with the production LangChain tools from ``agent_core.tools``."""
 
     from agent_core import tools as tools_mod
 
     names = list(tools_mod.ALL_LANGCHAIN_AGENT_TOOLS)
-    if include_demo:
-        names.extend(tools_mod.WORKFLOW_DEMO_LANGCHAIN_TOOLS)
     registry = ToolRegistry()
     registry.register_many(names)
     return registry

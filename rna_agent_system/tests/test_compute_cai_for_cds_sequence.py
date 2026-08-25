@@ -4,27 +4,26 @@ import json
 
 import pytest
 
-from agent_core.file_manager import PROJECT_ROOT
+from agent_core.file_manager import PROJECT_ROOT, _GLOBAL_WM
 from agent_core.sequence_utils import build_cai_weights, compute_cai, normalize_cds_sequence
 from agent_core.tools import compute_cai_for_cds_sequence
 
 
+def _scratch_rel(name: str, content: str) -> str:
+    ws = _GLOBAL_WM.base_dir
+    (ws / name).write_text(content, encoding="utf-8")
+    return str((ws / name).relative_to(PROJECT_ROOT))
+
+
 @pytest.fixture()
 def cds_sample_filepath():
-    ws = PROJECT_ROOT / "workspace"
-    ws.mkdir(parents=True, exist_ok=True)
-    name = "test_cai_demo_cds.fasta"
     # A short CDS with known composition (human-optimized EF1A tag: GSKEE)
     # GGC AGC AAA GAG GAG  -> 5 codons
-    (ws / name).write_text(">demo_cds\nGGCAGCAAAGAGGAG\n", encoding="utf-8")
-    return f"workspace/{name}"
+    return _scratch_rel("test_cai_demo_cds.fasta", ">demo_cds\nGGCAGCAAAGAGGAG\n")
 
 
 @pytest.fixture()
 def custom_table_filepath():
-    ws = PROJECT_ROOT / "workspace"
-    ws.mkdir(parents=True, exist_ok=True)
-    name = "test_custom_codon_table.json"
     # Uniform usage: every codon gets fraction 1.0 / num_synonymous
     # For simplicity, just define a tiny table with equal fractions per aa group.
     table = {
@@ -42,8 +41,7 @@ def custom_table_filepath():
         "GAG": {"aa": "E", "fraction": 0.5},
         "GAA": {"aa": "E", "fraction": 0.5},
     }
-    (ws / name).write_text(json.dumps(table), encoding="utf-8")
-    return f"workspace/{name}"
+    return _scratch_rel("test_custom_codon_table.json", json.dumps(table))
 
 
 def test_compute_cai_for_cds_sequence_returns_dict(cds_sample_filepath):
@@ -86,12 +84,10 @@ def test_compute_cai_with_custom_table(cds_sample_filepath, custom_table_filepat
 
 
 def test_compute_cai_invalid_cds_length_raises():
-    ws = PROJECT_ROOT / "workspace"
-    name = "test_cai_bad_length.fasta"
-    (ws / name).write_text(">bad\nAUGCA\n", encoding="utf-8")
+    bad = _scratch_rel("test_cai_bad_length.fasta", ">bad\nAUGCA\n")
     with pytest.raises(ValueError, match="multiple of 3"):
         compute_cai_for_cds_sequence.invoke(
-            {"filepath": f"workspace/{name}", "species": "human"}
+            {"filepath": bad, "species": "human"}
         )
 
 

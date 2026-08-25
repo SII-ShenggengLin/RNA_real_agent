@@ -633,16 +633,6 @@ class CaiForCdsOutput(_OutBase):
     model: str
 
 
-class WorkflowDemoEchoOutput(_OutBase):
-    """Workflow demo echo output schema.
-
-    """
-
-    echo: str
-    length: int
-    model: str
-
-
 TOOL_SPECS: Dict[str, ToolSpec] = {
     "compute_sirna_duplex_binding_vienna": ToolSpec(
         identity="compute_sirna_duplex_binding_vienna",
@@ -1674,36 +1664,6 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
                 title="CAI of a human CDS",
                 input={"filepath": "workspace/cds.fa", "species": "human"},
                 output_excerpt={"cai_score": 0.85, "species": "Homo sapiens", "codon_count": 100},
-            )
-        ],
-    ),
-    "workflow_demo_echo": ToolSpec(
-        identity="workflow_demo_echo",
-        kind=ToolKind.utility,
-
-        display_name="Workflow Demo Echo",
-        version="0.1.0",
-        source="internal",
-        transport=ToolTransport.python_api,
-        endpoint="",
-        capabilities=[
-            "Minimal echo tool for registry/executor smoke tests.",
-        ],
-        limitations=[
-            "Not used by production routing by default.",
-            "Does not perform any real RNA computation.",
-        ],
-        task_tags=["demo", "workflow_test"],
-        requires=[],
-        produces=["echo", "length"],
-        input_model=tool_wrappers.WorkflowDemoEchoInput,
-        output_model=WorkflowDemoEchoOutput,
-        status=ToolStatus.available,
-        examples=[
-            ToolExample(
-                title="Echo a short string",
-                input={"text": "hello"},
-                output_excerpt={"echo": "hello", "length": 5},
             )
         ],
     ),

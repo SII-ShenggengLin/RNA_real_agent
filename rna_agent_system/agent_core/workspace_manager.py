@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+# Optional deployment/test override for the default workspace base directory.
+# Honoured only when the caller did not pass an explicit ``base_dir``.
+WORKSPACE_BASE_ENV = "RNADA_WORKSPACE_BASE"
 
 
 class WorkspaceManager:
@@ -22,6 +27,8 @@ class WorkspaceManager:
     """
 
     def __init__(self, base_dir: str = "workspace") -> None:
+        if base_dir == "workspace":
+            base_dir = os.environ.get(WORKSPACE_BASE_ENV, "workspace")
         self.base_dir = PROJECT_ROOT / base_dir
 
     def _session_dir_path(self, session_id: str) -> Path:

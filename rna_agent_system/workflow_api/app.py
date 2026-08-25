@@ -23,7 +23,7 @@ app = FastAPI(
 )
 
 _agent_runner = AgentRunner(
-    executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+    executor=ToolExecutor(build_default_tool_registry()),
 )
 
 

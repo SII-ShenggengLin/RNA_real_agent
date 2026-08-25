@@ -1,7 +1,7 @@
 # RNADesignAgent — Experiment Manual
 
 > **Scope**: benchmark/anchor assets, the pilot-first protocol (still in force), and the data-availability register for both experiment campaigns.
-> **Last updated**: 2026-08-10 (v4 — condensed rewrite)
+> **Last updated**: 2026-08-22
 
 ---
 
@@ -174,6 +174,6 @@ serve it), never a model-quality result. See `DECISIONS.md` Part 1(d).
   (006–024: original batch; 025–036: batch-B fresh-data batch incl. GenNav
   navigation runs).
 - Agent-core suite: `PYTHONPATH="$(pwd):$PYTHONPATH" python -m pytest tests/ -x`
-  (baseline 496 passed).
+  (baseline 635 passed, 2026-08-22).
 - Conventions: JSONL = one record per run; analysis never reads session logs
   directly — only the JSONLs/summaries above.

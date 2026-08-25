@@ -46,7 +46,7 @@ def test_sgrna_design_no_seed_raises_clear_error():
     )
 
     registry = build_default_capability_registry(
-        ToolExecutor(build_default_tool_registry(include_demo=False))
+        ToolExecutor(build_default_tool_registry())
     )
     wf = SgRnaDesignWorkflow(registry)
     inp = SgRnaDesignInput(target_sequence="A" * 60, off_target_sequences=[])
@@ -65,7 +65,7 @@ def test_sgrna_design_run_surfaces_seed_error_in_summary():
     )
 
     registry = build_default_capability_registry(
-        ToolExecutor(build_default_tool_registry(include_demo=False))
+        ToolExecutor(build_default_tool_registry())
     )
     wf = SgRnaDesignWorkflow(registry)
     # Bypass service pre-flight so the test does not depend on the CRGPT
@@ -112,7 +112,7 @@ def stream_runner():
     from agent_core.tool_executor import ToolExecutor, build_default_tool_registry
 
     runner = AgentRunner(
-        executor=ToolExecutor(build_default_tool_registry(include_demo=False)),
+        executor=ToolExecutor(build_default_tool_registry()),
         quality_review_enabled=False,
     )
     runner.specialist_registry["mock_hard_fail"] = SpecialistAgent(

@@ -238,7 +238,7 @@ def test_ires_generation_tool_failure_is_a_hard_failure(tmp_path, monkeypatch):
     )
 
     registry = build_default_capability_registry(
-        ToolExecutor(build_default_tool_registry(include_demo=False))
+        ToolExecutor(build_default_tool_registry())
     )
     monkeypatch.setattr(
         "agent_core.capabilities.base.Capability.invoke",

@@ -1,7 +1,7 @@
 # Workflows Reference
 
 > **Scope**: all Layer-2 domain workflows — their pipelines, scoring formulas, and quality review strategies.  
-> **Last updated**: 2026-07-06
+> **Last updated**: 2026-08-22
 
 ---
 

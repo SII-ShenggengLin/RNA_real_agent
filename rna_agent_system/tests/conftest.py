@@ -69,6 +69,45 @@ def registry(executor):
     return build_default_capability_registry(executor)
 
 
+@pytest.fixture(autouse=True, scope="session")
+def _isolated_workspace():
+    """Keep all test scratch out of the real workspace.
+
+    Workflows and tools invoked without a session id write scratch artifacts
+    (``save_sequence`` / ``save_text_file``) to the workspace base directory;
+    at suite scale this leaked >100k stray files into ``workspace/``.  Every
+    default workspace base is redirected to ``workspace/_tests`` for the whole
+    run and removed afterwards — including subprocesses (the env-var override
+    is inherited).  Managers constructed with an explicit base directory are
+    left untouched.
+    """
+    import os
+    import shutil
+
+    import agent_core.file_manager as fm
+    from agent_core.workspace_manager import WORKSPACE_BASE_ENV
+
+    scratch = fm.PROJECT_ROOT / "workspace" / "_tests"
+    shutil.rmtree(scratch, ignore_errors=True)
+    (scratch / "sessions").mkdir(parents=True)
+
+    saved_base = fm._GLOBAL_WM.base_dir
+    had_env = WORKSPACE_BASE_ENV in os.environ
+    saved_env = os.environ.get(WORKSPACE_BASE_ENV)
+
+    fm._GLOBAL_WM.base_dir = scratch
+    os.environ[WORKSPACE_BASE_ENV] = str(scratch)
+    try:
+        yield scratch
+    finally:
+        if had_env:
+            os.environ[WORKSPACE_BASE_ENV] = saved_env  # type: ignore[assignment]
+        else:
+            os.environ.pop(WORKSPACE_BASE_ENV, None)
+        fm._GLOBAL_WM.base_dir = saved_base
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 @pytest.fixture(autouse=True)
 def _workspace_dir():
     """Ensure the workspace directory exists before each test.

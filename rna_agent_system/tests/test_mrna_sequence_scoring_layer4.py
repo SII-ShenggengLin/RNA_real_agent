@@ -339,7 +339,7 @@ def test_runner_registry_contains_scoring_workflow():
     from agent_core.runner import AgentRunner
     from agent_core.tool_executor import build_default_tool_registry
 
-    executor = ToolExecutor(build_default_tool_registry(include_demo=False))
+    executor = ToolExecutor(build_default_tool_registry())
     runner = AgentRunner(executor)
 
     assert "mrna_sequence_scoring" in runner.workflow_registry
@@ -356,7 +356,7 @@ def test_run_mrna_sequence_scoring_functional_entry():
     """``run_mrna_sequence_scoring`` should work without an explicit registry/executor."""
     from agent_core.tool_executor import build_default_tool_registry
 
-    reg = build_default_tool_registry(include_demo=False)
+    reg = build_default_tool_registry()
     ex = ToolExecutor(reg)
     # The default registry may not have all tools, so we register stubs
     reg.register(StubGcTool())

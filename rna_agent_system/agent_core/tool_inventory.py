@@ -30,8 +30,6 @@ RESERVED_TOOLS: dict[str, str] = {
     # LinearFold evaluate/zuker modes, batch LinearDesign, codonw-slim) were
     # deleted together with their tools. New reservations go here.
 }
-DEMO_TOOLS: frozenset[str] = frozenset({"workflow_demo_echo"})
-
 _PRODUCTION_DIRS = (
     _PROJECT_ROOT / "agent_core" / "workflows",
     _PROJECT_ROOT / "agent_core" / "agents",
@@ -113,8 +111,6 @@ def build_inventory() -> dict[str, Any]:
             status = "production"
         elif exp.get(name):
             status = "experiment_only"
-        elif name in DEMO_TOOLS:
-            status = "demo"
         elif name in RESERVED_TOOLS:
             status = "reserved"
         else:
@@ -150,7 +146,7 @@ def build_inventory() -> dict[str, Any]:
             }
         )
 
-    status_counts = {s: sum(1 for t in tools if t["status"] == s) for s in ("production", "experiment_only", "reserved", "demo")}
+    status_counts = {s: sum(1 for t in tools if t["status"] == s) for s in ("production", "experiment_only", "reserved")}
     kind_counts: dict[str, int] = {}
     for t in tools:
         kind_counts[t["kind"]] = kind_counts.get(t["kind"], 0) + 1
@@ -158,7 +154,7 @@ def build_inventory() -> dict[str, Any]:
         "schema_version": "tool_inventory_v1",
         "summary": {
             "total_tools": len(tools),
-            "scientific_tools": len(tools) - status_counts.get("demo", 0),
+            "scientific_tools": len(tools),
             "status": status_counts,
             "kind": kind_counts,
             "service_backed": sum(1 for t in tools if t["service"] is not None),
