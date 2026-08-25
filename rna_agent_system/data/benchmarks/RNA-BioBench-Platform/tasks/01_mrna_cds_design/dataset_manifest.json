@@ -96,5 +96,11 @@
       "file": "01_mrna_cds_design_019.json",
       "sha256": "99f5367d3c1e34173e9c1663d63243031e331a3bfebbb666d2452ff1b7a190f9"
     }
-  ]
+  ],
+  "task_count": 19,
+  "category_counts": {
+    "basic": 2,
+    "edge": 13,
+    "full": 4
+  }
 }

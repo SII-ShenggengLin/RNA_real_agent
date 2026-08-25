@@ -1,7 +1,7 @@
 {
   "task_id": "08_rna_aptamer_design_003_thrombin",
   "workflow": "rna_aptamer_design",
-  "category": "full-length",
+  "category": "full",
   "description": "Aptamer design against human thrombin (classic TBA target)",
   "input": {
     "protein_structure_path": "data/benchmarks/RNA-BioBench-Aptamer/structures/1hao.pdb",

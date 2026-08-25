@@ -76,5 +76,11 @@
       "file": "09_rna_small_molecule_020_gernabind_both_split.json",
       "sha256": "1f15666c8e47b004b33b851ef6dcbc12fad60afaad9d23c106d597993ae25bd1"
     }
-  ]
+  ],
+  "task_count": 15,
+  "category_counts": {
+    "basic": 2,
+    "edge": 10,
+    "full": 3
+  }
 }

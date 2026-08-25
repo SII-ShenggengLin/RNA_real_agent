@@ -8,6 +8,45 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-25 (z) — Experiment-programme reset: legacy campaigns deleted, RNADesign-210 audited+repaired, Exp 1 re-run 210/210
+
+User-directed reset (DECISIONS (z)): the architecture moved too much since
+the legacy campaigns, so **all paper experiments re-run against the frozen
+gated platform** with newly written drivers and figures; the legacy campaign
+drivers (`run_platform_quality_benchmark.py`, `run_e16_e17_e18_oracle_profiling.py`,
+`curate_*`), the `experiments/analysis` helpers, the `experiments/plots/paper_v5`
+figure programme and the legacy campaign results (fig2–fig7, E3–E15, P0–P3,
+junction line, PA regressions, caches/logs) are deleted. Retained: the
+packaged-SelfModel evidence chain (`e1_*_v2`, `e7_*`, `rnasmol_boundary_panel*`,
+`e16_e17_e18/`, `build_default_self_model.py`), `codon_tables/`,
+`tool_inventory.json`, `MODEL_API_USAGE.md`, the workspace audit trail.
+
+**RNADesign-210 dataset audit and repair** (`experiments/audit_rnadesign210.py`
++ `fix_rnadesign210.py`, report `results/rnadesign210_audit.json`): all 210
+task inputs validate against the current workflow Input models; benchmark
+manifest recounts (208→210, tertiary 18→20); category taxonomy normalized to
+basic/edge/full (was 14 ad-hoc values incl. BMC-era labels); the 12 IRES tasks
+rebuilt on real IRES-positive anchors (poliovirus 5′UTR for mode 0 — the old
+synthetic 5′UTR scores 0.458 < its own 0.5 task threshold and mode-0 scores
+of canonical IRES 5′UTRs peak ≈0.48, so the two mode-0 detection tasks use
+0.45 with the rationale recorded in-task; EMCV 5′UTR for mode 2; best window
+251–424 for mode 1); absolute IRES paths → repo-relative; stale junction-tool
+expected chains dropped; all expected chains regrounded from observed traces
+(`reground_tool_chains.py`; re-audit: 0 issues / 0 warnings).
+
+**Exp 1 (paper §2.2 experiment 1, Fig. 2a) executed**: pilot 10/11 (the one
+failure was the IRES data defect, fixed and verified 12/12 against the live
+service), then the full matrix — **210/210 successful across the 11 workflows**
+(primary arm `RNADA_CAPGATE=advisory`; five parallel lanes; GPU-pinned services
+via `experiments/exp1_bring_up_services.sh`; records and per-workflow medians
+in `results/exp1_rnadesign210/`). A 4-task **enforce probe** documents the
+gated-platform boundary as data: IRES tasks refuse with an explicit
+`GatedActionError`, small-molecule tasks fail cleanly with both oracles gated
+(`enforce_probe.jsonl`). **Fig 2a** rendered (per-task tile carpet + horizontal
+bar summary) from the new **unified palette**
+(`experiments/plots/palette.py`, the ten mandated colours; every experiment
+figure draws from it exclusively).
+
 ## 2026-08-25 — Paper figure-lettering unification (doc-only)
 
 All six figure legends in `docs/PAPER_DRAFT.md` re-lettered to

@@ -1,8 +1,0 @@
-{"event_type": "gate_decision", "payload": {"action_id": "e5_finalize", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T08:52:19.234611+00:00"}
-{"event_type": "gate_decision", "payload": {"action": "finalize", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T08:52:19.236236+00:00"}
-{"event_type": "gate_decision", "payload": {"action_id": "e5_select", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T17:48:04.435842+00:00"}
-{"event_type": "gate_decision", "payload": {"action": "select", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T17:48:04.436900+00:00"}
-{"event_type": "gate_decision", "payload": {"action_id": "e5_finalize", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T17:48:55.033440+00:00"}
-{"event_type": "gate_decision", "payload": {"action": "finalize", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T17:48:55.033732+00:00"}
-{"event_type": "gate_decision", "payload": {"action_id": "e5_finalize", "oracle": null, "use": "none", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T22:00:03.693337+00:00"}
-{"event_type": "gate_decision", "payload": {"action": "finalize", "verdict": "allow", "reason": "use=none does not drive ranking/screening decisions"}, "timestamp": "2026-08-08T22:00:03.693678+00:00"}

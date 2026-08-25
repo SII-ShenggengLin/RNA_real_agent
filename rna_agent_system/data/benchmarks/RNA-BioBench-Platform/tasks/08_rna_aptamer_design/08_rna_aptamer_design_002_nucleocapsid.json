@@ -1,7 +1,7 @@
 {
   "task_id": "08_rna_aptamer_design_002_nucleocapsid",
   "workflow": "rna_aptamer_design",
-  "category": "full-length",
+  "category": "full",
   "description": "Aptamer design against SARS-CoV-2 Nucleocapsid (BMC Type-II benchmark)",
   "input": {
     "protein_structure_path": "data/benchmarks/RNA-BioBench-Aptamer/structures/6m3m.pdb",

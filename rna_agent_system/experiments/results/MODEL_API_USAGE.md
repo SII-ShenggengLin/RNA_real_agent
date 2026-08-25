@@ -19,8 +19,11 @@
 
 ## 2. 按图的 LLM API 使用明细
 
+> **2026-08-25 reset**：上表历史行（图 2–7、P0–P3、E1–E8）对应的证据文件已随实验计划重置删除（DECISIONS (z)）；行保留作历史来源记录。重置计划的新实验自此行起追加。
+
 | 图 | LLM API | 说明 |
 |---|---|---|
+| **Exp 1 / 图 2a（RNADesign-210 全量基准，2026-08-25 重置运行，210/210）** | DeepSeek deepseek-v4-pro（同 §1 配置，temp 0.2） | 仅 QualityAgent 质量评审；3 个确定性工作流（aso 14 / scoring 13 / small-molecule 15 = 42 任务）无评审，其余 **168/210 任务全部产生质量评审记录**（`exp1_rnadesign210/lane_*.jsonl` 的 `quality_actions` 字段）；enforce 探针 4 任务未产生评审（工作流在评审前被门控拒绝）；token 未逐条采集（usage_available=false，按 §1 剖面估算整轮 <¥10）；证据 `experiments/results/exp1_rnadesign210/summary.json` |
 | 图 2（210 任务 + 空跑 + 文献面板） | DeepSeek deepseek-v4-pro | 仅被评审工作流的 QualityAgent；3 个确定性工作流（aso/scoring/small-mol）无评审、无 LLM 调用；1 个 sirna 任务被 QualityAgent 正确中止 |
 | 图 3（Type-I 消融 240 + 引导 18 + 锚点） | 同上 | 锚点打分为能力级工具直调，无 LLM |
 | 图 4（Type-II 消融 240 + 已知适配体 7 blocks） | 同上 | 已知适配体过链为能力级工具直调，无 LLM |

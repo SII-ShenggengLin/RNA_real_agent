@@ -13,9 +13,9 @@
   },
   "expected_tool_chain": [
     "compute_cai_for_cds_sequence",
+    "compute_rna_sequence_u_content",
     "design_mrna_cds_with_lineardesign",
-    "predict_mrna_stability_with_rnastop",
-    "compute_rna_sequence_u_content"
+    "predict_mrna_stability_with_rnastop"
   ],
   "evaluation_rubric": {
     "cds_generated": true

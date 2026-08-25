@@ -2,11 +2,11 @@
   "task_id": "11_ires_prediction_001_basic",
   "workflow": "ires_prediction",
   "category": "basic",
-  "description": "IRES prediction mode 0 (full sequence) with default parameters. window_size and step_size are omitted because they are only effective in mode 2.",
+  "description": "IRES prediction mode 0 (full sequence) on the authentic poliovirus type 1 5'UTR. Threshold 0.45 (below the 0.5 default): deployed-oracle full-sequence scores of canonical IRES 5'UTRs peak at ~0.48 (E16 profiling), so 0.5 yields no call on any known positive.",
   "input": {
-    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "sequence_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
     "iresfinder_mode": 0,
-    "probability_threshold": 0.5,
+    "probability_threshold": 0.45,
     "top_n_candidates": 5,
     "run_structural_validation": false
   },
@@ -15,8 +15,8 @@
   ],
   "evaluation_rubric": {
     "min_candidates": 1,
-    "probability_threshold": 0.5
+    "probability_threshold": 0.45
   },
-  "source": "Synthetic 5'UTR (400 nt, balanced GC content)",
+  "source": "Poliovirus type 1 5'UTR NC_002058.3:1-742 (external anchor ires_positive.fa)",
   "paper_reference": null
 }

@@ -126,5 +126,11 @@
       "file": "06_rna_secondary_structure_025_fixed_loop_constraint.json",
       "sha256": "c024aef6054211cafbf67444acf229eaf7c859472fb92925a94258f543623d69"
     }
-  ]
+  ],
+  "task_count": 25,
+  "category_counts": {
+    "basic": 1,
+    "edge": 21,
+    "full": 3
+  }
 }

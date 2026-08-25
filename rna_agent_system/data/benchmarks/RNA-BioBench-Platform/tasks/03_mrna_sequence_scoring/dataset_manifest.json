@@ -66,5 +66,11 @@
       "file": "03_mrna_sequence_scoring_013_skip_both.json",
       "sha256": "88c8654da5020d69c2bedeaf0fc848afe2d882dc7dca16ad49d1e2c6f3274803"
     }
-  ]
+  ],
+  "task_count": 13,
+  "category_counts": {
+    "basic": 1,
+    "edge": 11,
+    "full": 1
+  }
 }

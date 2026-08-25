@@ -57,5 +57,11 @@
       "task_id": "10_aso_target_screening_014_large_top_50",
       "file": "10_aso_target_screening_014_large_top_50.json"
     }
-  ]
+  ],
+  "task_count": 14,
+  "category_counts": {
+    "basic": 1,
+    "edge": 12,
+    "full": 1
+  }
 }

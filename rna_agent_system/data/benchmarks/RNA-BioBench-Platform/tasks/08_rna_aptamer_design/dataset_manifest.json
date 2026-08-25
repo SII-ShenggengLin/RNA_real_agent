@@ -91,5 +91,11 @@
       "file": "08_rna_aptamer_design_026_chain_b.json",
       "sha256": "7b62d439d7fd0e821ee4dc59a8f853ce49fab35303090766735982b58da5732e"
     }
-  ]
+  ],
+  "task_count": 18,
+  "category_counts": {
+    "basic": 1,
+    "edge": 14,
+    "full": 3
+  }
 }

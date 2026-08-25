@@ -151,5 +151,11 @@
       "file": "05_sgrna_design_030_both_seed_sources.json",
       "sha256": "f8966c5f2d8ecd7224aa2741e7c873cbeb3e31d08fc4a48a1a62ca46bcb926a0"
     }
-  ]
+  ],
+  "task_count": 30,
+  "category_counts": {
+    "basic": 1,
+    "edge": 28,
+    "full": 1
+  }
 }

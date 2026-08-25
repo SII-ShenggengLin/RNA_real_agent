@@ -1,7 +1,7 @@
 {
   "task_id": "10_aso_target_screening_012_max_step_10",
   "workflow": "aso_target_screening",
-  "category": "boundary",
+  "category": "edge",
   "description": "ASO screening with maximum window step=10 (boundary test, 18mer, step=10, top=5, RNAup)",
   "input": {
     "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",

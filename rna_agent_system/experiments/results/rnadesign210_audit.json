@@ -1,0 +1,24 @@
+{
+  "audit_date": "2026-08-25",
+  "total_tasks": 210,
+  "per_workflow": {
+    "01_mrna_cds_design": 19,
+    "02_full_length_mrna_design": 22,
+    "03_mrna_sequence_scoring": 13,
+    "04_sirna_design": 22,
+    "05_sgrna_design": 30,
+    "06_rna_secondary_structure": 25,
+    "07_rna_tertiary_structure": 20,
+    "08_rna_aptamer_design": 18,
+    "09_rna_small_molecule": 15,
+    "10_aso_target_screening": 14,
+    "11_ires_prediction": 12
+  },
+  "issues": [],
+  "warnings": [],
+  "feature_usage": {
+    "sirna_off_target_scan": 3,
+    "ires_structural_validation": 3
+  },
+  "navigation_tasks": []
+}

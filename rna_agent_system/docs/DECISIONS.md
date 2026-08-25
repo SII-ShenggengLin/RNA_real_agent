@@ -277,6 +277,43 @@ and stale service-run intermediates are deleted, not hoarded. The audit trail
 retired — 41 tools, all production. Docs keep current-state contracts and a
 condensed era register instead of per-day narrative. Do not reintroduce demo /
 echo tools or per-day narrative logs. Evidence: `docs/CHANGELOG.md` 2026-08-22 (i).
+**Partially superseded 2026-08-25 by (z)**: the experiment-programme reset
+deletes legacy campaign results; the SelfModel evidence chain and the platform
+audit trail are retained.
+
+### (z) Experiment-programme reset: all paper experiments re-run against the frozen gated platform (2026-08-25, user-directed)
+
+Architecture churn (BMC removal, CapGate production integration, GenNav
+wiring, ASF generalization, 2026-08-2x audits) invalidated the mixed-era
+evidence base, so the user reset the experiment programme: every experiment
+re-runs against the current architecture with newly written drivers and
+figures; legacy campaign drivers, plots and results are deleted (the retention
+clause of (n)/(y) is overridden for campaign artifacts only). **Retention
+boundary**: the packaged-SelfModel evidence chain stays
+(`e1_*_v2`, `e7_*`, `rnasmol_boundary_panel*`, `e16_e17_e18/`,
+`experiments/build_default_self_model.py`), as do `codon_tables/` (production
+CAI data), `tool_inventory.json`, `MODEL_API_USAGE.md` and the workspace audit
+trail. **RNADesign-210 dataset audit + fixes (same day)**: benchmark manifest
+recounts (208→210; tertiary 18→20); category taxonomy normalized to
+`basic|edge|full` (was 14 ad-hoc values incl. BMC-era labels); IRES fixtures
+rebuilt from real IRES-positive anchors — poliovirus 5′UTR (mode 0),
+EMCV 5′UTR (mode 2, best window 251–424 for mode 1) — because the synthetic
+5′UTR scores 0.458 < the tasks' own 0.5 threshold and mode-0 scores of
+canonical IRES 5′UTRs peak ≈0.48, so mode-0 detection tasks use threshold 0.45
+(task 001/011, rationale in the task descriptions); stale
+`shuffle_cds_junction_codons` expected chains dropped and all chains
+regrounded from observed run traces (`experiments/reground_tool_chains.py`);
+12 IRES absolute paths → repo-relative. **Benchmark protocol**: primary arm
+`RNADA_CAPGATE=advisory` (the documented regression convention — enforce
+intentionally refuses whole workflows whose core oracle is decertified);
+a 4-task enforce probe documents the refusal signatures (IRESfinder
+`GatedActionError`, small-molecule "no valid scoring results") as data.
+**Result (Exp 1, Fig 2a)**: 210/210 across the 11 workflows
+(`experiments/results/exp1_rnadesign210/summary.json`; driver
+`experiments/exp1_rnadesign210.py`, services GPU-pinned 0/1/2 via
+`experiments/exp1_bring_up_services.sh`). **Unified figure palette** locked to
+the ten user-specified colours (`experiments/plots/palette.py`); every
+experiment figure draws from it exclusively.
 
 ---
 
@@ -288,7 +325,7 @@ echo tools or per-day narrative logs. Evidence: `docs/CHANGELOG.md` 2026-08-22 (
 | 2 | E6 GenNav S2 primary endpoint GO: per-profile JCD-pass McNemar p = 1.86e-09 (n = 54), c_e2e_gene = 1.0; secondary endpoint failed and is disclosed | `e6_s2_verdict_aggregated.json` |
 | 3 | Junction ddG metric valid: constraint obedience 216/216, ddG ≥ 0 in 216/216, LinearFold-vs-Vienna r = 0.9449 — report/profile-only use | `junction_ddg_pilot_summary.json` |
 | 4 | Methodology (locks + budget matching + pre-registered pilots) caught three expensive errors pre-scale (P0/P1/P2/E4) | `MANUSCRIPT.md` §2 |
-| 5 | Platform output validity (Fig 2): 210/210 tasks succeed across 11 workflows; designed CDS CAI median 0.745 (n = 20) vs WT 0.729 vs random 0.672 (WT > random p = 4.0e-07); inverse folding exact match 22/25 | `fig2_summary.json` |
+| 5 | Platform output validity (Fig 2a): 210/210 tasks succeed across 11 workflows on the gated platform (2026-08-25 reset run, advisory arm; legacy `fig2_summary.json` deleted with the 2026-08-25 reset) | `exp1_rnadesign210/summary.json` |
 | 6 | HER2-class zero-feasible-gear targets: registered open problem, not hidden | `e6_s2_verdict_aggregated.json` |
 | 7 | E7 mRNA-oracle profiling GO: GEMORNA 5′UTR MRL verified on 3/3 anchor families (AUROC 0.990/1.000/1.000, ρ 0.926/0.920/0.835; n = 706) | `e7_mrna_oracle_profile_summary.json` |
 | 8 | RNAsmol two-sided boundary + deployment-fidelity fix: in-distribution AUROC 0.9744/0.9828, decoy ranks 2/1601 and 7/265; OOD short aptamers show no demonstrated discrimination | `rnasmol_boundary_panel.json` |
@@ -313,6 +350,7 @@ echo tools or per-day narrative logs. Evidence: `docs/CHANGELOG.md` 2026-08-22 (
 - **2026-08-22**: Layer-3/4/5/6 fresh-data audits + whole-platform E2E audit (14 defects fixed across the stack); oracle version stamps; Interface Locks retired; GenNav-λ + ASO-ASF production wiring.
 - **2026-08-22 (i)**: repo-wide simplification pass — workspace scratch isolation, demo tool retired, 4.3 GB → ~0.9 GB, docs condensed (this register compressed; DECISIONS (y)).
 - **2026-08-25**: external-agent survey (web-verified: no published, code-available agent covers the platform's RNA design workflow space) → external-baseline arms **E21 (bare LLM)** and **E22 (same-tools ReAct)** registered (Part 4).
+- **2026-08-25 (z)**: experiment-programme reset — legacy campaign code/results/plots deleted (SelfModel evidence chain retained); RNADesign-210 audited and repaired on disk; **Exp 1 re-run: 210/210 across 11 workflows** (advisory arm; enforce-probe refusal signatures recorded); unified figure palette locked.
 
 ---
 

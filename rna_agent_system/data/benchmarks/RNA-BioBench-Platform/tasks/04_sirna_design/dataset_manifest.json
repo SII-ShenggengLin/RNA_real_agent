@@ -111,5 +111,11 @@
       "file": "04_sirna_design_022_ncores_4.json",
       "sha256": "b2b2dabd5c5b0500fabd57de18b6d8d6257336be593b2cc8c63509daff888e6d"
     }
-  ]
+  ],
+  "task_count": 22,
+  "category_counts": {
+    "basic": 1,
+    "edge": 11,
+    "full": 10
+  }
 }

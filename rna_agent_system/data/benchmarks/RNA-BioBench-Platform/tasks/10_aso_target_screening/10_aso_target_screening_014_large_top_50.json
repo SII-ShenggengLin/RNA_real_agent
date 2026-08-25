@@ -1,7 +1,7 @@
 {
   "task_id": "10_aso_target_screening_014_large_top_50",
   "workflow": "aso_target_screening",
-  "category": "boundary",
+  "category": "edge",
   "description": "ASO screening with large top_n=50 (18mer, step=1, top=50, RNAcofold)",
   "input": {
     "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",

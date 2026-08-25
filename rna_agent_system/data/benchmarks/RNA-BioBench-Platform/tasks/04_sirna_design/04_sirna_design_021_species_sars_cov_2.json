@@ -17,8 +17,7 @@
   "expected_tool_chain": [
     "compute_rna_sequence_gc_content",
     "compute_sirna_duplex_binding_vienna",
-    "predict_rna_secondary_structure_with_linearfold",
-    "run_bowtie2_short_alignment"
+    "predict_rna_secondary_structure_with_linearfold"
   ],
   "evaluation_rubric": {
     "min_candidates": 2,

@@ -111,5 +111,11 @@
       "file": "02_full_length_mrna_design_022_fly_cai.json",
       "sha256": "5a53fb84855464c487f519d47a36d6df0c8cae6d137916ae0f3734bfb1f2f1f3"
     }
-  ]
+  ],
+  "task_count": 22,
+  "category_counts": {
+    "basic": 1,
+    "edge": 3,
+    "full": 18
+  }
 }

@@ -61,5 +61,11 @@
       "file": "11_ires_prediction_012_top_n_large.json",
       "sha256": "5889e4fccb1aaa08ff9a6cbc63bc9b995afcc965c5f0e6c00fe1813f6a9ef1f8"
     }
-  ]
+  ],
+  "task_count": 12,
+  "category_counts": {
+    "basic": 3,
+    "edge": 6,
+    "full": 3
+  }
 }

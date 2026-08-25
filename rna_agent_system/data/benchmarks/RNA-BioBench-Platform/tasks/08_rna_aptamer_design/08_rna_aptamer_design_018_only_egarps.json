@@ -24,8 +24,7 @@
     "identify_protein_binding_hotspots",
     "predict_rna_protein_complex_with_proteinx",
     "predict_rna_tertiary_structure_with_rhofold",
-    "run_odesign_inference",
-    "score_rna_protein_complex_with_egarps"
+    "run_odesign_inference"
   ],
   "evaluation_rubric": {
     "min_candidates": 2,

@@ -1,7 +1,7 @@
 {
   "task_id": "02_full_length_mrna_design_004_reporter_gfp",
   "workflow": "full_length_mrna_design",
-  "category": "reporter",
+  "category": "full",
   "description": "GFP full-length mRNA with LinearDesign lambda=4 and long UTR",
   "input": {
     "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
@@ -17,18 +17,13 @@
     "compute_cai_for_cds_sequence",
     "compute_dot_bracket_unpaired_fraction",
     "compute_rna_sequence_gc_content",
-    "design_3utr_with_gemorna",
-    "design_5utr_with_gemorna",
-    "design_mrna_cds_with_lineardesign",
-    "predict_mrna_stability_with_rnastop",
-    "predict_rna_secondary_structure_with_linearfold",
-    "shuffle_cds_junction_codons",
     "compute_rna_sequence_u_content",
+    "predict_3utr_stability_with_gemorna",
     "predict_5utr_mrl_with_gemorna",
-    "predict_3utr_stability_with_gemorna"
+    "predict_mrna_stability_with_rnastop",
+    "predict_rna_secondary_structure_with_linearfold"
   ],
   "evaluation_rubric": {
-    "junction_mfe_threshold": -15.0,
     "cai_threshold": 0.8
   },
   "source": "Aequorea victoria GFP",

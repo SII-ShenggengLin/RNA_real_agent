@@ -101,5 +101,11 @@
       "file": "07_rna_tertiary_structure_020_full_p4_p6_domain.json",
       "sha256": "cf9a1216c89146eb4085549408cc9e0615ea5c92ad4598c29ad2e30ac0b6df28"
     }
-  ]
+  ],
+  "task_count": 20,
+  "category_counts": {
+    "basic": 1,
+    "edge": 17,
+    "full": 2
+  }
 }

@@ -1,7 +1,7 @@
 {
   "dataset_name": "RNA-BioBench-Platform",
   "schema_version": "1.1.0",
-  "description": "Platform coverage benchmark: 11 workflows x variable canonical test cases",
+  "description": "Platform coverage benchmark (a.k.a. RNADesign-210): 11 workflows × curated canonical/edge/full-biology tasks; every task input passes the current workflow Input models (audited 2026-08-25).",
   "created_date": "2026-05-28",
   "workflows": [
     {
@@ -37,7 +37,7 @@
     {
       "id": "07_rna_tertiary_structure",
       "name": "RNA Tertiary Structure Design",
-      "task_count": 18
+      "task_count": 20
     },
     {
       "id": "08_rna_aptamer_design",
@@ -60,11 +60,11 @@
       "task_count": 12
     }
   ],
-  "total_tasks": 208,
+  "total_tasks": 210,
   "task_categories": {
     "basic": "Canonical inputs for smoke testing",
-    "edge": "Mixed-modality or boundary-case inputs",
-    "full": "Real biological sequences/structures",
-    "full-length": "Multi-module tasks requiring BMC"
-  }
+    "edge": "Boundary-case, mixed-modality or parameter-sweep inputs",
+    "full": "Real biological sequences/structures (UniProt proteins, viral genomes, PDB structures)"
+  },
+  "last_audited": "2026-08-25"
 }

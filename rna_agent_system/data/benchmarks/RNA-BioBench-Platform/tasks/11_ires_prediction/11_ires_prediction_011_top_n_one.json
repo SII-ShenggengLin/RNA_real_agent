@@ -2,11 +2,11 @@
   "task_id": "11_ires_prediction_011_top_n_one",
   "workflow": "ires_prediction",
   "category": "edge",
-  "description": "IRES prediction mode 0 with top_n_candidates=1. Verifies that the result is limited to exactly one best candidate.",
+  "description": "IRES prediction mode 0 with top_n_candidates=1 — exactly one candidate must be returned. Threshold 0.45 (see task 001 note: mode-0 scores of canonical IRES 5'UTRs peak ~0.48).",
   "input": {
-    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "sequence_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
     "iresfinder_mode": 0,
-    "probability_threshold": 0.5,
+    "probability_threshold": 0.45,
     "top_n_candidates": 1,
     "run_structural_validation": false
   },
@@ -16,8 +16,8 @@
   "evaluation_rubric": {
     "min_candidates": 1,
     "max_candidates": 1,
-    "probability_threshold": 0.5
+    "probability_threshold": 0.45
   },
-  "source": "Boundary test: top_n_candidates minimum value",
+  "source": "Poliovirus type 1 5'UTR NC_002058.3:1-742 (external anchor)",
   "paper_reference": null
 }

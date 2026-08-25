@@ -38,11 +38,11 @@ and were removed in this edition; the drivers themselves remain under
 
 | Benchmark | Path | Size | Used by |
 |-----------|------|------|---------|
-| RNA-BioBench-Platform | `RNA-BioBench-Platform/tasks/<dir>/<task>.json` | 210 tasks / 11 workflows | Fig 2 (legacy) |
-| RNA-BioBench-FullLength-mRNA | `RNA-BioBench-FullLength-mRNA/targets/*.json` (+`sequences/*.fa`) | 20 targets | Fig 3/7A (legacy); P0–P3, E4, E5, E6 |
-| RNA-BioBench-Aptamer | `RNA-BioBench-Aptamer/targets/*.json` (+`structures/*.pdb`) | 20 targets | Fig 4/7B (legacy); P2, E1 |
-| RNA-BioBench-ProcessAware | `RNA-BioBench-ProcessAware/task_set_for_llm_comparison.json` | 19 tasks on disk (PA_006–024) | Fig 6 (legacy), CLI regression (`run_pa_test.py`) |
-| PA batch-B registry | `pa_benchmarks.json` entries 025–036 | 12 fresh-data benchmarks (all 11 workflows + GenNav `navigation=true`) | CLI regression batch-B, 2026-08-19 (`experiments/results/pa_regression_batchB_2026-08-19/`) |
+| RNA-BioBench-Platform | `RNA-BioBench-Platform/tasks/<dir>/<task>.json` | 210 tasks / 11 workflows | **Exp 1 / Fig 2a (2026-08-25 reset run, 210/210)**; subsequent Fig 2 panels |
+| RNA-BioBench-FullLength-mRNA | `RNA-BioBench-FullLength-mRNA/targets/*.json` (+`sequences/*.fa`) | 20 targets | Fig 2 b–c panels; navigation campaigns (to be re-run under the reset) |
+| RNA-BioBench-Aptamer | `RNA-BioBench-Aptamer/targets/*.json` (+`structures/*.pdb`) | 20 targets | aptamer profiling/navigation campaigns (to be re-run under the reset) |
+| RNA-BioBench-ProcessAware | `RNA-BioBench-ProcessAware/task_set_for_llm_comparison.json` | 19 tasks on disk (PA_006–024) | CLI regression (`run_pa_test.py`) |
+| PA batch-B registry | `pa_benchmarks.json` entries 025–036 | 12 fresh-data benchmarks (all 11 workflows + GenNav `navigation=true`) | CLI regression batch-B (GenNav production coverage; re-run evidence pending under the reset) |
 
 Platform task JSON → the `input` object is passed verbatim as the CLI params
 file; `evaluation_rubric` defines pass thresholds; `expected_tool_chain` is
@@ -98,14 +98,31 @@ this protocol **before** any full-matrix run:
 
 ## 3. Data Availability Register
 
-All paths are under `rna_agent_system/experiments/results/`.
+> **2026-08-25 reset (DECISIONS (z))**: the legacy campaign results (Tier 1
+> below, E2–E15 of Tier 2, pivot/junction verdicts, failure taxonomy) were
+> **deleted** — every paper experiment re-runs against the frozen gated
+> platform with new drivers. The historical conclusions below are retained as
+> the do-not-repeat context (full register: `DECISIONS.md` Parts 1–2); their
+> evidence files no longer exist on disk except where noted. Retained on disk:
+> the packaged-SelfModel evidence chain (`e1_capability_summary_v2.json`,
+> `e1_oracle_scoring_v2.jsonl`, `e1_docking_power_v2.jsonl`, `e7_*`,
+> `rnasmol_boundary_panel*`, `e16_e17_e18/`, `build_default_self_model.py`),
+> `codon_tables/`, `tool_inventory.json`, `MODEL_API_USAGE.md`, the workspace
+> audit trail, and the new reset-run results:
 
-### 3.1 Tier 1 — legacy campaign (Figs 2–7): data complete, conclusions downgraded
+### 3.0 Reset programme (2026-08-25 →)
 
-Data collection for the legacy figure campaign is **complete**; the conclusions
-are stated only in the downgraded form established by the P0–P3 pilots and the
-E2 audit (`E2_SELF_AUDIT_FIG4_FIG7B.md`, claim survival 0/2). One-line status
-per figure:
+| Exp | Question | Status | Evidence |
+|-----|----------|--------|----------|
+| Exp 1 (Fig 2a) | RNADesign-210 full-platform benchmark | **210/210 across 11 workflows** (advisory arm; pilot 10/11 — the one failure was the IRES fixture defect, fixed and verified 12/12 pre-run); enforce probe: IRES refuses with `GatedActionError`, small-molecule fails cleanly with both oracles gated | `exp1_rnadesign210/` (driver `experiments/exp1_rnadesign210.py`; dataset audit `rnadesign210_audit.json`) |
+| Fig 2 b–i panels, Figs 3–6 campaigns, E21/E22 baselines | — | to be re-run under the reset | — |
+
+### 3.1 Tier 1 — legacy campaign (Figs 2–7): conclusions downgraded, files deleted 2026-08-25
+
+Data collection for the legacy figure campaign completed pre-reset; the files
+were deleted in the 2026-08-25 reset and the conclusions survive only in the
+downgraded form established by the P0–P3 pilots and the E2 audit (claim
+survival 0/2). One-line status per figure:
 
 | Figure | Data | Verdict-file pointer | Downgraded conclusion |
 |--------|------|----------------------|------------------------|
@@ -163,13 +180,15 @@ serve it), never a model-quality result. See `DECISIONS.md` Part 1(d).
 
 ## 5. Reproduction Pointers
 
-- Evidence: every campaign's verdict JSON / raw run records live under
-  `experiments/results/` (the durable audit record). The E1–E15 era drivers
-  were deleted in the 2026-08-18 simplification (DECISIONS.md (n)); the live
-  drivers are `experiments/run_platform_quality_benchmark.py` (fig2),
-  `experiments/run_e16_e17_e18_oracle_profiling.py` (profiling) and
-  `experiments/analysis/stats_utils.py` (Wilcoxon / Cliff's δ / BH-FDR /
-  bootstrap AUROC).
+- Reset-run evidence: `experiments/results/exp1_rnadesign210/` (Exp 1) —
+  per-lane JSONLs + `summary.json` + enforce probe; driver
+  `experiments/exp1_rnadesign210.py` (pre-registration in its docstring);
+  services GPU-pinned by `experiments/exp1_bring_up_services.sh`.
+- Dataset audit/repair tooling: `experiments/audit_rnadesign210.py`,
+  `experiments/fix_rnadesign210.py`, `experiments/reground_tool_chains.py`
+  (report: `experiments/results/rnadesign210_audit.json`).
+- SelfModel regeneration: `experiments/build_default_self_model.py` (reads
+  the retained e1_v2/e7/rnasmol/e16_e17_e18 evidence chain).
 - CLI regression: `run_pa_test.py <006..036>` over `pa_benchmarks.json`
   (006–024: original batch; 025–036: batch-B fresh-data batch incl. GenNav
   navigation runs).

@@ -4,7 +4,7 @@
   "category": "edge",
   "description": "IRES prediction mode 2 with small window_size=50 and dense step_size=10. Tests high-overlap scanning behavior.",
   "input": {
-    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr_long.fa",
+    "sequence_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr_long.fa",
     "iresfinder_mode": 2,
     "probability_threshold": 0.4,
     "window_size": 50,
@@ -19,6 +19,6 @@
     "min_candidates": 1,
     "probability_threshold": 0.4
   },
-  "source": "Small-window dense scan on long sequence (800 nt, balanced GC content)",
+  "source": "EMCV 5'UTR NC_001479.1:1-840 (external anchor)",
   "paper_reference": null
 }

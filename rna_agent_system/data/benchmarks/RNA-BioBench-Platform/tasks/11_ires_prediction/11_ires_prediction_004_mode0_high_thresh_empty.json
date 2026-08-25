@@ -4,7 +4,7 @@
   "category": "edge",
   "description": "IRES prediction mode 0 with probability_threshold=1.0 (boundary test). No fragments should pass, resulting in an empty candidate list.",
   "input": {
-    "sequence_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
+    "sequence_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/test_5utr.fa",
     "iresfinder_mode": 0,
     "probability_threshold": 1.0,
     "top_n_candidates": 5,
@@ -17,6 +17,6 @@
     "min_candidates": 0,
     "probability_threshold": 1.0
   },
-  "source": "Boundary test: maximum threshold, expects empty candidate list",
+  "source": "Poliovirus type 1 5'UTR NC_002058.3:1-742 (external anchor)",
   "paper_reference": null
 }
