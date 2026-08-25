@@ -311,12 +311,14 @@ a 4-task enforce probe documents the refusal signatures (IRESfinder
 **Result (Exp 1, Fig 2a)**: 210/210 across the 11 workflows
 (`experiments/results/exp1_rnadesign210/summary.json`; driver
 `experiments/exp1_rnadesign210.py`, services GPU-pinned 0/1/2 via
-`experiments/exp1_bring_up_services.sh`). **Unified figure palette** locked to the
-user's earthy Morandi twelve-colour set (`experiments/plots/palette.py` rev 7:
-`#B5838D #D3B5B0 #C08B7C #D9C3A9 #CDBF9E #A3B18A #8DA290 #8FA6BB #6B7B8D
-#A99AAF #B7B0A2 #7A7672`); the eleven workflows each own one distinct colour
-(#7A7672 held out for neutral-dark semantics), and every experiment figure
-draws from the palette exclusively.
+`experiments/exp1_bring_up_services.sh`). **Unified figure palette finalized at rev 7**
+(user-confirmed 2026-08-25): the earthy Morandi twelve-colour set
+(`experiments/plots/palette.py`: `#B5838D #D3B5B0 #C08B7C #D9C3A9 #CDBF9E
+#A3B18A #8DA290 #8FA6BB #6B7B8D #A99AAF #B7B0A2 #7A7672`); the eleven
+workflows each own one distinct colour (#7A7672 held out for neutral-dark
+semantics such as failed tiles). **Every subsequent experiment figure draws
+from this palette exclusively** — do not introduce new colours or re-open
+palette revisions without user direction.
 
 ---
 

@@ -50,11 +50,13 @@ colours + two in-family extensions (withdrawn same day); rev 4 = twelve
 colours extracted from a user reference figure (withdrawn same day);
 rev 5 = the user's muted Morandi set (withdrawn same day);
 rev 6 = the user's cool pastel set (withdrawn same day);
-**rev 7 (current)** = the user's earthy Morandi twelve-colour set, supplied
-directly (`#B5838D #D3B5B0 #C08B7C #D9C3A9 #CDBF9E #A3B18A #8DA290 #8FA6BB
-#6B7B8D #A99AAF #B7B0A2 #7A7672`) — eleven identify the workflows (#7A7672
-dark warm grey held out, reserved for neutral-dark semantics such as failed
-tiles); warm and cool tones alternate, slate blue separates the palest warms.
+**rev 7 (final, user-confirmed 2026-08-25)** = the earthy Morandi
+twelve-colour set, supplied directly (`#B5838D #D3B5B0 #C08B7C #D9C3A9
+#CDBF9E #A3B18A #8DA290 #8FA6BB #6B7B8D #A99AAF #B7B0A2 #7A7672`) — eleven
+identify the workflows (#7A7672 dark warm grey held out, reserved for
+neutral-dark semantics such as failed tiles); warm and cool tones alternate,
+slate blue separates the palest warms. All subsequent experiment figures use
+rev 7 exclusively (DECISIONS (z)).
 
 ## 2026-08-25 — Paper figure-lettering unification (doc-only)
 
