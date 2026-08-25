@@ -100,6 +100,19 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 | h | Failure taxonomy of all campaigns: 35 final failures classified; 188 transient recovered | stacked/donut | `failure_taxonomy.json` |
 | i | LLM usage & cost: per-campaign external-LLM call counts + measured tokens; everything else local | bars + annotations | `MODEL_API_USAGE.md` |
 
+## Supplementary tables and figures (outside the six main figures)
+
+| ID | Content | Type | Data |
+|---|---|---|---|
+| Suppl. Table S1 | Representative ungated claims and their gated rewrites, with gate reasons (moved out of main Fig. 4 in the v5 rebuild; cross-referenced from the Fig. 4 legend) | table | `e3_runs_full.jsonl`, E3-M adjudication |
+| Suppl. Note S2 | GenNav aptamer pre-registration archive: campaign timeline, user-adjudicated criteria revision, exact-McNemar power analysis, E14 discordant-cell sensitivity, protocol addenda, file map | note + tables | `docs/SUPPLEMENTARY_GENNAV_APTAMER.md` §S1–S6 |
+
+2026-08-25 lettering unification: the main-figure legends in
+`PAPER_DRAFT.md` were re-lettered to this plan (they had kept pre-rebuild
+lettering — stale in Figs. 1 b/c/f, 2 g–i, 3 f–i, 4 c–i, 5 d–i, 6 g–i);
+previously uncited panels gained Results citations (Fig. 1c,f; 2g; 4g,i;
+6g–i). This plan remains the single source of truth for panel lettering.
+
 ## Caption statistics conventions
 
 Every caption states: n, exact test, two-sided P (or NS), effect size

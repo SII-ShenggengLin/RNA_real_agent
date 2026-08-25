@@ -14,6 +14,19 @@
 > All result files live in `rna_agent_system/experiments/results/` (gitignored but on disk).
 > Compiled 2026-08-10.
 
+> **Panel-lettering note (2026-08-25)**: section headings and data keys below use
+> the **legacy (paper-v2-era) figure letters** — these strings match the keys inside
+> `fig2_summary.json` and the on-disk data files and are kept verbatim. The current
+> manuscript lettering is `docs/FIGURE_PLAN_V5.md`. Mapping: legacy Fig 2 → v5 Fig 2
+> with letters remapped (2a CDS nulls → v5 2b/2c; 2e inverse folding → v5 2d;
+> 2c siRNA → v5 2f; 2i IRES → v5 2e; 2h small molecule → v5 2g; runtime/audit panels
+> are now v5 2h/2i; the legacy 2f tertiary-design panel has no v5 main panel — data
+> retained). "Fig 2d addendum" (RNAsmol boundary) → v5 Fig 2g + Fig 3h. Legacy Fig 3
+> and Fig 4 (Type-I/II BMC ablations) and Fig 5 (mechanism ablations) → v5 Fig 3i
+> (confounded improvement). Legacy Fig 6a (QualityAgent ablation) → v5 Fig 4h;
+> fig6b (backend matrix) has no v5 main panel (LLM cost lives in v5 4i/6i). Legacy
+> Fig 7 (case studies) → v5 Table 1.
+
 ---
 
 ## 1. System scale (platform claims)

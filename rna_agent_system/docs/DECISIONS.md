@@ -312,3 +312,93 @@ echo tools or per-day narrative logs. Evidence: `docs/CHANGELOG.md` 2026-08-22 (
 - **2026-08-20 → 21**: ASF ranking generalized + ranking governance (CapGate-verdict-driven objectives); paper_v5 figure programme; Layer-0/1/2 fresh-data audits.
 - **2026-08-22**: Layer-3/4/5/6 fresh-data audits + whole-platform E2E audit (14 defects fixed across the stack); oracle version stamps; Interface Locks retired; GenNav-λ + ASO-ASF production wiring.
 - **2026-08-22 (i)**: repo-wide simplification pass — workspace scratch isolation, demo tool retired, 4.3 GB → ~0.9 GB, docs condensed (this register compressed; DECISIONS (y)).
+- **2026-08-25**: external-agent survey (web-verified: no published, code-available agent covers the platform's RNA design workflow space) → external-baseline arms **E21 (bare LLM)** and **E22 (same-tools ReAct)** registered (Part 4).
+
+---
+
+## Part 4 — Registered Next Experiments (planned, not yet run)
+
+Pre-registration stubs for the paper's external-baseline arms, registered
+2026-08-25. Rationale (external-agent survey, web-verified against primary
+sources): no published, code-available agent system covers the platform's RNA
+design workflow space (closest concurrent works are preprint/website-only —
+STREAM/DIGs mRNA design, RLAgent RNA–ligand modelling — or single-workflow
+with code — CRISPR-GPT, sgRNA); the paper's baseline table therefore follows
+the accepted agent-for-science methodology instead: (a) bare LLM, (b)
+same-tools generic scaffold, (c) per-task deterministic tools, (e) component
+ablations. Categories (c) and (e) already exist (fig2 null models; CapGate /
+QualityAgent ablations); E21/E22 fill (a) and (b). E-numbering continues at
+E21 because E19/E20 stay reserved for the CRISOT-Score / CRGPT profiling gap
+(item (l)). Driver-level pre-registration (hypothesis, primary metric,
+expected effect size, gate, pilot n in the driver docstring, `MANUSCRIPT.md`
+§2) is still required before any run; nothing below has been executed.
+
+### E21 — Bare-LLM arm (no tools) on RNADesign-210-style tasks
+
+Literature category (a) — every quantitatively evaluated agent paper includes
+it (ChemCrow, CRISPR-GPT, BioMni). Design: identical task inputs to the
+platform arm, same LLM (DeepSeek `deepseek-v4-pro`, temperature 0), zero- and
+few-shot prompting, **no tool access**. Adjudication only on CapGate-admissible
+deterministic metrics (recomputable CAI, folding energy, constraint
+satisfaction, off-target counts) — never on unprofiled oracles, and never by
+an LLM judge (the ChemCrow EvaluatorGPT mis-ranking caveat). Deliverable: the
+tool-free floor per workflow — task success, output validity, and the rate of
+unverifiable claims. Pilot n = 6 tasks spanning 6 workflows; a zero-everywhere
+pilot is a valid recorded floor, not a failed run.
+
+### E22 — ReAct arm (same 41 tools, generic agent loop) vs the platform
+
+Literature category (b) — the 2025-standard "same tools, plain scaffold"
+control (BioMni's Biomni-ReAct; DrugAgent's ReAct arm). Design: a thin ReAct /
+function-calling loop drives the same 41 tools through the same
+`ToolExecutor` (every call lands in the platform audit trail), same LLM, on a
+PA-style task subset spanning all 11 workflows. Budget matching applies as the
+iron rule: equal total generated-and-evaluated candidates and an equal
+LLM-call cap per task against the platform arm. Primary metrics: task success
+rate, constraint satisfaction, and claim quality — the ReAct arm's
+natural-language claims are adjudicated by the E3 deterministic blind
+adjudicator, testing whether the ungated false-positive rate (~57.9% on our
+own ungated arm) generalizes to a generic scaffold. Pre-registered expectation:
+the platform arm wins through deterministic workflows + CapGate governance,
+not LLM cleverness. Pilot n = 6 tasks; full matrix (all 31 PA benchmarks or a
+fresh-data equivalent) only if the pilot effect is in the expected direction
+on ≥ 4/6 tasks.
+
+Both arms reuse existing evaluation infrastructure and introduce no new oracle
+and no new claim path — item (e) applies to baselines too: no baseline result
+may be narrated beyond its deterministic evidence. The survey also fixes the
+related-work positioning set (cite-only): ChemCrow / Coscientist (chemistry),
+ProtAgents / Virtual Lab (protein), CRISPR-GPT (sgRNA, concurrent, code),
+STREAM/DIGs + RLAgent (concurrent preprints), BioMni (general biomedical
+tool agent; **RNA-design absence verified 2026-08-25** against repo commit
+`400c1f366b96a35ca253e13c9b06c5076af41d65`: 260 tool functions, no siRNA /
+ASO / aptamer / inverse-folding / RNA-3D / RNA–small-molecule tools anywhere;
+RNA-specific tools are only a ViennaRNA RNAfold wrapper
+(`microbiology.py:predict_rna_secondary_structure`), a dot-bracket feature
+calculator and a greedy codon optimizer requiring a user-supplied codon-usage
+table (`synthetic_biology.py:optimize_codons_for_heterologous_expression`);
+its "CRISPR screen design" benchmark is gene-panel selection and its
+`design_knockout_sgrna` retrieves precomputed CRISPick/Addgene library guides
+— no de novo guide design. BioMni is under active development: re-pin the
+commit when the manuscript is submitted); and Claude Science (Anthropic's
+scientist AI workbench, beta 2026-06-30 — positioning note below).
+
+Claude Science positioning (recorded 2026-08-25): a macOS/Linux workbench —
+generalist coordinating agent over 60+ skills/connectors and scientific
+databases, spawnable specialist agents, and a reviewer agent that checks
+citations and calculations. **Cite-only, never a runnable baseline arm**: no
+paper and no published evaluation (non-citable and non-reproducible for
+reviewers), a closed-source beta under version drift, and Claude-only
+backbones that would confound model with scaffold against the sole-LLM
+convention (item (d)); access additionally requires a paid subscription (the
+free-credit AI-for-Science call closed 2026-07-15). The manuscript-relevant
+contrast: the reviewer is the same LLM checking itself — the live industrial
+foil for CapGate's thesis that LLM self-review cannot substitute for
+deterministic evidence gates (the ClaimGate is deterministic; ChemCrow's
+EvaluatorGPT mis-ranking is the literature precedent). Its advertised domains
+(genomics, single-cell, proteomics, protein structural biology,
+cheminformatics; BioNeMo's Evo 2 / Boltz-2 / OpenFold3) include no RNA
+sequence-design tooling — but this is documented from the public announcement
+and press coverage, not a repo-level verification as for BioMni: any
+manuscript sentence relying on it must be worded from public documentation
+and re-checked at submission.

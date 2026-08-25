@@ -1,12 +1,34 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-08-25
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-25 — Paper figure-lettering unification (doc-only)
+
+All six figure legends in `docs/PAPER_DRAFT.md` re-lettered to
+`docs/FIGURE_PLAN_V5.md` (the operative build plan for
+`experiments/plots/paper_v5/`). The v5 figure rebuild had updated the
+Results body citations and the built figures, but the legends kept
+pre-rebuild lettering — stale in Figs. 1 (b/c/f), 2 (g–i), 3 (f–i),
+4 (c–i), 5 (d–i) and 6 (missing g–i). Body text gained citations for
+previously unreferenced panels (Fig. 1c,f; 2g; 4g,i; 6g–i); the
+representative-claims examples moved from main Fig. 4 to the planned
+Supplementary Table S1, now registered in the figure plan alongside the
+GenNav aptamer supplementary archive. Draft endnote panel counts corrected
+(6 + 9×5; "End of draft v4.3" → v4.5). No numbers changed — lettering and
+cross-references only. Same day, the first Results subsection was split
+into a system-design subsection ("Overview of the RNADesignAgent platform",
+Fig. 1) and the RNADesign-210 biological-validity results subsection
+(Fig. 2), so experimental results begin with the second Results
+subsection; content unchanged apart from the new heading. A legacy→v5
+panel-lettering map was added to `docs/PAPER_FACT_SHEET.md` (legacy letters
+double as `fig2_summary.json` keys and are kept verbatim), and the AGENTS.md
+What's New index records the pass.
 
 ## 2026-08-22 (i) — Repo-wide simplification pass: workspace scratch isolation, demo tool retired, historical outputs purged
 
