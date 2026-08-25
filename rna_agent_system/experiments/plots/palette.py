@@ -1,43 +1,43 @@
-"""Unified experiment-figure palette (user-specified, 2026-08-25 reset; rev 5).
+"""Unified experiment-figure palette (user-specified, 2026-08-25 reset; rev 6).
 
 Every experiment figure draws its colours exclusively from PALETTE below.
-Rev 5: the user's muted Morandi twelve-colour set, supplied directly as hex
-codes. Eleven of the twelve identify the workflows (#EFE1D6 almond held out —
-nearest neighbour of #F3E3E3/#EDE7D9); the layout keeps the darkest tones
-(#654E5E plum, #78828B slate) as row separators so no two adjacent carpet
-rows share the same lightness band.
+Rev 6: the user's cool pastel twelve-colour set (blue-grey / lavender / green
+families), supplied directly as hex codes. Eleven of the twelve identify the
+workflows (#dbe0eb held out — nearest neighbour of #d5dee6); the two chromatic
+anchors (#7aa490 sage, #8db1e1 cornflower) break the pale runs, and the two
+near-twin pairs (#d5dee6/#dbe0eb, #b3c3d5/#acc5d1) are kept rows apart.
 """
 from __future__ import annotations
 
 # The mandated palette (twelve colours as supplied; used verbatim).
 PALETTE: list[str] = [
-    "#A49193",  # mauve grey
-    "#EDE7D9",  # ivory
-    "#D3DCE3",  # pale blue grey
-    "#B5C9BE",  # sage
-    "#F3E3E3",  # pale blush
-    "#DECCA6",  # wheat
-    "#E0DEDF",  # pale lavender grey
-    "#78828B",  # slate
-    "#D6E3D2",  # pale sage
-    "#C89D94",  # dusty rose
-    "#EFE1D6",  # almond (held out: nearest neighbour of ivory/blush)
-    "#654E5E",  # dark plum
+    "#d5dee6",  # pale blue grey
+    "#b3c3d5",  # light blue grey
+    "#d4d2e9",  # pale lavender
+    "#d5d3de",  # grey lavender
+    "#aecbe0",  # sky blue
+    "#dbe0eb",  # blue white (held out: nearest neighbour of #d5dee6)
+    "#c0c4c9",  # neutral grey
+    "#c4d4de",  # steel blue
+    "#acccae",  # pale green
+    "#acc5d1",  # teal grey
+    "#7aa490",  # sage green (anchor)
+    "#8db1e1",  # cornflower (anchor)
 ]
 
 PALETTE_BY_NAME: dict[str, str] = {
-    "mauve_grey": "#A49193",
-    "ivory": "#EDE7D9",
-    "pale_blue_grey": "#D3DCE3",
-    "sage": "#B5C9BE",
-    "pale_blush": "#F3E3E3",
-    "wheat": "#DECCA6",
-    "pale_lavender_grey": "#E0DEDF",
-    "slate": "#78828B",
-    "pale_sage": "#D6E3D2",
-    "dusty_rose": "#C89D94",
-    "almond": "#EFE1D6",
-    "dark_plum": "#654E5E",
+    "pale_blue_grey": "#d5dee6",
+    "light_blue_grey": "#b3c3d5",
+    "pale_lavender": "#d4d2e9",
+    "grey_lavender": "#d5d3de",
+    "sky_blue": "#aecbe0",
+    "blue_white": "#dbe0eb",
+    "neutral_grey": "#c0c4c9",
+    "steel_blue": "#c4d4de",
+    "pale_green": "#acccae",
+    "teal_grey": "#acc5d1",
+    "sage_green": "#7aa490",
+    "cornflower": "#8db1e1",
 }
 
 # Semantic accents reused across figures.
@@ -73,19 +73,19 @@ WORKFLOW_LABELS: dict[str, str] = {
     "ires_prediction": "IRES prediction",
 }
 
-# Workflow → palette colour (one distinct colour per workflow; the dark plum
-# and slate rows separate the pale-tone runs so adjacent rows never share a
-# lightness band).
+# Workflow → palette colour (one distinct colour per workflow; the sage and
+# cornflower anchors split the carpet into three pale runs, and near-twin
+# tones never sit on adjacent rows).
 WORKFLOW_COLORS: dict[str, str] = {
-    "mrna_cds_design": "#DECCA6",                 # wheat
-    "full_length_mrna_design": "#C89D94",         # dusty rose
-    "mrna_sequence_scoring": "#EDE7D9",           # ivory
-    "sirna_design": "#654E5E",                    # dark plum
-    "sgrna_design": "#D3DCE3",                    # pale blue grey
-    "rna_secondary_structure_design": "#B5C9BE",  # sage
-    "rna_tertiary_structure_design": "#A49193",   # mauve grey
-    "rna_aptamer_design": "#D6E3D2",              # pale sage
-    "rna_small_molecule_interaction": "#78828B",  # slate
-    "aso_target_screening": "#F3E3E3",            # pale blush
-    "ires_prediction": "#E0DEDF",                 # pale lavender grey
+    "mrna_cds_design": "#d4d2e9",                 # pale lavender
+    "full_length_mrna_design": "#8db1e1",         # cornflower (anchor)
+    "mrna_sequence_scoring": "#acccae",           # pale green
+    "sirna_design": "#aecbe0",                    # sky blue
+    "sgrna_design": "#d5d3de",                    # grey lavender
+    "rna_secondary_structure_design": "#7aa490",  # sage green (anchor)
+    "rna_tertiary_structure_design": "#d5dee6",   # pale blue grey
+    "rna_aptamer_design": "#c0c4c9",              # neutral grey
+    "rna_small_molecule_interaction": "#b3c3d5",  # light blue grey
+    "aso_target_screening": "#c4d4de",            # steel blue
+    "ires_prediction": "#acc5d1",                 # teal grey
 }
