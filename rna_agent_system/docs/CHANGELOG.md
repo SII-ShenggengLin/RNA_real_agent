@@ -48,12 +48,13 @@ bar summary) from the new **unified palette**
 colours; rev 2 = a 12-colour replacement (withdrawn same day); rev 3 = ten
 colours + two in-family extensions (withdrawn same day); rev 4 = twelve
 colours extracted from a user reference figure (withdrawn same day);
-rev 5 = the user's muted Morandi twelve-colour set (withdrawn same day);
-**rev 6 (current)** = the user's cool pastel twelve-colour set, supplied
-directly (`#d5dee6 #b3c3d5 #d4d2e9 #d5d3de #aecbe0 #dbe0eb #c0c4c9 #c4d4de
-#acccae #acc5d1 #7aa490 #8db1e1`) — eleven identify the workflows (#dbe0eb
-held out), the sage/cornflower anchors break the pale runs and near-twin
-tones never sit on adjacent rows.
+rev 5 = the user's muted Morandi set (withdrawn same day);
+rev 6 = the user's cool pastel set (withdrawn same day);
+**rev 7 (current)** = the user's earthy Morandi twelve-colour set, supplied
+directly (`#B5838D #D3B5B0 #C08B7C #D9C3A9 #CDBF9E #A3B18A #8DA290 #8FA6BB
+#6B7B8D #A99AAF #B7B0A2 #7A7672`) — eleven identify the workflows (#7A7672
+dark warm grey held out, reserved for neutral-dark semantics such as failed
+tiles); warm and cool tones alternate, slate blue separates the palest warms.
 
 ## 2026-08-25 — Paper figure-lettering unification (doc-only)
 
