@@ -1,12 +1,52 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-25
+> **Last updated**: 2026-08-26
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-26 — Exp 7 (Fig 2g) executed under the reset: RNAsmol two-sided boundary, every registered metric reproduced
+
+Zero-intervention re-run of the small-molecule oracle's two-sided profile
+(`experiments/exp7_rnasmol_boundary.py`, pre-registered docstring, pilot
+37/37; evidence `experiments/results/exp7_rnasmol_boundary/`). Instrument =
+the deployed RNAsmol microservice exactly as the platform ships it (CPU
+default via its own `start.sh`), one call per pair, sequences and SMILES
+verbatim and **case-preserving** — the official held-out splits encode
+modified bases in lowercase, and the agent tool layer's uppercase+T→U
+normalization would silently re-introduce the v0.2.0 fidelity-defect class,
+so the service endpoint is the fidelity-correct instrument (the retained
+evidence's protocol; no ToolExecutor calls, hence no CapGate audit entries
+at this layer). Checkpoint auto-selection via data-provenance hints only
+(robin/pdb + molperturbation; FMN→pdb, MALAT1→robin; OOD no hints →
+platform default); no thresholds, no tuning.
+
+- **3,545/3,545 pairs scored, 0 failures**: robin test 1,492 + pdb test 170
+  + FMN decoys 1,601 + MALAT1 decoys 265 + OOD panel 17.
+- **Every registered metric of the retained 2026-08-11 evidence reproduced
+  exactly**: robin AUROC 0.9744 (0.9678–0.9803), pdb 0.9828 (0.9607–0.9970;
+  ≤500-nt subset 0.9788, n=126, 44 truncated service-side); decoy true-binder
+  ranks 2/1601 (0.125 pct) and 7/265 (2.642 pct); OOD binder-vs-random-chem
+  0.7222 (0.2778–1.0) and binder-vs-near-cognate 0.5625 (0.0625–1.0) — both
+  CIs span chance. Verdict GO on all three axes.
+- **Per-pair cross-check** vs the retained JSONL: medians ~1e-6 (MALAT1
+  ≤3.8e-5, OOD ≤6.3e-4); a minority of near-decision-boundary inputs amplify
+  inference-backend arithmetic (robin max 0.021 at 1/1492 pairs >1e-3; pdb
+  0.047 at 1/170; FMN 0.367 at 53/1601 — one unstable near-0.5-band decoy,
+  idx 367, re-scored bit-identical to confirm this run's determinism; the
+  retained run's device is unrecorded). No registered metric moves. The
+  cross-check tolerance was amended from bit-level to the disclosed
+  4-decimal-AUROC + decoy-rank criterion **before** the full run (docstring
+  records the amendment).
+- Figure `experiments/plots/fig2g_rnasmol_boundary.py` →
+  `fig2g_rnasmol_boundary.{pdf,png}` (forest dot + CI; khaki in-distribution
+  / dark-warm-grey OOD; chance + 0.8 screening-gate reference lines; palette
+  rev 7 unchanged). `PAPER_DRAFT.md` Fig 2g legend + Results sentence,
+  `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md` row g and `MANUSCRIPT.md`
+  reset-run table updated with the re-run as the numbers of record.
 
 ## 2026-08-25 — Platform fix: species-resolved LinearDesign codon tables; Exp 2+3 (Fig 2b–c) re-run
 
