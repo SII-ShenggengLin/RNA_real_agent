@@ -11,7 +11,7 @@
 | Anchor | Status | Check |
 |--------|--------|-------|
 | `wt_cds/*.fa` (20 files) | ✅ 20/20 | translation vs benchmark `protein_sequence`: 17 identical (≥ 0.998), 3 documented deviations (below) |
-| `ires/ires_positive.fa` (EMCV, HCV, poliovirus) | ✅ | NCBI RefSeq 5′UTR ranges |
+| `ires/ires_positive.fa` (9 literature IRES: 6 viral + 3 cellular) | ✅ | NCBI RefSeq 5′UTR ranges (viral: 1..CDS_start−1; cellular: full annotated 5′UTR) |
 | `ires/utr_negative.fa` (50 × 200 nt) | ✅ | local GENCODE v46 transcriptome, seed 0 |
 | `aptamers/known_aptamers.json` (TBA, SARS-CoV-2 N) | ✅ | extracted from benchmark target JSONs |
 | `aptamers/pegaptanib.json` | ✅ | sequence confirmed by multiple independent literature sources |
@@ -50,7 +50,17 @@ All other 14 targets: identity = 1.000.
 
 ## IRES panels (`ires/`)
 
-- `ires_positive.fa` — EMCV (NC_001479.1:1-840), HCV (NC_004102.1:1-341), poliovirus type 1 (NC_002058.3:1-742) 5′UTR regions.
+- `ires_positive.fa` — 9 literature-validated IRES 5′UTR regions. Original 3 (curated
+  2026-07-17): EMCV (NC_001479.1:1-840), HCV (NC_004102.1:1-341), poliovirus type 1
+  (NC_002058.3:1-742). Six additions (curated 2026-08-25, NCBI eutils efetch, ranges =
+  1..CDS_start−1 of the cited record): FMDV type O (NC_004004.1:1-1058, picornavirus
+  type II IRES), human rhinovirus A1 (NC_038311.1:1-626, picornavirus type I),
+  BVDV-1 (NC_001461.1:1-385, pestivirus HCV-like IRES), human MYC transcript variant 1
+  (NM_002467.6:1-363; IRES: Stoneley 1998 Oncogene 16:423, Nanbru 1997 Oncogene 14:881),
+  human HSPA5/Bip (NM_005347.5:1-217; IRES: Yang & Sarnow 1997 J Virol 71:2840), human
+  VEGFA transcript variant 1 (NM_001025366.3:1-496; IRES: Stein 1998 MCB 18:3112, Akiri
+  1998 Oncogene 17:227). Panel composition registered for Exp 5 / Fig 2e (user-approved
+  expansion from 3 to 9 positives, 2026-08-25).
 - `utr_negative.fa` — 50 × 200-nt 5′-terminal windows from random human transcripts (GENCODE v46, seed 0).
 
 ## Small-molecule pairs (`small_molecule/pairs.json`)
