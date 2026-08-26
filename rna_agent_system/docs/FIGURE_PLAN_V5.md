@@ -35,10 +35,10 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 | Panel | Content | Type | Data |
 |---|---|---|---|
 | a | 210/210 task success by workflow (per-task tile carpet, all pass; n printed) | per-task tile carpet + horizontal-bar summary | `fig2_summary.json` coverage |
-| b | CDS null model: CAI designed vs WT vs random-synonymous (median 0.745/0.729/0.672; MW P=4.0e-7, δ=0.69) | violin + jitter | `fig2_cds_nulls.jsonl` |
-| c | Folding-energy control: MFE/nt WT vs random (NS, P=0.23) — CAI lift is not a folding artifact | violin + jitter | `fig2_cds_nulls.jsonl` |
-| d | Secondary-structure inverse folding: per-benchmark distance dots, 22/25 exact | strip + step cumulative curve | fig2 raw runs (GPU jsonl) |
-| e | IRES prediction: ROC curve, AUROC 0.762 (CI 0.43–0.98), 3 pos / 49 neg | ROC + CI band | `fig2_literature_panels.jsonl` |
+| b | CDS null model, CAI arm: designed (golden-path ranked deliverable, species-resolved codon tables) vs WT vs random-synonymous (median 0.832/0.729/0.674; designed-vs-WT P=6.9e-4 δ=0.63; WT-vs-random P=6.8e-7 δ=0.67; post-species-fix re-run 2026-08-25) | violin + jitter | `exp2_cds_nulls/fig2_cds_nulls.jsonl` |
+| c | CDS null model, folding arm: MFE/nt three-arm — designed −0.336 vs WT −0.051 vs random −0.047 (designed vs both P≤7e-8 δ=−1.0; WT vs random NS P=0.29); designed leads on CAI and structure simultaneously | violin + jitter | `exp2_cds_nulls/fig2_cds_nulls.jsonl` |
+| d | Secondary-structure inverse folding: per-benchmark distance dots, 21/25 exact (reset run 2026-08-25; miss dot-bracket distances 2/2/4/6, base-pair distances 1/2/3/1) | strip + step cumulative curve | `exp4_inverse_folding/records.jsonl` |
+| e | IRES literature panel (9 pos: 6 viral + 3 cellular / 50 neg GENCODE 5′UTR), threshold-free ROC + CI band — **figure endpoint: mode-2 sliding-window scanning arm, AUROC 0.673 (0.467–0.862, P=0.102)** (user re-registration 2026-08-26; the legacy panel's protocol and the oracle's native regime, matching the E16 oracle grading); pre-registered mode-0 default-path primary 0.478 (0.311–0.649, P=0.841) archived as `fig2e_ires_roc_mode0.*`; both below the 0.8 gate the capability profile assigns this oracle | ROC + CI band | `exp5_ires_panel/summary.json` |
 | f | siRNA designs: predicted off-targets per task (21/22 at zero) | lollipop/strip vs zero line | fig2 raw runs |
 | g | Small-molecule oracle two-sided: in-distribution AUROC 0.974/0.983 vs OOD 0.722/0.563, all CI | forest dot + CI | `rnasmol_boundary_panel.json` |
 | h | End-to-end runtime by workflow (log scale; 210-task suite + PA regression batches) | log-axis ECDF curves + box inset | fig2 runtime rows + PA tsv |

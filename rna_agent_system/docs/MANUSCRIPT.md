@@ -1,7 +1,7 @@
 # RNADesignAgent — Experiment Manual
 
 > **Scope**: benchmark/anchor assets, the pilot-first protocol (still in force), and the data-availability register for both experiment campaigns.
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-08-25 (experiment-programme reset; Exps 1–5 executed)
 
 ---
 
@@ -62,7 +62,7 @@ URL + accession + download date):
 | `vaccine_mrna/` | BNT162b2 and mRNA-1273 full CDS + UTR sequences (published) |
 | `wt_cds/` | Wild-type CDS for the 20 full-length-mRNA targets (NCBI RefSeq) |
 | `aptamers/` | Known aptamers: TBA (Kd 25 nM, vs 1HAO), SARS-CoV-2 N aptamer (Kd 15.2 nM, vs 6M3M), pegaptanib (Macugen) + VEGF165 binding-site residues |
-| `ires/` | Validated viral IRES (EMCV, HCV, poliovirus) + cellular IRES (c-myc, VEGF, Bip); 50 random human 5′UTR negatives (GENCODE v46) |
+| `ires/` | 9 validated IRES 5′UTRs — viral EMCV, HCV, poliovirus, FMDV, HRV-A1, BVDV-1 + cellular c-myc, VEGF-A, Bip/GRP78 (2026-08-25 user-approved expansion from 3 to 9 positives for Exp 5; provenance in the anchor `SOURCES.md`); 50 random human 5′UTR negatives (GENCODE v46) |
 | `small_molecule/` | Binder/non-binder pairs: theophylline, HIV TAR, guanine aptamer panels |
 | E1 anchor sets | Per-target binder Kd gradients + fixed-seed negatives + native/decoy pose pairs (prototype: P2's 15 entries, extended per task type) |
 
@@ -115,7 +115,10 @@ this protocol **before** any full-matrix run:
 | Exp | Question | Status | Evidence |
 |-----|----------|--------|----------|
 | Exp 1 (Fig 2a) | RNADesign-210 full-platform benchmark | **210/210 across 11 workflows** (advisory arm; pilot 10/11 — the one failure was the IRES fixture defect, fixed and verified 12/12 pre-run); enforce probe: IRES refuses with `GatedActionError`, small-molecule fails cleanly with both oracles gated | `exp1_rnadesign210/` (driver `experiments/exp1_rnadesign210.py`; dataset audit `rnadesign210_audit.json`) |
-| Fig 2 b–i panels, Figs 3–6 campaigns, E21/E22 baselines | — | to be re-run under the reset | — |
+| Exp 2+3 (Figs 2b–c) | CDS null model: designed vs WT vs random-synonymous on CAI **and** MFE/nt (re-run post species-table fix) | **20/20 design (golden path, `design_tool=all`, species-resolved LinearDesign codon tables) + 240/240 scoring, 0 failures**; CAI medians 0.832/0.729/0.674 (designed>WT>random gate PASS; designed-vs-WT P=6.9e-4 δ=0.63, WT-vs-random P=6.8e-7 δ=0.67); MFE/nt medians −0.336/−0.051/−0.047 (designed vs both nulls P≤7e-8 δ=−1.0; WT-vs-random NS P=0.29 — three-arm folding panel per user direction) | `exp2_cds_nulls/` (driver `experiments/exp2_cds_null_model.py`, pilot 3/3; figures `experiments/plots/fig2bc_cds_nulls.py`; pre-fix run archived `exp2_cds_nulls_prefix/`) |
+| Exp 4 (Fig 2d) | Secondary-structure inverse folding, 25 RNADesign-210 targets, zero-intervention protocol | **25/25 runs, 21/25 exact dot-bracket recovery** (misses 2/2/4/6 positions = 1/2/3/1 base pairs of 10–14 target pairs; all edge-case categories) | `exp4_inverse_folding/` (driver `experiments/exp4_inverse_folding.py`; figure `experiments/plots/fig2d_inverse_folding.py`) |
+| Exp 5 (Fig 2e) | IRES literature-panel prediction, threshold-free ROC (user-approved panel expansion 3→9 positives: 6 viral + 3 cellular vs 50 GENCODE 5′UTR negatives) | **59/59 sequences scored, 0 failures** (one workflow run per sequence, defaults except the labelling threshold disabled at 0.0 to expose raw scores). Pre-registered mode-0 primary (workflow default, full-sequence scoring): **AUROC 0.478 (95% CI 0.311–0.649), P=0.841 — at chance**. Disclosed mode-2 addendum arm (registered after the primary was known; upstream scanning regime, window 174/step 50 defaults): AUROC 0.673 (0.467–0.862), P=0.102 — matches the E16 oracle grading (0.68–0.76 on IRESfinder's own held-out sets, below the 0.8 gate → enforce-gated). Legacy 3-positive-panel AUROC 0.762 does not reproduce (legacy-3 subset on the same negatives: 0.513); **figure endpoint re-registered to the mode-2 arm (user direction, 2026-08-26)** — it is the legacy panel's protocol (legacy per-sequence scores match this arm exactly) and the oracle's native window regime; the mode-0 default-path result stays the pre-registered primary analysis record (archived figure variant `fig2e_ires_roc_mode0.*`) | `exp5_ires_panel/` (driver `experiments/exp5_ires_literature_panel.py`, pilot 6/6; figure `experiments/plots/fig2e_ires_roc.py` — mode-2 endpoint + mode-0 archive) |
+| Fig 2 f–i panels, Figs 3–6 campaigns, E21/E22 baselines | — | to be re-run under the reset | — |
 
 ### 3.1 Tier 1 — legacy campaign (Figs 2–7): conclusions downgraded, files deleted 2026-08-25
 
