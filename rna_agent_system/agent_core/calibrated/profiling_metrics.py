@@ -5,7 +5,7 @@ Part B pose-level rows) and computes the pre-registered metrics:
 screening -> AUROC (+ bootstrap CI), ranking -> Spearman rho,
 docking -> top-1 native-pose identification rate.
 
-Thresholds mirror ``experiments/analysis/e1_extension_analysis.py``
+Thresholds mirror the E1 extension analysis convention
 (AUROC > 0.8, rho >= 0.6, top-1 >= 2/3) and are overridable.
 Deterministic; no LLM.
 """
@@ -14,11 +14,10 @@ from __future__ import annotations
 
 import logging
 import math
+import random
 from typing import Any, Iterable
 
 from scipy.stats import spearmanr
-
-from experiments.analysis.stats_utils import bootstrap_auroc_ci
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,6 +26,46 @@ RHO_PASS = 0.6
 DOCK_PASS_FRAC = 2.0 / 3.0
 
 _BINDER_ROLES = ("binder", "binder_no_kd")
+
+
+def _auroc(pos: list[float], neg: list[float]) -> float:
+    """Rank-based AUROC (probability a positive scores above a negative)."""
+    wins = ties = 0
+    for p in pos:
+        for n in neg:
+            if p > n:
+                wins += 1
+            elif p == n:
+                ties += 1
+    return (wins + 0.5 * ties) / (len(pos) * len(neg))
+
+
+def bootstrap_auroc_ci(
+    pos: list[float],
+    neg: list[float],
+    *,
+    n_boot: int = 10_000,
+    seed: int = 0,
+) -> tuple[float, float, float]:
+    """AUROC with bootstrap 95 % CI over (pos, neg) pairs resampling.
+
+    Inlined verbatim from the deleted ``experiments/analysis/stats_utils.py``
+    (2026-08-25 reset) so the calibrated stack stays self-contained.
+    """
+    pos, neg = list(pos), list(neg)
+    if not pos or not neg:
+        return (float("nan"),) * 3
+    point = _auroc(pos, neg)
+    rng = random.Random(seed)
+    boot = []
+    for _ in range(n_boot):
+        ps = [pos[rng.randrange(len(pos))] for _ in pos]
+        ns = [neg[rng.randrange(len(neg))] for _ in neg]
+        boot.append(_auroc(ps, ns))
+    boot.sort()
+    lo = boot[int(0.025 * n_boot)]
+    hi = boot[min(int(0.975 * n_boot), n_boot - 1)]
+    return point, lo, hi
 
 
 def _score(row: dict[str, Any], oracle_key: str) -> float | None:

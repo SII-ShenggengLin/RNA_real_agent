@@ -10,7 +10,7 @@ import json
 import math
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from agent_core.constants.species import CAI_SPECIES_ALIASES
 
@@ -191,6 +191,26 @@ def resolve_species_name(name: str) -> str:
     """
     normalized = name.strip().lower()
     return _SPECIES_ALIASES.get(normalized, name)
+
+
+# LinearDesign-format codon-usage CSVs, one per built-in species, generated
+# from the same Kazusa tables the CAI evaluator uses (scripts/
+# gen_lineardesign_codon_tables.py) so generation and evaluation always work
+# against the same species table.
+LINEARDESIGN_CODON_TABLES_DIR = (
+    Path(__file__).resolve().parent / "data" / "codon_usage_lineardesign"
+)
+
+
+def lineardesign_codon_table_for_species(species: str) -> Optional[str]:
+    """Resolve a species to the platform-shipped LinearDesign codon-usage CSV.
+
+    Returns the CSV path for built-in species (canonical name or alias), or
+    ``None`` when the species has no built-in table.
+    """
+    resolved = resolve_species_name(species)
+    csv_path = LINEARDESIGN_CODON_TABLES_DIR / f"{resolved.replace(' ', '_')}.csv"
+    return str(csv_path) if csv_path.exists() else None
 
 
 def normalize_cds_sequence(raw: str) -> str:

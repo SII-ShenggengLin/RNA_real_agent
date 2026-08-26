@@ -307,8 +307,10 @@ def test_mrna_cds_design_truncation_n_terminal():
     assert best.metadata.get("protein_sequence") == full_seq
 
 
-def test_mrna_cds_design_unsupported_cai_species_still_runs():
-    """Workflow succeeds even when CAI species is not in built-in tables."""
+def test_mrna_cds_design_unsupported_cai_species_fails_fast_for_lineardesign():
+    """Species-correct design contract (2026-08-25 fix): LinearDesign with an
+    unresolvable cai_species fails at the input layer instead of silently
+    designing against the service's default human table."""
     registry = _build_cds_registry()
     pipeline = _build_pipeline_agent(registry)
 
@@ -318,6 +320,30 @@ def test_mrna_cds_design_unsupported_cai_species_still_runs():
             "protein_sequence": "MKTAIVE",
             "design_tool": "lineardesign",
             "lambda_value": 0.0,
+            "cai_species": "unsupported_species_xyz",
+        },
+    )
+
+    state: dict[str, Any] = {"_quality_review_enabled": False}
+    result = pipeline.execute(plan, state)
+
+    assert result.success is False
+    node = result.node_results["n1"]
+    assert node.success is False
+    assert any("No codon-usage table" in e for e in node.errors)
+
+
+def test_mrna_cds_design_unsupported_cai_species_still_runs_without_lineardesign():
+    """Without LinearDesign (gemorna engine) an unknown CAI species does not
+    fail the run up front — the CAI evaluator surfaces it per candidate."""
+    registry = _build_cds_registry()
+    pipeline = _build_pipeline_agent(registry)
+
+    plan = PipelinePlan.single(
+        workflow="mrna_cds_design",
+        static_params={
+            "protein_sequence": "MKTAIVE",
+            "design_tool": "gemorna",
             "cai_species": "unsupported_species_xyz",
         },
     )

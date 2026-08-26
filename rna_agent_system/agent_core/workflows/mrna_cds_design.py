@@ -26,6 +26,7 @@ from agent_core.file_manager import save_sequence
 from agent_core.sequence_utils import (
     _load_builtin_codon_tables,
     _pick_float,
+    lineardesign_codon_table_for_species,
     resolve_species_name,
 )
 from agent_core.constants.species import DEFAULT_CAI_SPECIES, DEFAULT_RNARL_MODEL_TYPE, RNARLModelType, format_cai_species_aliases, format_rnarl_model_types
@@ -207,6 +208,57 @@ class MrnaCdsDesignInput(BaseModel):
             raise ValueError("truncate_n_terminal and truncate_c_terminal are mutually exclusive")
         return self
 
+    @model_validator(mode="after")
+    def _require_resolvable_species_for_lineardesign(self) -> "MrnaCdsDesignInput":
+        """Species-correct design contract (2026-08-25 fix).
+
+        When LinearDesign will run, ``cai_species`` must resolve to a built-in
+        codon table (or an explicit ``lineardesign_codon_usage_path`` must be
+        provided) — otherwise the service would silently design against its
+        default human table. Fail fast at the input layer instead.
+        """
+        uses_lineardesign = (
+            self.design_tool in ("all", "lineardesign") or bool(self.navigation)
+        )
+        if (
+            uses_lineardesign
+            and not self.lineardesign_codon_usage_path
+            and lineardesign_codon_table_for_species(self.cai_species) is None
+        ):
+            raise ValueError(
+                f"No codon-usage table for cai_species {self.cai_species!r}: "
+                "LinearDesign would fall back to its default human table. Use a "
+                f"built-in species ({format_cai_species_aliases()}) or provide "
+                "lineardesign_codon_usage_path (LinearDesign CSV) and "
+                "cai_custom_codon_table_path (CAI JSON)."
+            )
+        return self
+
+
+def _lineardesign_codon_table(inp: "MrnaCdsDesignInput") -> Optional[str]:
+    """Codon table LinearDesign must design against (species-correct design).
+
+    The explicit ``lineardesign_codon_usage_path`` override wins; otherwise the
+    species-resolved CSV shipped with the platform — generated from the same
+    Kazusa tables the CAI evaluator uses — is passed, so the generator and the
+    evaluator always work against the same species table. Fails fast for
+    unresolvable species instead of letting the service silently design
+    against its default human table.
+    """
+    if inp.lineardesign_codon_usage_path:
+        return str(inp.lineardesign_codon_usage_path)
+    path = lineardesign_codon_table_for_species(inp.cai_species)
+    if path is None:
+        raise ValueError(
+            f"No codon-usage table for cai_species {inp.cai_species!r}: "
+            "LinearDesign would fall back to its default human table. Use a "
+            f"built-in species ({format_cai_species_aliases()}) or provide "
+            "lineardesign_codon_usage_path (LinearDesign CSV) and "
+            "cai_custom_codon_table_path (CAI JSON)."
+        )
+    return path
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -335,12 +387,17 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         if getattr(inp, "navigation", False):
             return self._generate_cds_navigation(inp, protein_fp)
 
+        # Species-correct design: resolve the LinearDesign codon table from
+        # cai_species (explicit override wins) before any generator call.
+        uses_lineardesign = inp.design_tool in ("all", "lineardesign")
+        ld_codon_table = _lineardesign_codon_table(inp) if uses_lineardesign else None
+
         design_configs: list[tuple[str, dict[str, Any]]] = []
 
         def _ld_args(lam: float) -> dict[str, Any]:
             extra: dict[str, Any] = {"lambda_value": lam}
-            if inp.lineardesign_codon_usage_path:
-                extra["codon_usage_path"] = str(inp.lineardesign_codon_usage_path)
+            if ld_codon_table:
+                extra["codon_usage_path"] = ld_codon_table
             return extra
 
         if inp.design_tool in ("all", "lineardesign"):
@@ -484,6 +541,9 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         written to ``_workflow_state["_gennav_trace"]``.
         """
         config = MrnaNavConfig()
+        # Species-correct design on the navigation path too: every probe /
+        # reinforcement LinearDesign call designs against the species table.
+        ld_codon_table = _lineardesign_codon_table(inp)
         pool: list[dict] = []
         gears: list[dict] = []
         seen: set[str] = set()
@@ -530,8 +590,8 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             gear_lam = lam
             records = records_by_lam.setdefault(lam, [])
             args: dict[str, Any] = {"filepath": protein_fp, "lambda_value": lam}
-            if inp.lineardesign_codon_usage_path:
-                args["codon_usage_path"] = str(inp.lineardesign_codon_usage_path)
+            if ld_codon_table:
+                args["codon_usage_path"] = ld_codon_table
             res = self._nav_invoke(
                 "design_mrna_cds_with_lineardesign", args, records,
                 step_name=f"gennav_lineardesign:lambda{lam:g}",
