@@ -75,6 +75,16 @@ WORKFLOW_LABELS: dict[str, str] = {
     "ires_prediction": "IRES prediction",
 }
 
+# CDS null-model arm colours (Figs 2b/2c): designed reuses the mRNA-CDS
+# workflow colour (the arm IS that workflow's deliverable); sage marks
+# wild-type/certified; the held-out dark warm grey marks random/null
+# baselines (figure-plan null-model convention).
+ARM_COLORS = {
+    "designed": "#C08B7C",
+    "wt": "#A3B18A",
+    "random": "#7A7672",
+}
+
 # Workflow → palette colour (one distinct colour per workflow; warm and cool
 # tones alternate, the slate-blue row separates the two palest warm tones).
 WORKFLOW_COLORS: dict[str, str] = {
