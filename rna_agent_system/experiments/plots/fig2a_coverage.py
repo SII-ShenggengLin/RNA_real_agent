@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
-"""Fig. 2a — RNADesign-210 task-success carpet + per-workflow summary bars.
+"""Fig. 2a — RNADesign-210 task-success carpet (single merged panel).
 
-Left  : per-task tile carpet — one row per workflow (canonical order), one
-        tile per task in task-id order, filled with the workflow colour on
-        success (failed tiles would be drawn white with a grey edge).
-Right : horizontal bars — task count per workflow, annotated with the
-        success rate; the panel title carries the overall n/n.
+One row per workflow (canonical order), one tile per task in task-id order,
+filled with the workflow colour on success (a failed tile would be drawn
+white with a grey edge). Row labels carry the per-workflow task count as
+"label (n=…)" in the same colour and size as every other in-figure text;
+each row end carries the per-workflow success count "ok/n", anchored by a
+tile-semantics legend in the empty bottom-right corner (black swatch =
+filled tile, task succeeded; white swatch = task failed — none
+in the 2026-08-25 reset run). The
+shared x-axis gives the task-count scale, so row length doubles as the
+per-workflow count — the earlier companion summary-bar panel was redundant
+with the carpet and was merged into this axis.
 
-Data  : experiments/results/exp1_rnadesign210/summary.json (+ lane JSONLs).
+Figure revision 2026-08-27 (user-directed): merged the two sub-panels into
+one, removed all in-figure titles (Nature style — the headline lives in the
+caption, panels carry letters only), and unified every text element to one
+font size and colour.
 
+Data  : experiments/results/exp1_rnadesign210/{pilot,lane_*}.jsonl
 Usage : python experiments/plots/fig2a_coverage.py
 Output : experiments/plots/output/fig2a_coverage.{pdf,png}
 """
@@ -37,10 +47,12 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp1_rnadesign210"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
+FONT = 6  # single font size for every in-figure text element
+
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-    "font.size": 6,
+    "font.size": FONT,
     "axes.linewidth": 0.5,
     "text.color": TEXT,
     "axes.edgecolor": TEXT,
@@ -49,9 +61,7 @@ plt.rcParams.update({
     "pdf.fonttype": 42,
 })
 
-TILE = 1.0        # tile size in data units
-GAP = 0.28        # tile gap
-ROW_GAP = 0.62    # extra gap between workflow rows
+TILE = 0.8        # tile side in data units (unit lattice, square tiles)
 
 
 def load_records() -> dict[str, dict]:
@@ -86,76 +96,91 @@ def main() -> int:
     for wf in by_wf:
         by_wf[wf].sort(key=lambda r: r["task_id"])
 
-    total = sum(len(v) for v in by_wf.values())
-    n_ok = sum(1 for v in by_wf.values() for r in v if r.get("success"))
-    n_wf = len([wf for wf, v in by_wf.items() if v])
-    max_cols = max(len(v) for v in by_wf.values())
-
-    # ---- layout ---------------------------------------------------------
-    # 183 mm double-column width; use a 62 mm-tall panel suited to 11 rows.
-    fig_w, fig_h = 183 / 25.4, 62 / 25.4
-    fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_left = fig.add_axes([0.215, 0.16, 0.50, 0.74])
-    ax_right = fig.add_axes([0.760, 0.16, 0.150, 0.74])
-
     rows: list[tuple[str, list[dict]]] = [
         (wf, by_wf[wf]) for wf in WORKFLOW_ORDER if by_wf.get(wf)
     ]
     n_rows = len(rows)
+    total = sum(len(v) for v in by_wf.values())
+    n_ok = sum(1 for v in by_wf.values() for r in v if r.get("success"))
+    max_cols = max(len(v) for _, v in rows)
+
+    # ---- layout ---------------------------------------------------------
+    # 183 mm double-column width; axes height follows from the unit lattice
+    # so tiles stay square (aspect "equal").
+    fig_w_in = 183 / 25.4
+    label_margin_in = 1.30   # left room for "RNA–small molecule (n=15)" labels
+    right_margin_in = 0.06
+    axes_w_in = fig_w_in - label_margin_in - right_margin_in
+
+    x_lo, x_hi = -0.2, max_cols + 1.9  # right room for the per-row ok/n count
+    y_lo, y_hi = -0.4, n_rows + 0.2
+    unit_in = axes_w_in / (x_hi - x_lo)
+    axes_h_in = unit_in * (y_hi - y_lo)
+    bottom_margin_in = 0.30  # tick labels + xlabel
+    top_margin_in = 0.05
+    fig_h_in = axes_h_in + bottom_margin_in + top_margin_in
+
+    fig = plt.figure(figsize=(fig_w_in, fig_h_in), facecolor="white")
+    ax = fig.add_axes([
+        label_margin_in / fig_w_in,
+        bottom_margin_in / fig_h_in,
+        axes_w_in / fig_w_in,
+        axes_h_in / fig_h_in,
+    ])
 
     for ri, (wf, recs) in enumerate(rows):
-        y = (n_rows - 1 - ri) * (TILE + ROW_GAP)
+        y = n_rows - 1 - ri
         color = WORKFLOW_COLORS[wf]
         for ci, rec in enumerate(recs):
-            x = ci * (TILE + GAP)
             if rec.get("success"):
-                ax_left.add_patch(Rectangle((x, y), TILE, TILE, facecolor=color,
-                                            edgecolor="none"))
+                ax.add_patch(Rectangle((ci, y), TILE, TILE, facecolor=color,
+                                       edgecolor="none"))
             else:
-                ax_left.add_patch(Rectangle((x, y), TILE, TILE, facecolor="white",
-                                            edgecolor=NEUTRAL_GRID, linewidth=0.4))
+                ax.add_patch(Rectangle((ci, y), TILE, TILE, facecolor="white",
+                                       edgecolor=NEUTRAL_GRID, linewidth=0.4))
+        ax.text(-0.55, y + TILE / 2, f"{WORKFLOW_LABELS[wf]} (n={len(recs)})",
+                ha="right", va="center", fontsize=FONT)
+        n_ok_row = sum(1 for r in recs if r.get("success"))
+        ax.text(len(recs) + 0.3, y + TILE / 2, f"{n_ok_row}/{len(recs)}",
+                ha="left", va="center", fontsize=FONT)
 
-    ax_left.set_xlim(-GAP, max_cols * (TILE + GAP))
-    ax_left.set_ylim(-TILE - ROW_GAP, n_rows * (TILE + ROW_GAP) - ROW_GAP + TILE)
-    ax_left.set_aspect("equal")
-    ax_left.axis("off")
-    ax_left.set_title(f"Per-task outcome ({total} tasks, {n_wf} workflows)", loc="left",
-                      fontsize=6.5, pad=3)
+    # tile-semantics legend: one row, two entries, in the empty bottom-right
+    # corner (right of the short bottom rows), so the row-end ok/n counts
+    # read as successes/tasks. A single black swatch stands for a filled tile
+    # (the carpet fills tiles with each workflow's own colour); the "failed"
+    # swatch matches the white failure tile exactly (none occurs in the
+    # 2026-08-25 reset run). Legend texts carry a white bbox so the vertical
+    # count guides never cross them.
+    sw = 0.55                      # legend swatch side (smaller than a tile)
+    leg_y = 0.9                    # centred in the empty bottom-right corner
+    leg_x = max_cols - 6.6         # block left edge; block ends near x_hi
+    leg_bbox = dict(facecolor="white", edgecolor="none", pad=1.2)
+    ax.add_patch(Rectangle((leg_x, leg_y - sw / 2), sw, sw,
+                           facecolor=TEXT, edgecolor="none"))
+    tx = leg_x + sw + 0.35
+    ax.text(tx, leg_y, "task succeeded", ha="left", va="center",
+            fontsize=FONT, bbox=leg_bbox)
+    leg_x2 = tx + 3.9              # entry gap past "task succeeded" (~14 chars)
+    ax.add_patch(Rectangle((leg_x2, leg_y - sw / 2), sw, sw, facecolor="white",
+                           edgecolor=NEUTRAL_GRID, linewidth=0.4))
+    ax.text(leg_x2 + sw + 0.35, leg_y, "task failed", ha="left", va="center",
+            fontsize=FONT, bbox=leg_bbox)
 
-    # row labels
-    for ri, (wf, recs) in enumerate(rows):
-        y = (n_rows - 1 - ri) * (TILE + ROW_GAP) + TILE / 2
-        ax_left.text(-0.6, y, WORKFLOW_LABELS[wf], ha="right", va="center", fontsize=5.5)
-        ax_left.text(-0.6, y - 0.78, f"n={len(recs)}", ha="right", va="center",
-                     fontsize=4.6, color="#666666")
-
-    # ---- right: horizontal bar summary -----------------------------------
-    wf_names = [wf for wf, _ in rows]
-    counts = [len(recs) for _, recs in rows]
-    rates = [sum(1 for r in recs if r.get("success")) / len(recs) if recs else 0
-             for _, recs in rows]
-    ypos = [i for i in range(n_rows)][::-1]
-    ax_right.barh(ypos, counts, height=0.62,
-                  color=[WORKFLOW_COLORS[wf] for wf in wf_names],
-                  edgecolor="none")
-    for y, c, r in zip(ypos, counts, rates):
-        ax_right.text(c + 0.6, y, f"{r * 100:.0f}%", va="center", fontsize=5.5)
-    ax_right.set_yticks([])
-    ax_right.set_xlim(0, max(counts) * 1.30)
-    ax_right.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-    ax_right.set_xlabel("Tasks (success rate)", fontsize=5.5, labelpad=1.5)
-    ax_right.tick_params(axis="x", labelsize=5, length=1.5, pad=1)
-    for s in ("top", "right"):
-        ax_right.spines[s].set_visible(False)
-    ax_right.grid(axis="x", color=NEUTRAL_GRID, linewidth=0.4, alpha=0.6)
-    ax_right.set_axisbelow(True)
-    ax_right.set_title("Tasks per workflow", loc="left", fontsize=6.5, pad=3)
-
-    # overall KPI
-    ax_left.text(0.5, 1.045,
-                 f"RNADesign-210:  {n_ok}/{total} tasks successful  ·  {n_wf} workflows",
-                 transform=ax_left.transAxes, ha="center", va="bottom",
-                 fontsize=7, fontweight="bold")
+    ax.set_xlim(x_lo, x_hi)
+    ax.set_ylim(y_lo, y_hi)
+    ax.set_aspect("equal")
+    ax.set_yticks([])
+    ax.set_xticks(list(range(0, max_cols + 1, 5)))
+    ax.set_xlabel("Tasks per workflow", fontsize=FONT, labelpad=2)
+    ax.tick_params(axis="x", labelsize=FONT, length=1.5, pad=1.5)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    # vertical count guides, drawn only up to the carpet top so they never
+    # cross the tile legend on the strip above
+    for gx in range(0, max_cols + 1, 5):
+        ax.plot([gx, gx], [y_lo, n_rows - 0.2], color=NEUTRAL_GRID,
+                linewidth=0.4, alpha=0.6, zorder=0, solid_capstyle="butt")
+    ax.set_axisbelow(True)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
@@ -167,7 +192,7 @@ def main() -> int:
         f"{WORKFLOW_LABELS[w]} {sum(1 for r in rs if r.get('success'))}/{len(rs)}"
         for w, rs in rows
     )
-    print(f"{n_ok}/{total} successful across {n_wf} workflows ({per_wf})")
+    print(f"{n_ok}/{total} successful across {n_rows} workflows ({per_wf})")
     return 0
 
 

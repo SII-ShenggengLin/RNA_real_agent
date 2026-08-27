@@ -66,7 +66,7 @@ WORKFLOW_LABELS: dict[str, str] = {
     "full_length_mrna_design": "Full-length mRNA",
     "mrna_sequence_scoring": "mRNA scoring",
     "sirna_design": "siRNA",
-    "sgrna_design": "sgRNA handle",
+    "sgrna_design": "sgRNA",
     "rna_secondary_structure_design": "Secondary structure",
     "rna_tertiary_structure_design": "Tertiary structure",
     "rna_aptamer_design": "Aptamer",
