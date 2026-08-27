@@ -8,6 +8,39 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-27 — Exp 10 (Fig 3b) executed under the reset: structure-oracle screening-power profile, 66/66, 0/18 cells pass
+
+Zero-intervention oracle profiling on the registered aptamer anchor set
+(`experiments/exp10_structure_oracle_screening.py`, pre-registered docstring,
+pilot 6/6; evidence `experiments/results/exp10_structure_oracle_screening/`).
+Anchor set `e1_anchor_set_v2.json` verbatim (66 entries, 6 targets;
+user-confirmed after the target-count review — 6 is the discipline-exhausted
+maximum). Instrument = the platform production tool path
+(`ToolExecutor.run_tool` → deployed rhofold/proteinx/egarps services; DNA
+scored as RNA via T→U per the anchor-set convention); CapGate advisory
+(regression convention — under default enforce the three oracles are
+SelfModel-governed and blocked); every call audited to
+`platform_audit.jsonl` (the driver activates the audit runtime via
+`runtime_from_env()`; an initial unaudited ~8-record attempt was discarded
+and the run restarted from scratch — disclosed).
+
+- **66/66 successful, 0 failures** (wall ≈ 3.3 h, 165–225 s/entry).
+- **18/18 cells measured, 0/18 pass AUROC > 0.8; all 18 bootstrap 95% CIs
+  cover chance**; best cell 0.800 exactly (RhoFold pLDDT × PDGF-BB);
+  sensitivity 5/2/0/0 cells above 0.6/0.7/0.8/0.9.
+- Secondary ranking (descriptive): ρ ≥ 0.6 only on two n = 3 Angiopoietin-2
+  SPR subsets — underpowered by pre-registration.
+- Vs retained evidence: **11/18 cells identical** (RhoFold bit-deterministic,
+  pilot cross-check bit-identical; 5/6 ProteinX); the 6 EGARPS cells + 1
+  ProteinX cell shift by ProteinX-complex realization variance (largest
+  Δ +0.476, egarps × Thrombin) — headline invariant.
+- Figure `experiments/plots/fig3b_oracle_screening.py` →
+  `fig3b_oracle_screening.{pdf,png}` (balloon matrix; size + colour
+  dual-encode AUROC, printed values, chance/gate reference lines; palette
+  rev 7). `PAPER_DRAFT.md` Fig 3b legend + Results reset sentence,
+  `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md` row 3b, `MANUSCRIPT.md` reset
+  table updated.
+
 ## 2026-08-27 — Exp 8 (Fig 2h) executed under the reset: end-to-end runtime by workflow, 241/241, minutes-to-1 h per target
 
 Zero-intervention timing of the 11 workflows (`experiments/exp8_runtime.py`

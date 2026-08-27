@@ -49,7 +49,7 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 | Panel | Content | Type | Data |
 |---|---|---|---|
 | a | Failure-mode schematic: uncalibrated trust / claim overreach / confounded improvement entering an ungated agent | schematic | — |
-| b | Screening: AUROC bubble-matrix heatmap 3 oracles × 6 targets, 0/18 pass (gate 0.8) | bubble-matrix heatmap (size + colour encode AUROC) + printed values | `e1_capability_summary_v2.json` |
+| b | Screening: AUROC bubble-matrix heatmap 3 oracles × 6 targets, **0/18 pass (gate 0.8), all CIs cover chance** (reset run 2026-08-27: 66/66 zero-intervention re-scored through the deployed chain; 11/18 cells identical to the retained evidence, EGARPS cells shift by ProteinX-complex realization variance, largest +0.48 — headline invariant; sensitivity 5 cells >0.6, 2 >0.7) | bubble-matrix heatmap (size + colour encode AUROC) + printed values + chance/gate reference lines | `exp10_structure_oracle_screening/summary.json` |
 | c | Ranking: per-cell Spearman ρ dots vs 0.6 gate (best 0.56) | dot plot + gate line | e1 v2 |
 | d | Docking: native-pose rank lollipop for 5 complexes (0/5 top-1; TBA 21/21) | lollipop + gate zone | e1 v2 part B |
 | e | Calibration inversion: thrombin Kd series (ρ=0.40) + binders-below-negatives (AUROC 0.356; pegaptanib ~2e-6 vs scrambled 0.99) | scatter + ridgeline densities (binders / negatives / random 30-mers) | `p2_aptamer_calibration_summary.json` |
