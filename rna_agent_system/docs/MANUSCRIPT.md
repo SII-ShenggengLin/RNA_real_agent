@@ -42,7 +42,7 @@ and were removed in this edition; the drivers themselves remain under
 | RNA-BioBench-FullLength-mRNA | `RNA-BioBench-FullLength-mRNA/targets/*.json` (+`sequences/*.fa`) | 20 targets | Fig 2 b–c panels; navigation campaigns (to be re-run under the reset) |
 | RNA-BioBench-Aptamer | `RNA-BioBench-Aptamer/targets/*.json` (+`structures/*.pdb`) | 20 targets | aptamer profiling/navigation campaigns (to be re-run under the reset) |
 | RNA-BioBench-ProcessAware | `RNA-BioBench-ProcessAware/task_set_for_llm_comparison.json` | 19 tasks on disk (PA_006–024) | CLI regression (`run_pa_test.py`) |
-| PA batch-B registry | `pa_benchmarks.json` entries 025–036 | 12 fresh-data benchmarks (all 11 workflows + GenNav `navigation=true`) | CLI regression batch-B (GenNav production coverage; re-run evidence pending under the reset) |
+| PA batch-B registry | `pa_benchmarks.json` entries 025–036 | 12 fresh-data benchmarks (all 11 workflows + GenNav `navigation=true`) | CLI regression batch-B (GenNav production coverage) |
 
 Platform task JSON → the `input` object is passed verbatim as the CLI params
 file; `evaluation_rubric` defines pass thresholds; `expected_tool_chain` is

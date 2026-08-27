@@ -84,7 +84,7 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 | f | Aptamer campaign arc E8→E15: b:c discordance and P per campaign with labelled levers (lattice, priors, guarantee) | lollipop + P line | `e8/e9/e10/e12/e14/e15_verdict_s2.json` |
 | g | E14 decisive: delivered cells 26/36 vs 15/36; e2e 6/12 vs 0/12; discordant 14:3 (P=0.0127) | grouped bars + inset mosaic | `e14_verdict_s2.json` |
 | h | E14 delivery map: 12 targets × 3 profiles pair-outcome mosaic | categorical heatmap | e14 pairs |
-| i | Budget compliance + production: raw spend ≤48/target; 1 LLM call; production runs 1CA2 47/48 (5 guarantee rounds), 3CNA 35/48 (early stop), VEGF live | cost–delivery Pareto scatter (cap-hit / early-stop markers) + breakthrough step-line inset | e14 secondary + `gennav_*_navigation_result.json` |
+| i | Budget compliance + production: raw spend ≤48/target; 1 LLM call; VEGF live campaign | cost–delivery Pareto scatter (cap-hit / early-stop markers) + breakthrough step-line inset | e14 secondary |
 
 ## Fig 6 | Pre-registered negative results delineate durable boundaries (9 panels)
 
