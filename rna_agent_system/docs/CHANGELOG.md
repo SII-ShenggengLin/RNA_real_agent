@@ -8,6 +8,45 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-27 — Exp 11 (Fig 3c) executed under the reset: structure-oracle ranking-power profile, 34/34, no reliable ranking power
+
+Zero-intervention ranking-power profiling on the affinity subsets of the
+same anchor set (`experiments/exp11_oracle_ranking_power.py`, pre-registered
+docstring, pilot 4/4; evidence
+`experiments/results/exp11_oracle_ranking_power/`). Subset rule = per target,
+binders with measured Kd gated by `ranking_eligible` (flag defaults True
+where absent — pilot-3 targets carry none), giving the retained per-target
+n 6/8/5/6/3/6 = 34 entries; the rule was pre-verified by recomputing the
+nine retained v2 JSONL cells to max |Δρ| = 0. ρ = Spearman(oracle score,
+−log10 Kd), gate 0.6 analysis-side only. Instrument identical to Exp 10
+(`ToolExecutor.run_tool` → deployed rhofold/proteinx/egarps, GPU-pinned
+0/1/2 inherited; fixed protocol args only); CapGate advisory; every call
+audited to `platform_audit.jsonl`.
+
+- **34/34 successful, 0 failures** (wall ≈ 1.7 h, 164–208 s/entry).
+- **18/18 cells measured; no oracle shows reliable ranking power across
+  targets** — 2/18 nominal ρ ≥ 0.6 passes, both small-n with vacuous
+  uncertainty (egarps × PDGF-BB n = 5, ρ = +0.667, CI −0.40–1.0, an
+  ordering of near-zero scores; proteinx × Ang2 n = 3, ρ = +1.0 with two of
+  three entries flipping ~0 ↔ ~1 across complex realizations); no oracle
+  passes on more than one target; sensitivity 6/4/2/1 at 0.4/0.5/0.6/0.7;
+  the retained best cell (rhofold × PDGF-BB +0.5643) reproduces
+  bit-identically and stays sub-gate.
+- Vs retained evidence: **10/18 cells identical** (all 6 RhoFold
+  bit-deterministic — also re-derives the pilot-3 targets' retained ρ
+  exactly); 8 shifted by ProteinX-complex realization variance (largest
+  Δρ +0.5). Vs Exp-10 per-entry scores (same 34 ids): RhoFold max |Δ| = 0,
+  ProteinX median 0.005, EGARPS median 1.9e-5 with 5 bimodal entries
+  (max 0.9998) — the disclosed instability class.
+- Figure `experiments/plots/fig3c_oracle_ranking.py` →
+  `fig3c_oracle_ranking.{pdf,png}` (Cleveland dot plot, 3 oracle blocks ×
+  6 targets; zero line solid / 0.6 gate dashed with nominal-pass rings;
+  retained open markers + dumbbell hairlines; palette rev 7).
+  `PAPER_DRAFT.md` Fig 3c legend + Results reset sentence,
+  `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md` row c, `MANUSCRIPT.md` reset
+  table, `AGENTS.md` updated. Docking panel 3d remains on retained evidence
+  pending its own reset re-run.
+
 ## 2026-08-27 — Exp 10 (Fig 3b) executed under the reset: structure-oracle screening-power profile, 66/66, 0/18 cells pass
 
 Zero-intervention oracle profiling on the registered aptamer anchor set

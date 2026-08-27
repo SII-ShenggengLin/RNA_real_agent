@@ -34,7 +34,7 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 
 | Panel | Content | Type | Data |
 |---|---|---|---|
-| a | 210/210 task success by workflow (per-task tile carpet, all pass; n printed) | per-task tile carpet + horizontal-bar summary | `fig2_summary.json` coverage |
+| a | 210/210 task success by workflow (per-task tile carpet, all pass; n printed in row labels, ok/n success counts at row ends, tile-semantics legend in the bottom-right corner) | per-task tile carpet on a shared task-count axis (single panel; the former companion summary-bar panel merged into it, 2026-08-27 figure revision) | `fig2_summary.json` coverage |
 | b | CDS null model, CAI arm: designed (golden-path ranked deliverable, species-resolved codon tables) vs WT vs random-synonymous (median 0.832/0.729/0.674; designed-vs-WT P=6.9e-4 δ=0.63; WT-vs-random P=6.8e-7 δ=0.67; post-species-fix re-run 2026-08-25) | violin + jitter | `exp2_cds_nulls/fig2_cds_nulls.jsonl` |
 | c | CDS null model, folding arm: MFE/nt three-arm — designed −0.336 vs WT −0.051 vs random −0.047 (designed vs both P≤7e-8 δ=−1.0; WT vs random NS P=0.29); designed leads on CAI and structure simultaneously | violin + jitter | `exp2_cds_nulls/fig2_cds_nulls.jsonl` |
 | d | Secondary-structure inverse folding: per-benchmark distance dots, 21/25 exact (reset run 2026-08-25; miss dot-bracket distances 2/2/4/6, base-pair distances 1/2/3/1) | strip + step cumulative curve | `exp4_inverse_folding/records.jsonl` |
@@ -50,7 +50,7 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 |---|---|---|---|
 | a | Failure-mode schematic: uncalibrated trust / claim overreach / confounded improvement entering an ungated agent | schematic | — |
 | b | Screening: AUROC bubble-matrix heatmap 3 oracles × 6 targets, **0/18 pass (gate 0.8), all CIs cover chance** (reset run 2026-08-27: 66/66 zero-intervention re-scored through the deployed chain; 11/18 cells identical to the retained evidence, EGARPS cells shift by ProteinX-complex realization variance, largest +0.48 — headline invariant; sensitivity 5 cells >0.6, 2 >0.7) | bubble-matrix heatmap (size + colour encode AUROC) + printed values + chance/gate reference lines | `exp10_structure_oracle_screening/summary.json` |
-| c | Ranking: per-cell Spearman ρ dots vs 0.6 gate (best 0.56) | dot plot + gate line | e1 v2 |
+| c | Ranking: per-cell Spearman ρ dots vs 0.6 gate, **no cell shows reliable ranking power** (retained best 0.56 = RhoFold × PDGF-BB, reproduced bit-identically; reset run 2026-08-27: 34/34 affinity entries zero-intervention through the deployed chain, pilot 4/4 — 2/18 nominal passes, both small-n with vacuous CIs (egarps × PDGF-BB n=5 ρ=0.67 CI −0.40–1.0 on near-zero scores; proteinx × Ang2 n=3 ρ=1.0 with two entries flipping ~0↔~1 across realizations); 10/18 cells identical to retained, rest ProteinX-realization variance; sensitivity 6/4/2/1 at 0.4/0.5/0.6/0.7) | Cleveland dot plot + gate line (+ retained open markers, dumbbell) | `exp11_oracle_ranking_power/summary.json` |
 | d | Docking: native-pose rank lollipop for 5 complexes (0/5 top-1; TBA 21/21) | lollipop + gate zone | e1 v2 part B |
 | e | Calibration inversion: thrombin Kd series (ρ=0.40) + binders-below-negatives (AUROC 0.356; pegaptanib ~2e-6 vs scrambled 0.99) | scatter + ridgeline densities (binders / negatives / random 30-mers) | `p2_aptamer_calibration_summary.json` |
 | f | Claim overreach (ungated): FP 11/19 (57.9%), overreach events by category (23) | waffle + bar | `e3_runs_full.jsonl` |
