@@ -1,0 +1,172 @@
+{
+  "experiment": "exp8_runtime",
+  "generated": "2026-08-27T03:47:49",
+  "capgate_policy": "advisory (regression convention; see docstring)",
+  "services": "pre-warmed via experiments/exp1_bring_up_services.sh (GPU-pinned 0/1/2)",
+  "measurement": "subprocess wall clock per task/session; successful runs only",
+  "total_runs": 241,
+  "n_success": 241,
+  "all_pass": true,
+  "grand_elapsed_s": {
+    "median": 156.3,
+    "mean": 261.6,
+    "min": 2.5,
+    "max": 5917.2
+  },
+  "per_workflow": {
+    "aso_target_screening": {
+      "n_runs": 17,
+      "n_success": 17,
+      "n_rnadesign210": 14,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 3.7,
+        "median": 17.0,
+        "mean": 44.6,
+        "p90": 66.4,
+        "max": 295.3
+      }
+    },
+    "full_length_mrna_design": {
+      "n_runs": 25,
+      "n_success": 25,
+      "n_rnadesign210": 22,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 83.7,
+        "median": 259.1,
+        "mean": 370.4,
+        "p90": 887.5,
+        "max": 1278.9
+      }
+    },
+    "ires_prediction": {
+      "n_runs": 15,
+      "n_success": 15,
+      "n_rnadesign210": 12,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 64.5,
+        "median": 80.3,
+        "mean": 144.8,
+        "p90": 331.8,
+        "max": 368.1
+      }
+    },
+    "mrna_cds_design": {
+      "n_runs": 21,
+      "n_success": 21,
+      "n_rnadesign210": 19,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 46.3,
+        "median": 192.4,
+        "mean": 316.3,
+        "p90": 802.4,
+        "max": 1619.5
+      }
+    },
+    "mrna_sequence_scoring": {
+      "n_runs": 15,
+      "n_success": 15,
+      "n_rnadesign210": 13,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 2.5,
+        "median": 2.5,
+        "mean": 3.4,
+        "p90": 8.9,
+        "max": 9.1
+      }
+    },
+    "rna_aptamer_design": {
+      "n_runs": 22,
+      "n_success": 22,
+      "n_rnadesign210": 18,
+      "n_pa_regression": 4,
+      "failures": [],
+      "elapsed_s": {
+        "min": 219.8,
+        "median": 377.1,
+        "mean": 962.0,
+        "p90": 2575.7,
+        "max": 5917.2
+      }
+    },
+    "rna_secondary_structure_design": {
+      "n_runs": 27,
+      "n_success": 27,
+      "n_rnadesign210": 25,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 36.8,
+        "median": 72.5,
+        "mean": 83.2,
+        "p90": 125.9,
+        "max": 212.4
+      }
+    },
+    "rna_small_molecule_interaction": {
+      "n_runs": 18,
+      "n_success": 18,
+      "n_rnadesign210": 15,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 2.5,
+        "median": 13.6,
+        "mean": 17.0,
+        "p90": 42.1,
+        "max": 42.6
+      }
+    },
+    "rna_tertiary_structure_design": {
+      "n_runs": 22,
+      "n_success": 22,
+      "n_rnadesign210": 20,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 109.5,
+        "median": 232.1,
+        "mean": 336.2,
+        "p90": 488.2,
+        "max": 1249.1
+      }
+    },
+    "sgrna_design": {
+      "n_runs": 34,
+      "n_success": 34,
+      "n_rnadesign210": 30,
+      "n_pa_regression": 4,
+      "failures": [],
+      "elapsed_s": {
+        "min": 97.0,
+        "median": 192.0,
+        "mean": 235.9,
+        "p90": 521.4,
+        "max": 723.8
+      }
+    },
+    "sirna_design": {
+      "n_runs": 25,
+      "n_success": 25,
+      "n_rnadesign210": 22,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 75.4,
+        "median": 156.4,
+        "mean": 200.7,
+        "p90": 356.0,
+        "max": 546.2
+      }
+    }
+  }
+}

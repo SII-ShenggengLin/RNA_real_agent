@@ -1,12 +1,53 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-26
+> **Last updated**: 2026-08-27
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-27 — Exp 8 (Fig 2h) executed under the reset: end-to-end runtime by workflow, 241/241, minutes-to-1 h per target
+
+Zero-intervention timing of the 11 workflows (`experiments/exp8_runtime.py`
++ orchestrator `experiments/exp8_run_all.sh`, pre-registered docstring,
+pilot 4/4; evidence `experiments/results/exp8_runtime/`). Instrument = one
+`cli/form_chat.py` subprocess per run through the user form entry, inputs
+verbatim, no thresholds, CapGate advisory (the documented regression
+convention); services pre-warmed and GPU-pinned 0/1/2 by
+`exp1_bring_up_services.sh`, so per-run time measures the delivered
+workflow (pre-flight → generate → evaluate → score → rank → advisory
+review → writeout), not cold model loads; lanes strictly sequential
+(gpu_aptamer → gpu_tertiary → cpu → PA batch) against cross-lane
+contention. Successful runs only enter the distribution.
+
+- **241/241 successful**: all 210 RNADesign-210 tasks + all 31 PA
+  regression sessions (PA_006–PA_036, each timed as one whole form
+  session). Pooled median **2.6 min** (mean 4.4).
+- **Workflow medians**: mRNA scoring 2.5 s; small-molecule 0.23 min; ASO
+  0.28; secondary structure 1.21; IRES 1.34; siRNA 2.61; sgRNA 3.20; CDS
+  3.21; tertiary structure 3.87; full-length mRNA 4.32; aptamer 6.29.
+- **Completion profile**: 76.3% ≤5 min, 92.9% ≤10 min, 98.3% ≤30 min,
+  **240/241 ≤1 h**. The four >30-min runs are all multi-turn aptamer PA
+  sessions (42.4/42.9/59.9/**98.6** min); the single >1 h run is the GenNav
+  `navigation=true` aptamer session PA_028. Suite-task maximum 27.0 min.
+- **Disclosed amendment (registered before the PA_028 re-run)**: the
+  PA-arm timeout (3600 s, calibrated on suite-task maxima) under-covered
+  multi-turn navigation sessions — PA_027 finished at 3593 s and PA_028 was
+  killed at 3600 s while progressing normally; the timeout's
+  kill-only-the-direct-child semantics orphaned its turn-2 grandchild,
+  which then completed (~5740 s total), exposing a driver defect now fixed
+  (process-group kill). Amended budget 10800 s; PA_028 re-run once under
+  it (**5917.2 s**, consistent with the orphan reconstruction); the
+  original censored record retained in `pa_batch.jsonl`; the orphan's
+  overlap window with PA_029 verified uncontaminating (42.63 s vs siblings
+  42.15/42.52 s).
+- Figure `experiments/plots/fig2h_runtime_ecdf.py` →
+  `fig2h_runtime_ecdf.{pdf,png}` (log-axis ECDF per workflow + box inset,
+  1 h reference line; palette rev 7 unchanged). `PAPER_DRAFT.md`,
+  `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md`, `MANUSCRIPT.md`, `AGENTS.md`
+  updated.
 
 ## 2026-08-26 — Exp 7 (Fig 2g) executed under the reset: RNAsmol two-sided boundary, every registered metric reproduced
 
