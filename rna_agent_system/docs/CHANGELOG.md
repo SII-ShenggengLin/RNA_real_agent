@@ -8,6 +8,38 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-28 — Exp 13 (Fig 3e): affinity calibration at anchor-set scale — chance-level, inversion does not survive scale
+
+- **Driver** `experiments/exp13_affinity_calibration.py` (pre-registered
+  docstring; pilot 6/6 → full 95/95, 0 failures, wall ≈ 4.4 h): the retained
+  P2 pilot's question re-registered on `e1_anchor_set_v3.json` verbatim (95
+  entries / 9 targets — the Fig-3b/c/d data source, user-confirmed); zero
+  intervention (ToolExecutor.run_tool → deployed rhofold 8005 / proteinx
+  8022 / egarps 8023, fixed protocol args only); CapGate advisory; every
+  call audited; the retained P2 15-record reference recovered from git
+  e601913 and embedded (12/15 ids live in v3, drops disclosed).
+- **Results**: thrombin 6-point Kd series ρ = 0.4857 (sub-gate; retained
+  4-point 0.40 re-measures 0.20 — realization variance); pooled
+  binder-vs-negative AUROC **0.5225 (CI 0.391–0.652, 62 vs 28)** — gate
+  fails, CI covers chance; **the retained pilot's below-chance 0.356 does
+  not survive scale — the honest reading upgrades "directionally inverted"
+  to "uncalibrated, chance-level"** (per-entry inversion reproduces:
+  pegaptanib 1.27e-6 vs scrambled TBA 0.983); all three ridgeline classes
+  span the full 9-order score range; legacy-12 1:1 median |Δnp| = 7e-4
+  (3 large shifts = the disclosed EGARPS bimodal class); vs exp10_v3:
+  RhoFold bit-identical, EGARPS median Δ 5.7e-4. Verdict: **NO-GO on both
+  P2 gates — no validated affinity calibration**.
+- **Figure** `experiments/plots/fig3e_affinity_calibration.py` →
+  `output/fig3e_affinity_calibration.{pdf,png}` (Kd–score scatter with the
+  thrombin series emphasized + horizontal ridgeline densities on the shared
+  log-score axis, ridgeline style after SeFMol Fig. 3d; palette rev 7; the
+  group legend as a centred row block under the axis, the fig2i
+  convention).
+- **Docs**: PAPER_DRAFT Fig-3e legend + Results sentence (anti-signal →
+  noise, inversion → chance-level at scale with the per-entry inversion
+  preserved), PAPER_FACT_SHEET (E13 section + key-number 11), FIGURE_PLAN_V5
+  row e, MANUSCRIPT reset table (Exp 13 row).
+
 ## 2026-08-28 — Fig 2 panel-letter swap: audit trail ↔ runtime (h ↔ i; user-directed)
 
 The audit-trail panel is now **Fig 2h** and the end-to-end runtime ECDF
