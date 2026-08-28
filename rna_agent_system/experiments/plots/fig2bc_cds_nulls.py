@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Figs. 2b & 2c — CDS null model: designed vs wild-type vs random-synonymous.
 
-2b: CAI per arm (violin + jitter; medians marked, pairwise Mann–Whitney P and
-    Cliff's δ annotated).
+2b: CAI per arm (violin + jitter; medians marked and printed above each arm,
+    n carried by the tick labels; pairwise Mann–Whitney P and Cliff's δ live
+    in the manuscript legend, not on the panel — Nature panel style).
 2c: MFE/nt per arm (same geometry; more negative = more structured).
 
 Data  : experiments/results/exp2_cds_nulls/fig2_cds_nulls.jsonl
@@ -69,29 +70,30 @@ def load_summary() -> dict:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
-def fmt_p(p: float | None) -> str:
-    if p is None:
-        return "NA"
-    return f"P = {p:.1e}".replace("e-0", "e-").replace("e-0", "e-") if p < 1e-3 else f"P = {p:.3g}"
-
-
-def violin_jitter(ax, data: list[np.ndarray], metric: str, stats: dict) -> None:
-    """One violin+jitter panel; `stats` is summary.json[metric]."""
+def violin_jitter(ax, data: list[np.ndarray], stats: dict) -> None:
+    """One violin+jitter panel; `stats` is summary.json[metric] (n per arm)."""
     n = len(ARMS)
     rng = np.random.default_rng(0)
 
-    # KDE violins (bandwidth-scott via gaussian_kde; mirrored densities)
+    # KDE violins. The evaluation grid extends three bandwidths past the data
+    # extremes so the density tapers to zero instead of ending in a chopped
+    # edge at the sample min/max.
+    tops: list[float] = []
+    bottoms: list[float] = []
     for i, vals in enumerate(data):
         color = ARM_COLORS[ARMS[i]]
+        xs = np.asarray(vals, dtype=float)
         if len(vals) >= 8:
             kde = gaussian_kde(vals)
-            span = np.ptp(vals)
-            xs = np.linspace(vals.min() - 0.02 * span - 1e-6,
-                             vals.max() + 0.02 * span + 1e-6, 240)
+            bw = float(kde.factor) * float(np.std(vals, ddof=1))
+            pad = max(3.0 * bw, 0.02 * float(np.ptp(vals)))
+            xs = np.linspace(vals.min() - pad, vals.max() + pad, 300)
             dens = kde(xs)
             dens = dens / dens.max() * 0.34
             ax.fill_betweenx(xs, i + 1 - dens, i + 1 + dens,
                              facecolor=color, alpha=0.55, edgecolor=color, linewidth=0.6)
+        tops.append(float(xs.max()))
+        bottoms.append(float(xs.min()))
         # jitter points
         jit = rng.uniform(-0.16, 0.16, size=len(vals))
         marker_size = 4.0 if len(vals) <= 20 else 2.4
@@ -101,48 +103,46 @@ def violin_jitter(ax, data: list[np.ndarray], metric: str, stats: dict) -> None:
         # median marker
         med = float(np.median(vals))
         ax.hlines(med, i + 1 - 0.38, i + 1 + 0.38, colors=TEXT, linewidth=1.0, zorder=5)
-        arm_n = stats.get("arms", {}).get(ARMS[i], {}).get("n", len(vals))
-        ax.annotate(f"{med:.3f}\nn = {arm_n}", (i + 1, med),
-                    xytext=(14, 0), textcoords="offset points",
-                    ha="left", va="center", fontsize=5.2, zorder=6,
-                    bbox=dict(facecolor="white", edgecolor="none",
-                              alpha=0.75, pad=0.6))
 
-    ax.set_xlim(0.45, n + 0.55 + 0.85)  # right margin for median labels
+    # Symmetric margins: identical gaps between arms and to the axes edges.
+    ax.set_xlim(0.45, n + 0.55)
+    yr = float(max(tops) - min(bottoms)) or 1.0
+    ax.set_ylim(min(bottoms) - 0.04 * yr, max(tops) + 0.16 * yr)
+
     ax.set_xticks(range(1, n + 1))
-    ax.set_xticklabels([ARM_LABELS[a] for a in ARMS], fontsize=6)
+    tick_labels = []
+    for i, a in enumerate(ARMS):
+        arm_n = stats.get("arms", {}).get(a, {}).get("n", len(data[i]))
+        tick_labels.append(f"{ARM_LABELS[a]}\n(n = {arm_n})")
+    ax.set_xticklabels(tick_labels)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     ax.grid(axis="y", color=NEUTRAL_GRID, linewidth=0.4, alpha=0.6)
     ax.set_axisbelow(True)
-    ax.tick_params(axis="both", labelsize=5.5, length=1.5, pad=1)
+    ax.tick_params(axis="both", labelsize=6, length=1.5, pad=1.5)
 
-    # pairwise stats strip under the title
-    pairs = [("designed", "wt"), ("wt", "random"), ("designed", "random")]
-    labels = []
-    for a, b in pairs:
-        st = stats.get(f"{a}_vs_{b}") or {}
-        if "mannwhitney_p" in st:
-            labels.append(f"{ARM_LABELS[a].split()[0]}–{ARM_LABELS[b].split()[0]}: "
-                          f"{fmt_p(st['mannwhitney_p'])}, δ = {st['cliffs_delta']:+.2f}")
-    for j, lab in enumerate(labels):
-        ax.text(0.0, 1.035 - j * 0.085, lab, transform=ax.transAxes,
-                ha="left", va="bottom", fontsize=5.2, color="#444444")
+    # Median value centred above each violin — clear of every drawn element.
+    # (\u2212 matches the tick labels' minus sign.)
+    for i, vals in enumerate(data):
+        label = f"{np.median(vals):.3f}".replace("-", "\u2212")
+        ax.text(i + 1, tops[i] + 0.02 * yr, label,
+                ha="center", va="bottom", fontsize=6, color=TEXT, zorder=6,
+                bbox=dict(facecolor="white", edgecolor="none",
+                          alpha=0.85, pad=0.5))
 
 
-def draw(metric_key: str, values_by_arm: dict[str, np.ndarray],
-         stats: dict, ylabel: str, title: str, stem: str) -> int:
+def draw(values_by_arm: dict[str, np.ndarray],
+         stats: dict, ylabel: str, stem: str) -> int:
     fig_w, fig_h = 88 / 25.4, 66 / 25.4  # single-column panel
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax = fig.add_axes([0.155, 0.135, 0.72, 0.70])
+    ax = fig.add_axes([0.14, 0.19, 0.82, 0.76])
     data = [values_by_arm[a] for a in ARMS]
-    violin_jitter(ax, data, metric_key, stats)
+    violin_jitter(ax, data, stats)
     ax.set_ylabel(ylabel, fontsize=6, labelpad=2)
-    ax.set_title(title, loc="left", fontsize=6.5, pad=14)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"{stem}.{ext}"
-        fig.savefig(out, format=ext, dpi=600 if ext == "png" else None,
+        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")
     return 0
@@ -166,11 +166,9 @@ def main() -> int:
     cai_arrays = {a: np.array(v, dtype=float) for a, v in by_arm.items()}
     mfe_arrays = {a: np.array(v, dtype=float) for a, v in by_arm_mfe.items()}
 
-    rc = draw("cai", cai_arrays, summary.get("cai", {}),
-              "CAI", "CDS null model — codon adaptation index", "fig2b_cai")
-    rc += draw("mfe_per_nt", mfe_arrays, summary.get("mfe_per_nt", {}),
-               "MFE per nucleotide (kcal mol$^{-1}$ nt$^{-1}$)",
-               "CDS null model — folding energy per nucleotide", "fig2c_mfe_per_nt")
+    rc = draw(cai_arrays, summary.get("cai", {}), "CAI", "fig2b_cai")
+    rc += draw(mfe_arrays, summary.get("mfe_per_nt", {}),
+               "MFE per nucleotide (kcal/mol/nt)", "fig2c_mfe_per_nt")
     for a in ARMS:
         print(f"{a:8s} CAI n={len(cai_arrays[a]):3d} "
               f"median={np.median(cai_arrays[a]) if len(cai_arrays[a]) else float('nan'):.4f}   "

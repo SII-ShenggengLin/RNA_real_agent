@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Experiment 9 (paper §2.2, Fig. 2i): production audit-trail statistics.
+"""Experiment 9 (paper §2.2, Fig. 2h): production audit-trail statistics.
 
 Pre-registration (pilot-first rule, MANUSCRIPT.md §2; zero-intervention rule)
 ---------------------------------------------------------------------------
@@ -15,7 +15,7 @@ Pre-registration (pilot-first rule, MANUSCRIPT.md §2; zero-intervention rule)
 * Corpus (fixed, user-confirmed 2026-08-27): the audit slice of the 241
   registered Exp-8 runs — all 210 RNADesign-210 tasks + all 31 PA form
   sessions (PA_028 = the amended re-run ``exp8_r2_pa028``), i.e. exactly the
-  Fig-2h campaign. The session set is derived 1:1 from the registered Exp-8
+  Fig-2i campaign. The session set is derived 1:1 from the registered Exp-8
   records (``lane_*.jsonl`` + ``pa_batch.jsonl``, latest-record-wins,
   ``success=True`` required), never hand-listed; the four pilot sessions and
   the censored PA_028 original (``exp8_pa028``) drop out of that mapping by
@@ -432,7 +432,7 @@ def main() -> int:
 
     manifest = {
         "created_utc": datetime.now(timezone.utc).isoformat(),
-        "experiment": "exp9_audit_stats (paper §2.2, Fig. 2i)",
+        "experiment": "exp9_audit_stats (paper §2.2, Fig. 2h)",
         "source_trail": {
             "path": str(AUDIT_TRAIL.relative_to(PROJECT_ROOT)),
             "bytes": AUDIT_TRAIL.stat().st_size,

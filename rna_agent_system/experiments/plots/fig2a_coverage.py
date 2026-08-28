@@ -185,7 +185,7 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig2a_coverage.{ext}"
-        fig.savefig(out, format=ext, dpi=600 if ext == "png" else None,
+        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")
     per_wf = ", ".join(

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Experiment 8 (paper §2.2, Fig. 2h): end-to-end runtime by workflow.
+"""Experiment 8 (paper §2.2, Fig. 2i): end-to-end runtime by workflow.
 
 Pre-registration (pilot-first rule, MANUSCRIPT.md §2; zero-intervention rule)
 ---------------------------------------------------------------------------

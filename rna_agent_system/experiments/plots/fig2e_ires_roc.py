@@ -11,6 +11,19 @@ variant ``--arm mode0`` → ``fig2e_ires_roc_mode0.*``. Statistics from the
 driver's ``summary.json`` (stratified bootstrap, 10,000 replicates, seed
 20260825).
 
+Figure revision 2026-08-27 (user-directed): Nature panel-style pass — the
+in-figure title removed (the headline lives in the caption; panels carry
+letters only, same as the fig2d revision) and nothing drawn above the axes;
+every text element shares one font size and is uniform black; tick labels
+trimmed (0 / 0.25 / 0.5 / 0.75 / 1); axes limits extended to ±0.03 so the
+TPR = 1 band edge and the (1, 1) curve endpoint sit visibly inside the frame.
+The legend (one column, two rows) and the AUROC/CI/P statistics share the
+empty lower-right corner — the legend takes the lowest strip, the statistics
+sit right-aligned above it — both placements verified clear of the CI band on
+the full-resolution band grid for both arms (legend top 0.095 vs band floor
+0.111 at its left edge in mode-0; every statistics line ends right of where
+the band floor rises above it).
+
 Data   : experiments/results/exp5_ires_panel/summary.json
 Usage  : python experiments/plots/fig2e_ires_roc.py [--arm mode0]
 Output : experiments/plots/output/fig2e_ires_roc.{pdf,png}   (mode-2 endpoint)
@@ -29,25 +42,31 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from palette import NEUTRAL_GRID, TEXT, WORKFLOW_COLORS  # noqa: E402
+from palette import NEUTRAL_GRID, WORKFLOW_COLORS  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 SUMMARY = PROJECT_ROOT / "experiments" / "results" / "exp5_ires_panel" / "summary.json"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
+FONT = 6           # single font size for every text element (Fig. 2 convention)
+BLACK = "#000000"  # user directive 2026-08-27: all in-figure text uniform black
+
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-    "font.size": 6,
+    "font.size": FONT,
     "axes.linewidth": 0.5,
-    "text.color": TEXT,
-    "axes.edgecolor": TEXT,
-    "xtick.color": TEXT,
-    "ytick.color": TEXT,
+    "text.color": BLACK,
+    "axes.edgecolor": BLACK,
+    "axes.labelcolor": BLACK,
+    "xtick.color": BLACK,
+    "ytick.color": BLACK,
     "pdf.fonttype": 42,
 })
 
 CURVE = WORKFLOW_COLORS["ires_prediction"]  # warm grey — this workflow's colour
+TICKS = [0, 0.25, 0.5, 0.75, 1.0]
+TICK_LABELS = ["0", "0.25", "0.5", "0.75", "1"]
 
 
 def main() -> int:
@@ -71,8 +90,9 @@ def main() -> int:
     p = res.get("mannwhitney_p_two_sided")
 
     fig_w, fig_h = 88 / 25.4, 66 / 25.4  # single-column panel
+    left, bottom, ax_w, ax_h = 0.40, 0.30, fig_w - 0.50, fig_h - 0.38
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax = fig.add_axes([0.16, 0.15, 0.70, 0.68])
+    ax = fig.add_axes([left / fig_w, bottom / fig_h, ax_w / fig_w, ax_h / fig_h])
 
     ax.plot([0, 1], [0, 1], color=NEUTRAL_GRID, lw=0.7, ls=(0, (4, 3)), zorder=1)
     ax.fill_between(grid, lo, hi, facecolor=CURVE, alpha=0.38,
@@ -81,33 +101,36 @@ def main() -> int:
     ax.plot(fpr, tpr, color=CURVE, lw=1.4, solid_joinstyle="round",
             zorder=3, label="IRES prediction workflow")
 
-    ax.set_xlim(-0.02, 1.02)
-    ax.set_ylim(-0.02, 1.02)
-    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_xlabel("False-positive rate", fontsize=6, labelpad=2)
-    ax.set_ylabel("True-positive rate", fontsize=6, labelpad=2)
-    ax.set_title("IRES literature panel — threshold-free ROC"
-                 + ("" if arm == "mode2" else " (full-sequence default arm)"),
-                 loc="left", fontsize=6.5, pad=14)
+    ax.set_xlim(-0.03, 1.03)
+    ax.set_ylim(-0.03, 1.03)
+    ax.set_xticks(TICKS)
+    ax.set_xticklabels(TICK_LABELS)
+    ax.set_yticks(TICKS)
+    ax.set_yticklabels(TICK_LABELS)
+    ax.set_xlabel("False positive rate", fontsize=FONT, labelpad=2)
+    ax.set_ylabel("True positive rate", fontsize=FONT, labelpad=2)
+    ax.tick_params(axis="both", labelsize=FONT, length=1.5, pad=1)
+
+    # legend and statistics share the empty lower-right corner: the legend
+    # takes the lowest strip (row tops stay below the band floor — 0.111 at
+    # its left edge in mode-0), the statistics sit right-aligned above it
+    leg = ax.legend(loc="lower right", ncol=1, bbox_to_anchor=(0.97, 0.03),
+                    fontsize=FONT, handlelength=1.5, handletextpad=0.5,
+                    labelspacing=0.35, borderaxespad=0, frameon=False)
+    for t in leg.get_texts():
+        t.set_color(BLACK)
 
     p_txt = "NA" if p is None else (f"P = {p:.1e}" if p < 1e-3 else f"P = {p:.3g}")
-    ax.text(0.98, 0.05,
-            f"AUROC = {auroc:.3f}\n(95% CI {ci[0]:.2f}–{ci[1]:.2f}; {p_txt})\n"
-            f"n = {summary['panel'][f'positives_scored_{arm}']} IRES / "
-            f"{summary['panel'][f'negatives_scored_{arm}']} 5′UTR",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=5.4,
-            color="#444444", linespacing=1.5)
-
-    leg = ax.legend(loc="upper left", fontsize=5.2, handlelength=1.6,
-                    frameon=False, borderaxespad=0.2, labelspacing=0.35)
-    leg.get_frame().set_linewidth(0)
+    ax.text(0.97, 0.16,
+            f"AUROC = {auroc:.3f}\n95% CI {ci[0]:.2f}–{ci[1]:.2f}\n{p_txt}",
+            transform=ax.transAxes, ha="right", va="bottom",
+            fontsize=FONT, color=BLACK, linespacing=1.5)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     stem = "fig2e_ires_roc" if arm == "mode2" else "fig2e_ires_roc_mode0"
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"{stem}.{ext}"
-        fig.savefig(out, format=ext, dpi=600 if ext == "png" else None,
+        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")
     return 0
