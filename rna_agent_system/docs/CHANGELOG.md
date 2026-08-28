@@ -1,12 +1,185 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-27
+> **Last updated**: 2026-08-28
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-28 — Fig 2 panel-letter swap: audit trail ↔ runtime (h ↔ i; user-directed)
+
+The audit-trail panel is now **Fig 2h** and the end-to-end runtime ECDF
+is now **Fig 2i** (lettering-only change — no data, statistics or panel
+content touched), which also restores strict a → i reading order in the
+composite (the f–g–h equal-height row now precedes the full-width i).
+Files renamed: `experiments/plots/fig2h_audit_trail.py` (was
+`fig2i_audit_trail.py`), `experiments/plots/fig2i_runtime_ecdf.py` (was
+`fig2h_runtime_ecdf.py`), plus the four
+`experiments/plots/output/fig2{h,i}_*.{pdf,png}` outputs; script
+docstrings, usage lines and save stems updated. References swapped
+across `PAPER_DRAFT.md` (Results citations + the Fig. 2 legend, whose
+(h)/(i) paragraphs also traded places so the legend still runs a → i;
+the Results' end-to-end sentence likewise traded its audit and runtime
+clauses so the citations run Fig. 2h → Fig. 2i — "the 241-run campaign
+above" became "below"),
+`FIGURE_PLAN_V5.md` (Fig-2 table rows h/i contents + the
+diversification-paragraph chart-type references), `PAPER_FACT_SHEET.md`
+(the Exp-9/audit and Exp-8/runtime sections retitled and reordered;
+**legacy** no-space records `Fig2i_ires` / `Fig2h_small_molecule` /
+`fig2h 17 pairs` / `fig2_summary.json fig2i` deliberately untouched —
+they name pre-reset artifacts, not the current panels), `MANUSCRIPT.md`
+(reset table), this log's historical entries (re-lettered to the new
+convention), `AGENTS.md` (Exp-8/Exp-9 What's-New bullets),
+`experiments/exp8_runtime.py` / `exp9_audit_stats.py` docstrings, and
+the frozen `exp9_audit_stats/MANIFEST.json` `experiment` field
+(metadata only — the SHA-256 corpus hash entries are untouched).
+`fig2_composite.{pdf,png}` regenerated.
+
+## 2026-08-28 — Fig 2 composite assembly (a–i)
+
+`experiments/plots/fig2_assemble.py` added →
+`experiments/plots/output/fig2_composite.{pdf,png}`: the nine finished
+Fig. 2 panels combined into one figure on the Nature conventions surveyed
+in `relevant_references/` (bold lowercase letters at each panel's
+top-left corner, strict column grid, rows top-aligned so the letters
+share one line). Panels are embedded as vectors; every panel already
+carries the reset programme's single 6-pt ink-black text style, so all
+panels share one scale unless a row must shrink to fit. Layout
+(user-directed): a (tile carpet) full width; b c and d e two per row at
+scale 1.0, centred in their columns; **f g h share one row drawn at one
+equal height** (f's squarer aspect made it look bigger than g/h under a
+uniform row scale; per-panel scales differ, ≈ 0.59/0.67/0.71, widths
+follow their aspects and the leftover width becomes even gutters),
+sized so the row fills edge to edge and the first revision's empty
+bottom-right half-cell disappears; i (ECDF) closes the figure full
+width. After the same-day h ↔ i letter swap (entry above) the composite
+reads in strict lettering order a → i. Letters Helvetica-Bold 8 pt ink
+black, drawn by the assembler at one size regardless of row scale. PNG
+rendered from the composite PDF at 300 dpi.
+
+## 2026-08-28 — Fig 2h figure revision (user-directed; no data change)
+
+`experiments/plots/fig2h_audit_trail.py` revised and regenerated
+(`fig2h_audit_trail.{pdf,png}`; the Exp-9 corpus, session selection and
+numbers are unchanged): the composition donut dropped — it carried three
+numbers the paper already states in the Results text and the Fig. 2h caption;
+the in-figure panel titles removed (Nature style — the headline lives in the
+caption and panels carry letters only, the fig2d/fig2f/fig2i convention);
+every text element now shares one font size (6 pt) and one colour (ink black
+— the old layout's 4.8–5.6 pt labels antialiased to a pale grey); the legend
+moved from floating half-outside the axes into the empty upper-right of the
+milestone track; geometry changed from the double-column two-panel layout to
+the single-column panel size of fig2b–g. `PAPER_DRAFT.md` Fig 2h legend,
+`FIGURE_PLAN_V5.md` row i and `PAPER_FACT_SHEET.md` Fig-2h figure line
+updated to match.
+
+## 2026-08-28 — Fig 2i figure revision (user-directed; no data change)
+
+`experiments/plots/fig2i_runtime_ecdf.py` revised and regenerated
+(`fig2i_runtime_ecdf.{pdf,png}`; the Exp-8 numbers are unchanged): the
+in-figure title removed (Nature style — the headline lives in the caption and
+panels carry letters only, the fig2d/fig2f convention); every text element
+now shares one font size (6 pt) and one colour (ink black — the legend
+entries were previously set in their pale workflow colours); the box inset —
+which overlapped the ECDF curves — dropped entirely (it summarized the same
+samples the ECDF already shows in full, and the legend carries the medians);
+the legend moved from floating at the figure's right margin to a centred row
+block under the x-axis, so it reads as part of the panel; axis wording
+corrected target → run (the 241-run sample times whole PA sessions as single
+runs); y-range headroom added above the y = 1 step so the curve tops no
+longer touch the panel edge. `PAPER_DRAFT.md` Fig 2i legend and
+`FIGURE_PLAN_V5.md` row h chart-type phrase updated to match.
+
+## 2026-08-28 — anchor set v3 Part-A extension + Exps 10–11 v3 re-runs: 9 targets / 95 entries, 2/27 and 4/27 nominal passes, none reliable
+
+User-sequenced second curation pass (after the Fig. 3d run). Survey
+(2026-08-27) vs curation outcomes — the assertion gate arbitrated:
+**admitted** FGF2 (10 binders, Jellinek 1993; sequences/Kd via the
+Ribocentre transcription + family-motif nesting assertions — primary PDF
+bot-walled, deviation registered), swine influenza H3N2 HA (4 binders +
+printed negative HA1c, Wongphatcharachai 2013; protein surrogate
+A/swine/Illinois/03040/2010 full-length HA0 — selection strain
+GISAID-restricted, 95.1% identity to the MN/2008 partial, registered), and
+IFN-γ (B1-4 + 5 in-silico mutants, Zhao 2022; every mutant DERIVED from
+B1-4 by its registered point-mutation list and asserted equal to the SI
+print; M5-5 cross-checked between SI Tables S1 and S5; printed
+docking-negative mutant admitted as negative). **Rejected at curation**
+(two survey verdicts overturned): SARS-CoV-2 RBD (Shekar 2025 — 83-sequence
+SI zip without any printed ID mapping) and HIV-1 RT FANA (Ferreira-Bravo
+2015 — sequences figure-only; a vision extraction contradicted the paper's
+own text-printed primer flanks). Part-A 66 → 95 entries (v2 byte-verbatim),
+9 targets; docking anchors byte-identical to the first-pass v3 (asserted —
+the Fig. 3d measurement unaffected); generator deterministic (md5
+`7b7a71b915a2c3a181673ea3d27bdd27`); SOURCES.md second-pass section added.
+
+- **Exp 10 v3** (`EXP_ANCHOR_SET` override, results `*_v3/`; defaults and
+  v2-run records untouched): **95/95, 0 failures** (pilot 6/6; first
+  attempt crashed on a generator fasta-path convention bug at the first
+  new-target entry — 66 v2 records unaffected, fixed, `--resume` continued).
+  **27/27 cells: 2 nominal passes > 0.8** (proteinx × swH3-HA 0.833 CI
+  0.333–1.0; egarps × IFN-γ 0.833 CI 0.5–1.0) — both small-n, **all 27 CIs
+  cover chance**; sensitivity 10/7/2/0; FGF2 (widest Kd span, 2.25 orders)
+  sub-gate 0.47/0.43/−0.18.
+- **Exp 11 v3**: **54/54, 0 failures** (pilot 4/4). **27/27 cells: 4 nominal
+  ρ ≥ 0.6, all CIs span zero** — egarps/proteinx/rhofold × IFN-γ
+  (+0.714/−0.226–1.0, +0.657/−0.5–1.0, +0.600/−0.6–1.0; n=6, single
+  in-silico-mutant family, Kd span 0.94 orders — within-family covariation
+  caveat registered) + proteinx × Ang2 (n=3). Sensitivity 8/6/4/2. Vs the
+  first reset run: 10/18 v2 cells identical, rest ProteinX-realization
+  variance (egarps × PDGF-BB 0.67 → 0.10 — the disclosed instability
+  class). Headline invariant: no oracle–target cell shows reliable ranking
+  power.
+- Figures 3b/3c re-rendered on the v3 summaries (9-target data-driven
+  columns/rows via `FIG3_SUMMARY`; v2 regression render verified; fig3b
+  cell values gained a white halo after a vision check found two truncated
+  at minimal bubble size). Docs updated: PAPER_DRAFT (Results, Fig 3 b/c
+  legends, Discussion counts), PAPER_FACT_SHEET (Fig 3b/c sections + key
+  numbers), FIGURE_PLAN_V5 rows b/c, MANUSCRIPT reset table.
+
+## 2026-08-27 — Exp 12 (Fig 3d) executed under the reset + anchor set v3: docking-power profile on the extended panel, 397/399, 0/19 native top-1
+
+Two-part delivery. (1) **Anchor set v3** (`data/benchmarks/external_anchors/aptamers/e1_anchor_set_v3.json`,
+generator `experiments/curate_e1_anchor_set_v3.py`, user-approved scope
+"admit every qualifying complex"): docking anchors 5 → **19 complexes / 14
+independent protein targets**; Part-A 66 entries carried byte-verbatim
+(asserted). Survey backbone = Troisi 2023 (144 protein–aptamer PDB entries)
++ a full-text RCSB sweep of all post-2024 "aptamer" deposits; every admitted
+entry chain-composition/meth­od/resolution-verified against the RCSB API at
+generation time (the assertion screen itself caught that 6RTI A9g is
+2′-F-modified, missed by the survey scan). Chemistry screen rejected
+SOMAmer-class and mirror-image complexes with RCSB-chemcomp-verified reasons
+(4ZBN/8J1Q/7YQ3/9SA8/5UC6/4NI7/7JTN/6TXR; 4WB2/4WB3/4R8I) plus redundant
+families and out-of-scope systems — 18 rejection classes registered.
+(2) **Exp 12** (`experiments/exp12_docking_capability.py`, pre-registered
+docstring, pilot 3/3; evidence `experiments/results/exp12_docking_capability/`):
+per complex, native pose + 20 seeded rigid-body decoys; decoy parameters
+offline-calibrated so the 1HVU decoy-RMSD distribution matches the retained
+Part-B evidence, and the contact computation reproduces the retained 1HVU
+native n_contacts = 152 exactly (protocol anchors). Instrument zero-intervention:
+ToolExecutor.run_tool → deployed egarps 8023 (`academic=False` only); CapGate
+advisory; every call audited.
+
+- **399 poses attempted, 397 scored** — 2 reproducible service-side failures
+  (8ZBF decoy16, 5HRU decoy13; one disclosed retry reproduced the failure;
+  those complexes analysed with 20 candidates). Wall ≈ 4.6 h, median 38 s/pose.
+- **0/19 complexes rank the native pose top-1** (gate ≥ 2/3 fails
+  decisively); native ranks 6–20 of 21; native scores below the median decoy
+  in most complexes (1HVU 0.008 vs 0.34); within-decoy Spearman(np, −RMSD)
+  −0.59…+0.44.
+- Vs retained: 0/5 headline invariant under the union 0/19; native-np deltas
+  ≤ 0.0058 (service variance); per-complex ranks shift under the regenerated
+  decoy protocol (disclosed).
+- Figure `experiments/plots/fig3d_docking_lollipop.py` →
+  `fig3d_docking_lollipop.{pdf,png}` (lollipop + top-1 gate line, grouped by
+  protein target; terracotta EGARPS colour across Fig. 3; open markers = the
+  five v2-retained anchors). Docs updated: PAPER_DRAFT (Fig 3d legend +
+  Results + Discussion counts), PAPER_FACT_SHEET (E12 section + key numbers),
+  FIGURE_PLAN_V5 row d, MANUSCRIPT reset table, SOURCES.md v3 section.
+- **Next (user-sequenced)**: the five surveyed Part-A targets (FGF2 /
+  influenza HA / HIV-1 RT FANA / SARS-CoV-2 RBD / IFN-γ) enter the same v3
+  set in a second curation pass, then Exps 10–11 re-run on v3 for Figs 3b–c.
 
 ## 2026-08-27 — Exp 11 (Fig 3c) executed under the reset: structure-oracle ranking-power profile, 34/34, no reliable ranking power
 
@@ -80,7 +253,7 @@ and the run restarted from scratch — disclosed).
   `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md` row 3b, `MANUSCRIPT.md` reset
   table updated.
 
-## 2026-08-27 — Exp 8 (Fig 2h) executed under the reset: end-to-end runtime by workflow, 241/241, minutes-to-1 h per target
+## 2026-08-27 — Exp 8 (Fig 2i) executed under the reset: end-to-end runtime by workflow, 241/241, minutes-to-1 h per target
 
 Zero-intervention timing of the 11 workflows (`experiments/exp8_runtime.py`
 + orchestrator `experiments/exp8_run_all.sh`, pre-registered docstring,
@@ -115,8 +288,8 @@ contention. Successful runs only enter the distribution.
   original censored record retained in `pa_batch.jsonl`; the orphan's
   overlap window with PA_029 verified uncontaminating (42.63 s vs siblings
   42.15/42.52 s).
-- Figure `experiments/plots/fig2h_runtime_ecdf.py` →
-  `fig2h_runtime_ecdf.{pdf,png}` (log-axis ECDF per workflow + box inset,
+- Figure `experiments/plots/fig2i_runtime_ecdf.py` →
+  `fig2i_runtime_ecdf.{pdf,png}` (log-axis ECDF per workflow + box inset,
   1 h reference line; palette rev 7 unchanged). `PAPER_DRAFT.md`,
   `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md`, `MANUSCRIPT.md`, `AGENTS.md`
   updated.
@@ -194,7 +367,7 @@ platform layer, not the driver:
 - **Exp 2+3 re-run** (driver docstring updated; pre-fix run archived at
   ``exp2_cds_nulls_prefix/``, session prefixes ``exp2d_/exp2s_`` vs the
   re-run's ``exp2rd_/exp2rs_``): 20/20 design + 240/240 scoring, 0 failures.
-  CAI medians **0.832 / 0.729 / 0.674** (designed-vs-WT P = 6.9e-4,
+  CAI medians **0.832 / 0.729 / 0.675** (designed-vs-WT P = 6.9e-4,
   δ = 0.63; WT-vs-random P = 6.8e-7, δ = 0.67; designed-vs-random
   P = 2.2e-13, δ ≈ 1.0); MFE/nt medians **−0.336 / −0.051 / −0.047**
   (designed vs both nulls δ = −1.0; WT-vs-random NS P = 0.29). E. coli
@@ -321,7 +494,7 @@ in its docstring; pilot 3/3 then full matrix, `RNADA_CAPGATE=advisory`):
   all 240 sequences (`mrna_sequence_scoring`: CAI via Kazusa tables,
   species-resolved + GC + LinearFold MFE).
 - **Results**: design 20/20, scoring 240/240, zero failures. CAI medians
-  **0.830 / 0.729 / 0.674** (designed > WT > random gate PASS;
+  **0.830 / 0.729 / 0.675** (designed > WT > random gate PASS;
   designed-vs-WT P = 7.1e-3 δ = 0.50; WT-vs-random P = 6.8e-7 δ = 0.67).
   MFE/nt medians **−0.336 / −0.051 / −0.047** (designed vs both nulls
   P ≤ 7e-8, δ = −1.0; WT-vs-random NS P = 0.29).
