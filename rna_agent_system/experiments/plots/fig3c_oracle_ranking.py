@@ -39,6 +39,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 SUMMARY = (
     PROJECT_ROOT / "experiments" / "results" / "exp11_oracle_ranking_power" / "summary.json"
 )
+import os
+if os.environ.get("FIG3_SUMMARY"):
+    SUMMARY = Path(os.environ["FIG3_SUMMARY"]).resolve()
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 ORACLE_ROWS = [
@@ -56,7 +59,6 @@ ORACLE_COLORS = {
     "proteinx_ipTM": PALETTE_BY_NAME["slate_blue"],               # #6B7B8D
     "rhofold_mean_plddt": PALETTE_BY_NAME["sage_green"],          # #A3B18A
 }
-TARGET_COLS = ["Thrombin", "VEGF", "PDGF-BB", "IL-17A", "Angiopoietin-2", "SARS-CoV-2 N"]
 TARGET_LABELS = {
     "Thrombin": "Thrombin",
     "VEGF": "VEGF",
@@ -64,7 +66,25 @@ TARGET_LABELS = {
     "IL-17A": "IL-17A",
     "Angiopoietin-2": "Angiopoietin-2",
     "SARS-CoV-2 N": "SARS-CoV-2 N",
+    "FGF2": "FGF2",
+    "Influenza H3N2 HA": "swine H3 HA",
+    "IFN-gamma": "IFN-\u03b3",
 }
+# v3 re-run endpoint: FIG3_SUMMARY points the script at the _v3 results and
+# the target columns are derived from the summary cells (registered targets
+# first, then new targets in first-appearance order) — no hardcoded 6.
+V2_TARGET_ORDER = ["Thrombin", "VEGF", "PDGF-BB", "IL-17A", "Angiopoietin-2", "SARS-CoV-2 N"]
+
+
+def _derive_targets(cells) -> list:
+    seen = []
+    for key in cells:
+        _, _, target = key.partition(" | ")
+        if target and target not in seen:
+            seen.append(target)
+    ordered = [t for t in V2_TARGET_ORDER if t in seen]
+    ordered += [t for t in seen if t not in V2_TARGET_ORDER]
+    return ordered
 GATE = 0.6
 C_GATE = PALETTE_BY_NAME["dark_warm_grey"]   # #7A7672 (held-out neutral-dark)
 C_RETAINED = "#9A9A9A"                        # retained-marker neutral (non-data)
@@ -88,6 +108,7 @@ def main() -> int:
         return 1
     s = json.loads(SUMMARY.read_text(encoding="utf-8"))
     cells = s["cells"]
+    TARGET_COLS = _derive_targets(cells)
     retained = s.get("comparison_vs_retained", {})
 
     # 18 rows: oracle blocks (top→bottom) × target, first row on top.
@@ -111,7 +132,8 @@ def main() -> int:
     pass_ns = sorted(r["n"] for r in rows if r["rho"] >= GATE)
     best = max(rows, key=lambda r: r["rho"])
 
-    fig_w, fig_h = 88 / 25.4, 76 / 25.4  # single-column panel, 18 rows
+    n_expected = len(ORACLE_ROWS) * len(TARGET_COLS)
+    fig_w, fig_h = 88 / 25.4, 76 / 25.4 * max(1.0, n_expected / 18.0)  # scales with cell count
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([0.30, 0.155, 0.635, 0.775])
 

@@ -30,6 +30,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.patheffects as patheffects  # noqa: E402
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -39,6 +40,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 SUMMARY = (
     PROJECT_ROOT / "experiments" / "results" / "exp10_structure_oracle_screening" / "summary.json"
 )
+import os
+if os.environ.get("FIG3_SUMMARY"):
+    SUMMARY = Path(os.environ["FIG3_SUMMARY"]).resolve()
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 ORACLE_ROWS = [
@@ -51,7 +55,6 @@ ORACLE_LABELS = {
     "proteinx_ipTM": "ProteinX\nipTM",
     "rhofold_mean_plddt": "RhoFold\nmean pLDDT",
 }
-TARGET_COLS = ["Thrombin", "VEGF", "PDGF-BB", "IL-17A", "Angiopoietin-2", "SARS-CoV-2 N"]
 TARGET_LABELS = {
     "Thrombin": "Thrombin",
     "VEGF": "VEGF",
@@ -59,7 +62,25 @@ TARGET_LABELS = {
     "IL-17A": "IL-17A",
     "Angiopoietin-2": "Angiopoietin-2",
     "SARS-CoV-2 N": "SARS-CoV-2 N",
+    "FGF2": "FGF2",
+    "Influenza H3N2 HA": "swine H3 HA",
+    "IFN-gamma": "IFN-\u03b3",
 }
+# v3 re-run endpoint: FIG3_SUMMARY points the script at the _v3 results and
+# the target columns are derived from the summary cells (registered targets
+# first, then new targets in first-appearance order) — no hardcoded 6.
+V2_TARGET_ORDER = ["Thrombin", "VEGF", "PDGF-BB", "IL-17A", "Angiopoietin-2", "SARS-CoV-2 N"]
+
+
+def _derive_targets(cells) -> list:
+    seen = []
+    for key in cells:
+        _, _, target = key.partition(" | ")
+        if target and target not in seen:
+            seen.append(target)
+    ordered = [t for t in V2_TARGET_ORDER if t in seen]
+    ordered += [t for t in seen if t not in V2_TARGET_ORDER]
+    return ordered
 GATE = 0.8
 CHANCE = 0.5
 VMIN, VMAX = 0.1, 0.9
@@ -90,8 +111,9 @@ def _luminance(rgb: tuple[float, float, float]) -> float:
 def main() -> int:
     summary = json.loads(SUMMARY.read_text())
     cells = summary["cells"]
+    TARGET_COLS = _derive_targets(cells)
 
-    fig, ax = plt.subplots(figsize=(5.12, 2.05))  # 130 × 52 mm
+    fig, ax = plt.subplots(figsize=(min(7.4, 5.12 * len(TARGET_COLS) / 6), 2.05))
     norm = TwoSlopeNorm(vmin=VMIN, vcenter=CHANCE, vmax=VMAX)
     s_min, s_max = 30.0, 300.0
 
@@ -116,7 +138,9 @@ def main() -> int:
                            edgecolors=C_PASS_RING, linewidths=1.1, zorder=3)
             txt_color = "white" if _luminance(color[:3]) < 0.55 else TEXT
             ax.text(c, r, f"{auroc:.2f}", ha="center", va="center",
-                    fontsize=5.2, color=txt_color, zorder=4)
+                    fontsize=5.2, color=txt_color, zorder=4,
+                    path_effects=[patheffects.withStroke(linewidth=1.6,
+                                                          foreground="white")])
 
     # per-target anchor counts under the column labels
     counts = {}

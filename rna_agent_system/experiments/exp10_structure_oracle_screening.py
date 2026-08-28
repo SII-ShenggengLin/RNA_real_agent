@@ -100,12 +100,21 @@ import numpy as np
 os.environ.setdefault("RNADA_CAPGATE", "advisory")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-ANCHOR_JSON = (
+ANCHOR_JSON_DEFAULT = (
     PROJECT_ROOT / "data" / "benchmarks" / "external_anchors" / "aptamers" / "e1_anchor_set_v2.json"
 )
+# v3 re-run (user-approved 2026-08-28): --anchor-set overrides the registered
+# default; pilot defaults unchanged (ANCHORS.md §5.6)
+ANCHOR_JSON = ANCHOR_JSON_DEFAULT
+if os.environ.get("EXP_ANCHOR_SET"):
+    ANCHOR_JSON = Path(os.environ["EXP_ANCHOR_SET"]).resolve()
 PROTEIN_DIR = ANCHOR_JSON.parent / "proteins"
 STRUCT_DIR = PROJECT_ROOT / "data" / "benchmarks" / "RNA-BioBench-Aptamer" / "structures"
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp10_structure_oracle_screening"
+# v3 re-run: results land in a sibling _v3 directory when the anchor
+# set is overridden, so the registered v2-run records are never touched
+if ANCHOR_JSON != ANCHOR_JSON_DEFAULT:
+    RESULTS_DIR = RESULTS_DIR.with_name(RESULTS_DIR.name + "_v3")
 RETAINED_JSONL = PROJECT_ROOT / "experiments" / "results" / "e1_oracle_scoring_v2.jsonl"
 RETAINED_SUMMARY = PROJECT_ROOT / "experiments" / "results" / "e1_capability_summary_v2.json"
 
@@ -116,6 +125,13 @@ ORACLE_LABELS = {
     "rhofold_mean_plddt": "RhoFold mean pLDDT",
 }
 TARGETS = ["Thrombin", "VEGF", "PDGF-BB", "IL-17A", "Angiopoietin-2", "SARS-CoV-2 N"]
+# v3 re-run: target list extended from the anchor set actually loaded
+if ANCHOR_JSON != ANCHOR_JSON_DEFAULT:
+    _extra = []
+    for _e in json.loads(ANCHOR_JSON.read_text())["entries"]:
+        if _e["target"] not in TARGETS and _e["target"] not in _extra:
+            _extra.append(_e["target"])
+    TARGETS = TARGETS + _extra
 SCREEN_GATE = 0.8
 RANK_GATE = 0.6
 AUROC_GRID = [0.6, 0.7, 0.8, 0.9]
@@ -455,7 +471,7 @@ def analyze(records: list[dict], mode_label: str) -> dict:
         "failed_ids": [r["id"] for r in records if not r["success"]],
         "cells": cells,
         "decision_bits": [
-            f"cells with measured AUROC: {n_cells}/18; screening pass (AUROC>{SCREEN_GATE}): {n_pass}",
+            f"cells with measured AUROC: {n_cells}/{len(cells)}; screening pass (AUROC>{SCREEN_GATE}): {n_pass}",
             f"threshold sensitivity (cells passing AUROC>g): {grid_counts}",
             f"ranking cells (rho>={RANK_GATE}, ranking-eligible subsets): {n_rank_pass}/{n_rank_cells}"
             + (f" — passing cells are small-n subsets {small_n_rank_pass}; descriptive only "

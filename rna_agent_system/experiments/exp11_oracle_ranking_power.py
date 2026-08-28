@@ -121,17 +121,29 @@ import numpy as np
 os.environ.setdefault("RNADA_CAPGATE", "advisory")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-ANCHOR_JSON = (
+ANCHOR_JSON_DEFAULT = (
     PROJECT_ROOT / "data" / "benchmarks" / "external_anchors" / "aptamers" / "e1_anchor_set_v2.json"
 )
+# v3 re-run (user-approved 2026-08-28): --anchor-set overrides the registered
+# default; pilot defaults unchanged (ANCHORS.md §5.6)
+ANCHOR_JSON = ANCHOR_JSON_DEFAULT
+if os.environ.get("EXP_ANCHOR_SET"):
+    ANCHOR_JSON = Path(os.environ["EXP_ANCHOR_SET"]).resolve()
 PROTEIN_DIR = ANCHOR_JSON.parent / "proteins"
 STRUCT_DIR = PROJECT_ROOT / "data" / "benchmarks" / "RNA-BioBench-Aptamer" / "structures"
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp11_oracle_ranking_power"
+# v3 re-run: results land in a sibling _v3 directory when the anchor
+# set is overridden, so the registered v2-run records are never touched
+if ANCHOR_JSON != ANCHOR_JSON_DEFAULT:
+    RESULTS_DIR = RESULTS_DIR.with_name(RESULTS_DIR.name + "_v3")
 RETAINED_JSONL = PROJECT_ROOT / "experiments" / "results" / "e1_oracle_scoring_v2.jsonl"
 RETAINED_SUMMARY = PROJECT_ROOT / "experiments" / "results" / "e1_capability_summary_v2.json"
 EXP10_RECORDS = (
     PROJECT_ROOT / "experiments" / "results" / "exp10_structure_oracle_screening" / "records.jsonl"
 )
+if ANCHOR_JSON != ANCHOR_JSON_DEFAULT:
+    EXP10_RECORDS = Path(str(EXP10_RECORDS).replace(
+        "exp10_structure_oracle_screening", "exp10_structure_oracle_screening_v3"))
 
 ORACLES = ["egarps_native_probability", "proteinx_ipTM", "rhofold_mean_plddt"]
 ORACLE_LABELS = {
@@ -140,6 +152,13 @@ ORACLE_LABELS = {
     "rhofold_mean_plddt": "RhoFold mean pLDDT",
 }
 TARGETS = ["Thrombin", "VEGF", "PDGF-BB", "IL-17A", "Angiopoietin-2", "SARS-CoV-2 N"]
+# v3 re-run: target list extended from the anchor set actually loaded
+if ANCHOR_JSON != ANCHOR_JSON_DEFAULT:
+    _extra = []
+    for _e in json.loads(ANCHOR_JSON.read_text())["entries"]:
+        if _e["target"] not in TARGETS and _e["target"] not in _extra:
+            _extra.append(_e["target"])
+    TARGETS = TARGETS + _extra
 RANK_GATE = 0.6
 RHO_GRID = [0.4, 0.5, 0.6, 0.7]
 N_BOOT = 10_000
@@ -166,12 +185,18 @@ def in_ranking_subset(entry: dict) -> bool:
     return bool(entry.get("ranking_eligible", True))
 
 
+V2_RANKING_N = {"Thrombin": 6, "VEGF": 8, "PDGF-BB": 5, "IL-17A": 6,
+                 "Angiopoietin-2": 3, "SARS-CoV-2 N": 6}
+
+
 def ranking_entries(entries: list[dict]) -> list[dict]:
     sub = [e for e in entries if in_ranking_subset(e)]
     per = {t: sum(1 for e in sub if e["target"] == t) for t in TARGETS}
-    assert per == {"Thrombin": 6, "VEGF": 8, "PDGF-BB": 5, "IL-17A": 6,
-                   "Angiopoietin-2": 3, "SARS-CoV-2 N": 6}, (
-        f"ranking-subset counts deviate from the pre-registered per-target n: {per}")
+    # the six v2 targets must reproduce their pre-registered subset counts
+    # verbatim (invariance check); v3-added targets record their counts
+    for t, n in V2_RANKING_N.items():
+        assert per.get(t) == n, (
+            f"v2 target {t} ranking-subset count deviates: {per.get(t)} != {n}")
     return sub
 
 
@@ -454,7 +479,7 @@ def analyze(records: list[dict], mode_label: str) -> dict:
         "failed_ids": [r["id"] for r in records if not r["success"]],
         "cells": cells,
         "decision_bits": [
-            f"cells with measured rho: {n_cells}/18; ranking pass (rho>={RANK_GATE}): {n_pass}"
+            f"cells with measured rho: {n_cells}/{len(cells)}; ranking pass (rho>={RANK_GATE}): {n_pass}"
             + (f" — passing cells are small-n subsets {small_n_pass}; descriptive only "
                "(n too small for p values, pre-registered)" if small_n_pass else ""),
             f"threshold sensitivity (cells passing rho>=g): {grid_counts}",
