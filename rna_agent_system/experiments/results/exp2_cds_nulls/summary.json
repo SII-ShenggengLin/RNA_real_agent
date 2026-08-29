@@ -1,0 +1,128 @@
+{
+  "experiment": "exp2_cds_null_model",
+  "panels": [
+    "fig2b_cai",
+    "fig2c_mfe_per_nt"
+  ],
+  "generated": "2026-08-25T23:10:18",
+  "capgate_policy_primary_arm": "advisory",
+  "designed_arm_config": "mrna_cds_design design_tool=all (LinearDesign λ∈{0,1,4,10} + RNARL + GEMORNA → evaluate → score → rank), best-ranked",
+  "random_arm": "10 seeded synonymous draws per WT (uniform, standard code, seed 'exp2:<target>:<draw>')",
+  "n_scored_records": 240,
+  "cai": {
+    "arms": {
+      "designed": {
+        "n": 20,
+        "median": 0.8322,
+        "q1": 0.8126,
+        "q3": 0.8366
+      },
+      "wt": {
+        "n": 20,
+        "median": 0.7286,
+        "q1": 0.6822,
+        "q3": 0.817
+      },
+      "random": {
+        "n": 200,
+        "median": 0.6745,
+        "q1": 0.651,
+        "q3": 0.6863
+      }
+    },
+    "designed_vs_wt": {
+      "n_x": 20,
+      "n_y": 20,
+      "median_x": 0.8322,
+      "median_y": 0.7286,
+      "mannwhitney_p": 0.0006868221882035613,
+      "cliffs_delta": 0.63
+    },
+    "wt_vs_random": {
+      "n_x": 20,
+      "n_y": 200,
+      "median_x": 0.7286,
+      "median_y": 0.6745,
+      "mannwhitney_p": 6.751202547051292e-07,
+      "cliffs_delta": 0.6745
+    },
+    "designed_vs_random": {
+      "n_x": 20,
+      "n_y": 200,
+      "median_x": 0.8322,
+      "median_y": 0.6745,
+      "mannwhitney_p": 2.2378429070075436e-13,
+      "cliffs_delta": 0.9955
+    }
+  },
+  "mfe_per_nt": {
+    "arms": {
+      "designed": {
+        "n": 20,
+        "median": -0.3363,
+        "q1": -0.3663,
+        "q3": -0.3204
+      },
+      "wt": {
+        "n": 20,
+        "median": -0.0508,
+        "q1": -0.0966,
+        "q3": -0.0358
+      },
+      "random": {
+        "n": 200,
+        "median": -0.0473,
+        "q1": -0.06,
+        "q3": -0.0394
+      }
+    },
+    "designed_vs_wt": {
+      "n_x": 20,
+      "n_y": 20,
+      "median_x": -0.3363,
+      "median_y": -0.0508,
+      "mannwhitney_p": 6.795615128173358e-08,
+      "cliffs_delta": -1.0
+    },
+    "wt_vs_random": {
+      "n_x": 20,
+      "n_y": 200,
+      "median_x": -0.0508,
+      "median_y": -0.0473,
+      "mannwhitney_p": 0.2945435734207976,
+      "cliffs_delta": -0.1425
+    },
+    "designed_vs_random": {
+      "n_x": 20,
+      "n_y": 200,
+      "median_x": -0.3363,
+      "median_y": -0.0473,
+      "mannwhitney_p": 1.746164117893342e-13,
+      "cliffs_delta": -1.0
+    }
+  },
+  "gc_content_control": {
+    "arms": {
+      "designed": {
+        "n": 20,
+        "median": 0.5763,
+        "q1": 0.5534,
+        "q3": 0.6069
+      },
+      "wt": {
+        "n": 20,
+        "median": 0.4501,
+        "q1": 0.392,
+        "q3": 0.5629
+      },
+      "random": {
+        "n": 200,
+        "median": 0.4715,
+        "q1": 0.4548,
+        "q3": 0.4991
+      }
+    }
+  },
+  "failures": [],
+  "cai_ordering_gate_designed_gt_wt_gt_random": true
+}

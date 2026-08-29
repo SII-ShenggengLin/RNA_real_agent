@@ -1,0 +1,52 @@
+{
+  "created_utc": "2026-08-27T04:21:56.407343+00:00",
+  "experiment": "exp9_audit_stats (paper §2.2, Fig. 2h)",
+  "source_trail": {
+    "path": "workspace/audit/platform_audit.jsonl",
+    "bytes": 16028106,
+    "line_count": 36745,
+    "sha256": "9ba2471c2ec91ba979ef6291c98808de373fc905518eacd4600851c9c694074c"
+  },
+  "frozen_slice": {
+    "path": "experiments/results/exp9_audit_stats/data/exp9_corpus.jsonl",
+    "lines": 10217,
+    "sha256": "2495d9b548ffdf9c45769c7886a9d162e2312adab472de90c2499ff416c31b6d",
+    "note": "records verbatim except the added provenance key 'corpus_session'"
+  },
+  "selection_rule": "tool_call: session stamp; gate/ranking/claim: unique session time window (windows pairwise disjoint, campaign strictly sequential); events outside every window belong to no registered run and are excluded with counts",
+  "corpus_definition": "audit slice of the 241 registered Exp-8 runs (210 RNADesign-210 tasks + 31 PA sessions; PA_028 = exp8_r2_pa028)",
+  "counts": {
+    "tool_call": 8798,
+    "gate_decision": 1377,
+    "ranking_objective_assembly": 42,
+    "claim_verdict": 0
+  },
+  "exclusions": {
+    "pilot_sessions": [
+      "exp8_pilot_01_mrna_cds_design_001",
+      "exp8_pilot_03_mrna_sequence_scoring_001_basic",
+      "exp8_pilot_08_rna_aptamer_design_001_basic",
+      "exp8_pilot_pa006"
+    ],
+    "censored_sessions": [
+      "exp8_pa028"
+    ],
+    "events_in_excluded_windows": {
+      "tool_call": 514,
+      "gate_decision(unstamped,in-window)": 61,
+      "ranking_objective_assembly(unstamped,in-window)": 3
+    },
+    "between_session_gap_events": {
+      "ranking_objective_assembly": 142,
+      "gate_decision": 31
+    }
+  },
+  "assertions_passed": [
+    "241 corpus sessions = 210 tasks + 31 PA (1:1 with registered records)",
+    "PA_028 resolves to exp8_r2_pa028 (censored original excluded)",
+    "241 windows pairwise disjoint",
+    "0 unstamped tool_calls inside the campaign span",
+    "all pilot-derived expected counts reproduced",
+    "representative turn gaps == registered n_turns - 1 (exp8_pa036)"
+  ]
+}

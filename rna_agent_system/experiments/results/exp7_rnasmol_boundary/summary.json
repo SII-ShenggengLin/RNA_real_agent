@@ -1,0 +1,304 @@
+{
+  "experiment": "exp7_rnasmol_boundary",
+  "generated": "2026-08-26T05:13:00",
+  "protocol": {
+    "instrument": "deployed RNAsmol microservice (microservices/rnasmol_service/start.sh, CPU default, port 8007)",
+    "inputs": "verbatim, case-preserving (official splits encode modified bases in lowercase)",
+    "checkpoint_hints": {
+      "robin_test": {
+        "dataset": "robin",
+        "perturbation_type": "molperturbation"
+      },
+      "pdb_test": {
+        "dataset": "pdb",
+        "perturbation_type": "molperturbation"
+      },
+      "FMN_ribocil_decoy": {
+        "dataset": "pdb",
+        "perturbation_type": "molperturbation"
+      },
+      "MALAT1_furamidine_decoy": {
+        "dataset": "robin",
+        "perturbation_type": "molperturbation"
+      }
+    },
+    "ood_checkpoint": "no hints — platform default resolution (alphabetical first)",
+    "thresholds_or_tuning": "none — raw probability_positive throughout",
+    "rna_truncation": "service pads/truncates to 500 nt (platform default; counts reported per arm)",
+    "statistics": "stratified bootstrap 10000 replicates, numpy default_rng seed 20260826, percentile 95% CI"
+  },
+  "failures": [],
+  "robin_test": {
+    "n_scored": 1492,
+    "n_failed": 0,
+    "n_pos": 763,
+    "n_neg": 729,
+    "n_rna_over_500nt_truncated": 0,
+    "checkpoint": [
+      "robin_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.9744,
+    "auroc_ci95": [
+      0.9678,
+      0.9803
+    ],
+    "mannwhitney_p_two_sided": 9.168800505511127e-221,
+    "cliffs_delta": 0.9487,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": true
+  },
+  "pdb_test": {
+    "n_scored": 170,
+    "n_failed": 0,
+    "n_pos": 87,
+    "n_neg": 83,
+    "n_rna_over_500nt_truncated": 44,
+    "checkpoint": [
+      "pdb_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.9828,
+    "auroc_ci95": [
+      0.9607,
+      0.997
+    ],
+    "mannwhitney_p_two_sided": 3.1616754527067805e-28,
+    "cliffs_delta": 0.9657,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": true,
+    "subset_le500nt": {
+      "n": 126,
+      "point_auroc": 0.9788,
+      "auroc_ci95": [
+        0.9496,
+        0.9975
+      ],
+      "mannwhitney_p_two_sided": 4.632900915637684e-21,
+      "cliffs_delta": 0.9576,
+      "ci_includes_chance_0.5": false
+    }
+  },
+  "FMN_ribocil_decoy": {
+    "n_scored": 1601,
+    "n_failed": 0,
+    "checkpoint": [
+      "pdb_bothaug_molperturbation.pt"
+    ],
+    "n": 1601,
+    "n_pos": 1,
+    "n_neg": 1600,
+    "true_binder_rank": 2,
+    "true_binder_percentile": 0.125,
+    "top5pct_gate_pass": true,
+    "n_rna_over_500nt_truncated": 0
+  },
+  "MALAT1_furamidine_decoy": {
+    "n_scored": 265,
+    "n_failed": 0,
+    "checkpoint": [
+      "robin_bothaug_molperturbation.pt"
+    ],
+    "n": 265,
+    "n_pos": 1,
+    "n_neg": 264,
+    "true_binder_rank": 7,
+    "true_binder_percentile": 2.642,
+    "top5pct_gate_pass": true,
+    "n_rna_over_500nt_truncated": 0
+  },
+  "ood_aptamer": {
+    "n_scored": 17,
+    "n_failed": 0,
+    "n_binders": 4,
+    "n_near_cognate": 4,
+    "n_random_chem": 9,
+    "checkpoint": [
+      "pdb_bothaug_molperturbation.pt"
+    ],
+    "per_pair": [
+      {
+        "pair_id": "grna_aptamer_adenine",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9759156703948975
+      },
+      {
+        "pair_id": "grna_aptamer_caffeine",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9920533895492554
+      },
+      {
+        "pair_id": "grna_aptamer_guanine",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 0.27189746499061584
+      },
+      {
+        "pair_id": "grna_aspirin",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.17235000431537628
+      },
+      {
+        "pair_id": "grna_benzoic_acid",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.29693007469177246
+      },
+      {
+        "pair_id": "grna_ethanol",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.9843782782554626
+      },
+      {
+        "pair_id": "tar_aspirin",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.2851010262966156
+      },
+      {
+        "pair_id": "tar_benzoic_acid",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.40420979261398315
+      },
+      {
+        "pair_id": "tar_ethanol",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.9551716446876526
+      },
+      {
+        "pair_id": "tar_neomycin",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 1.0
+      },
+      {
+        "pair_id": "tar_paromomycin",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 1.0
+      },
+      {
+        "pair_id": "tar_theophylline",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.978188157081604
+      },
+      {
+        "pair_id": "theo_aptamer_caffeine",
+        "expected": "non_binder",
+        "negative_class": null,
+        "probability_positive": 0.9472204446792603
+      },
+      {
+        "pair_id": "theo_aptamer_theophylline",
+        "expected": "binder",
+        "negative_class": null,
+        "probability_positive": 0.95055091381073
+      },
+      {
+        "pair_id": "theo_aspirin",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.5010919570922852
+      },
+      {
+        "pair_id": "theo_benzoic_acid",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.5011168122291565
+      },
+      {
+        "pair_id": "theo_ethanol",
+        "expected": "non_binder",
+        "negative_class": "random_chemistry",
+        "probability_positive": 0.8996629118919373
+      }
+    ],
+    "auroc_vs_random_chem": {
+      "point_auroc": 0.7222,
+      "auroc_ci95": [
+        0.2778,
+        1.0
+      ],
+      "mannwhitney_p_two_sided": 0.24650996530318925,
+      "cliffs_delta": 0.4444,
+      "ci_includes_chance_0.5": true
+    },
+    "auroc_vs_near_cognate": {
+      "point_auroc": 0.5625,
+      "auroc_ci95": [
+        0.0625,
+        1.0
+      ],
+      "mannwhitney_p_two_sided": 0.8845494388529623,
+      "cliffs_delta": 0.125,
+      "ci_includes_chance_0.5": true
+    }
+  },
+  "legacy_cross_check": {
+    "available": true,
+    "arms": {
+      "robin_test": {
+        "legacy_n": 1492,
+        "matched": 1492,
+        "not_run_yet": 0,
+        "max_abs_prob_delta": 0.02091565728187561,
+        "median_abs_prob_delta": 2.5033950805664062e-06,
+        "p95_abs_prob_delta": 5.206465721130371e-05,
+        "n_over_1e-3": 1,
+        "prob_agreement_within_1e-3": false
+      },
+      "pdb_test": {
+        "legacy_n": 170,
+        "matched": 170,
+        "not_run_yet": 0,
+        "max_abs_prob_delta": 0.046627163887023926,
+        "median_abs_prob_delta": 1.5255636753863655e-09,
+        "p95_abs_prob_delta": 0.00023474814952351153,
+        "n_over_1e-3": 1,
+        "prob_agreement_within_1e-3": false
+      },
+      "FMN_ribocil_decoy": {
+        "legacy_n": 1601,
+        "matched": 1601,
+        "not_run_yet": 0,
+        "max_abs_prob_delta": 0.36657315492630005,
+        "median_abs_prob_delta": 2.682209014892578e-06,
+        "p95_abs_prob_delta": 9.22083854675293e-05,
+        "n_over_1e-3": 53,
+        "prob_agreement_within_1e-3": false
+      },
+      "MALAT1_furamidine_decoy": {
+        "legacy_n": 265,
+        "matched": 265,
+        "not_run_yet": 0,
+        "max_abs_prob_delta": 3.775954246520996e-05,
+        "median_abs_prob_delta": 3.635883331298828e-06,
+        "p95_abs_prob_delta": 3.1828880310058594e-05,
+        "n_over_1e-3": 0,
+        "prob_agreement_within_1e-3": true
+      },
+      "ood_aptamer": {
+        "legacy_n": 17,
+        "matched": 17,
+        "not_run_yet": 0,
+        "max_abs_prob_delta": 0.0006276965141296387,
+        "median_abs_prob_delta": 4.231929779052734e-06,
+        "p95_abs_prob_delta": 0.0005221962928771973,
+        "n_over_1e-3": 0,
+        "prob_agreement_within_1e-3": true
+      }
+    },
+    "note": "Per-pair bit-identity is not expected across inference backends (the retained 2026-08-11 evidence does not record its device; this run uses the platform's packaged CPU default). Deltas concentrate at ~1e-6; a minority of near-decision-boundary inputs amplify backend arithmetic (FMN decoy idx 367: 0.945 → 0.578, an unstable near-0.5-band decoy). All registered metrics reproduce exactly: AUROC to 4 decimals on both test splits, both decoy true-binder ranks, both OOD AUROCs and CIs. Determinism of this run verified by re-scoring the outlier (bit-identical)."
+  },
+  "verdict": {
+    "in_distribution_auroc_gt_0.8_all": true,
+    "decoy_top5pct_all": true,
+    "ood_chance_consistent": true,
+    "go": true
+  }
+}
