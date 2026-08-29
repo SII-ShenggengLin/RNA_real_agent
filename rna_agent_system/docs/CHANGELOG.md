@@ -8,6 +8,13 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-29 — Exp 14（图 3g，论文登记 E7）：MRL 表达 oracle 认证重跑 —— 三族双门槛全过，逐条复现
+
+- **E7 = §2.3 实验 6（oracle 认证·正面）重跑**（用户确认三族原设计，含 in-distribution 正控族）：驱动 `experiments/exp14_mrl_oracle_certification.py`（预注册 docstring；下一个空闲重置序号，不与图 2g 的 `exp7_rnasmol_boundary.py` 冲突）。锚定集 `data/benchmarks/external_anchors/utr_mrl/e7_mrl_anchor_set.json` 逐字节未动（706 条 / 3 族：random-50 训练分布内（正控，用户复议后保留）+ 变长随机 + 变长人内源；每族 hi60/lo60 筛选层 + 120 条秩分层排序子集；组成断言全部通过）。仪器 = 生产工具路径 `ToolExecutor.run_tool("predict_5utr_mrl_with_gemorna")` → 部署 GEMORNA 8004（GPU 0/1/2 布局继承不动；锚序列逐字节写入 scratch 文件，工具层 uppercase+T→U 规范化为唯一变换——锚集"DNA 按 RNA 计"约定，服务回显 input_sequence 逐条记录）；RNADA_CAPGATE=advisory，全程审计；零 LLM；pilot 6/6（与保留记录逐位一致）。
+- **全量 706/706，0 失败（≈ 37 min）：三族双门槛全过，且与保留证据完全复现** —— AUROC **0.9903 (CI 0.9754–1.0) / 1.0000 / 1.0000**（门槛 > 0.8，CI 均清 chance），ρ **0.9256 / 0.9201 / 0.8353**（门槛 ≥ 0.6；新增描述性 bootstrap CI 0.884–0.949 / 0.874–0.947 / 0.748–0.897，全部高于门槛）；与保留 `e7_mrl_scoring.jsonl` 1:1 对照 **706/706 精确一致，max |Δ MRL| = 0.0** —— oracle 经部署链端到端完全确定。披露：保留 S0 sanity 注（6.34 vs 2.48）的聚合口径不可考（旧驱动已删）；本次池化层均值 6.364 vs 2.818（逐条分数逐位相同，仅上下文引用）。
+- 图 `experiments/plots/fig3g_mrl_certification.py` → `fig3g_mrl_certification.{pdf,png}`（点图+CI 对门槛：左 AUROC（chance 0.5 实线 + 0.8 门槛虚线）、右 ρ（零线 + 0.6 门槛虚线），三族行共享，值+CI 印于点上方；GEMORNA MRL oracle 色 = palette 灰蓝 #8FA6BB（区别于 3b–f 结构 oracle 三色）；6-pt 墨黑、无图内标题（fig2/3 系惯例）；palette rev 7）。保留 `e7_*` SelfModel 证据链未动（never-delete 规则；打包默认 SelfModel 无需变更——本次全部证实其 graded verdict）。
+- 文档：PAPER_DRAFT（§2.3 正文 + Fig 3g 图注 + Methods 基准段 + 数据可用性）、PAPER_FACT_SHEET（E7 节 + claim check）、FIGURE_PLAN_V5 row g、MANUSCRIPT E7 行、本日志、AGENTS.md 更新。**下一步：按用户顺序重跑新程序后续实验。**
+
 ## 2026-08-29 — 实验程序重置（第三次）+ Exp 5（图 3f，E3 控臂 45 任务重测）+ 误删恢复
 
 - **程序重置（用户指示）**：整体架构变动较大，所有实验按用户顺序逐个重跑、逐个换新代码——**只有当前正在重跑的实验可以替换它自己的旧代码/结果/图；尚未重跑实验的一切文件保持原样**。（当日曾误将 exp1–exp13 的旧代码/图/结果整体删除，用户指出后**已从 git 290141b 全量恢复**（175 个已跟踪文件 100% 找回）；不可恢复的仅两类未跟踪文件：旧运行日志 `results/*.log`（`.gitignore` 第 60 行 `*.log`）与 exp10–13 结果目录下的 `scratch/` 中间产物——均非判据证据，后者可由保留驱动确定性重算。）
@@ -314,6 +321,14 @@ audited to `platform_audit.jsonl`.
   `fig3c_oracle_ranking.{pdf,png}` (Cleveland dot plot, 3 oracle blocks ×
   6 targets; zero line solid / 0.6 gate dashed with nominal-pass rings;
   retained open markers + dumbbell hairlines; palette rev 7).
+  2026-08-29 user-directed revisions: retained-evidence open markers +
+  dumbbell hairlines dropped, then the zero/gate reference lines and
+  their tags removed as uninformative — the panel shows the reset run
+  only; in-figure title removed (Nature convention), every text element
+  one 6-pt ink-black style, printed ρ values in a fixed right-hand
+  column. Same-day user direction: retained-evidence comparison
+  narrative removed from PAPER_DRAFT text and legends (it stays in the
+  internal registers).
   `PAPER_DRAFT.md` Fig 3c legend + Results reset sentence,
   `PAPER_FACT_SHEET.md`, `FIGURE_PLAN_V5.md` row c, `MANUSCRIPT.md` reset
   table, `AGENTS.md` updated. Docking panel 3d remains on retained evidence

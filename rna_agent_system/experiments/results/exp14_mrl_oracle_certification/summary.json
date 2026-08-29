@@ -1,0 +1,160 @@
+{
+  "analysis": "Exp14 / paper-E7 MRL expression-oracle certification (reset run; retained E7 2026-08-11 re-registered)",
+  "mode": "full-run",
+  "anchor_set": {
+    "path": "data/benchmarks/external_anchors/utr_mrl/e7_mrl_anchor_set.json",
+    "n_entries": 706,
+    "families": {
+      "sample2019_egfp_random50": "Random 50-nt (in-distribution)",
+      "sample2019_varying_length_random": "Varying-length random",
+      "sample2019_varying_length_human": "Varying-length human"
+    },
+    "source": "Sample et al. 2019 MPRA (Nat Biotechnol 37:803), GEO GSE114002",
+    "convention": "DNA anchor sequences verbatim; tool-layer production normalization (uppercase, T→U) before the service — 'DNA scored as RNA', service echo recorded per call"
+  },
+  "conventions": {
+    "instrument": "ToolExecutor.run_tool (ToolRegistry, schema-validated .invoke) -> deployed GEMORNA microservice as shipped",
+    "service": {
+      "gemorna": 8004,
+      "endpoint": "/predict/5utr_mrl"
+    },
+    "gpu_map": "deployed instance GPU-pinned 0/1/2 by the bring-up script; placement inherited, untouched — zero intervention",
+    "capgate_policy": "advisory",
+    "zero_intervention": "anchor entries verbatim; default tool arguments only; no threshold presets; no in-run retries (resume only)",
+    "gates": {
+      "screening": "AUROC > 0.8 (strict), stratified bootstrap 95% CI must clear chance for the certification reading",
+      "ranking": "Spearman rho >= 0.6",
+      "source": "E1/E7 pre-registration (identical gates)"
+    },
+    "bootstrap": "percentile 95% CI, 10000 resamples, seed 0 (rho CI descriptive — not gate-bearing)",
+    "positive_control": "sample2019_egfp_random50 is in-training-distribution; its pass certifies the deployed chain, not generalization"
+  },
+  "n_records": 706,
+  "n_success": 706,
+  "n_failed": 0,
+  "failed_ids": [],
+  "per_family": {
+    "sample2019_egfp_random50": {
+      "label": "Random 50-nt (in-distribution)",
+      "n_scored": 238,
+      "screening": {
+        "n_pos": 60,
+        "n_neg": 60,
+        "auroc": 0.9903,
+        "auroc_ci95": [
+          0.9754,
+          1.0
+        ],
+        "ci_clears_chance": true,
+        "gate": "> 0.8",
+        "pass": true,
+        "retained_auroc": 0.9903,
+        "delta_vs_retained": -0.0
+      },
+      "ranking": {
+        "n": 120,
+        "spearman_rho": 0.9256,
+        "rho_ci95_descriptive": [
+          0.8835,
+          0.9489
+        ],
+        "gate": ">= 0.6",
+        "pass": true,
+        "retained_rho": 0.9256,
+        "delta_vs_retained": -0.0
+      },
+      "tier_sanity": {
+        "high_tier_mean_predicted": 6.426,
+        "low_tier_mean_predicted": 2.902
+      }
+    },
+    "sample2019_varying_length_random": {
+      "label": "Varying-length random",
+      "n_scored": 238,
+      "screening": {
+        "n_pos": 60,
+        "n_neg": 60,
+        "auroc": 1.0,
+        "auroc_ci95": [
+          1.0,
+          1.0
+        ],
+        "ci_clears_chance": true,
+        "gate": "> 0.8",
+        "pass": true,
+        "retained_auroc": 1.0,
+        "delta_vs_retained": 0.0
+      },
+      "ranking": {
+        "n": 120,
+        "spearman_rho": 0.9201,
+        "rho_ci95_descriptive": [
+          0.874,
+          0.9467
+        ],
+        "gate": ">= 0.6",
+        "pass": true,
+        "retained_rho": 0.9201,
+        "delta_vs_retained": 0.0
+      },
+      "tier_sanity": {
+        "high_tier_mean_predicted": 6.401,
+        "low_tier_mean_predicted": 2.379
+      }
+    },
+    "sample2019_varying_length_human": {
+      "label": "Varying-length human",
+      "n_scored": 230,
+      "screening": {
+        "n_pos": 60,
+        "n_neg": 60,
+        "auroc": 1.0,
+        "auroc_ci95": [
+          1.0,
+          1.0
+        ],
+        "ci_clears_chance": true,
+        "gate": "> 0.8",
+        "pass": true,
+        "retained_auroc": 1.0,
+        "delta_vs_retained": 0.0
+      },
+      "ranking": {
+        "n": 120,
+        "spearman_rho": 0.8353,
+        "rho_ci95_descriptive": [
+          0.7479,
+          0.8973
+        ],
+        "gate": ">= 0.6",
+        "pass": true,
+        "retained_rho": 0.8353,
+        "delta_vs_retained": 0.0
+      },
+      "tier_sanity": {
+        "high_tier_mean_predicted": 6.266,
+        "low_tier_mean_predicted": 3.174
+      }
+    }
+  },
+  "pooled_tier_sanity": {
+    "high_tier_mean_predicted": 6.364,
+    "low_tier_mean_predicted": 2.818,
+    "retained_context": "6.34 vs 2.48 (retained S0 sanity)"
+  },
+  "reproduction_vs_retained": {
+    "source": "experiments/results/e7_mrl_scoring.jsonl",
+    "n_compared": 706,
+    "n_retained_total": 706,
+    "exact_matches": 706,
+    "exact_fraction": 1.0,
+    "median_abs_delta_mrl": 0.0,
+    "max_abs_delta_mrl": 0.0
+  },
+  "decision_bits": [
+    "Random 50-nt (in-distribution): AUROC 0.9903 (CI [0.9754, 1.0]) gate > 0.8: PASS; rho +0.9256 (CI [0.8835, 0.9489]) gate >= 0.6: PASS [retained 0.990 / 0.926]",
+    "Varying-length random: AUROC 1.0000 (CI [1.0, 1.0]) gate > 0.8: PASS; rho +0.9201 (CI [0.874, 0.9467]) gate >= 0.6: PASS [retained 1.000 / 0.920]",
+    "Varying-length human: AUROC 1.0000 (CI [1.0, 1.0]) gate > 0.8: PASS; rho +0.8353 (CI [0.7479, 0.8973]) gate >= 0.6: PASS [retained 1.000 / 0.835]",
+    "E7 verdict (all three families × both gates): GO — MRL oracle certified (verified/verified) on all families; random50 read as the in-distribution positive control"
+  ]
+}
