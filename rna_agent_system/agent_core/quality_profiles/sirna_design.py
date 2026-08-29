@@ -10,7 +10,7 @@ SIRNA_QUALITY_PROFILE = QualityProfile(
     evaluation_dimensions=[
         "Duplex MFE (RNAcofold): more negative = more stable duplex. Very positive values indicate poor binding.",
         "Off-target count should be minimal. High off-target counts reduce specificity and increase toxicity.",
-        "GC content of siRNA should be 30-60%. Too high GC increases off-target effects; too low reduces stability.",
+        "GC content: the workflow already filters candidates to [mingc, maxgc] (defaults 0.25-0.60). Flag values outside the user's requested range; as a heuristic, ~30-60% GC balances duplex stability against specificity (very high GC raises off-target risk, very low GC weakens duplex stability).",
         "Consecutive homopolymers (>3 identical bases) should be avoided as they can cause non-specific effects.",
         "For antiviral mode: Evitar predicted efficiency should be high.",
     ],
@@ -40,13 +40,13 @@ SIRNA_QUALITY_PROFILE = QualityProfile(
         },
         "off_target_scan": {
             "type": "bool",
-            "hint": "Whether to run BLAST off-target scan. Keep True unless it's failing.",
+            "hint": "Whether to run the transcriptome off-target scan (bowtie2 by default). Keep True unless it's failing.",
         },
         "blast_perc_identity": {
             "type": "float",
             "min": 70.0,
             "max": 100.0,
-            "hint": "BLAST percent identity threshold (only used when alignment_tool='blast'). Lower = stricter off-target filtering (fewer matches).",
+            "hint": "BLAST minimum percent-identity filter (only used when alignment_tool='blast'). Higher = stricter off-target filtering (fewer alignments reported); lower = looser (more matches).",
         },
         "alignment_tool": {
             "type": "enum",

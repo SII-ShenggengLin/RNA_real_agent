@@ -8,8 +8,8 @@ SGRNA_QUALITY_PROFILE = QualityProfile(
     workflow_name="sgrna_design",
     workflow_description="Design sgRNA handle candidates using CRGPT with optional CRISOT off-target scoring",
     evaluation_dimensions=[
-        "CRGPT nn_score is perplexity (lower is better, range ~[1, +inf)). Values close to 1.0 indicate excellent on-target activity; values above 3.0 suggest poor quality.",
-        "CRISOT score should indicate low off-target potential. Higher is generally better.",
+        "CRGPT nn_score is perplexity (exp of cross-entropy loss; lower is better, range ~[1, +inf)). It is a model-likelihood proxy, not a validated activity predictor — capability profiling on labeled data is still pending, so interpret it relative to the candidate set and the user's constraints rather than against fixed cutoffs.",
+        "CRISOT score is computed on the guide's on-target pair and predicts cleavage activity for that pair (higher suggests stronger predicted on-target activity); genome-wide off-target specificity is the separate CRISOT-Spec component (crisot_specificity). Both are unprofiled model predictions — treat as opinions, not validated facts.",
         "Sequence diversity among candidates is important — if all candidates are very similar, the search may be stuck in a local optimum.",
         "Mutation count should be reasonable relative to the seed sequence — too many mutations may destabilize the structure.",
         "MFE (Minimum Free Energy) from structure prediction should indicate a stable secondary structure.",
@@ -63,6 +63,12 @@ SGRNA_QUALITY_PROFILE = QualityProfile(
             "min": 0.0,
             "max": 1.0,
             "hint": "Weight for CRISOT score in composite scoring. Increase to prioritize off-target safety.",
+        },
+        "weight_crisot_specificity": {
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "hint": "Weight for the CRISOT-Spec specificity component. Default (0.3); inactive while off_target_sequences is empty.",
         },
     },
     retry_strategy="adjust_params",

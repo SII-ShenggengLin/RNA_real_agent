@@ -13,12 +13,12 @@ MRNA_CDS_QUALITY_PROFILE = QualityProfile(
     workflow_name="mrna_cds_design",
     workflow_description="Design mRNA CDS from protein sequence using LinearDesign, RNARL, or GEMORNA",
     evaluation_dimensions=[
-        "CAI (Codon Adaptation Index) measures translation efficiency. For human mRNA, CAI > 0.8 is good, < 0.4 is poor and suggests the codon usage is not optimized for the target organism.",
-        "MFE (Minimum Free Energy) measures RNA secondary structure stability. More negative = more stable. Too negative may indicate excessive structure that could impede translation.",
+        "CAI (Codon Adaptation Index) measures translation efficiency and is species-dependent — always compare against the table for the requested species. For human, platform null-model evidence: random synonymous redraws already average ~0.67 and optimized designs typically reach ~0.8, so a designed human CDS near or below the random baseline signals failed optimization.",
+        "MFE (Minimum Free Energy) measures RNA secondary structure stability. More negative = more stable. MFE scales with sequence length — compare MFE per nucleotide when candidates differ in length. Excessively negative MFE may indicate structure that could impede translation.",
         "GC content is reported for reference but does not directly enter the ranking score.",
         "Unpaired fraction is reported for reference but does not directly enter the ranking score.",
-        "If RNASTOP overall_stability is available, values closer to 1.0 indicate higher predicted stability.",
-        "LinearDesign lambda parameter controls the MFE/CAI tradeoff: lambda=0 gives the best MFE (most stable structure, most negative) but lowest CAI. As lambda increases towards +∞ (practical range 0–10), CAI gradually improves while MFE gradually worsens (becomes less stable). Lambda cannot directly control GC content.",
+        "If RNASTOP overall_stability is available, LOWER values indicate higher predicted stability: it is the mean of predicted reactivity and degradation metrics (report-only diagnostic, not a normalized [0, 1] score).",
+        "LinearDesign lambda parameter controls the MFE/CAI tradeoff: lambda=0 gives the best MFE (most stable structure, most negative) but lowest CAI. As lambda increases (input schema caps it at 20, typical values <=10), CAI gradually improves while MFE gradually worsens (becomes less stable). Lambda cannot directly control GC content.",
         "Diversity of design tools matters: if all candidates come from the same tool, consider switching tools for the retry.",
     ],
     adjustable_params={
@@ -31,7 +31,7 @@ MRNA_CDS_QUALITY_PROFILE = QualityProfile(
             "type": "float",
             "min": 0.0,
             "max": 20.0,
-            "hint": "LinearDesign MFE/CAI tradeoff parameter. Range is [0, +∞), typically set ≤10. lambda=0 gives the best MFE (most stable structure, most negative) but lowest CAI. As lambda increases, CAI gradually improves while MFE gradually worsens. Decrease lambda to improve poor MFE; increase lambda to improve poor CAI.",
+            "hint": "LinearDesign MFE/CAI tradeoff parameter. Input schema range [0, 20], typically <=10. lambda=0 gives the best MFE (most stable structure, most negative) but lowest CAI. As lambda increases, CAI gradually improves while MFE gradually worsens. Decrease lambda to improve poor MFE; increase lambda to improve poor CAI. Only effective when design_tool='lineardesign'; design_tool='all' runs the static lambda grid instead.",
         },
         "model_type": {
             "type": "enum",

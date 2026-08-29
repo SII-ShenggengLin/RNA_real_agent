@@ -94,7 +94,7 @@ RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE = QualityProfile(
         "Recovery rate from the design tool indicates how well the designed sequence matches the original structure's sequence profile. Higher recovery generally suggests better compatibility with the target backbone.",
         "Diversity of design tools matters: if all candidates come from the same tool, consider switching tools for retry to explore different sequence spaces.",
         "CRITICAL: Base your quality assessment on the user's original intent and any explicit constraints they stated. If the user specified thresholds (e.g., 'pLDDT must be > 70', 'TM-score > 0.5', 'RMSD < 3.0'), evaluate whether the results meet those constraints. Failure to meet user constraints is a CRITICAL issue. Do not apply universal thresholds that may be inappropriate for this specific design task.",
-        "CRITICAL: Default parameters for this workflow have been carefully tuned (n_samples_per_tool=3, rhodesign_temperature=1e-5, temperature_range=0.05, ribodiffusion_sampling_steps=50, scoring weights=0.5/0.5). These defaults work well for most RNA tertiary structure design tasks. Only recommend parameter overrides when you have strong evidence that the current settings are causing systematic problems. Do not tweak parameters lightly.",
+        "CRITICAL: Default parameters for this workflow have been carefully tuned (n_samples_per_tool=3, rhodesign_temperature=0.1, temperature_range=0.05, ribodiffusion_sampling_steps=50, scoring weights weight_rhofold/weight_rmsd/weight_tm_score=0.30/0.50/0.50 — pLDDT deliberately below the closeness weights so a self-confidence champion cannot bury the structure-closest candidate). These defaults work well for most RNA tertiary structure design tasks. Only recommend parameter overrides when you have strong evidence that the current settings are causing systematic problems. Do not tweak parameters lightly.",
     ],
     adjustable_params={
         "design_tools": {
@@ -112,7 +112,7 @@ RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE = QualityProfile(
             "type": "float",
             "min": 0.0,
             "max": 1.0,
-            "hint": "Base sampling temperature for RhoDesign. Higher values increase diversity but may reduce quality. Default (1e-5) is well-tuned for structure fidelity; only adjust when there is strong evidence that the current temperature is causing systematic issues.",
+            "hint": "Base sampling temperature for RhoDesign. Higher values increase diversity but may reduce quality. Default (0.1) is well-tuned for structure fidelity; only adjust when there is strong evidence that the current temperature is causing systematic issues.",
         },
         "rhodesign_temperature_range": {
             "type": "float",
@@ -130,13 +130,19 @@ RNA_TERTIARY_STRUCTURE_QUALITY_PROFILE = QualityProfile(
             "type": "float",
             "min": 0.0,
             "max": 1.0,
-            "hint": "Weight for RhoFold pLDDT in composite scoring. Default (0.5) balances foldability and structural fidelity; only adjust when the user explicitly prioritizes one over the other.",
+            "hint": "Weight for RhoFold pLDDT in composite scoring. Default (0.3) sits deliberately below the closeness weights (pool-relative min-max otherwise lets a pLDDT champion bury the native-closest candidate); only adjust when the user explicitly prioritizes foldability confidence over structural closeness.",
         },
         "weight_rmsd": {
             "type": "float",
             "min": 0.0,
             "max": 1.0,
-            "hint": "Weight for RMSD in composite scoring. Default (0.5) balances foldability and structural fidelity; only adjust when the user explicitly prioritizes one over the other.",
+            "hint": "Weight for RMSD in composite scoring. Default (0.5); only adjust when the user explicitly prioritizes one objective over the others.",
+        },
+        "weight_tm_score": {
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "hint": "Weight for the TM-score component (only measurable when a reference structure exists). Default (0.5); only adjust when the user explicitly prioritizes one objective over the others.",
         },
     },
     retry_strategy="adjust_params",

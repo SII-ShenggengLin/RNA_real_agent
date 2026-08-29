@@ -132,7 +132,7 @@ IRES_QUALITY_PROFILE = QualityProfile(
         },
         "run_structural_validation": {
             "type": "bool",
-            "hint": "Whether to run ViennaRNA structural validation. Keep True for better confidence assessment.",
+            "hint": "Whether to run structural validation (LinearFold primary / ViennaRNA fallback fold + RNAplfold + dot-bracket analysis). Keep True for better confidence assessment.",
         },
         "iresfinder_mode": {
             "type": "enum",

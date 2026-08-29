@@ -1,12 +1,54 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-28
+> **Last updated**: 2026-08-29
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-29 — QualityAgent 提示词/profile 全面审计：3 处方向性错误修正 + 过时默认值同步
+
+- **审计范围**: 全部 4 个 LLM 调用点（QualityAgent 默认诊断提示词、
+  secondary-structure `build_prompt` 覆盖、SynthesisAgent 综合报告、ClaimGate
+  抽取/润白）+ 8 个进入提示词的 QualityProfile 的 evaluation_dimensions 与
+  adjustable_params hints，逐条对照当前工作流实现、工具语义与重置后实验结论。
+- **方向性错误修正（3 处）**: (1) `blast_perc_identity` hint 写反 — BLAST
+  perc_identity 是最低相似度过滤，higher = stricter（fewer matches），
+  原文 "Lower = stricter" 反了；(2) RNASTOP `overall_stability`（mrna_cds +
+  full_length 两处）写反 — 该值是 mean(reactivity, deg_Mg_pH10, deg_Mg_50C)
+  反应性/降解均值，**lower = more stable**，原文 "closer to 1.0 = higher
+  stability" 方向反且无归一化依据；(3) sgrna 的 CRISOT 语义混淆 —
+  CRISOT-Score 是 sgRNA–DNA 对切割活性评分（工作流配 on-target 对，higher =
+  预测 on-target 活性强），基因组级脱靶特异性是独立的 CRISOT-Spec 分量。
+- **过时内容同步（2026-08-20 评分权重审计之后未跟进）**: tertiary profile 的
+  "carefully tuned defaults" 句与其 hints 声称 rhodesign_temperature=1e-5 /
+  权重 0.5/0.5 — 实际 workflow 默认 0.1 / 0.30/0.50/0.50（三组分），补
+  `weight_tm_score`；sgrna profile 补 `weight_crisot_specificity`（默认 0.3）；
+  ires 的 `run_structural_validation` hint 由 "ViennaRNA structural
+  validation" 更正为 LinearFold 主 / ViennaRNA 备的当前实现；siRNA GC 评审
+  维度由 "30-60%" 对齐工作流自身门限 [mingc=0.25, maxgc=0.60]。
+- **阈值证据化**: mrna_cds 的 CAI 评审维度由 "human >0.8 good / <0.4 poor"
+  的悬空启发式改为 Exp-2/3 零模型证据（人类随机同义重抽 ≈0.67、优化设计
+  ≈0.83），并强调物种相关；MFE 维度补长度归一化提示（MFE 随长度缩放，
+  跨长度比较用 MFE/nt — 与 Exp-2 的分析约定一致）；CRGPT nn_score 删除
+  "close to 1.0 excellent / >3.0 poor" 无依据阈值并标注为未剖析
+  （governance=pending）的模型似然代理 — 与 standing fact "CRISOT+CRGPT
+  data gap" 一致。
+- **核对通过、未改动**: QualityAgent 默认 11 条规则（无阈值、与参数白名单
+  机制一致）；secondary-structure 覆盖段的默认值（repeats=10/
+  num_invocations=3/mode m/37 °C，与 workflow 一致）与分数语义
+  （total_score = distance/length、smaller better，与 score() 实现一致；
+  0.3 触发线与 Exp-4 证据不矛盾，保留）；aptamer profile 全部参数/边界/
+  reference_point 键与工作流逐项一致，其 "Do NOT apply hard thresholds for
+  EGARPS/pLDDT/ipTM" 与 E10–E13 重置结论一致保留；ires 的反通用阈值条款与
+  Exp-5 一致保留；ClaimGate 抽取提示词的 oracle 示例（gemorna_5utr_mrl /
+  egarps_native_probability / rnasmol）与 capability 枚举与 SelfModel/
+  CapabilityKind 完全一致；CDS "GC/unpaired 不进排序分" 与
+  score_mrna_candidate（−MFE + codon_count·log CAI）一致。
+- **验证**: 6 profile 导入 + 默认提示词构建冒烟通过；测试套件
+  **646 passed, 1 skipped**（= 基线）。
 
 ## 2026-08-28 — Exp 13 (Fig 3e): affinity calibration at anchor-set scale — chance-level, inversion does not survive scale
 
