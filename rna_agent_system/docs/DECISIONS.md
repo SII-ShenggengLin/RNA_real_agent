@@ -49,7 +49,18 @@ fig6b data kept as historical fact (`fig6_backends.jsonl`, `MODEL_API_USAGE.md`)
 No oracle may support a screening, ranking or docking claim until it passed
 anchor-set profiling for that capability (E1: screening 0/18 cells, ranking no
 cell at ρ ≥ 0.6, docking 0/5 top-1, `e1_capability_summary_v2.json`; P2 EGARPS
-calibration NO-GO, `p2_aptamer_calibration_summary.json`). Violations die
+calibration NO-GO, `p2_aptamer_calibration_summary.json` — file deleted in the
+2026-08-25 reset, recovered from git as the Exp-13 reference). **All four
+verdicts re-derived zero-intervention under the reset at v3 anchor scale and
+sharpened** (2026-08-27/28): screening 2/27 nominal passes, all CIs cover
+chance (`exp10_structure_oracle_screening_v3/summary.json`); ranking 4/27
+nominal passes, all CIs span zero (`exp11_oracle_ranking_power_v3/summary.json`);
+docking 0/19 native top-1 (`exp12_docking_capability/summary.json`); affinity
+calibration NO-GO on both P2 gates — **chance-level at scale (pooled AUROC
+0.5225, CI 0.391–0.652; the retained pilot's below-chance 0.356 does not
+survive scale — the citable reading is "uncalibrated", not "inverted";
+per-entry inversions such as pegaptanib ~1.3e-6 vs scrambled TBA 0.98 remain
+real**; `exp13_affinity_calibration/summary.json`). Violations die
 under re-audit — both legacy flagship claims did (survival 0/2,
 `E2_SELF_AUDIT_FIG4_FIG7B.md`).
 

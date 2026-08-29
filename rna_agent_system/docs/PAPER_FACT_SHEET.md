@@ -201,13 +201,14 @@
 
 **Claim check (ddG pilot)**: r = 0.945 ✓ (exact 0.94491); ddG ≥ 0 216/216 ✓; Route C 1/3 targets, EPO improvement 5.84 kcal/mol ✓ (exact 5.835) — **VERIFIED** (note the overall decision is NO-GO because gate 2 failed; gate 1 passed).
 
-### P2 — aptamer calibration (`p2_aptamer_calibration_summary.json`, 2026-08-03)
+### P2 — aptamer calibration (`p2_aptamer_calibration_summary.json`, 2026-08-03; file deleted in the 2026-08-25 reset, recovered from git e601913 as the Exp-13 reference)
 - **Purpose**: does the EGARPS native_probability oracle track binding affinity for known aptamers?
 - **Design**: 15 records (9 binders with Kd, 1 binder without Kd, 5 negatives) across Thrombin/VEGF/PDGF-BB/IgE/SARS-CoV-2 N; thrombin 4-point Kd series.
 - **Pre-registered gate**: Spearman ρ ≥ 0.6 (Kd ranking, n = 4, reported without p-value per pre-registration) AND binder-vs-negative AUROC ≥ 0.8.
 - **Exact numbers**: thrombin series **ρ = 0.39999999999999997**; binder (9) vs negative (5) **AUROC = 0.35555555555555557**, 95% CI [0.0, 0.7556]. Direction-inverting detail: random negatives random30_a np = 0.952 and scrambled_tba np = 0.987 exceed pegaptanib (1.9e-6) and PDGF aptamers (~1e-8).
 - **Verdict: NO-GO** — per-target calibration gating added; optimization claims restricted to relative same-target comparisons.
 - **Conclusion**: EGARPS np has no validated screening/ranking power for RNA–protein aptamers.
+- **Scale note (2026-08-28)**: re-registered at the nine-target v3 scale as **E13** (next section) — the NO-GO verdict holds on both gates, but the below-chance direction does **not** survive scale (pooled AUROC 0.5225, chance-level); cite E13, not this pilot, for the calibration claim.
 
 **Claim check**: thrombin ρ = 0.40 ✓; AUROC = 0.356 ✓; NO-GO ✓ — **VERIFIED**.
 

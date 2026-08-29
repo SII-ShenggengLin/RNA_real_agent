@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Fig. 3e — EGARPS affinity-calibration inversion (scatter + ridgeline).
+"""Fig. 3e — EGARPS affinity calibration at anchor-set scale (scatter + ridgeline).
 
 Left axes: Kd-vs-score scatter for every anchor-set binder with a measured
 Kd (log Kd vs log native probability); the six-point thrombin series is
 emphasized and carries the within-target Spearman ρ annotation; pegaptanib
-is annotated (the marketed binder that scores near 1e-6).
+is annotated (the marketed binder that scores near 1e-6 — the per-entry
+inversion that survives scale, against scrambled TBA near 0.98).
 
 Right axes (shared log-score y-axis): horizontal ridgeline densities of the
 three pre-registered groups — binders, literature negatives and the
-random-sequence negative class — showing the inversion directly: the binder
-density mass sits orders of magnitude below the negative densities.  Pooled
+random-sequence negative class — all three spanning the full nine-order
+score range with interleaved medians: no separation (pooled AUROC ≈ chance,
+the retained P2 pilot's below-chance 0.356 not surviving scale).  Pooled
 binder-vs-negative AUROC annotated (the retained P2 framing, gate 0.8).
 
 Chart type: Kd scatter + ridgeline densities, registered in

@@ -29,7 +29,7 @@
 
 ## Standing facts (keep in mind before proposing work)
 
-- **Registered next steps**: the remaining paper experiments (Figs 4–6 campaigns, E21/E22 baseline arms) re-run under the 2026-08-25 reset (Figs 3b–d complete, including the v3 Part-A re-runs) — new drivers follow the Exp-1 pattern (`experiments/expN_*.py`, pre-registered docstring, advisory primary arm + enforce probes where gating semantics matter, unified palette figures); E19/E20 stay reserved for the CRISOT/CRGPT data gap.
+- **Registered next steps**: the remaining paper experiments (Figs 4–6 campaigns, E21/E22 baseline arms) re-run under the 2026-08-25 reset (Figs 3b–e complete, including the v3 Part-A re-runs; paper text follows the reset conclusions — e.g. Fig 3e is "uncalibrated, chance-level at scale", not "directionally inverted") — new drivers follow the Exp-1 pattern (`experiments/expN_*.py`, pre-registered docstring, advisory primary arm + enforce probes where gating semantics matter, unified palette figures); E19/E20 stay reserved for the CRISOT/CRGPT data gap.
 - **Pending profiling backlog**: CRISOT-Score + CRGPT stay governance=pending on a registered data gap — no labeled anchor set exists on disk; do **not** improvise self-referential anchors (DECISIONS (l)).
 - **Auditability boundary**: every ToolExecutor call lands in the CapGate platform audit trail (`workspace/audit/platform_audit.jsonl`, session-stamped); microservice-internal oracle hops (e.g. GerNA-Bind folding via RhoFold inside the service) are **not** audited at the agent layer (DECISIONS (k)).
 - **Never deleted**: the workspace audit trail and the SelfModel evidence chain (`e1_*_v2`/`e7_*`/`rnasmol_boundary_panel*`/`e16_e17_e18/`); campaign artifacts are deleted per reset (DECISIONS (n)/(y)/(z)).
