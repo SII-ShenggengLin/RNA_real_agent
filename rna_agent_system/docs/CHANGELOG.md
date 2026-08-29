@@ -8,6 +8,26 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-29 — 实验程序重置（第三次）+ Exp 5（图 3f，E3 控臂 45 任务重测）
+
+- **程序重置（用户指示）**：整体架构变动较大，所有实验重跑、所有实验代码重写——旧 campaign 驱动（exp1–exp13）、全部旧图脚本与图输出、旧 campaign 结果目录删除；保留 palette.py（rev 7，12 色 Morandi，用户再度确认）、`exp1_bring_up_services.sh`（服务启动，GPU 0/1/2）、SelfModel 证据链（`e1_*_v2` / `e7_*` / `e16_e17_e18` / `rnasmol_boundary_panel*`）、`MODEL_API_USAGE.md`、审计 trail 与锚集资产及其生成器。
+- **Exp 5 = E3 控臂（声明越界）在 45 任务规模重测（图 3f，华夫+条形）**：任务集 `experiments/e5_audit_tasks.json`（生成器 `exp5_build_audit_tasks.py`，确定性 + 断言优先；24 确定性（3 族 × 8）+ 21 适配体（12 排序 + 9 筛选，9 靶标全覆盖）；strata = legacy_v1 20 条逐字节（自 git e601913 恢复，候选/Kd 与 v3 逐条断言一致）+ extension_v2 25 条（方案 A 预注册规则：每靶标排序/筛选全覆盖、≥8-Kd 靶标拆第二排序任务（结合物不相交））。驱动 `experiments/exp5_claim_overreach.py`（预注册 docstring；仅 ungated 臂；每任务 2 次 LLM 调用 deepseek-v4-pro temp 0，提示词与旧 E3 逐字节一致；**oracle 分数改走 live 生产路径**（ToolExecutor → rhofold 8005 / proteinx 8022 / egarps 8023，按 (候选, oracle) 去重缓存：213 分数 / 71 候选，0 服务错误）——唯一预注册协议偏离，已披露；RNADA_CAPGATE=advisory，全程审计）。Pilot 8/8（不可信类 5 FP + 11 越界 → 判别门 PASS）。**全量 45/45 零失败（≈4.5 h）：FP 30/55 = 54.5%（Wilson CI 41.5–67.0），越界事件 59（全落不可信类，3 oracle × 2 用途 8–11/格）；类选择性极强——确定性类 23 TP / 0 FP，不可信类 30 FP / 2 TP = 93.8%（排序 16/17、筛选 9/10）；两 stratum 同率（55.6% / 53.6%）；legacy-20 子集 15/28 = 55.6% + 28 事件 ≈ 登记值 57.9% + 23（实现方差内）**。图 `experiments/plots/fig3f_claim_overreach.py` → `fig3f_claim_overreach.{pdf,png}`（华夫：逐声明瓦片，FP 陶土/TP 鼠尾草绿/borderline 暖灰，确定性/适配体两块；条形：越界事件按 oracle×用途，oracle 配色同 3b–3e，实心=排序目标/浅色=筛选评估；用途图例图底居中（fig2i 惯例）；palette rev 7）。PAPER_DRAFT（摘要/引言/§2.3/§2.4/Fig 3f 与 Fig 4b,d 图注/Methods 基准段/数据可用性）、PAPER_FACT_SHEET（Exp 5 节 + 关键数字 14）、FIGURE_PLAN_V5 row f、MANUSCRIPT E3 行、MODEL_API_USAGE、本日志更新。**下一步：新程序实验 6 起（图 2 与图 4–6 各 campaign）按同模式重跑。**
+
+## 2026-08-29 — Fig 3b 视觉修订（Nature 风格，用户指示）
+
+- **`experiments/plots/fig3b_oracle_screening.py` 纯视觉修订，数据与数字不
+  变**（仍渲染 v3 summary，9 靶标 27 格，2/27 nominal pass）：(1) 删除图内
+  标题 — Nature 惯例 headline 进图注、panel 字母在组装时添加，与
+  fig2d/fig2f/fig2h/fig2i 的既有修订一致；(2) 全部文字统一为 6-pt 墨黑
+  （palette `TEXT`）— 删除深色气泡上的白字分支与白色描边光晕（该光晕是
+  2026-08-28 为两个最小气泡格加的，却恰好让那两个 AUROC=0.17 的格子白字
+  叠白底糊成一团；墨黑无描边在本调色板的中间明度色阶上各种气泡尺寸均可
+  读）；(3) 色条标注缩减为 "AUROC (binder vs negative)"（chance 实线 /
+  gate 虚线的含义本就在图注中）；(4) 图宽上限 7.4 in → 183 mm（Nature
+  双栏上限），PNG 600 dpi 不变。
+- 文档：PAPER_DRAFT Fig 3b 图注补 "+/−" 锚点计数记号定义（binders + /
+  negatives − 列于列标签下）。
+
 ## 2026-08-29 — QualityAgent 提示词/profile 全面审计：3 处方向性错误修正 + 过时默认值同步
 
 - **审计范围**: 全部 4 个 LLM 调用点（QualityAgent 默认诊断提示词、

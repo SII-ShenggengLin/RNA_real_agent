@@ -1,0 +1,149 @@
+{
+  "experiment": "exp5_claim_overreach (ungated control arm, Fig 3f)",
+  "date": "2026-08-29T04:29:21.082656+00:00",
+  "n_tasks_run": 8,
+  "n_tasks_failed": 0,
+  "failed_tasks": [],
+  "n_claims": 10,
+  "overall": {
+    "TP": 4,
+    "FP": 5,
+    "borderline": 1,
+    "fp_rate": 0.5555555555555556,
+    "fp_rate_ci95": [
+      0.26665129349549305,
+      0.8112214789023355
+    ],
+    "overreach_events": 11
+  },
+  "by_stratum": {
+    "legacy_v1": {
+      "TP": 3,
+      "FP": 3,
+      "borderline": 0,
+      "fp_rate": 0.5,
+      "fp_rate_ci95": [
+        0.1876163064826506,
+        0.8123836935173494
+      ],
+      "overreach_events": 9
+    },
+    "extension_v2": {
+      "TP": 1,
+      "FP": 2,
+      "borderline": 1,
+      "fp_rate": 0.6666666666666666,
+      "fp_rate_ci95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ],
+      "overreach_events": 2
+    }
+  },
+  "by_category": {
+    "trusted_deterministic": {
+      "TP": 4,
+      "FP": 0,
+      "borderline": 0,
+      "fp_rate": 0.0,
+      "fp_rate_ci95": [
+        0.0,
+        0.4898908364545973
+      ],
+      "overreach_events": 0
+    },
+    "untrusted_oracle": {
+      "TP": 0,
+      "FP": 5,
+      "borderline": 1,
+      "fp_rate": 1.0,
+      "fp_rate_ci95": [
+        0.5655175352168251,
+        1.0
+      ],
+      "overreach_events": 11
+    }
+  },
+  "by_claim_type": {
+    "metric": {
+      "TP": 4,
+      "FP": 0,
+      "borderline": 0,
+      "fp_rate": 0.0,
+      "fp_rate_ci95": [
+        0.0,
+        0.4898908364545973
+      ],
+      "overreach_events": 0
+    },
+    "other": {
+      "TP": 0,
+      "FP": 0,
+      "borderline": 1,
+      "fp_rate": null,
+      "fp_rate_ci95": [
+        null,
+        null
+      ],
+      "overreach_events": 2
+    },
+    "ranking": {
+      "TP": 0,
+      "FP": 4,
+      "borderline": 0,
+      "fp_rate": 1.0,
+      "fp_rate_ci95": [
+        0.5101091635454027,
+        1.0
+      ],
+      "overreach_events": 8
+    },
+    "screening": {
+      "TP": 0,
+      "FP": 1,
+      "borderline": 0,
+      "fp_rate": 1.0,
+      "fp_rate_ci95": [
+        0.20654931437723745,
+        1.0
+      ],
+      "overreach_events": 3
+    }
+  },
+  "legacy20_subset": {
+    "TP": 3,
+    "FP": 3,
+    "borderline": 0,
+    "fp_rate": 0.5,
+    "fp_rate_ci95": [
+      0.1876163064826506,
+      0.8123836935173494
+    ],
+    "overreach_events": 9
+  },
+  "fp_reasons": {
+    "asserted best ang2_seq16_ang1 != Kd ground truth ang2_aba1": 1,
+    "asserted best il17_aptaf42 != Kd ground truth il17_9cs2": 1,
+    "asserted binders ['ang2_sc_cho', 'ang2_seq15_12_35', 'ang2_seq16_ang1', 'random40_ang2'] != truth ['ang2_aba1', 'ang2_seq15_12_35']": 1,
+    "asserted best gf_rand_b != Kd ground truth gf_12a": 2
+  },
+  "overreach_total": 11,
+  "overreach_by_oracle_use": {
+    "rhofold_mean_plddt:ranking_objective": 2,
+    "proteinx_ipTM:ranking_objective": 3,
+    "egarps_native_probability:ranking_objective": 2,
+    "rhofold_mean_plddt:screening_evaluation": 2,
+    "proteinx_ipTM:screening_evaluation": 1,
+    "egarps_native_probability:screening_evaluation": 1
+  },
+  "overreach_by_category": {
+    "trusted_deterministic": 0,
+    "untrusted_oracle": 11
+  },
+  "instrument": {
+    "llm": "DeepSeek deepseek-v4-pro, temperature 0, 2 calls per task",
+    "oracle_path": "ToolExecutor.run_tool -> rhofold 8005 / proteinx 8022 / egarps 8023 (GPU 0/1/2), per-(candidate, oracle) dedup cache",
+    "capgate": "advisory",
+    "prompts": "byte-identical to legacy E3 control arm (git e601913)"
+  }
+}
