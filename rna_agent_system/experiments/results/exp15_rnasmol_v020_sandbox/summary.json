@@ -1,0 +1,87 @@
+{
+  "experiment": "exp15_rnasmol_v020_sandbox",
+  "generated": "2026-08-29T16:30:32",
+  "protocol": {
+    "artifact": "git 7262e54 :: rna_agent_system/microservices/rnasmol_service/main.py (byte-verbatim)",
+    "artifact_sha256": "de261f8b95e96bfac2aa664ca614389db8ddacd02ece1e3099ec3bb5274ed767",
+    "artifact_sha_matches_registered": true,
+    "sandbox": "results-local run/service_v020 + external_repos/RNAsmol symlink; port 8107 (outside the production registry); RNASMOL_DEVICE=cpu; conda env rnasmol_service_env; the production 8007 service untouched",
+    "inputs": "identical to exp15 — official held-out splits verbatim; hints robin/pdb + molperturbation; the artifact's own internal normalization measured, not bypassed",
+    "statistics": "stratified bootstrap 10000 replicates, numpy default_rng seed 20260829, percentile 95% CI",
+    "registered_history": {
+      "robin_test": 0.7864,
+      "pdb_test": 0.4103
+    }
+  },
+  "failures": [],
+  "v020_sandbox::robin_test": {
+    "n_scored": 1492,
+    "n_failed": 0,
+    "n_pos": 763,
+    "n_neg": 729,
+    "n_rna_over_500nt_truncated": 0,
+    "checkpoint": [
+      "robin_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.7897,
+    "auroc_ci95": [
+      0.7663,
+      0.8117
+    ],
+    "mannwhitney_p_two_sided": 1.3038011184753891e-83,
+    "cliffs_delta": 0.5795,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": false,
+    "registered_hist_auroc": 0.7864,
+    "abs_delta_vs_registered": 0.0033,
+    "agrees_within_0.02": true,
+    "checkpoint_agree_with_exp15": 1492,
+    "checkpoint_mismatch_with_exp15": 0
+  },
+  "v020_sandbox::pdb_test": {
+    "n_scored": 170,
+    "n_failed": 0,
+    "n_pos": 87,
+    "n_neg": 83,
+    "n_rna_over_500nt_truncated": 44,
+    "checkpoint": [
+      "pdb_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.4197,
+    "auroc_ci95": [
+      0.3335,
+      0.507
+    ],
+    "mannwhitney_p_two_sided": 0.07107673460883543,
+    "cliffs_delta": -0.1605,
+    "ci_includes_chance_0.5": true,
+    "auroc_gate_0.8_pass": false,
+    "registered_hist_auroc": 0.4103,
+    "abs_delta_vs_registered": 0.0094,
+    "agrees_within_0.02": true,
+    "checkpoint_agree_with_exp15": 170,
+    "checkpoint_mismatch_with_exp15": 0
+  },
+  "verdict": {
+    "collapse_class_reproduced": true,
+    "agrees_with_registered_history_within_0.02": true,
+    "checkpoints_match_exp15": true,
+    "artifact_sha_verified": true,
+    "all_pass": true
+  },
+  "decomposition": {
+    "statement": "v0.2.0 (uppercase + rewritten adjacency) vs exp15 arm A (uppercase + upstream-faithful adjacency) share the case treatment; exp15 measured the case channel alone AUROC-neutral, so the collapse difference isolates the adjacency rewrite as the damage carrier (conditional on the checkpoint agreement asserted above and additivity of the two deviations)",
+    "exp15_armA_reference": {
+      "robin_test": 0.9745,
+      "pdb_test": 0.986
+    },
+    "exp15_armB_reference": {
+      "robin_test": 0.9744,
+      "pdb_test": 0.9828
+    },
+    "v020_sandbox": {
+      "robin_test": 0.7897,
+      "pdb_test": 0.4197
+    }
+  }
+}

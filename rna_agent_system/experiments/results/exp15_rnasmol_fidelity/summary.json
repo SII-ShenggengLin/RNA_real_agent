@@ -1,0 +1,186 @@
+{
+  "experiment": "exp15_rnasmol_fidelity",
+  "generated": "2026-08-29T15:59:00",
+  "protocol": {
+    "instrument": "deployed RNAsmol microservice (microservices/rnasmol_service/start.sh, CPU default, port 8007) — both arms hit the same running service",
+    "arm_A_tool_layer": "ToolExecutor.run_tool(score_rna_ligand_binding_with_rnasmol) — the platform production path; the tool wrapper uppercases + T→U-converts its input (the v0.2.0 defect class, live)",
+    "arm_B_service_endpoint": "case-preserving verbatim POST /score (exp7's registered protocol)",
+    "inputs": "the two official upstream held-out test splits, verbatim, source-file order",
+    "checkpoint_hints": {
+      "robin_test": {
+        "dataset": "robin",
+        "perturbation_type": "molperturbation"
+      },
+      "pdb_test": {
+        "dataset": "pdb",
+        "perturbation_type": "molperturbation"
+      }
+    },
+    "capgate_policy": "advisory",
+    "thresholds_or_tuning": "none — raw probability_positive throughout",
+    "rna_truncation": "service pads/truncates to 500 nt (platform default; counted per cell)",
+    "statistics": "stratified bootstrap 10000 replicates, numpy default_rng seed 20260829, percentile 95% CI"
+  },
+  "failures": [],
+  "tool_layer::robin_test": {
+    "n_scored": 1492,
+    "n_failed": 0,
+    "n_pos": 763,
+    "n_neg": 729,
+    "n_rna_over_500nt_truncated": 0,
+    "n_source_with_lowercase": 1492,
+    "checkpoint": [
+      "robin_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.9745,
+    "auroc_ci95": [
+      0.9678,
+      0.9804
+    ],
+    "mannwhitney_p_two_sided": 7.404339651422718e-221,
+    "cliffs_delta": 0.9489,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": true
+  },
+  "tool_layer::pdb_test": {
+    "n_scored": 170,
+    "n_failed": 0,
+    "n_pos": 87,
+    "n_neg": 83,
+    "n_rna_over_500nt_truncated": 44,
+    "n_source_with_lowercase": 170,
+    "checkpoint": [
+      "pdb_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.986,
+    "auroc_ci95": [
+      0.9715,
+      0.9963
+    ],
+    "mannwhitney_p_two_sided": 3.179084207815209e-28,
+    "cliffs_delta": 0.972,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": true,
+    "subset_le500nt": {
+      "n": 126,
+      "point_auroc": 0.9912,
+      "auroc_ci95": [
+        0.9791,
+        0.999
+      ],
+      "mannwhitney_p_two_sided": 6.139613879715823e-22,
+      "cliffs_delta": 0.9823,
+      "ci_includes_chance_0.5": false
+    }
+  },
+  "service_endpoint::robin_test": {
+    "n_scored": 1492,
+    "n_failed": 0,
+    "n_pos": 763,
+    "n_neg": 729,
+    "n_rna_over_500nt_truncated": 0,
+    "n_source_with_lowercase": 1492,
+    "checkpoint": [
+      "robin_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.9744,
+    "auroc_ci95": [
+      0.9677,
+      0.9803
+    ],
+    "mannwhitney_p_two_sided": 9.168800505511127e-221,
+    "cliffs_delta": 0.9487,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": true
+  },
+  "service_endpoint::pdb_test": {
+    "n_scored": 170,
+    "n_failed": 0,
+    "n_pos": 87,
+    "n_neg": 83,
+    "n_rna_over_500nt_truncated": 44,
+    "n_source_with_lowercase": 170,
+    "checkpoint": [
+      "pdb_bothaug_molperturbation.pt"
+    ],
+    "point_auroc": 0.9828,
+    "auroc_ci95": [
+      0.9616,
+      0.9968
+    ],
+    "mannwhitney_p_two_sided": 3.1616754527067805e-28,
+    "cliffs_delta": 0.9657,
+    "ci_includes_chance_0.5": false,
+    "auroc_gate_0.8_pass": true,
+    "subset_le500nt": {
+      "n": 126,
+      "point_auroc": 0.9788,
+      "auroc_ci95": [
+        0.9498,
+        0.9972
+      ],
+      "mannwhitney_p_two_sided": 4.632900915637684e-21,
+      "cliffs_delta": 0.9576,
+      "ci_includes_chance_0.5": false
+    }
+  },
+  "cross_checks": {
+    "armB_vs_exp7": {
+      "available": true,
+      "splits": {
+        "robin_test": {
+          "exp7_point_auroc": 0.9744,
+          "exp7_ci95": [
+            0.9678,
+            0.9803
+          ],
+          "matched_pairs": 1492,
+          "expected_pairs": 1492,
+          "max_abs_prob_delta": 0.0,
+          "median_abs_prob_delta": 0.0,
+          "n_over_1e-3": 0
+        },
+        "pdb_test": {
+          "exp7_point_auroc": 0.9828,
+          "exp7_ci95": [
+            0.9607,
+            0.997
+          ],
+          "matched_pairs": 170,
+          "expected_pairs": 170,
+          "max_abs_prob_delta": 0.0,
+          "median_abs_prob_delta": 0.0,
+          "n_over_1e-3": 0
+        }
+      },
+      "note": "Per-pair bit-identity is not expected across inference backends (exp7's registered amendment); the registered criterion is 4-decimal AUROC agreement, checked in the verdict block."
+    },
+    "armA_normalization": {
+      "records_checked": 1662,
+      "echo_matches_expected_normalization": true,
+      "normalization_mismatches": 0,
+      "pairs_where_echo_differs_from_source": 1662,
+      "pairs_with_lowercase_in_source": 1662
+    },
+    "checkpoint_agreement": {
+      "pairs_agree": 1662,
+      "pairs_disagree": 0,
+      "checkpoints_per_split": {
+        "robin_test": [
+          "robin_bothaug_molperturbation.pt"
+        ],
+        "pdb_test": [
+          "pdb_bothaug_molperturbation.pt"
+        ]
+      }
+    }
+  },
+  "verdict": {
+    "armB_gate_0.8_both_splits": true,
+    "armA_below_gate_both_splits": false,
+    "armB_reproduces_exp7_4decimals": true,
+    "armA_normalization_verified": true,
+    "checkpoints_agree_across_arms": true,
+    "defect_class_demonstrated": false
+  }
+}
