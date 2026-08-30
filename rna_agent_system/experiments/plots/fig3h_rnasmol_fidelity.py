@@ -31,9 +31,22 @@ path — the fig3f failure semantic, and the pre-fix open marker's edge; sage
 connector + gate line in the held-out dark warm grey.
 
 Style: the fig2d–fig3g conventions — no in-figure title (the headline lives
-in the caption), every text element one font size and ink black,
-single-column geometry, legend as a centred row block under the axis (the
-fig2i convention).
+in the caption; Nature panels carry letters only), every text element one
+font size, single-column geometry, legend as a centred row block under the
+axis (the fig2i convention).
+
+Figure revision 2026-08-30 (user-directed): every text element pure black
+#000000 (the fig3f convention — the chance tag was dark warm grey and the
+remaining text near-black #1A1A1A); the x-axis label shortened to
+"Screening AUROC" — the held-out-split clause is caption material, and the
+long label centred on the shifted axes box read as a misplaced title;
+the in-figure legend rewritten as strategy labels without the internal
+version string or the provenance qualifiers ("Pre-fix preprocessing" /
+"Tool-path normalization" / "Verbatim input" — the re-measured/live
+provenance lives in the caption); the chance line retained
+— the pre-fix PDB arm (0.420) falls below it, and the below-chance reading
+is the panel's failure evidence (unlike fig2g/fig3g, whose dropped chance
+lines carried no below-chance point).
 
 Data  : experiments/results/exp15_rnasmol_fidelity/summary.json (live arms)
         + experiments/results/exp15_rnasmol_v020_sandbox/summary.json
@@ -54,13 +67,14 @@ import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from palette import NEUTRAL_GRID, PALETTE_BY_NAME, TEXT  # noqa: E402
+from palette import NEUTRAL_GRID, PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp15_rnasmol_fidelity"
 V020_DIR = PROJECT_ROOT / "experiments" / "results" / "exp15_rnasmol_v020_sandbox"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
+INK = "#000000"   # 2026-08-30 user direction: every text element pure black
 FONT = 6          # single font size for every in-figure text element
 C_PRE = PALETTE_BY_NAME["terracotta"]     # #C08B7C — default tool path / pre-fix edge
 C_POST = PALETTE_BY_NAME["sage_green"]    # #A3B18A — service endpoint (verbatim)
@@ -81,10 +95,11 @@ plt.rcParams.update({
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
     "font.size": FONT,
     "axes.linewidth": 0.5,
-    "text.color": TEXT,
-    "axes.edgecolor": TEXT,
-    "xtick.color": TEXT,
-    "ytick.color": TEXT,
+    "text.color": INK,
+    "axes.edgecolor": INK,
+    "axes.labelcolor": INK,
+    "xtick.color": INK,
+    "ytick.color": INK,
     "pdf.fonttype": 42,
 })
 
@@ -155,16 +170,18 @@ def main() -> int:
         # v0.2.0 pre-fix: open marker (registered history, no CI)
         ax.scatter(hist_x, y_h, s=20, facecolors="white", edgecolors=C_PRE,
                    linewidths=1.0, zorder=4)
-        ax.text(hist_x, y_h - 0.13, f"{hist_x:.3f}", fontsize=FONT,
-                ha="center", va="top", color=TEXT, zorder=5)
+        # value label left of the fork marker — the below-placement sat on
+        # the gate (0.8) / chance (0.5) reference lines
+        ax.text(hist_x - 0.02, y_h, f"{hist_x:.3f}", fontsize=FONT,
+                ha="right", va="center", color=INK, zorder=5)
         # live arms with CIs and printed values
         ci_bar(ax, y_ep, *ep, colour=C_POST)
         ax.text(ep[0] + 0.02, y_ep + 0.10, f"{ep[0]:.3f} ({ep[1]:.2f}–{ep[2]:.2f})",
-                fontsize=FONT, va="bottom", ha="left", color=TEXT, zorder=5)
+                fontsize=FONT, va="bottom", ha="left", color=INK, zorder=5)
         ci_bar(ax, y_tool, *tool, colour=C_PRE, size=16.0)
         ax.text(tool[0] + 0.02, y_tool - 0.10,
                 f"{tool[0]:.3f} ({tool[1]:.2f}–{tool[2]:.2f})",
-                fontsize=FONT, va="top", ha="left", color=TEXT, zorder=5)
+                fontsize=FONT, va="top", ha="left", color=INK, zorder=5)
 
     # reference lines: chance solid grid grey, gate dashed dark warm grey
     for x, gate, label in ((0.5, False, "chance"), (0.8, True, "gate 0.8")):
@@ -172,43 +189,48 @@ def main() -> int:
                 linewidth=0.7, linestyle=(0, (3, 2)) if gate else "-",
                 zorder=1)
         ax.text(x, y_top + 0.05, label, fontsize=FONT, ha="center",
-                va="bottom", color=TEXT if gate else C_LINK, zorder=5)
+                va="bottom", color=INK, zorder=5)
 
     ax.set_yticks([lanes(i)[1] for i in range(len(rows))])
     ax.set_yticklabels([r["label"] for r in rows], fontsize=FONT,
-                       linespacing=1.2, color=TEXT)
+                       linespacing=1.2, color=INK)
     ax.set_xlim(X_MIN, X_MAX)
     ax.set_ylim(-0.25, y_top + 0.42)
     ax.set_xticks([0.0, 0.25, 0.5, 0.75, 1.0])
     ax.set_xticklabels(["0", "0.25", "0.5", "0.75", "1"], fontsize=FONT)
     ax.tick_params(axis="x", labelsize=FONT, length=1.5, pad=1)
     ax.tick_params(axis="y", labelsize=FONT, length=1.5, pad=2)
-    ax.set_xlabel("Screening AUROC — the oracle's own official held-out splits",
-                  fontsize=FONT, labelpad=2)
+    ax.set_xlabel("Screening AUROC", fontsize=FONT, labelpad=2)
     for s_name in ("top", "right"):
         ax.spines[s_name].set_visible(False)
 
-    # legend: centred row block under the axis (the fig2i convention)
+    # legend: centred row block under the panel (the fig2i convention); on the
+    # fixed canvas it is figure-centred, not axes-centred (the axes box is
+    # shifted right by the label column)
     handles = [
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor="white", markeredgecolor=C_PRE,
-               markeredgewidth=0.8, label="v0.2.0 pre-fix service (re-measured, git-recovered)"),
+               markeredgewidth=0.8, label="Pre-fix preprocessing"),
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor=C_PRE, markeredgecolor="white",
-               markeredgewidth=0.4, label="default tool path (live)"),
+               markeredgewidth=0.4, label="Tool-path normalization"),
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor=C_POST, markeredgecolor="white",
-               markeredgewidth=0.4, label="verbatim endpoint (live)"),
+               markeredgewidth=0.4, label="Verbatim input"),
     ]
-    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.26),
-              frameon=False, fontsize=FONT, ncols=3, handlelength=1.0,
-              handletextpad=0.35, columnspacing=0.9, borderaxespad=0.0)
+    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.074),
+               frameon=False, fontsize=FONT, ncols=3, handlelength=1.0,
+               handletextpad=0.35, columnspacing=0.9, borderaxespad=0.0)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    # save at the true 88 x 50 mm single-column canvas — the panel is sparse,
+    # and tight-cropping shrank it to 78 mm, which made the uniform 6-pt text
+    # effectively oversized next to the sibling panels (the 2026-08-30 axis-
+    # text review)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig3h_rnasmol_fidelity.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white")
         print(f"written {out}")
     for row in rows:
         print(f"{row['label'].splitlines()[0]}: v0.2.0 {row['hist']:.4f} | "
