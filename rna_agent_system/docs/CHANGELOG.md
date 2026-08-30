@@ -8,6 +8,17 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-30 — Fig 3g 视觉修订（Nature 风格 + 布局修正，用户指示）
+
+- **`experiments/plots/fig3g_mrl_certification.py` 纯视觉修订，数据与数字不变**（仍渲染 `exp14_mrl_oracle_certification` 的 summary：AUROC 0.9903/1.000/1.000、ρ 0.9256/0.9201/0.8353，706/706）：
+  (1) 全部文字统一 6-pt 纯黑 #000000（fig3f 惯例 —— palette `TEXT` #1A1A1A 在 6-pt 抗锯齿下显灰；原 chance/zero 标注用的是 dark warm grey）；
+  (2) chance 0.5 / zero 参考线及其标注移除 —— 认证判读只依赖预注册 gate 线（0.8 / 0.6，保留，虚线 + 纯黑标注）；chance 在共享 0–1 坐标轴上仍然可读，并写入 Fig 3g 图注（fig2g 第二轮修订惯例）；原 "zero" 标注悬于两面板之间、"chance" 与 "gate 0.8" 互相挤碰的问题随之消除；
+  (3) 两个 x 轴第二行标签互相压叠修复：删去其中的 n 标注（分层 60+60 / 排序 n=120 移入图注），标签缩短为 "(high vs low MRL tier)" / "(predicted vs measured MRL)"；
+  (4) 数值标签加白色衬底，不再与 gate 虚线穿插；
+  (5) 行标签改为 Sample-2019 5′UTR 文库名（"Random 50-nt 5′UTRs (in-distribution)" 等）；
+  (6) 布局改为绝对 mm 几何并重新配平（标签列 22 mm｜两个 29 mm 轴｜面板间距 6 mm，图高 58 → 52 mm）；
+  (7) PNG 1200 dpi（Nature Methods line-art 指引）+ 矢量 PDF（fonttype 42）。PAPER_DRAFT Fig 3g 图注、FIGURE_PLAN_V5 row g、PAPER_FACT_SHEET E7 条目、AGENTS.md、本日志更新。
+
 ## 2026-08-30 — Fig 3f 视觉修订（Nature 风格 + 布局修正，用户指示）
 
 - **`experiments/plots/fig3f_claim_overreach.py` 纯视觉修订，数据与数字不变**（仍渲染 `exp5_claim_overreach` 的 records/summary：56 claims = 23 确定性 + 33 适配体（30 FP / 25 TP / 1 borderline），59 越界事件按 oracle×用途 = 9/11、11/8、11/9）：
