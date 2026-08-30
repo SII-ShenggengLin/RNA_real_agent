@@ -1,12 +1,27 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-29
+> **Last updated**: 2026-08-30
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-30 — Fig 3f 视觉修订（Nature 风格 + 布局修正，用户指示）
+
+- **`experiments/plots/fig3f_claim_overreach.py` 纯视觉修订，数据与数字不变**（仍渲染 `exp5_claim_overreach` 的 records/summary：56 claims = 23 确定性 + 33 适配体（30 FP / 25 TP / 1 borderline），59 越界事件按 oracle×用途 = 9/11、11/8、11/9）：
+  (1) 图内标题与汇总统计全部移除 —— 原 "FP rate 30/55 = 54.5% (95% CI …)"、"deterministic/aptamer tasks: n claims, n FP"、"59 events on 21 tasks" 各行的数字 Fig 3f 图注原本已含；panel 字母组装时添加（fig2d–fig3g 惯例）；
+  (2) 文字-文字重叠修复：原两个块标题互相压叠（"…0 FPaptamer tasks…"）；华夫块改挂短组标签 "deterministic tasks" / "aptamer tasks"，居中于各自块正下方、共用基线；
+  (3) 图例归位：判定图例（false positive / true positive / borderline）改为华夫面板正下方居中单行，用途图例（ranking objective / screening evaluation）改为条形面板正下方居中单行 —— 各自紧贴所属面板（原先一在图左上角、一在整图底部）；
+  (4) 条形面板 oracle 标签（RhoFold / ProteinX / EGARPS）从 ranking 行改为居中于一组两条之间；
+  (5) 全部文字统一 6-pt 纯黑 #000000（用户指示；原 palette `TEXT` #1A1A1A 在 6-pt 抗锯齿下显灰）；图形颜色仍全部出自 palette rev 7 十二色；
+  (6) 布局改为绝对 mm 几何（fig3g 惯例，89 mm 单栏宽，bbox_inches="tight"），消除原图的大片空白带；
+  (7) PNG 1200 dpi（Nature Methods line-art 指引，与 fig3d/fig3e/fig3g 一致）+ 矢量 PDF（fonttype 42）。FIGURE_PLAN_V5 row f、AGENTS.md、本日志更新。
+- **同日第二轮（用户指示）：华夫面板整个移除，Fig 3f 变为纯条形面板** —— 用户判定逐声明小方块信息量过低（类选择性一句话即可说清）；`draw_waffle`、判定图例（false/true positive、borderline）与华夫组标签随之移除，图高 63 → 34 mm；PAPER_DRAFT Fig 3f 图注改为 "horizontal bars: …; the per-claim adjudication is text-reported"，59 事件注明 "spread 8–11 per cell"；FIGURE_PLAN_V5 row f 图型 waffle + bar → bar。
+- **同日第三轮（用户指出图例疑问）：用途图例色块 grey_blue → palette 预留中性深暖灰 #7A7672** —— 用户问"三种颜色为什么只有两个图例"：三色是 oracle 标识、已由 y 轴标签直接标注（无需颜色图例），图例只承担实心/浅色 alpha 通道；grey_blue 色块易被误读为第四种数据色，故改用预留中性色。图例锚点同时从整图居中（0.5）改为坐标轴居中（50.5/89）—— 原位置相对坐标轴偏左 6 mm。
+- **同日第四轮（用户指示）：图例改为六色块样式键** —— 用户要求"分别用三个深颜色和三个浅颜色做标注"：上行三个实色块（RhoFold sage / ProteinX slate / EGARPS terracotta）标注 "ranking objective"，下行三个对应浅色块标注 "screening evaluation"，与六种条形样式一一对应；手绘色块（fig.patches + fig.text，fig.legend 无法实现行标注网格），整体对齐坐标轴中心；坐标轴上移 1 mm、图例行下移（首轮实现与 x 轴标题重叠，已修）。中性深暖灰方案被本轮取代。
+- **同日第五轮（用户指示）：样式键两行并为一行** —— [实色 sage/slate/terracotta] "ranking objective"　[浅色 sage/slate/terracotta] "screening evaluation" 同一行，整体对齐坐标轴中心；行宽 ≈65.5 mm < 轴宽 71 mm。
 
 ## 2026-08-29 — Fig 3e 视觉修订（Nature 风格 + 布局修正，用户指示）
 
