@@ -8,6 +8,57 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-29 — Fig 3e 视觉修订（Nature 风格 + 布局修正，用户指示）
+
+- **`experiments/plots/fig3e_affinity_calibration.py` 纯视觉修订，数据与数字不
+  变**（仍渲染 `exp13_affinity_calibration` 的 records/summary：thrombin 系列
+  ρ = +0.49 (n = 6)、pooled AUROC 0.52 (62 vs 28)、三类 ridgeline
+  67/11/17）：
+  (1) 图例从右侧面板下方移到整图底部居中单行 —— 原先锚在右图下且被图缘
+  裁断（"Random sequences (n = 17)" 显示不全）；
+  (2) 右侧三条 ridgeline 在面板内均匀展开 —— 原先挤在左半边（xlim 0–6.4
+  而三条峰只占 0.15–3.3）；
+  (3) 文字-图形重叠清理：thrombin ρ 标注移入数据上方留白带（原与顶部散点
+  重叠）、pooled AUROC 汇总数字移出面板进 Fig 3e 图注（fig3d 惯例——汇总
+  统计与判据入图注；原文字压在 random-negatives 峰上）、pegaptanib 标注
+  移位避开散点与网格线；
+  (4) 散点 x 轴范围扩至 1.2 × 10³ nM —— 原 xlim 止于 400，IFN-γ 家族三个
+  Kd 结合物（439.5 / 481.6 / 913.9 nM）被裁掉，现 62 个 Kd binders 全部
+  在图；
+  (5) 全部文字统一 6-pt 墨黑（palette `TEXT`，含显式 `legend.labelcolor`），
+  无图内标题（Nature 惯例 —— headline 进图注、panel 字母组装时添加）；
+  (6) PNG 1200 dpi（Nature Methods line-art 指引，与 fig3d/fig3g 一致），
+  PDF 保持矢量。
+- 文档：PAPER_DRAFT Fig 3e 图注（thrombin 系列标明 ringed、pegaptanib
+  annotated）、FIGURE_PLAN_V5 row e、AGENTS.md Exp 13 条目、本日志。
+- **同日第二轮（用户指示）**：(1) 右图三条单侧 ridgeline 改为镜像密度小提琴
+  —— 数据与 KDE（Scott 带宽）不变，仅改为对称填充；三根并排柱子用半小提琴
+  观感不佳；(2) 图例行整体取消，组名直接标注在各自小提琴下方（直接标注优于
+  脱离面板的图例盒；右图内部无空位放图例）；(3) pegaptanib 指引线缩短为
+  水平短线（原斜长线易被误读为趋势线，且中途擦过一个散点）；(4) Fig 3e 图注
+  补明散点为"九个靶标全部 62 个带 Kd 的 binders"。
+- **同日第三轮（用户指示）**：小提琴 KDE 在概率物理边界 score = 1 处截断
+  （1 以上的密度是带宽伪影），右图顶部由此空出留白带，pooled AUROC 统计量
+  （0.52, CI 0.39–0.65, 62 vs 28）回到面板上、置于该留白带（取代第一轮的
+  "仅入图注"处理——用户指出右图不能没有数字）。
+- **同日第四轮（用户指示）**：pooled-AUROC 统计量再次撤下面板 —— 其
+  62 vs 28 口径（保留 P2 登记的 Kd-binder 约定）与小提琴组标签 67/11/17
+  并排读来自相矛盾；数值（含 CI 与组成）保留在图注与正文；右图改为直接
+  标出纵坐标（y 刻度标签 + 主网格线穿过小提琴），分数轴在两个面板上都可
+  直接读数。
+- **同日第五轮（用户指示）**：左图 thrombin 标注从纯文字改为带墨黑圈点
+  标记的图例项（圈点样式 = 数据中的环标点心智一一对应），读者第一眼即可
+  明白为何这六个点带黑边框。
+- **同日第六轮（用户指示）**：右图密度小提琴整体更换为逐点抖动散点列 +
+  中位数刻线 —— n = 11–67 且横跨九个数量级，密度曲线会假装出数据中没有
+  的结构；每个点直接可见，中位数直接标在纵轴刻度上，且与左图散点共享同一
+  分数轴、图型呼应。组标签改两行/三行换行避免相互触碰。
+- **同日第七轮（用户指示）**：类别分布伴随面板整体撤下 —— 图 3e 收敛为
+  单面板 Kd–分数散点（62 Kd binders；thrombin 环标 + 图例项；pegaptanib
+  标注）。类别分离证据（pooled AUROC 0.52 [CI 0.39–0.65, 62 vs 28] 与三类
+  中位数 0.22 / 1.4e-3 / 2.2e-2）改为文字报告（图注 + 正文），筛选失败的
+  系统性展示由 Fig 3b 承载。
+
 ## 2026-08-29 — Exp 15（图 3h，§2.3 实验 7）：RNAsmol 部署工件保真度 A/B —— 两臂皆过 + 预注册缺陷类判据被证伪（披露）
 
 - **§2.3 实验 7 重跑**（用户确认数据集后启动；驱动 `experiments/exp15_rnasmol_fidelity.py`，预注册 docstring，下一个空闲重置序号；pilot 20/20）。数据 = RNAsmol 官方 held-out 测试集两份逐字（robin n=1,492 763/729；pdb n=170 87/83；全部 1,662 条源序列带小写修饰碱基编码；pdb 字母表含 T 与 x）；decoy 案例与 OOD 面板不在范围（图 2g 证据；全大写输入——两臂无对比）。两臂打同一部署服务（start.sh CPU 默认 8007，GPU 0–2 未占用）：臂 A = 生产工具路径 `ToolExecutor.run_tool("score_rna_ligand_binding_with_rnasmol")`（工具层 uppercase+T→U 归一化 = v0.2.0 缺陷类的现役等价物；advisory CapGate，全部入审计）；臂 B = case-preserving verbatim 直连端点（exp7 协议）。历史参考（仅上下文，从不 gate）：v0.2.0 修复前 0.7864/0.4103。

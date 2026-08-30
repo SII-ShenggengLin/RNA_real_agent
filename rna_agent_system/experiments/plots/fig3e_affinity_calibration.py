@@ -1,27 +1,60 @@
 #!/usr/bin/env python3
-"""Fig. 3e — EGARPS affinity calibration at anchor-set scale (scatter + ridgeline).
+"""Fig. 3e — EGARPS affinity calibration at anchor-set scale (single-panel scatter).
 
-Left axes: Kd-vs-score scatter for every anchor-set binder with a measured
-Kd (log Kd vs log native probability); the six-point thrombin series is
-emphasized and carries the within-target Spearman ρ annotation; pegaptanib
-is annotated (the marketed binder that scores near 1e-6 — the per-entry
-inversion that survives scale, against scrambled TBA near 0.98).
+The panel: Kd-vs-score scatter for every anchor-set binder with a measured
+Kd (log Kd vs log native probability; all 62 Kd binders — the x-range
+extends to 1.2e3 nM so the three IFN-gamma family members at Kd 440–914 nM
+are on-panel).  The six-point thrombin series is emphasized (ink-black
+rings) with a ringed-marker legend entry in the empty head band above the
+data (carrying its rho stat); pegaptanib is annotated (the marketed binder
+that scores near 1e-6 — the per-entry inversion that survives scale,
+against scrambled TBA near 0.98).
 
-Right axes (shared log-score y-axis): horizontal ridgeline densities of the
-three pre-registered groups — binders, literature negatives and the
-random-sequence negative class — all three spanning the full nine-order
-score range with interleaved medians: no separation (pooled AUROC ≈ chance,
-the retained P2 pilot's below-chance 0.356 not surviving scale).  Pooled
-binder-vs-negative AUROC annotated (the retained P2 framing, gate 0.8).
+The companion class-separation view (binders vs literature negatives vs
+random-sequence negatives on the same score axis) is NOT shown: its content
+is text-reported instead (round 7, user-directed) — the pooled
+binder-vs-negative AUROC (0.52, CI 0.39–0.65, 62 vs 28 — the registered P2
+Kd-binder convention) and the three-class medians (0.22 / 1.4e-3 /
+2.2e-2) live in the Fig-3e caption and the main text, and the screening
+failure is shown systematically in Fig. 3b.
 
-Chart type: Kd scatter + ridgeline densities, registered in
-FIGURE_PLAN_V5.md row 3e (user-directed 2026-08-28; ridgeline style after
-the SeFMol Fig. 3d convention).
+Chart type: Kd scatter (single panel), registered in
+FIGURE_PLAN_V5.md row 3e.
 
 Colours (palette rev 7): binders terracotta (the EGARPS oracle colour used
-across Fig. 3), literature negatives slate blue, random-sequence negatives
-sand; thrombin-series emphasis ring in ink black; all text one 6-pt
-ink-black style (no in-figure title, Nature convention).
+across Fig. 3); thrombin-series emphasis ring in ink black; every text
+element one 6-pt ink-black style.  No in-figure titles (Nature convention —
+panels are lettered at composite assembly, the headline lives in the
+caption).  PNG saved at 1200 dpi (Nature Methods line-art guidance).
+
+2026-08-29 user-directed revisions: (round 1) legend recentred under the
+whole figure (was clipped at the figure edge under the right panel),
+ridgelines spread across the panel (were squashed into the left half),
+stat annotations moved off the data (thrombin rho into the head band,
+pooled AUROC into the caption), pegaptanib callout repositioned clear of
+points, x-range extended to cover all 62 Kd binders, 1200-dpi PNG;
+(round 2) one-sided ridges replaced by mirrored density violins (the
+half-violin look read as odd for three side-by-side groups — same data,
+same Scott-bandwidth KDE, mirrored), the separate legend row dropped in
+favour of direct group labels under each violin, the pegaptanib leader
+shortened so it cannot read as a trend line; (round 3) violin KDEs
+truncated at the probability boundary (score = 1) so the right panel gains
+an empty head band, and the pooled-AUROC stat restored on-panel there;
+(round 4) the pooled-AUROC stat taken back off the panel — its 62-vs-28
+basis (the registered P2 Kd-binder convention) read as inconsistent with
+the 67/11/17 group labels, and the number with CI and composition lives in
+the caption and main text — and the ordinate marked directly on the right
+panel instead (y tick labels + major gridlines extended across the
+violins); (round 5) the thrombin head-band label replaced by a proper
+ringed-marker legend entry so the ink-ringed points are self-explanatory;
+(round 6) density violins replaced by jittered column scatter with median
+ticks — at n = 11–67 over a nine-order log range a density curve implies
+structure that is not in the data, and showing every point is the honest
+rendering (it also rhymes with the left panel's dots on the shared axis);
+(round 7) the class-distribution panel dropped altogether — the figure is
+now the single Kd–score scatter; the class-separation evidence (pooled
+AUROC + three-class medians) is text-reported in the caption and main text,
+and the screening failure is shown systematically in Fig. 3b.
 
 Data  : experiments/results/exp13_affinity_calibration/{records.jsonl,summary.json}
 Usage : python experiments/plots/fig3e_affinity_calibration.py
@@ -46,15 +79,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp13_affinity_calibration"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
+FONT = 6          # single font size for every in-figure text element
 C_BINDER = PALETTE_BY_NAME["terracotta"]      # #C08B7C
-C_LITNEG = PALETTE_BY_NAME["slate_blue"]      # #6B7B8D
-C_RANDNEG = PALETTE_BY_NAME["sand"]           # #D9C3A9
 EMPH_EDGE = TEXT
 
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-    "font.size": 6,
+    "font.size": FONT,
     "axes.linewidth": 0.5,
     "text.color": TEXT,
     "axes.edgecolor": TEXT,
@@ -76,107 +108,69 @@ def load_records() -> list[dict]:
     return ok
 
 
-def kde_curve(values: np.ndarray, grid: np.ndarray, scale: float | None = None):
-    """Gaussian KDE on log10 scores evaluated on `grid`; peak height
-    normalized to `scale` (ridgeline row height) when given."""
-    from scipy.stats import gaussian_kde
-
-    kde = gaussian_kde(values)  # Scott's rule bandwidth (registered convention)
-    dens = kde(grid)
-    if scale is not None and dens.max() > 0:
-        dens = dens / dens.max() * scale
-    return dens
-
-
 def main() -> int:
     records = load_records()
     summary = json.loads((RESULTS_DIR / "summary.json").read_text())
     thr = summary["thrombin_series"]
-    pooled = summary["pooled_binder_vs_negative"]["egarps_native_probability"]
 
     binders_kd = [r for r in records if r["role"] == "binder" and r["kd_nm"]]
     thr_ids = {p["id"] for p in thr["points"]}
     thr_pts = [r for r in binders_kd if r["id"] in thr_ids]
     other_pts = [r for r in binders_kd if r["id"] not in thr_ids]
-    lit_neg = [r for r in records if r["role"] == "negative" and not r.get("random_negative")]
-    rand_neg = [r for r in records if r.get("random_negative")]
-
     np_all = np.array([r["raw"]["egarps_native_probability"] for r in records])
     ymin = np.floor(np.log10(np_all[np_all > 0].min())) - 0.5
-    ymax = 0.3
+    ymax = 0.9  # head band above the data (max score 1.0) for the annotations
 
-    fig_w, fig_h = 7.16, 2.5  # inches (~183 mm double-column, panel e)
+    fig_w, fig_h = 3.84, 2.46  # inches (single panel e; scatter axes kept at
+    # the same physical size as in the former two-panel layout)
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_s = fig.add_axes([0.085, 0.20, 0.485, 0.72])
-    ax_r = fig.add_axes([0.615, 0.20, 0.33, 0.72], sharey=ax_s)
+    ax_s = fig.add_axes([0.164, 0.270, 0.820, 0.698])
 
-    # ── left: Kd–score scatter ───────────────────────────────────────────────
-    xs_other = [r["kd_nm"] for r in other_pts]
-    ys_other = [r["raw"]["egarps_native_probability"] for r in other_pts]
-    ax_s.scatter(xs_other, ys_other, s=9, facecolor=C_BINDER, edgecolor="none",
-                 alpha=0.85, zorder=4)
+    # ── left: Kd–score scatter ──────────────────────────────────────────────
+    ax_s.scatter([r["kd_nm"] for r in other_pts],
+                 [r["raw"]["egarps_native_probability"] for r in other_pts],
+                 s=9, facecolor=C_BINDER, edgecolor="none", alpha=0.85, zorder=4)
     ax_s.scatter([r["kd_nm"] for r in thr_pts],
                  [r["raw"]["egarps_native_probability"] for r in thr_pts],
                  s=16, facecolor=C_BINDER, edgecolor=EMPH_EDGE, linewidth=0.6,
                  zorder=5)
 
     peg = next(r for r in binders_kd if r["id"] == "pegaptanib_vegf")
-    ax_s.annotate("pegaptanib", xy=(peg["kd_nm"], peg["raw"]["egarps_native_probability"]),
-                  xytext=(2.0, 1.5e-7), fontsize=6, color=TEXT,
-                  arrowprops=dict(arrowstyle="-", linewidth=0.5, color=TEXT))
+    ax_s.annotate("pegaptanib",
+                  xy=(peg["kd_nm"], peg["raw"]["egarps_native_probability"]),
+                  xytext=(0.15, peg["raw"]["egarps_native_probability"]),
+                  textcoords="data",
+                  fontsize=FONT, color=TEXT, ha="left", va="center",
+                  arrowprops=dict(arrowstyle="-", linewidth=0.5, color=TEXT,
+                                  shrinkA=1.5, shrinkB=1.5))
 
     ax_s.set_xscale("log")
     ax_s.set_yscale("log")
-    ax_s.set_xlim(0.02, 400)
+    ax_s.set_xlim(0.02, 1200)
     ax_s.set_ylim(10**ymin, 10**ymax)
-    ax_s.set_xlabel("Measured K$_d$ (nM)", fontsize=6, labelpad=2)
-    ax_s.set_ylabel("EGARPS+ native probability", fontsize=6, labelpad=2)
-    ax_s.tick_params(labelsize=6, pad=1.5)
+    ax_s.set_xlabel("Measured K$_d$ (nM)", fontsize=FONT, labelpad=2)
+    ax_s.set_ylabel("EGARPS+ native probability", fontsize=FONT, labelpad=2)
+    ax_s.tick_params(labelsize=FONT, pad=1.5)
     ax_s.grid(True, which="major", axis="both", color=NEUTRAL_GRID, linewidth=0.4,
               zorder=0)
-    ax_s.text(0.97, 0.96,
-              f"thrombin series ρ = {thr['spearman_rho_vs_neglog_kd']:+.2f} (n = {thr['n_points']})",
-              transform=ax_s.transAxes, fontsize=6, color=TEXT, va="top", ha="right")
-
-    # ── right: horizontal ridgeline (shared log-score axis) ─────────────────
-    grid = np.linspace(ymin, ymax, 400)
-    binders_all = [r for r in records if r["role"] in ("binder", "binder_no_kd")]
-    rows = [
-        ("Binders (all targets)", binders_all, C_BINDER, 0.15),
-        ("Literature negatives", lit_neg, C_LITNEG, 1.35),
-        ("Random sequences", rand_neg, C_RANDNEG, 2.55),
-    ]
-    row_h = 0.75
-    from matplotlib.patches import Patch
-    handles = []
-    for label, grp, colour, base in rows:
-        vals = np.log10([r["raw"]["egarps_native_probability"] for r in grp
-                         if r["raw"]["egarps_native_probability"] > 0])
-        dens = kde_curve(vals, grid, scale=row_h)
-        ax_r.fill_betweenx(10**grid, base, base + dens, facecolor=colour,
-                           edgecolor=TEXT, linewidth=0.4, alpha=0.9, zorder=3)
-        ax_r.axvline(base, color=NEUTRAL_GRID, linewidth=0.4, zorder=1)
-        handles.append(Patch(facecolor=colour, edgecolor=TEXT, linewidth=0.4,
-                             label=f"{label} (n = {len(grp)})"))
-    ax_r.set_xlim(0, 6.4)
-    ax_r.set_ylim(10**ymin, 10**ymax)
-    ax_r.set_xticks([])
-    ax_r.tick_params(labelleft=False, labelsize=6)
-    ax_r.set_xlabel("Density", fontsize=6, labelpad=2)
-    for spine in ("top", "right"):
-        ax_r.spines[spine].set_visible(False)
-    ax_r.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.16),
-                ncol=3, frameon=False, fontsize=6, handlelength=1.0,
-                handleheight=0.8, columnspacing=1.0, handletextpad=0.4)
-    ax_r.text(0.98, 0.97,
-              f"pooled AUROC = {pooled['auroc']:.2f} "
-              f"({pooled['n_binders']} vs {pooled['n_negatives']})",
-              transform=ax_r.transAxes, fontsize=6, color=TEXT, va="top", ha="right")
+    # ringed-marker legend entry: explains the ink-black ringed points
+    # (the pre-registered thrombin Kd series) and carries its rho stat
+    from matplotlib.lines import Line2D
+    thr_handle = Line2D([0], [0], marker="o", linestyle="None",
+                        markerfacecolor=C_BINDER, markeredgecolor=EMPH_EDGE,
+                        markeredgewidth=0.6, markersize=4,
+                        label=(f"thrombin series ρ = "
+                               f"{thr['spearman_rho_vs_neglog_kd']:+.2f} "
+                               f"(n = {thr['n_points']})"))
+    ax_s.legend(handles=[thr_handle], loc="upper left",
+                bbox_to_anchor=(0.015, 1.0), frameon=False, fontsize=FONT,
+                handletextpad=0.35, borderaxespad=0.1)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig3e_affinity_calibration.{ext}"
-        fig.savefig(out, format=ext, dpi=600, facecolor="white")
+        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
+                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"saved -> {out}")
     return 0
 
