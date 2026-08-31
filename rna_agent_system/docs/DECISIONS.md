@@ -54,7 +54,9 @@ calibration NO-GO, `p2_aptamer_calibration_summary.json` — file deleted in the
 verdicts re-derived zero-intervention under the reset at v3 anchor scale and
 sharpened** (2026-08-27/28): screening 2/27 nominal passes, all CIs cover
 chance (`exp10_structure_oracle_screening_v3/summary.json`); ranking 4/27
-nominal passes, all CIs span zero (`exp11_oracle_ranking_power_v3/summary.json`);
+nominal passes, none reliable — the three IFN-γ CIs span zero and the
+proteinx × Ang2 cell is a degenerate n = 3 estimate (ρ = 1.0, CI [1.0, 1.0],
+realization-flip entries) (`exp11_oracle_ranking_power_v3/summary.json`);
 docking 0/19 native top-1 (`exp12_docking_capability/summary.json`); affinity
 calibration NO-GO on both P2 gates — **chance-level at scale (pooled AUROC
 0.5225, CI 0.391–0.652; the retained pilot's below-chance 0.356 does not

@@ -8,6 +8,12 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-31 — PAPER_DRAFT §2.3 按 Fig 3 成品合图与最新重测数字重写
+
+- **`docs/PAPER_DRAFT.md` §2.3 全节重写**（用户指示；依据成品 `experiments/plots/output/fig3_composite.png` 逐面板核对，全部数字与 `experiments/results/exp{10,11}_v3 / exp12–16`（含 `exp15_rnasmol_v020_sandbox`）及 `exp5_claim_overreach` 的冻结 summaries 逐一相符）：面板引用重排为严格阅读顺序 **a→h**（旧文为 a–d, g, f, e, h，不合惯例）；节结构 = 引言（三失败模式框定）→ **Uncalibrated tool trust**（a–d；拆为「锚集+门槛+screening+ranking」与「docking+affinity 标定」两段）→ **Claim overreach**（e）→ **MRL 认证**（f，profiling 双面性）→ **RNAsmol 部署保真**（g，v0.2.0 沙盒考古 + 「邻接改写=损害载体」测量闭环 + 己方预测被证伪的披露）→ **Confounded improvement**（h；240 cells / 228 成功 / Ferritin 注册边界 / 56 paired cells / 19 有效靶标，δ +0.14→+0.05→−0.01，自审计 0/2）。
+- **相对旧文的实质修正**：`Protenix ipTM` → `ProteinX ipTM`（与图面板标注及数据键 `proteinx_ipTM` 一致；§2.1 概览段的 Protenix 指 vendored 仓库名，保留）；ranking 段旧表述「每个通过细胞的 CI 均跨零」更正为精确版——三个 IFN-γ 细胞 CI 跨零（−0.23/−0.50/−0.60 起），而 Angiopoietin-2 细胞为 n = 3、ρ = 1.0 的退化点估计（CI [1.0, 1.0]，其三条目在随机复合物实现间 ~0↔~1 翻转）——结论「无可靠 ranking 细胞」不变。**同日修正落实**（用户指示，三处 + 同类引申处）：摘要「0 of 18 cells」→ v3 口径（0/27 可靠 screening/ranking 细胞 + docking 0/19 top-1）；「every passing CI spans zero / all CIs span zero」的四处活文档（PAPER_DRAFT Fig-3 图注 b 行、FACT_SHEET Exp-11 v3 节与关键数字 10 号、FIGURE_PLAN_V5 row b、DECISIONS Part-1 段）统一更正为「三个 IFN-γ CI 跨零；proteinx × Ang2 细胞为 n = 3 退化估计（ρ = 1.0、CI [1.0, 1.0]、条目在实现间翻转）」；FACT_SHEET Exp-10 v3 节 FGF2 括注更正为 AUROC 0.37/0.63/0.30（原括注 0.47/0.43/−0.18 混入 ranking-ρ 值）；FIGURE_PLAN_V5 row a 由 v2 六靶口径更新为 panel 实际渲染的 v3 九靶 run（2/27 名义通过、全 CI 跨随机，并补引 v3 summary）。CHANGELOG 历史条目按写作时保留，更正以本条及新版 §2.3 为准。
+- 其余节逐行 diff 确认不变（§2.4 起全同）。自动化核查：必含数字 token 全部在文、无遗留旧值、面板引用序列 a→h。
+
 ## 2026-08-31 — Fig 3 composite 组装（a–h 八面板）
 
 - **`experiments/plots/fig3_assemble.py` 新增 → `experiments/plots/output/fig3_composite.{pdf,png}`**：八个完成的 Fig 3 面板组合成一张大图。Nature 惯例经 `relevant_references/` 已发表 DeepRare 主图（Figs. 2–4，Nature 651，2026）复核：粗体小写字母置于各面板左上角（无句点、无括号）、严格阅读顺序 a→h、行顶对齐使同行字母共线、固定列网格。面板经 PyMuPDF `show_pdf_page` 以矢量 Form XObject 嵌入（无栅格化）；字母 Helvetica-Bold 8 pt 墨黑（palette TEXT）由组装器统一绘制；所有面板 scale 1.0（重置计划的统一 6-pt 文字样式，全图无 fit 缩放）。
