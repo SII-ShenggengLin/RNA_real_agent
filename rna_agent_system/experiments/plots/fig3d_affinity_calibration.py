@@ -121,8 +121,10 @@ def main() -> int:
     ymin = np.floor(np.log10(np_all[np_all > 0].min())) - 0.5
     ymax = 0.9  # head band above the data (max score 1.0) for the annotations
 
-    fig_w, fig_h = 3.84, 2.46  # inches (single panel e; scatter axes kept at
-    # the same physical size as in the former two-panel layout)
+    fig_w, fig_h = 3.70, 2.00  # inches (single panel e; 2026-08-31 composite
+    # revision: shrunk from 3.84 x 2.46 so the d|e composite row carries two
+    # matched-height panels — the height mismatch had left a blank band under
+    # e; fonts and axes-fraction layout unchanged, no data change)
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax_s = fig.add_axes([0.164, 0.270, 0.820, 0.698])
 

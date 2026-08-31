@@ -126,11 +126,15 @@ def main() -> int:
     results_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else RESULTS
     summary, runs_rows = load_data(results_dir)
 
-    # absolute-mm geometry (the fig3f convention): single-column 89 mm wide
-    fig_w, fig_h = 89 / 25.4, 34 / 25.4
+    # absolute-mm geometry (the fig3f convention); 2026-08-31 composite
+    # revision: enlarged from 89 x 34 mm (axes 71 x 21) so the d|e composite
+    # row carries two matched-height panels — the height mismatch had left a
+    # blank band under e; fonts, bar geometry and the style-key row unchanged,
+    # no data change
+    fig_w, fig_h = 94 / 25.4, 44.6 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax_b = fig.add_axes([15 / 25.4 / fig_w, 11 / 25.4 / fig_h,
-                         71 / 25.4 / fig_w, 21 / 25.4 / fig_h])
+                         75 / 25.4 / fig_w, 31 / 25.4 / fig_h])
 
     draw_bars(ax_b, runs_rows)
 
@@ -143,7 +147,7 @@ def main() -> int:
     trio_w = sw_w + 2 * pitch
     label_w = {"ranking_objective": 19.0, "screening_evaluation": 23.0}
     row_w = 2 * (trio_w + gap) + group_gap + sum(label_w.values())
-    x0 = (15 + 71 / 2) - row_w / 2                        # row centred on the axes
+    x0 = (15 + 75 / 2) - row_w / 2                        # row centred on the axes
     x = x0
     for use in ("ranking_objective", "screening_evaluation"):
         for i, oracle in enumerate(ORACLE_ORDER):

@@ -189,7 +189,10 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig3a_oracle_screening.{ext}"
-        fig.savefig(out, dpi=600 if ext == "png" else None, bbox_inches="tight")
+        # dpi also governs the PDF's one raster element (the colorbar
+        # gradient) — 1200 keeps the composite PDF all-vector-sharp at the
+        # Nature Methods line-art bar (the fig3_assemble finding).
+        fig.savefig(out, dpi=1200, bbox_inches="tight")
         print(f"written {out}")
     return 0
 

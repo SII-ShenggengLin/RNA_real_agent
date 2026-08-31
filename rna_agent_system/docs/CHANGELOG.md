@@ -8,6 +8,13 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-31 — Fig 3 composite 组装（a–h 八面板）
+
+- **`experiments/plots/fig3_assemble.py` 新增 → `experiments/plots/output/fig3_composite.{pdf,png}`**：八个完成的 Fig 3 面板组合成一张大图。Nature 惯例经 `relevant_references/` 已发表 DeepRare 主图（Figs. 2–4，Nature 651，2026）复核：粗体小写字母置于各面板左上角（无句点、无括号）、严格阅读顺序 a→h、行顶对齐使同行字母共线、固定列网格。面板经 PyMuPDF `show_pdf_page` 以矢量 Form XObject 嵌入（无栅格化）；字母 Helvetica-Bold 8 pt 墨黑（palette TEXT）由组装器统一绘制；所有面板 scale 1.0（重置计划的统一 6-pt 文字样式，全图无 fit 缩放）。
+- **布局**（同日晚些时候用户指示修订）：a（screening balloon 矩阵）全宽；**b、c 共行且两端齐平** —— b 为 27-cell 高瘦 Cleveland 点图（82.3×103.4 mm），c 以**双行 composite 变体**嵌入（`FIG3C_LAYOUT=composite python experiments/plots/fig3c_docking_lollipop.py` → `fig3c_docking_lollipop_composite.{pdf,png}`：19 个 lollipop 在 SARS-CoV-2 RBD｜PSMA 组分界处折为 11+8 两行，画布 97.2×103.8 mm 与 b 同高；单行独立面板 c 不变）；**d、e 等高配对** —— 首版 d|e 行在 e 下方留出高差空白带（d 高 e 56 pt），用户指示后 d 就地缩小重渲染（3.84×2.46 → 3.70×2.00 in → 86.7×44.1 mm）、e 就地放大重渲染（89×34 → 94×44.6 mm，轴区 71×21 → 75×31 mm → 85.5×41.4 mm），两者 6-pt 字体与内部版式不变、数据不变；**f、g、h 三联等高一排收尾**（fig2 fgh 行惯例：统一绘制高度 90.2 pt，各面板缩放 ≈ 0.69/0.64/0.81，宽度随各自纵横比、剩余宽度均分为 gutters；用户指示 —— h 无需全宽，首版的全宽收尾变体 `fig3h_dissolution_composite.*` 随之退役删除，fig3h 脚本回退单一版式）。
+- **分辨率**：成品 PDF 一页 539.9×721.7 pt（190.5×254.6 mm），PNG 从矢量成品以 **1200 dpi** 渲染（8999×12029 px，Nature Methods line-art 指引）。组装 QA 发现 fig3a 的 colorbar 渐变在面板 PDF 内以 100 dpi 栅格嵌入（成品中唯一的栅格元素）—— fig3a 的 savefig dpi 已统一为 1200 并重渲染（仍读 v3 summary，"cells passing AUROC > 0.8: 2/27" 不变；顺带将其独立 PNG 提到 1200 dpi，与 fig3b–h 的 1200-dpi 惯例一致），现成品 PDF 中该 colorbar 为 1200 dpi。逐条带视觉 QA（各行字母线、b|c 接缝、d|e 等高、fgh 三联行、h 的 inset/门槛标注、右缘齐平）通过。
+- FIGURE_PLAN_V5（Fig-3 表后注记）、AGENTS.md、本日志更新。
+
 ## 2026-08-31 — Figs 3–5 撤销 a 子图总结图（用户决定）；fig3 图脚本与输出改名 fig3a–h
 
 - **结果图不再以总结/机制示意图开头**：Fig 3a 失败模式示意图（当日早些时候绘制，见下条）连同文件删除；规划中的 Fig 4a（CapGate 机制示意）与 Fig 5a（GenNav 机制示意）在战役重跑前移除；Figs 3–5 原 b–i 面板重编为 a–h，图例与正文引用同步（机制引用改指 Fig. 1d / Fig. 1e — 机制示意保留在 Fig 1；§2.3 开头引用改指整图）。

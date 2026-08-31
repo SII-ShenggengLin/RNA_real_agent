@@ -57,6 +57,29 @@ colour-coded arrows: solid slate = data flow, dashed terracotta = gate/block.
 | g | Deployed-artifact fidelity (reset 2026-08-29, Exp 15 + same-day addendum): the git-recovered v0.2.0 service re-measured in a sandbox **0.790/0.420** (open markers; the registered incident 0.786/0.410 reproduces within ≤ 0.009) forking to both shipped paths re-verified live, zero-intervention, on all 1,662 official test pairs — default tool path (normalization verified applied per pair) **0.975/0.986**, verbatim endpoint **0.974/0.983** bit-identical to exp7; the exp7 prediction that agent-side normalization would re-introduce the defect class **falsified** (AUROC-neutral, score-perturbing: pdb median \|Δp\| 0.083, max 0.910) — the shared case treatment across arms isolates the v0.2.0 **adjacency rewrite** as the damage carrier | dumbbell + verification fork (2026-08-30 revision, user-directed: every text element pure black #000000 (the fig3e convention — the chance tag had been dark warm grey); x-label shortened to "Screening AUROC" (the held-out-split clause is caption material; the long label read as a misplaced title); in-figure legend rewritten as strategy labels without the internal version string or provenance qualifiers — "Pre-fix preprocessing" / "Tool-path normalization" / "Verbatim input" (the re-measured/live provenance lives in the caption); fork value labels moved left of the open markers — the below-placement sat on the gate 0.8 dashes; the chance line retained — the pre-fix PDB arm (0.420) falls below it, unlike fig2g/fig3f whose dropped chance lines carried no below-chance point); saved at the true 88 × 50 mm canvas, no tight crop, figure-centred legend row (the sparse panel's 78-mm tight crop had made the uniform 6-pt text effectively oversized next to the sibling panels)) | `exp15_rnasmol_fidelity/summary.json` + `exp15_rnasmol_v020_sandbox/summary.json` |
 | h | Confounded improvement dissolved at full-panel scale (reset 2026-08-29→31, Exp 16): the removed coordination loop reconstructed driver-side verbatim (deterministic AptamerCoordinator rules recovered from git 1b45138~1; BMC stays out of the platform) — apparent effect **δ = +0.140 (P = 0.0026, already sub-gate)** → budget-matched **δ = +0.050 (P = 0.21, NS)** → fixed-resampling **δ = −0.012 (P = 0.73, NS)**; self-audit survival **0/2** vs the 70% threshold; 240 cells = 4 arms × 20 targets × 3 seeds, 228 successful (Ferritin the registered zero-output boundary), 56/56/57 paired (target, seed) cells, loop 56/57 hotspot-expansion branch, realized pools 8/16/16/16; deployment topology with service replicas disclosed | annotated slope + gate + permutation-null histogram inset (observed δ marked; quadrant-adaptive placement; stage dots terracotta / grey blue / sage, trajectory warm grey, gate dashed dark warm grey) | `exp16_confounded_improvement/summary.json` |
 
+2026-08-31 Fig 3 composite assembled: `experiments/plots/fig3_assemble.py` →
+`experiments/plots/output/fig3_composite.{pdf,png}` (190.5 × 254.6 mm page;
+PNG 8999 × 12029 px at 1200 dpi from the all-vector PDF — the one embedded
+raster element is the fig3a colour-bar gradient, re-rendered at 1200 dpi the
+same day). Nature conventions re-verified against the published DeepRare main
+Figs. 2–4 (`relevant_references/`, Nature 651, 2026): bold lowercase letters
+at each panel's top-left corner (Helvetica-Bold 8 pt, no period/brackets),
+strict reading order a → h, rows top-aligned so same-row letters share one
+line. Layout (same-day user-directed revision): a full width; b + c share row
+2 edge to edge — c embedded in a two-sub-row composite layout
+(`fig3c_docking_lollipop_composite.{pdf,png}`, `FIG3C_LAYOUT=composite`;
+the 19 lollipops wrap 11 + 8 at the SARS-CoV-2 RBD | PSMA group boundary
+onto a 97.2 × 103.8 mm canvas matching b's height; the standalone
+single-row panel c is unchanged); d + e share row 3 as matched-height
+panels — d re-rendered smaller (86.7 × 44.1 mm) and e larger
+(85.5 × 41.4 mm), both with unchanged 6-pt fonts and no data change, so the
+first layout's height-mismatch blank band under e is gone; f g h close the
+figure as one equal-height row (the fig2 fgh-row convention: one drawn
+height 90.2 pt, per-panel scales ≈ 0.69/0.64/0.81, leftover width becomes
+even gutters) — h does not span the full width; the first layout's
+full-width h variant was retired the same day (standalone h panel
+unchanged).
+
 ## Fig 4 | CapGate eliminates false claims, preserves true ones (8 panels)
 
 | Panel | Content | Type | Data |

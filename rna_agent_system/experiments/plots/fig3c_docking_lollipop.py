@@ -32,11 +32,19 @@ Fig. 3 (terracotta); all text in ink black.
 
 Data  : experiments/results/exp12_docking_capability/summary.json
 Usage : python experiments/plots/fig3c_docking_lollipop.py
+        FIG3C_LAYOUT=composite python experiments/plots/fig3c_docking_lollipop.py
 Output : experiments/plots/output/fig3c_docking_lollipop.{pdf,png}
+         (composite layout: fig3c_docking_lollipop_composite.{pdf,png} —
+         the same 19 lollipops wrapped into two stacked sub-rows (11 + 8,
+         split at the SARS-CoV-2 RBD | PSMA group boundary) on one
+         single-column-wide, b-height canvas, so the Fig. 3 composite can
+         pair panel c with the tall panel b on one row; the standalone
+         single-row panel above is unchanged)
 """
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -104,7 +112,7 @@ SHORT_LABELS = {
 }
 
 
-def main() -> None:
+def load_rows():
     summary = json.loads(SUMMARY_PATH.read_text())
     per_anchor = summary["per_anchor"]
 
@@ -116,12 +124,12 @@ def main() -> None:
                 continue
             rows.append((group, aid, v))
     assert rows, "no scored anchors in summary.json"
+    return rows
 
+
+def draw_lollipops(ax, rows, max_rank):
+    """One sub-row of lollipops — the single-row panel's drawing body."""
     n = len(rows)
-    max_rank = max(v["native_rank"] for _, _, v in rows)
-
-    fig, ax = plt.subplots(figsize=(6.2, 2.3))
-
     for i, (_, aid, v) in enumerate(rows):
         rank = v["native_rank"]
         n_poses = v["n_poses_scored"]
@@ -145,6 +153,58 @@ def main() -> None:
     ax.tick_params(axis="x", length=0)
     ax.tick_params(axis="both", labelsize=FS)
     ax.grid(axis="y", color=NEUTRAL_GRID, lw=0.4, zorder=1)
+
+
+def render_composite(rows) -> None:
+    """Composite layout: the 19 lollipops wrapped into two stacked sub-rows
+    (11 + 8, split at the SARS-CoV-2 RBD | PSMA group boundary) on a
+    single-column-wide canvas matching panel b's height, so the Fig. 3
+    composite can place c next to b on one row (mm geometry, the fig3h
+    convention)."""
+    SPLIT = 11  # TBA..FY-apt | A9g..pL1
+    top_rows, bot_rows = rows[:SPLIT], rows[SPLIT:]
+    max_rank = max(v["native_rank"] for _, _, v in rows)
+
+    fig_w, fig_h = 97.2 / 25.4, 109.5 / 25.4
+    fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
+
+    def mm_axes(x0, y0, w, h):
+        return fig.add_axes([x0 / 25.4 / fig_w, y0 / 25.4 / fig_h,
+                             w / 25.4 / fig_w, h / 25.4 / fig_h])
+
+    left, right = 7.0, 1.5
+    band, gap, top_m, bot_m = 12.5, 3.0, 1.5, 1.2
+    w_mm = 97.2 - left - right
+    h_mm = (109.5 - top_m - bot_m - 2 * band - gap) / 2.0
+    y2 = bot_m + band                  # bottom sub-row axes base
+    y1 = y2 + h_mm + gap + band        # top sub-row axes base
+
+    ax1 = mm_axes(left, y1, w_mm, h_mm)
+    ax2 = mm_axes(left, y2, w_mm, h_mm)
+    draw_lollipops(ax1, top_rows, max_rank)
+    draw_lollipops(ax2, bot_rows, max_rank)
+
+    for ext in ("pdf", "png"):
+        out = OUT_DIR / f"fig3c_docking_lollipop_composite.{ext}"
+        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
+                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+    plt.close(fig)
+    print(f"wrote fig3c_docking_lollipop_composite.{{pdf,png}} "
+          f"({len(top_rows)} + {len(bot_rows)} complexes, two sub-rows)")
+
+
+def main() -> None:
+    rows = load_rows()
+
+    if os.environ.get("FIG3C_LAYOUT") == "composite":
+        render_composite(rows)
+        return
+
+    n = len(rows)
+    max_rank = max(v["native_rank"] for _, _, v in rows)
+
+    fig, ax = plt.subplots(figsize=(6.2, 2.3))
+    draw_lollipops(ax, rows, max_rank)
 
     n_top1 = sum(1 for _, _, v in rows if v["top1"])
     n_scored = sum(v["n_poses_scored"] for _, _, v in rows)
