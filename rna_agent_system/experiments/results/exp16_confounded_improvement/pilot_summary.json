@@ -1,0 +1,712 @@
+{
+ "timestamp": "2026-08-29T19:27:15",
+ "capgate_policy": "advisory",
+ "gate_delta": 0.3,
+ "legacy_reference": {
+  "fig4_headline": {
+   "delta": 0.45706371191135736,
+   "p": 0.000209808349609375,
+   "n": 19,
+   "note": "egarps_component best-of-pool, BMCx1 vs Serial"
+  },
+  "p0_budget_matched": {
+   "delta": 0.2777777777777778,
+   "p": 0.12939453125,
+   "wins": "9/12",
+   "gate": 0.3,
+   "verdict": "NO-GO"
+  },
+  "p3_fixed_resampling": {
+   "delta": 0.2222222222222222,
+   "p": 0.10986328125,
+   "wins": "9/12",
+   "gate": 0.3,
+   "verdict": "NO-GO"
+  },
+  "e2_self_audit": {
+   "survival": "0/2",
+   "threshold": 0.7
+  },
+  "source": "git 1b45138~1 (drivers deleted 2026-08-18) + PAPER_FACT_SHEET \u00a72/\u00a73"
+ },
+ "n_records": 8,
+ "arms": {
+  "serial8": {
+   "cells_run": 2,
+   "cells_ok": 2,
+   "pool_size_median": 8.0,
+   "elapsed_median_s": 626.5999999999999,
+   "primary_median": 0.8810072499999999
+  },
+  "loop16": {
+   "cells_run": 2,
+   "cells_ok": 2,
+   "pool_size_median": 16.0,
+   "elapsed_median_s": 1277.25,
+   "primary_median": 0.9355976
+  },
+  "serial16": {
+   "cells_run": 2,
+   "cells_ok": 2,
+   "pool_size_median": 16.0,
+   "elapsed_median_s": 1094.8,
+   "primary_median": 0.87706285
+  },
+  "fixed16": {
+   "cells_run": 2,
+   "cells_ok": 2,
+   "pool_size_median": 16.0,
+   "elapsed_median_s": 1283.6999999999998,
+   "primary_median": 0.9816078
+  }
+ },
+ "failures": [],
+ "analyses": {
+  "apparent": {
+   "comparison": "apparent",
+   "arm_a": "loop16",
+   "arm_b": "serial8",
+   "metric": "egarps_component",
+   "n_pairs": 2,
+   "dropped_cells": 0,
+   "a_wins": 1,
+   "ties": 0,
+   "median_a": 0.9355976,
+   "median_b": 0.8810072499999999,
+   "delta": 0.5,
+   "p_wilcoxon": 1.0,
+   "perm_null": {
+    "n": 10000,
+    "mean": -0.00795,
+    "p_perm": 1.0,
+    "q025": -1.0,
+    "q975": 1.0,
+    "hist": [
+     [
+      -0.9756,
+      2496
+     ],
+     [
+      -0.9268,
+      0
+     ],
+     [
+      -0.878,
+      0
+     ],
+     [
+      -0.8293,
+      0
+     ],
+     [
+      -0.7805,
+      0
+     ],
+     [
+      -0.7317,
+      0
+     ],
+     [
+      -0.6829,
+      0
+     ],
+     [
+      -0.6341,
+      0
+     ],
+     [
+      -0.5854,
+      0
+     ],
+     [
+      -0.5366,
+      0
+     ],
+     [
+      -0.4878,
+      2560
+     ],
+     [
+      -0.439,
+      0
+     ],
+     [
+      -0.3902,
+      0
+     ],
+     [
+      -0.3415,
+      0
+     ],
+     [
+      -0.2927,
+      0
+     ],
+     [
+      -0.2439,
+      0
+     ],
+     [
+      -0.1951,
+      0
+     ],
+     [
+      -0.1463,
+      0
+     ],
+     [
+      -0.0976,
+      0
+     ],
+     [
+      -0.0488,
+      0
+     ],
+     [
+      0.0,
+      0
+     ],
+     [
+      0.0488,
+      0
+     ],
+     [
+      0.0976,
+      0
+     ],
+     [
+      0.1463,
+      0
+     ],
+     [
+      0.1951,
+      0
+     ],
+     [
+      0.2439,
+      0
+     ],
+     [
+      0.2927,
+      0
+     ],
+     [
+      0.3415,
+      0
+     ],
+     [
+      0.3902,
+      0
+     ],
+     [
+      0.439,
+      0
+     ],
+     [
+      0.4878,
+      2495
+     ],
+     [
+      0.5366,
+      0
+     ],
+     [
+      0.5854,
+      0
+     ],
+     [
+      0.6341,
+      0
+     ],
+     [
+      0.6829,
+      0
+     ],
+     [
+      0.7317,
+      0
+     ],
+     [
+      0.7805,
+      0
+     ],
+     [
+      0.8293,
+      0
+     ],
+     [
+      0.878,
+      0
+     ],
+     [
+      0.9268,
+      0
+     ],
+     [
+      0.9756,
+      2449
+     ]
+    ]
+   },
+   "gate_pass": true,
+   "verdict": "GO",
+   "target_level": {
+    "n": 2,
+    "delta": 0.5
+   }
+  },
+  "budget_matched": {
+   "comparison": "budget_matched",
+   "arm_a": "loop16",
+   "arm_b": "serial16",
+   "metric": "egarps_component",
+   "n_pairs": 2,
+   "dropped_cells": 0,
+   "a_wins": 1,
+   "ties": 0,
+   "median_a": 0.9355976,
+   "median_b": 0.87706285,
+   "delta": 0.5,
+   "p_wilcoxon": 1.0,
+   "perm_null": {
+    "n": 10000,
+    "mean": -0.00795,
+    "p_perm": 1.0,
+    "q025": -1.0,
+    "q975": 1.0,
+    "hist": [
+     [
+      -0.9756,
+      2496
+     ],
+     [
+      -0.9268,
+      0
+     ],
+     [
+      -0.878,
+      0
+     ],
+     [
+      -0.8293,
+      0
+     ],
+     [
+      -0.7805,
+      0
+     ],
+     [
+      -0.7317,
+      0
+     ],
+     [
+      -0.6829,
+      0
+     ],
+     [
+      -0.6341,
+      0
+     ],
+     [
+      -0.5854,
+      0
+     ],
+     [
+      -0.5366,
+      0
+     ],
+     [
+      -0.4878,
+      2560
+     ],
+     [
+      -0.439,
+      0
+     ],
+     [
+      -0.3902,
+      0
+     ],
+     [
+      -0.3415,
+      0
+     ],
+     [
+      -0.2927,
+      0
+     ],
+     [
+      -0.2439,
+      0
+     ],
+     [
+      -0.1951,
+      0
+     ],
+     [
+      -0.1463,
+      0
+     ],
+     [
+      -0.0976,
+      0
+     ],
+     [
+      -0.0488,
+      0
+     ],
+     [
+      0.0,
+      0
+     ],
+     [
+      0.0488,
+      0
+     ],
+     [
+      0.0976,
+      0
+     ],
+     [
+      0.1463,
+      0
+     ],
+     [
+      0.1951,
+      0
+     ],
+     [
+      0.2439,
+      0
+     ],
+     [
+      0.2927,
+      0
+     ],
+     [
+      0.3415,
+      0
+     ],
+     [
+      0.3902,
+      0
+     ],
+     [
+      0.439,
+      0
+     ],
+     [
+      0.4878,
+      2495
+     ],
+     [
+      0.5366,
+      0
+     ],
+     [
+      0.5854,
+      0
+     ],
+     [
+      0.6341,
+      0
+     ],
+     [
+      0.6829,
+      0
+     ],
+     [
+      0.7317,
+      0
+     ],
+     [
+      0.7805,
+      0
+     ],
+     [
+      0.8293,
+      0
+     ],
+     [
+      0.878,
+      0
+     ],
+     [
+      0.9268,
+      0
+     ],
+     [
+      0.9756,
+      2449
+     ]
+    ]
+   },
+   "gate_pass": true,
+   "verdict": "GO",
+   "target_level": {
+    "n": 2,
+    "delta": 0.5
+   }
+  },
+  "fixed_resampling": {
+   "comparison": "fixed_resampling",
+   "arm_a": "loop16",
+   "arm_b": "fixed16",
+   "metric": "egarps_component",
+   "n_pairs": 2,
+   "dropped_cells": 0,
+   "a_wins": 1,
+   "ties": 0,
+   "median_a": 0.9355976,
+   "median_b": 0.9816078,
+   "delta": 0.0,
+   "p_wilcoxon": 1.0,
+   "perm_null": {
+    "n": 10000,
+    "mean": -0.00235,
+    "p_perm": 1.0,
+    "q025": -0.5,
+    "q975": 0.5,
+    "hist": [
+     [
+      -0.4878,
+      2496
+     ],
+     [
+      -0.4634,
+      0
+     ],
+     [
+      -0.439,
+      0
+     ],
+     [
+      -0.4146,
+      0
+     ],
+     [
+      -0.3902,
+      0
+     ],
+     [
+      -0.3659,
+      0
+     ],
+     [
+      -0.3415,
+      0
+     ],
+     [
+      -0.3171,
+      0
+     ],
+     [
+      -0.2927,
+      0
+     ],
+     [
+      -0.2683,
+      0
+     ],
+     [
+      -0.2439,
+      0
+     ],
+     [
+      -0.2195,
+      0
+     ],
+     [
+      -0.1951,
+      0
+     ],
+     [
+      -0.1707,
+      0
+     ],
+     [
+      -0.1463,
+      0
+     ],
+     [
+      -0.122,
+      0
+     ],
+     [
+      -0.0976,
+      0
+     ],
+     [
+      -0.0732,
+      0
+     ],
+     [
+      -0.0488,
+      0
+     ],
+     [
+      -0.0244,
+      0
+     ],
+     [
+      0.0,
+      5055
+     ],
+     [
+      0.0244,
+      0
+     ],
+     [
+      0.0488,
+      0
+     ],
+     [
+      0.0732,
+      0
+     ],
+     [
+      0.0976,
+      0
+     ],
+     [
+      0.122,
+      0
+     ],
+     [
+      0.1463,
+      0
+     ],
+     [
+      0.1707,
+      0
+     ],
+     [
+      0.1951,
+      0
+     ],
+     [
+      0.2195,
+      0
+     ],
+     [
+      0.2439,
+      0
+     ],
+     [
+      0.2683,
+      0
+     ],
+     [
+      0.2927,
+      0
+     ],
+     [
+      0.3171,
+      0
+     ],
+     [
+      0.3415,
+      0
+     ],
+     [
+      0.3659,
+      0
+     ],
+     [
+      0.3902,
+      0
+     ],
+     [
+      0.4146,
+      0
+     ],
+     [
+      0.439,
+      0
+     ],
+     [
+      0.4634,
+      0
+     ],
+     [
+      0.4878,
+      2449
+     ]
+    ]
+   },
+   "gate_pass": false,
+   "verdict": "NO-GO",
+   "target_level": {
+    "n": 2,
+    "delta": 0.0
+   }
+  }
+ },
+ "self_audit": {
+  "protocol": "declare dependencies -> profile re-check -> confound control -> gated verdict",
+  "survival": "0/2",
+  "survival_fraction": 0.0,
+  "threshold": 0.7,
+  "threshold_met": false,
+  "claims": [
+   {
+    "claim": "coordination improves aptamer design (legacy Fig 4 main effect)",
+    "step1_dependencies": [
+     "egarps_native_probability (primary metric)",
+     "rhofold_mean_plddt",
+     "proteinx_ipTM"
+    ],
+    "step2_profile_recheck": {
+     "egarps_native_probability": {
+      "screening": "failed",
+      "ranking": "failed",
+      "docking": "failed"
+     },
+     "rhofold_mean_plddt": {
+      "screening": "failed",
+      "ranking": "failed"
+     },
+     "proteinx_ipTM": {
+      "screening": "failed",
+      "ranking": "failed"
+     }
+    },
+    "step2_pass": false,
+    "step3_confound_control": {
+     "apparent_delta": 0.5,
+     "apparent_p": 1.0,
+     "budget_matched_delta": 0.5,
+     "budget_matched_p": 1.0,
+     "fixed_resampling_delta": 0.0,
+     "fixed_resampling_p": 1.0
+    },
+    "step3_pass": true,
+    "step4_verdict": "retired"
+   },
+   {
+    "claim": "designed candidates beat the pegaptanib literature anchor (legacy Fig 7B)",
+    "step1_dependencies": [
+     "egarps_native_probability (cross-source complex scoring)"
+    ],
+    "step2_profile_recheck": {
+     "egarps_native_probability": {
+      "screening": "failed",
+      "ranking": "failed",
+      "docking": "failed"
+     }
+    },
+    "step2_pass": false,
+    "step3_confound_control": {
+     "basis": "cross-complex-source comparability (ODesign complexes vs PDB 4QXX) + unrepresentable 2'-F/PEG modifications \u2014 registered in E2; unchanged"
+    },
+    "step3_pass": false,
+    "step4_verdict": "retired"
+   }
+  ]
+ },
+ "run_counts": {
+  "ok": 8,
+  "fail": 0,
+  "skip": 0
+ }
+}

@@ -1,12 +1,20 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-30
+> **Last updated**: 2026-08-31
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-08-31 — Exp 16（Fig 3i / §2.3 实验 8）混淆改进证伪全面板重跑
+
+- **`experiments/exp16_confounded_improvement.py` 执行**（第三次重置计划，预注册 docstring，pilot 8/8；用户确认 RNA-BioBench-Aptamer 全 20 靶标 × 3 seeds × 4 臂 = 240 cells）：被移除的协同环（BMC，2026-08-18 删除，DECISIONS (m)）**作为研究对象在实验驱动内逐字重构**——legacy AptamerCoordinator 确定性规则从 git 1b45138~1 恢复（utopian 参考点诊断 / ASF 最优 + 各维度领先者诊断集 / EGARPS-IPTM 差距→热点扩展±5 再生 8 / RHOFOLD 差距→长度+10（pLDDT<60）或+5、种子+1 / 零违规→池 8 早停）；四臂 = serial8 / loop16 / serial16（同种子一次生成 16）/ fixed16（固定种子+1 重采样、无诊断内容）；平台本身零改动，全部走生产 RnaAptamerDesignWorkflow（逐 cell 新实例、CapGate advisory、全审计）；主指标 egarps_component best-of-pool（被注销的 oracle——测的就是它）；配对 Wilcoxon + 两样本 Cliff's δ（legacy 约定）+ 10⁴ 符号翻转置换零分布；预注册 gate δ≥0.3（P0/P3 约定）；E2 四步自审计确定性重跑（阈值 70%）。
+- **结果：240/240 记录，228 成功 + 12 Ferritin 零输出边界失败（19 靶有效，legacy 口径）；环 56/57 走热点扩展分支，实现池 8/16/16/16。表观效应 δ = +0.1397（p = 0.0026，perm p = 0.0555，胜 41/56）——方向为正、名义显著，但已在门槛之下；预算匹配 δ = +0.0504（p = 0.212，胜 34/56）——消解；固定重采样 δ = −0.0120（p = 0.730，胜 31/57）——恰好为零。自审计存活 0/2（两条 legacy 旗舰声明均被注销）。** vs 注册 legacy 弧线（+0.457→0.278→0.222，0/2，内部登记保留）：证伪定性复现且全面板尺度下更锐利——表观效应在对照之前就不再过门槛。
+- **部署拓扑（披露）**：6 个认领制并行 worker + 5 个服务副本（EGARPS×3、ProteinX×2，GPU 0–2，同代码同权重仅端口/设备不同；设备位置不影响分数——exp10 约定）；EGARPS 输入按 worker 隔离目录（result.txt 并发竞态防护）；导向失败自动回落默认端点；两次整机断电经监督重启 + 陈旧认领接管零 cell 损失。并行拓扑下 240 cells ≈ 36.5 h（单进程投影约 3×）。
+- **图 `experiments/plots/fig3i_dissolution.py` → `fig3i_dissolution.{pdf,png}`**（斜率轨迹 + δ=0.3 门槛虚线 + 每段 δ/P 两行标注；置换零分布直方图 inset（10⁴ 符号翻转，观测 δ 陶土红标线，象限自适应避让数据；Robin Extended Data Fig. 4c 惯例）；阶段点陶土/灰蓝/鼠尾草绿，连线暖灰，门槛线深暖灰（fig3b/3c 惯例）；无图内标题、6-pt 纯黑统一、单栏 88 mm 几何、PNG 1200 dpi；视觉 QA 通过）。
+- PAPER_DRAFT（§2.3 混淆改进段重写为重测数字 + Fig 3i 图注）、PAPER_FACT_SHEET（Exp 16 节 + claim check + 关键数字 9 号升级）、FIGURE_PLAN_V5 行 i、MANUSCRIPT 重置表（Exp 16 行）、本日志更新；workspace 隔离 scratch 清理。
 
 ## 2026-08-30 — Fig 3g 视觉修订（Nature 风格 + 布局修正，用户指示）
 
