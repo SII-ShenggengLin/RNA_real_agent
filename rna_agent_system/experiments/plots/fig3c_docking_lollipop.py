@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3d — EGARPS+ docking power: native-pose rank lollipop.
+"""Fig. 3c — EGARPS+ docking power: native-pose rank lollipop.
 
 One lollipop per docking anchor (x = complex, ordered by protein target),
 stem height = rank of the experimental native pose among the 21-candidate
@@ -10,13 +10,13 @@ line sat one rank above the x-axis and read as a duplicate axis.
 
 Style (reset programme, Nature convention): no in-figure title — the
 headline lives in the caption and the assembler adds the panel letter;
-every text element is one 6-pt ink-black style (fig2d/fig2f/fig2i/fig3c
+every text element is one 6-pt ink-black style (fig2d/fig2f/fig2i/fig3b
 convention).  2026-08-29 user-directed revisions: in-figure title dropped
 (it duplicated the caption and sat off-centre); the alternating group
 bands dropped — non-data shading; all markers one filled terracotta style
 (the v2-retained/v3-added provenance split and its legend dropped — the
-panel shows the reset run only, the fig3c convention); the protein-target
-group labels moved out of the panel into the Fig. 3d caption, which lists
+panel shows the reset run only, the fig3b convention); the protein-target
+group labels moved out of the panel into the Fig. 3c caption, which lists
 the aptamer→target mapping left to right (the two staggered text rows did
 not track their groups); the top-1 gate line dropped after user review
 (it sat one rank above the x-axis and read as a duplicate axis; the
@@ -31,8 +31,8 @@ Colours (palette rev 7): lollipops in the EGARPS oracle colour used across
 Fig. 3 (terracotta); all text in ink black.
 
 Data  : experiments/results/exp12_docking_capability/summary.json
-Usage : python experiments/plots/fig3d_docking_lollipop.py
-Output : experiments/plots/output/fig3d_docking_lollipop.{pdf,png}
+Usage : python experiments/plots/fig3c_docking_lollipop.py
+Output : experiments/plots/output/fig3c_docking_lollipop.{pdf,png}
 """
 from __future__ import annotations
 
@@ -74,7 +74,7 @@ C_ORACLE = "#C08B7C"           # terracotta — EGARPS across Fig. 3
 
 # x order = protein-target groups (retained families first, then the v3
 # additions by target then PDB); the aptamer→target mapping is stated in
-# the Fig. 3d caption, not on the panel
+# the Fig. 3c caption, not on the panel
 GROUP_ORDER = [
     ("Thrombin", ["tba_thrombin", "hd22_t27_thrombin", "toggle25t_thrombin",
                   "m08s1_thrombin"]),
@@ -151,11 +151,11 @@ def main() -> None:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3d_docking_lollipop.{ext}"
+        out = OUT_DIR / f"fig3c_docking_lollipop.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
-    print(f"wrote fig3d_docking_lollipop.{{pdf,png}} ({n} complexes, "
+    print(f"wrote fig3c_docking_lollipop.{{pdf,png}} ({n} complexes, "
           f"{n_top1} top-1, {n_scored} poses scored)")
 
 

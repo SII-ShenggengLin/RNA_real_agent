@@ -1,4 +1,4 @@
-"""Fig 3f — claim overreach of the ungated agent (bar panel).
+"""Fig 3e — claim overreach of the ungated agent (bar panel).
 
 Horizontal bars — decision-layer overreach events of the ungated control
 arm (Experiment 5) by oracle and intended use (plan requests of a
@@ -9,12 +9,12 @@ sage green); solid = ranking objective, 55% alpha = screening evaluation.
 The per-claim adjudication waffle was dropped on user direction
 (2026-08-30, second revision): the class selectivity it encoded — 23/23
 claims true on the trusted-deterministic tasks versus 30/32 false on the
-untrusted-oracle tasks — is stated in one sentence in the Fig. 3f caption
+untrusted-oracle tasks — is stated in one sentence in the Fig. 3e caption
 and the main text; the FP-rate headline likewise lives in the caption.
 
 Style (2026-08-30 user-directed revisions, Nature conventions): no
 in-figure titles or summary statistics — the panel letter is added at
-figure assembly and the headline numbers live in the Fig. 3f caption; the
+figure assembly and the headline numbers live in the Fig. 3e caption; the
 legend is a single-row six-swatch style key centred on the axes directly
 under the panel — the three oracle colours solid (ranking objective) then
 light (screening evaluation), one swatch per bar style; oracle
@@ -23,7 +23,7 @@ pure-black style; colours only from palette rev 7; 1200-dpi PNG (Nature
 Methods line-art guidance) + vector PDF (fonttype 42).
 
 Data: experiments/results/exp5_claim_overreach/runs.jsonl (+
-_summary.json). Output: experiments/plots/output/fig3f_claim_overreach.
+_summary.json). Output: experiments/plots/output/fig3e_claim_overreach.
 {pdf,png}.
 """
 
@@ -126,7 +126,7 @@ def main() -> int:
     results_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else RESULTS
     summary, runs_rows = load_data(results_dir)
 
-    # absolute-mm geometry (the fig3g convention): single-column 89 mm wide
+    # absolute-mm geometry (the fig3f convention): single-column 89 mm wide
     fig_w, fig_h = 89 / 25.4, 34 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax_b = fig.add_axes([15 / 25.4 / fig_w, 11 / 25.4 / fig_h,
@@ -159,12 +159,12 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3f_claim_overreach.{ext}"
+        out = OUT_DIR / f"fig3e_claim_overreach.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     ov = summary["overall"]
-    print(f"fig3f -> {OUT_DIR / 'fig3f_claim_overreach.pdf'} "
+    print(f"fig3e -> {OUT_DIR / 'fig3e_claim_overreach.pdf'} "
           f"(+png 1200 dpi); FP={ov['FP']}, TP={ov['TP']}, "
           f"events={summary['overreach_total']}")
     return 0

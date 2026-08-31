@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3c — structure-oracle ranking power (Cleveland dot plot, reset run).
+"""Fig. 3b — structure-oracle ranking power (Cleveland dot plot, reset run).
 
 27 cells (3 oracles × 9 aptamer targets): per-cell Spearman ρ of oracle score
 against −log10 of measured Kd on the within-target affinity series, plotted as
@@ -23,12 +23,12 @@ row block directly under the x-axis label (fig2i convention).
 Colours (palette rev 7): the three oracle identity colours — terracotta
 (EGARPS), slate blue (ProteinX), sage green (RhoFold) — data dots only; the
 nominal-pass rings in the held-out dark warm grey (#7A7672, neutral-dark
-semantic, matching fig3b's pass-ring convention).  All text is ink black
+semantic, matching fig3a's pass-ring convention).  All text is ink black
 regardless of element.
 
 Data  : experiments/results/exp11_oracle_ranking_power/summary.json
-Usage : python experiments/plots/fig3c_oracle_ranking.py
-Output: experiments/plots/output/fig3c_oracle_ranking.{pdf,png}
+Usage : python experiments/plots/fig3b_oracle_ranking.py
+Output: experiments/plots/output/fig3b_oracle_ranking.{pdf,png}
 """
 from __future__ import annotations
 
@@ -167,7 +167,7 @@ def main() -> int:
         color = ORACLE_COLORS[row["oracle"]]
         ax.scatter(row["rho"], y, s=17, c=color, edgecolors="white",
                    linewidths=0.4, zorder=5)
-        if row["rho"] >= GATE:  # nominal pass ring (fig3b convention)
+        if row["rho"] >= GATE:  # nominal pass ring (fig3a convention)
             ax.scatter(row["rho"], y, s=50, facecolors="none",
                        edgecolors=C_GATE, linewidths=0.9, zorder=6)
         # printed ρ in the fixed right-hand column — never crosses a graphic
@@ -215,7 +215,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3c_oracle_ranking.{ext}"
+        out = OUT_DIR / f"fig3b_oracle_ranking.{ext}"
         fig.savefig(out, format=ext, dpi=600 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")

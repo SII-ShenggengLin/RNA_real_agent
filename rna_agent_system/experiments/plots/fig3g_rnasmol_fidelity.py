@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3h — RNAsmol deployment-artifact fidelity (dumbbell with a live
+"""Fig. 3g — RNAsmol deployment-artifact fidelity (dumbbell with a live
 verification fork).
 
 The same deployed small-molecule oracle, its own official held-out test
@@ -23,20 +23,20 @@ sage), each with its stratified-bootstrap 95% CI. The decomposition closes:
 v0.2.0 (uppercase + rewritten adjacency) collapses while arm A (uppercase +
 upstream-faithful adjacency) does not — the same case treatment on both
 sides, so the adjacency rewrite carries the damage. Chance 0.5 solid, the
-0.8 screening-gate line dashed (the fig3b/3c/3g reference convention).
+0.8 screening-gate line dashed (the fig3a/3b/3f reference convention).
 
 Colours (palette rev 7): terracotta (#C08B7C) = the platform's default tool
-path — the fig3f failure semantic, and the pre-fix open marker's edge; sage
-(#A3B18A) = the verbatim service endpoint — the fig3f true/pass semantic;
+path — the fig3e failure semantic, and the pre-fix open marker's edge; sage
+(#A3B18A) = the verbatim service endpoint — the fig3e true/pass semantic;
 connector + gate line in the held-out dark warm grey.
 
-Style: the fig2d–fig3g conventions — no in-figure title (the headline lives
+Style: the fig2d–fig3f conventions — no in-figure title (the headline lives
 in the caption; Nature panels carry letters only), every text element one
 font size, single-column geometry, legend as a centred row block under the
 axis (the fig2i convention).
 
 Figure revision 2026-08-30 (user-directed): every text element pure black
-#000000 (the fig3f convention — the chance tag was dark warm grey and the
+#000000 (the fig3e convention — the chance tag was dark warm grey and the
 remaining text near-black #1A1A1A); the x-axis label shortened to
 "Screening AUROC" — the held-out-split clause is caption material, and the
 long label centred on the shifted axes box read as a misplaced title;
@@ -45,14 +45,14 @@ version string or the provenance qualifiers ("Pre-fix preprocessing" /
 "Tool-path normalization" / "Verbatim input" — the re-measured/live
 provenance lives in the caption); the chance line retained
 — the pre-fix PDB arm (0.420) falls below it, and the below-chance reading
-is the panel's failure evidence (unlike fig2g/fig3g, whose dropped chance
+is the panel's failure evidence (unlike fig2g/fig3f, whose dropped chance
 lines carried no below-chance point).
 
 Data  : experiments/results/exp15_rnasmol_fidelity/summary.json (live arms)
         + experiments/results/exp15_rnasmol_v020_sandbox/summary.json
         (the git-recovered v0.2.0 pre-fix arm, re-measured)
-Usage : python experiments/plots/fig3h_rnasmol_fidelity.py
-Output : experiments/plots/output/fig3h_rnasmol_fidelity.{pdf,png}
+Usage : python experiments/plots/fig3g_rnasmol_fidelity.py
+Output : experiments/plots/output/fig3g_rnasmol_fidelity.{pdf,png}
 """
 from __future__ import annotations
 
@@ -228,7 +228,7 @@ def main() -> int:
     # effectively oversized next to the sibling panels (the 2026-08-30 axis-
     # text review)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3h_rnasmol_fidelity.{ext}"
+        out = OUT_DIR / f"fig3g_rnasmol_fidelity.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white")
         print(f"written {out}")

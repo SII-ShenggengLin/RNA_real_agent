@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3g — MRL expression-oracle certification (forest dot + CI vs gates).
+"""Fig. 3f — MRL expression-oracle certification (forest dot + CI vs gates).
 
 The positive side of the capability profile: the GEMORNA 5′UTR MRL expression
 oracle on the three measured-MRL anchor families (Sample et al. 2019 MPRA).
@@ -11,20 +11,20 @@ in-distribution family (random 50-nt, the registered positive control) is
 named as such in its row label.
 
 Colours (palette rev 7): the GEMORNA MRL oracle identity colour is the
-palette's grey blue (#8FA6BB) — distinct from the fig3b–f structure-oracle
+palette's grey blue (#8FA6BB) — distinct from the fig3a–e structure-oracle
 trio (terracotta / slate / sage); gate lines dashed in the held-out dark
-warm grey (the fig3b/fig3c gate convention).
+warm grey (the fig3a/fig3b gate convention).
 
-Style: the fig2d–fig2i/fig3b–fig3f conventions — no in-figure title (the
+Style: the fig2d–fig2i/fig3a–fig3e conventions — no in-figure title (the
 headline lives in the caption, the panel letter is added at assembly), every
 text element one font size and pure black, single-column geometry.
 
 Figure revision 2026-08-30 (user-directed): every text element pure black
-#000000 (the fig3f convention — the palette's TEXT #1A1A1A reads grey at
+#000000 (the fig3e convention — the palette's TEXT #1A1A1A reads grey at
 6-pt anti-aliasing); the chance/zero reference lines dropped — the
 certification reading rests on the pre-registered gates (kept, dashed,
 labelled in black), the chance level stays visible on the shared 0–1 metric
-axis and is stated in the Fig-3g caption (the fig2g second-revision
+axis and is stated in the Fig-3f caption (the fig2g second-revision
 convention); the two x-label second lines shortened — they had mutually
 overlapped at the inter-panel gap (the screening tier n's moved into the
 caption); row labels rewritten as the Sample-2019 5′UTR library names; value
@@ -33,8 +33,8 @@ rebalanced (wider inter-panel gap, shorter figure). PNG at 1200 dpi (Nature
 Methods line-art guidance) + vector PDF (fonttype 42).
 
 Data  : experiments/results/exp14_mrl_oracle_certification/summary.json
-Usage : python experiments/plots/fig3g_mrl_certification.py
-Output : experiments/plots/output/fig3g_mrl_certification.{pdf,png}
+Usage : python experiments/plots/fig3f_mrl_certification.py
+Output : experiments/plots/output/fig3f_mrl_certification.{pdf,png}
 """
 from __future__ import annotations
 
@@ -57,7 +57,7 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 INK = "#000000"   # 2026-08-30 user direction: every text element pure black
 FONT = 6          # single font size for every in-figure text element
 C_ORACLE = PALETTE_BY_NAME["grey_blue"]       # #8FA6BB — GEMORNA MRL oracle
-C_GATE = PALETTE_BY_NAME["dark_warm_grey"]    # #7A7672 — gate lines (fig3b/3c)
+C_GATE = PALETTE_BY_NAME["dark_warm_grey"]    # #7A7672 — gate lines (fig3a/3b)
 
 FAMILIES = [
     ("sample2019_egfp_random50", "Random 50-nt 5′UTRs\n(in-distribution)"),
@@ -174,7 +174,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3g_mrl_certification.{ext}"
+        out = OUT_DIR / f"fig3f_mrl_certification.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")

@@ -8,6 +8,21 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-08-31 — Figs 3–5 撤销 a 子图总结图（用户决定）；fig3 图脚本与输出改名 fig3a–h
+
+- **结果图不再以总结/机制示意图开头**：Fig 3a 失败模式示意图（当日早些时候绘制，见下条）连同文件删除；规划中的 Fig 4a（CapGate 机制示意）与 Fig 5a（GenNav 机制示意）在战役重跑前移除；Figs 3–5 原 b–i 面板重编为 a–h，图例与正文引用同步（机制引用改指 Fig. 1d / Fig. 1e — 机制示意保留在 Fig 1；§2.3 开头引用改指整图）。
+- **文件改名**：`experiments/plots/fig3{b..i}_*.py` → `fig3{a..h}_*.py`（output/ 下 pdf/png 同步）；脚本内 Usage/Output 路径与面板惯例互引重编（fig3b/3c/3g 惯例 → fig3a/3b/3f 等；外部文献引用如 CASCADE Fig. 3b 未动）；8 个脚本 py_compile 通过。`fig3a_failure_modes.{py,pdf,png}` 删除。Fig 2a 毯图与 Fig 6a 能力地图为数据面板，未动。
+- **文档同步**：FIGURE_PLAN_V5（三图删 a 行、行重编、9→8 panels、类型清单字母、新增 2026-08-31 注记）、PAPER_DRAFT（Results 引用 + 三个图例 + 头部注记）、PAPER_FACT_SHEET / MANUSCRIPT（v5 面板字母 + 图脚本路径 + legacy→v5 映射注记）、AGENTS.md。历史登记条目（本日志旧条目、预注册 driver docstring、冻结结果 summary）按写作时字母/路径保留。
+
+## 2026-08-31 — Fig 3a 绘制（失败模式示意图，Fig 3 九面板收尾；**当日撤销 — 见上条**）
+
+- **`experiments/plots/fig3a_failure_modes.py` → `fig3a_failure_modes.{pdf,png}`**（b–i 八个子图既成后按规划绘制行 a 示意图；Nature 风格 surveyed 自 `relevant_references/` Robin Fig. 1 / Co-Scientist Fig. 1：圆角浅彩盒 + 细墨线边框、左→右数据流、克制用色、充分留白）：
+  顶部主轴 = 未门控生产路径 [Design goal] → [Ungated agent: plans · calls tools · narrates results] ⇄（calls / scores 双箭头）[Tool layer: oracles & scorers] → [Report: candidates + claims]，下弯回环箭头标注 "iterative rounds — pool grows"（多轮协同环）；流程上三个编号入口（① 工具/分数端口、② 报告端口、③ 回环），下方三条编号 lane 一一对应：
+  1 **Uncalibrated tool trust**（b–e）—— 实测 (score, affinity) 点为噪声云（sage 点）vs agent 假设的单调关系（terracotta 虚线），"optimizes an oracle score with no measured power — climbing noise"；
+  2 **Claim overreach**（f）—— claim 条（terracotta）越过 evidence 条（sage）尽头的虚线证据边界，"narration outruns measurement"；
+  3 **Confounded improvement**（i）—— 表观 δ +0.14 在预算匹配 +0.05 / 固定重采样 −0.01 下消解的三点斜率，点色复用 Fig-3i 阶段色（terracotta / grey blue / sage）。
+  约定：实线 slate-blue = 数据流（paper_v5 示意图惯例）；terracotta = 未门控/apparent/claim，sage = 实测真值/证据，grey blue = 对照，mauve grey = lane 2 识别色，深暖灰 = 中性边框/边界；全部文字 6-pt 纯黑（fig3f 惯例）；无图内标题（标题在 Fig-3 图注）；全宽 184 × 51 mm、绝对 mm 几何、矢量 PDF（fonttype 42）+ 1200-dpi PNG。分区域视觉 QA 通过（calls/scores 标注、回环下凹 + ③ 端口徽章、三 lane 图元——无文字/图形重叠；回环 rad 符号经显示坐标验证修正）。FIGURE_PLAN_V5 行 a、AGENTS.md、本日志更新。
+
 ## 2026-08-31 — Exp 16（Fig 3i / §2.3 实验 8）混淆改进证伪全面板重跑
 
 - **`experiments/exp16_confounded_improvement.py` 执行**（第三次重置计划，预注册 docstring，pilot 8/8；用户确认 RNA-BioBench-Aptamer 全 20 靶标 × 3 seeds × 4 臂 = 240 cells）：被移除的协同环（BMC，2026-08-18 删除，DECISIONS (m)）**作为研究对象在实验驱动内逐字重构**——legacy AptamerCoordinator 确定性规则从 git 1b45138~1 恢复（utopian 参考点诊断 / ASF 最优 + 各维度领先者诊断集 / EGARPS-IPTM 差距→热点扩展±5 再生 8 / RHOFOLD 差距→长度+10（pLDDT<60）或+5、种子+1 / 零违规→池 8 早停）；四臂 = serial8 / loop16 / serial16（同种子一次生成 16）/ fixed16（固定种子+1 重采样、无诊断内容）；平台本身零改动，全部走生产 RnaAptamerDesignWorkflow（逐 cell 新实例、CapGate advisory、全审计）；主指标 egarps_component best-of-pool（被注销的 oracle——测的就是它）；配对 Wilcoxon + 两样本 Cliff's δ（legacy 约定）+ 10⁴ 符号翻转置换零分布；预注册 gate δ≥0.3（P0/P3 约定）；E2 四步自审计确定性重跑（阈值 70%）。

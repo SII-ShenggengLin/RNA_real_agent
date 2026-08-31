@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3e — EGARPS affinity calibration at anchor-set scale (single-panel scatter).
+"""Fig. 3d — EGARPS affinity calibration at anchor-set scale (single-panel scatter).
 
 The panel: Kd-vs-score scatter for every anchor-set binder with a measured
 Kd (log Kd vs log native probability; all 62 Kd binders — the x-range
@@ -15,8 +15,8 @@ random-sequence negatives on the same score axis) is NOT shown: its content
 is text-reported instead (round 7, user-directed) — the pooled
 binder-vs-negative AUROC (0.52, CI 0.39–0.65, 62 vs 28 — the registered P2
 Kd-binder convention) and the three-class medians (0.22 / 1.4e-3 /
-2.2e-2) live in the Fig-3e caption and the main text, and the screening
-failure is shown systematically in Fig. 3b.
+2.2e-2) live in the Fig-3d caption and the main text, and the screening
+failure is shown systematically in Fig. 3a.
 
 Chart type: Kd scatter (single panel), registered in
 FIGURE_PLAN_V5.md row 3e.
@@ -54,11 +54,11 @@ rendering (it also rhymes with the left panel's dots on the shared axis);
 (round 7) the class-distribution panel dropped altogether — the figure is
 now the single Kd–score scatter; the class-separation evidence (pooled
 AUROC + three-class medians) is text-reported in the caption and main text,
-and the screening failure is shown systematically in Fig. 3b.
+and the screening failure is shown systematically in Fig. 3a.
 
 Data  : experiments/results/exp13_affinity_calibration/{records.jsonl,summary.json}
-Usage : python experiments/plots/fig3e_affinity_calibration.py
-Output: experiments/plots/output/fig3e_affinity_calibration.{pdf,png}
+Usage : python experiments/plots/fig3d_affinity_calibration.py
+Output: experiments/plots/output/fig3d_affinity_calibration.{pdf,png}
 """
 from __future__ import annotations
 
@@ -168,7 +168,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3e_affinity_calibration.{ext}"
+        out = OUT_DIR / f"fig3d_affinity_calibration.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"saved -> {out}")

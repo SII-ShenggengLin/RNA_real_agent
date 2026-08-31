@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3b — structure-oracle screening-power balloon matrix (reset run).
+"""Fig. 3a — structure-oracle screening-power balloon matrix (reset run).
 
 3 oracles (rows) × N aptamer targets (columns — 6 on the v2 summary, 9 on the
 v3 extension; derived from the summary cells): per-cell binder-vs-negative
@@ -33,8 +33,8 @@ solid chance line remains).
 Data  : experiments/results/exp10_structure_oracle_screening/summary.json
         (FIG3_SUMMARY env override — the v3 render points it at
         experiments/results/exp10_structure_oracle_screening_v3/summary.json)
-Usage : python experiments/plots/fig3b_oracle_screening.py
-Output: experiments/plots/output/fig3b_oracle_screening.{pdf,png}
+Usage : python experiments/plots/fig3a_oracle_screening.py
+Output: experiments/plots/output/fig3a_oracle_screening.{pdf,png}
 """
 from __future__ import annotations
 
@@ -188,7 +188,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3b_oracle_screening.{ext}"
+        out = OUT_DIR / f"fig3a_oracle_screening.{ext}"
         fig.savefig(out, dpi=600 if ext == "png" else None, bbox_inches="tight")
         print(f"written {out}")
     return 0

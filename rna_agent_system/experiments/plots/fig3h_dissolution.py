@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3i — Confounded improvement: the coordination-loop apparent effect
+"""Fig. 3h — Confounded improvement: the coordination-loop apparent effect
 dissolves under pre-registered controls (annotated slope + gate +
 permutation-null histogram inset, observed δ marked).
 
@@ -12,23 +12,34 @@ pre-registered GO gate δ = 0.3 dashed (the P0/P3 convention) and per-stage
 δ / P printed above each dot. Inset: the sign-flip permutation null (10^4)
 of the apparent effect with the observed δ marked (the Robin Extended Data
 Fig. 4c convention) — the effect is real-looking precisely because the
-budget confound is real; the controls, not the loop, carry it. The inset
-is placed in the data-emptiest corner so it never covers a stage dot,
-its printed values or the gate line.
+budget confound is real; the controls, not the loop, carry it.
+
+2026-08-31 user-directed repair: every text element pure black #000000 (the
+fig3e convention — the gate tag had been dark warm grey and the observed-δ
+tag terracotta, the rest palette-TEXT #1A1A1A); the two in-figure
+title-like strings removed (Nature style — the italic "n = 56 paired cells;
+self-audit claim survival 0/2" summary line and the "δ null, apparent
+effect" inset title; both facts already live in the Fig-3h caption); the
+inset moved to a fixed upper-left rect audited against the frozen summary
+so it clears the gate line, every stage dot and every two-line stage label
+(the earlier quadrant-adaptive placement scored only dots/lines and covered
+the apparent-effect label); the inset's two text blocks horizontally
+separated so neither white halo clips the other (the permutation-null block
+had covered the leading glyphs of the observed-δ label).
 
 Colours (palette rev 7): stage dots — terracotta (apparent / confounded),
 grey blue (budget-matched), sage (fixed-resampling); connecting line warm
-grey; gate line dark warm grey dashed (the fig3b/fig3c gate convention);
+grey; gate line dark warm grey dashed (the fig3a/fig3b gate convention);
 zero line neutral grid grey; null bars warm grey with the observed-δ marker
-line terracotta.
+line terracotta. All text ink black.
 
-Style: the fig2d–fig3h conventions — no in-figure title (the headline lives
-in the caption), every text element one font size and ink black,
-single-column geometry.
+Style: the fig2d–fig3g conventions — no in-figure title (the headline lives
+in the caption), every text element one 6-pt font size and pure black,
+single-column geometry, 1200-dpi PNG.
 
 Data  : experiments/results/exp16_confounded_improvement/summary.json
-Usage : python experiments/plots/fig3i_dissolution.py
-Output: experiments/plots/output/fig3i_dissolution.{pdf,png}
+Usage : python experiments/plots/fig3h_dissolution.py
+Output: experiments/plots/output/fig3h_dissolution.{pdf,png}
 """
 from __future__ import annotations
 
@@ -40,21 +51,21 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.transforms import Bbox  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from palette import NEUTRAL_GRID, PALETTE_BY_NAME, TEXT  # noqa: E402
+from palette import NEUTRAL_GRID, PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp16_confounded_improvement"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 FONT = 6
+INK = "#000000"   # fig3e convention: every text element pure black
 C_APPARENT = PALETTE_BY_NAME["terracotta"]      # #C08B7C — the confounded claim
 C_BUDGET = PALETTE_BY_NAME["grey_blue"]         # #8FA6BB — budget-matched control
 C_FIXED = PALETTE_BY_NAME["sage_green"]         # #A3B18A — fixed-resampling control
 C_LINE = PALETTE_BY_NAME["warm_grey"]           # #B7B0A2 — trajectory line / null bars
-C_GATE = PALETTE_BY_NAME["dark_warm_grey"]      # #7A7672 — gate line (fig3b/3c)
+C_GATE = PALETTE_BY_NAME["dark_warm_grey"]      # #7A7672 — gate line (fig3a/3b)
 C_REF = NEUTRAL_GRID
 
 STAGES = [
@@ -68,10 +79,11 @@ plt.rcParams.update({
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
     "font.size": FONT,
     "axes.linewidth": 0.5,
-    "text.color": TEXT,
-    "axes.edgecolor": TEXT,
-    "xtick.color": TEXT,
-    "ytick.color": TEXT,
+    "text.color": INK,
+    "axes.edgecolor": INK,
+    "axes.labelcolor": INK,
+    "xtick.color": INK,
+    "ytick.color": INK,
     "pdf.fonttype": 42,
 })
 
@@ -94,8 +106,6 @@ def main() -> int:
 
     vals = [an[k]["delta"] for k, _, _ in STAGES]
     ps = [an[k].get("p_wilcoxon") for k, _, _ in STAGES]
-    n_pairs = an[STAGES[0][0]]["n_pairs"]
-    survival = s["self_audit"]["survival"]
 
     fig_w, fig_h = 88 / 25.4, 58 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
@@ -114,14 +124,12 @@ def main() -> int:
     y_lo, y_hi = -0.12, 0.66
     ax.axhline(gate, color=C_GATE, linewidth=0.7, linestyle=(0, (3, 2)), zorder=1)
     ax.text(0.985, gate + 0.012, f"GO gate δ ≥ {gate:.1f}", fontsize=FONT,
-            ha="right", va="bottom", color=C_GATE, transform=ax.get_yaxis_transform())
+            ha="right", va="bottom", color=INK, transform=ax.get_yaxis_transform())
     ax.axhline(0, color=C_REF, linewidth=0.5, zorder=1)
 
     for x, (v, p) in enumerate(zip(vals, ps)):
-        above = v < gate - 0.06  # keep the two-line label clear of the gate line
-        ax.text(x, v + (0.035 if above else 0.035), f"δ = {v:+.2f}\n{p_str(p)}",
-                fontsize=FONT, ha="center",
-                va="bottom" if above else "bottom", color=TEXT, zorder=5)
+        ax.text(x, v + 0.035, f"δ = {v:+.2f}\n{p_str(p)}",
+                fontsize=FONT, ha="center", va="bottom", color=INK, zorder=5)
 
     ax.set_xlim(-0.35, 2.45)
     ax.set_ylim(y_lo, y_hi)
@@ -132,10 +140,6 @@ def main() -> int:
     for spine in ("top", "right"):
         ax.spines[spine].set_visible(False)
 
-    ax.text(0.0, 1.05, f"n = {n_pairs} paired cells; self-audit claim survival {survival}",
-            transform=ax.transAxes, fontsize=FONT, ha="left", va="bottom",
-            color=TEXT, style="italic")
-
     # ── inset: permutation null of the apparent effect, observed δ marked ──
     null = an["apparent"].get("perm_null") or {}
     obs = vals[0]
@@ -143,47 +147,29 @@ def main() -> int:
         hist = null["hist"]
         counts = [c for _, c in hist]
         centers = [c for c, _ in hist]
-        width = (centers[1] - centers[0]) if len(centers) > 1 else 0.02
         x_obs = sum(1 for c in centers if c < obs) - 0.5
 
-        # data-emptiest corner for the inset (never over dots, labels or gate)
-        iw, ih = 0.46, 0.52  # axes fraction
-        corners = {
-            "upper left": (0.07, 0.97, "left", "top"),
-            "upper right": (0.93, 0.97, "right", "top"),
-            "lower left": (0.07, 0.06, "left", "bottom"),
-            "lower right": (0.93, 0.06, "right", "bottom"),
-        }
-        def occupancy(key: str) -> float:
-            fx, fy, hx, hy = corners[key]
-            cx = -0.35 + fx * 2.8
-            cy = y_lo + fy * (y_hi - y_lo)
-            score = 0.0
-            for v in vals:
-                score += max(0.0, 1.2 - abs(v - cy) / 0.5)  # dot rows
-            score += max(0.0, 1.0 - abs(gate - cy) / 0.15) * 0.8  # gate line
-            score += max(0.0, 1.0 - abs(0.0 - cy) / 0.1) * 0.4    # zero line
-            # stage label columns are near x = 0/1/2 — the inset mid-x matters less
-            return score
-
-        placement = min(corners, key=occupancy)
-        fx, fy, hx, hy = corners[placement]
-        axi = ax.inset_axes([fx if hx == "left" else fx - iw, fy - ih if hy == "top" else fy,
-                             iw, ih], transform=ax.transAxes)
+        # Fixed upper-left rect (axes fraction), audited against the frozen
+        # summary: bottom edge at data y = 0.329 sits ~1.2 mm above the gate
+        # line and ~2.3 mm above the apparent-effect label (tops at 0.275);
+        # right edge at data x = 1.43 clears the right-anchored gate tag;
+        # no stage dot, label, or reference line is covered.
+        axi = ax.inset_axes([0.055, 0.575, 0.58, 0.39], transform=ax.transAxes)
 
         axi.bar(range(len(counts)), counts, width=1.0, color=C_LINE,
                 edgecolor="none", zorder=2)
         axi.axvline(x_obs, color=C_APPARENT, linewidth=1.1, zorder=4)
-        # observed-δ label with a white halo, anchored inside the inset
+        # observed-δ label with a white halo, kept clear of the marker line
         label_right = x_obs > len(counts) * 0.6
-        axi.text(x_obs - 0.6 if label_right else x_obs + 0.6, max(counts) * 0.97,
+        axi.text(x_obs - 0.8 if label_right else x_obs + 0.8, max(counts) * 0.97,
                  f"observed\nδ = {obs:+.2f}", fontsize=FONT,
                  ha="right" if label_right else "left", va="top",
-                 color=C_APPARENT, zorder=5,
+                 color=INK, zorder=5,
                  bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.0})
-        axi.text(0.03, 0.97, f"permutation null\n($10^4$ sign flips)\n{p_str(null.get('p_perm'))}",
+        axi.text(0.03, 0.97,
+                 f"permutation null\n($10^4$ sign flips)\n{p_str(null.get('p_perm'))}",
                  transform=axi.transAxes, fontsize=FONT, ha="left", va="top",
-                 color=TEXT, zorder=5,
+                 color=INK, zorder=4,
                  bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.0})
         axi.set_xlim(-0.8, len(counts) - 0.2)
         axi.set_ylim(0, max(counts) * 1.15)
@@ -192,15 +178,14 @@ def main() -> int:
         axi.tick_params(length=0, pad=0)
         for spine in axi.spines.values():
             spine.set_linewidth(0.4)
-            spine.set_color(C_GATE)
-        axi.set_title("δ null, apparent effect", fontsize=FONT, pad=1.5, color=TEXT)
+            spine.set_color(INK)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig3i_dissolution.{ext}",
+        fig.savefig(OUT_DIR / f"fig3h_dissolution.{ext}",
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
-    print(f"written: {OUT_DIR}/fig3i_dissolution.{{pdf,png}} (inset at {placement if null.get('hist') else 'n/a'})")
+    print(f"written: {OUT_DIR}/fig3h_dissolution.{{pdf,png}}")
     return 0
 
 
