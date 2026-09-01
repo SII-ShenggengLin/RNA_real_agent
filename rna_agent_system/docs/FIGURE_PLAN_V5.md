@@ -86,7 +86,7 @@ unchanged).
 |---|---|---|---|
 | a | E3 dual-arm re-run (Exp 17 gated arm + Exp 5 ungated control, 45 tasks, 2026-08-31): **FP rate 54.5% → 0%** (0/31, Wilson CI 0–16.1) and **TP retention 80.0% (25 → 20, below the pre-registered 90% gate)** — losses decompose as 2 true metric claims suppressed by the uniform basis rule (unprofiled deterministic-proxy dependency), 2 length-sloppy sequences correctly abstained (counterfactual FPs), 2 lucky untrusted TPs unretainable by design, +1 rescue | grouped bars w/ values | `exp17_claim_gating/summary.json` |
 | b | Per-claim adjudication: ungated 25 TP / 30 FP vs gated **20 TP / 0 FP / 7 suppressed / 4 borderline** (task × status colour-block matrix, sage = retained / terracotta = false claim — the Biomni Fig. 2C–E convention; + arm × verdict mosaic inset) | per-claim colour-block matrix (task × status) + mosaic inset | `exp17_claim_gating/summary.json` (per_task_matrix) |
-| c | Overreach events: 59 → 0 by oracle × use (ungated = Exp 5; gated = Exp 17; panel pending its draw) | paired bars + Δ annotation (59→0) | exp5 + exp17 summaries |
+| c | Overreach events: **59 → 0** by oracle × use (ungated = Exp 5: RhoFold 9+11, ProteinX 11+8, EGARPS 11+9; gated = Exp 17: 0 in every cell — 71 plan requests blocked at the decision gate, stated in the caption) | paired bars + Δ annotation (59→0) | `exp5_claim_overreach/runs_summary.json` + `exp17_claim_gating/summary.json` |
 | d | E3-M mRNA side: per-task-family verdicts, FP 38.9%→8.3%, TP 11/11; suppressions land on utr3/junction/cross-family | paired categorical strip | `e3_mrna_runs_full_adjudicated_summary.json` |
 | e | Selective, not prohibitive: gate behaviour on certified vs transferred vs unprofiled oracles (allow/downgrade/require_profiling) | decision matrix | `e7_gate_demo.jsonl` |
 | f | Production gate decisions: reject 816 / require_profiling 355 / downgrade 46 by oracle | horizontal Cleveland dot plot by oracle | `platform_audit.jsonl` |
@@ -149,7 +149,7 @@ numbers unchanged; the legends in `PAPER_DRAFT.md` now name the new
 types.
 
 
-2026-08-31 Fig 4a/4b drawn from the Exp-17 dual-arm re-run (`experiments/plots/fig4a_claim_gating_headline.py` → `fig4a_claim_gating.{pdf,png}` grouped bars, FP rate + Wilson CI / TP counts, ungated terracotta vs gated sage; `experiments/plots/fig4b_claim_matrix.py` → `fig4b_claim_matrix.{pdf,png}` 45-row task × arm per-claim colour-block matrix with arm × verdict mosaic inset). Rows a/b updated to the re-measured numbers; row c's data note updated (59 → 0), its panel pending the draw.
+2026-08-31 Fig 4a/4b drawn from the Exp-17 dual-arm re-run (`experiments/plots/fig4a_claim_gating_headline.py` → `fig4a_claim_gating.{pdf,png}` grouped bars, FP rate + Wilson CI / TP counts, ungated terracotta vs gated sage; `experiments/plots/fig4b_claim_matrix.py` → `fig4b_claim_matrix.{pdf,png}` 45-row task × arm per-claim colour-block matrix with arm × verdict mosaic inset). Rows a/b updated to the re-measured numbers. Same-day: row c drawn (`experiments/plots/fig4c_overreach_events.py` → `fig4c_overreach_events.{pdf,png}`, same frozen results, no re-run).
 
 2026-08-31 summary-panel removal (user direction): Figs 3–5 drop their lead
 summary panel a — the failure-mode schematic (Fig 3, drawn 2026-08-31 and
