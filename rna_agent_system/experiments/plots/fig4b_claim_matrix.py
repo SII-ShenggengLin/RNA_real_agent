@@ -5,9 +5,15 @@ untrusted-oracle block below), two column blocks (Ungated control arm =
 Exp 5, Gated treatment arm = Exp 17); one colour tile per published claim,
 green (sage) = retained true positive, red (terracotta) = false claim —
 the Biomni Fig. 2C–E correct/incorrect matrix encoding; suppressed claims
-dark warm grey; borderline claims warm grey. A summary mosaic inset (arm
-columns x verdict segments, heights proportional to claim counts) sits at
-the panel's top right over the empty claim space of low-claim rows.
+dark warm grey; borderline claims warm grey.
+
+2026-09-01 user-directed revision: the arm x verdict mosaic inset at the
+panel's top right was removed (its counts are already stated in the
+Fig. 4b caption and main text, its duplicated arm headers cramped against
+each other, and it left a tall empty column below it — the fig2h-donut /
+fig3f-waffle precedent); row labels now follow the fig3 target-label
+convention ("IFN-gamma" -> "IFN-γ", "Influenza H3N2 HA" -> "swine H3 HA")
+and "U reduce" was reworded to "U reduction".
 
 Style (Nature conventions, the fig3-panel house style): no in-figure
 titles; every text element one 6-pt pure-black style; colours only from
@@ -73,10 +79,13 @@ def task_rows() -> list[tuple[str, str]]:
     payload = json.loads(TASKS_JSON.read_text(encoding="utf-8"))
     det = [t for t in payload["tasks"] if t["category"] == "trusted_deterministic"]
     unt = [t for t in payload["tasks"] if t["category"] == "untrusted_oracle"]
-    fam = {"gc_target": "GC target", "u_reduce": "U reduce",
+    fam = {"gc_target": "GC target", "u_reduce": "U reduction",
            "purine_band": "Purine band"}
+    # target-label convention shared with the fig3 panels
+    tgt = {"IFN-gamma": "IFN-γ", "Influenza H3N2 HA": "swine H3 HA"}
     rows = [(t["id"], fam.get(t["task_family"], t["id"])) for t in det]
-    rows += [(t["id"], t["target_family"]) for t in unt]
+    rows += [(t["id"], tgt.get(t["target_family"], t["target_family"]))
+             for t in unt]
     return rows
 
 
@@ -90,16 +99,15 @@ def main() -> int:
                           or [0]) for tid, _ in rows), default=1)
 
     # Fixed block widths; claim tiles shrink to fit denser rows.
-    block_w = 12.0                          # mm per arm block
+    block_w = 14.0                          # mm per arm block
     tile = min(2.0, (block_w - 1.0) / max(1, max_claims) - 0.5)
     gap_tile = 0.5 if tile >= 1.2 else 0.3
     row_h, row_gap = 1.55, 0.55             # mm per task row
-    block_gap = 5.0                         # mm between the two arm blocks
+    block_gap = 8.0                         # mm between the two arm blocks
     label_w = 24.0                          # row-label column
     left_x = label_w + 2.0
     gated_x = left_x + block_w + block_gap
-    mx_w, mx_col = 16.0, 5.2                # mosaic inset
-    fig_w = gated_x + block_w + 4.0 + mx_w + 2.0
+    fig_w = gated_x + block_w + 3.0         # right margin
     fig_h = 10.0 + n_rows * (row_h + row_gap) + 8.0
 
     fig = plt.figure(figsize=(fig_w / 25.4, fig_h / 25.4), facecolor="white")
@@ -150,40 +158,22 @@ def main() -> int:
         fig.text(_fx(left_x - 4.5), _fy(yy), lab, ha="center", va="center",
                  rotation=90, fontsize=FONT, color=INK)
 
-    # ── mosaic inset: claim composition per arm ───────────────────────────
-    mx_w, mx_h = 16.0, min(22.0, fig_h - 14.0)
-    mx_x = fig_w - mx_w - 3.0
-    mx_y = 9.5
-    arms = summary["arms"]
-    col_w = 5.2
-    totals = {a: sum(arms[a][v] for v in VERDICT_ORDER) for a in ARM_ORDER}
-    max_total = max(totals.values())
-    for b, arm in enumerate(ARM_ORDER):
-        cx = mx_x + b * (col_w + 1.6)
-        yy = mx_y
-        for v in VERDICT_ORDER:
-            n = arms[arm][v]
-            if not n:
-                continue
-            seg_h = mx_h * n / max_total
-            fig.patches.append(Rectangle(
-                (_fx(cx), _fy(yy + seg_h)), _fx(col_w),
-                _fy(yy) - _fy(yy + seg_h),
-                facecolor=VERDICT_COLORS[v], edgecolor="white",
-                linewidth=0.4, transform=fig.transFigure, zorder=3))
-            if n / max_total > 0.10:
-                fig.text(_fx(cx + col_w / 2), _fy(yy + seg_h / 2), str(n),
-                         ha="center", va="center", fontsize=FONT, color=INK,
-                         zorder=4)
-            yy += seg_h
-        fig.text(_fx(cx + col_w / 2), _fy(mx_y - 2.6), ARM_LABELS[arm],
-                 ha="center", va="center", fontsize=FONT, color=INK)
-
     # ── verdict key: one centred row under the matrix ─────────────────────
+    # Label widths measured with the renderer (the fig4e measured-glyph
+    # convention) so the centred row never overflows the canvas.
     key_y = fig_h - 4.6
-    sw_w, sw_h, pitch, gap_k = 2.4, 1.6, 3.0, 1.6
-    label_w = {"TP": 16.5, "FP": 14.5, "suppressed": 16.0, "borderline": 14.0}
-    row_w = sum(pitch + label_w[v] + gap_k for v in VERDICT_ORDER) - gap_k
+    sw_w, sw_h, pitch, gap_k = 2.4, 1.6, 3.0, 1.5
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    text_w = {}
+    for v in VERDICT_ORDER:
+        probe = fig.text(0, 0, VERDICT_LABELS[v], fontsize=FONT, color=INK)
+        bb = probe.get_window_extent(renderer)
+        text_w[v] = bb.width / fig.dpi * 25.4     # px → mm
+        probe.remove()
+    row_w = sum(pitch + text_w[v] for v in VERDICT_ORDER) + \
+        gap_k * (len(VERDICT_ORDER) - 1)
+    assert row_w <= fig_w - 4.0, f"verdict key {row_w:.1f} mm > canvas"
     x = (fig_w - row_w) / 2
     for v in VERDICT_ORDER:
         fig.patches.append(Rectangle(
@@ -193,7 +183,7 @@ def main() -> int:
             transform=fig.transFigure))
         fig.text(_fx(x + pitch), _fy(key_y), VERDICT_LABELS[v],
                  ha="left", va="center", fontsize=FONT, color=INK)
-        x += pitch + label_w[v] + gap_k
+        x += pitch + text_w[v] + gap_k
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
@@ -201,6 +191,7 @@ def main() -> int:
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
+    arms = summary["arms"]
     u, g = arms["ungated"], arms["gated"]
     print(f"fig4b -> {OUT_DIR / 'fig4b_claim_matrix.pdf'} (+png 1200 dpi); "
           f"ungated TP {u['TP']}/FP {u['FP']}, gated TP {g['TP']}/FP {g['FP']}/"
