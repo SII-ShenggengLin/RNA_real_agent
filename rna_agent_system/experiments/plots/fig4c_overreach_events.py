@@ -14,6 +14,15 @@ or summary statistics beyond the registered delta annotation; every text
 element one 6-pt pure-black style; colours only from palette rev 7; 1200-dpi
 PNG + vector PDF (fonttype 42); absolute-mm geometry, single-column width.
 
+2026-09-01 user-directed revision (same frozen results, no re-run): the arm
+key was moved from the floating figure-top position to a single centred row
+directly under the panel (the fig3e convention — legend attached to the
+panel); the y-axis label was shortened from the 31-character
+"Decision-layer overreach events" (which overflowed the 23-mm axis at 6 pt)
+to "Overreach events" — the decision-layer qualifier is stated verbatim in
+the Fig. 4c caption; and the figure geometry was rebalanced to the new
+stack (44 → 40.5 mm tall).
+
 Data  : experiments/results/exp5_claim_overreach/runs_summary.json (ungated)
         experiments/results/exp17_claim_gating/summary.json (gated)
 Usage : python experiments/plots/fig4c_overreach_events.py
@@ -77,13 +86,13 @@ def main() -> int:
     gated_total = exp17["arms"]["gated"]["overreach_events"]
     assert gated_total == 0 and sum(ungated) == exp5["overreach_total"]
 
-    fig_w, fig_h = 89 / 25.4, 44 / 25.4
+    fig_w, fig_h = 89 / 25.4, 40.5 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax = fig.add_axes([16 / 25.4 / fig_w, 12.5 / 25.4 / fig_h,
-                       68 / 25.4 / fig_w, 23.5 / 25.4 / fig_h])
+    ax = fig.add_axes([11 / 25.4 / fig_w, 12.5 / 25.4 / fig_h,
+                       72 / 25.4 / fig_w, 23.5 / 25.4 / fig_h])
 
     w = 0.34
-    y_top = max(ungated) * 1.45
+    y_top = max(ungated) * 1.48
     for x, n in zip(xs, ungated):
         ax.bar(x - w / 2 - 0.01, n, width=w, color=ARM_COLORS["ungated"],
                edgecolor="none")
@@ -105,7 +114,7 @@ def main() -> int:
     ax.set_xlim(-0.75, 6.75)
     ax.set_ylim(0, y_top)
     ax.set_yticks(range(0, 12, 3))
-    ax.set_ylabel("Decision-layer overreach events", fontsize=FONT, labelpad=2)
+    ax.set_ylabel("Overreach events", fontsize=FONT, labelpad=2)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
@@ -118,22 +127,25 @@ def main() -> int:
     ax.text((bx0 + bx1) / 2, by + 0.35, f"{sum(ungated)} → 0",
             ha="center", va="bottom", fontsize=FONT, color=INK)
 
-    # arm key: one centred row under the panel (the fig4a arm-colour key)
+    # arm key: one centred row directly under the panel, centred on the axes
+    # (the fig3e convention — the legend attaches to the panel rather than
+    # floating above it)
     def _fx(v: float) -> float: return v / 25.4 / fig_w
-    def _fy(v: float) -> float: return 1 - v / 25.4 / fig_h
-    key_y = 4.0
-    sw_w, sw_h, pitch, gap_k, label_w = 2.4, 1.6, 3.0, 1.8, 10.0
-    row_w = 2 * (sw_w + gap_k + label_w) + pitch - gap_k
-    x = (16 + 68 / 2) - row_w / 2
-    for arm, lab in (("ungated", "Ungated"), ("gated", "Gated")):
+    def _fy(v: float) -> float: return v / 25.4 / fig_h
+    sw_w, sw_h, gap_k, gap_e = 2.4, 1.6, 1.6, 4.0
+    entries = (("ungated", "Ungated"), ("gated", "Gated"))
+    label_w = {"ungated": 7.4, "gated": 5.5}
+    row_w = (sum(sw_w + gap_k + label_w[a] for a, _ in entries)
+             + gap_e * (len(entries) - 1))
+    x = (11 + 72 / 2) - row_w / 2
+    for arm, lab in entries:
         fig.patches.append(plt.Rectangle(
-            (_fx(x), _fy(key_y + sw_h / 2)), _fx(sw_w),
-            _fy(key_y - sw_h / 2) - _fy(key_y + sw_h / 2),
+            (_fx(x), _fy(3.0 - sw_h / 2)), _fx(sw_w), _fy(sw_h),
             facecolor=ARM_COLORS[arm], edgecolor="none",
             transform=fig.transFigure))
-        fig.text(_fx(x + sw_w + gap_k), _fy(key_y), lab, ha="left", va="center",
+        fig.text(_fx(x + sw_w + gap_k), _fy(3.0), lab, ha="left", va="center",
                  fontsize=FONT, color=INK)
-        x += sw_w + gap_k + label_w + pitch
+        x += sw_w + gap_k + label_w[arm] + gap_e
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):

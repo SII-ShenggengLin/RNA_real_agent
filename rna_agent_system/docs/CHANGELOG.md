@@ -12,6 +12,10 @@
 
 - **`experiments/plots/fig4b_claim_matrix.py` 修订并重渲染**（`fig4b_claim_matrix.{pdf,png}`）：(1) 删除右上 arm × verdict mosaic inset——其计数已在 Fig 4b 图注与正文陈述（fig2h 删 donut / fig3f 删 waffle 的先例），且其重复的臂标签互相挤压、下方留出整列空带；(2) 行标签改用 fig3 靶标惯例（"IFN-gamma" → "IFN-γ"、"Influenza H3N2 HA" → "swine H3 HA"），"U reduce" 改词为 "U reduction"；(3) 底部四摆片裁定键改为渲染器实测字宽排版（fig4e 惯例）并加画布溢出断言——旧版估算字宽使图例实际比画布宽、靠 tight-crop 外扩；(4) 臂块 12 → 14 mm、块间距 5 → 8 mm，使矩阵主体与单行图例共享画布宽度（tile 1.7 → 2.0 mm）。全部文字维持 6-pt 纯黑（光栅复核：旧版亦全部为 #000000 文字核，无非黑文字）、palette rev 7 用色、1200-dpi PNG + 矢量 PDF。光栅 QA：零非黑文字核、零非调色板色块、tile 内零文字墨迹、四边无裁切。文档同步：PAPER_DRAFT Fig 4 图注 (b) 删 mosaic-inset 从句、FIGURE_PLAN_V5 行 b + 类型清单 + 注记。
 
+## 2026-09-01 — Fig 4c 用户指示修订（同一份 Exp-17/Exp-5 冻结结果，无重跑；数据 59 → 0 不变）
+
+- **`experiments/plots/fig4c_overreach_events.py` 修订并重渲染**（`fig4c_overreach_events.{pdf,png}`）：(1) 臂图例（Ungated/Gated）从悬浮于图顶部（与面板脱开、视觉上像偏置标题）移到面板正下方单行、对轴居中——fig3e「图例贴面板」惯例；(2) y 轴标签从 31 字符的 "Decision-layer overreach events"（6 pt 下超出 23-mm 轴高）缩为 "Overreach events"——decision-layer 限定语在 Fig. 4c 图注中逐字保留；(3) 图几何按新堆叠再平衡（89×44 → 89×40.5 mm，轴 11/12.5/72/23.5 mm，y_top 1.45 → 1.48 使 "59 → 0" 标注完整落于轴内）。子图内无标题维持（Nature 惯例：面板字母组版时加，标题性陈述在图注）。全部文字 6-pt 纯黑（光栅复核：文字核全部 #000000，仅抗锯齿灰晕）、palette rev 7 用色、1200-dpi PNG + 矢量 PDF（fonttype 42）。光栅 QA：四边外 3 px 零墨迹、非条形色块仅调色板两色、无文字/图形重叠。文档同步：FIGURE_PLAN_V5 行 c 注记。
+
 ## 2026-09-01 — Exp 23: 选择性门控决策矩阵重跑（Fig 4e，§2.4 实验 4）
 
 - **数据集（用户确认后开跑，与最新重跑对齐）**：认证家族 = Exp-14 MRL 锚集 `e7_mrl_anchor_set.json`（706 / 3 族，Sample et al. 2019 MPRA, GEO GSE114002——即 Fig 3f 的认证基础、Fig 4d 的 MRL 真值，sha256 冻结进 summary）；未剖析家族 = e18 任务集的生产键 `novel_utr_family_7` 及其真实 50-nt 候选；阻断格 3′UTR = 同一 e18 集的生产 Insulin 构造 3′UTR；E1 交叉验证基准 = 保留的 `e7_mrl_scoring.jsonl`。与 Fig 2a–i / Fig 3a–h / Fig 4a–d 的重合核查：Fig 3f 同一文件、Fig 4d 部分取自它（mrl_optimum 两任务）、Fig 2e 同类零重合（706×50 全比对 0 相同 0 包含）、其余无涉。
