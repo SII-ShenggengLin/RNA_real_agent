@@ -1,0 +1,1628 @@
+{
+ "task_id": "mrna_cds_20260901_042603",
+ "success": true,
+ "timestamp": "2026-09-01T04:27:59.124353",
+ "session_id": "exp18probe_Insulin",
+ "candidate_count": 6,
+ "candidates": [
+  {
+   "rank": 1,
+   "id": "cand_e048786d6525",
+   "source": "cds_design:lineardesign_lambda1.0",
+   "sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+   "sequence_type": "mrna",
+   "total_length": 330,
+   "total_score": 112.4566691762234,
+   "scores": {
+    "mfe_per_nt": -0.4087272727272727,
+    "cai_score": 0.8155859540596127,
+    "combined_score": 112.4566691762234,
+    "total_score": 112.4566691762234,
+    "gc_content": 0.6424242424242425,
+    "gc_content_local": 0.6424242424242425,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -134.88,
+    "unpaired_fraction": 0.18787878787878787,
+    "rnastop_overall_stability": 0.43997272849082947,
+    "u_fraction": 0.19696969696969696,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 1.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+     "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_7b23d5d83d.fasta",
+     "generated_sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+     "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((.(.(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).))).).)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))",
+     "mfe": -241.2,
+     "cai_score": 0.816,
+     "lambda_value": 1.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\nmRNA structure: ...((((((((((.(((((((((((((((((((((((((((((((((((((((((((.(.(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).))).).)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))\nmRNA folding free energy: -241.20 kcal/mol; mRNA CAI: 0.816\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).)))...)))))).))))).)))))))).)))...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.6424242424242425,
+    "gc_content_local": 0.6424242424242425,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -134.88,
+    "mfe_per_nt": -0.4087272727272727,
+    "unpaired_fraction": 0.18787878787878787,
+    "rnastop_overall_stability": 0.43997272849082947,
+    "cai_score": 0.8155859540596127,
+    "u_fraction": 0.19696969696969696,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 2,
+   "id": "cand_5906ae0a2446",
+   "source": "cds_design:lineardesign_lambda0.0",
+   "sequence": "AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+   "sequence_type": "mrna",
+   "total_length": 330,
+   "total_score": 112.2286051120944,
+   "scores": {
+    "mfe_per_nt": -0.441030303030303,
+    "cai_score": 0.7387240316538054,
+    "combined_score": 112.2286051120944,
+    "total_score": 112.2286051120944,
+    "gc_content": 0.6515151515151515,
+    "gc_content_local": 0.6515151515151515,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -145.54,
+    "unpaired_fraction": 0.18787878787878787,
+    "rnastop_overall_stability": 0.4468992352485657,
+    "u_fraction": 0.18787878787878787,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 0.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+     "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_e85de91e0a.fasta",
+     "generated_sequence": "AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+     "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))((.(((.((((((((....))))))))))).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))",
+     "mfe": -247.3,
+     "cai_score": 0.739,
+     "lambda_value": 0.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\nmRNA structure: ...((((((((((.(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))((.(((.((((((((....))))))))))).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))\nmRNA folding free energy: -247.30 kcal/mol; mRNA CAI: 0.739\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "structure": "...((((((((((.((((((((((((((((((((((((((((((((((((((((((.((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))(((.((.((((((((....)))))))).)).)))))))).))))).)))))))).)))...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "mfe_per_nt"
+   },
+   "metrics": {
+    "gc_content": 0.6515151515151515,
+    "gc_content_local": 0.6515151515151515,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -145.54,
+    "mfe_per_nt": -0.441030303030303,
+    "unpaired_fraction": 0.18787878787878787,
+    "rnastop_overall_stability": 0.4468992352485657,
+    "cai_score": 0.7387240316538054,
+    "u_fraction": 0.18787878787878787,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 3,
+   "id": "cand_20f7b42647a7",
+   "source": "cds_design:lineardesign_lambda4.0",
+   "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+   "sequence_type": "mrna",
+   "total_length": 330,
+   "total_score": 92.42210891006033,
+   "scores": {
+    "mfe_per_nt": -0.29145454545454547,
+    "cai_score": 0.9664143081695393,
+    "combined_score": 92.42210891006033,
+    "total_score": 92.42210891006033,
+    "gc_content": 0.706060606060606,
+    "gc_content_local": 0.706060606060606,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -96.18,
+    "unpaired_fraction": 0.3333333333333333,
+    "rnastop_overall_stability": 0.43978700041770935,
+    "u_fraction": 0.15454545454545454,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 4.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+     "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_01752470e9.fasta",
+     "generated_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+     "structure": "...(((((((...(((((..(((((((.(((.((((((((((((((((.(((.(((((.(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))))))).)))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))",
+     "mfe": -200.7,
+     "cai_score": 0.966,
+     "lambda_value": 4.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC\nmRNA structure: ...(((((((...(((((..(((((((.(((.((((((((((((((((.(((.(((((.(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))))))).)))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))\nmRNA folding free energy: -200.70 kcal/mol; mRNA CAI: 0.966\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "structure": "...(((((((...(((((..(((((((.(((.(((((((((((((((..((((((((..(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.706060606060606,
+    "gc_content_local": 0.706060606060606,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -96.18,
+    "mfe_per_nt": -0.29145454545454547,
+    "unpaired_fraction": 0.3333333333333333,
+    "rnastop_overall_stability": 0.43978700041770935,
+    "cai_score": 0.9664143081695393,
+    "u_fraction": 0.15454545454545454,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 4,
+   "id": "cand_f4808a64fb27",
+   "source": "cds_design:lineardesign_lambda10.0",
+   "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+   "sequence_type": "mrna",
+   "total_length": 330,
+   "total_score": 85.56129970485009,
+   "scores": {
+    "mfe_per_nt": -0.264,
+    "cai_score": 0.9859299192832108,
+    "combined_score": 85.56129970485009,
+    "total_score": 85.56129970485009,
+    "gc_content": 0.7090909090909091,
+    "gc_content_local": 0.7090909090909091,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -87.12,
+    "unpaired_fraction": 0.3575757575757576,
+    "rnastop_overall_stability": 0.4427735507488251,
+    "u_fraction": 0.15151515151515152,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 10.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+     "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_d827db4636.fasta",
+     "generated_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+     "structure": "...(((((((...((((((((((((((((((.(((..(((((((((((.(((.(((((.((((((..((((((..((..(((.((((((...((((((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).)))).)))))))...))).)))..)).)))))).))))))))))).))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))",
+     "mfe": -189.5,
+     "cai_score": 0.986,
+     "lambda_value": 10.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC\nmRNA structure: ...(((((((...((((((((((((((((((.(((..(((((((((((.(((.(((((.((((((..((((((..((..(((.((((((...((((((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).)))).)))))))...))).)))..)).)))))).))))))))))).))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))\nmRNA folding free energy: -189.50 kcal/mol; mRNA CAI: 0.986\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "structure": "...(((((((...((((((((((((((((((.(((..((((((((((..((((((((..((((((..((((((..((..(((.(((......((((((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))).)))......))).)))..)).))))))....(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "cai_score"
+   },
+   "metrics": {
+    "gc_content": 0.7090909090909091,
+    "gc_content_local": 0.7090909090909091,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -87.12,
+    "mfe_per_nt": -0.264,
+    "unpaired_fraction": 0.3575757575757576,
+    "rnastop_overall_stability": 0.4427735507488251,
+    "cai_score": 0.9859299192832108,
+    "u_fraction": 0.15151515151515152,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 5,
+   "id": "cand_c17bf6036f8b",
+   "source": "cds_design:rnarl",
+   "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC",
+   "sequence_type": "mrna",
+   "total_length": 330,
+   "total_score": 70.7762327821773,
+   "scores": {
+    "mfe_per_nt": -0.22639393939393937,
+    "cai_score": 0.964870368177015,
+    "combined_score": 70.7762327821773,
+    "total_score": 70.7762327821773,
+    "gc_content": 0.7181818181818181,
+    "gc_content_local": 0.7181818181818181,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -74.71,
+    "unpaired_fraction": 0.3393939393939394,
+    "rnastop_overall_stability": 0.44552159309387207,
+    "u_fraction": 0.14545454545454545,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "rnarl",
+    "design_params": {
+     "model_type": "Homo sapiens mRNA"
+    },
+    "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+     "output_filepath": "workspace/sessions/exp18probe_Insulin/rnarl_cds_6a6a398b47.fasta",
+     "generated_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC",
+     "model_type": "Homo sapiens mRNA",
+     "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/checkpoints/homo_mrna.pt",
+     "esm2_model_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D",
+     "device": "cuda:0",
+     "model": "RNARL-actor"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "structure": "....((((((...((((((((((.(((((.(((((((((((...((((((((((((....(((((((..(((((((((.(((((.....(((((((.(((.((....)).))))))))))))))).))))))).))((((((........))))))......))))))).)))).....))))))))...)))))).......(truncated)",
+    "fold_tool": "LinearFold"
+   },
+   "metrics": {
+    "gc_content": 0.7181818181818181,
+    "gc_content_local": 0.7181818181818181,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -74.71,
+    "mfe_per_nt": -0.22639393939393937,
+    "unpaired_fraction": 0.3393939393939394,
+    "rnastop_overall_stability": 0.44552159309387207,
+    "cai_score": 0.964870368177015,
+    "u_fraction": 0.14545454545454545,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 6,
+   "id": "cand_c50accdf8b81",
+   "source": "cds_design:gemorna",
+   "sequence": "AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC",
+   "sequence_type": "mrna",
+   "total_length": 330,
+   "total_score": 51.105241404765394,
+   "scores": {
+    "mfe_per_nt": -0.19463636363636364,
+    "cai_score": 0.8875273091529597,
+    "combined_score": 51.105241404765394,
+    "total_score": 51.105241404765394,
+    "gc_content": 0.7151515151515152,
+    "gc_content_local": 0.7151515151515152,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -64.23,
+    "unpaired_fraction": 0.3878787878787879,
+    "rnastop_overall_stability": 0.4569021463394165,
+    "u_fraction": 0.15454545454545454,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "gemorna",
+    "design_params": {},
+    "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+    "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+     "output_filepath": "workspace/sessions/exp18probe_Insulin/gemorna_cds_bc2fc92453.fasta",
+     "generated_sequence": "AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC",
+     "raw_output": "Generated CDS & Naturalness\nATGGCGCTGTGGATGCGGCTGCTGCCCCTGCTGGCGCTGCTGGCGCTGTGGGGCCCGGACCCCGCGGCCGCCTTCGTGAACCAGCACCTGTGCGGCTCCCACCTGGTGGAGGCGCTGTACCTGGTGTGTGGCGAGCGCGGCTTCTTCTACACCCCCAAGACCCGCCGGGAGGCCGAGGACCTGCAGGTGGGCCAGGTGGAGCTGGGCGGCGGCCCGGGCGCGGGCAGCCTGCAGCCGCTGGCCCTGGAGGGCAGCCTCCAGAAGCGGGGCATCGTGGAGCAGTGCTGCACCTCCATCTGCAGCCTGTACCAGCTCGAGAACTACTGCAAC 0.64",
+     "model": "GEMORNA-cds"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "structure": ".....((((((((((.((.(((.((..(((((.(((.((((...(((((((((((((...((((.(((((((........(((((.((.....((..((((((((..((...((((((((.....))))))))..(.(((((((((....................))))))))).)..))..))))))))))....))....(truncated)",
+    "fold_tool": "LinearFold"
+   },
+   "metrics": {
+    "gc_content": 0.7151515151515152,
+    "gc_content_local": 0.7151515151515152,
+    "sequence_length": 330,
+    "mfe_kcal_per_mol": -64.23,
+    "mfe_per_nt": -0.19463636363636364,
+    "unpaired_fraction": 0.3878787878787879,
+    "rnastop_overall_stability": 0.4569021463394165,
+    "cai_score": 0.8875273091529597,
+    "u_fraction": 0.15454545454545454,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  }
+ ],
+ "best_candidate": {
+  "rank": 1,
+  "id": "cand_e048786d6525",
+  "source": "cds_design:lineardesign_lambda1.0",
+  "sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+  "sequence_type": "mrna",
+  "total_length": 330,
+  "total_score": 112.4566691762234,
+  "scores": {
+   "mfe_per_nt": -0.4087272727272727,
+   "cai_score": 0.8155859540596127,
+   "combined_score": 112.4566691762234,
+   "total_score": 112.4566691762234,
+   "gc_content": 0.6424242424242425,
+   "gc_content_local": 0.6424242424242425,
+   "sequence_length": 330,
+   "mfe_kcal_per_mol": -134.88,
+   "unpaired_fraction": 0.18787878787878787,
+   "rnastop_overall_stability": 0.43997272849082947,
+   "u_fraction": 0.19696969696969696,
+   "fold_tool": "LinearFold",
+   "cai_species": "Homo sapiens"
+  },
+  "metadata": {
+   "design_tool": "lineardesign",
+   "design_params": {
+    "lambda_value": 1.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+   },
+   "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+   "protein_sequence_used": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+   "protein_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+   "design_output": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_7b23d5d83d.fasta",
+    "generated_sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((.(.(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).))).).)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))",
+    "mfe": -241.2,
+    "cai_score": 0.816,
+    "lambda_value": 1.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\nmRNA structure: ...((((((((((.(((((((((((((((((((((((((((((((((((((((((((.(.(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).))).).)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))\nmRNA folding free energy: -241.20 kcal/mol; mRNA CAI: 0.816\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "cai_species": "Homo sapiens",
+   "workspace_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+   "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).)))...)))))).))))).)))))))).)))...(truncated)",
+   "fold_tool": "LinearFold",
+   "pareto_tag": "balanced"
+  },
+  "metrics": {
+   "gc_content": 0.6424242424242425,
+   "gc_content_local": 0.6424242424242425,
+   "sequence_length": 330,
+   "mfe_kcal_per_mol": -134.88,
+   "mfe_per_nt": -0.4087272727272727,
+   "unpaired_fraction": 0.18787878787878787,
+   "rnastop_overall_stability": 0.43997272849082947,
+   "cai_score": 0.8155859540596127,
+   "u_fraction": 0.19696969696969696,
+   "fold_tool": "LinearFold",
+   "cai_species": "Homo sapiens"
+  }
+ },
+ "summary": "candidates=6\nbest_total_score=112.4566691762234\npareto_frontier_size=4\n---\n#1 | source=cds_design:lineardesign_lambda1.0 | len=330nt | GC=0.642 | MFE=-134.88(LinearFold) | MFE/nt=-0.4087 | unpaired=0.188 | RNASTOP=0.4400 | CAI=0.8156 | U=0.197 | total_score=112.457\n#2 | source=cds_design:lineardesign_lambda0.0 | len=330nt | GC=0.652 | MFE=-145.54(LinearFold) | MFE/nt=-0.4410 | unpaired=0.188 | RNASTOP=0.4469 | CAI=0.7387 | U=0.188 | total_score=112.229\n#3 | source=cds_design:lineardesign_lambda4.0 | len=330nt | GC=0.706 | MFE=-96.18(LinearFold) | MFE/nt=-0.2915 | unpaired=0.333 | RNASTOP=0.4398 | CAI=0.9664 | U=0.155 | total_score=92.422\n#4 | source=cds_design:lineardesign_lambda10.0 | len=330nt | GC=0.709 | MFE=-87.12(LinearFold) | MFE/nt=-0.2640 | unpaired=0.358 | RNASTOP=0.4428 | CAI=0.9859 | U=0.152 | total_score=85.561\n#5 | source=cds_design:rnarl | len=330nt | GC=0.718 | MFE=-74.71(LinearFold) | MFE/nt=-0.2264 | unpaired=0.339 | RNASTOP=0.4455 | CAI=0.9649 | U=0.145 | total_score=70.776\n#6 | source=cds_design:gemorna | len=330nt | GC=0.715 | MFE=-64.23(LinearFold) | MFE/nt=-0.1946 | unpaired=0.388 | RNASTOP=0.4569 | CAI=0.8875 | U=0.155 | total_score=51.105",
+ "_diagnosis_history": [
+  {
+   "overall_assessment": "All six candidates showed strong human CAI (0.739-0.986, all above the ~0.67 random-synonym baseline and most near or above the ~0.8 optimized benchmark). MFE per nucleotide values are in a reasonable range, and source diversity is good across LinearDesign lambda grid, RNARL, and GEMORNA. No critical quality failures were detected, and no retry is warranted for the requested task.",
+   "quality_score": 0.88,
+   "issues": [
+    {
+     "severity": "warning",
+     "category": "gc_content",
+     "description": "Several candidates, especially RNARL and higher-lambda LinearDesign outputs, have GC content above 70%. High GC can complicate synthesis and may promote undesired secondary structure, though GC content is not directly ranked in this workflow.",
+     "metric_value": 0.7181818181818181,
+     "threshold": 0.7
+    },
+    {
+     "severity": "info",
+     "category": "sequence_completeness",
+     "description": "All candidates are 330 nt for a 110-residue input, consistent with the designed CDS not including a terminal stop codon. If a full CDS with stop is required, the sequence should be extended manually; this was not specified in the request.",
+     "metric_value": 330.0,
+     "threshold": 333.0
+    }
+   ],
+   "action": "pass",
+   "parameter_overrides": {},
+   "reasoning": "CAI is excellent for human across all candidates and the expected LinearDesign lambda tradeoff is observed. MFE per nucleotide is not excessively stable, and tool diversity is adequate. The high GC content is a reference-only warning and the missing terminal stop is informational because the user did not request a stop codon explicitly.",
+   "confidence": 0.9,
+   "evaluator_only": false,
+   "affected_evaluators": []
+  },
+  {
+   "overall_assessment": "The candidate set is diverse across LinearDesign, RNARL, and GEMORNA. All candidates have human CAI well above the ~0.67 random baseline, and MFE per nucleotide values are moderate rather than excessively stable. No critical issues; the run can be accepted.",
+   "quality_score": 0.9,
+   "issues": [
+    {
+     "severity": "warning",
+     "category": "gc_content",
+     "description": "Four of six candidates have GC content above 70% (lambda4, lambda10, RNARL, GEMORNA), which may complicate synthesis. This was previously noted and is a reference metric only; the lower-lambda LinearDesign candidates remain below 70%.",
+     "metric_value": 0.7181818181818181,
+     "threshold": 0.7
+    },
+    {
+     "severity": "info",
+     "category": "sequence_completeness",
+     "description": "All candidates are 330 nt for a 110-residue input, consistent with the designed CDS not including a terminal stop codon. If a full CDS with stop is required, add the stop codon manually. This was not specified in the request.",
+     "metric_value": 330.0,
+     "threshold": 333.0
+    }
+   ],
+   "action": "pass",
+   "parameter_overrides": {},
+   "reasoning": "No retry is warranted. The top LinearDesign candidates provide a good balance of CAI and structure, while higher-lambda and RNARL candidates offer higher CAI if translation efficiency is prioritized. The high-GC warning is reference-only and does not directly affect ranking, and the candidate set includes options below the 70% GC threshold.",
+   "confidence": 0.9,
+   "evaluator_only": false,
+   "affected_evaluators": []
+  }
+ ],
+ "_quality_auto_retry": false,
+ "retry_count": 0,
+ "_user_explicit_params": [
+  "cai_species",
+  "design_tool",
+  "protein_sequence",
+  "run_fold",
+  "run_gc"
+ ],
+ "_tool_timings": {},
+ "_last_form_params": {
+  "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+  "design_tool": "all",
+  "cai_species": "Homo sapiens",
+  "run_fold": true,
+  "run_gc": true
+ },
+ "workflow_input": {
+  "lineardesign_filepath": null,
+  "lineardesign_service_url": "http://127.0.0.1:8014/generate/cds",
+  "lineardesign_lambda_value": 0.0,
+  "lineardesign_codon_usage_path": null,
+  "lineardesign_verbose": false,
+  "rnarl_filepath": null,
+  "rnarl_service_url": "http://127.0.0.1:8008/generate/cds",
+  "rnarl_model_type": "Homo sapiens mRNA",
+  "rnarl_checkpoint_path": null,
+  "rnarl_esm2_model_path": null,
+  "rnarl_device": null,
+  "gemorna_filepath": null,
+  "gemorna_service_url": "http://127.0.0.1:8004/generate/cds",
+  "vienna_fold_filepath": null,
+  "vienna_fold_temp_c": 37.0,
+  "vienna_fold_dangles": 2,
+  "vienna_fold_no_lp": false,
+  "vienna_fold_no_gu": false,
+  "vienna_fold_no_closing_gu": false,
+  "vienna_fold_salt": null,
+  "vienna_fold_no_tetra": false,
+  "vienna_fold_energy_model": null,
+  "vienna_fold_nsp": null,
+  "vienna_fold_param_file": null,
+  "vienna_fold_constraint": null,
+  "vienna_fold_shape_file": null,
+  "vienna_fold_shape_method": "D",
+  "vienna_fold_partfunc": false,
+  "vienna_fold_circ": false,
+  "vienna_fold_gquad": false,
+  "vienna_fold_service_url": "http://127.0.0.1:8003/fold",
+  "vienna_fold_noDP": false,
+  "vienna_fold_maxBPspan": -1,
+  "vienna_fold_MEA": null,
+  "vienna_fold_batch": false,
+  "vienna_fold_canonicalBPonly": false,
+  "vienna_fold_enforceConstraint": false,
+  "vienna_fold_shapeConversion": "O",
+  "vienna_fold_verbose": false,
+  "linearfold_filepath": null,
+  "linearfold_beam_size": 100,
+  "linearfold_use_vienna": false,
+  "linearfold_dangles": 2,
+  "linearfold_sharpturn": false,
+  "linearfold_constraints": null,
+  "linearfold_shape_file_path": null,
+  "linearfold_service_url": "http://127.0.0.1:8015/fold",
+  "linearfold_fasta": false,
+  "linearfold_verbose": false,
+  "gc_filepath": null,
+  "gc_service_url": "http://127.0.0.1:8020/gc-content",
+  "gc_timeout_seconds": 120.0,
+  "u_content_filepath": null,
+  "u_content_service_url": "http://127.0.0.1:8020/u-content",
+  "u_content_timeout_seconds": 120.0,
+  "unpaired_filepath": null,
+  "unpaired_service_url": "http://127.0.0.1:8020/unpaired-fraction",
+  "unpaired_timeout_seconds": 120.0,
+  "rnastop_filepath": null,
+  "rnastop_service_url": "http://127.0.0.1:8009/predict/stability",
+  "rnastop_structure": null,
+  "rnastop_loop_type": null,
+  "rnastop_checkpoint_path": null,
+  "rnastop_device": null,
+  "rnastop_rnafm_model_path": null,
+  "rnastop_dnabert_model_path": null,
+  "cai_filepath": null,
+  "cai_custom_codon_table_path": null,
+  "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+  "truncate_n_terminal": null,
+  "truncate_c_terminal": null,
+  "design_tool": "all",
+  "navigation": false,
+  "lambda_value": null,
+  "model_type": "Homo sapiens mRNA",
+  "cai_species": "Homo sapiens",
+  "run_fold": true,
+  "run_gc": true
+ },
+ "trace": [
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"lambda_value\": 0.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"output_filepath\": \"workspace/sessions/exp18probe_Insulin/lineardesign_cds_e85de91e0a.fasta\", \"generated_sequence\": \"AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCU",
+   "success": true,
+   "error": null,
+   "elapsed_time": 7.662799190962687,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_e85de91e0a.fasta",
+    "generated_sequence": "AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))((.(((.((((((((....))))))))))).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))",
+    "mfe": -247.3,
+    "cai_score": 0.739,
+    "lambda_value": 0.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\nmRNA structure: ...((((((((((.(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))((.(((.((((((((....))))))))))).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))\nmRNA folding free energy: -247.30 kcal/mol; mRNA CAI: 0.739\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 0.0
+   },
+   "created_at": "2026-09-01T04:25:08.456513Z"
+  },
+  {
+   "step_name": "cand_5906ae0a2446_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"sequence_length\": 330, \"g_count\": 110, \"c_count\": 105, \"gc_count\": 215, \"gc_content\": 0.6515151515151515, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00467763701453805,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "sequence_length": 330,
+    "g_count": 110,
+    "c_count": 105,
+    "gc_count": 215,
+    "gc_content": 0.6515151515151515,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6515151515151515,
+    "sequence_length": 330
+   },
+   "created_at": "2026-09-01T04:25:53.716925Z"
+  },
+  {
+   "step_name": "cand_5906ae0a2446_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"sequence_length\": 330, \"u_count\": 62, \"u_fraction\": 0.18787878787878787, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0029583399882540107,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "sequence_length": 330,
+    "u_count": 62,
+    "u_fraction": 0.18787878787878787,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.18787878787878787,
+    "u_count": 62
+   },
+   "created_at": "2026-09-01T04:25:53.720162Z"
+  },
+  {
+   "step_name": "cand_5906ae0a2446_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"sequence\": \"AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\", \"structure\": \"...((((((((((.((((((((((((((((((((((((((((((((((((((((((.(((",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.13460769993253052,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "sequence": "AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "structure": "...((((((((((.((((((((((((((((((((((((((((((((((((((((((.((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))(((.((.((((((((....)))))))).)).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................",
+    "mfe": -145.54,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -145.54,
+    "structure": "...((((((((((.((((((((((((((((((((((((((((((((((((((((((.((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))(((.((.((((((((....)))))))).)).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:25:53.855065Z"
+  },
+  {
+   "step_name": "cand_5906ae0a2446_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/structure_76e1da8c21.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/structure_76e1da8c21.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_76e1da8c21.db\", \"structure_length\": 330, \"dot_count\": 62, \"unpaired_fraction\": 0.18787878787878787, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.003348059020936489,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/structure_76e1da8c21.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_76e1da8c21.db",
+    "structure_length": 330,
+    "dot_count": 62,
+    "unpaired_fraction": 0.18787878787878787,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.18787878787878787
+   },
+   "created_at": "2026-09-01T04:25:53.859098Z"
+  },
+  {
+   "step_name": "cand_5906ae0a2446_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"structure\": \"...((((((((((.((((((((((((((((((((((((((((((((((((((((((.((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))(((.((.((((((((....)))))))).)).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18probe_Insulin/rnastop_prediction_4eb167459d.json\", \"sequence\": \"AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 5.835542434011586,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "prediction_filepath": "workspace/sessions/exp18probe_Insulin/rnastop_prediction_4eb167459d.json",
+    "sequence": "AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "used_sequence": "AUGGCGCUCUGGAUGCGACUCCUCCCCCUCCUAGCUCUCCUGGCCCUCUGGGGUCCUGACCCCGCCGCCGCAUUCGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUAGAGGCGCUGUAUCUCGUGUGCGGCGAGCGGGGUUUCUUCUACACGCCGAAGACUCGGCGUGAGGCGGAGGACCUCCAGGUGGGCCAGGUAGAGCUAGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCGCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "sequence_length": 330,
+    "used_length": 330,
+    "truncated": false,
+    "structure": "...((((((((((.((((((((((((((((((((((((((((((((((((((((((.((((((((((((((((.((.((..((((.(((((((((((....))))))))))).))))..)).)).)))))))).))))))))(((.((.((((((((....)))))))).)).)))))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................",
+    "loop_type": "EEEIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -256.6000061035156,
+    "mean_reactivity": 0.3807346224784851,
+    "mean_deg_mg_ph10": 0.4754362106323242,
+    "mean_deg_mg_50c": 0.4845268130302429,
+    "overall_stability": 0.4468992352485657,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.4468992352485657
+   },
+   "created_at": "2026-09-01T04:25:59.695059Z"
+  },
+  {
+   "step_name": "cand_5906ae0a2446_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta\", \"cai_score\": 0.7387240316538054, \"species\": \"Homo sapiens\", \"cds_length_nt\": 330, \"codon_count\": 110, \"valid_codons\": 110, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002274641999974847,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_d57290f0ad.fasta",
+    "cai_score": 0.7387240316538054,
+    "species": "Homo sapiens",
+    "cds_length_nt": 330,
+    "codon_count": 110,
+    "valid_codons": 110,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.7387240316538054,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:25:59.697745Z"
+  },
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"lambda_value\": 1.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"output_filepath\": \"workspace/sessions/exp18probe_Insulin/lineardesign_cds_7b23d5d83d.fasta\", \"generated_sequence\": \"AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCU",
+   "success": true,
+   "error": null,
+   "elapsed_time": 7.4699973539682105,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_7b23d5d83d.fasta",
+    "generated_sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((.(.(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).))).).)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))",
+    "mfe": -241.2,
+    "cai_score": 0.816,
+    "lambda_value": 1.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\nmRNA structure: ...((((((((((.(((((((((((((((((((((((((((((((((((((((((((.(.(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).))).).)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).)))))))))))))))).)))))(((((((.((((((((((((...))))).)))))))))))))).((((.((.....)).))))\nmRNA folding free energy: -241.20 kcal/mol; mRNA CAI: 0.816\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 1.0
+   },
+   "created_at": "2026-09-01T04:25:15.926935Z"
+  },
+  {
+   "step_name": "cand_e048786d6525_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"sequence_length\": 330, \"g_count\": 114, \"c_count\": 98, \"gc_count\": 212, \"gc_content\": 0.6424242424242425, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004191852058283985,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "sequence_length": 330,
+    "g_count": 114,
+    "c_count": 98,
+    "gc_count": 212,
+    "gc_content": 0.6424242424242425,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6424242424242425,
+    "sequence_length": 330
+   },
+   "created_at": "2026-09-01T04:25:59.702948Z"
+  },
+  {
+   "step_name": "cand_e048786d6525_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"sequence_length\": 330, \"u_count\": 65, \"u_fraction\": 0.19696969696969696, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0028746810276061296,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "sequence_length": 330,
+    "u_count": 65,
+    "u_fraction": 0.19696969696969696,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.19696969696969696,
+    "u_count": 65
+   },
+   "created_at": "2026-09-01T04:25:59.706512Z"
+  },
+  {
+   "step_name": "cand_e048786d6525_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"sequence\": \"AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC\", \"structure\": \"...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.1237865190487355,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).)))...)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................",
+    "mfe": -134.88,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -134.88,
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).)))...)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:25:59.830608Z"
+  },
+  {
+   "step_name": "cand_e048786d6525_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/structure_9cfe6eeeb3.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/structure_9cfe6eeeb3.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_9cfe6eeeb3.db\", \"structure_length\": 330, \"dot_count\": 62, \"unpaired_fraction\": 0.18787878787878787, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0027949890354648232,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/structure_9cfe6eeeb3.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_9cfe6eeeb3.db",
+    "structure_length": 330,
+    "dot_count": 62,
+    "unpaired_fraction": 0.18787878787878787,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.18787878787878787
+   },
+   "created_at": "2026-09-01T04:25:59.834096Z"
+  },
+  {
+   "step_name": "cand_e048786d6525_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"structure\": \"...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).)))...)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18probe_Insulin/rnastop_prediction_3e4b54f170.json\", \"sequence\": \"AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.5690459460020065,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "prediction_filepath": "workspace/sessions/exp18probe_Insulin/rnastop_prediction_3e4b54f170.json",
+    "sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "used_sequence": "AUGGCGCUCUGGAUGAGACUCCUCCCCCUCCUGGCUCUCCUGGCCCUCUGGGGUCCUGACCCUGCCGCCGCGUUUGUGAAUCAGCACCUCUGCGGGAGCCAUCUCGUGGAGGCGCUGUAUCUGGUGUGUGGAGAGAGGGGCUUUUUCUACACACCAAAGACGCGGCGGGAGGCUGAGGACCUCCAGGUGGGCCAGGUGGAGCUGGGAGGGGGGCCAGGGGCUGGAAGCCUCCAGCCCCUGGCCCUGGAGGGGUCUCUCCAGAAGCGCGGUAUAGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGUUGGAGAACUACUGCAAC",
+    "sequence_length": 330,
+    "used_length": 330,
+    "truncated": false,
+    "structure": "...((((((((((.(((((((((((((((((((((((((((((((((((((((((((...(((.(((((((((((..((..((((.(((((((((((....))))))))))).))))..))((((((((((((((((...)))))))))))))))).))))))))))).)))...)))))).))))).)))))))).)))))))))))))(((((((((((((((....))))))))))))))).))))))))))))))))).))))(((((((.((((((((((((...))))).))))))))))))))....................",
+    "loop_type": "EEEIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -251.10000610351562,
+    "mean_reactivity": 0.37038713693618774,
+    "mean_deg_mg_ph10": 0.469552606344223,
+    "mean_deg_mg_50c": 0.47997844219207764,
+    "overall_stability": 0.43997272849082947,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.43997272849082947
+   },
+   "created_at": "2026-09-01T04:26:00.403553Z"
+  },
+  {
+   "step_name": "cand_e048786d6525_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta\", \"cai_score\": 0.8155859540596127, \"species\": \"Homo sapiens\", \"cds_length_nt\": 330, \"codon_count\": 110, \"valid_codons\": 110, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.000966446939855814,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f277daad17.fasta",
+    "cai_score": 0.8155859540596127,
+    "species": "Homo sapiens",
+    "cds_length_nt": 330,
+    "codon_count": 110,
+    "valid_codons": 110,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.8155859540596127,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:26:00.404810Z"
+  },
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"lambda_value\": 4.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"output_filepath\": \"workspace/sessions/exp18probe_Insulin/lineardesign_cds_01752470e9.fasta\", \"generated_sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCU",
+   "success": true,
+   "error": null,
+   "elapsed_time": 7.44188794598449,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_01752470e9.fasta",
+    "generated_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "structure": "...(((((((...(((((..(((((((.(((.((((((((((((((((.(((.(((((.(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))))))).)))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))",
+    "mfe": -200.7,
+    "cai_score": 0.966,
+    "lambda_value": 4.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC\nmRNA structure: ...(((((((...(((((..(((((((.(((.((((((((((((((((.(((.(((((.(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))))))).)))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))\nmRNA folding free energy: -200.70 kcal/mol; mRNA CAI: 0.966\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 4.0
+   },
+   "created_at": "2026-09-01T04:25:23.369219Z"
+  },
+  {
+   "step_name": "cand_20f7b42647a7_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"sequence_length\": 330, \"g_count\": 119, \"c_count\": 114, \"gc_count\": 233, \"gc_content\": 0.706060606060606, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0036236890591681004,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "sequence_length": 330,
+    "g_count": 119,
+    "c_count": 114,
+    "gc_count": 233,
+    "gc_content": 0.706060606060606,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.706060606060606,
+    "sequence_length": 330
+   },
+   "created_at": "2026-09-01T04:26:00.409256Z"
+  },
+  {
+   "step_name": "cand_20f7b42647a7_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"sequence_length\": 330, \"u_count\": 51, \"u_fraction\": 0.15454545454545454, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002586806076578796,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "sequence_length": 330,
+    "u_count": 51,
+    "u_fraction": 0.15454545454545454,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.15454545454545454,
+    "u_count": 51
+   },
+   "created_at": "2026-09-01T04:26:00.412119Z"
+  },
+  {
+   "step_name": "cand_20f7b42647a7_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC\", \"structure\": \"...(((((((...(((((..(((((((.(((.(((((((((((((((..((((((((..(",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.12519560405053198,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "structure": "...(((((((...(((((..(((((((.(((.(((((((((((((((..((((((((..(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))..)))))))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))...........................",
+    "mfe": -96.18,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -96.18,
+    "structure": "...(((((((...(((((..(((((((.(((.(((((((((((((((..((((((((..(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))..)))))))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))...........................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:26:00.537622Z"
+  },
+  {
+   "step_name": "cand_20f7b42647a7_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/structure_b0e7a610c6.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/structure_b0e7a610c6.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_b0e7a610c6.db\", \"structure_length\": 330, \"dot_count\": 110, \"unpaired_fraction\": 0.3333333333333333, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00287224305793643,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/structure_b0e7a610c6.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_b0e7a610c6.db",
+    "structure_length": 330,
+    "dot_count": 110,
+    "unpaired_fraction": 0.3333333333333333,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3333333333333333
+   },
+   "created_at": "2026-09-01T04:26:00.541764Z"
+  },
+  {
+   "step_name": "cand_20f7b42647a7_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"structure\": \"...(((((((...(((((..(((((((.(((.(((((((((((((((..((((((((..(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))..)))))))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))...........................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18probe_Insulin/rnastop_prediction_bf0425ad66.json\", \"sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.5567748369649053,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "prediction_filepath": "workspace/sessions/exp18probe_Insulin/rnastop_prediction_bf0425ad66.json",
+    "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "used_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUCCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCUGCCGCCUUCGUGAACCAGCACCUCUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCAGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "sequence_length": 330,
+    "used_length": 330,
+    "truncated": false,
+    "structure": "...(((((((...(((((..(((((((.(((.(((((((((((((((..((((((((..(((((((.((((((..((..(((.((((((((((..(((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))))))))))...))).)))..)).)))))))))))))..)))))))))))))))))))............))))..)))))))))))))))...))))))).....((((((((((((...))))).)))))))...........................",
+    "loop_type": "EEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEIIIIIIIIIIIHHHHHIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -203.39999389648438,
+    "mean_reactivity": 0.38669177889823914,
+    "mean_deg_mg_ph10": 0.4622443914413452,
+    "mean_deg_mg_50c": 0.4704248011112213,
+    "overall_stability": 0.43978700041770935,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.43978700041770935
+   },
+   "created_at": "2026-09-01T04:26:01.098936Z"
+  },
+  {
+   "step_name": "cand_20f7b42647a7_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta\", \"cai_score\": 0.9664143081695393, \"species\": \"Homo sapiens\", \"cds_length_nt\": 330, \"codon_count\": 110, \"valid_codons\": 110, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009250580333173275,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_f9b0c4769f.fasta",
+    "cai_score": 0.9664143081695393,
+    "species": "Homo sapiens",
+    "cds_length_nt": 330,
+    "codon_count": 110,
+    "valid_codons": 110,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.9664143081695393,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:26:01.100136Z"
+  },
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"lambda_value\": 10.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"output_filepath\": \"workspace/sessions/exp18probe_Insulin/lineardesign_cds_d827db4636.fasta\", \"generated_sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCU",
+   "success": true,
+   "error": null,
+   "elapsed_time": 7.460761075024493,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/lineardesign_cds_d827db4636.fasta",
+    "generated_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "structure": "...(((((((...((((((((((((((((((.(((..(((((((((((.(((.(((((.((((((..((((((..((..(((.((((((...((((((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).)))).)))))))...))).)))..)).)))))).))))))))))).))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))",
+    "mfe": -189.5,
+    "cai_score": 0.986,
+    "lambda_value": 10.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nmRNA sequence:  AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC\nmRNA structure: ...(((((((...((((((((((((((((((.(((..(((((((((((.(((.(((((.((((((..((((((..((..(((.((((((...((((((((.(((((((((((((((((.((((.....))))..)))))))))))..............)))))).)))).)))))))...))).)))..)).)))))).))))))))))).))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))..((..(((.(((....))))))..))\nmRNA folding free energy: -189.50 kcal/mol; mRNA CAI: 0.986\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 10.0
+   },
+   "created_at": "2026-09-01T04:25:30.830368Z"
+  },
+  {
+   "step_name": "cand_f4808a64fb27_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"sequence_length\": 330, \"g_count\": 121, \"c_count\": 113, \"gc_count\": 234, \"gc_content\": 0.7090909090909091, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0037014969857409596,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "sequence_length": 330,
+    "g_count": 121,
+    "c_count": 113,
+    "gc_count": 234,
+    "gc_content": 0.7090909090909091,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.7090909090909091,
+    "sequence_length": 330
+   },
+   "created_at": "2026-09-01T04:26:01.104691Z"
+  },
+  {
+   "step_name": "cand_f4808a64fb27_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"sequence_length\": 330, \"u_count\": 50, \"u_fraction\": 0.15151515151515152, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002680522040463984,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "sequence_length": 330,
+    "u_count": 50,
+    "u_fraction": 0.15151515151515152,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.15151515151515152,
+    "u_count": 50
+   },
+   "created_at": "2026-09-01T04:26:01.107657Z"
+  },
+  {
+   "step_name": "cand_f4808a64fb27_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC\", \"structure\": \"...(((((((...((((((((((((((((((.(((..((((((((((..((((((((..(",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.11739531706552953,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "structure": "...(((((((...((((((((((((((((((.(((..((((((((((..((((((((..((((((..((((((..((..(((.(((......((((((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))).)))......))).)))..)).)))))).))))))..))))))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))...........................",
+    "mfe": -87.12,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -87.12,
+    "structure": "...(((((((...((((((((((((((((((.(((..((((((((((..((((((((..((((((..((((((..((..(((.(((......((((((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))).)))......))).)))..)).)))))).))))))..))))))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))...........................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:26:01.225367Z"
+  },
+  {
+   "step_name": "cand_f4808a64fb27_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/structure_f08e426f7a.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/structure_f08e426f7a.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_f08e426f7a.db\", \"structure_length\": 330, \"dot_count\": 118, \"unpaired_fraction\": 0.3575757575757576, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0030995350098237395,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/structure_f08e426f7a.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_f08e426f7a.db",
+    "structure_length": 330,
+    "dot_count": 118,
+    "unpaired_fraction": 0.3575757575757576,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3575757575757576
+   },
+   "created_at": "2026-09-01T04:26:01.229188Z"
+  },
+  {
+   "step_name": "cand_f4808a64fb27_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"structure\": \"...(((((((...((((((((((((((((((.(((..((((((((((..((((((((..((((((..((((((..((..(((.(((......((((((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))).)))......))).)))..)).)))))).))))))..))))))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))...........................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18probe_Insulin/rnastop_prediction_08f1764736.json\", \"sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.5564684410346672,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "prediction_filepath": "workspace/sessions/exp18probe_Insulin/rnastop_prediction_08f1764736.json",
+    "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "used_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCACUGCUGGCCCUGCUGGCCCUGUGGGGCCCCGACCCAGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGCUUCUUCUACACCCCCAAGACCAGGCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGGGGCCCCGGGGCCGGCAGCCUGCAGCCCCUGGCCCUGGAGGGCAGCCUGCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCAGCAUCUGCUCCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "sequence_length": 330,
+    "used_length": 330,
+    "truncated": false,
+    "structure": "...(((((((...((((((((((((((((((.(((..((((((((((..((((((((..((((((..((((((..((..(((.(((......((((((((.(((((((((((((((((.(((........))).)))))))))))..............)))))).))))).)))......))).)))..)).)))))).))))))..))))))))))))))))))))).))))....)))).......))))))).)))...))))))).....((((((((((((...))))).)))))))...........................",
+    "loop_type": "EEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEIIIIIIIIIIIHHHHHIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -192.1999969482422,
+    "mean_reactivity": 0.3897474706172943,
+    "mean_deg_mg_ph10": 0.46488165855407715,
+    "mean_deg_mg_50c": 0.47369152307510376,
+    "overall_stability": 0.4427735507488251,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.4427735507488251
+   },
+   "created_at": "2026-09-01T04:26:01.786171Z"
+  },
+  {
+   "step_name": "cand_f4808a64fb27_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta\", \"cai_score\": 0.9859299192832108, \"species\": \"Homo sapiens\", \"cds_length_nt\": 330, \"codon_count\": 110, \"valid_codons\": 110, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0008845990523695946,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_37efcec671.fasta",
+    "cai_score": 0.9859299192832108,
+    "species": "Homo sapiens",
+    "cds_length_nt": 330,
+    "codon_count": 110,
+    "valid_codons": 110,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.9859299192832108,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:26:01.787334Z"
+  },
+  {
+   "step_name": "cds_design:rnarl",
+   "tool_name": "design_mrna_cds_with_rnarl",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"model_type\": \"Homo sapiens mRNA\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"output_filepath\": \"workspace/sessions/exp18probe_Insulin/rnarl_cds_6a6a398b47.fasta\", \"generated_sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCU",
+   "success": true,
+   "error": null,
+   "elapsed_time": 18.317781816935167,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/rnarl_cds_6a6a398b47.fasta",
+    "generated_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "model_type": "Homo sapiens mRNA",
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/checkpoints/homo_mrna.pt",
+    "esm2_model_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D",
+    "device": "cuda:0",
+    "model": "RNARL-actor"
+   },
+   "metrics": {},
+   "created_at": "2026-09-01T04:25:49.181045Z"
+  },
+  {
+   "step_name": "cand_c17bf6036f8b_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"sequence_length\": 330, \"g_count\": 132, \"c_count\": 105, \"gc_count\": 237, \"gc_content\": 0.7181818181818181, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0036246180534362793,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "sequence_length": 330,
+    "g_count": 132,
+    "c_count": 105,
+    "gc_count": 237,
+    "gc_content": 0.7181818181818181,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.7181818181818181,
+    "sequence_length": 330
+   },
+   "created_at": "2026-09-01T04:26:01.791728Z"
+  },
+  {
+   "step_name": "cand_c17bf6036f8b_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"sequence_length\": 330, \"u_count\": 48, \"u_fraction\": 0.14545454545454545, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0026502999244257808,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "sequence_length": 330,
+    "u_count": 48,
+    "u_fraction": 0.14545454545454545,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.14545454545454545,
+    "u_count": 48
+   },
+   "created_at": "2026-09-01T04:26:01.794651Z"
+  },
+  {
+   "step_name": "cand_c17bf6036f8b_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC\", \"structure\": \"....((((((...((((((((((.(((((.(((((((((((...((((((((((((....",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.12167618703097105,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "structure": "....((((((...((((((((((.(((((.(((((((((((...((((((((((((....(((((((..(((((((((.(((((.....(((((((.(((.((....)).))))))))))))))).))))))).))((((((........))))))......))))))).)))).....))))))))...))))))....)))))))))).)))(((((((((((.((.....)).))))))))))).....)))).)))...)))))).....(((.((((.((((((........)))))))))).)))...................",
+    "mfe": -74.71,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -74.71,
+    "structure": "....((((((...((((((((((.(((((.(((((((((((...((((((((((((....(((((((..(((((((((.(((((.....(((((((.(((.((....)).))))))))))))))).))))))).))((((((........))))))......))))))).)))).....))))))))...))))))....)))))))))).)))(((((((((((.((.....)).))))))))))).....)))).)))...)))))).....(((.((((.((((((........)))))))))).)))...................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:26:01.916628Z"
+  },
+  {
+   "step_name": "cand_c17bf6036f8b_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/structure_b19da1b141.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/structure_b19da1b141.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_b19da1b141.db\", \"structure_length\": 330, \"dot_count\": 112, \"unpaired_fraction\": 0.3393939393939394, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002739619929343462,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/structure_b19da1b141.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_b19da1b141.db",
+    "structure_length": 330,
+    "dot_count": 112,
+    "unpaired_fraction": 0.3393939393939394,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3393939393939394
+   },
+   "created_at": "2026-09-01T04:26:01.920611Z"
+  },
+  {
+   "step_name": "cand_c17bf6036f8b_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"structure\": \"....((((((...((((((((((.(((((.(((((((((((...((((((((((((....(((((((..(((((((((.(((((.....(((((((.(((.((....)).))))))))))))))).))))))).))((((((........))))))......))))))).)))).....))))))))...))))))....)))))))))).)))(((((((((((.((.....)).))))))))))).....)))).)))...)))))).....(((.((((.((((((........)))))))))).)))...................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18probe_Insulin/rnastop_prediction_7d44efe773.json\", \"sequence\": \"AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.5719389050500467,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "prediction_filepath": "workspace/sessions/exp18probe_Insulin/rnastop_prediction_7d44efe773.json",
+    "sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "used_sequence": "AUGGCCCUGUGGAUGCGGCUGCUGCCCCUGCUGGCCCUGCUGGCCCUGUGGGGGCCCGACCCCGCCGCCGCCUUCGUGAACCAGCACCUGUGCGGGAGCCACCUGGUGGAGGCCCUGUACCUGGUGUGCGGGGAGCGGGGGUUCUUCUACACCCCCAAGACCCGGCGGGAGGCCGAGGACCUGCAGGUGGGGCAGGUGGAGCUGGGGGGGGGGCCCGGGGCCGGGAGCCUGCAGCCCCUGGCCCUGGAGGGGAGCCUGCAGAAGCGGGGGAUCGUGGAGCAGUGCUGCACCAGCAUCUGCAGCCUGUACCAGCUGGAGAACUACUGCAAC",
+    "sequence_length": 330,
+    "used_length": 330,
+    "truncated": false,
+    "structure": "....((((((...((((((((((.(((((.(((((((((((...((((((((((((....(((((((..(((((((((.(((((.....(((((((.(((.((....)).))))))))))))))).))))))).))((((((........))))))......))))))).)))).....))))))))...))))))....)))))))))).)))(((((((((((.((.....)).))))))))))).....)))).)))...)))))).....(((.((((.((((((........)))))))))).)))...................",
+    "loop_type": "EEEEIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIMMMMMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHIIIIIIIIIIIIIMMMMMMIIIIIIIIIIIIIIIIEEEEEIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEE",
+    "mfe": -177.10000610351562,
+    "mean_reactivity": 0.37722843885421753,
+    "mean_deg_mg_ph10": 0.4690468907356262,
+    "mean_deg_mg_50c": 0.49028944969177246,
+    "overall_stability": 0.44552159309387207,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.44552159309387207
+   },
+   "created_at": "2026-09-01T04:26:02.492958Z"
+  },
+  {
+   "step_name": "cand_c17bf6036f8b_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta\", \"cai_score\": 0.964870368177015, \"species\": \"Homo sapiens\", \"cds_length_nt\": 330, \"codon_count\": 110, \"valid_codons\": 110, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009648599661886692,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_719c4a489f.fasta",
+    "cai_score": 0.964870368177015,
+    "species": "Homo sapiens",
+    "cds_length_nt": 330,
+    "codon_count": 110,
+    "valid_codons": 110,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.964870368177015,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:26:02.494211Z"
+  },
+  {
+   "step_name": "cds_design:gemorna",
+   "tool_name": "design_mrna_cds_with_gemorna",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta\", \"output_filepath\": \"workspace/sessions/exp18probe_Insulin/gemorna_cds_bc2fc92453.fasta\", \"generated_sequence\": \"AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 4.530031710048206,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/protein_3a9abfa835.fasta",
+    "output_filepath": "workspace/sessions/exp18probe_Insulin/gemorna_cds_bc2fc92453.fasta",
+    "generated_sequence": "AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC",
+    "raw_output": "Generated CDS & Naturalness\nATGGCGCTGTGGATGCGGCTGCTGCCCCTGCTGGCGCTGCTGGCGCTGTGGGGCCCGGACCCCGCGGCCGCCTTCGTGAACCAGCACCTGTGCGGCTCCCACCTGGTGGAGGCGCTGTACCTGGTGTGTGGCGAGCGCGGCTTCTTCTACACCCCCAAGACCCGCCGGGAGGCCGAGGACCTGCAGGTGGGCCAGGTGGAGCTGGGCGGCGGCCCGGGCGCGGGCAGCCTGCAGCCGCTGGCCCTGGAGGGCAGCCTCCAGAAGCGGGGCATCGTGGAGCAGTGCTGCACCTCCATCTGCAGCCTGTACCAGCTCGAGAACTACTGCAAC 0.64",
+    "model": "GEMORNA-cds"
+   },
+   "metrics": {},
+   "created_at": "2026-09-01T04:25:53.711478Z"
+  },
+  {
+   "step_name": "cand_c50accdf8b81_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"sequence_length\": 330, \"g_count\": 123, \"c_count\": 113, \"gc_count\": 236, \"gc_content\": 0.7151515151515152, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0037489660317078233,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "sequence_length": 330,
+    "g_count": 123,
+    "c_count": 113,
+    "gc_count": 236,
+    "gc_content": 0.7151515151515152,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.7151515151515152,
+    "sequence_length": 330
+   },
+   "created_at": "2026-09-01T04:26:02.498895Z"
+  },
+  {
+   "step_name": "cand_c50accdf8b81_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"sequence_length\": 330, \"u_count\": 51, \"u_fraction\": 0.15454545454545454, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0026004030369222164,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "sequence_length": 330,
+    "u_count": 51,
+    "u_fraction": 0.15454545454545454,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.15454545454545454,
+    "u_count": 51
+   },
+   "created_at": "2026-09-01T04:26:02.502078Z"
+  },
+  {
+   "step_name": "cand_c50accdf8b81_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"sequence\": \"AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC\", \"structure\": \".....((((((((((.((.(((.((..(((((.(((.((((...(((((((((((((...",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.12034761905670166,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "sequence": "AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC",
+    "structure": ".....((((((((((.((.(((.((..(((((.(((.((((...(((((((((((((...((((.(((((((........(((((.((.....((..((((((((..((...((((((((.....))))))))..(.(((((((((....................))))))))).)..))..))))))))))....)).)))))..)))))))))))..)))))..))))))))((((....(((((((....))))))).)))).)))).)))..))))).)).))).)).))))))))))...........................",
+    "mfe": -64.23,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -64.23,
+    "structure": ".....((((((((((.((.(((.((..(((((.(((.((((...(((((((((((((...((((.(((((((........(((((.((.....((..((((((((..((...((((((((.....))))))))..(.(((((((((....................))))))))).)..))..))))))))))....)).)))))..)))))))))))..)))))..))))))))((((....(((((((....))))))).)))).)))).)))..))))).)).))).)).))))))))))...........................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:26:02.622714Z"
+  },
+  {
+   "step_name": "cand_c50accdf8b81_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/structure_4d8f3b01e1.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/structure_4d8f3b01e1.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_4d8f3b01e1.db\", \"structure_length\": 330, \"dot_count\": 128, \"unpaired_fraction\": 0.3878787878787879, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002445325953885913,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/structure_4d8f3b01e1.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18probe_Insulin/structure_4d8f3b01e1.db",
+    "structure_length": 330,
+    "dot_count": 128,
+    "unpaired_fraction": 0.3878787878787879,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3878787878787879
+   },
+   "created_at": "2026-09-01T04:26:02.625849Z"
+  },
+  {
+   "step_name": "cand_c50accdf8b81_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"structure\": \".....((((((((((.((.(((.((..(((((.(((.((((...(((((((((((((...((((.(((((((........(((((.((.....((..((((((((..((...((((((((.....))))))))..(.(((((((((....................))))))))).)..))..))))))))))....)).)))))..)))))))))))..)))))..))))))))((((....(((((((....))))))).)))).)))).)))..))))).)).))).)).))))))))))...........................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18probe_Insulin/rnastop_prediction_ca779aa69b.json\", \"sequence\": \"AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.5635576338972896,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "prediction_filepath": "workspace/sessions/exp18probe_Insulin/rnastop_prediction_ca779aa69b.json",
+    "sequence": "AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC",
+    "used_sequence": "AUGGCGCUGUGGAUGCGGCUGCUGCCCCUGCUGGCGCUGCUGGCGCUGUGGGGCCCGGACCCCGCGGCCGCCUUCGUGAACCAGCACCUGUGCGGCUCCCACCUGGUGGAGGCGCUGUACCUGGUGUGUGGCGAGCGCGGCUUCUUCUACACCCCCAAGACCCGCCGGGAGGCCGAGGACCUGCAGGUGGGCCAGGUGGAGCUGGGCGGCGGCCCGGGCGCGGGCAGCCUGCAGCCGCUGGCCCUGGAGGGCAGCCUCCAGAAGCGGGGCAUCGUGGAGCAGUGCUGCACCUCCAUCUGCAGCCUGUACCAGCUCGAGAACUACUGCAAC",
+    "sequence_length": 330,
+    "used_length": 330,
+    "truncated": false,
+    "structure": ".....((((((((((.((.(((.((..(((((.(((.((((...(((((((((((((...((((.(((((((........(((((.((.....((..((((((((..((...((((((((.....))))))))..(.(((((((((....................))))))))).)..))..))))))))))....)).)))))..)))))))))))..)))))..))))))))((((....(((((((....))))))).)))).)))).)))..))))).)).))).)).))))))))))...........................",
+    "loop_type": "EEEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMMIIIIIIIHHHHHHHIIIIIIIMMIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -170.10000610351562,
+    "mean_reactivity": 0.3966060280799866,
+    "mean_deg_mg_ph10": 0.4799163341522217,
+    "mean_deg_mg_50c": 0.49418413639068604,
+    "overall_stability": 0.4569021463394165,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.4569021463394165
+   },
+   "created_at": "2026-09-01T04:26:03.189789Z"
+  },
+  {
+   "step_name": "cand_c50accdf8b81_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta\", \"cai_score\": 0.8875273091529597, \"species\": \"Homo sapiens\", \"cds_length_nt\": 330, \"codon_count\": 110, \"valid_codons\": 110, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0008717349264770746,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18probe_Insulin/mrna_cds_59ce384e0c.fasta",
+    "cai_score": 0.8875273091529597,
+    "species": "Homo sapiens",
+    "cds_length_nt": 330,
+    "codon_count": 110,
+    "valid_codons": 110,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.8875273091529597,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:26:03.190922Z"
+  }
+ ]
+}

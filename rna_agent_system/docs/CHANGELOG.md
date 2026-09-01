@@ -1,12 +1,20 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-08-31
+> **Last updated**: 2026-09-01
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-09-01 — Exp 18: E3-M mRNA 侧门控双臂重跑（Fig 4d）
+
+- **任务集按最新数据集重建**（用户指示「与最新的数据集保持一致」；构建器 `experiments/exp18_build_mrna_audit_tasks.py`，断言优先，20 题 = 8 家族 10 可信 + 10 不可信，家族/靶分配与 legacy 相同）：靶标取当前 `RNA-BioBench-FullLength-mRNA` 文件（逐靶密码子表——GFP 按当前注册为 E. coli，legacy 曾四靶统一 Homo sapiens，披露）；CDS 候选 = 生产 `mrna_cds_design` design_tool="all" λ-grid（任务取 λ{0,4,10}、比较取 0 vs 10）；全长度构造 = 生产 `full_length_mrna_design`（utr_mode=all）每靶 top-3 排名唯一构造；MRL 真值 = Exp-14 锚集实测 MRL。可信任务真值 = 生产 CAI 工具（Sharp–Li、逐靶 Kazusa）+ LinearFold MFE + 纯 Python 约束的精确重算；不可信任务分数**不内嵌**，运行期经生产链活体取（GEMORNA 8004 3′UTR/MRL + LinearFold 8015 junction 窗口 MFE/nt + 约束折叠 ddG_open_w1 = 当前平台 junction 报告；junction 计算与设计期工作流值逐位一致交叉验证）。
+- **双臂重跑**（`experiments/exp18_mrna_claim_gating.py`，预注册 docstring，pilot 6/6 × 双臂 PASS）：两臂全新运行——未门控 = advisory 全放行；门控 = `RNADA_CAPGATE=enforce` + 打包默认 SelfModel（E7/Exp-14 GEMORNA-MRL 剖析；scoring-由-ranking-蕴含的 legacy 补丁恢复，6 次 pilot v1 运行作废披露）+ 逐家族注册确定性报告指标 + 建时真值执行验证 + ClaimGate。每臂每题恰好 2 次 LLM 调用（deepseek-v4-pro，temp 0；提示词与 git e337ac5 恢复的 legacy E3-M 逐字节相同，仅门控臂加 gate-feedback 块）。确定性盲判（legacy 规则；洗牌 seed 0 + 密封映射；**注册修正案**：decoy 家族上正向断言需以候选 id 为主语——legacy 关键词启发式对门控臂的否定式弃权声明误判）。
+- **结果 40/40（20 × 2），0 失败：FP 6/17 = 35.3%（CI 17.3–58.7）→ 1/12 = 8.3%（CI 1.5–35.4）；TP 保留 11/11 = 100%；越权 6 → 0；go-rule 双项通过（降幅 76.4% ≥ 50%、保留 100% ≥ 90%）**。未门控 FP 全部落在 utr3（3/3）+ junction（2/2）+ 一处对称 MRL 排名翻转（最弱认证家族 ρ=0.835，预测 hi30 vs 实测 hi01——两臂同错，即唯一存活的门控 FP，与 legacy 登记通道一致）；门控机制比 aptamer 侧早一层——6 条计划请求被拦后模型在五道 utr3/junction 任务上**完全不发声明**（Fig 4d 白描边空格），3 条跨家族 MRL 绝对声明被降级为靶内相对（neutral），0 压制 0 越权；可信家族 10/10 双臂全 TP，执行验证 0 弃权。
+- **平台缺陷披露（构建期发现并绕开）**：全长度结果 JSON 的 `metadata.cds_sequence` 为存储侧截断 echo（200 字符 + "…(truncated)"，ToolExecutor 字符串上限）——设计期评估本身用内存真序列（存储 `cds_cai` 与干净 CDS 的 CAI 精确相等可证），构建器按 cds_source 从 CDS 设计缓存回填真 CDS 并断言前缀一致；修复后五道构造任务重跑（10 次作废运行披露）。用量：80 次有效 + 32 次作废 LLM 调用；壁钟 ≈ 34 min（双臂）+ 设计阶段 64 min（缓存）。
+- **Fig 4d 绘制**（`experiments/plots/fig4d_mrna_family_strip.py` → `fig4d_mrna_family_strip.{pdf,png}`）：按任务家族分组配对类别条带——20 任务行 × 两臂块、每发布声明一色块（sage=TP / terracotta=FP / warm grey=neutral，白描边=未发布声明——门控弃权的关键视觉元素）+ 臂×裁定 mosaic inset；palette rev 7、6-pt 纯黑、绝对 mm、1200-dpi PNG；视觉 QA 两轮（首轮标签列相撞，缩短家族/靶标签并加宽标签列）。文档同步：FIGURE_PLAN_V5 行 d + 注记、PAPER_DRAFT（摘要 + 贡献 3 + §2.4 段 + Fig 4 图注 d + Methods + LLM 用量 + 数据可用性）、PAPER_FACT_SHEET（Exp 18 节 + claim check + 关键数字 13 补 E3-M 重测口径）、MANUSCRIPT 重置表 Exp 18 行、AGENTS.md。**Next: Fig 4e–h + Figs 5–6 战役 + E21/E22 baselines 按第三次重置继续。**
 
 ## 2026-08-31 — Exp 17: E3 门控双臂主实验重跑（Fig 4a/4b）
 

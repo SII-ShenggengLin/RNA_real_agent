@@ -1,0 +1,1628 @@
+{
+ "task_id": "mrna_cds_20260901_045034",
+ "success": true,
+ "timestamp": "2026-09-01T04:51:46.811639",
+ "session_id": "exp18_cds_EPO",
+ "candidate_count": 6,
+ "candidates": [
+  {
+   "rank": 1,
+   "id": "cand_01ca31eda030",
+   "source": "cds_design:lineardesign_lambda1.0",
+   "sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+   "sequence_type": "mrna",
+   "total_length": 579,
+   "total_score": 201.72297631732184,
+   "scores": {
+    "mfe_per_nt": -0.415405872193437,
+    "cai_score": 0.8178953798140791,
+    "combined_score": 201.72297631732184,
+    "total_score": 201.72297631732184,
+    "gc_content": 0.6459412780656304,
+    "gc_content_local": 0.6459412780656304,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -240.52,
+    "unpaired_fraction": 0.1848013816925734,
+    "rnastop_overall_stability": 0.45779815316200256,
+    "u_fraction": 0.17443868739205526,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 1.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+     "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_649830f652.fasta",
+     "generated_sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+     "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.((((.((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).).))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).))))))))))))))).)))).))))))))))))))))).))))))).((((((((.((((((((.(((((..(.(((((((((((((((((((...))).)))))))))))))))))..))))).)))))))).)))))))).((((((((....))))))))",
+     "mfe": -433.9,
+     "cai_score": 0.818,
+     "lambda_value": 1.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG\nmRNA structure: ...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.((((.((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).).))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).))))))))))))))).)))).))))))))))))))))).))))))).((((((((.((((((((.(((((..(.(((((((((((((((((((...))).)))))))))))))))))..))))).)))))))).)))))))).((((((((....))))))))\nmRNA folding free energy: -433.90 kcal/mol; mRNA CAI: 0.818\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.(((..((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).))...))).)))))))))))))))))))))))))))))...(((((.(...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.6459412780656304,
+    "gc_content_local": 0.6459412780656304,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -240.52,
+    "mfe_per_nt": -0.415405872193437,
+    "unpaired_fraction": 0.1848013816925734,
+    "rnastop_overall_stability": 0.45779815316200256,
+    "cai_score": 0.8178953798140791,
+    "u_fraction": 0.17443868739205526,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 2,
+   "id": "cand_0d62568745b1",
+   "source": "cds_design:lineardesign_lambda4.0",
+   "sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+   "sequence_type": "mrna",
+   "total_length": 579,
+   "total_score": 189.18034047652196,
+   "scores": {
+    "mfe_per_nt": -0.35065630397236613,
+    "cai_score": 0.9307543487769133,
+    "combined_score": 189.18034047652196,
+    "total_score": 189.18034047652196,
+    "gc_content": 0.6597582037996546,
+    "gc_content_local": 0.6597582037996546,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -203.03,
+    "unpaired_fraction": 0.2158894645941278,
+    "rnastop_overall_stability": 0.4669969081878662,
+    "u_fraction": 0.17271157167530224,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 4.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+     "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_29729a8002.fasta",
+     "generated_sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+     "structure": "...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...((((((((((((((((((........)))))))).).)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((...(((....)))...))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).))))))))))))))).)))).)))))((((((((((((((((((((..(((((((((((.......((((((((((...(((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))",
+     "mfe": -381.4,
+     "cai_score": 0.931,
+     "lambda_value": 4.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG\nmRNA structure: ...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...((((((((((((((((((........)))))))).).)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((...(((....)))...))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).))))))))))))))).)))).)))))((((((((((((((((((((..(((((((((((.......((((((((((...(((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))\nmRNA folding free energy: -381.40 kcal/mol; mRNA CAI: 0.931\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "structure": "...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...(((((((((.((((((((........))))))))...)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).......(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.6597582037996546,
+    "gc_content_local": 0.6597582037996546,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -203.03,
+    "mfe_per_nt": -0.35065630397236613,
+    "unpaired_fraction": 0.2158894645941278,
+    "rnastop_overall_stability": 0.4669969081878662,
+    "cai_score": 0.9307543487769133,
+    "u_fraction": 0.17271157167530224,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 3,
+   "id": "cand_21ad4ed66ad7",
+   "source": "cds_design:lineardesign_lambda0.0",
+   "sequence": "AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU",
+   "sequence_type": "mrna",
+   "total_length": 579,
+   "total_score": 187.77454051530125,
+   "scores": {
+    "mfe_per_nt": -0.436321243523316,
+    "cai_score": 0.7145954860382963,
+    "combined_score": 187.77454051530125,
+    "total_score": 187.77454051530125,
+    "gc_content": 0.6286701208981001,
+    "gc_content_local": 0.6286701208981001,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -252.63,
+    "unpaired_fraction": 0.16062176165803108,
+    "rnastop_overall_stability": 0.47033682465553284,
+    "u_fraction": 0.19343696027633853,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 0.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+     "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_2447aab04e.fasta",
+     "generated_sequence": "AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU",
+     "structure": "..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((.((.(((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))).))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))",
+     "mfe": -443.2,
+     "cai_score": 0.715,
+     "lambda_value": 0.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU\nmRNA structure: ..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((.((.(((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))).))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))\nmRNA folding free energy: -443.20 kcal/mol; mRNA CAI: 0.715\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "structure": "..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "mfe_per_nt"
+   },
+   "metrics": {
+    "gc_content": 0.6286701208981001,
+    "gc_content_local": 0.6286701208981001,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -252.63,
+    "mfe_per_nt": -0.436321243523316,
+    "unpaired_fraction": 0.16062176165803108,
+    "rnastop_overall_stability": 0.47033682465553284,
+    "cai_score": 0.7145954860382963,
+    "u_fraction": 0.19343696027633853,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 4,
+   "id": "cand_8b62edad8b35",
+   "source": "cds_design:lineardesign_lambda10.0",
+   "sequence": "AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG",
+   "sequence_type": "mrna",
+   "total_length": 579,
+   "total_score": 123.65630283735148,
+   "scores": {
+    "mfe_per_nt": -0.21620034542314337,
+    "cai_score": 0.9921362781636495,
+    "combined_score": 123.65630283735148,
+    "total_score": 123.65630283735148,
+    "gc_content": 0.6925734024179621,
+    "gc_content_local": 0.6925734024179621,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -125.18,
+    "unpaired_fraction": 0.3333333333333333,
+    "rnastop_overall_stability": 0.4834012985229492,
+    "u_fraction": 0.1381692573402418,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 10.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+    },
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+     "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_d51a129403.fasta",
+     "generated_sequence": "AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG",
+     "structure": "..((((((((.((.(((((......((((((((((.((.(((.((((((((.((((((((((.(((((((.((((((.((((((((..(((((((..(((((..(((((((.(((((...))))))))))))...))..))).)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).))(((.....)))..))))))))))))))))))...((((.(((((((((((((((((((((...(((....)))...)))))))))))))))))).....))).))))..((((((((.(((((.((((.((..((.((((.((((((....))))))...)))).))..))..)))).).)))))))))).)).)))..)).))))).))))).....)))))))...))).))))).(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).))))))).((((...))))",
+     "mfe": -305.0,
+     "cai_score": 0.992,
+     "lambda_value": 10.0,
+     "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+     "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG\nmRNA structure: ..((((((((.((.(((((......((((((((((.((.(((.((((((((.((((((((((.(((((((.((((((.((((((((..(((((((..(((((..(((((((.(((((...))))))))))))...))..))).)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).))(((.....)))..))))))))))))))))))...((((.(((((((((((((((((((((...(((....)))...)))))))))))))))))).....))).))))..((((((((.(((((.((((.((..((.((((.((((((....))))))...)))).))..))..)))).).)))))))))).)).)))..)).))))).))))).....)))))))...))).))))).(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).))))))).((((...))))\nmRNA folding free energy: -305.00 kcal/mol; mRNA CAI: 0.992\n\n",
+     "stderr": "",
+     "model": "LinearDesign"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "structure": "...(((((...((.(((((......((((((((((.((((((.((((((((.((((((((((.(((((((.((((((.(((((.(((.(((((((.........(((((((..((((...)))).)))))))...........)))))))............))).))))).)))))))))))))...((((((..((((...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "cai_score"
+   },
+   "metrics": {
+    "gc_content": 0.6925734024179621,
+    "gc_content_local": 0.6925734024179621,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -125.18,
+    "mfe_per_nt": -0.21620034542314337,
+    "unpaired_fraction": 0.3333333333333333,
+    "rnastop_overall_stability": 0.4834012985229492,
+    "cai_score": 0.9921362781636495,
+    "u_fraction": 0.1381692573402418,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 5,
+   "id": "cand_17c981dfb5e8",
+   "source": "cds_design:rnarl",
+   "sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGGCCCUGGGGGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGCGGGGGAAGCUGAAGCUGUACACCGGGGAGGCCUGCCGGACCGGGGACCGG",
+   "sequence_type": "mrna",
+   "total_length": 579,
+   "total_score": 115.99591146882184,
+   "scores": {
+    "mfe_per_nt": -0.20780656303972364,
+    "cai_score": 0.9778445154062892,
+    "combined_score": 115.99591146882184,
+    "total_score": 115.99591146882184,
+    "gc_content": 0.7132987910189983,
+    "gc_content_local": 0.7132987910189983,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -120.32,
+    "unpaired_fraction": 0.3540587219343696,
+    "rnastop_overall_stability": 0.5052422881126404,
+    "u_fraction": 0.12953367875647667,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "rnarl",
+    "design_params": {
+     "model_type": "Homo sapiens mRNA"
+    },
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+     "output_filepath": "workspace/sessions/exp18_cds_EPO/rnarl_cds_262932d0e0.fasta",
+     "generated_sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGGCCCUGGGGGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGCGGGGGAAGCUGAAGCUGUACACCGGGGAGGCCUGCCGGACCGGGGACCGG",
+     "model_type": "Homo sapiens mRNA",
+     "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/checkpoints/homo_mrna.pt",
+     "esm2_model_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D",
+     "device": "cuda:0",
+     "model": "RNARL-actor"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "structure": "...(((((((....)))))))....(((((((((((((((((.(((.((.(.((((((((((.(((((((..(((((.((.((.((..((((((((........))))))))....)).)).(((((((.(((.((((.....))))..........))).))))))).)).))))).)))))))...........((((...(truncated)",
+    "fold_tool": "LinearFold"
+   },
+   "metrics": {
+    "gc_content": 0.7132987910189983,
+    "gc_content_local": 0.7132987910189983,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -120.32,
+    "mfe_per_nt": -0.20780656303972364,
+    "unpaired_fraction": 0.3540587219343696,
+    "rnastop_overall_stability": 0.5052422881126404,
+    "cai_score": 0.9778445154062892,
+    "u_fraction": 0.12953367875647667,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  },
+  {
+   "rank": 6,
+   "id": "cand_b39e7b9c994d",
+   "source": "cds_design:gemorna",
+   "sequence": "AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCGCCCUGGGCGCCCAGAAGGAGGCCAUCUCCCCGCCGGACGCCGCCUCGGCCGCCCCCCUGAGGACCAUCACCGCCGACACCUUCCGCAAGCUGUUCCGCGUUUAUUCAAACUUCCUGAGAGGCAAACUCAAGCUGUACACGGGCGAGGCCUGCAGGACCGGCGACCGG",
+   "sequence_type": "mrna",
+   "total_length": 579,
+   "total_score": 78.29867838232084,
+   "scores": {
+    "mfe_per_nt": -0.17089810017271156,
+    "cai_score": 0.8985241756768297,
+    "combined_score": 78.29867838232084,
+    "total_score": 78.29867838232084,
+    "gc_content": 0.6925734024179621,
+    "gc_content_local": 0.6925734024179621,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -98.95,
+    "unpaired_fraction": 0.46113989637305697,
+    "rnastop_overall_stability": 0.5161669850349426,
+    "u_fraction": 0.14335060449050085,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   },
+   "metadata": {
+    "design_tool": "gemorna",
+    "design_params": {},
+    "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+    "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "design_output": {
+     "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+     "output_filepath": "workspace/sessions/exp18_cds_EPO/gemorna_cds_bfecab4718.fasta",
+     "generated_sequence": "AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCGCCCUGGGCGCCCAGAAGGAGGCCAUCUCCCCGCCGGACGCCGCCUCGGCCGCCCCCCUGAGGACCAUCACCGCCGACACCUUCCGCAAGCUGUUCCGCGUUUAUUCAAACUUCCUGAGAGGCAAACUCAAGCUGUACACGGGCGAGGCCUGCAGGACCGGCGACCGG",
+     "raw_output": "Generated CDS & Naturalness\nATGGGAGTGCACGAGTGCCCGGCCTGGCTCTGGCTGCTGCTGTCACTGCTGAGCCTGCCGCTGGGGCTCCCCGTGCTGGGGGCCCCACCCCGCCTCATCTGCGACAGCCGGGTGCTGGAGCGCTACCTGCTGGAGGCCAAGGAGGCCGAGAACATCACCACCGGCTGCGCCGAGCACTGCAGCCTGAACGAGAACATCACCGTGCCCGACACCAAGGTGAACTTTTACGCCTGGAAGCGGATGGAGGTGGGGCAGCAGGCCGTGGAGGTGTGGCAGGGCCTGGCGCTGCTGAGCGAGGCGGTGCTGCGGGGCCAGGCGCTGCTGGTGAACAGCAGCCAGCCCTGGGAGCCGCTGCAGCTGCACGTGGACAAGGCCGTGTCCGGCCTCCGCAGCCTGACCACCCTGCTGCGCGCCCTGGGCGCCCAGAAGGAGGCCATCTCCCCGCCGGACGCCGCCTCGGCCGCCCCCCTGAGGACCATCACCGCCGACACCTTCCGCAAGCTGTTCCGCGTTTATTCAAACTTCCTGAGAGGCAAACTCAAGCTGTACACGGGCGAGGCCTGCAGGACCGGCGACCGG 0.58",
+     "model": "GEMORNA-cds"
+    },
+    "cai_species": "Homo sapiens",
+    "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "structure": "..((.(((((.(.(((((((((((.......)))....((((((.(.(.((((........((((((((((......))))))))))......)))).).).)))))))))))))).).))))).)).......((((.....))))...............(((((((........)))))))............((((...(truncated)",
+    "fold_tool": "LinearFold"
+   },
+   "metrics": {
+    "gc_content": 0.6925734024179621,
+    "gc_content_local": 0.6925734024179621,
+    "sequence_length": 579,
+    "mfe_kcal_per_mol": -98.95,
+    "mfe_per_nt": -0.17089810017271156,
+    "unpaired_fraction": 0.46113989637305697,
+    "rnastop_overall_stability": 0.5161669850349426,
+    "cai_score": 0.8985241756768297,
+    "u_fraction": 0.14335060449050085,
+    "fold_tool": "LinearFold",
+    "cai_species": "Homo sapiens"
+   }
+  }
+ ],
+ "best_candidate": {
+  "rank": 1,
+  "id": "cand_01ca31eda030",
+  "source": "cds_design:lineardesign_lambda1.0",
+  "sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+  "sequence_type": "mrna",
+  "total_length": 579,
+  "total_score": 201.72297631732184,
+  "scores": {
+   "mfe_per_nt": -0.415405872193437,
+   "cai_score": 0.8178953798140791,
+   "combined_score": 201.72297631732184,
+   "total_score": 201.72297631732184,
+   "gc_content": 0.6459412780656304,
+   "gc_content_local": 0.6459412780656304,
+   "sequence_length": 579,
+   "mfe_kcal_per_mol": -240.52,
+   "unpaired_fraction": 0.1848013816925734,
+   "rnastop_overall_stability": 0.45779815316200256,
+   "u_fraction": 0.17443868739205526,
+   "fold_tool": "LinearFold",
+   "cai_species": "Homo sapiens"
+  },
+  "metadata": {
+   "design_tool": "lineardesign",
+   "design_params": {
+    "lambda_value": 1.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv"
+   },
+   "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+   "protein_sequence_used": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+   "protein_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+   "design_output": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_649830f652.fasta",
+    "generated_sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.((((.((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).).))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).))))))))))))))).)))).))))))))))))))))).))))))).((((((((.((((((((.(((((..(.(((((((((((((((((((...))).)))))))))))))))))..))))).)))))))).)))))))).((((((((....))))))))",
+    "mfe": -433.9,
+    "cai_score": 0.818,
+    "lambda_value": 1.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG\nmRNA structure: ...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.((((.((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).).))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).))))))))))))))).)))).))))))))))))))))).))))))).((((((((.((((((((.(((((..(.(((((((((((((((((((...))).)))))))))))))))))..))))).)))))))).)))))))).((((((((....))))))))\nmRNA folding free energy: -433.90 kcal/mol; mRNA CAI: 0.818\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "cai_species": "Homo sapiens",
+   "workspace_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+   "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.(((..((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).))...))).)))))))))))))))))))))))))))))...(((((.(...(truncated)",
+   "fold_tool": "LinearFold",
+   "pareto_tag": "balanced"
+  },
+  "metrics": {
+   "gc_content": 0.6459412780656304,
+   "gc_content_local": 0.6459412780656304,
+   "sequence_length": 579,
+   "mfe_kcal_per_mol": -240.52,
+   "mfe_per_nt": -0.415405872193437,
+   "unpaired_fraction": 0.1848013816925734,
+   "rnastop_overall_stability": 0.45779815316200256,
+   "cai_score": 0.8178953798140791,
+   "u_fraction": 0.17443868739205526,
+   "fold_tool": "LinearFold",
+   "cai_species": "Homo sapiens"
+  }
+ },
+ "summary": "candidates=6\nbest_total_score=201.72297631732184\npareto_frontier_size=4\n---\n#1 | source=cds_design:lineardesign_lambda1.0 | len=579nt | GC=0.646 | MFE=-240.52(LinearFold) | MFE/nt=-0.4154 | unpaired=0.185 | RNASTOP=0.4578 | CAI=0.8179 | U=0.174 | total_score=201.723\n#2 | source=cds_design:lineardesign_lambda4.0 | len=579nt | GC=0.660 | MFE=-203.03(LinearFold) | MFE/nt=-0.3507 | unpaired=0.216 | RNASTOP=0.4670 | CAI=0.9308 | U=0.173 | total_score=189.180\n#3 | source=cds_design:lineardesign_lambda0.0 | len=579nt | GC=0.629 | MFE=-252.63(LinearFold) | MFE/nt=-0.4363 | unpaired=0.161 | RNASTOP=0.4703 | CAI=0.7146 | U=0.193 | total_score=187.775\n#4 | source=cds_design:lineardesign_lambda10.0 | len=579nt | GC=0.693 | MFE=-125.18(LinearFold) | MFE/nt=-0.2162 | unpaired=0.333 | RNASTOP=0.4834 | CAI=0.9921 | U=0.138 | total_score=123.656\n#5 | source=cds_design:rnarl | len=579nt | GC=0.713 | MFE=-120.32(LinearFold) | MFE/nt=-0.2078 | unpaired=0.354 | RNASTOP=0.5052 | CAI=0.9778 | U=0.130 | total_score=115.996\n#6 | source=cds_design:gemorna | len=579nt | GC=0.693 | MFE=-98.95(LinearFold) | MFE/nt=-0.1709 | unpaired=0.461 | RNASTOP=0.5162 | CAI=0.8985 | U=0.143 | total_score=78.299",
+ "_diagnosis_history": [
+  {
+   "overall_assessment": "All six candidates meet or exceed the human CAI baseline. Source diversity covers LinearDesign, RNARL, and GEMORNA, and the observed CAI/MFE tradeoff is consistent with the selected lambda values. No critical defects were identified.",
+   "quality_score": 0.92,
+   "issues": [
+    {
+     "severity": "info",
+     "category": "CAI",
+     "description": "The LinearDesign lambda=0 candidate has the lowest CAI (0.715) and is only modestly above the Homo sapiens random synonymous baseline (~0.67), consistent with maximum structure weighting.",
+     "metric_value": 0.7145954860382963,
+     "threshold": 0.67
+    },
+    {
+     "severity": "info",
+     "category": "GC content",
+     "description": "Some high-CAI candidates (lambda=10 and RNARL) have GC content above 0.69, which is high for typical mammalian mRNA but does not directly enter the ranking score.",
+     "metric_value": 0.7132987910189983,
+     "threshold": 0.65
+    }
+   ],
+   "action": "pass",
+   "parameter_overrides": {},
+   "reasoning": "Diverse tools were used, all candidates show acceptable or strong CAI for Homo sapiens, and MFE per nucleotide is not excessively negative. The differences are expected tradeoffs between stability and codon adaptation. Retry is not warranted.",
+   "confidence": 0.9,
+   "evaluator_only": false,
+   "affected_evaluators": []
+  },
+  {
+   "overall_assessment": "The run succeeded and produced six source-diverse candidates. Five of six candidates have strong human CAI above 0.82, and the lambda=0 candidate is modestly above the human random synonymous baseline as expected for maximum structure weighting. MFE per nucleotide values are moderate and length-consistent, with no evidence of destabilizing or over-stabilizing failures. Remaining observations are informational only and do not justify retry.",
+   "quality_score": 0.9,
+   "issues": [
+    {
+     "severity": "info",
+     "category": "CAI",
+     "description": "LinearDesign lambda=0 has the lowest CAI (0.715), only modestly above the Homo sapiens random synonymous baseline (~0.67). This is expected for the maximum-structure lambda=0 setting, and other candidates are above 0.81.",
+     "metric_value": 0.7145954860382963,
+     "threshold": 0.67
+    },
+    {
+     "severity": "info",
+     "category": "GC content",
+     "description": "Two high-CAI candidates (LinearDesign lambda=10 and RNARL) have GC content above 0.69, which is high for typical mammalian mRNA. GC content is report-only and does not directly enter the ranking score.",
+     "metric_value": 0.7132987910189983,
+     "threshold": 0.65
+    }
+   ],
+   "action": "pass",
+   "parameter_overrides": {},
+   "reasoning": "All candidates are biologically plausible for Homo sapiens CDS design. The high-CAI candidates remain within acceptable structure ranges, and the only lower-CAI candidate is the expected lambda=0 tradeoff. Previous issues were informational and do not represent failed optimization. No parameter adjustments are strongly warranted.",
+   "confidence": 0.93,
+   "evaluator_only": false,
+   "affected_evaluators": []
+  }
+ ],
+ "_quality_auto_retry": false,
+ "retry_count": 0,
+ "_user_explicit_params": [
+  "cai_species",
+  "design_tool",
+  "protein_sequence",
+  "run_fold",
+  "run_gc"
+ ],
+ "_tool_timings": {},
+ "_last_form_params": {
+  "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+  "design_tool": "all",
+  "cai_species": "Homo sapiens",
+  "run_fold": true,
+  "run_gc": true
+ },
+ "workflow_input": {
+  "lineardesign_filepath": null,
+  "lineardesign_service_url": "http://127.0.0.1:8014/generate/cds",
+  "lineardesign_lambda_value": 0.0,
+  "lineardesign_codon_usage_path": null,
+  "lineardesign_verbose": false,
+  "rnarl_filepath": null,
+  "rnarl_service_url": "http://127.0.0.1:8008/generate/cds",
+  "rnarl_model_type": "Homo sapiens mRNA",
+  "rnarl_checkpoint_path": null,
+  "rnarl_esm2_model_path": null,
+  "rnarl_device": null,
+  "gemorna_filepath": null,
+  "gemorna_service_url": "http://127.0.0.1:8004/generate/cds",
+  "vienna_fold_filepath": null,
+  "vienna_fold_temp_c": 37.0,
+  "vienna_fold_dangles": 2,
+  "vienna_fold_no_lp": false,
+  "vienna_fold_no_gu": false,
+  "vienna_fold_no_closing_gu": false,
+  "vienna_fold_salt": null,
+  "vienna_fold_no_tetra": false,
+  "vienna_fold_energy_model": null,
+  "vienna_fold_nsp": null,
+  "vienna_fold_param_file": null,
+  "vienna_fold_constraint": null,
+  "vienna_fold_shape_file": null,
+  "vienna_fold_shape_method": "D",
+  "vienna_fold_partfunc": false,
+  "vienna_fold_circ": false,
+  "vienna_fold_gquad": false,
+  "vienna_fold_service_url": "http://127.0.0.1:8003/fold",
+  "vienna_fold_noDP": false,
+  "vienna_fold_maxBPspan": -1,
+  "vienna_fold_MEA": null,
+  "vienna_fold_batch": false,
+  "vienna_fold_canonicalBPonly": false,
+  "vienna_fold_enforceConstraint": false,
+  "vienna_fold_shapeConversion": "O",
+  "vienna_fold_verbose": false,
+  "linearfold_filepath": null,
+  "linearfold_beam_size": 100,
+  "linearfold_use_vienna": false,
+  "linearfold_dangles": 2,
+  "linearfold_sharpturn": false,
+  "linearfold_constraints": null,
+  "linearfold_shape_file_path": null,
+  "linearfold_service_url": "http://127.0.0.1:8015/fold",
+  "linearfold_fasta": false,
+  "linearfold_verbose": false,
+  "gc_filepath": null,
+  "gc_service_url": "http://127.0.0.1:8020/gc-content",
+  "gc_timeout_seconds": 120.0,
+  "u_content_filepath": null,
+  "u_content_service_url": "http://127.0.0.1:8020/u-content",
+  "u_content_timeout_seconds": 120.0,
+  "unpaired_filepath": null,
+  "unpaired_service_url": "http://127.0.0.1:8020/unpaired-fraction",
+  "unpaired_timeout_seconds": 120.0,
+  "rnastop_filepath": null,
+  "rnastop_service_url": "http://127.0.0.1:8009/predict/stability",
+  "rnastop_structure": null,
+  "rnastop_loop_type": null,
+  "rnastop_checkpoint_path": null,
+  "rnastop_device": null,
+  "rnastop_rnafm_model_path": null,
+  "rnastop_dnabert_model_path": null,
+  "cai_filepath": null,
+  "cai_custom_codon_table_path": null,
+  "protein_sequence": "MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLLEAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVLRGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTITADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR",
+  "truncate_n_terminal": null,
+  "truncate_c_terminal": null,
+  "design_tool": "all",
+  "navigation": false,
+  "lambda_value": null,
+  "model_type": "Homo sapiens mRNA",
+  "cai_species": "Homo sapiens",
+  "run_fold": true,
+  "run_gc": true
+ },
+ "trace": [
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"lambda_value\": 0.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_EPO/lineardesign_cds_2447aab04e.fasta\", \"generated_sequence\": \"AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 27.163952325936407,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_2447aab04e.fasta",
+    "generated_sequence": "AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU",
+    "structure": "..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((.((.(((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))).))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))",
+    "mfe": -443.2,
+    "cai_score": 0.715,
+    "lambda_value": 0.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU\nmRNA structure: ..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((.((.(((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))).))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))\nmRNA folding free energy: -443.20 kcal/mol; mRNA CAI: 0.715\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 0.0
+   },
+   "created_at": "2026-09-01T04:48:58.276341Z"
+  },
+  {
+   "step_name": "cand_21ad4ed66ad7_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"sequence_length\": 579, \"g_count\": 191, \"c_count\": 173, \"gc_count\": 364, \"gc_content\": 0.6286701208981001, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0045923799043521285,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "sequence_length": 579,
+    "g_count": 191,
+    "c_count": 173,
+    "gc_count": 364,
+    "gc_content": 0.6286701208981001,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6286701208981001,
+    "sequence_length": 579
+   },
+   "created_at": "2026-09-01T04:50:24.810052Z"
+  },
+  {
+   "step_name": "cand_21ad4ed66ad7_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"sequence_length\": 579, \"u_count\": 112, \"u_fraction\": 0.19343696027633853, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0027569140074774623,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "sequence_length": 579,
+    "u_count": 112,
+    "u_fraction": 0.19343696027633853,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.19343696027633853,
+    "u_count": 112
+   },
+   "created_at": "2026-09-01T04:50:24.813101Z"
+  },
+  {
+   "step_name": "cand_21ad4ed66ad7_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"sequence\": \"AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.2714176109293476,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "sequence": "AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU",
+    "structure": "..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((...((((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))..))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))",
+    "mfe": -252.63,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -252.63,
+    "structure": "..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((...((((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))..))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:50:25.085051Z"
+  },
+  {
+   "step_name": "cand_21ad4ed66ad7_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/structure_6d2367d6ba.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/structure_6d2367d6ba.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_6d2367d6ba.db\", \"structure_length\": 579, \"dot_count\": 93, \"unpaired_fraction\": 0.16062176165803108, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0042246009688824415,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/structure_6d2367d6ba.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_6d2367d6ba.db",
+    "structure_length": 579,
+    "dot_count": 93,
+    "unpaired_fraction": 0.16062176165803108,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.16062176165803108
+   },
+   "created_at": "2026-09-01T04:50:25.090221Z"
+  },
+  {
+   "step_name": "cand_21ad4ed66ad7_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"structure\": \"..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).)))))))))))))))))))))))))))))........((((((((((.(((((.((((..(((((.(((((...((((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))..))))).)))))..)))).((((((((((((((((((((((((((..(((((((((((.((((((((.(((((((..(((....)))...))))))).))))))))))))))))))).)))))))))))))).)))))).))))))))))).))))))))))\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_EPO/rnastop_prediction_a663796687.json\", \"sequence\": \"AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.3304794270079583,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_EPO/rnastop_prediction_a663796687.json",
+    "sequence": "AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGUCUACAGUAAUUUCCUGAGGGGCAAGCUGAAGCUGUAUACGGGGGAGGCUUGUCGUACCGGGGACCGU",
+    "used_sequence": "AUGGGGGUUCAUGAGUGUCCAGCGUGGCUUUGGCUACUGCUGUCACUCUUGAGCCUCCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGUUUGAUCUGCGACUCCCGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUAACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACGGUCCCCGAUACGAAGGUCAACUUCUACGCCUGGAAGCGCAUGGAGGUGGGUCAGCAGGCUGUGGAGGUCUGGCAGGGCCUUGCCUUGUUGAGCGAAGCGGUUCUCCGGGGCCAGGCGCUGUUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUUCAGCUCCACGUGGACAAGGCCGUGUCAGGCCUCCGCAGCCUGACGACCCUCCUCCGUGCGCUCGGGGCGCAGAAGGAGGCCAUAAGCCCCCCCGAUGCAGCUUCAGCUGCGCCCCUCAGGACGAUUACUGCAGACACGUUCAGGAAACUGUUUCGUGU",
+    "sequence_length": 579,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "..(((((((((.(((((..(((((((((....))))).)))).))))).)))))))))((((((((((((.(((((((((((((((((.(((((((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).))))).))))))))))))))))))))))))))))).........................((((..(((((.(((((...((((((((((((.(((((..((((((((((((((((((((.(((((((((.(((.((((((((((((((.(((((((..(((((((((....)))))).))).))))))))))))))))).)))).))).)).))))))).))))))))))))))))))))..))))).))))))))))))..))))).)))))..))))....................................................(((((..(((....)))...)))))",
+    "loop_type": "EEIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIHHHHHHIIIIIIIIII",
+    "mfe": -348.3999938964844,
+    "mean_reactivity": 0.42140382528305054,
+    "mean_deg_mg_ph10": 0.4838314950466156,
+    "mean_deg_mg_50c": 0.5057752132415771,
+    "overall_stability": 0.47033682465553284,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.47033682465553284
+   },
+   "created_at": "2026-09-01T04:50:26.421179Z"
+  },
+  {
+   "step_name": "cand_21ad4ed66ad7_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta\", \"cai_score\": 0.7145954860382963, \"species\": \"Homo sapiens\", \"cds_length_nt\": 579, \"codon_count\": 193, \"valid_codons\": 193, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.001884780009277165,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e69741e980.fasta",
+    "cai_score": 0.7145954860382963,
+    "species": "Homo sapiens",
+    "cds_length_nt": 579,
+    "codon_count": 193,
+    "valid_codons": 193,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.7145954860382963,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:50:26.423373Z"
+  },
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"lambda_value\": 1.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_EPO/lineardesign_cds_649830f652.fasta\", \"generated_sequence\": \"AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 27.300078246043995,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_649830f652.fasta",
+    "generated_sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.((((.((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).).))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).))))))))))))))).)))).))))))))))))))))).))))))).((((((((.((((((((.(((((..(.(((((((((((((((((((...))).)))))))))))))))))..))))).)))))))).)))))))).((((((((....))))))))",
+    "mfe": -433.9,
+    "cai_score": 0.818,
+    "lambda_value": 1.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG\nmRNA structure: ...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.((((.((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).)).).))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).))))))))))))))).)))).))))))))))))))))).))))))).((((((((.((((((((.(((((..(.(((((((((((((((((((...))).)))))))))))))))))..))))).)))))))).)))))))).((((((((....))))))))\nmRNA folding free energy: -433.90 kcal/mol; mRNA CAI: 0.818\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 1.0
+   },
+   "created_at": "2026-09-01T04:49:25.576915Z"
+  },
+  {
+   "step_name": "cand_01ca31eda030_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"sequence_length\": 579, \"g_count\": 200, \"c_count\": 174, \"gc_count\": 374, \"gc_content\": 0.6459412780656304, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0041369450045749545,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "sequence_length": 579,
+    "g_count": 200,
+    "c_count": 174,
+    "gc_count": 374,
+    "gc_content": 0.6459412780656304,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6459412780656304,
+    "sequence_length": 579
+   },
+   "created_at": "2026-09-01T04:50:26.428510Z"
+  },
+  {
+   "step_name": "cand_01ca31eda030_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"sequence_length\": 579, \"u_count\": 101, \"u_fraction\": 0.17443868739205526, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0031195631017908454,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "sequence_length": 579,
+    "u_count": 101,
+    "u_fraction": 0.17443868739205526,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.17443868739205526,
+    "u_count": 101
+   },
+   "created_at": "2026-09-01T04:50:26.431924Z"
+  },
+  {
+   "step_name": "cand_01ca31eda030_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"sequence\": \"AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.26950705994386226,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.(((..((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).))...))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).)))))))))))))))).))).))))))))))))))))).))))))).((((((((.((((((((.(((((....((((((((((((((((..........))))))))))))))))...))))).)))))))).)))))))).((((((((....))))))))",
+    "mfe": -240.52,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -240.52,
+    "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.(((..((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).))...))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).)))))))))))))))).))).))))))))))))))))).))))))).((((((((.((((((((.(((((....((((((((((((((((..........))))))))))))))))...))))).)))))))).)))))))).((((((((....))))))))",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:50:26.701902Z"
+  },
+  {
+   "step_name": "cand_01ca31eda030_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/structure_8669b80e70.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/structure_8669b80e70.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_8669b80e70.db\", \"structure_length\": 579, \"dot_count\": 107, \"unpaired_fraction\": 0.1848013816925734, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0040778579423204064,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/structure_8669b80e70.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_8669b80e70.db",
+    "structure_length": 579,
+    "dot_count": 107,
+    "unpaired_fraction": 0.1848013816925734,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.1848013816925734
+   },
+   "created_at": "2026-09-01T04:50:26.706918Z"
+  },
+  {
+   "step_name": "cand_01ca31eda030_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"structure\": \"...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.(((..((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).))...))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).)))))))))))))))).))).))))))))))))))))).))))))).((((((((.((((((((.(((((....((((((((((((((((..........))))))))))))))))...))))).)))))))).)))))))).((((((((....))))))))\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_EPO/rnastop_prediction_4060f19ad8.json\", \"sequence\": \"AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGU",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.351881873095408,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_EPO/rnastop_prediction_4060f19ad8.json",
+    "sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGUCUACAGCAACUUCCUGAGGGGGAAGCUGAAGUUGUACACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "used_sequence": "AUGGGCGUUCACGAGUGUCCGGCGUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCGUUGGGGCUGCCAGUGCUCGGCGCACCCCCUCGGCUGAUCUGCGACUCCAGGGUCCUCGAGCGGUACCUGCUCGAGGCCAAGGAGGCGGAGAACAUCACGACGGGGUGCGCCGAGCACUGCAGCCUCAACGAGAACAUCACAGUGCCUGACACCAAGGUCAACUUCUAUGCGUGGAAACGCAUGGAGGUUGGCCAGCAGGCAGUGGAGGUGUGGCAGGGCCUCGCUCUGCUGAGCGAGGCCGUGCUGCGUGGUCAGGCUCUGCUGGUCAACAGCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGAGCCUGACCACGCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCGCCGGACGCCGCGAGCGCCGCUCCCCUGCGUACAAUUACAGCUGACACCUUCAGGAAGUUGUUUAGGGU",
+    "sequence_length": 579,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "...(((((((.((.((((((((((.((((((((((((((((((((((((.((((((((((((((((((((.(((((((((((((((((.(((..((.(((.((.((((..((.((((((((((...))))))))))))..)))).)).))).))...))).)))))))))))))))))))))))))))))...(((((.((.((((((.......(((((((((((((((((....)))))))))))))))))..)))))).))..)))))((((.((((((((((....)))))))))).))))(((((((((((((((((.((((....(((((((((((((....(((((((....))).)))).))))))))))))))))).)))))))))))))))))....)))))))).)))))))))))))))).))).))))))))))))))))).)))))))..................................................",
+    "loop_type": "EEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -376.29998779296875,
+    "mean_reactivity": 0.4094713032245636,
+    "mean_deg_mg_ph10": 0.47183525562286377,
+    "mean_deg_mg_50c": 0.4920880198478699,
+    "overall_stability": 0.45779815316200256,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.45779815316200256
+   },
+   "created_at": "2026-09-01T04:50:28.059232Z"
+  },
+  {
+   "step_name": "cand_01ca31eda030_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta\", \"cai_score\": 0.8178953798140791, \"species\": \"Homo sapiens\", \"cds_length_nt\": 579, \"codon_count\": 193, \"valid_codons\": 193, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009814880322664976,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_cfff117d36.fasta",
+    "cai_score": 0.8178953798140791,
+    "species": "Homo sapiens",
+    "cds_length_nt": 579,
+    "codon_count": 193,
+    "valid_codons": 193,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.8178953798140791,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:50:28.060486Z"
+  },
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"lambda_value\": 4.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_EPO/lineardesign_cds_29729a8002.fasta\", \"generated_sequence\": \"AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 27.421138831065036,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_29729a8002.fasta",
+    "generated_sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "structure": "...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...((((((((((((((((((........)))))))).).)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((...(((....)))...))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).))))))))))))))).)))).)))))((((((((((((((((((((..(((((((((((.......((((((((((...(((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))",
+    "mfe": -381.4,
+    "cai_score": 0.931,
+    "lambda_value": 4.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG\nmRNA structure: ...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...((((((((((((((((((........)))))))).).)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((...(((....)))...))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).))))))))))))))).)))).)))))((((((((((((((((((((..(((((((((((.......((((((((((...(((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))\nmRNA folding free energy: -381.40 kcal/mol; mRNA CAI: 0.931\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 4.0
+   },
+   "created_at": "2026-09-01T04:49:52.998473Z"
+  },
+  {
+   "step_name": "cand_0d62568745b1_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"sequence_length\": 579, \"g_count\": 198, \"c_count\": 184, \"gc_count\": 382, \"gc_content\": 0.6597582037996546, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.009008754976093769,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "sequence_length": 579,
+    "g_count": 198,
+    "c_count": 184,
+    "gc_count": 382,
+    "gc_content": 0.6597582037996546,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6597582037996546,
+    "sequence_length": 579
+   },
+   "created_at": "2026-09-01T04:50:28.084402Z"
+  },
+  {
+   "step_name": "cand_0d62568745b1_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"sequence_length\": 579, \"u_count\": 100, \"u_fraction\": 0.17271157167530224, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0025880400789901614,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "sequence_length": 579,
+    "u_count": 100,
+    "u_fraction": 0.17271157167530224,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.17271157167530224,
+    "u_count": 100
+   },
+   "created_at": "2026-09-01T04:50:28.087254Z"
+  },
+  {
+   "step_name": "cand_0d62568745b1_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"sequence\": \"AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.26392151101026684,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "structure": "...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...(((((((((.((((((((........))))))))...)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((.(.(((....))).).))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).)))))))))))))))).))).)))))((((((((((((((((((((..(((((((((((.......(((((((((...((((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))",
+    "mfe": -203.03,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -203.03,
+    "structure": "...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...(((((((((.((((((((........))))))))...)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((.(.(((....))).).))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).)))))))))))))))).))).)))))((((((((((((((((((((..(((((((((((.......(((((((((...((((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:50:28.351599Z"
+  },
+  {
+   "step_name": "cand_0d62568745b1_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/structure_3f1b2b2508.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/structure_3f1b2b2508.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_3f1b2b2508.db\", \"structure_length\": 579, \"dot_count\": 125, \"unpaired_fraction\": 0.2158894645941278, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0035239929566159844,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/structure_3f1b2b2508.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_3f1b2b2508.db",
+    "structure_length": 579,
+    "dot_count": 125,
+    "unpaired_fraction": 0.2158894645941278,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.2158894645941278
+   },
+   "created_at": "2026-09-01T04:50:28.355964Z"
+  },
+  {
+   "step_name": "cand_0d62568745b1_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"structure\": \"...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...(((((((((.((((((((........))))))))...)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((.(.(((....))).).))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).)))))))))))))))).))).)))))((((((((((((((((((((..(((((((((((.......(((((((((...((((((....)))))))))).)))))...))))))))))).)))))))))))))).))))))...((((((((....))))))))\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_EPO/rnastop_prediction_198f484962.json\", \"sequence\": \"AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.3329434770857915,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_EPO/rnastop_prediction_198f484962.json",
+    "sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGAGGGGGAAGCUGAAGCUGUAUACAGGGGAGGCCUGUCGCACCGGCGACAGG",
+    "used_sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUCCUUCUGAGCCUCCUGAGCCUGCCCCUGGGCCUGCCAGUGCUGGGCGCUCCACCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGUGCUGAGCACUGUUCUCUGAAUGAGAACAUCACCGUGCCAGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUCUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACUCCUCACAGCCUUGGGAGCCACUGCAGCUGCACGUGGACAAGGCUGUGAGCGGCCUGCGGUCCCUGACCACUCUGCUGCGGGCUCUGGGGGCUCAGAAGGAGGCCAUCAGCCCCCCUGAUGCAGCUUCAGCUGCCCCCCUCAGGACCAUCACUGCUGACACCUUCCGGAAGCUGUUCCGGGU",
+    "sequence_length": 579,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "...(((((((....)))))))....((((((((((((((((((((((((.((((((((.(((.(((((.((((((...(((((((((.((((((((........))))))))...)))))))))...))))))))))).)))((((..((((..(((((....(((((.(((.(((((((((((.....))))))).....))))))))))))..)))))..))))..))))...(((((((((.((.(((((.(((((((((((((..((((((((((((((((((((.(.(((....))).).))))))))))))))))))))....))))(((((((((((....(((((((....))).)))).)))))))))))))))))))))))))))..))).)))))))))))))).)))))))))))))))).))).)))))...............................................((...((((((....))))))))",
+    "loop_type": "EEEIIIIIIHHHHHHIIIIIIEEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIHHHHHHIIIIIII",
+    "mfe": -320.70001220703125,
+    "mean_reactivity": 0.4266374707221985,
+    "mean_deg_mg_ph10": 0.4750611484050751,
+    "mean_deg_mg_50c": 0.4992920160293579,
+    "overall_stability": 0.4669969081878662,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.4669969081878662
+   },
+   "created_at": "2026-09-01T04:50:29.689340Z"
+  },
+  {
+   "step_name": "cand_0d62568745b1_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta\", \"cai_score\": 0.9307543487769133, \"species\": \"Homo sapiens\", \"cds_length_nt\": 579, \"codon_count\": 193, \"valid_codons\": 193, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009615779854357243,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_7141745ba6.fasta",
+    "cai_score": 0.9307543487769133,
+    "species": "Homo sapiens",
+    "cds_length_nt": 579,
+    "codon_count": 193,
+    "valid_codons": 193,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.9307543487769133,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:50:29.690595Z"
+  },
+  {
+   "step_name": "cds_design:lineardesign",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"lambda_value\": 10.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_EPO/lineardesign_cds_d51a129403.fasta\", \"generated_sequence\": \"AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 27.288218852016144,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/lineardesign_cds_d51a129403.fasta",
+    "generated_sequence": "AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG",
+    "structure": "..((((((((.((.(((((......((((((((((.((.(((.((((((((.((((((((((.(((((((.((((((.((((((((..(((((((..(((((..(((((((.(((((...))))))))))))...))..))).)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).))(((.....)))..))))))))))))))))))...((((.(((((((((((((((((((((...(((....)))...)))))))))))))))))).....))).))))..((((((((.(((((.((((.((..((.((((.((((((....))))))...)))).))..))..)))).).)))))))))).)).)))..)).))))).))))).....)))))))...))).))))).(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).))))))).((((...))))",
+    "mfe": -305.0,
+    "cai_score": 0.992,
+    "lambda_value": 10.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Homo_sapiens.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nmRNA sequence:  AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG\nmRNA structure: ..((((((((.((.(((((......((((((((((.((.(((.((((((((.((((((((((.(((((((.((((((.((((((((..(((((((..(((((..(((((((.(((((...))))))))))))...))..))).)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).))(((.....)))..))))))))))))))))))...((((.(((((((((((((((((((((...(((....)))...)))))))))))))))))).....))).))))..((((((((.(((((.((((.((..((.((((.((((((....))))))...)))).))..))..)))).).)))))))))).)).)))..)).))))).))))).....)))))))...))).))))).(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).))))))).((((...))))\nmRNA folding free energy: -305.00 kcal/mol; mRNA CAI: 0.992\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {
+    "lambda_value": 10.0
+   },
+   "created_at": "2026-09-01T04:50:20.287132Z"
+  },
+  {
+   "step_name": "cand_8b62edad8b35_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"sequence_length\": 579, \"g_count\": 205, \"c_count\": 196, \"gc_count\": 401, \"gc_content\": 0.6925734024179621, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004190037027001381,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "sequence_length": 579,
+    "g_count": 205,
+    "c_count": 196,
+    "gc_count": 401,
+    "gc_content": 0.6925734024179621,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6925734024179621,
+    "sequence_length": 579
+   },
+   "created_at": "2026-09-01T04:50:29.695993Z"
+  },
+  {
+   "step_name": "cand_8b62edad8b35_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"sequence_length\": 579, \"u_count\": 80, \"u_fraction\": 0.1381692573402418, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002719564945437014,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "sequence_length": 579,
+    "u_count": 80,
+    "u_fraction": 0.1381692573402418,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.1381692573402418,
+    "u_count": 80
+   },
+   "created_at": "2026-09-01T04:50:29.698998Z"
+  },
+  {
+   "step_name": "cand_8b62edad8b35_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"sequence\": \"AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.2654298560228199,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "sequence": "AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG",
+    "structure": "...(((((...((.(((((......((((((((((.((((((.((((((((.((((((((((.(((((((.((((((.(((((.(((.(((((((.........(((((((..((((...)))).)))))))...........)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).)).............))))))))))))))))))...((((.(((((((((((((((((((((.(.(((....))).).)))))))))))))))))).....))).)))))))).(((((.((((((.((((.....((((.((((((((....))))))........)).))))...)))).))).....))).)))))..)).))))).))))).....)))))))...)))))(((..(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).)))))))...)))......",
+    "mfe": -125.18,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -125.18,
+    "structure": "...(((((...((.(((((......((((((((((.((((((.((((((((.((((((((((.(((((((.((((((.(((((.(((.(((((((.........(((((((..((((...)))).)))))))...........)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).)).............))))))))))))))))))...((((.(((((((((((((((((((((.(.(((....))).).)))))))))))))))))).....))).)))))))).(((((.((((((.((((.....((((.((((((((....))))))........)).))))...)))).))).....))).)))))..)).))))).))))).....)))))))...)))))(((..(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).)))))))...)))......",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:50:29.964753Z"
+  },
+  {
+   "step_name": "cand_8b62edad8b35_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/structure_45f1b0ac1e.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/structure_45f1b0ac1e.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_45f1b0ac1e.db\", \"structure_length\": 579, \"dot_count\": 193, \"unpaired_fraction\": 0.3333333333333333, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002849644050002098,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/structure_45f1b0ac1e.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_45f1b0ac1e.db",
+    "structure_length": 579,
+    "dot_count": 193,
+    "unpaired_fraction": 0.3333333333333333,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3333333333333333
+   },
+   "created_at": "2026-09-01T04:50:29.968367Z"
+  },
+  {
+   "step_name": "cand_8b62edad8b35_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"structure\": \"...(((((...((.(((((......((((((((((.((((((.((((((((.((((((((((.(((((((.((((((.(((((.(((.(((((((.........(((((((..((((...)))).)))))))...........)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).)).............))))))))))))))))))...((((.(((((((((((((((((((((.(.(((....))).).)))))))))))))))))).....))).)))))))).(((((.((((((.((((.....((((.((((((((....))))))........)).))))...)))).))).....))).)))))..)).))))).))))).....)))))))...)))))(((..(((((((.((.((.(((...(((.((((((...(((.(((((((.((......)).))))))).)))...)))))).)))....))).)))).)))))))...)))......\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_EPO/rnastop_prediction_ba7e4e9654.json\", \"sequence\": \"AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.2910822869744152,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_EPO/rnastop_prediction_ba7e4e9654.json",
+    "sequence": "AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGUGUACAGCAACUUCCUGAGGGGCAAGCUGAAGCUGUACACCGGCGAGGCCUGCAGGACCGGCGACCGG",
+    "used_sequence": "AUGGGCGUGCACGAGUGUCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCUCUGGGGCUGCCAGUGCUGGGCGCCCCCCCUCGGCUGAUCUGCGACAGCAGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGAGGAUGGAGGUGGGCCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGCCAGGCCCUGCUGGUGAACAGCUCCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGCCUGAGGUCCCUGACCACCCUGCUGAGGGCCCUGGGCGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCAGGAAGCUGUUCAGGGU",
+    "sequence_length": 579,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "...(((((...((.(((((......((((((((((.((((((.((((((((.((((((((((.(((((((.((((((.(((((.(((.(((((((.........(((((((..((((...)))).)))))))...........)))))))............))).))))).)))))))))))))...((((((..((((((((.....)))...)))))..)))).)).............))))))))))))))))))...((((.(((((((((((((((((((((.(.(((....))).).)))))))))))))))))).....))).)))))))).(((((.((((((.((((.....((((.((((((((....))))))........)).))))...)))).))).....))).)))))..)).))))).))))).....)))))))...)))))..................................................",
+    "loop_type": "EEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIMMIIIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIHHHHHHHIIIIIIIIIIIIIIIIIIIMMMMMMMMMMMMMMIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -273.70001220703125,
+    "mean_reactivity": 0.45626479387283325,
+    "mean_deg_mg_ph10": 0.47794437408447266,
+    "mean_deg_mg_50c": 0.515994668006897,
+    "overall_stability": 0.4834012985229492,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.4834012985229492
+   },
+   "created_at": "2026-09-01T04:50:31.259864Z"
+  },
+  {
+   "step_name": "cand_8b62edad8b35_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta\", \"cai_score\": 0.9921362781636495, \"species\": \"Homo sapiens\", \"cds_length_nt\": 579, \"codon_count\": 193, \"valid_codons\": 193, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009644950041547418,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_df218c602e.fasta",
+    "cai_score": 0.9921362781636495,
+    "species": "Homo sapiens",
+    "cds_length_nt": 579,
+    "codon_count": 193,
+    "valid_codons": 193,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.9921362781636495,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:50:31.261112Z"
+  },
+  {
+   "step_name": "cds_design:rnarl",
+   "tool_name": "design_mrna_cds_with_rnarl",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"model_type\": \"Homo sapiens mRNA\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_EPO/rnarl_cds_262932d0e0.fasta\", \"generated_sequence\": \"AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.06931131903547794,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/rnarl_cds_262932d0e0.fasta",
+    "generated_sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGGCCCUGGGGGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGCGGGGGAAGCUGAAGCUGUACACCGGGGAGGCCUGCCGGACCGGGGACCGG",
+    "model_type": "Homo sapiens mRNA",
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/checkpoints/homo_mrna.pt",
+    "esm2_model_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNARL/esm2_model_t33_650M_UR50D",
+    "device": "cuda:0",
+    "model": "RNARL-actor"
+   },
+   "metrics": {},
+   "created_at": "2026-09-01T04:50:20.356783Z"
+  },
+  {
+   "step_name": "cand_17c981dfb5e8_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"sequence_length\": 579, \"g_count\": 217, \"c_count\": 196, \"gc_count\": 413, \"gc_content\": 0.7132987910189983, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0038173190550878644,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "sequence_length": 579,
+    "g_count": 217,
+    "c_count": 196,
+    "gc_count": 413,
+    "gc_content": 0.7132987910189983,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.7132987910189983,
+    "sequence_length": 579
+   },
+   "created_at": "2026-09-01T04:50:31.266092Z"
+  },
+  {
+   "step_name": "cand_17c981dfb5e8_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"sequence_length\": 579, \"u_count\": 75, \"u_fraction\": 0.12953367875647667, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00265315396245569,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "sequence_length": 579,
+    "u_count": 75,
+    "u_fraction": 0.12953367875647667,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.12953367875647667,
+    "u_count": 75
+   },
+   "created_at": "2026-09-01T04:50:31.269016Z"
+  },
+  {
+   "step_name": "cand_17c981dfb5e8_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"sequence\": \"AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.2614060539053753,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGGCCCUGGGGGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGCGGGGGAAGCUGAAGCUGUACACCGGGGAGGCCUGCCGGACCGGGGACCGG",
+    "structure": "...(((((((....)))))))....(((((((((((((((((.(((.((.(.((((((((((.(((((((..(((((.((.((.((..((((((((........))))))))....)).)).(((((((.(((.((((.....))))..........))).))))))).)).))))).)))))))...........(((((....(((...((.(((((........)))))))...))).....))))).((((((((((......((.((((((((.....)))))))).))..)))).)))))))))))))))).).)).)))...)))))))..(((((.((.((((..(((((.....((((.(.((((((((.......)))))..)))).))))...))))))))).)).))))).........))))).))))).(((((...(((.(((.(((.((((...((((.......))))..........(((((....)))))((((((((((..((((((....)))))).....)))))))))))))).)))))).)))..))))).....",
+    "mfe": -120.32,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -120.32,
+    "structure": "...(((((((....)))))))....(((((((((((((((((.(((.((.(.((((((((((.(((((((..(((((.((.((.((..((((((((........))))))))....)).)).(((((((.(((.((((.....))))..........))).))))))).)).))))).)))))))...........(((((....(((...((.(((((........)))))))...))).....))))).((((((((((......((.((((((((.....)))))))).))..)))).)))))))))))))))).).)).)))...)))))))..(((((.((.((((..(((((.....((((.(.((((((((.......)))))..)))).))))...))))))))).)).))))).........))))).))))).(((((...(((.(((.(((.((((...((((.......))))..........(((((....)))))((((((((((..((((((....)))))).....)))))))))))))).)))))).)))..))))).....",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:50:31.530750Z"
+  },
+  {
+   "step_name": "cand_17c981dfb5e8_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/structure_c1c7e73e88.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/structure_c1c7e73e88.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_c1c7e73e88.db\", \"structure_length\": 579, \"dot_count\": 205, \"unpaired_fraction\": 0.3540587219343696, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.003162437933497131,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/structure_c1c7e73e88.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_c1c7e73e88.db",
+    "structure_length": 579,
+    "dot_count": 205,
+    "unpaired_fraction": 0.3540587219343696,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3540587219343696
+   },
+   "created_at": "2026-09-01T04:50:31.534759Z"
+  },
+  {
+   "step_name": "cand_17c981dfb5e8_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"structure\": \"...(((((((....)))))))....(((((((((((((((((.(((.((.(.((((((((((.(((((((..(((((.((.((.((..((((((((........))))))))....)).)).(((((((.(((.((((.....))))..........))).))))))).)).))))).)))))))...........(((((....(((...((.(((((........)))))))...))).....))))).((((((((((......((.((((((((.....)))))))).))..)))).)))))))))))))))).).)).)))...)))))))..(((((.((.((((..(((((.....((((.(.((((((((.......)))))..)))).))))...))))))))).)).))))).........))))).))))).(((((...(((.(((.(((.((((...((((.......))))..........(((((....)))))((((((((((..((((((....)))))).....)))))))))))))).)))))).)))..))))).....\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_EPO/rnastop_prediction_4e448e553a.json\", \"sequence\": \"AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.3108267179923132,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_EPO/rnastop_prediction_4e448e553a.json",
+    "sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGGCCCUGGGGGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCCGGAAGCUGUUCCGGGUGUACAGCAACUUCCUGCGGGGGAAGCUGAAGCUGUACACCGGGGAGGCCUGCCGGACCGGGGACCGG",
+    "used_sequence": "AUGGGGGUGCACGAGUGCCCCGCCUGGCUGUGGCUGCUGCUGAGCCUGCUGAGCCUGCCCCUGGGGCUGCCCGUGCUGGGGGCCCCCCCCCGGCUGAUCUGCGACAGCCGGGUGCUGGAGCGGUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGGUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUCUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGGCUGGCCCUGCUGAGCGAGGCCGUGCUGCGGGGGCAGGCCCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCCCUGCAGCUGCACGUGGACAAGGCCGUGAGCGGGCUGCGGAGCCUGACCACCCUGCUGCGGGCCCUGGGGGCCCAGAAGGAGGCCAUCAGCCCCCCCGACGCCGCCAGCGCCGCCCCCCUGCGGACCAUCACCGCCGACACCUUCCGGAAGCUGUUCCGGGU",
+    "sequence_length": 579,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "...(((((((....)))))))....(((((((((((((((((.(((.((.(.((((((((((.(((((((..(((((.((.((.((..((((((((........))))))))....)).)).(((((((.(((.((((.....))))..........))).))))))).)).))))).)))))))...........(((((....(((...((.(((((........)))))))...))).....))))).((((((((((......((.((((((((.....)))))))).))..)))).)))))))))))))))).).)).)))...)))))))..(((((.((.((((..(((((.....((((.(.((((((((.......)))))..)))).))))...))))))))).)).))))).........))))).)))))............................((((.......))))..........(((((....)))))...",
+    "loop_type": "EEEIIIIIIHHHHHHIIIIIIEEEEIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIMMMMMMMMMMMIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMMMMMMMMMMIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIHHHHHHHHHIIIEEEEEEEEEEIIIIHHHHHHIIIIEEE",
+    "mfe": -261.8999938964844,
+    "mean_reactivity": 0.47730255126953125,
+    "mean_deg_mg_ph10": 0.49564898014068604,
+    "mean_deg_mg_50c": 0.5427752137184143,
+    "overall_stability": 0.5052422881126404,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.5052422881126404
+   },
+   "created_at": "2026-09-01T04:50:32.845995Z"
+  },
+  {
+   "step_name": "cand_17c981dfb5e8_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta\", \"cai_score\": 0.9778445154062892, \"species\": \"Homo sapiens\", \"cds_length_nt\": 579, \"codon_count\": 193, \"valid_codons\": 193, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009675259934738278,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_fdaab06b69.fasta",
+    "cai_score": 0.9778445154062892,
+    "species": "Homo sapiens",
+    "cds_length_nt": 579,
+    "codon_count": 193,
+    "valid_codons": 193,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.9778445154062892,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:50:32.847225Z"
+  },
+  {
+   "step_name": "cds_design:gemorna",
+   "tool_name": "design_mrna_cds_with_gemorna",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_EPO/gemorna_cds_bfecab4718.fasta\", \"generated_sequence\": \"AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 4.446967334952205,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/protein_1e86a7e7b6.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_EPO/gemorna_cds_bfecab4718.fasta",
+    "generated_sequence": "AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCGCCCUGGGCGCCCAGAAGGAGGCCAUCUCCCCGCCGGACGCCGCCUCGGCCGCCCCCCUGAGGACCAUCACCGCCGACACCUUCCGCAAGCUGUUCCGCGUUUAUUCAAACUUCCUGAGAGGCAAACUCAAGCUGUACACGGGCGAGGCCUGCAGGACCGGCGACCGG",
+    "raw_output": "Generated CDS & Naturalness\nATGGGAGTGCACGAGTGCCCGGCCTGGCTCTGGCTGCTGCTGTCACTGCTGAGCCTGCCGCTGGGGCTCCCCGTGCTGGGGGCCCCACCCCGCCTCATCTGCGACAGCCGGGTGCTGGAGCGCTACCTGCTGGAGGCCAAGGAGGCCGAGAACATCACCACCGGCTGCGCCGAGCACTGCAGCCTGAACGAGAACATCACCGTGCCCGACACCAAGGTGAACTTTTACGCCTGGAAGCGGATGGAGGTGGGGCAGCAGGCCGTGGAGGTGTGGCAGGGCCTGGCGCTGCTGAGCGAGGCGGTGCTGCGGGGCCAGGCGCTGCTGGTGAACAGCAGCCAGCCCTGGGAGCCGCTGCAGCTGCACGTGGACAAGGCCGTGTCCGGCCTCCGCAGCCTGACCACCCTGCTGCGCGCCCTGGGCGCCCAGAAGGAGGCCATCTCCCCGCCGGACGCCGCCTCGGCCGCCCCCCTGAGGACCATCACCGCCGACACCTTCCGCAAGCTGTTCCGCGTTTATTCAAACTTCCTGAGAGGCAAACTCAAGCTGTACACGGGCGAGGCCTGCAGGACCGGCGACCGG 0.58",
+    "model": "GEMORNA-cds"
+   },
+   "metrics": {},
+   "created_at": "2026-09-01T04:50:24.804150Z"
+  },
+  {
+   "step_name": "cand_b39e7b9c994d_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"sequence_length\": 579, \"g_count\": 199, \"c_count\": 202, \"gc_count\": 401, \"gc_content\": 0.6925734024179621, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.008761871955357492,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "sequence_length": 579,
+    "g_count": 199,
+    "c_count": 202,
+    "gc_count": 401,
+    "gc_content": 0.6925734024179621,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.6925734024179621,
+    "sequence_length": 579
+   },
+   "created_at": "2026-09-01T04:50:32.857000Z"
+  },
+  {
+   "step_name": "cand_b39e7b9c994d_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"sequence_length\": 579, \"u_count\": 83, \"u_fraction\": 0.14335060449050085, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00274931697640568,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "sequence_length": 579,
+    "u_count": 83,
+    "u_fraction": 0.14335060449050085,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.14335060449050085,
+    "u_count": 83
+   },
+   "created_at": "2026-09-01T04:50:32.860026Z"
+  },
+  {
+   "step_name": "cand_b39e7b9c994d_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"sequence\": \"AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.2590863308869302,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "sequence": "AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCGCCCUGGGCGCCCAGAAGGAGGCCAUCUCCCCGCCGGACGCCGCCUCGGCCGCCCCCCUGAGGACCAUCACCGCCGACACCUUCCGCAAGCUGUUCCGCGUUUAUUCAAACUUCCUGAGAGGCAAACUCAAGCUGUACACGGGCGAGGCCUGCAGGACCGGCGACCGG",
+    "structure": "..((.(((((.(.(((((((((((.......)))....((((((.(.(.((((........((((((((((......))))))))))......)))).).).)))))))))))))).).))))).)).......((((.....))))...............(((((((........)))))))............((((((((.....)))...)))))................((((..((((((((.....(((((.((((((((..((((.(((((..((((((..(((..((((((.((.((((((.....(((((((.....)))))))..)))))))).))))))...)))))).)))....))))).))))..)))))))).))))).((..(((.(((.(((((...))))).))).))).))))))))))))))(((.((((((((.((((((((.....................................................................................))))..))))...)))..))))).))).",
+    "mfe": -98.95,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -98.95,
+    "structure": "..((.(((((.(.(((((((((((.......)))....((((((.(.(.((((........((((((((((......))))))))))......)))).).).)))))))))))))).).))))).)).......((((.....))))...............(((((((........)))))))............((((((((.....)))...)))))................((((..((((((((.....(((((.((((((((..((((.(((((..((((((..(((..((((((.((.((((((.....(((((((.....)))))))..)))))))).))))))...)))))).)))....))))).))))..)))))))).))))).((..(((.(((.(((((...))))).))).))).))))))))))))))(((.((((((((.((((((((.....................................................................................))))..))))...)))..))))).))).",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-01T04:50:33.119479Z"
+  },
+  {
+   "step_name": "cand_b39e7b9c994d_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/structure_6e8e4b1d82.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/structure_6e8e4b1d82.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_6e8e4b1d82.db\", \"structure_length\": 579, \"dot_count\": 267, \"unpaired_fraction\": 0.46113989637305697, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.003318608971312642,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/structure_6e8e4b1d82.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_EPO/structure_6e8e4b1d82.db",
+    "structure_length": 579,
+    "dot_count": 267,
+    "unpaired_fraction": 0.46113989637305697,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.46113989637305697
+   },
+   "created_at": "2026-09-01T04:50:33.123576Z"
+  },
+  {
+   "step_name": "cand_b39e7b9c994d_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"structure\": \"..((.(((((.(.(((((((((((.......)))....((((((.(.(.((((........((((((((((......))))))))))......)))).).).)))))))))))))).).))))).)).......((((.....))))...............(((((((........)))))))............((((((((.....)))...)))))................((((..((((((((.....(((((.((((((((..((((.(((((..((((((..(((..((((((.((.((((((.....(((((((.....)))))))..)))))))).))))))...)))))).)))....))))).))))..)))))))).))))).((..(((.(((.(((((...))))).))).))).))))))))))))))(((.((((((((.((((((((.....................................................................................))))..))))...)))..))))).))).\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_EPO/rnastop_prediction_5998d6a9de.json\", \"sequence\": \"AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.299735156004317,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_EPO/rnastop_prediction_5998d6a9de.json",
+    "sequence": "AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCGCCCUGGGCGCCCAGAAGGAGGCCAUCUCCCCGCCGGACGCCGCCUCGGCCGCCCCCCUGAGGACCAUCACCGCCGACACCUUCCGCAAGCUGUUCCGCGUUUAUUCAAACUUCCUGAGAGGCAAACUCAAGCUGUACACGGGCGAGGCCUGCAGGACCGGCGACCGG",
+    "used_sequence": "AUGGGAGUGCACGAGUGCCCGGCCUGGCUCUGGCUGCUGCUGUCACUGCUGAGCCUGCCGCUGGGGCUCCCCGUGCUGGGGGCCCCACCCCGCCUCAUCUGCGACAGCCGGGUGCUGGAGCGCUACCUGCUGGAGGCCAAGGAGGCCGAGAACAUCACCACCGGCUGCGCCGAGCACUGCAGCCUGAACGAGAACAUCACCGUGCCCGACACCAAGGUGAACUUUUACGCCUGGAAGCGGAUGGAGGUGGGGCAGCAGGCCGUGGAGGUGUGGCAGGGCCUGGCGCUGCUGAGCGAGGCGGUGCUGCGGGGCCAGGCGCUGCUGGUGAACAGCAGCCAGCCCUGGGAGCCGCUGCAGCUGCACGUGGACAAGGCCGUGUCCGGCCUCCGCAGCCUGACCACCCUGCUGCGCGCCCUGGGCGCCCAGAAGGAGGCCAUCUCCCCGCCGGACGCCGCCUCGGCCGCCCCCCUGAGGACCAUCACCGCCGACACCUUCCGCAAGCUGUUCCGCGU",
+    "sequence_length": 579,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "..((.(((((.(.(((((((((((.......)))....((((((.(.(.((((........((((((((((......))))))))))......)))).).).)))))))))))))).).))))).)).......((((.....))))...............(((((((........)))))))............((((((((.....)))...)))))................((((..((((((((.....(((((.((((((((..((((.(((((..((((((..(((..((((((.((.((((((.....(((((((.....)))))))..)))))))).))))))...)))))).)))....))))).))))..)))))))).))))).((..(((.(((.(((((...))))).))).))).))))))))))))))...................................................................",
+    "loop_type": "EEIIIIIIIIIIIIIIIIIIMIIHHHHHHHHHIIMMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIIIEEEEEEEIIIHHHHHHHIIIEEEEEEEEEEEEEEEIIIIIIHHHHHHHHHHIIIIIIEEEEEEEEEEEEIIIIIIIHHHHHHHIIIIIIIIIIEEEEEEEEEEEEEEEEIIIIIIIIIIIIIMMMMMMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMIIIIIIIIIIIIIIIIHHHHHIIIIIIIIIIIIIIIMIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "mfe": -247.8000030517578,
+    "mean_reactivity": 0.49472546577453613,
+    "mean_deg_mg_ph10": 0.5041082501411438,
+    "mean_deg_mg_50c": 0.549667239189148,
+    "overall_stability": 0.5161669850349426,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.5161669850349426
+   },
+   "created_at": "2026-09-01T04:50:34.423729Z"
+  },
+  {
+   "step_name": "cand_b39e7b9c994d_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"species\": \"Homo sapiens\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta\", \"cai_score\": 0.8985241756768297, \"species\": \"Homo sapiens\", \"cds_length_nt\": 579, \"codon_count\": 193, \"valid_codons\": 193, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009613740257918835,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_EPO/mrna_cds_e82964051e.fasta",
+    "cai_score": 0.8985241756768297,
+    "species": "Homo sapiens",
+    "cds_length_nt": 579,
+    "codon_count": 193,
+    "valid_codons": 193,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.8985241756768297,
+    "cai_species": "Homo sapiens"
+   },
+   "created_at": "2026-09-01T04:50:34.424955Z"
+  }
+ ]
+}
