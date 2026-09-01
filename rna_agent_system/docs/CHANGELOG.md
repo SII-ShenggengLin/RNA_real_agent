@@ -8,6 +8,22 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-09-01 — Fig 4d 用户指示修订（第五轮：行长标签缩短；无重跑）
+
+- 两个 Sample-2019 文库行标签从 fig3f 全名（"Random 50-nt 5′UTRs" / "Varying-length human 5′UTRs"）缩短为 fig4e 短名惯例（"EGFP random-50" / "Var-len human"）——它们单独撑宽了整个标签列；缩短后标签列宽度由 "Novel 5′UTR 11" 行决定，画布 62.3 × 86.0 → **50.8 × 86.0 mm**。全名仍在 Fig 3f 与 Fig 4e 图注中。同轮附加：底部裁定键从两行各自居中改为**两行共享列网格**（列宽取两行最大值，两列色块/文字左缘分别对齐，整块居中）。数据不变。光栅 QA 同前全绿。文档同步：FIGURE_PLAN_V5 注记、AGENTS.md Exp-18 条。
+
+## 2026-09-01 — Fig 4d 用户指示修订（第四轮：改回第二轮层级条带；无重跑）
+
+- 地毯图（第三轮）经用户评审为不如条带直观，**`fig4d_mrna_family_strip.py` 回退到第二轮的层级家族条带**（家族表头行 + 缩进靶行单列标签、10-mm 臂块、两行居中裁定键、0.5–0.6 lw 细线、62.3 × 86.0 mm 竖版）并重渲染——逐像素统计与第二轮首次渲染逐项一致（可复现）；数据不变（FP 35.3% → 8.3%、TP 11/11）。第三轮地毯图的旋转标签锚定探针结论（matplotlib rotation=90 向下悬挂需 ha="center", va="top"）留档备复用。文档同步：PAPER_DRAFT 图注 (d) 恢复条带措辞、FIGURE_PLAN_V5 行 d + 注记、AGENTS.md Exp-18 条。
+
+## 2026-09-01 — Fig 4d 用户指示修订（第三轮：改图型；同一份 Exp-18 冻结结果，无重跑）
+
+- **`experiments/plots/fig4d_mrna_family_strip.py` 改为转置任务×臂裁定地毯图（oncoprint 式）并重渲染**（`fig4d_mrna_family_strip.{pdf,png}`）：20 任务列按 8 家族分组 × Ungated/Gated 两行，单元格整格填裁定色（白描边空格 = 未发布声明）；家族表头居中于列组上方、按渲染器实测字宽贪心分层（同级间距 ≥0.8 mm 断言、中心钳入画布）；靶名 90° 悬于列下（fig3d 旋转刻度惯例；matplotlib 旋转锚定语义经探针实测——rotation=90 须用 ha="center", va="top"）；可信/不可信块间短竖分隔线只穿地毯区；裁定键单行居中。横版 86.3 × 50.8 mm（与 fig4c/fig4e 同向）。数据不变（FP 35.3% → 8.3%、TP 11/11）。光栅 QA：零边缘墨迹、暗色像素全为纯黑+抗锯齿灰、彩色像素全在调色板→白线段上。文档同步：PAPER_DRAFT Fig 4 图注 (d) 改写为地毯图、FIGURE_PLAN_V5 行 d + 注记、AGENTS.md Exp-18 条。
+
+## 2026-09-01 — Fig 4d 用户指示修订（第二轮；同一份 Exp-18 冻结结果，无重跑）
+
+- **`experiments/plots/fig4d_mrna_family_strip.py` 修订并重渲染**（`fig4d_mrna_family_strip.{pdf,png}`）：(1) 左侧标签区并为单列层级文字列——家族表头行 + 缩进靶行取代旋转类别列与独立家族列（可信/不可信分组改由全宽分隔线承担并在图注声明），回应「左侧两列文字过宽」；(2) 行标签生物学显式化并跨图一致——"Novel UTR 7/11/13" 补回丢失的撇号为 "Novel 5′UTR 7/11/13"，Sample-2019 文库改署 Fig 3f 名 "Random 50-nt 5′UTRs" / "Varying-length human 5′UTRs"，家族表头去折行（"3′UTR stability rank"、"Relative comparison" 等）；(3) 单声明格臂块 18 → 10 mm，臂表头精确居中于色块列；底部裁定键改两行居中；(4) 分隔线与空格描边 0.4 → 0.5–0.6 lw——旧版细线在 1200-dpi 下渲染为事实灰 (42,42,42)，是「有文字发浅」观感来源之一（文字本体经栅格复核旧版即全为 #000000 文字核）。画布 79.5 × 62 → 62.3 × 86.0 mm；palette rev 7 用色、6-pt 纯黑、1200-dpi PNG + 矢量 PDF（fonttype 42）不变。光栅 QA：四边零墨迹、暗色像素全为纯黑+抗锯齿灰、全部彩色像素落在调色板→白线段上。文档同步：PAPER_DRAFT Fig 4 图注 (d)（删过时 mosaic-inset 从句、补分隔线分组说明）、FIGURE_PLAN_V5 行 d + 注记、AGENTS.md Exp-18 条。
+
 ## 2026-09-01 — Exp 24: 生产 campaign 共享仪器重跑（Fig 4f + Fig 2a/2h/2i 再测量，§2.4 实验 5）
 
 - **设计**：用户指示「跑一次、登记为共享仪器、冻结切片」——一次 241 运行生产 campaign（210 RNADesign-210 任务 + 31 PA 表单会话，用户入口逐次子进程、输入 verbatim、advisory CapGate、GPU 0/1/2 服务按发行拓扑预热）同时供四个 panel：Fig 4f（按 oracle 的门决策 Cleveland 点图）、Fig 2a（任务毯图）、Fig 2h（代表会话里程碑轨）、Fig 2i（runtime ECDF）。drivers：`experiments/exp24_production_campaign.py`（campaign，预注册 docstring，pilot 4/4）+ `experiments/exp24_run_parallel.py`（编排）+ `experiments/exp24_audit_gate_stats.py`（只读分析器；`--verify` 从冻结切片重算字节一致）。

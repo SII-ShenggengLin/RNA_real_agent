@@ -1,14 +1,13 @@
 """Fig 4d — E3-M mRNA-side dual-arm re-run: per-task-family verdict strips.
 
 One row per audit task (20 tasks grouped into the eight task families,
-trusted-deterministic families above, untrusted-oracle families below), two
-column blocks (Ungated control arm / Gated treatment arm); one colour tile
-per published claim — sage = true positive, terracotta = false claim, warm
-grey = neutral relative-scope claim; an empty cell means the arm published
-no claim on that task (the gated arm's plan-layer blocks make the model
-abstain on the utr3/junction families — the mechanism this panel shows).
-Category blocks (trusted / untrusted) read left to right: rotated category
-label, family label, target label, then the two tile blocks.
+trusted-deterministic families above the divider, untrusted-oracle families
+below), two column blocks (Ungated control arm / Gated treatment arm); one
+colour tile per published claim — sage = true positive, terracotta = false
+claim, warm grey = neutral relative-scope claim; an outlined empty cell means
+the arm published no claim on that task (the gated arm's plan-layer blocks
+make the model abstain on the utr3/junction families — the mechanism this
+panel shows).
 
 2026-09-01 user-directed repair pass:
   - the arm × verdict mosaic inset was removed (its counts are stated in the
@@ -16,14 +15,51 @@ label, family label, target label, then the two tile blocks.
   - all left labels rebuilt with renderer-measured text extents so family /
     target / category labels can never overlap; the four longest family
     labels wrap onto two lines;
-  - labels: "seed 7/11/13" relabelled to "Novel 5′UTR 7/11/13", libraries
-    relabelled "EGFP random-50" / "Var-len human" (fig4e conventions);
-    rotated category labels moved to the far left.
+  - labels: "seed 7/11/13" relabelled to "Novel UTR 7/11/13", libraries
+    relabelled "Random-50" / "Var-len human"; rotated category labels moved
+    to the far left.
 
-Style (Nature conventions, the fig3/fig4 house style): no in-figure titles;
-every text element one 6-pt pure-black style; colours only from palette
-rev 7; 1200-dpi PNG + vector PDF (fonttype 42); absolute-mm geometry; exact
-canvas (no tight crop).
+2026-09-01 user-directed revision (second; same frozen Exp-18 summary, no
+re-run):
+  - the left label zone is now a single hierarchical text column — a family
+    header line above its indented per-target rows replaces the rotated
+    category column plus the separate family column (the trusted/untrusted
+    split stays visible as the full-width divider and is stated in the
+    caption), answering the "two left columns read too wide" review;
+  - row labels made biologically explicit and cross-figure consistent:
+    "Novel 5′UTR 7/11/13" (the prime the repair pass had dropped), and the
+    Sample-2019 libraries under their Fig. 3f names "Random 50-nt 5′UTRs" /
+    "Varying-length human 5′UTRs"; family headers unwrapped to single lines
+    ("3′UTR stability rank", "Cross-family MRL", "Junction quality", "MRL
+    optimum", "Relative comparison");
+  - every cell carries at most one claim, so the arm blocks narrow 18 →
+    10 mm around the centred tile and the arm headers sit directly over
+    their tile column; the verdict key wraps to two centred rows to fit the
+    narrower canvas; the divider and the empty-cell outlines draw at 0.5–
+    0.6 lw so no ink renders as de-facto grey;
+  - every text element remains one 6-pt pure-black style (verified by raster
+    QA: the only dark pixels are pure black plus antialiasing greys).
+
+2026-09-01 user-directed revision (third — chart-type change, reverted the
+same day): a transposed task × arm verdict carpet (oncoprint-style) was
+drawn and judged less readable than the strip by the user; the panel
+reverted to the second revision's hierarchical family strip above. The
+carpet's rotated-label anchor semantics probe (matplotlib rotation=90 needs
+ha="center", va="top" for downward-hanging column labels) stays recorded in
+the CHANGELOG for reuse.
+
+2026-09-01 user-directed revision (fourth — label trim; same frozen summary,
+no re-run): the two Sample-2019 library row labels shortened from the fig3f
+full names ("Random 50-nt 5′UTRs" / "Varying-length human 5′UTRs") to the
+compact fig4e short-name convention ("EGFP random-50" / "Var-len human") —
+they alone set the label-column width; with them trimmed, the "Novel 5′UTR"
+rows set the floor and the canvas narrows accordingly.
+
+Style (Nature conventions, the fig3/fig4 house style): no in-figure titles —
+the headline lives in the caption and the arm names are plain column
+headers; every text element one 6-pt pure-black style; colours only from
+palette rev 7; 1200-dpi PNG + vector PDF (fonttype 42); absolute-mm
+geometry; exact canvas (no tight crop).
 
 Data  : experiments/results/exp18_mrna_claim_gating/summary.json
         (+ experiments/e18_audit_tasks_mrna.json for task order/labels)
@@ -58,28 +94,33 @@ VERDICT_COLORS = {
     "TP": PALETTE_BY_NAME["sage_green"],
     "FP": PALETTE_BY_NAME["terracotta"],
     "neutral": PALETTE_BY_NAME["warm_grey"],
-    "suppressed": PALETTE_BY_NAME["dark_warm_grey"],
 }
-VERDICT_LABELS = {"TP": "True positive", "FP": "False claim",
-                  "neutral": "Neutral", "suppressed": "Suppressed"}
-VERDICT_ORDER = ("TP", "FP", "neutral", "suppressed")
+VERDICT_LABELS = {"TP": "True positive", "FP": "False claim", "neutral": "Neutral"}
+VERDICT_ORDER = ("TP", "FP", "neutral")
 ARM_ORDER = ("ungated", "gated")
 ARM_LABELS = {"ungated": "Ungated", "gated": "Gated"}
 
-# Family display names (the four longest wrap onto two lines).
+# Family header labels (single line — the hierarchical layout gives them the
+# full label-column width).
 FAMILY_LABELS = {
     "cds_cai_report": "CAI report",
     "cds_mfe_report": "MFE report",
     "cds_constraint_report": "Constraints",
-    "cds_relative_compare": "Relative\ncompare",
-    "utr3_stability_rank": "3\u2032UTR rank",
-    "cross_family_expression": "Cross-family\nMRL",
-    "junction_quality": "Junction\nquality",
-    "mrl_optimum": "MRL\noptimum",
+    "cds_relative_compare": "Relative comparison",
+    "utr3_stability_rank": "3′UTR stability rank",
+    "cross_family_expression": "Cross-family MRL",
+    "junction_quality": "Junction quality",
+    "mrl_optimum": "MRL optimum",
 }
 
+# Per-row target labels: protein targets keep the benchmark display names;
+# the two Sample-2019 libraries carry the compact fig4e short names (the
+# fig3f full names "Random 50-nt 5′UTRs" / "Varying-length human 5′UTRs"
+# alone set a 22.5-mm label column — shortened on same-day user review;
+# their full names remain in Fig. 3f and the Fig. 4e legend), and the
+# never-profiled families their e18 production numbering, with the 5′ prime.
 _ROW_LABEL_OVERRIDES = {
-    "sample2019_egfp_random50": "Random-50",
+    "sample2019_egfp_random50": "EGFP random-50",
     "sample2019_varying_length_human": "Var-len human",
 }
 
@@ -98,14 +139,14 @@ plt.rcParams.update({
 
 
 def task_rows() -> list[dict]:
-    """Task-set order -> rows of (family, row_label, task_id)."""
+    """Task-set order -> rows of (family, category, row label, task_id)."""
     payload = json.loads(TASKS_JSON.read_text(encoding="utf-8"))
     rows = []
     for t in payload["tasks"]:
         raw_label = t["target_family"]
         label = _ROW_LABEL_OVERRIDES.get(raw_label, raw_label)
         if raw_label.startswith("novel_"):
-            label = f"Novel UTR {raw_label.rsplit('_', 1)[1]}"
+            label = f"Novel 5′UTR {raw_label.rsplit('_', 1)[1]}"
         rows.append({
             "family": t["task_family"],
             "category": t["category"],
@@ -130,41 +171,69 @@ def main() -> int:
     rows = task_rows()
     arms = summary["arms"]
 
-    n_rows = len(rows)
+    # consecutive family groups in task-set order
+    groups: list[dict] = []
+    for r in rows:
+        if not groups or groups[-1]["family"] != r["family"]:
+            groups.append({"family": r["family"], "category": r["category"],
+                           "rows": []})
+        groups[-1]["rows"].append(r)
+
     max_claims = max((max([sum(v.values()) for v in matrix.get(r["task_id"], {}).values()]
                           or [0]) for r in rows), default=1)
 
-    block_w = 18.0                          # mm per arm block
-    tile = min(5.0, (block_w - 2.0) / max(1, max_claims) - 0.6)
-    gap_tile = 0.6 if tile >= 1.4 else 0.4
-    row_h, row_gap = 1.7, 0.7               # mm per task row
-    pitch = row_h + row_gap
-    block_gap = 8.0                         # mm between the two arm blocks
-
-    # ── measured-width left-label zone, then the two tile blocks ─────────
+    # ── measured-width single hierarchical label column ──────────────────
     probe = plt.figure(figsize=(4, 4))
-    fam_w = max(max(text_w_mm(probe, ln)
-                    for ln in FAMILY_LABELS[r["family"]].split("\n"))
-                for r in rows)
+    fam_w = max(text_w_mm(probe, FAMILY_LABELS[g["family"]]) for g in groups)
     tgt_w = max(text_w_mm(probe, r["label"]) for r in rows)
+    key_w = {v: text_w_mm(probe, VERDICT_LABELS[v]) for v in VERDICT_ORDER}
+    none_w = text_w_mm(probe, "No published claim")
     plt.close(probe)
 
-    ML = 1.2                                # left margin
-    GRP_CX = ML + 1.5                       # rotated category-label centre
-    FAM_X = GRP_CX + 1.6                    # family labels left edge
-    fam_col = fam_w + 0.6
-    CL_FT = 1.6                             # family -> target clearance
-    tgt_right = FAM_X + fam_col + CL_FT + tgt_w  # target labels right edge
-    GAP_TB = 2.2                            # target -> block clearance
-    ungated_x = tgt_right + GAP_TB
+    ML = 1.2                                # outer margin (left = right)
+    IND = 2.5                               # target-row indent under headers
+    label_right = ML + max(fam_w, IND + tgt_w)
+    GAP_TB = 2.2                            # labels -> first block clearance
+    block_w = 10.0                          # mm per arm block (≤1 claim/cell)
+    block_gap = 7.0                         # mm between the two arm blocks
+    ungated_x = label_right + GAP_TB
     gated_x = ungated_x + block_w + block_gap
     fig_w = gated_x + block_w + ML
 
-    top_margin = 1.8
-    header_y = 4.6                          # arm-header centre
-    rows_y0 = 7.6                           # top edge of the first row
-    key_gap = 3.6
-    fig_h = rows_y0 + n_rows * pitch - row_gap + key_gap + 2.4 + ML
+    tile = min(5.0, (block_w - 2.0 - (max_claims - 1) * 0.6) / max_claims)
+    gap_tile = 0.6
+    row_h, row_gap = 1.7, 0.7               # mm per task row
+    pitch = row_h + row_gap
+    fam_header_h = 2.5                      # family header line height
+    fam_gap = 1.0                           # extra gap between families
+    sep_extra = 0.8                         # extra gap at the category divider
+
+    header_y = 4.2                          # arm-header centre
+    rows_y0 = 7.2                           # top edge of the first header
+
+    # ── vertical walk: headers + rows, divider between the categories ────
+    layout: list[dict] = []                 # per-row geometry records
+    headers: list[tuple[str, float]] = []   # family header (label, centre y)
+    sep_y = None
+    y = rows_y0
+    for gi, g in enumerate(groups):
+        if gi:
+            gap = fam_gap
+            if g["category"] != groups[gi - 1]["category"]:
+                gap += sep_extra
+                sep_y = y + gap / 2
+            y += gap
+        headers.append((FAMILY_LABELS[g["family"]], y + fam_header_h / 2))
+        y += fam_header_h
+        for r in g["rows"]:
+            layout.append({"row": r, "y": y})
+            y += pitch
+        y -= row_gap
+    content_bottom = y
+
+    key_top = content_bottom + 3.2
+    key_cy = (key_top + 1.0, key_top + 3.2)  # two centred key rows
+    fig_h = key_top + 4.2 + ML
 
     fig = plt.figure(figsize=(fig_w / 25.4, fig_h / 25.4), facecolor="white")
 
@@ -173,10 +242,9 @@ def main() -> int:
     def hm(v): return v / fig_h
 
     # ── tiles + row (target) labels ──────────────────────────────────────
-    fam_spans: dict[str, list[float]] = {}
-    for i, r in enumerate(rows):
-        y = rows_y0 + i * pitch
-        fig.text(fx(tgt_right), fy(y + row_h / 2), r["label"], ha="right",
+    for item in layout:
+        r, y = item["row"], item["y"]
+        fig.text(fx(ML + IND), fy(y + row_h / 2), r["label"], ha="left",
                  va="center", fontsize=FONT, color=INK)
         for b, arm in enumerate(ARM_ORDER):
             counts = (matrix.get(r["task_id"], {}).get(arm) or {})
@@ -189,7 +257,7 @@ def main() -> int:
                 fig.patches.append(Rectangle(
                     (fx(bx + block_w / 2 - tile / 2), fy(y + row_h)),
                     fx(tile), hm(row_h),
-                    facecolor="white", edgecolor=INK, linewidth=0.4,
+                    facecolor="white", edgecolor=INK, linewidth=0.5,
                     transform=fig.transFigure, zorder=2))
             for k, verdict in enumerate(seq):
                 fig.patches.append(Rectangle(
@@ -197,59 +265,46 @@ def main() -> int:
                     fx(tile), hm(row_h),
                     facecolor=VERDICT_COLORS[verdict], edgecolor="none",
                     transform=fig.transFigure, zorder=2))
-        fam_spans.setdefault(r["family"], []).append(y)
 
-    # family labels centred on their row groups (two-line where long)
-    for fam, ys in fam_spans.items():
-        cy = (min(ys) + max(ys) + row_h) / 2
-        fig.text(fx(FAM_X), fy(cy), FAMILY_LABELS[fam], ha="left", va="center",
-                 fontsize=FONT, color=INK, linespacing=1.05)
+    # family headers, left-aligned on their own line above each group
+    for label, cy in headers:
+        fig.text(fx(ML), fy(cy), label, ha="left", va="center",
+                 fontsize=FONT, color=INK)
 
-    # category-block separator between the deterministic and oracle blocks
-    det_end = sum(1 for r in rows if r["category"] == "trusted_deterministic")
-    sep_y = rows_y0 + det_end * pitch - row_gap / 2
+    # category-block divider between the deterministic and oracle blocks
+    assert sep_y is not None
     fig.lines.append(plt.Line2D(
-        [fx(ML), fx(gated_x + block_w)], [fy(sep_y), fy(sep_y)],
-        color=INK, linewidth=0.4, transform=fig.transFigure, zorder=1))
+        [fx(ML), fx(fig_w - ML)], [fy(sep_y), fy(sep_y)],
+        color=INK, linewidth=0.6, transform=fig.transFigure, zorder=1))
 
-    # rotated category labels centred on their 10-row blocks
-    y_det = rows_y0 + (det_end * pitch - row_gap) / 2
-    y_unt = rows_y0 + det_end * pitch + ((n_rows - det_end) * pitch - row_gap) / 2
-    for yy, lab in ((y_det, "Trusted-deterministic"), (y_unt, "Untrusted-oracle")):
-        fig.text(fx(GRP_CX), fy(yy), lab, ha="center", va="center",
-                 rotation=90, fontsize=FONT, color=INK)
-
-    # block headers (arm labels centred above each block)
+    # block headers (arm labels centred exactly above each tile column)
     for b, arm in enumerate(ARM_ORDER):
         bx = ungated_x if b == 0 else gated_x
         fig.text(fx(bx + block_w / 2), fy(header_y), ARM_LABELS[arm],
                  ha="center", va="center", fontsize=FONT, color=INK)
 
-    # ── verdict key: one centred row under the matrix ────────────────────
-    key_verdicts = [v for v in VERDICT_ORDER
-                    if any(matrix.get(r["task_id"], {}).get(a, {}).get(v)
-                           for r in rows for a in ARM_ORDER)] + ["none"]
-    key_labels = dict(VERDICT_LABELS)
-    key_labels["none"] = "No published claim"
-    key_colors = dict(VERDICT_COLORS)
-    key_colors["none"] = "white"
-    key_y = fig_h - ML - 1.2
-    sw_w, sw_h, pitch_k, gap_k = 2.4, 1.6, 3.0, 1.6
-    probe2 = plt.figure(figsize=(4, 4))
-    kw = {v: text_w_mm(probe2, key_labels[v]) for v in key_verdicts}
-    plt.close(probe2)
-    row_w = sum(pitch_k + kw[v] for v in key_verdicts) + gap_k * (len(key_verdicts) - 1)
-    assert row_w <= fig_w - 2 * ML, f"verdict key {row_w:.1f} mm > canvas"
-    x = (fig_w - row_w) / 2
-    for v in key_verdicts:
-        fig.patches.append(Rectangle(
-            (fx(x), fy(key_y + sw_h / 2)), fx(sw_w),
-            fy(key_y - sw_h / 2) - fy(key_y + sw_h / 2),
-            facecolor=key_colors[v], edgecolor=INK if v == "none" else "none",
-            linewidth=0.4, transform=fig.transFigure))
-        fig.text(fx(x + pitch_k), fy(key_y), key_labels[v], ha="left",
-                 va="center", fontsize=FONT, color=INK)
-        x += pitch_k + kw[v] + gap_k
+    # ── verdict key: two rows on a shared column grid, block centred ─────
+    key_rows = [
+        [("TP", VERDICT_LABELS["TP"]), ("FP", VERDICT_LABELS["FP"])],
+        [("neutral", VERDICT_LABELS["neutral"]), ("none", "No published claim")],
+    ]
+    sw_w, sw_h, gap_st, gap_e = 2.4, 1.6, 0.8, 3.0
+    # column widths shared across both rows -> swatch/label left edges align
+    widths = {(v, lbl): key_w.get(v, none_w) for row in key_rows for v, lbl in row}
+    col_ws = [max(widths[row[c]] for row in key_rows) for c in range(2)]
+    key_block_w = sum(sw_w + gap_st + w for w in col_ws) + gap_e
+    assert key_block_w <= fig_w - 2 * ML, f"verdict key {key_block_w:.1f} mm > canvas"
+    for entries, cy in zip(key_rows, key_cy):
+        x = (fig_w - key_block_w) / 2
+        for (v, lbl), cw in zip(entries, col_ws):
+            fig.patches.append(Rectangle(
+                (fx(x), fy(cy + sw_h / 2)), fx(sw_w), hm(sw_h),
+                facecolor=VERDICT_COLORS.get(v, "white"),
+                edgecolor=INK if v == "none" else "none",
+                linewidth=0.5, transform=fig.transFigure))
+            fig.text(fx(x + sw_w + gap_st), fy(cy), lbl,
+                     ha="left", va="center", fontsize=FONT, color=INK)
+            x += sw_w + gap_st + cw + gap_e
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
@@ -258,6 +313,7 @@ def main() -> int:
     plt.close(fig)
     u, g = arms["ungated"], arms["gated"]
     print(f"fig4d -> {OUT_DIR / 'fig4d_mrna_family_strip.pdf'} (+png 1200 dpi); "
+          f"canvas {fig_w:.1f} x {fig_h:.1f} mm; "
           f"ungated TP {u['TP']}/FP {u['FP']}/neutral {u['neutral']}, "
           f"gated TP {g['TP']}/FP {g['FP']}/neutral {g['neutral']}; "
           f"fp {u['fp_rate']:.3f} -> {g['fp_rate']:.3f}, "
