@@ -1,0 +1,437 @@
+{
+  "0": {
+    "task_id": "purine_band_7",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "1": {
+    "task_id": "gc_target_7",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "2": {
+    "task_id": "aptamer_ranking_v3_fgf2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "3": {
+    "task_id": "gc_target_5",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "4": {
+    "task_id": "aptamer_ranking_4",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "5": {
+    "task_id": "aptamer_ranking_0",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "6": {
+    "task_id": "aptamer_ranking_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "7": {
+    "task_id": "aptamer_ranking_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "8": {
+    "task_id": "gc_target_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "9": {
+    "task_id": "purine_band_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "10": {
+    "task_id": "aptamer_ranking_v3_influenza_h3n2_ha",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "11": {
+    "task_id": "aptamer_ranking_split_vegf",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "12": {
+    "task_id": "purine_band_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "13": {
+    "task_id": "purine_band_4",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "14": {
+    "task_id": "aptamer_ranking_5",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "15": {
+    "task_id": "u_reduce_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "16": {
+    "task_id": "aptamer_screening_v3_thrombin",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "17": {
+    "task_id": "u_reduce_7",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "18": {
+    "task_id": "gc_target_3",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "19": {
+    "task_id": "aptamer_ranking_2",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "20": {
+    "task_id": "aptamer_ranking_2",
+    "arm": "ungated",
+    "claim_id": "c3"
+  },
+  "21": {
+    "task_id": "aptamer_screening_v3_fgf2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "22": {
+    "task_id": "aptamer_screening_v3_influenza_h3n2_ha",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "23": {
+    "task_id": "u_reduce_4",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "24": {
+    "task_id": "aptamer_ranking_split_vegf",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "25": {
+    "task_id": "gc_target_4",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "26": {
+    "task_id": "gc_target_2",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "27": {
+    "task_id": "gc_target_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "28": {
+    "task_id": "aptamer_ranking_split_sars_cov_2_n",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "29": {
+    "task_id": "u_reduce_6",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "30": {
+    "task_id": "aptamer_ranking_v3_ifn_gamma",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "31": {
+    "task_id": "purine_band_6",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "32": {
+    "task_id": "aptamer_screening_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "33": {
+    "task_id": "u_reduce_4",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "34": {
+    "task_id": "aptamer_ranking_v3_fgf2",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "35": {
+    "task_id": "u_reduce_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "36": {
+    "task_id": "gc_target_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "37": {
+    "task_id": "u_reduce_5",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "38": {
+    "task_id": "purine_band_6",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "39": {
+    "task_id": "aptamer_ranking_3",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "40": {
+    "task_id": "gc_target_0",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "41": {
+    "task_id": "aptamer_screening_v3_ifn_gamma",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "42": {
+    "task_id": "aptamer_screening_v3_vegf",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "43": {
+    "task_id": "purine_band_2",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "44": {
+    "task_id": "aptamer_ranking_0",
+    "arm": "ungated",
+    "claim_id": "c3"
+  },
+  "45": {
+    "task_id": "aptamer_ranking_split_sars_cov_2_n",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "46": {
+    "task_id": "gc_target_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "47": {
+    "task_id": "aptamer_screening_v3_thrombin",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "48": {
+    "task_id": "gc_target_3",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "49": {
+    "task_id": "u_reduce_6",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "50": {
+    "task_id": "aptamer_ranking_v3_influenza_h3n2_ha",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "51": {
+    "task_id": "aptamer_ranking_2",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "52": {
+    "task_id": "aptamer_ranking_5",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "53": {
+    "task_id": "aptamer_ranking_0",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "54": {
+    "task_id": "gc_target_7",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "55": {
+    "task_id": "aptamer_screening_3",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "56": {
+    "task_id": "gc_target_6",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "57": {
+    "task_id": "purine_band_5",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "58": {
+    "task_id": "purine_band_5",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "59": {
+    "task_id": "purine_band_7",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "60": {
+    "task_id": "u_reduce_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "61": {
+    "task_id": "aptamer_ranking_5",
+    "arm": "ungated",
+    "claim_id": "c3"
+  },
+  "62": {
+    "task_id": "aptamer_ranking_2",
+    "arm": "ungated",
+    "claim_id": "c4"
+  },
+  "63": {
+    "task_id": "aptamer_ranking_split_fgf2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "64": {
+    "task_id": "purine_band_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "65": {
+    "task_id": "u_reduce_5",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "66": {
+    "task_id": "aptamer_screening_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "67": {
+    "task_id": "purine_band_3",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "68": {
+    "task_id": "u_reduce_3",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "69": {
+    "task_id": "aptamer_ranking_4",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "70": {
+    "task_id": "gc_target_6",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "71": {
+    "task_id": "purine_band_3",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "72": {
+    "task_id": "aptamer_ranking_5",
+    "arm": "ungated",
+    "claim_id": "c4"
+  },
+  "73": {
+    "task_id": "u_reduce_7",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "74": {
+    "task_id": "gc_target_4",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "75": {
+    "task_id": "aptamer_ranking_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "76": {
+    "task_id": "purine_band_4",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "77": {
+    "task_id": "aptamer_ranking_v3_ifn_gamma",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "78": {
+    "task_id": "purine_band_0",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "79": {
+    "task_id": "aptamer_screening_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "80": {
+    "task_id": "aptamer_ranking_split_sars_cov_2_n",
+    "arm": "ungated",
+    "claim_id": "c3"
+  },
+  "81": {
+    "task_id": "purine_band_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "82": {
+    "task_id": "gc_target_5",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "83": {
+    "task_id": "aptamer_ranking_5",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "84": {
+    "task_id": "u_reduce_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "85": {
+    "task_id": "aptamer_ranking_split_vegf",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "86": {
+    "task_id": "aptamer_ranking_split_sars_cov_2_n",
+    "arm": "ungated",
+    "claim_id": "c1"
+  }
+}
