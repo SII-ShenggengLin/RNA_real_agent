@@ -4,8 +4,9 @@ Grouped bar headline of the E3 dual-arm re-run (Experiment 17, gated
 treatment arm, paired with the Exp-5 ungated control arm on the identical
 45-task audit set): left axis, false-positive claim rate FP/(FP+TP) per
 arm with Wilson 95% CI whiskers; right axis, true-positive claim counts.
-Value labels above every bar; n claims carried by the arm tick labels
-(the fig2b convention). Arm colours: ungated terracotta / gated sage
+Value labels above every bar; both panels carry identical two-line arm
+tick labels with the per-arm claim basis n (the fig2b convention, kept
+consistent across panels). Arm colours: ungated terracotta / gated sage
 green — the same warm/cool semantics as the per-claim verdict colours of
 Fig. 4b (FP terracotta, TP sage).
 
@@ -72,9 +73,11 @@ def main() -> int:
                              w_mm / 25.4 / fig_w, 26 / 25.4 / fig_h])
 
     xs = [0, 1]
+    arm_order = ("ungated", "gated")
+    tick_labels = [f"{ARM_LABELS[a]}\n(n = {n_claims[a]})" for a in arm_order]
     # ── left: false-positive claim rate (%), Wilson CI whiskers ──────────
     ax_l = _ax(26, 24)
-    for x, arm in zip(xs, ("ungated", "gated")):
+    for x, arm in zip(xs, arm_order):
         rate = arms[arm]["fp_rate"]
         lo, hi = arms[arm]["fp_rate_ci95"]
         ax_l.bar(x, 100 * rate, width=0.58, color=ARM_COLORS[arm],
@@ -91,8 +94,7 @@ def main() -> int:
         ax_l.text(x, label_y, f"{100 * rate:.1f}%",
                   ha="center", va="bottom", fontsize=FONT, color=INK)
     ax_l.set_xticks(xs)
-    ax_l.set_xticklabels([f"{ARM_LABELS[a]}\n(n = {n_claims[a]})"
-                          for a in ("ungated", "gated")], fontsize=FONT)
+    ax_l.set_xticklabels(tick_labels, fontsize=FONT)
     ax_l.set_xlim(-0.55, 1.55)
     ax_l.set_ylim(0, 100)
     ax_l.set_yticks(range(0, 101, 25))
@@ -107,13 +109,12 @@ def main() -> int:
     y_max = max(tp.values())
     step = 5 if y_max <= 25 else 10
     y_top = ((y_max * 1.25 + step - 1) // step) * step
-    for x, arm in zip(xs, ("ungated", "gated")):
+    for x, arm in zip(xs, arm_order):
         ax_r.bar(x, tp[arm], width=0.58, color=ARM_COLORS[arm], edgecolor="none")
         ax_r.text(x, tp[arm] + 0.035 * y_top, str(tp[arm]),
                   ha="center", va="bottom", fontsize=FONT, color=INK)
     ax_r.set_xticks(xs)
-    ax_r.set_xticklabels([ARM_LABELS[a] for a in ("ungated", "gated")],
-                         fontsize=FONT)
+    ax_r.set_xticklabels(tick_labels, fontsize=FONT)
     ax_r.set_xlim(-0.55, 1.55)
     ax_r.set_ylim(0, y_top)
     ax_r.set_yticks(list(range(0, int(y_top) + 1, int(step))))
