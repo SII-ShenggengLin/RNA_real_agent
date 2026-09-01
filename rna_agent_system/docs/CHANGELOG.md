@@ -8,6 +8,15 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-09-01 — Exp 24: 生产 campaign 共享仪器重跑（Fig 4f + Fig 2a/2h/2i 再测量，§2.4 实验 5）
+
+- **设计**：用户指示「跑一次、登记为共享仪器、冻结切片」——一次 241 运行生产 campaign（210 RNADesign-210 任务 + 31 PA 表单会话，用户入口逐次子进程、输入 verbatim、advisory CapGate、GPU 0/1/2 服务按发行拓扑预热）同时供四个 panel：Fig 4f（按 oracle 的门决策 Cleveland 点图）、Fig 2a（任务毯图）、Fig 2h（代表会话里程碑轨）、Fig 2i（runtime ECDF）。drivers：`experiments/exp24_production_campaign.py`（campaign，预注册 docstring，pilot 4/4）+ `experiments/exp24_run_parallel.py`（编排）+ `experiments/exp24_audit_gate_stats.py`（只读分析器；`--verify` 从冻结切片重算字节一致）。
+- **并行修订（用户指示提速，重跑前登记）**：11 个工作流独占并行 worker——同一工作流的运行永不重叠，unstamped 门事件按 payload 工作流键唯一归属（硬断言，0 歧义；歧义即失败而非污染）；单次运行墙钟 = 并发负载下交付的工作流（图注披露）；重试一律新 sid（本次 0 次重试）；两次编排器重启的半途会话按排除披露；并发追加 0 撕裂行。campaign 墙钟 ≈ 6.8 h（串行 legacy ≈ 17.5 h）；利用率全程监控（128 核聚合 CPU 10–60%，GPU 0/1/2 脉冲式、模型驻留）。
+- **结果**：241/241、0 失败。冻结审计切片 10,395 事件 = 8,818 tool calls（84.8%，40 工具，3 例孤立瞬时失败）+ **1,392 门决策（709 reject / 549 require_profiling / 134 downgrade / allow 0，11 oracle）** + 185 ranking 组装 + 0 claim。runtime：中位 2.32 min，工作流中位 2.7 s–6.39 min，76.8% ≤5 min，240/241 ≤1 h（最大 = GenNav 导航 aptamer PA_028 104.9 min）。代表会话规则再次选出 PA_036（152 calls + 32 gates [16/8/8] + 3 ranking，7.5 min 跨度）。Fig 2a：210/210。
+- **对 legacy（内部登记）**：Exp-9 切片 10,217/8,798/1,377[690/553/134]/42——各项均在几个百分点内复现、downgrade 逐条相等、代表会话相同且分类构成几乎一致；ranking 组装 42→185（当前平台排序治理事件粒度）；Exp-8 runtime 2.6/2.5s–6.29min/98.6min → 2.32/2.7s–6.39min/104.9min（并发口径）。
+- **图**：`fig4f_gate_decisions.py`（新 panel：水平 Cleveland 点图、按 oracle 行、三 verdict marker + dumbbell + 计数标注、CASCADE Fig. 5d/e 惯例、verdict 配色沿用 fig2h/4e 惯例）→ `fig4f_gate_decisions.{pdf,png}`；fig2a/2h/2i 重写指向 Exp-24 记录（注册图型不变）；四图栅格 QA 全绿（mm 尺寸正确、零边缘墨、palette 校验）。视觉通道对 fig4f 两次返回旧缓存图（登记过的失效模式）——判不可信，QA 以确定性栅格分析为准。
+- **文档**：PAPER_DRAFT（§2.2 审计/runtime 段 + §2.4 Fig-4f 句与数字 + Fig 2 a/h/i 与 Fig 4f 图例 + Methods campaign 段 + Data availability）、PAPER_FACT_SHEET（Fig 2h/2i 节改写为 Exp-24 + Exp 24 节 + claim check）、FIGURE_PLAN_V5（行 a/h/i/f + 共享仪器登记）、MANUSCRIPT 重置表、本 CHANGELOG、AGENTS.md 更新。旧 exp1（覆盖）与 exp8/exp9（runtime/审计）结果目录按重置规则删除（`exp1_bring_up_services.sh` 保留）。
+
 ## 2026-09-01 — Fig 4b 用户指示修订（同一份 Exp-17 冻结结果，无重跑）
 
 - **`experiments/plots/fig4b_claim_matrix.py` 修订并重渲染**（`fig4b_claim_matrix.{pdf,png}`）：(1) 删除右上 arm × verdict mosaic inset——其计数已在 Fig 4b 图注与正文陈述（fig2h 删 donut / fig3f 删 waffle 的先例），且其重复的臂标签互相挤压、下方留出整列空带；(2) 行标签改用 fig3 靶标惯例（"IFN-gamma" → "IFN-γ"、"Influenza H3N2 HA" → "swine H3 HA"），"U reduce" 改词为 "U reduction"；(3) 底部四摆片裁定键改为渲染器实测字宽排版（fig4e 惯例）并加画布溢出断言——旧版估算字宽使图例实际比画布宽、靠 tight-crop 外扩；(4) 臂块 12 → 14 mm、块间距 5 → 8 mm，使矩阵主体与单行图例共享画布宽度（tile 1.7 → 2.0 mm）。全部文字维持 6-pt 纯黑（光栅复核：旧版亦全部为 #000000 文字核，无非黑文字）、palette rev 7 用色、1200-dpi PNG + 矢量 PDF。光栅 QA：零非黑文字核、零非调色板色块、tile 内零文字墨迹、四边无裁切。文档同步：PAPER_DRAFT Fig 4 图注 (b) 删 mosaic-inset 从句、FIGURE_PLAN_V5 行 b + 类型清单 + 注记。

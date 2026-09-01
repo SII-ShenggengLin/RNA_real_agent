@@ -1,35 +1,29 @@
 #!/usr/bin/env python3
-"""Fig. 2i — end-to-end runtime by workflow (log-axis ECDF).
+"""Fig. 2i — end-to-end runtime by workflow (log-axis ECDF; Exp-24 re-run).
 
 One cumulative-distribution step curve per workflow (SeFMol Fig. 2b/c style):
 x = wall-clock minutes per run on a log axis, y = fraction of runs completed
-within x. Samples pool the two Exp-8 arms — the RNADesign-210 suite tasks and
-the PA_006–PA_036 regression sessions — both driven end-to-end through the
-same user form entry on the pre-warmed platform (see
-experiments/exp8_runtime.py docstring for the registered measurement
-boundary). Successful runs only.
+within x. Samples pool the two Exp-24 arms — the RNADesign-210 suite tasks
+and the PA_006–PA_036 regression sessions — both driven end-to-end through
+the same user form entry on the pre-warmed platform (see
+experiments/exp24_production_campaign.py docstring for the registered
+measurement boundary). Successful runs only.
+
+Exp-24 shared-instrument re-measurement (2026-09-01): the campaign is the
+registered third-reset production campaign feeding Figs. 2a/2h/2i/4f; this
+panel re-draws from its records (superseding the second-reset Exp-8 numbers
+in the caption and paper text).
 
 Reference line: 1 h per run (the programme's stated upper operating scale),
 dashed. The legend (one row block centred under the axis) carries each
-workflow's colour, median runtime and sample size.
-
-Figure revisions 2026-08-28 (user-directed): removed the in-figure title —
-Nature style, the headline lives in the caption and panels carry letters only
-(the fig2d/fig2f revision convention); every text element now shares one font
-size (6 pt) and one colour (ink black — the legend entries were previously set
-in their pale workflow colours); the box inset — which overlapped the ECDF
-curves — dropped entirely (it summarized the same samples the ECDF already
-shows in full, and the legend carries the medians); the legend moved from
-floating at the figure's right margin to a centred block under the x-axis, so
-it reads as part of the panel; axis wording corrected target → run (the
-241-run sample times whole PA sessions as single runs, not per target);
-y-range headroom added above the y = 1 step so the curve tops no longer touch
-the panel edge.
+workflow's colour, median runtime and sample size. No in-figure title
+(Nature style — the headline lives in the caption); every text element one
+6-pt ink-black style; y-range headroom above the y = 1 step.
 
 Colours (palette rev 7): each workflow's canonical WORKFLOW_COLORS entry;
 reference line and all text in ink black.
 
-Data  : experiments/results/exp8_runtime/{pilot,lane_*,pa_batch}.jsonl
+Data  : experiments/results/exp24_production_campaign/{pilot,lane_*,pa_batch}.jsonl
 Usage : python experiments/plots/fig2i_runtime_ecdf.py
 Output : experiments/plots/output/fig2i_runtime_ecdf.{pdf,png}
 """
@@ -55,7 +49,7 @@ from palette import (  # noqa: E402
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp8_runtime"
+RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp24_production_campaign"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 FONT = 6  # single font size for every in-figure text element
@@ -114,7 +108,7 @@ def main() -> int:
         if rec.get("success"):
             by_wf.setdefault(rec["workflow"], []).append(rec["elapsed_seconds"] / 60.0)
     if not by_wf:
-        print("no successful exp8 records — run experiments/exp8_run_all.sh first")
+        print("no successful exp24 records — run experiments/exp24_run_all.sh first")
         return 1
 
     missing = [wf for wf in WORKFLOW_ORDER if wf not in by_wf]
@@ -182,6 +176,14 @@ def main() -> int:
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")
+    pooled = sorted(all_vals)
+    n_le_5 = sum(1 for v in pooled if v <= 5)
+    n_le_10 = sum(1 for v in pooled if v <= 10)
+    n_le_60 = sum(1 for v in pooled if v <= 60)
+    print(f"pooled n={len(pooled)} median={median(pooled):.2f} min; "
+          f"<=5min {n_le_5}/{len(pooled)} ({100*n_le_5/len(pooled):.1f}%), "
+          f"<=10min {n_le_10}/{len(pooled)} ({100*n_le_10/len(pooled):.1f}%), "
+          f"<=1h {n_le_60}/{len(pooled)}")
     for wf in wfs:
         vals = sorted(by_wf[wf])
         print(f"{wf}: n={len(vals)} min={vals[0]:.2f} med={median(vals):.2f} max={vals[-1]:.2f} (min)")

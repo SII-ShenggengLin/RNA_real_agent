@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Fig. 2a — RNADesign-210 task-success carpet (single merged panel).
+"""Fig. 2a — RNADesign-210 task-success carpet (single merged panel; Exp-24
+re-run).
 
 One row per workflow (canonical order), one tile per task in task-id order,
 filled with the workflow colour on success (a failed tile would be drawn
@@ -7,18 +8,17 @@ white with a grey edge). Row labels carry the per-workflow task count as
 "label (n=…)" in the same colour and size as every other in-figure text;
 each row end carries the per-workflow success count "ok/n", anchored by a
 tile-semantics legend in the empty bottom-right corner (black swatch =
-filled tile, task succeeded; white swatch = task failed — none
-in the 2026-08-25 reset run). The
+filled tile, task succeeded; white swatch = task failed). The
 shared x-axis gives the task-count scale, so row length doubles as the
-per-workflow count — the earlier companion summary-bar panel was redundant
-with the carpet and was merged into this axis.
+per-workflow count.
 
-Figure revision 2026-08-27 (user-directed): merged the two sub-panels into
-one, removed all in-figure titles (Nature style — the headline lives in the
-caption, panels carry letters only), and unified every text element to one
-font size and colour.
+Exp-24 shared-instrument re-measurement (2026-09-01): the tiles now re-draw
+from the registered third-reset production campaign's suite arm (the 210
+RNADesign-210 tasks; PA sessions are not carpet tiles — the ECDF panel
+pools them for runtime only). No in-figure titles (Nature style — the
+headline lives in the caption); every text element one 6-pt ink-black size.
 
-Data  : experiments/results/exp1_rnadesign210/{pilot,lane_*}.jsonl
+Data  : experiments/results/exp24_production_campaign/{pilot,lane_*}.jsonl
 Usage : python experiments/plots/fig2a_coverage.py
 Output : experiments/plots/output/fig2a_coverage.{pdf,png}
 """
@@ -44,7 +44,7 @@ from palette import (  # noqa: E402
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp1_rnadesign210"
+RESULTS_DIR = PROJECT_ROOT / "experiments" / "results" / "exp24_production_campaign"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 FONT = 6  # single font size for every in-figure text element
@@ -80,6 +80,8 @@ def load_records() -> dict[str, dict]:
                 rec = json.loads(line)
             except json.JSONDecodeError:
                 continue
+            if rec.get("source") != "rnadesign210":
+                continue  # PA regression sessions are not carpet tiles
             by_id[rec["task_id"]] = rec
     return by_id
 
@@ -87,7 +89,7 @@ def load_records() -> dict[str, dict]:
 def main() -> int:
     records = load_records()
     if not records:
-        print("no run records found — run the benchmark first")
+        print("no run records found — run the campaign first")
         return 1
 
     by_wf: dict[str, list[dict]] = {wf: [] for wf in WORKFLOW_ORDER}
@@ -118,6 +120,7 @@ def main() -> int:
     axes_h_in = unit_in * (y_hi - y_lo)
     bottom_margin_in = 0.30  # tick labels + xlabel
     top_margin_in = 0.05
+
     fig_h_in = axes_h_in + bottom_margin_in + top_margin_in
 
     fig = plt.figure(figsize=(fig_w_in, fig_h_in), facecolor="white")
@@ -148,9 +151,8 @@ def main() -> int:
     # corner (right of the short bottom rows), so the row-end ok/n counts
     # read as successes/tasks. A single black swatch stands for a filled tile
     # (the carpet fills tiles with each workflow's own colour); the "failed"
-    # swatch matches the white failure tile exactly (none occurs in the
-    # 2026-08-25 reset run). Legend texts carry a white bbox so the vertical
-    # count guides never cross them.
+    # swatch matches the white failure tile exactly. Legend texts carry a
+    # white bbox so the vertical count guides never cross them.
     sw = 0.55                      # legend swatch side (smaller than a tile)
     leg_y = 0.9                    # centred in the empty bottom-right corner
     leg_x = max_cols - 6.6         # block left edge; block ends near x_hi

@@ -1,0 +1,3 @@
+{"task_id": "pa_006", "pa_id": "006", "workflow": "sirna_design", "n_turns": 4, "source": "pa_regression", "session_id": "exp24_pa006", "exit_code": 0, "elapsed_seconds": 487.39, "timestamp": "2026-09-01T11:14:23", "error": null, "success": true}
+{"task_id": "pa_016", "pa_id": "016", "workflow": "sirna_design", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa016", "exit_code": 0, "elapsed_seconds": 387.61, "timestamp": "2026-09-01T11:20:50", "error": null, "success": true}
+{"task_id": "pa_025", "pa_id": "025", "workflow": "sirna_design", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa025", "exit_code": 0, "elapsed_seconds": 354.26, "timestamp": "2026-09-01T11:26:45", "error": null, "success": true}
