@@ -1,0 +1,136 @@
+{
+  "experiment": "exp23_selective_gating",
+  "paper_ref": "§2.4 实验 4 / Fig 4e — selective gating decision matrix",
+  "legacy_relation": "re-run of the legacy E7 gate demo (e7_gate_demo.jsonl, 2026-08-11)",
+  "stage": "full",
+  "timestamp_utc": "2026-09-01T07:23:27.119744+00:00",
+  "wall_s": 5.569,
+  "cells_total": 12,
+  "cells_expectation_met": 12,
+  "all_met": true,
+  "llm_calls": 0,
+  "instrument": {
+    "policy": "enforce",
+    "self_model_path": "agent_core/calibrated/default_self_model.json",
+    "self_model_sha256": "cc3c1a312a64ba3e6bea19857a10d49d1e0a82d1241529d81554261846f3dbdd",
+    "self_model_records": 29,
+    "mrl_certified_families": [
+      "sample2019_egfp_random50",
+      "sample2019_varying_length_human",
+      "sample2019_varying_length_random"
+    ],
+    "utr3_records": 0,
+    "oracle_version_drift": [],
+    "decision_gate_via": "runtime.review_tool_call under oracle_use(ranking_objective, family)",
+    "claim_gate_via": "runtime.claim_gate.review (deterministic templates, polish off)",
+    "enforcement_via": "ToolExecutor.run_tool (production registry)",
+    "audit_trail": "workspace/audit/platform_audit.jsonl",
+    "audit_lines_written_this_run": 15,
+    "service_health": "{\"status\":\"ok\"}"
+  },
+  "datasets": {
+    "mrl_anchor_set": {
+      "path": "data/benchmarks/external_anchors/utr_mrl/e7_mrl_anchor_set.json",
+      "sha256": "d66679024ef7059a1fd6146bbdbb6d6c36cb0bd34781561791c92e1438cf7e7f",
+      "n_entries": 706,
+      "certified_by": "Exp 14 (Fig 3f), 706/706 bit-identical"
+    },
+    "novel_family_source": {
+      "path": "experiments/e18_audit_tasks_mrna.json",
+      "sha256": "68ceddc489237dc1e6068af824124e12a96ec373ecc18b61af93cbd492a73d77",
+      "note": "Exp-18 (Fig 4d) cross_family_expression task: novel_utr_family_7"
+    },
+    "utr3_sequence_source": "e18 utr3_stability_rank candidate cand_4f0a9b504442",
+    "e1_crosscheck_cache": {
+      "path": "experiments/results/e7_mrl_scoring.jsonl",
+      "sha256": "4d90dc53a26c9e021fa635dc27e9d59411fe98d381973d63f9198edb59c27377",
+      "anchor_id": "hi01_egfp_random50"
+    }
+  },
+  "verdict_matrix": {
+    "D1": {
+      "layer": "decision_gate",
+      "oracle": "gemorna_5utr_mrl",
+      "family": "sample2019_egfp_random50",
+      "verdict": "allow",
+      "met": true
+    },
+    "D2": {
+      "layer": "decision_gate",
+      "oracle": "gemorna_5utr_mrl",
+      "family": "sample2019_varying_length_random",
+      "verdict": "allow",
+      "met": true
+    },
+    "D3": {
+      "layer": "decision_gate",
+      "oracle": "gemorna_5utr_mrl",
+      "family": "sample2019_varying_length_human",
+      "verdict": "allow",
+      "met": true
+    },
+    "D4": {
+      "layer": "decision_gate",
+      "oracle": "gemorna_5utr_mrl",
+      "family": "novel_utr_family_7",
+      "verdict": "downgrade",
+      "met": true
+    },
+    "D5": {
+      "layer": "decision_gate",
+      "oracle": "gemorna_3utr_stability",
+      "family": "sample2019_egfp_random50",
+      "verdict": "require_profiling",
+      "met": true
+    },
+    "D6": {
+      "layer": "decision_gate",
+      "oracle": "gemorna_3utr_stability",
+      "family": "novel_utr_family_7",
+      "verdict": "require_profiling",
+      "met": true
+    },
+    "C1": {
+      "layer": "claim_gate",
+      "oracle": "gemorna_5utr_mrl",
+      "family": "sample2019_egfp_random50",
+      "verdict": "pass",
+      "met": true
+    },
+    "C2": {
+      "layer": "claim_gate",
+      "oracle": "gemorna_5utr_mrl",
+      "family": "novel_utr_family_7",
+      "verdict": "downgrade",
+      "met": true
+    },
+    "C3": {
+      "layer": "claim_gate",
+      "oracle": "gemorna_3utr_stability",
+      "family": "novel_utr_family_7",
+      "verdict": "reject",
+      "met": true
+    },
+    "E1": {
+      "layer": "enforcement",
+      "oracle": "predict_5utr_mrl_with_gemorna",
+      "family": "sample2019_egfp_random50",
+      "verdict": "executed",
+      "met": true
+    },
+    "E2": {
+      "layer": "enforcement",
+      "oracle": "predict_5utr_mrl_with_gemorna",
+      "family": "novel_utr_family_7",
+      "verdict": "executed",
+      "met": true
+    },
+    "E3": {
+      "layer": "enforcement",
+      "oracle": "predict_3utr_stability_with_gemorna",
+      "family": "sample2019_egfp_random50",
+      "verdict": "GatedActionError",
+      "met": true
+    }
+  }
+}
