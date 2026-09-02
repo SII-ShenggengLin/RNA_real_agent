@@ -97,7 +97,7 @@ unchanged).
 
 | Panel | Content | Type | Data |
 |---|---|---|---|
-| a | Why selection-layer failed (E5): pool pass rates (GFP 0/315→12/315; insulin diversity 0.0082 < 0.02 gate) | bars + gate line | E5 report numbers |
+| a | Why selection-layer failed (Exp 26 re-run 2026-09-02, the paper's citation): pool pass rates (A1AT 27 / Insulin 144 / EPO 306 / IL-2 297; GFP 0/315 → 18/315, passing candidates confined to the λ{4,10} gears; insulin delivered-batch diversity 0.0101 < 0.02 gate — the λ-saturation failure) | bars + gate line | `exp26_selection_layer_pool/full/summary.json` |
 | b | mRNA primary endpoint: discordant 30:0, McNemar P=1.9e-9, n=54 | paired dots + counts + permutation-null histogram inset | `e6_s2_verdict_aggregated.json` |
 | c | mRNA delivery map: 18 targets × 3 profiles pair-outcome mosaic (C-only / both / none) | categorical heatmap | `e6_s2_runs.jsonl` evaluations |
 | d | mRNA secondary endpoint (disclosed): quality bundle fails via HER2 zero-feasible-gear degrade; LLM 43 calls (2.4/gene) | bullet bars + annotation | e6 verdict quality block |

@@ -1,0 +1,68 @@
+{
+  "experiment": "exp26_selection_layer_pool",
+  "paper_registry": "E5 (selection-layer precursor; Fig 5a)",
+  "protocol_source": "git b6dad08 experiments/run_e5_constraint_nav.py (S1 r5/B0)",
+  "pool_definition": "LD lambda{0,1,4,10} + RNARL + GEMORNA 30 CDS = 35 x 9 UTR = 315",
+  "gates": {
+    "diversity_min_dist": 0.02,
+    "cai_min": 0.8,
+    "constraint_ids": [
+      "C1",
+      "C2",
+      "C6",
+      "C7",
+      "M1",
+      "CAI"
+    ]
+  },
+  "targets": [
+    {
+      "target": "Insulin",
+      "wiring": "production",
+      "pool_n": 315,
+      "pass_n": 123,
+      "pass_rate": 0.3904761904761905,
+      "pass_by_lambda": {
+        "4.0": 6,
+        "10.0": 6,
+        "-1.0": 111
+      },
+      "constraint_fail_tally": {
+        "C1": 144,
+        "C2": 0,
+        "C6": 42,
+        "C7": 22,
+        "M1": 0,
+        "CAI": 9
+      },
+      "d1_min_dist_min_over_profiles": 0.009041591320072333,
+      "d1_min_dist_per_profile": {
+        "expression": 0.0099601593625498,
+        "stability": 0.009041591320072333,
+        "balanced": 0.009041591320072333
+      },
+      "d1_pass_all_profiles": false,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [
+          2,
+          3,
+          4
+        ],
+        "stability": [
+          2,
+          3,
+          4
+        ],
+        "balanced": [
+          2,
+          3,
+          4
+        ]
+      },
+      "e2e_pass_all_profiles": true,
+      "elapsed_seconds": 264.6761751200538
+    }
+  ],
+  "wall_seconds": 264.68111511005554,
+  "tool_calls": 457
+}

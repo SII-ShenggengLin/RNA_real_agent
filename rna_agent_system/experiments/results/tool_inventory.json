@@ -90,7 +90,10 @@
         "agent_core/workflows/mrna_cds_design.py",
         "agent_core/workflows/mrna_sequence_scoring.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp18_build_mrna_audit_tasks.py",
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "compute_dot_bracket_unpaired_fraction",
@@ -200,7 +203,9 @@
       "production_callers": [
         "agent_core/workflows/full_length_mrna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "design_5utr_with_gemorna",
@@ -216,7 +221,9 @@
       "production_callers": [
         "agent_core/workflows/full_length_mrna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "design_mrna_cds_with_gemorna",
@@ -233,7 +240,9 @@
         "agent_core/workflows/full_length_mrna_design.py",
         "agent_core/workflows/mrna_cds_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "design_mrna_cds_with_lineardesign",
@@ -250,7 +259,9 @@
         "agent_core/workflows/full_length_mrna_design.py",
         "agent_core/workflows/mrna_cds_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "design_mrna_cds_with_rnarl",
@@ -267,7 +278,9 @@
         "agent_core/workflows/full_length_mrna_design.py",
         "agent_core/workflows/mrna_cds_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "design_rna_inverse_fold_with_ribodiffusion",
@@ -395,7 +408,11 @@
         "agent_core/workflows/evaluators.py",
         "agent_core/workflows/full_length_mrna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp18_mrna_claim_gating.py",
+        "experiments/exp23_selective_gating.py",
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "predict_5utr_mrl_with_gemorna",
@@ -417,7 +434,12 @@
         "agent_core/workflows/evaluators.py",
         "agent_core/workflows/full_length_mrna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp14_mrl_oracle_certification.py",
+        "experiments/exp18_mrna_claim_gating.py",
+        "experiments/exp23_selective_gating.py",
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "predict_mrna_stability_with_rnastop",
@@ -516,7 +538,12 @@
       "production_callers": [
         "agent_core/workflows/rna_aptamer_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp10_structure_oracle_screening.py",
+        "experiments/exp11_oracle_ranking_power.py",
+        "experiments/exp13_affinity_calibration.py",
+        "experiments/exp5_claim_overreach.py"
+      ]
     },
     {
       "name": "predict_rna_secondary_structure",
@@ -561,7 +588,11 @@
         "agent_core/workflows/rna_aptamer_design.py",
         "agent_core/workflows/sirna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp18_build_mrna_audit_tasks.py",
+        "experiments/exp18_mrna_claim_gating.py",
+        "experiments/exp26_selection_layer_pool.py"
+      ]
     },
     {
       "name": "predict_rna_tertiary_structure_with_rhofold",
@@ -584,7 +615,12 @@
         "agent_core/workflows/rna_small_molecule_interaction.py",
         "agent_core/workflows/rna_tertiary_structure_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp10_structure_oracle_screening.py",
+        "experiments/exp11_oracle_ranking_power.py",
+        "experiments/exp13_affinity_calibration.py",
+        "experiments/exp5_claim_overreach.py"
+      ]
     },
     {
       "name": "run_blastn_similarity_search",
@@ -600,7 +636,9 @@
       "production_callers": [
         "agent_core/workflows/sirna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp6_sirna_offtarget.py"
+      ]
     },
     {
       "name": "run_bowtie2_short_alignment",
@@ -616,7 +654,9 @@
       "production_callers": [
         "agent_core/workflows/sirna_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp6_sirna_offtarget.py"
+      ]
     },
     {
       "name": "run_odesign_inference",
@@ -696,7 +736,9 @@
       "production_callers": [
         "agent_core/workflows/rna_small_molecule_interaction.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp15_rnasmol_fidelity.py"
+      ]
     },
     {
       "name": "score_rna_protein_complex_with_egarps",
@@ -717,7 +759,13 @@
       "production_callers": [
         "agent_core/workflows/rna_aptamer_design.py"
       ],
-      "experiment_callers": []
+      "experiment_callers": [
+        "experiments/exp10_structure_oracle_screening.py",
+        "experiments/exp11_oracle_ranking_power.py",
+        "experiments/exp12_docking_capability.py",
+        "experiments/exp13_affinity_calibration.py",
+        "experiments/exp5_claim_overreach.py"
+      ]
     },
     {
       "name": "score_sgrna_handle_with_crgpt",

@@ -1,0 +1,292 @@
+{
+  "experiment": "exp26_selection_layer_pool",
+  "paper_registry": "E5 (selection-layer precursor; Fig 5a)",
+  "protocol_source": "git b6dad08 experiments/run_e5_constraint_nav.py (S1 r5/B0)",
+  "pool_definition": "LD lambda{0,1,4,10} + RNARL + GEMORNA 30 CDS = 35 x 9 UTR = 315",
+  "gates": {
+    "diversity_min_dist": 0.02,
+    "cai_min": 0.8,
+    "constraint_ids": [
+      "C1",
+      "C2",
+      "C6",
+      "C7",
+      "M1",
+      "CAI"
+    ]
+  },
+  "targets": [
+    {
+      "target": "A1AT",
+      "wiring": "production",
+      "pool_n": 315,
+      "pass_n": 27,
+      "pass_rate": 0.08571428571428572,
+      "pass_by_lambda": {
+        "4.0": 9,
+        "10.0": 9,
+        "-2.0": 9
+      },
+      "constraint_fail_tally": {
+        "C1": 270,
+        "C2": 0,
+        "C6": 0,
+        "C7": 18,
+        "M1": 0,
+        "CAI": 180
+      },
+      "d1_min_dist_min_over_profiles": 0.03706245710363761,
+      "d1_min_dist_per_profile": {
+        "expression": 0.03706245710363761,
+        "stability": 0.03706245710363761,
+        "balanced": 0.03706245710363761
+      },
+      "d1_pass_all_profiles": true,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [
+          2,
+          3,
+          5
+        ],
+        "stability": [
+          2,
+          3,
+          5
+        ],
+        "balanced": [
+          2,
+          3,
+          5
+        ]
+      },
+      "e2e_pass_all_profiles": true,
+      "elapsed_seconds": 751.6278377459385
+    },
+    {
+      "target": "Insulin",
+      "wiring": "production",
+      "pool_n": 315,
+      "pass_n": 144,
+      "pass_rate": 0.45714285714285713,
+      "pass_by_lambda": {
+        "4.0": 9,
+        "10.0": 9,
+        "-1.0": 126
+      },
+      "constraint_fail_tally": {
+        "C1": 153,
+        "C2": 0,
+        "C6": 6,
+        "C7": 18,
+        "M1": 0,
+        "CAI": 9
+      },
+      "d1_min_dist_min_over_profiles": 0.010101010101010102,
+      "d1_min_dist_per_profile": {
+        "expression": 0.010101010101010102,
+        "stability": 0.010101010101010102,
+        "balanced": 0.010101010101010102
+      },
+      "d1_pass_all_profiles": false,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [
+          2,
+          3,
+          4
+        ],
+        "stability": [
+          2,
+          3,
+          4
+        ],
+        "balanced": [
+          2,
+          3,
+          4
+        ]
+      },
+      "e2e_pass_all_profiles": true,
+      "elapsed_seconds": 237.5370609309757
+    },
+    {
+      "target": "EPO",
+      "wiring": "production",
+      "pool_n": 315,
+      "pass_n": 306,
+      "pass_rate": 0.9714285714285714,
+      "pass_by_lambda": {
+        "1.0": 9,
+        "4.0": 9,
+        "10.0": 9,
+        "-2.0": 9,
+        "-1.0": 270
+      },
+      "constraint_fail_tally": {
+        "C1": 0,
+        "C2": 0,
+        "C6": 0,
+        "C7": 0,
+        "M1": 0,
+        "CAI": 9
+      },
+      "d1_min_dist_min_over_profiles": 0.034574468085106384,
+      "d1_min_dist_per_profile": {
+        "expression": 0.034574468085106384,
+        "stability": 0.034574468085106384,
+        "balanced": 0.06382978723404255
+      },
+      "d1_pass_all_profiles": true,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "stability": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "balanced": [
+          1,
+          2,
+          4,
+          5
+        ]
+      },
+      "e2e_pass_all_profiles": true,
+      "elapsed_seconds": 390.868877497036
+    },
+    {
+      "target": "IL-2",
+      "wiring": "production",
+      "pool_n": 315,
+      "pass_n": 297,
+      "pass_rate": 0.9428571428571428,
+      "pass_by_lambda": {
+        "1.0": 9,
+        "4.0": 9,
+        "10.0": 9,
+        "-2.0": 9,
+        "-1.0": 261
+      },
+      "constraint_fail_tally": {
+        "C1": 9,
+        "C2": 0,
+        "C6": 0,
+        "C7": 0,
+        "M1": 0,
+        "CAI": 18
+      },
+      "d1_min_dist_min_over_profiles": 0.026124818577648767,
+      "d1_min_dist_per_profile": {
+        "expression": 0.05805515239477504,
+        "stability": 0.026124818577648767,
+        "balanced": 0.026124818577648767
+      },
+      "d1_pass_all_profiles": true,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "stability": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "balanced": [
+          1,
+          2,
+          4,
+          5
+        ]
+      },
+      "e2e_pass_all_profiles": true,
+      "elapsed_seconds": 279.53196352010127
+    },
+    {
+      "target": "GFP",
+      "wiring": "pre_b0",
+      "pool_n": 315,
+      "pass_n": 0,
+      "pass_rate": 0.0,
+      "pass_by_lambda": {},
+      "constraint_fail_tally": {
+        "C1": 75,
+        "C2": 0,
+        "C6": 9,
+        "C7": 0,
+        "M1": 0,
+        "CAI": 315
+      },
+      "d1_min_dist_min_over_profiles": 0.0,
+      "d1_min_dist_per_profile": {
+        "expression": 0.0,
+        "stability": 0.0,
+        "balanced": 0.0
+      },
+      "d1_pass_all_profiles": false,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [],
+        "stability": [],
+        "balanced": []
+      },
+      "e2e_pass_all_profiles": false,
+      "elapsed_seconds": 381.7575763310306
+    },
+    {
+      "target": "GFP",
+      "wiring": "production",
+      "pool_n": 315,
+      "pass_n": 18,
+      "pass_rate": 0.05714285714285714,
+      "pass_by_lambda": {
+        "4.0": 9,
+        "10.0": 9
+      },
+      "constraint_fail_tally": {
+        "C1": 75,
+        "C2": 0,
+        "C6": 9,
+        "C7": 9,
+        "M1": 0,
+        "CAI": 297
+      },
+      "d1_min_dist_min_over_profiles": 0.04252873563218391,
+      "d1_min_dist_per_profile": {
+        "expression": 0.04252873563218391,
+        "stability": 0.04389086595492289,
+        "balanced": 0.04252873563218391
+      },
+      "d1_pass_all_profiles": true,
+      "d2_lambda_ranks_per_profile": {
+        "expression": [
+          2,
+          3
+        ],
+        "stability": [
+          2,
+          3
+        ],
+        "balanced": [
+          2,
+          3
+        ]
+      },
+      "e2e_pass_all_profiles": true,
+      "elapsed_seconds": 106.9345214170171
+    }
+  ],
+  "wall_seconds": 2148.2994493769947,
+  "tool_calls": 2310
+}

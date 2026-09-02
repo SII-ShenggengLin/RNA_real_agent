@@ -1,12 +1,43 @@
 # Change Log
 
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-09-01
+> **Last updated**: 2026-09-02
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-09-02 — 第四次实验计划重置开启 + Exp 26 执行（Fig 5a：选择层前驱池失败重测，§2.5 实验 1 / 登记名 E5）
+
+**计划重置（用户指示）**：架构再度大改，全部实验重新跑、代码重写——沿用 2026-08-29 第三次重置的
+"一次一个实验、只替换当前实验产物"规则与 12 色统一调色板（palette rev 7 原样，用户复述的 12 hex
+与之一致）；可用 GPU 0/1/2 不变。legacy E5 证据文件（`e5_verdict_s*.json`、`E5_REPORT`）与旧
+fig5a 资产在历次重置中已删除、盘上无待删项；`exp5_*`（声明越界/IRES）属未重跑实验、按规则不动。
+
+**Exp 26（`experiments/exp26_selection_layer_pool.py`，预注册 docstring，协议自 git `b6dad08`
+逐字恢复——LD λ{0,1,4,10} + RNARL + GEMORNA 30 采样 = 35 CDS × 9 UTR 组合 = 315 构造体/靶点；
+硬约束 C1/C2/C6/C7/M1/CAI 阈值原版；arm-A 规则交付 × 3 画像；D1 交付批次最小两两距离对 2% 门槛）**
+：数据集 = 现行 `RNA-BioBench-FullLength-mRNA` S1 五靶子集（A1AT/Insulin/EPO/GFP/IL-2，与
+Fig 2b/c/4d 同一套文件——2026-09-02 用户确认）；仪器 = 生产工具路径（ToolExecutor，advisory
+CapGate，审计 runtime，2,310 次调用；GEMORNA 8004/RNARL 8008 GPU 2，LinearDesign 8014/
+LinearFold 8015 CPU；CAI 本地 Kazusa）；GFP 双接线 = pre-B0 默认 human 表（注册的修复前仪器，
+CAI 315/315 全倒）vs 生产 E. coli 表，RNARL/GEMORNA/UTR 档共享、表是唯一杠杆；GEMORNA 采样非
+幂等、legacy 缓存已删 → 新实现落盘缓存（实测而非复刻，披露）；LinearFold 全长结构+MFE 单次
+确定性调用合并（legacy 折两次，值相同，披露）；零 LLM。**6/6 cell，0 失败（pilot Insulin
+123/315、D1 0.0090；全量 35.8 min）：通过数 A1AT 27 / Insulin 144 / EPO 306 / IL-2 297 /
+GFP 0→18（default→E. coli 表；通过者恰好全在 λ{4,10} 两档，与注册"可用档仅 λ{4,10}"逐字复现）；
+Insulin 交付批次多样性 1.01% < 2% 门槛——λ 饱和失败结构复现（legacy 0.82%）；EPO 306/315 与
+legacy 逐数相同（实现巧合，披露）；预注册预期全部命中；`--verify` 六条记录从存储数据重算逐字节
+一致。** 图 `experiments/plots/fig5a_selection_pool_pass.py` → `fig5a_selection_pool_pass.
+{pdf,png}`（89 × 82 mm 双层条形图：上层固定池通过数 6 条——4 human 灰蓝 + GFP 双条 terracotta/
+sage；下层交付批次多样性 5 条按 2% 门槛分色 sage/terracotta + 虚线门槛线；6-pt 纯黑、绝对 mm、
+1200-dpi PNG + 矢量 PDF；视觉 QA 一轮修正——门槛标签改置于低于门槛条上方的空白带、面板间隙
+加大、旋转标签缩短；栅格 QA：零边缘墨迹、颜色仅出自 12 色调色板、文字纯黑、双面板基线像素级
+确认存在）。PAPER_DRAFT（§2.5 句 + Fig 5 图例 a + Methods 战役段 + LLM 用量 + 数据可用性——
+全部改引 26/315→18/315、1.01% 重测值）、PAPER_FACT_SHEET（Exp 26 小节 + claim check + 关键数字
+16 扩展；legacy E5 节标注为内部登记）、FIGURE_PLAN_V5 行 a、MANUSCRIPT 重置表、MODEL_API_USAGE
+（零 LLM 行）、AGENTS.md 更新。**下一步：Fig 5 其余面板（GenNav 战役）+ E21/E22 基线，同模式。**
 
 ## 2026-09-01 — Exp 25 执行（Fig 4g + 图 4h：质量评审 advisory 三臂 + 各战役 LLM 用量实测）
 
