@@ -4,27 +4,45 @@ One row per process-aware regression session (31 sessions PA_006–PA_036,
 grouped by workflow in the canonical workflow order, reviewed workflows
 above and the three deterministic-exempt ones below a category divider),
 three column blocks — Review off / Review on / Review on with the LLM
-failure injected — and one outcome tile per session × arm:
+API outage injected — and one colour tile per session × arm. The tile
+colour directly encodes the session's combined outcome × review state
+(no overlaid glyphs):
 
-  sage fill    = every turn of the session succeeds
-  terracotta   = at least one failed turn (none expected — the panel's point)
+  sage green   = succeeds · review completed    (Review-on arm, reviewed
+                                                 workflows — 144 calls)
+  grey blue    = succeeds · review unavailable  (outage arm, reviewed
+                                                 workflows — 144 calls
+                                                 absorbed, audit metadata only)
+  warm grey    = succeeds · no review           (Review-off arm, and the
+                                                 deterministic-exempt
+                                                 workflows in every arm)
+  terracotta   = failed                         (PA_023 only, identically in
+                                                 all three arms — the
+                                                 inherited input-fixture gap)
 
-Review-state glyphs (the governance layer the panel measures):
-  filled ink dot   = review calls completed normally (Review-on arm,
-                     reviewed workflows)
-  open ink ring    = review recorded unavailable — audit metadata only
-                     (failure-injected arm, reviewed workflows)
-  no glyph         = no review applicable (deterministic-exempt workflows,
-                     or the whole Review-off arm)
+2026-09-02 user-directed repair pass (same frozen Exp-25 records, no
+re-run):
+  - every text element is pure black — the workflow group headers no
+    longer pick up the workflow carpet colours and the category divider
+    draws in ink at 0.6 lw instead of de-facto grey (the fig4d
+    convention);
+  - the arm headers were vertically misaligned (the one-line headers sat
+    on the first of the two-line header's rows) and the whole panel was
+    shifted left by a retry-annotation column that the zero-retry data
+    never fills — the headers are now a fixed two-line block (arm name +
+    a per-arm numbers line "30/31 succeed · N calls", aligned across
+    arms) and the retry column is only reserved when retries exist;
+  - second pass (same day, user-directed): the first repair's key split
+    the encoding into tile fill × overlaid dot/ring glyphs with two
+    lead-in rows — judged too complex; the encoding is now direct, one
+    colour per state, four plain colour swatches in a two-row key.
 
-Hard-failure retry counts per arm are annotated on the right only for the
-rows that have any (format off·on·fail); the totals live in the caption.
-
-Style (Nature conventions, the fig3/fig4 house style): no in-figure titles;
-every text element one 6-pt pure-black style; colours only from palette
-rev 7; 1200-dpi PNG + vector PDF (fonttype 42); absolute-mm geometry; exact
-canvas (no tight crop); renderer-measured label widths inside a canvas-
-overflow assert (the fig4b/fig4e convention).
+Style (Nature conventions, the fig3/fig4 house style): no in-figure titles —
+the headline lives in the caption and the arm names are plain column
+headers; every text element one 6-pt pure-black style; colours only from
+palette rev 7; 1200-dpi PNG + vector PDF (fonttype 42); absolute-mm
+geometry; exact canvas (no tight crop); renderer-measured label widths
+inside a canvas-overflow assert (the fig4b/fig4e convention).
 
 Data  : experiments/results/exp25_quality_review_advisory/{records.jsonl,summary.json}
         (+ pa_benchmarks.json for session order/workflows)
@@ -42,10 +60,10 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.patches import Circle, Rectangle  # noqa: E402
+from matplotlib.patches import Rectangle  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from palette import WORKFLOW_COLORS, WORKFLOW_LABELS, WORKFLOW_ORDER  # noqa: E402
+from palette import PALETTE_BY_NAME, WORKFLOW_LABELS, WORKFLOW_ORDER  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RESULTS = PROJECT_ROOT / "experiments" / "results" / "exp25_quality_review_advisory"
@@ -61,15 +79,22 @@ EXEMPT_WORKFLOWS = {
     "rna_small_molecule_interaction",
 }
 ARM_ORDER = ("off", "on", "fail")
-ARM_HEADERS = {"off": "Review off", "on": "Review on", "fail": "Review on, outage"}
-# explicit header lines (the automatic min-max wrap split "Review"/"on,
-# outage" awkwardly — split at the semantic break instead)
-ARM_HEADER_LINES = {
-    "off": ["Review off"],
-    "on": ["Review on"],
-    "fail": ["Review on,", "API outage"],
+ARM_HEADERS = {"off": "Review off", "on": "Review on", "fail": "Review on, API outage"}
+
+# one palette colour per combined outcome × review state
+STATE_COLORS = {
+    "completed": PALETTE_BY_NAME["sage_green"],   # succeeds · review completed
+    "unavailable": PALETTE_BY_NAME["grey_blue"],  # succeeds · review unavailable
+    "none": PALETTE_BY_NAME["warm_grey"],         # succeeds · no review
+    "fail": PALETTE_BY_NAME["terracotta"],        # failed
 }
-PALETTE_INK = {"sage": "#A3B18A", "terracotta": "#C08B7C"}
+STATE_ORDER = ("completed", "unavailable", "none", "fail")
+STATE_LABELS = {
+    "completed": "Succeeds · review completed",
+    "unavailable": "Succeeds · review unavailable",
+    "none": "Succeeds · no review",
+    "fail": "Failed (PA_023, all arms)",
+}
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -123,55 +148,92 @@ def load_rows() -> list[dict]:
     return rows
 
 
+def arm_stat_lines(summary: dict) -> dict[str, str]:
+    """Per-arm numbers line under each header: successes · review calls."""
+    head = summary["headline"]
+    n = head["n_sessions_per_arm"]
+    lines = {}
+    for arm in ARM_ORDER:
+        s = head["workflow_success_counts"][arm]
+        ok = summary["arms"][arm]["total_successful_review_calls"]
+        failed = summary["arms"][arm]["total_failed_review_calls"]
+        calls = ok if arm == "on" else failed if arm == "fail" else 0
+        suffix = {"off": "0 calls", "on": f"{calls} calls",
+                  "fail": f"{calls} failed"}[arm]
+        lines[arm] = f"{s}/{n} succeed · {suffix}"
+    return lines
+
+
+def cell_state(arm: str, reviewed: bool, success: bool) -> str:
+    if not success:
+        return "fail"
+    if reviewed and arm == "on":
+        return "completed"
+    if reviewed and arm == "fail":
+        return "unavailable"
+    return "none"
+
+
 def main() -> int:
     rows = load_rows()
+    summary = json.loads((RESULTS / "summary.json").read_text(encoding="utf-8"))
     missing = [(arm, r["pa"]) for r in rows for arm in ARM_ORDER if r["arms"][arm] is None]
     assert not missing, f"missing records for {missing[:5]} — run the full campaign first"
+    stat_lines = arm_stat_lines(summary)
+    # the retry-annotation column only exists when the data has retries
+    any_retries = any((rec["arms"][a].get("total_retry_count") or 0) > 0
+                      for rec in rows for a in ARM_ORDER)
 
-    # ── label-column widths, renderer-measured ───────────────────────────
+    # colour-only key: four swatches in a two-row grid, columns shared so
+    # swatch/label left edges align across rows (the fig4d convention)
+    key_rows = [STATE_ORDER[:2], STATE_ORDER[2:]]
+    TILE_W, TILE_H, SW_LABEL_GAP, ENTRY_GAP = 3.4, 1.7, 1.2, 3.4
+
+    # ── label-column + header + key widths, renderer-measured ────────────
     probe = plt.figure(figsize=(4, 4))
     wf_w = max(text_w_mm(probe, WORKFLOW_LABELS[r["workflow"]]) for r in rows)
     pa_w = max(text_w_mm(probe, f"PA_{r['pa']}") for r in rows)
-    hdr_w = max(text_w_mm(probe, line) for a in ARM_ORDER for line in ARM_HEADER_LINES[a])
-    retry_w = text_w_mm(probe, "8·8·8")  # retry-annotation column probe
-    # key = four mini-tile exemplars merging the two channels (outcome fill ×
-    # review-state glyph) — no glyph-less legend entry
-    key_parts = [
-        ("tile_dot", "Succeeds · review completed"),
-        ("tile_ring", "Succeeds · review unavailable (metadata only)"),
-        ("tile_plain", "Succeeds · no review applicable"),
-        ("tile_fail", "Fails"),
-    ]
-    # exact emulation of the key-render walk below (swatch 3.4 + gap 1.2,
-    # then label, then 3.4 before the next swatch; no trailing gap)
-    _x = 0.0
-    for _, t in key_parts:
-        _x += 3.4 + 1.2
-        _x += text_w_mm(probe, t) + 3.4
-    key_w = _x - 3.4
+    hdr_w = max(text_w_mm(probe, t) for t in
+                list(ARM_HEADERS.values()) + list(stat_lines.values()))
+    retry_w = text_w_mm(probe, "8·8·8") if any_retries else 0.0
+    col_ws = [max(text_w_mm(probe, STATE_LABELS[row[c]]) for row in key_rows)
+              for c in range(2)]
+    key_w = sum(TILE_W + SW_LABEL_GAP + w for w in col_ws) + ENTRY_GAP
     plt.close(probe)
 
     ML = 1.2
     IND = 2.5
     label_right = ML + max(wf_w, IND + pa_w)
     GAP_TB = 2.2
-    block_w = 14.0
-    block_gap = 6.0
+    block_w = max(14.0, hdr_w + 2.0)   # arm headers must sit inside their block
+    block_gap = 5.0
     retry_gap = 4.0
+
+    def panel_w(gap: float) -> float:
+        w = label_right + GAP_TB + 3 * block_w + 2 * gap + ML
+        if any_retries:
+            w += retry_gap + retry_w
+        return w
+
+    # canvas takes the wider of panel and key; a wider key is absorbed by
+    # widening the inter-block gaps so the panel never leaves a right void
+    fig_w = panel_w(block_gap)
+    if key_w + 2 * ML > fig_w:
+        block_gap += (key_w + 2 * ML - fig_w) / 2
+        fig_w = panel_w(block_gap)
     retry_x = label_right + GAP_TB + 3 * block_w + 2 * block_gap + retry_gap
-    fig_w = max(retry_x + retry_w + ML, key_w + 2 * ML)
 
     row_h, row_gap = 1.7, 0.7
     pitch = row_h + row_gap
     wf_header_h = 2.5
-    wf_gap = 1.0
     sep_extra = 3.0
-    header_y = 4.6   # arm-header first-line centre
-    rows_y0 = 9.6    # top edge of the first workflow header (2-line headers)
+    header_name_y = 4.6   # arm-name line centre
+    header_stat_y = 7.0   # numbers-line centre (aligned across all arms)
+    rows_y0 = 9.9         # top edge of the first workflow header
 
     # ── vertical walk: workflow headers + session rows + category divider ─
     layout: list[dict] = []
-    headers: list[tuple[str, float, bool]] = []
+    headers: list[tuple[str, float]] = []
     sep_y = None
     y = rows_y0
     prev_reviewed = None
@@ -180,14 +242,15 @@ def main() -> int:
             sep_y = y + sep_extra / 2
             y += sep_extra
         if not headers or headers[-1][0] != r["workflow"]:
-            headers.append((r["workflow"], y + wf_header_h / 2, r["reviewed"]))
+            headers.append((r["workflow"], y + wf_header_h / 2))
             y += wf_header_h
         layout.append({**r, "y": y})
         y += pitch
         prev_reviewed = r["reviewed"]
     panel_bottom = y + 1.0
-    key_y = panel_bottom + 3.2
-    fig_h = key_y + 3.0
+    key_top = panel_bottom + 3.2
+    key_cys = (key_top + 1.0, key_top + 3.6)
+    fig_h = key_top + 4.6 + ML
 
     fig = plt.figure(figsize=(fig_w / 25.4, fig_h / 25.4))
     ax = fig.add_axes([0, 0, 1, 1])
@@ -195,59 +258,46 @@ def main() -> int:
     ax.set_ylim(fig_h, 0)
     ax.axis("off")
 
-    # arm block headers — horizontal, explicit lines (never rotated; a
-    # rotated header was caught overflowing by the canvas assert)
+    # arm block headers: name line + numbers line, both centred over the
+    # block and aligned across arms (never rotated)
     for i, arm in enumerate(ARM_ORDER):
         bx = label_right + GAP_TB + i * (block_w + block_gap)
-        for j, line in enumerate(ARM_HEADER_LINES[arm]):
-            ax.text(bx + block_w / 2, header_y + j * 2.0, line, ha="center", va="center")
+        ax.text(bx + block_w / 2, header_name_y, ARM_HEADERS[arm], ha="center", va="center")
+        ax.text(bx + block_w / 2, header_stat_y, stat_lines[arm], ha="center", va="center")
+    if any_retries:
+        ax.text(retry_x, header_name_y, "Retries", ha="left", va="center")
 
-    # workflow headers + PA row labels + category divider
-    for wf, cy, reviewed in headers:
-        ax.text(ML, cy, WORKFLOW_LABELS[wf], ha="left", va="center",
-                color=WORKFLOW_COLORS[wf] if reviewed else "#7A7672")
+    # workflow headers + PA row labels (pure black) + category divider (ink)
+    for wf, cy in headers:
+        ax.text(ML, cy, WORKFLOW_LABELS[wf], ha="left", va="center")
     for rec in layout:
         ax.text(ML + IND, rec["y"] + row_h / 2, f"PA_{rec['pa']}", ha="left", va="center")
     if sep_y is not None:
-        ax.plot([ML, fig_w - ML], [sep_y, sep_y], color="#7A7672", lw=0.5, ls=(0, (2, 2)))
+        ax.plot([ML, fig_w - ML], [sep_y, sep_y], color=INK, lw=0.6)
 
-    # tiles + review-state glyphs + retry annotations
-    any_retries = False
+    # state-coloured tiles (+ retry annotations only when present)
     for rec in layout:
         for i, arm in enumerate(ARM_ORDER):
             arm_rec = rec["arms"][arm]
             bx = label_right + GAP_TB + i * (block_w + block_gap)
-            success = arm_rec.get("session_success")
-            cx, cy = bx + block_w / 2, rec["y"] + row_h / 2
+            state = cell_state(arm, rec["reviewed"], bool(arm_rec.get("session_success")))
             ax.add_patch(Rectangle((bx, rec["y"]), block_w, row_h,
-                                   facecolor=PALETTE_INK["sage"] if success else PALETTE_INK["terracotta"],
-                                   edgecolor="none"))
-            if arm == "on" and rec["reviewed"]:
-                ax.add_patch(Circle((cx, cy), 0.42, facecolor=INK, edgecolor="none"))
-            elif arm == "fail" and rec["reviewed"]:
-                ax.add_patch(Circle((cx, cy), 0.55, facecolor="none", edgecolor=INK, lw=0.6))
-        retries = [rec["arms"][a].get("total_retry_count", 0) or 0 for a in ARM_ORDER]
-        if any(retries):
-            any_retries = True
-            ax.text(retry_x, rec["y"] + row_h / 2, "·".join(str(v) for v in retries),
-                    ha="left", va="center")
-    if any_retries:
-        ax.text(retry_x, header_y, "Retries", ha="left", va="center")
+                                   facecolor=STATE_COLORS[state], edgecolor="none"))
+        if any_retries:
+            retries = [rec["arms"][a].get("total_retry_count", 0) or 0 for a in ARM_ORDER]
+            if any(retries):
+                ax.text(retry_x, rec["y"] + row_h / 2, "·".join(str(v) for v in retries),
+                        ha="left", va="center")
 
-    # centred one-row key (the fig4c convention: legend attached under the
-    # panel) — four mini tiles merging outcome fill × review-state glyph
-    x = (fig_w - key_w) / 2
-    ky = key_y
-    for kind, label in key_parts:
-        fill = PALETTE_INK["terracotta"] if kind == "tile_fail" else PALETTE_INK["sage"]
-        ax.add_patch(Rectangle((x, ky - 0.85), 3.4, 1.7, facecolor=fill, edgecolor="none"))
-        if kind == "tile_dot":
-            ax.add_patch(Circle((x + 1.7, ky), 0.42, facecolor=INK, edgecolor="none"))
-        elif kind == "tile_ring":
-            ax.add_patch(Circle((x + 1.7, ky), 0.55, facecolor="none", edgecolor=INK, lw=0.6))
-        x += 3.4 + 1.2
-        ax.text(x, ky, label, ha="left", va="center")
-        x += text_w_mm(fig, label) + 3.4
+    # ── colour key: two centred rows on the shared column grid ───────────
+    x0 = (fig_w - key_w) / 2
+    col_x = [x0, x0 + TILE_W + SW_LABEL_GAP + col_ws[0] + ENTRY_GAP]
+    for row, ky in zip(key_rows, key_cys):
+        for state, cx in zip(row, col_x):
+            ax.add_patch(Rectangle((cx, ky - TILE_H / 2), TILE_W, TILE_H,
+                                   facecolor=STATE_COLORS[state], edgecolor="none"))
+            ax.text(cx + TILE_W + SW_LABEL_GAP, ky, STATE_LABELS[state],
+                    ha="left", va="center")
 
     # canvas-overflow assert (renderer-measured, the fig4b convention)
     r = fig.canvas.get_renderer()
@@ -271,7 +321,8 @@ def main() -> int:
     for edge in (px.crop((0, 0, w, 1)), px.crop((0, h - 1, w, h)),
                  px.crop((0, 0, 1, h)), px.crop((w - 1, 0, w, h))):
         assert edge.getextrema()[0] == 255, "ink at the outer border"
-    print(f"[fig4g] {fig_w:.1f} × {fig_h:.1f} mm, {len(rows)} sessions × 3 arms — "
+    print(f"[fig4g] {fig_w:.1f} × {fig_h:.1f} mm, {len(rows)} sessions × 3 arms, "
+          f"retries {'shown' if any_retries else 'none (column dropped)'} — "
           f"raster QA green → {OUT_DIR / 'fig4g_quality_advisory_strip.png'}")
     return 0
 
