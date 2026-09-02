@@ -26,12 +26,16 @@ stack (44 → 40.5 mm tall).
 Data  : experiments/results/exp5_claim_overreach/runs_summary.json (ungated)
         experiments/results/exp17_claim_gating/summary.json (gated)
 Usage : python experiments/plots/fig4c_overreach_events.py
+        FIG4C_LAYOUT=tall python experiments/plots/fig4c_overreach_events.py
+            (composite stack variant — same data, taller axes)
 Output : experiments/plots/output/fig4c_overreach_events.{pdf,png}
+         (+ fig4c_overreach_events_tall.{pdf,png} for the tall variant)
 """
 
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -61,6 +65,16 @@ ORACLE_LABELS = {"rhofold_mean_plddt": "RhoFold", "proteinx_ipTM": "ProteinX",
 USES = ["ranking_objective", "screening_evaluation"]
 USE_LABELS = {"ranking_objective": "Ranking", "screening_evaluation": "Screening"}
 
+# Composite-layout variant (the fig3c convention): FIG4C_LAYOUT=tall renders
+# the same frozen data on a taller canvas (axes stretched vertically, same
+# 6-pt text, no data change) so the panel fills the Fig. 4 composite's row-1
+# stack (a over c) flush with panel b's height; the standalone render is the
+# default and is untouched. Output goes to a separate _tall file pair.
+LAYOUT = os.environ.get("FIG4C_LAYOUT", "standalone")
+FIG_H_MM = 71.7 if LAYOUT == "tall" else 40.5
+AX_H_MM = 54.7 if LAYOUT == "tall" else 23.5
+OUT_STEM = "fig4c_overreach_events_tall" if LAYOUT == "tall" else "fig4c_overreach_events"
+
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
@@ -86,10 +100,10 @@ def main() -> int:
     gated_total = exp17["arms"]["gated"]["overreach_events"]
     assert gated_total == 0 and sum(ungated) == exp5["overreach_total"]
 
-    fig_w, fig_h = 89 / 25.4, 40.5 / 25.4
+    fig_w, fig_h = 89 / 25.4, FIG_H_MM / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([11 / 25.4 / fig_w, 12.5 / 25.4 / fig_h,
-                       72 / 25.4 / fig_w, 23.5 / 25.4 / fig_h])
+                       72 / 25.4 / fig_w, AX_H_MM / 25.4 / fig_h])
 
     w = 0.34
     y_top = max(ungated) * 1.48
@@ -107,9 +121,12 @@ def main() -> int:
     ax.set_xticklabels([USE_LABELS[u] for _, u in cells], fontsize=FONT)
     ax.tick_params(axis="x", length=0, pad=1.5)
     ax.tick_params(axis="y", labelsize=FONT, length=1.5, pad=1)
-    # oracle labels centred on their cell pairs (fig3e group-label convention)
+    # oracle labels centred on their cell pairs (fig3e group-label convention);
+    # the offset is an absolute mm distance below the axis, so it does not
+    # scale with the axis height (the tall composite variant keeps the
+    # standalone 4.11 mm clearance above the legend row)
     for gx, o in zip((0.5, 3.0, 5.5), ORACLE_ORDER):
-        ax.text(gx, -0.175, ORACLE_LABELS[o], ha="center", va="top",
+        ax.text(gx, -4.11 / AX_H_MM, ORACLE_LABELS[o], ha="center", va="top",
                 fontsize=FONT, color=INK, transform=ax.get_xaxis_transform())
     ax.set_xlim(-0.75, 6.75)
     ax.set_ylim(0, y_top)
@@ -149,11 +166,11 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4c_overreach_events.{ext}", format=ext,
+        fig.savefig(OUT_DIR / f"{OUT_STEM}.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
-    print(f"fig4c -> {OUT_DIR / 'fig4c_overreach_events.pdf'} (+png 1200 dpi); "
+    print(f"fig4c ({LAYOUT}) -> {OUT_DIR / f'{OUT_STEM}.pdf'} (+png 1200 dpi); "
           f"overreach {sum(ungated)} -> 0 by oracle x use "
           f"({', '.join(str(n) for n in ungated)})")
     return 0
