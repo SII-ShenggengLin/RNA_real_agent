@@ -8,6 +8,16 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-09-02 — AGENTS.md 压缩（96 KB → 24.6 KB，用户指示，doc-only）
+
+- 根 `AGENTS.md` 超出 32 KB 建议上限：What's New 段由逐实验叙事体压缩为一里程碑一行的登记表（约 26 条，逆序），
+  各实验的协议、预注册、修正、披露与图形 QA 细节不在 AGENTS.md 重复——权威记录在本文件（按日期检索）、
+  `PAPER_FACT_SHEET.md`（claim check）与 `MANUSCRIPT.md`（实验手册）；压缩段顶部加了指路注记。
+- 顺带修正两处陈旧信息：Standing facts 首条"third programme reset"→ 第四次重置（进度：Figs 2/3/4 + Fig 5a 完成，
+  下一步 = Fig 5 其余 + Fig 6）；Testing 基线 635 → 646 passed, 1 skipped（2026-08-25 LinearDesign 密码子表接线后的最新登记数）。
+- Standing facts 其余条目、Documentation Index、Project Architecture、LLM Configuration、Multi-Agent Execution、
+  Testing 各节逐字保留（git diff 校验：除上述两处外零改动）。无代码、无实验、无图形变动。
+
 ## 2026-09-02 — 第四次实验计划重置开启 + Exp 26 执行（Fig 5a：选择层前驱池失败重测，§2.5 实验 1 / 登记名 E5）
 
 **计划重置（用户指示）**：架构再度大改，全部实验重新跑、代码重写——沿用 2026-08-29 第三次重置的
