@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import uuid
 from datetime import datetime
@@ -432,10 +433,18 @@ def main() -> int:
         print("\n资源不足，无法启动。请确保系统满足最低要求后重试。")
         return 1
 
+    # RNADA_QUALITY_REVIEW (default "on") mirrors the RNADA_CAPGATE env-knob
+    # convention: batch drivers / ops can switch the advisory quality review
+    # off for A/B instrumentation without touching code. The interactive
+    # default is unchanged (review on).
+    quality_review_enabled = os.environ.get("RNADA_QUALITY_REVIEW", "on").strip().lower() not in {
+        "off", "0", "false", "no",
+    }
+
     runner = AgentRunner(
         executor=ToolExecutor(build_default_tool_registry()),
         session_memory=SessionMemory(),
-        quality_review_enabled=True,
+        quality_review_enabled=quality_review_enabled,
         quality_auto_retry=False,
     )
 

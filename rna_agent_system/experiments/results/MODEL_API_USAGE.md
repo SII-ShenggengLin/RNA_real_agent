@@ -23,6 +23,7 @@
 
 | 图 | LLM API | 说明 |
 |---|---|---|
+| **Exp 25 / 图 4g+4h（质量评审 advisory 三臂 + 各战役 LLM 用量，2026-09-01 重跑，93/93）** | DeepSeek deepseek-v4-pro（同 §1 配置，temp 0.2；失败注入臂 `DEEPSEEK_BASE_URL=http://127.0.0.1:9` 连接拒绝，0 次完成） | 31 PA 会话 × 3 臂（评审关 / 评审开 / 评审开+端点失败注入）。评审开臂 **144 次成功评审调用**（= 72 被评审轮 × 2，免评审轮 0 次）；失败注入臂 **144 次尝试全部连接拒绝**（review_unavailable 仅记审计元数据，0 次完成、token 仅耗于错误处理）；评审关臂 0 次。配套图 4h 汇总（`experiments/results/exp25_quality_review_advisory/fig4h_llm_usage.json`）：Exp 5 = 90（deepseek-v4-pro temp 0，被测 LLM 规划/报告）、Exp 17 = 90、Exp 18 = 80（另 32 次被取代运行披露于 driver）、Exp 23 = 0、**Exp 24 生产战役 = 482 次评审调用（自各 run 保存的 `_diagnosis_history` 记录实测）**；GenNav 导航战役未重跑、暂不入表（登记注记）。证据 `experiments/results/exp25_quality_review_advisory/{records.jsonl,summary.json}`；driver `experiments/exp25_quality_review_advisory.py` |
 | **Exp 1 / 图 2a（RNADesign-210 全量基准，2026-08-25 重置运行，210/210）** | DeepSeek deepseek-v4-pro（同 §1 配置，temp 0.2） | 仅 QualityAgent 质量评审；3 个确定性工作流（aso 14 / scoring 13 / small-molecule 15 = 42 任务）无评审，其余 **168/210 任务全部产生质量评审记录**（`exp1_rnadesign210/lane_*.jsonl` 的 `quality_actions` 字段）；enforce 探针 4 任务未产生评审（工作流在评审前被门控拒绝）；token 未逐条采集（usage_available=false，按 §1 剖面估算整轮 <¥10）；证据 `experiments/results/exp1_rnadesign210/summary.json` |
 | 图 2（210 任务 + 空跑 + 文献面板） | DeepSeek deepseek-v4-pro | 仅被评审工作流的 QualityAgent；3 个确定性工作流（aso/scoring/small-mol）无评审、无 LLM 调用；1 个 sirna 任务被 QualityAgent 正确中止 |
 | 图 3（Type-I 消融 240 + 引导 18 + 锚点） | 同上 | 锚点打分为能力级工具直调，无 LLM |

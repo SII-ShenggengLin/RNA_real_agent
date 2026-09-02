@@ -8,6 +8,38 @@
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
 
+## 2026-09-01 — Exp 25 执行（Fig 4g + 图 4h：质量评审 advisory 三臂 + 各战役 LLM 用量实测）
+
+**接口变更**：`cli/form_chat.py` 新增 `RNADA_QUALITY_REVIEW` 环境旋钮（默认 `on`，取
+`off/0/false/no` 时构造 `AgentRunner(quality_review_enabled=False)`）——仿 `RNADA_CAPGATE`
+惯例的批处理/运维开关，交互默认行为不变。这是驱动"评审关"臂走生产表单入口的唯一平台接线
+（预注册 docstring 披露）。
+
+**实验**（`experiments/exp25_quality_review_advisory.py`，预注册 + 中途登记修正；pilot 6/6）：
+数据集对齐用户指示取全量 31 PA 会话（PA_006–PA_036 = Exp-24 战役 PA 臂；legacy "19" 为其时代
+全量）；三臂 × 31 = 93 次表单入口 CLI 子进程（输入逐字、CapGate advisory、GPU 0/1/2 预热；
+调度 ≤6 并发、GPU 类工作流 ≤3；墙钟 ≈ 5.5 h，时间非指标）。**93/93：完成 31/31 × 3 臂；工作流级
+30/31 × 3（唯一例外 PA_023 = 继承性输入缺口，三臂逐字相同）；跨臂逐轮结果完全一致（0 不匹配）；
+评审开臂 144 次成功调用 = 72 被评审轮 × 2；失败注入臂 144 次尝试全部 review_unavailable、0 轮受影响；
+重试 0/0/0；`--verify` 字节一致。** 中途修正（分析前、依据 exp8/exp24 冻结证据登记）：双成功判据 +
+跨臂配对一致性主终点；PA_023 缺口（`workspace/pa023_5utr.fa`，审计保留期 0 次成功读取）按实测披露、
+不重建（重建将与 Exp-24 锚定运行分叉）。
+
+**图**：`experiments/plots/fig4g_quality_advisory_strip.py`（配对条带：31 会话行 × 三臂块，
+sage/terracotta 结果 tile × 评审状态字形，分类分隔线上被评审/免评审两段，四样例键行；
+canvas-overflow 断言两度拦截旋转表头溢出与键宽低估后改为两行水平表头 + 精确模拟键宽）与
+`experiments/plots/fig4h_llm_usage_bubble.py`（气泡条带：8 战役行 × 每任务一泡、面积 = 实测
+LLM 调用数、短刻度线 = 零调用任务；零调用空心圆经视觉 QA 判读为占位符后改刻度线）；数据装配
+`experiments/exp25_fig4h_data.py`（**Exp-24 的 482 次评审调用自各 run 保存的
+`_diagnosis_history` 实测提取**；GenNav 导航战役未重跑、登记排除）。两图 6-pt 纯黑、palette
+rev 7、绝对 mm、1200 dpi，确定性 QA 绿（图 4g 视觉 QA 亦通过；图 4h 视觉通道 MCP 调用失败——
+已注册失效模式，以确定性 QA 为准）。
+
+**文档**：PAPER_DRAFT（Overview/贡献 1/§2.4/局限/Methods/Fig 1b/Fig 4 g,h 图例/LLM 用量/数据
+可用性——19/19 全部改写为 31 会话配对一致口径）、PAPER_FACT_SHEET（Exp 25 节 + claim check，
+legacy Fig-6a 节改 superseded）、FIGURE_PLAN_V5 行 g/h + 注记、MANUSCRIPT 重置表、
+MODEL_API_USAGE、AGENTS.md。
+
 ## 2026-09-01 — Fig 4d 用户指示修订（第五轮：行长标签缩短；无重跑）
 
 - 两个 Sample-2019 文库行标签从 fig3f 全名（"Random 50-nt 5′UTRs" / "Varying-length human 5′UTRs"）缩短为 fig4e 短名惯例（"EGFP random-50" / "Var-len human"）——它们单独撑宽了整个标签列；缩短后标签列宽度由 "Novel 5′UTR 11" 行决定，画布 62.3 × 86.0 → **50.8 × 86.0 mm**。全名仍在 Fig 3f 与 Fig 4e 图注中。同轮附加：底部裁定键从两行各自居中改为**两行共享列网格**（列宽取两行最大值，两列色块/文字左缘分别对齐，整块居中）。数据不变。光栅 QA 同前全绿。文档同步：FIGURE_PLAN_V5 注记、AGENTS.md Exp-18 条。
