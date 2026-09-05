@@ -1,0 +1,3 @@
+{"task_id": "pa_012", "pa_id": "012", "workflow": "ires_prediction", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa012", "exit_code": 0, "elapsed_seconds": 230.36, "timestamp": "2026-09-01T10:27:25", "error": null, "success": true}
+{"task_id": "pa_023", "pa_id": "023", "workflow": "ires_prediction", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa023", "exit_code": 0, "elapsed_seconds": 343.42, "timestamp": "2026-09-01T10:33:08", "error": null, "success": true}
+{"task_id": "pa_031", "pa_id": "031", "workflow": "ires_prediction", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa031", "exit_code": 0, "elapsed_seconds": 234.8, "timestamp": "2026-09-01T10:37:03", "error": null, "success": true}

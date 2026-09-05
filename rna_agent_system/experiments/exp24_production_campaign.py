@@ -125,8 +125,13 @@ PILOT_TASKS = [
 ]
 PILOT_PA = "006"
 
-TIMEOUT_SUITE_S = 3600
-TIMEOUT_PA_S = 10800
+# AMENDMENT (2026-09-06, navigation era, DECISIONS (aa) re-run): the mRNA
+# design_tool="all" tasks now run GenNav-λ by default — the >800-aa class
+# measures 2-4.5 h per navigation run (high-λ probe gears on long proteins;
+# Exp-28 register). Suite cap 3600 → 18000 s, PA cap 10800 → 21600 s
+# (upper bounds only; no run is padded).
+TIMEOUT_SUITE_S = 18000
+TIMEOUT_PA_S = 21600
 
 
 def _run_timed(cmd: list[str], *, cwd: Path, env: dict[str, str],

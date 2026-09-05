@@ -288,7 +288,15 @@ def design_one(target: dict[str, Any], *, capgate: str) -> dict[str, Any]:
         "run_fold": True,
         "run_gc": True,
     }
-    timeout = int(max(1800, 900 + 2.5 * aa_len))
+    # AMENDMENT (2026-09-06, navigation era, revised twice from measured
+    # latencies): GenNav-λ spends up to 35 raw LinearDesign calls per target
+    # (vs the static 4-λ grid), and the high-λ probe gears (λ=20/50) on
+    # >1,000-aa proteins take 5-15 min per call at ~45 GB RSS — the Exp-28
+    # register measured the >1,000-aa class at ~4 h wall per navigation run.
+    # Static-era formula (900 + 2.5·aa); first rescale (1800 + 4·aa) still
+    # timed out Beta_galactosidase/HER2. Final: 3600 + 10·aa, 1 h floor;
+    # failed targets re-run via --resume.
+    timeout = int(max(3600, 3600 + 10.0 * aa_len))
     session_id = f"exp2nd_{tid}"
     print(f"[design] {tid} ({aa_len} aa, timeout={timeout}s) ...", flush=True)
     results, exit_code, elapsed, error = run_cli(

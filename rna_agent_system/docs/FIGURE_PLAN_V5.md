@@ -106,7 +106,12 @@ unchanged).
 | g | Exp 29 delivery map: 12 × 3 mosaic (nav 10 / both 14 / rule 3 / none 9) + e2e column (4 nav-only) | categorical heatmap | `exp29_aptamer_campaign_arc/seg3_decisive/runs.jsonl` |
 | h | **Exp 30 production live run (2026-09-05, the paper's citation)**: 11 form-entry navigation campaigns on new targets outside every re-run dataset — mRNA arm (GenNav-λ, cap 35) 13/15 cells, all early stops 11–28/35 (PTH/CSF3 3/3 @ 11); aptamer arm (ODesign lattice, cap 48) 8/18 cells cap-bound 47–48/48, swH3 HA 0/3 the zero-delivery scarcity boundary, LEP/PLAT delivery-stage D1 degradation disclosed (the 2-cell points); 4.3× same-delivery cost span (47 vs 11 raw); inset breakthrough step-lines exact gap-chain reconstruction (IFN-γ 29/35/47, PDGF-BB 36/48, swH3 HA flat); 11/11 sessions, zero budget violations, verify byte-identical, 3 structure reuses disclosed per record. The interim Exp-29 sweep curve (caps 16–48, cap16 10:2 P = 0.039 the promotion point) stays cited in §2.5 text | cost–delivery Pareto scatter + breakthrough step-line inset | `exp30_production_navigation_live/{aptamer,mrna}/runs.jsonl` |
 
-## Fig 6 | Pre-registered negative results delineate durable boundaries (9 panels)
+## Fig 6 | REMOVED from the paper (2026-09-06, user direction)
+
+The planned nine-panel negative-boundaries figure is dropped — the material
+is reserved for a planned wet-lab-section treatment; the panel rows below
+are retained verbatim as the historical register of the plan.
+
 
 | Panel | Content | Type | Data |
 |---|---|---|---|

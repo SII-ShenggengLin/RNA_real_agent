@@ -1,0 +1,3 @@
+{"task_id": "pa_011", "pa_id": "011", "workflow": "aso_target_screening", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa011", "exit_code": 0, "elapsed_seconds": 189.02, "timestamp": "2026-09-01T10:16:42", "error": null, "success": true}
+{"task_id": "pa_022", "pa_id": "022", "workflow": "aso_target_screening", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa022", "exit_code": 0, "elapsed_seconds": 66.92, "timestamp": "2026-09-01T10:17:49", "error": null, "success": true}
+{"task_id": "pa_030", "pa_id": "030", "workflow": "aso_target_screening", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_pa030", "exit_code": 0, "elapsed_seconds": 64.75, "timestamp": "2026-09-01T10:18:54", "error": null, "success": true}

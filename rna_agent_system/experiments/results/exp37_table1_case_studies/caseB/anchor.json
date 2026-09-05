@@ -1,0 +1,7 @@
+{
+ "pegaptanib_rna": "CGGAAUCAGUGAAUGCUUAUACAUCCG",
+ "complex_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/proteinx_service_runs/proteinx_complex_run_4d1471df/output/proteinx_complex/seed_101/predictions/proteinx_complex_sample_0.cif",
+ "converted_pdb": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/odesign_complete_4777d85e80.pdb",
+ "egarps_native_probability": 0.36455533,
+ "scorer_error": null
+}

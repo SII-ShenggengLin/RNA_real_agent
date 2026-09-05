@@ -16,6 +16,13 @@ aligned with the LATEST re-run datasets instead of the legacy ones:
   pool came from the deleted E6 cache with λ ∈ {2, 8, 20});
 - full-length constructs = the current production
   ``full_length_mrna_design`` workflow (design_tool="all", utr_mode="all"),
+
+  AMENDMENT (2026-09-06, platform default change DECISIONS (aa), user-directed
+  re-run): with mrna_cds_design v2.0.0, design_tool="all" (navigation unset)
+  now runs the GenNav-λ navigation — the task set rebuilds on the current
+  production assets (navigation CDS deliveries; the static-λ-grid era's task
+  set is superseded). Ground truths stay exact recomputation on whatever the
+  production path delivers; construction rules unchanged.
   top-3 ranked unique constructs per target (the legacy pool came from the
   deleted E6 S2 deliveries);
 - MRL ground truth = the Exp-14 anchor set
@@ -178,14 +185,21 @@ def run_designs(force: bool) -> dict[str, dict]:
 
 
 def cds_pool(designs: dict[str, dict]) -> dict[tuple[str, str], str]:
-    """(target, lambda) -> CDS from the production λ grid."""
+    """(target, lambda) -> CDS from the production design deliveries.
+
+    AMENDMENT (2026-09-06, DECISIONS (aa)): the production path now delivers
+    GenNav-λ navigation CDSs (``cds_design_gennav:lambdaX``; the λ tag is the
+    delivery gear). The static-era ``cds_design:lineardesign_lambdaX`` form
+    is accepted for reproducibility of the archived task set.
+    """
     pool: dict[tuple[str, str], str] = {}
     for kind, tid in designs:
         if kind != "cds":
             continue
         for cand in designs[(kind, tid)].get("candidates") or []:
             src = cand.get("source") or ""
-            if not src.startswith("cds_design:lineardesign_lambda"):
+            if not (src.startswith("cds_design:lineardesign_lambda")
+                    or src.startswith("cds_design_gennav:lambda")):
                 continue
             lam = src.rsplit("lambda", 1)[1]
             pool[(tid, lam)] = cand["sequence"].upper().replace("T", "U")
