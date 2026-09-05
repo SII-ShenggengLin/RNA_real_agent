@@ -156,6 +156,7 @@ def test_unknown_species_tolerated_without_lineardesign():
 def test_lambda_grid_all_carries_table_on_every_call():
     cap = _run_generate(MrnaCdsDesignInput(
         protein_sequence="MKVAGIS", design_tool="all", cai_species="ecoli",
+        navigation=False,
     ))
     # only the lineardesign stub is registered; rnarl/gemorna are skipped
     assert [c["lambda_value"] for c in cap.calls] == [0.0, 1.0, 4.0, 10.0]

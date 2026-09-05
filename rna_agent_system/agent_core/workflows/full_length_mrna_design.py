@@ -6,7 +6,13 @@ evaluation → full-length scoring → ranking → WorkflowResult.
 
 Architecture: Full-length workflow reuses MrnaCdsDesignWorkflow for CDS
 generation and evaluation; only full-length and UTR metrics are computed here.
-
+Since MrnaCdsDesignWorkflow v2.0.0 the CDS sub-design defaults to GenNav-λ
+constraint navigation (the platform default recipe) — ``navigation`` is
+delegated, not duplicated: the full-length input's ``navigation`` (tristate,
+``None`` = inherit the CDS-layer platform default) passes straight through to
+the sub-workflow, whose resolution rule decides the mode from ``design_tool``.
+CapGate ranking governance (ASF objective assembly from gate verdicts) and the
+per-call audit trail apply on every path.
 """
 
 from __future__ import annotations
@@ -155,7 +161,17 @@ class FullLengthMrnaDesignInput(BaseModel):
         default=None,
         description="If set, remove the last N amino acids of protein_sequence before design.",
     )
-    design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = Field(default="all", description="CDS design engine(s) to run. 'lineardesign' uses LinearDesign; 'rnarl' uses RNARL; 'gemorna' uses GEMORNA; 'all' runs all three and merges candidates.")
+    design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = Field(default="all", description="CDS design engine(s) to run. 'lineardesign' uses LinearDesign; 'rnarl' uses RNARL; 'gemorna' uses GEMORNA; 'all' is the platform default recipe — under the v2.0.0 default this delegates to GenNav-λ constraint navigation unless navigation is explicitly disabled.")
+    navigation: Optional[bool] = Field(
+        default=None,
+        description=(
+            "GenNav-λ constraint navigation for the CDS sub-design, delegated "
+            "verbatim to MrnaCdsDesignWorkflow (single source of the default "
+            "policy). None (unset) = inherit the CDS-layer platform default "
+            "(navigation under the default 'all' recipe; a pinned design_tool "
+            "engine runs its static path); True/False always override."
+        ),
+    )
     lambda_value: Optional[float] = Field(
         default=None,
         description="LinearDesign MFE/CAI balance (0-20). Required when design_tool='lineardesign'; ignored otherwise.",
@@ -326,9 +342,11 @@ class FullLengthMrnaDesignWorkflow(
     task_type = "full_length_mrna"
     input_model = FullLengthMrnaDesignInput
     description = (
-        "Design full-length mRNA (5'UTR + CDS + 3'UTR) from protein sequence, "
-        "reuse MrnaCdsDesignWorkflow for CDS generation and evaluation, "
-        "evaluate full-length + UTR metrics incrementally, score, and rank candidates."
+        "Design full-length mRNA (5'UTR + CDS + 3'UTR) from protein sequence: "
+        "CDS sub-design via MrnaCdsDesignWorkflow (GenNav-λ constraint "
+        "navigation by default under the platform 'all' recipe), GEMORNA UTR "
+        "generation, incremental full-length + UTR evaluation, CapGate-"
+        "governed ASF ranking."
     )
     required_capabilities = [
         # UTR design / prediction
@@ -436,14 +454,18 @@ class FullLengthMrnaDesignWorkflow(
         """Generate full-length candidates: CDS baseline + UTR append.
 
         Step 1: Delegate CDS generation to MrnaCdsDesignWorkflow (evaluate via
-        SubWorkflowEvaluator in ``evaluate()``).
+        SubWorkflowEvaluator in ``evaluate()``) — GenNav-λ navigation by
+        default (up to 15 delivered CDS; static recipe up to 6).
         Step 2: For each CDS, generate 3×3 UTR combinations.
-        Total: up to 6 unique CDS × 9 UTR combos = 54 candidates.
+        Total: navigation ≤ 15 × 9 = 135; static ≤ 6 × 9 = 54 candidates.
         """
         # ── Step 1: Generate CDS candidates (evaluation deferred to evaluate()) ──
+        # navigation passes through verbatim: None = inherit the CDS-layer
+        # platform default (v2.0.0 GenNav-λ under the default 'all' recipe).
         cds_inp = MrnaCdsDesignInput(
             protein_sequence=inp.protein_sequence,
             design_tool=inp.design_tool,
+            navigation=inp.navigation,
             lambda_value=inp.lambda_value,
             model_type=inp.model_type,
             cai_species=inp.cai_species,

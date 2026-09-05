@@ -237,6 +237,7 @@ def test_mrna_cds_design_empty_candidates_graceful():
         static_params={
             "protein_sequence": "MKTAIVE",
             "design_tool": "all",
+            "navigation": False,
         },
     )
 

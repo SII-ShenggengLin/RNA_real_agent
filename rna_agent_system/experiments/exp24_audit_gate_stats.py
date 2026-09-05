@@ -2,6 +2,12 @@
 """Experiment 24 (paper §2.4 实验 5, Fig. 4f): production gate-decision
 statistics — audit-trail analysis of the exp24 production campaign.
 
+RE-RUN AMENDMENT (2026-09-06, platform default change DECISIONS (aa),
+user-directed): re-freezes and re-analyzes the campaign re-run under the
+GenNav-λ-default mRNA workflows. The corpus construction, attribution rules
+and assertions are unchanged; the static-default era's stats and frozen
+slice are archived at ``experiments/results/exp24_audit_gate_stats_static/``.
+
 Pre-registration (pilot-first rule, MANUSCRIPT.md §2; zero-intervention rule)
 ---------------------------------------------------------------------------
 * Question: across the platform's end-to-end production campaign (Exp 24,

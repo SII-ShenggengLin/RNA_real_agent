@@ -1,14 +1,22 @@
 """mRNA CDS design & optimisation workflow — the golden path (Layer 2).
 
-Protein sequence → CDS design (LinearDesign λ=[0,1,4,10] where λ∈[0,+∞), typically ≤10 + RNARL + GEMORNA) →
-fold + GC + unpaired-fraction evaluation → scoring → ranking → WorkflowResult.
+Protein sequence → CDS design (GenNav-λ constraint navigation, or the static
+recipe LinearDesign λ=[0,1,4,10] + RNARL + GEMORNA) → fold + GC +
+unpaired-fraction evaluation → scoring → ranking → WorkflowResult.
 
-With ``navigation=True`` (v1.2.0) the static LinearDesign λ grid is replaced
-by the deterministic GenNav-λ constraint navigation (E6 evidence, E8–E14
-levers; see ``agent_core/generation/gennav_mrna_lambda.py``): λ-curve probe →
-band-gap-first interstitial reinforcement under a raw budget → per-profile
-matrix delivery (expression / stability / balanced). RNARL/GEMORNA are not
-called on the navigation path.
+v2.0.0 (2026-09-05): GenNav-λ constraint navigation (E6 evidence, E8–E14
+levers; ``agent_core/generation/gennav_mrna_lambda.py``) is the platform
+DEFAULT design mode — λ-curve probe → gap-driven interstitial reinforcement
+under a 35-raw budget → per-profile matrix delivery (expression / stability /
+balanced, 5 each, D1 diversity). Deterministic, zero LLM. The ``navigation``
+input is a tristate: unset (``None``) navigates whenever ``design_tool`` is
+the platform default recipe (``"all"``) and honours an explicitly pinned
+engine (``lineardesign``/``rnarl``/``gemorna``) by running that static path;
+``True``/``False`` always override. Registered instruments that pin the
+static pool semantics pass ``navigation=False`` explicitly. RNARL/GEMORNA
+are not called on the navigation path; CapGate (audit trail + gate
+decisions) is mode-independent and active on every path through the
+capability layer.
 
 """
 
@@ -156,16 +164,18 @@ class MrnaCdsDesignInput(BaseModel):
         description="If set, keep only the last N amino acids of protein_sequence before design.",
     )
     design_tool: Literal["lineardesign", "rnarl", "gemorna", "all"] = Field(default="all", description="CDS design engine(s) to run. 'lineardesign' uses LinearDesign; 'rnarl' uses RNARL; 'gemorna' uses GEMORNA; 'all' runs all three and merges candidates.")
-    navigation: bool = Field(
-        default=False,
+    navigation: Optional[bool] = Field(
+        default=None,
         description=(
-            "Enable GenNav-λ constraint navigation (E6 evidence, E8–E14 levers): "
-            "replace the static LinearDesign λ=[0,1,4,10] grid with an adaptive "
-            "λ-curve probe → band-gap-first interstitial reinforcement under a "
-            "16-raw budget → per-profile matrix delivery (expression/stability/"
-            "balanced, 5 each, D1 diversity). Deterministic, zero LLM. When True, "
-            "RNARL/GEMORNA are not called and design_tool is ignored for "
-            "generation (evaluation/scoring/ranking unchanged)."
+            "GenNav-λ constraint navigation mode (E6 evidence, E8–E14 levers): "
+            "λ-curve probe → gap-driven interstitial reinforcement under a "
+            "35-raw budget → per-profile matrix delivery (expression/stability/"
+            "balanced, 5 each, D1 diversity). Deterministic, zero LLM. When "
+            "active, RNARL/GEMORNA are not called and design_tool is ignored "
+            "for generation (evaluation/scoring/ranking unchanged). "
+            "v2.0.0 platform default: None (unset) navigates when design_tool "
+            "is the default recipe ('all') and honours an explicitly pinned "
+            "engine; True/False always override."
         ),
     )
     lambda_value: Optional[float] = Field(
@@ -224,7 +234,8 @@ class MrnaCdsDesignInput(BaseModel):
         default human table. Fail fast at the input layer instead.
         """
         uses_lineardesign = (
-            self.design_tool in ("all", "lineardesign") or bool(self.navigation)
+            self.design_tool in ("all", "lineardesign")
+            or resolved_navigation(self)
         )
         if (
             uses_lineardesign
@@ -239,6 +250,20 @@ class MrnaCdsDesignInput(BaseModel):
                 "cai_custom_codon_table_path (CAI JSON)."
             )
         return self
+
+
+def resolved_navigation(inp: "MrnaCdsDesignInput") -> bool:
+    """Resolve the tristate ``navigation`` input to the effective mode.
+
+    v2.0.0 platform default: GenNav-λ navigation is the default design mode
+    of the platform's default recipe (``design_tool="all"``); an explicitly
+    pinned engine (``lineardesign``/``rnarl``/``gemorna``) honours the pin
+    and runs the static recipe path. An explicit ``navigation`` value always
+    wins over the default resolution.
+    """
+    if inp.navigation is not None:
+        return bool(inp.navigation)
+    return inp.design_tool == "all"
 
 
 def _lineardesign_codon_table(inp: "MrnaCdsDesignInput") -> Optional[str]:
@@ -390,7 +415,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             len(protein_sequence),
         )
 
-        if getattr(inp, "navigation", False):
+        if resolved_navigation(inp):
             return self._generate_cds_navigation(inp, protein_fp)
 
         # Species-correct design: resolve the LinearDesign codon table from

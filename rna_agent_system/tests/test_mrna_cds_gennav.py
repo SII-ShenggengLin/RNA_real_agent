@@ -10,8 +10,11 @@ frontier annotation) against a fully stubbed capability layer — no services:
   candidates carry nav_* metadata + audited tool records;
 - a run where nothing passes any profile fails with the dedicated
   ``navigation_delivery_empty`` error and still writes the audit trace;
-- the default (navigation=False) path is unchanged (static λ grid + RNARL +
-  GEMORNA, no trace);
+- the v2.0.0 tristate default: unset ``navigation`` navigates under the
+  default ``design_tool="all"`` recipe, honours an explicitly pinned engine
+  (static path), and True/False always override;
+- the explicit static recipe path (``navigation=False``) is unchanged
+  (static λ grid + RNARL + GEMORNA, no trace);
 - successful runs carry the ``pareto_frontier`` annotation (CAI × MFE/nt)
   without changing total_score ordering.
 
@@ -235,7 +238,7 @@ def test_navigation_all_fail_dedicated_error():
 
 def test_static_path_unchanged_when_navigation_false():
     caps = _build_registry()
-    result = _run(caps, design_tool="all")
+    result = _run(caps, design_tool="all", navigation=False)
 
     assert result.success is True
     assert result._state_writeback.get("_gennav_trace") is None
@@ -248,3 +251,57 @@ def test_static_path_unchanged_when_navigation_false():
     # Pareto annotation is present on the static path too
     assert "pareto_frontier_size" in result.summary
     assert getattr(result, "pareto_frontier", None)
+
+
+# ── v2.0.0 tristate default resolution ───────────────────────────────────────
+
+
+def test_default_recipe_navigates_when_navigation_unset():
+    # unset navigation + design_tool="all" (the platform default recipe)
+    # resolves to the navigation path (v2.0.0).
+    caps = _build_registry()
+    result = _run(caps, design_tool="all")
+    assert result.success is True
+    assert result._state_writeback["_gennav_trace"] is not None
+    assert caps["design_mrna_cds_with_rnarl"].calls == []
+    assert caps["design_mrna_cds_with_gemorna"].calls == []
+
+
+def test_default_input_navigates_without_any_kwargs():
+    # the bare default input (no design_tool, no navigation) navigates.
+    caps = _build_registry()
+    result = _run(caps)
+    assert result.success is True
+    assert result._state_writeback["_gennav_trace"] is not None
+
+
+def test_pinned_engine_stays_static_when_navigation_unset():
+    # an explicitly pinned engine honours the pin: static recipe, no trace.
+    caps = _build_registry()
+    result = _run(caps, design_tool="lineardesign", lambda_value=0.0)
+    assert result.success is True
+    assert result._state_writeback.get("_gennav_trace") is None
+    assert caps["design_mrna_cds_with_rnarl"].calls == []
+
+
+def test_explicit_navigation_overrides_pinned_engine():
+    # navigation=True wins over the engine pin (resolution order:
+    # explicit navigation > engine pin).
+    caps = _build_registry()
+    result = _run(caps, design_tool="gemorna", navigation=True)
+    assert result.success is True
+    assert result._state_writeback["_gennav_trace"] is not None
+    assert caps["design_mrna_cds_with_gemorna"].calls == []
+
+
+def test_unset_navigation_unknown_species_tolerated_for_pinned_engine():
+    # species fail-fast follows the resolved mode: a pinned non-LinearDesign
+    # engine with an unresolvable species is accepted (no navigation, no
+    # LinearDesign) — the v2.0.0 default does not change this contract.
+    from agent_core.workflows.mrna_cds_design import resolved_navigation
+    inp = MrnaCdsDesignInput(
+        protein_sequence="M" * 5, design_tool="rnarl",
+        cai_species="Martian pseudomonas",
+    )
+    assert inp.navigation is None
+    assert resolved_navigation(inp) is False

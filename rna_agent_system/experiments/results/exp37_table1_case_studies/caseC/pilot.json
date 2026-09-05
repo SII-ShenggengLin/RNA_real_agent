@@ -1,0 +1,10 @@
+{
+ "case": "C",
+ "session_id": "exp37_pilotC_nsp12",
+ "workflow_success": true,
+ "exit_code": 0,
+ "wall_seconds": 87.43,
+ "error": null,
+ "top5": [],
+ "n_candidates": 0
+}

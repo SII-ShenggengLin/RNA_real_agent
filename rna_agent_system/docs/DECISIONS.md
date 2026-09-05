@@ -333,6 +333,42 @@ semantics such as failed tiles). **Every subsequent experiment figure draws
 from this palette exclusively** — do not introduce new colours or re-open
 palette revisions without user direction.
 
+### (aa) GenNav-λ becomes the mRNA workflows' platform default (2026-09-06, user-directed)
+
+The delivered system's default configuration now matches the paper's core
+innovations. `mrna_cds_design` v2.0.0: `navigation` is a **tristate** — unset
+(`None`) runs GenNav-λ constraint navigation whenever `design_tool` is the
+platform default recipe (`"all"`) and honours an explicitly pinned engine
+(`lineardesign`/`rnarl`/`gemorna`) by running that static recipe; `True`/
+`False` always override. Consequences: (i) every registered instrument that
+pins the static pool passes `navigation=False` explicitly — the RNADesign-210
+tasks and PA benchmarks pin engines per-task and keep their registered
+protocols verbatim, their `design_tool="all"` tasks now exercise the default
+navigation flow; (ii) the species fail-fast contract follows the *resolved*
+mode (`resolved_navigation`); (iii) drivers predating the flip (exp27/28/30)
+pass `navigation` explicitly and are unaffected byte-for-byte.
+`full_length_mrna_design` **delegates, not duplicates**: its new tristate
+`navigation` field passes verbatim to the CDS sub-workflow, so the CDS layer
+is the single source of the default policy; the navigation trace lands in the
+merged full-length state writeback and navigation CDS deliveries compose with
+the unchanged 3×3 GEMORNA UTR grid (pilot Insulin: 99 full-length candidates
+from 11 navigation CDS × 9 UTR, ASF ranking with CapGate governance flags,
+gate decisions + ranking assemblies in the platform audit trail).
+**CapGate** needs no flip — audit trail, gate decisions and
+ranking-governance assembly are mode-independent and default-on (in-process
+default `enforce`; campaigns measure under explicit `advisory`).
+**Aptamer navigation stays opt-in** — its evidence is regime-specific
+(two-sided budget sweep, Exp 29) and re-opening is forbidden by (i).
+**Impact register + re-runs (same directive)**: Exp 2+3 (Figs 2b/c — the
+designed arm is the platform default flow; static era archived at
+`exp2_cds_nulls_static/`, session prefixes `exp2nd_/exp2ns_`), Exp 24
+(Figs 2a/2h/2i/4f — 210-suite `design_tool="all"` tasks + PA `all`-turns
+switch), Exp 25 (Fig 4g — PA mRNA sessions), Exp 18 (Fig 4d — the E3-M task
+set rebuilds on the current production assets). Unaffected: aptamer/siRNA/
+structure/small-molecule campaigns and every GenNav endpoint experiment
+(exp26/27/28/30/31 — all flag-pinned or instrument-built pools). Tests:
+672 passed, 1 skipped (baseline 646 + navigation-default suite).
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)

@@ -39,6 +39,18 @@ Pre-registration (pilot-first rule, MANUSCRIPT.md §2)
   ``experiments/results/exp2_cds_nulls_prefix/`` — its E. coli targets were
   designed against LinearDesign's default human table); session prefixes are
   ``exp2rd_/exp2rs_`` to keep the two runs' session artifacts disjoint.
+* AMENDMENT (2026-09-06, platform default change, user-directed): with
+  ``mrna_cds_design`` v2.0.0 the platform's default design flow —
+  ``design_tool="all"`` with ``navigation`` unset — is the GenNav-λ
+  constraint navigation (35-raw budget, per-profile delivery; the static
+  LinearDesign λ-grid + RNARL + GEMORNA recipe is now the explicit
+  ``navigation=False`` opt-out). The designed arm re-registers as the
+  platform default path under that semantics: one ``mrna_cds_design``
+  form-entry run per target (``design_tool="all"``, navigation unset →
+  GenNav-λ), best-ranked candidate per target as the designed CDS. The
+  hypothesis and arms are otherwise unchanged; the static-default era's
+  outputs are archived at ``experiments/results/exp2_cds_nulls_static/``
+  and this era's session prefixes are ``exp2nd_/exp2ns_``.
 * Scoring: every sequence in every arm goes through the same
   ``mrna_sequence_scoring`` workflow call (CAI + GC + LinearFold MFE,
   ``cai_species`` per target) — one code path for all three arms.
@@ -277,7 +289,7 @@ def design_one(target: dict[str, Any], *, capgate: str) -> dict[str, Any]:
         "run_gc": True,
     }
     timeout = int(max(1800, 900 + 2.5 * aa_len))
-    session_id = f"exp2rd_{tid}"
+    session_id = f"exp2nd_{tid}"
     print(f"[design] {tid} ({aa_len} aa, timeout={timeout}s) ...", flush=True)
     results, exit_code, elapsed, error = run_cli(
         "mrna_cds_design", params,
@@ -414,7 +426,7 @@ def build_scoring_jobs(targets: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "target_id": tid, "species": species, "arm": "designed",
                 "draw": None, "source": drec.get("best_source"),
                 "sequence": drec["designed_cds"],
-                "session_id": f"exp2rs_designed_{tid}",
+                "session_id": f"exp2ns_designed_{tid}",
             })
         else:
             print(f"[warn] no successful design record for {tid} — designed point skipped")
@@ -423,14 +435,14 @@ def build_scoring_jobs(targets: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "target_id": tid, "species": species, "arm": "wt",
             "draw": None, "source": "wt_cds_anchor",
             "sequence": wt["cds"],
-            "session_id": f"exp2rs_wt_{tid}",
+            "session_id": f"exp2ns_wt_{tid}",
         })
         for draw in range(N_RANDOM_DRAWS):
             jobs.append({
                 "target_id": tid, "species": species, "arm": "random",
                 "draw": draw, "source": "random_synonymous",
                 "sequence": random_synonymous(wt["cds"], tid, draw),
-                "session_id": f"exp2rs_random_{tid}_{draw}",
+                "session_id": f"exp2ns_random_{tid}_{draw}",
             })
     return jobs
 

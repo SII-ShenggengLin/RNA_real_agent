@@ -447,10 +447,14 @@ class TestLayer2Workflow:
     """Test FullLengthMrnaDesignWorkflow with stub capabilities (fast, no LLM)."""
 
     def test_workflow_generates_candidates_with_all_utr_presets(self):
-        """utr_mode='all' should produce candidates with short/medium/long UTRs."""
+        """utr_mode='all' should produce candidates with short/medium/long UTRs
+        (static recipe path — navigation=False; the default recipe navigates)."""
         registry = _build_stub_registry()
         wf = FullLengthMrnaDesignWorkflow(registry)
-        inp = FullLengthMrnaDesignInput(protein_sequence="MKTAIVE", design_tool="all", utr_mode="all")
+        inp = FullLengthMrnaDesignInput(
+            protein_sequence="MKTAIVE", design_tool="all", utr_mode="all",
+            navigation=False,
+        )
         cands = wf.generate_candidates(inp)
         assert len(cands) > 0
 
@@ -504,13 +508,15 @@ class TestLayer2Workflow:
             assert c.rank is not None
 
     def test_workflow_run_full_pipeline(self):
-        """run() should execute the complete pipeline end-to-end."""
+        """run() should execute the complete pipeline end-to-end
+        (static recipe path — navigation=False)."""
         registry = _build_stub_registry(mrl=6.5, utr3_stab=0.8, ires_score=0.1)
         wf = FullLengthMrnaDesignWorkflow(registry)
         inp = FullLengthMrnaDesignInput(
             protein_sequence="MKTAIVE",
             design_tool="all",
             utr_mode="short",
+            navigation=False,
         )
         result = wf.run(inp)
         assert result.success is True

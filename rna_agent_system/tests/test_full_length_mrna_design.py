@@ -218,10 +218,16 @@ def _make_registry_with_mocks() -> MagicMock:
 
 
 def test_generate_candidates_6cds_9utr_54_total():
-    """With 3 unique CDS tools and 3×3 UTR combos, verify 54 candidates."""
+    """With 3 unique CDS tools and 3×3 UTR combos, verify 54 candidates.
+
+    Static recipe path (navigation=False): the v2.0.0 default recipe would
+    otherwise delegate CDS design to GenNav-λ navigation.
+    """
     reg = _make_registry_with_mocks()
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="all")
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
     candidates = wf.generate_candidates(inp)
     # 3 CDS tools (lineardesign produces 4, but we mock same cap) × 9 UTR combos
     # Actually lineardesign cap returns same sequence every time, so after dedup:
@@ -280,7 +286,9 @@ def test_generate_candidates_dedup_full_sequence():
     reg.get = lambda name: caps[name]
 
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="all")
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
     candidates = wf.generate_candidates(inp)
     # 1 unique CDS × 3 UTR5 × 3 UTR3 = 9 unique full sequences
     assert len(candidates) == 9
@@ -308,7 +316,10 @@ def test_generate_candidates_utr_mode_filter():
     """utr_mode='short' should produce only 1 UTR preset per end → 1 combo per CDS."""
     reg = _make_registry_with_mocks()
     wf = FullLengthMrnaDesignWorkflow(reg)
-    inp = FullLengthMrnaDesignInput(protein_sequence="MKTLVVPFGQ", design_tool="all", utr_mode="short")
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", utr_mode="short",
+        navigation=False,
+    )
     candidates = wf.generate_candidates(inp)
     # 3 unique CDS × 1 UTR5(short) × 1 UTR3(short) = 3
     assert len(candidates) == 3
@@ -694,3 +705,162 @@ def test_reference_point_rejects_junction_dimensions():
                 "junction_cds_3utr_score": 0.7,
             },
         )
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# GenNav-λ delegation (v2.0.0 default recipe) — navigation tristate
+# ═══════════════════════════════════════════════════════════════════════
+
+
+def _make_nav_registry():
+    """Stub registry exercising the navigation path through the real
+    capability plumbing: LinearDesign returns a λ-dependent sequence whose
+    GC fraction encodes λ (0.40 + 0.004·λ); CAI / LinearFold decode it —
+    the same encoding as tests/test_mrna_cds_gennav.py."""
+    import random
+
+    from agent_core.file_manager import read_sequence
+
+    n_aa = 20
+
+    def seq_for_lambda(lam: float) -> str:
+        length = 3 * n_aa
+        n_gc = round(length * (0.40 + 0.004 * lam) / 2)
+        n_au = (length - 2 * n_gc) // 2
+        letters = ["G"] * n_gc + ["C"] * n_gc + ["A"] * n_au + ["U"] * n_au
+        rng = random.Random(int(lam * 1000))
+        rng.shuffle(letters)
+        return "".join(letters)[:length]
+
+    def decode_lambda(filepath: str) -> float:
+        seq = read_sequence(filepath).upper().replace("T", "U")
+        gc = sum(1 for c in seq if c in "GC") / len(seq)
+        return (gc - 0.40) / 0.004
+
+    caps: dict[str, Any] = {}
+
+    def _reg(name, fn):
+        def _invoke(args, state=None):
+            return CapabilityResult(
+                success=True, tool_name=name, output=fn(args)
+            )
+        m = MagicMock()
+        m.invoke.side_effect = _invoke
+        caps[name] = m
+
+    def _ld(args):
+        return {
+            "generated_sequence": seq_for_lambda(float(args.get("lambda_value", 0.0))),
+            "mfe": -10.0,
+        }
+
+    def _cai(args):
+        return {"cai_score": round(0.832 + 0.003 * decode_lambda(args["filepath"]), 4)}
+
+    def _fold(args):
+        lam = decode_lambda(args["filepath"])
+        seq = read_sequence(args["filepath"])
+        return {
+            "mfe": round((-0.45 + 0.02 * lam) * len(seq), 4),
+            "structure": "." * len(seq),
+        }
+
+    def _utr(preset_seq: str):
+        return lambda args: {"generated_sequence": preset_seq}
+
+    _reg("design_mrna_cds_with_lineardesign", _ld)
+    _reg("compute_cai_for_cds_sequence", _cai)
+    _reg("predict_rna_secondary_structure_with_linearfold", _fold)
+    _reg("design_5utr_with_gemorna", _utr("GGGAAACCCUUUGGGAAA"))
+    _reg("design_3utr_with_gemorna", _utr("AAAUUUGGGAAACCCUUU"))
+
+    reg = MagicMock()
+    reg.has = lambda name: name in caps
+    reg.get = lambda name: caps[name]
+    return caps, reg
+
+
+def test_full_length_default_recipe_delegates_to_navigation():
+    """v2.0.0: unset navigation + the default 'all' recipe runs GenNav-λ in
+    the CDS sub-workflow; the navigation trace lands in the merged
+    full-length state writeback; candidates carry the gennav source."""
+    caps, reg = _make_nav_registry()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(protein_sequence="M" * 20)
+    assert inp.navigation is None  # tristate default — inherit
+    candidates = wf.generate_candidates(inp)
+
+    assert candidates, "navigation delivery must compose with UTR presets"
+    sources = {c.metadata.get("cds_source", "") for c in candidates}
+    assert any(s.startswith("cds_design_gennav:lambda") for s in sources)
+    for c in candidates:
+        # every full-length candidate wraps a delivered navigation CDS
+        assert c.metadata["cds_source"].startswith("cds_design_gennav:lambda")
+        assert c.metadata["cds_length"] % 3 == 0
+    # navigation trace captured from the sub-workflow state
+    trace = wf._cds_state_writeback.get("_gennav_trace")
+    assert trace is not None and trace["raw_spent"] > 0
+    # UTR composition is unchanged: 9 combos per unique CDS
+    n_cds = len({c.metadata["cds_sequence"] for c in candidates})
+    assert len(candidates) <= n_cds * 9
+    # RNARL/GEMORNA CDS generation never runs on the navigation path
+    assert "design_mrna_cds_with_rnarl" not in caps
+    assert "design_mrna_cds_with_gemorna" not in caps
+
+
+def test_full_length_navigation_false_restores_static_recipe():
+    """Explicit navigation=False opts the full-length workflow back into the
+    static engine recipe (RNARL/GEMORNA called, no gennav trace)."""
+    caps, reg = _make_nav_registry()
+    # static 'all' recipe needs the other two engines
+    caps["design_mrna_cds_with_rnarl"] = make_mock_capability(
+        {"generated_sequence": "AUG" * 35}
+    )
+    caps["design_mrna_cds_with_gemorna"] = make_mock_capability(
+        {"generated_sequence": "AUG" * 40}
+    )
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="M" * 20, design_tool="all", navigation=False
+    )
+    candidates = wf.generate_candidates(inp)
+    assert candidates
+    sources = {c.metadata.get("cds_source", "") for c in candidates}
+    assert all(not s.startswith("cds_design_gennav") for s in sources)
+    assert wf._cds_state_writeback.get("_gennav_trace") is None
+    caps["design_mrna_cds_with_rnarl"].invoke.assert_called()
+
+
+def test_full_length_pinned_engine_stays_static_by_default():
+    """An explicitly pinned engine (design_tool='lineardesign' + λ) keeps the
+    static path without touching navigation — the registered benchmark-task
+    semantics are unchanged by the v2.0.0 default."""
+    caps, reg = _make_nav_registry()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="M" * 20, design_tool="lineardesign", lambda_value=0.0
+    )
+    candidates = wf.generate_candidates(inp)
+    assert candidates
+    assert wf._cds_state_writeback.get("_gennav_trace") is None
+    # exactly one static LinearDesign call at the pinned λ
+    ld_args = [call.args[0] for call in caps["design_mrna_cds_with_lineardesign"].invoke.call_args_list]
+    assert [a.get("lambda_value") for a in ld_args] == [0.0]
+
+
+def test_full_length_navigation_passthrough_overrides_pin():
+    """navigation=True overrides an engine pin — the full-length input's
+    explicit value wins, mirroring the CDS-layer tristate resolution."""
+    caps, reg = _make_nav_registry()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="M" * 20, design_tool="lineardesign",
+        lambda_value=0.0, navigation=True,
+    )
+    candidates = wf.generate_candidates(inp)
+    assert candidates
+    assert all(
+        c.metadata["cds_source"].startswith("cds_design_gennav:lambda")
+        for c in candidates
+    )
+    assert wf._cds_state_writeback.get("_gennav_trace") is not None

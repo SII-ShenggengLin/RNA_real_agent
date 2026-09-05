@@ -47,6 +47,16 @@ Design (pre-registered in this docstring):
   pa_batch_w<K>.jsonl per worker; the campaign driver's --summary globs
   both patterns (latest-record-wins).
 
+RE-RUN AMENDMENT (2026-09-06, platform default change DECISIONS (aa), user-
+directed): the campaign re-runs on the platform whose mRNA design flows now
+default to GenNav-λ navigation (mrna_cds_design v2.0.0 tristate). Task inputs
+are unchanged verbatim — the suite's design_tool="all" tasks and the PA
+"all"-turns now exercise the default navigation flow, pinned-engine tasks
+keep their registered protocols; every other workflow is untouched. The
+static-default era's outputs are archived at
+experiments/results/exp24_production_campaign_static/ (audit stats at
+exp24_audit_gate_stats_static/). Session prefixes unchanged (exp24).
+
 Usage:
     PYTHONPATH="$(pwd):$PYTHONPATH" python experiments/exp24_run_parallel.py
 """
