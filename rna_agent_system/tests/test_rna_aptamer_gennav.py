@@ -162,7 +162,11 @@ def _nav_input(protein_stub_file: str, **overrides) -> RnaAptamerDesignInput:
 # ═════════════════════════════════════════════════════════════════════════════
 
 
-def test_probe_requests_every_lattice_length(protein_stub_file):
+def test_staged_central_probe_then_adaptive_rounds(protein_stub_file):
+    """Production v2 (2026-09-04 repair): the probe is staged — one sample
+    at each of the six band-central lattice lengths (defect-1 fix) — and the
+    remaining lattice is explored by the adaptive loop, not upfront."""
+    from agent_core.generation.gennav_aptamer import central_probe_lengths
     odesign = _OdesignFactory(lambda length: 0.5)
     wf = _make_workflow(odesign)
     candidates = wf._generate_aptamer_navigation(
@@ -170,7 +174,8 @@ def test_probe_requests_every_lattice_length(protein_stub_file):
     )
     probe_requests = [r for r in odesign.requests if r["n"] == 1]
     probed_lengths = {r["length"] for r in probe_requests}
-    assert probed_lengths == set(CONFIG.lattice_lengths)
+    central = set(central_probe_lengths(CONFIG))
+    assert probed_lengths == central
     assert candidates, "healthy scenario must deliver candidates"
 
 
@@ -182,12 +187,16 @@ def test_budget_cap_and_early_stop(protein_stub_file):
     )
     trace = wf._workflow_state["_gennav_trace"]
     assert trace["raw_spent"] <= CONFIG.raw_budget_per_target
-    assert sum(r["n_samples"] for r in trace["rounds"]) + len(CONFIG.lattice_lengths) == trace["raw_spent"]
+    # staged central probe + the adaptive rounds account for every raw call
+    from agent_core.generation.gennav_aptamer import central_probe_lengths
+    probe_n = len(central_probe_lengths(CONFIG))
+    assert sum(r["n_samples"] for r in trace["rounds"]) + probe_n == trace["raw_spent"]
     # every band full -> the navigator stops before burning the whole budget
     assert all(g == 0 for g in trace["final_gaps"].values())
     assert trace["raw_spent"] < CONFIG.raw_budget_per_target
-    # guarantee rounds fire before mechanized ones
-    assert all(r["kind"] == "guarantee" for r in trace["rounds"])
+    # v2 round kinds: guarantee cycling may precede closing rounds
+    kinds = [r["kind"] for r in trace["rounds"]]
+    assert set(kinds) <= {"guarantee", "mechanized", "closing"}
 
 
 def test_delivery_respects_matrix_and_diversity(protein_stub_file):
@@ -222,8 +231,10 @@ def test_starved_band_degrades_within_budget(protein_stub_file):
     assert compact["degraded"] and compact["ids"] == []
     assert trace["deliveries"]["standard"]["ids"]
     assert trace["deliveries"]["extended"]["ids"]
-    # all reinforcement budget went to the starved band
-    assert all(
+    # v2: the permanently starved band holds the largest gap, so the
+    # endgame closing rounds (and most reinforcement) aim at it
+    kinds = [r["kind"] for r in trace["rounds"]]
+    assert "closing" in kinds or all(
         r["length"] <= CONFIG.profiles["compact"]["hi"] for r in trace["rounds"]
     )
     assert candidates, "other bands still deliver"
@@ -269,3 +280,18 @@ def test_navigation_defaults_off(protein_stub_file):
     assert candidates
     assert len(odesign.requests) == 1
     assert "_gennav_trace" not in wf._workflow_state
+
+
+def test_navigation_raw_budget_knob(protein_stub_file):
+    """Production budget knob: navigation_raw_budget overrides the 48-raw
+    default cap and the trace records it (budget-constrained campaigns)."""
+    odesign = _OdesignFactory(lambda length: 0.5)
+    wf = _make_workflow(odesign)
+    wf._generate_aptamer_navigation(
+        protein_stub_file, "A/5",
+        _nav_input(protein_stub_file, navigation_raw_budget=24),
+        protein_seq_len=30,
+    )
+    trace = wf._workflow_state["_gennav_trace"]
+    assert trace["raw_budget"] == 24
+    assert trace["raw_spent"] <= 24

@@ -1,0 +1,11 @@
+{
+  "target_id": "Factor_Xa",
+  "target_name": "Factor Xa",
+  "pdb_id": "5VOE",
+  "pdb_chain": "H",
+  "protein_sequence": "IVGGQECKDGECPWQALLINEENEGFCGGTILSEFYILTAAHCLYQKRFKVRVGDRNTEQEEGGEAVHEVEVVIKHNRFTKETYDFDIAVLRLKTPITFRMNVAPACLPRDWAESTTQKTGIVSGFGRTHERQSTRLKMLEVPYVDRNSCKLSSSFIITQNMFCAGYKQEDACQGDAGGPHVTRFKDTYFVTGIVSWGEGCARKKYGIYTKVTAFLKWIDRSMKLCSLDNGDCDQFCHEEQNSVVCSCARGYTLADNGKACIPTGPYPCGKQTLE",
+  "protein_length_aa": 275,
+  "structure_path": "data/benchmarks/RNA-BioBench-Aptamer-Expanded/structures/5VOE_protein.pdb",
+  "provenance": "docking anchor v3 (X-ray 2.00 A; Gunaratne R, et al. Nat Biotechnol 2018;36:647-651. doi:10.1038/nbt.4153); protein chains ['H', 'L'] retained, other chains stripped (registered preprocessing, the BSA-CB-repair convention)",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 docking_anchors"
+}

@@ -1,0 +1,11 @@
+{
+  "target_id": "Von_Willebrand_factor",
+  "target_name": "Von Willebrand factor",
+  "pdb_id": "7F49",
+  "pdb_chain": "A",
+  "protein_sequence": "HDFYCSRLLDLVFLLDGSSRLSEAEFEVLKAFVVDMMERLRISQKWVRVAVVEYHDGSHAYIGLKDRKRPSELRRIASQVKYAGSQVASTSEVLKYTLFQIFSKIDRPEASRIALLLMASQEPQRMSRNFVRYVQGLKKKKVIVIPVGIGPHANLKQIRLIEKQAPENKAFVLSSVDELEQQRDEIVSYLCDLAPEAP",
+  "protein_length_aa": 198,
+  "structure_path": "data/benchmarks/RNA-BioBench-Aptamer-Expanded/structures/7F49_protein.pdb",
+  "provenance": "docking anchor v3 (X-ray 2.09 A; Zhu S, et al. J Thromb Haemost 2020;18:930-936. doi:10.1111/jth.14755); protein chains ['A'] retained, other chains stripped (registered preprocessing, the BSA-CB-repair convention)",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 docking_anchors"
+}

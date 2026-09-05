@@ -1,0 +1,53 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 27,
+    "nav_raw_spent_mean": 27.0,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "delivered_cells": {
+    "A": 6,
+    "C": 5
+  },
+  "delivered_fraction": {
+    "A": 1.0,
+    "C": 0.8333
+  },
+  "e2e_targets": {
+    "A": 2,
+    "C": 1
+  },
+  "lever": "initial matrix v0; sparse lattice; mechanized reinforcement",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 0,
+    "c_rule_only": 1,
+    "n_discordant": 1,
+    "p_exact": 1.0,
+    "p_permutation_1e4": 1.0
+  },
+  "n_cells": 6,
+  "n_targets": 2,
+  "pair_outcomes": {
+    "both": 5,
+    "nav": 0,
+    "none": 0,
+    "rule": 1
+  },
+  "per_target": {
+    "GFP": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Thrombin": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    }
+  },
+  "segment": "seg1_migration",
+  "targets_missing_boundary": []
+}

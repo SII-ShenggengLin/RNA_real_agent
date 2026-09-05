@@ -1,0 +1,10 @@
+{
+  "guide_sequence": "GGCAGGATGGCTTCTCATCGTCT",
+  "target_sequence": "GGCAGGATGGCTTCTCATCGTCT",
+  "seed_sequence": "CGTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCTACTTGAAAAAGTGCG",
+  "n_samples": 5,
+  "mutation_number": 3,
+  "weight_nn_score": 0.5,
+  "weight_crisot": 0.5,
+  "evaluate_crisot": true
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pilot",
+  "n_campaigns": 1,
+  "n_with_trace": 1,
+  "raw_caps": [
+    48
+  ],
+  "cap_hits": 0,
+  "early_stops": 1,
+  "delivered_cells": {
+    "IFN-gamma": 3
+  },
+  "total_delivered_cells": 3,
+  "wall_seconds": {
+    "IFN-gamma": 3910.2
+  },
+  "spend": {
+    "IFN-gamma": [
+      47,
+      48
+    ]
+  },
+  "budget_violations": 0
+}

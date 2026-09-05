@@ -1,0 +1,11 @@
+{
+  "target_id": "IL_17A",
+  "target_name": "IL-17A",
+  "pdb_id": null,
+  "pdb_chain": null,
+  "protein_sequence": "MTPGKTSLVSLLLLLSLEAIVKAGITIPRNPGCPNSEDKNFPRTVMVNLNIHNRNTNTNPKRSSDYYNRSTSPWNLHRNEDPERYPSVIWEAKCRHLGCINADGNVDYHMNSVPIQQEILVLRREPPHCPNSFRLEKILVSVGCTCVTPIVHHVA",
+  "protein_length_aa": 155,
+  "structure_path": null,
+  "provenance": "e1 anchor set v3 uniprot_fasta target (anchor fasta); structure predicted by the production ProteinX path on first use",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 entries"
+}

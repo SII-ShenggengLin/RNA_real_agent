@@ -1,6 +1,6 @@
 {
   "experiment": "exp24_audit_gate_stats",
-  "generated": "2026-09-01T16:12:01",
+  "generated": "2026-09-05T11:13:45",
   "campaign": {
     "design": "parallel, six workflow-exclusive workers (user-directed amendment 2026-09-01; same-workflow sessions never overlap)",
     "runtimes_measure": "delivered workflow under concurrent campaign load"
@@ -8,7 +8,7 @@
   "corpus": {
     "definition": "audit slice of the 241 registered Exp-24 runs (210 RNADesign-210 tasks + 31 PA sessions, latest-record-wins, success required)",
     "n_sessions": 241,
-    "n_events": 10395,
+    "n_events": 10331,
     "composition": {
       "gate_decision": 1392,
       "ranking_objective_assembly": 185,
@@ -46,80 +46,48 @@
     }
   },
   "gate_decisions": {
-    "n": 1392,
+    "n": 1337,
     "verdict_totals": {
-      "reject": 709,
       "require_profiling": 549,
-      "downgrade": 134,
-      "allow": 0
+      "reject": 654,
+      "downgrade": 134
     },
     "n_oracles": 11,
     "by_oracle": {
       "crgpt_handle_score": {
-        "reject": 0,
-        "require_profiling": 241,
-        "downgrade": 0,
-        "allow": 0
+        "require_profiling": 241
       },
       "crisot_off_target_score": {
-        "reject": 0,
-        "require_profiling": 25,
-        "downgrade": 0,
-        "allow": 0
+        "require_profiling": 25
       },
       "egarps_native_probability": {
-        "reject": 70,
-        "require_profiling": 0,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 65
       },
       "gemorna_3utr_stability": {
-        "reject": 0,
-        "require_profiling": 134,
-        "downgrade": 0,
-        "allow": 0
+        "require_profiling": 134
       },
       "gemorna_5utr_mrl": {
-        "reject": 0,
-        "require_profiling": 0,
-        "downgrade": 134,
-        "allow": 0
+        "downgrade": 134
       },
       "gernabind_probability": {
-        "reject": 22,
-        "require_profiling": 0,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 22
       },
       "iresfinder_score": {
-        "reject": 23,
-        "require_profiling": 0,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 23
       },
       "proteinx_ipTM": {
-        "reject": 100,
-        "require_profiling": 0,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 88
       },
       "rhofold_mean_plddt": {
-        "reject": 300,
         "require_profiling": 99,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 262
       },
       "rnasmol": {
-        "reject": 14,
-        "require_profiling": 0,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 14
       },
       "rnastop_stability": {
-        "reject": 180,
         "require_profiling": 50,
-        "downgrade": 0,
-        "allow": 0
+        "reject": 180
       }
     },
     "use_by_oracle": {
@@ -1505,5 +1473,123 @@
     "0 same-workflow attribution ambiguities",
     "0 unstamped tool_call events inside the campaign span",
     "all gate verdicts in {reject, require_profiling, downgrade, allow}"
-  ]
+  ],
+  "totals": {
+    "events": 10331,
+    "tool_calls": 8810,
+    "gate_decisions": 1337,
+    "ranking_assemblies": 184
+  },
+  "composition": {
+    "tool_call": {
+      "count": 8810,
+      "fraction": 0.8528
+    },
+    "gate_decision": {
+      "count": 1337,
+      "fraction": 0.1294
+    },
+    "ranking_objective_assembly": {
+      "count": 184,
+      "fraction": 0.0178
+    }
+  },
+  "gate_verdicts": {
+    "require_profiling": 549,
+    "reject": 654,
+    "downgrade": 134
+  },
+  "gate_verdicts_by_oracle": {
+    "rnastop_stability": {
+      "require_profiling": 50,
+      "reject": 180
+    },
+    "rhofold_mean_plddt": {
+      "require_profiling": 99,
+      "reject": 262
+    },
+    "crgpt_handle_score": {
+      "require_profiling": 241
+    },
+    "gemorna_5utr_mrl": {
+      "downgrade": 134
+    },
+    "gemorna_3utr_stability": {
+      "require_profiling": 134
+    },
+    "crisot_off_target_score": {
+      "require_profiling": 25
+    },
+    "iresfinder_score": {
+      "reject": 23
+    },
+    "gernabind_probability": {
+      "reject": 22
+    },
+    "rnasmol": {
+      "reject": 14
+    },
+    "egarps_native_probability": {
+      "reject": 65
+    },
+    "proteinx_ipTM": {
+      "reject": 88
+    }
+  },
+  "tool_call_counts": {
+    "predict_rna_secondary_structure_with_linearfold": 1940,
+    "compute_rna_sequence_gc_content": 1840,
+    "compute_sirna_duplex_binding_vienna": 1231,
+    "predict_rna_tertiary_structure_with_rhofold": 403,
+    "extract_rna_sequence_from_cif": 262,
+    "compute_aso_target_accessibility_vienna": 244,
+    "score_sgrna_handle_with_crgpt": 241,
+    "predict_rna_secondary_structure": 232,
+    "compute_rna_sequence_u_content": 230,
+    "predict_mrna_stability_with_rnastop": 230,
+    "design_3utr_with_gemorna": 134,
+    "predict_5utr_mrl_with_gemorna": 134,
+    "predict_3utr_stability_with_gemorna": 134,
+    "compute_cai_for_cds_sequence": 121,
+    "inverse_fold_rna_secondary_structure_vienna": 121,
+    "run_bowtie2_short_alignment": 116,
+    "analyze_rna_protein_interface": 110,
+    "predict_rna_protein_complex_with_proteinx": 102,
+    "compute_dot_bracket_unpaired_fraction": 100,
+    "score_structure_alignment": 98,
+    "design_rna_sequence_with_rhodesign": 95,
+    "compute_rna_rna_interaction_vienna": 82,
+    "score_rna_protein_complex_with_egarps": 72,
+    "design_5utr_with_gemorna": 68,
+    "design_mrna_cds_with_lineardesign": 65,
+    "build_odesign_aptamer_input_json": 53,
+    "run_odesign_inference": 53,
+    "run_blastn_similarity_search": 46,
+    "design_sgrna_handle_with_crgpt": 43,
+    "predict_rna_local_accessibility_profile_vienna": 31,
+    "identify_protein_binding_hotspots": 27,
+    "score_crispr_off_target_with_crisot": 25,
+    "predict_putative_ires_with_iresfinder": 23,
+    "score_rna_ligand_binding_with_gernabind": 22,
+    "design_mrna_cds_with_rnarl": 20,
+    "design_rna_inverse_fold_with_ribodiffusion": 18,
+    "design_sirna_with_evitar": 16,
+    "score_rna_ligand_binding_with_rnasmol": 14,
+    "design_mrna_cds_with_gemorna": 11,
+    "predict_protein_structure_with_proteinx": 3
+  },
+  "amendment": {
+    "amendment": "surgical PA_028 v4 re-freeze",
+    "created": "2026-09-05T11:13:45",
+    "old_corpus_sha256": "8a1f6e3e36e89a8436af835c4c981bbfe21ebf3437beb8760fea7b24f2ed7c16",
+    "new_corpus_sha256": "3448fc06be49e2e620e770d04bf35521dd50ce95d4cf176fa53d6ed20cbdea3d",
+    "events_dropped": 424,
+    "events_added": 360,
+    "total_events": 10331,
+    "replaced_session": {
+      "old": "exp24_pa028",
+      "new": "pa028_v4_085328"
+    },
+    "disclosure": "All other 240 corpus sessions retain their original frozen events byte-identically; the original analyzer's quiet-trail freeze assertions cannot be re-asserted against the now-busy audit trail, hence the surgical replacement registered here."
+  }
 }

@@ -42,7 +42,10 @@ from agent_core.file_manager import (
 )
 from agent_core.generation.gennav_aptamer import (
     AptamerNavConfig,
+    adaptive_round,
+    central_probe_lengths,
     deliver_profile,
+    delivery_gaps,
     evaluate_matrix,
     gc_fraction,
     guarantee_round,
@@ -186,15 +189,30 @@ class RnaAptamerDesignInput(BaseModel):
             "from the candidate pool."
         ),
     )
+    navigation_raw_budget: Optional[int] = Field(
+        default=None,
+        ge=6,
+        le=200,
+        description=(
+            "Raw generator budget cap for navigation mode (production knob: "
+            "budget-constrained campaigns). None = the registered 48-raw "
+            "default of the shipped navigator."
+        ),
+    )
     navigation: bool = Field(
         default=False,
         description=(
-            "Enable GenNav constraint navigation (E14 protocol): probe the densified "
-            "17-length lattice (25-80 nt), allocate cycling guaranteed-repair "
-            "reinforcement rounds within a 48-raw generation budget, and deliver up to "
-            "5 candidates per length profile (compact 25-34 / standard 40-55 / "
-            "extended 61-80 nt) under the pre-registered constraint matrix v3 "
-            "(per-band GC window, homopolymer cap, stem cap, within-batch diversity). "
+            "Enable GenNav constraint navigation (production v4, 2026-09-04): a "
+            "staged band-central probe (the two lattice lengths nearest each band "
+            "centre), adaptive reinforcement scored by shrunken pass rates with a "
+            "UCB optimism bonus and least-served-first band rotation, D1-aware "
+            "stopping (a band is complete only when the diversity-greedy delivery "
+            "is full), and floor-free closing rounds that commit the remaining "
+            "budget to the largest gap — within the raw budget cap (48 default, "
+            "navigation_raw_budget to override). Delivers up to 5 candidates per "
+            "length profile (compact 25-34 / standard 40-55 / extended 61-80 nt) "
+            "under the pre-registered constraint matrix v3 (per-band GC window, "
+            "homopolymer cap, stem cap, within-batch diversity). "
             "When False (default), one static ODesign gear is used "
             "(aptamer_length, odesign_seeds, n_odesign_samples)."
         ),
@@ -549,7 +567,8 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         return candidates
 
     # ─────────────────────────────────────────────────────────────────────────
-    # GenNav navigation path (E14 protocol; production wiring 2026-08-19)
+    # GenNav navigation path (production v4, 2026-09-04: staged central probe,
+    # shrinkage+UCB allocation, least-served band rotation, D1-aware stopping)
     # ─────────────────────────────────────────────────────────────────────────
 
     def _generate_aptamer_navigation(
@@ -569,6 +588,9 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
         navigation trace is written to ``_workflow_state["_gennav_trace"]``.
         """
         config = AptamerNavConfig()
+        budget_override = getattr(inp, "navigation_raw_budget", None)
+        if budget_override is not None:
+            config = AptamerNavConfig(raw_budget_per_target=int(budget_override))
         pool: list[dict] = []
         gears: list[dict] = []
         seen: set[str] = set()
@@ -644,8 +666,14 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                     "matrix_pass": evaluate_matrix(seq, gc, stem, config),
                 })
 
-        # ── Phase 1: lattice probe — one sample at every length (probe seed) ──
-        for length in config.lattice_lengths:
+        # ── Phase 1: staged central probe (production v2 repair, 2026-09-04)
+        # The two lattice lengths nearest each band centre are probed first
+        # (defect-1 fix: the shipped 17-length upfront probe spent ~35% of
+        # the budget learning what a sensible default order already knows).
+        # The remaining lattice stays available to the adaptive loop below
+        # as explore gears with band-mean imputed rates.
+        central = central_probe_lengths(config)
+        for length in central:
             n = min(1, config.raw_budget_per_target - raw_spent)
             if n <= 0:
                 break
@@ -654,25 +682,24 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
                 length, config.probe_seed, n,
             )
         _LOGGER.info(
-            "gennav_probe_done lengths=%d raw_spent=%d pool=%d",
-            len(config.lattice_lengths), raw_spent, len(pool),
+            "gennav_probe_done central_lengths=%d raw_spent=%d pool=%d",
+            len(central), raw_spent, len(pool),
         )
 
-        # ── Phase 2: reinforcement — guarantee rounds first, mechanized fill ──
+        # ── Phase 2: adaptive reinforcement — guarantee cycling, unified
+        # explore/exploit proposals, floor-free closing rounds (defect-2
+        # fix: never leave a gapped band one candidate short with budget
+        # spent) ──
         while raw_spent < config.raw_budget_per_target:
-            gaps = profile_gaps(pool, config)
+            gaps = delivery_gaps(pool, config)
             if all(g == 0 for g in gaps.values()):
-                break  # every band already deliverable — stop early, save budget
-            gear, guaranteed_bands = guarantee_round(
-                pool, gears, raw_spent, config, guaranteed_bands=guaranteed_bands
+                break  # every band's D1 delivery full with margin — stop
+            gear, kind, guaranteed_bands = adaptive_round(
+                pool, gears, raw_spent, config,
+                guaranteed_bands=guaranteed_bands,
             )
-            kind = "guarantee"
             if gear is None:
-                proposals, _ = mechanized_proposals(pool, gears, raw_spent, config)
-                if not proposals:
-                    break
-                gear = proposals[0]
-                kind = "mechanized"
+                break
             n = min(int(gear["n_samples"]), config.raw_budget_per_target - raw_spent)
             if n <= 0:
                 break
@@ -697,10 +724,11 @@ class RnaAptamerDesignWorkflow(BaseDomainWorkflow[RnaAptamerDesignInput, Workflo
             for prof in config.profile_order
         }
         self._workflow_state["_gennav_trace"] = {
-            "protocol": "e14_production_v1",
+            "protocol": "e14_production_v4",
             "raw_budget": config.raw_budget_per_target,
             "raw_spent": raw_spent,
-            "probe": {"n_lengths": len(config.lattice_lengths), "seed": config.probe_seed},
+            "probe": {"n_lengths": len(central), "seed": config.probe_seed,
+                      "staged": "central_first"},
             "rounds": rounds,
             "final_gaps": profile_gaps(pool, config),
             "pool_size": len(pool),

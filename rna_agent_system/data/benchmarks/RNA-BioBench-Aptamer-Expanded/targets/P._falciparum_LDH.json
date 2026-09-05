@@ -1,0 +1,11 @@
+{
+  "target_id": "P._falciparum_LDH",
+  "target_name": "P. falciparum LDH",
+  "pdb_id": "3ZH2",
+  "pdb_chain": "A",
+  "protein_sequence": "PKAKIVLVGSGMIGGVMATLIVQKNLGDVVLFDIVKNMPHGKALDTSHTNVMAYSNCKVSGSNTYDDLAGADVVIVTAGFTKAPGKSDKEWNRDDLLPLNNKIMIEIGGHIKKNCPNAFIIVVTNPVDVMVQLLHQHSGVPKNKIIGLGGVLDTSRLKYYISQKLNVCPRDVNAHIVGAHGNKMVLLKRYITVGGIPLQEFINNKLISDAELEAIFDRTVNTALEIVNLHASPYVAPAAAIIEMAESYLKDLKKVLICSTLLEGQYGHSDIFGGTPVVLGANGVEQVIELQLNSEEKAKFDEAIAETKRMKALA",
+  "protein_length_aa": 314,
+  "structure_path": "data/benchmarks/RNA-BioBench-Aptamer-Expanded/structures/3ZH2_protein.pdb",
+  "provenance": "docking anchor v3 (X-ray 2.10 A; Cheung YW, et al. Proc Natl Acad Sci USA 2013;110:15967-15972. doi:10.1073/PNAS.1309538110); protein chains ['A'] retained, other chains stripped (registered preprocessing, the BSA-CB-repair convention)",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 docking_anchors"
+}

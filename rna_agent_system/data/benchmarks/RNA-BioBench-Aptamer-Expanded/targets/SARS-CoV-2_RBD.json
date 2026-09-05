@@ -1,0 +1,11 @@
+{
+  "target_id": "SARS-CoV-2_RBD",
+  "target_name": "SARS-CoV-2 RBD",
+  "pdb_id": "9T74",
+  "pdb_chain": "B",
+  "protein_sequence": "ITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPK",
+  "protein_length_aa": 197,
+  "structure_path": "data/benchmarks/RNA-BioBench-Aptamer-Expanded/structures/9T74_protein.pdb",
+  "provenance": "docking anchor v3 (cryoEM 3.46 A; Kristoffersen et al., RCSB 9T74 (to be published, deposited 2024)); protein chains ['B'] retained, other chains stripped (registered preprocessing, the BSA-CB-repair convention)",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 docking_anchors"
+}

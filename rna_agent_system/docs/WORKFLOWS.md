@@ -86,7 +86,7 @@ The authoritative `required_capabilities` list for each workflow is the class at
 3. **Score** — `total_score = -mfe + codon_count * log(CAI)`
 4. **Rank** — by `total_score` descending; a **Pareto frontier annotation** (CAI max × MFE/nt min, the classic LinearDesign trade-off view) is attached as `pareto_frontier` extras + `pareto_frontier_size` in the summary — ranking itself is unchanged
 
-**GenNav-λ navigation (opt-in, v1.2.0)**: set `navigation=True` to replace the static LinearDesign λ grid with the deterministic, zero-LLM constraint navigation (E6 evidence promoted to production; E8–E14 levers; pure core `agent_core/generation/gennav_mrna_lambda.py`): λ-curve probe {0, 1, 2, 4, 8, 10, 20, 50} → band-gap-first interstitial reinforcement (refinement λ set, 16-raw budget, cycling guarantee) → per-profile matrix delivery (expression/stability/balanced, 5 each, D1 diversity ≥ 0.15). Every LinearDesign/CAI/LinearFold call is audited; the full trace is written to `_state_writeback["_gennav_trace"]`; an empty delivery is the dedicated `navigation_delivery_empty` degrade. On the navigation path RNARL/GEMORNA are not called and `design_tool` is ignored for generation; evaluation/scoring/ranking are unchanged.
+**GenNav-λ navigation (opt-in, v1.2.0; parameters v2.4, 2026-09-03)**: set `navigation=True` to replace the static LinearDesign λ grid with the deterministic, zero-LLM constraint navigation (pure core `agent_core/generation/gennav_mrna_lambda.py`): λ-curve probe {0, 1, 2, 4, 8, 10, 20, 50} (fetched concurrently, memory-adaptive for > 800 aa) → band-gap-first interstitial reinforcement over a densified 35-value lattice under a **budget-matched 35-raw cap** (the registered rule-arm generator spend) with cycling guarantee and early stop → synonymous-diversity expansion of a band's best unexpanded gear (restored E6 component: local codon substitutions, zero generation budget, measured through the audited CAI/fold calls) → per-profile matrix delivery (expression/stability/balanced, 5 each, CDS-level D1 diversity ≥ 0.03 with the UTR-dilution margin). Every constraint-band dimension with a registered counterpart uses the registered value (CAI floor 0.80 = CAI_MIN on all bands, CDS-level stem ≤ 30 bp = C7, GC window [0.30, 0.80] = C1 bounds, homopolymer < 14 = C2). Every LinearDesign/CAI/LinearFold call is audited; the full trace (probe, rounds, expansions, gaps, deliveries) is written to `_state_writeback["_gennav_trace"]`; an empty delivery is the dedicated `navigation_delivery_empty` degrade. On the navigation path RNARL/GEMORNA are not called and `design_tool` is ignored for generation; evaluation/scoring/ranking are unchanged.
 
 **Truncation support**: Set `truncate_n_terminal=N` to design only for the first N amino acids, or `truncate_c_terminal=N` for the last N. The original `protein_sequence` is preserved in the audit trail; the workflow saves and uses the truncated region.
 
@@ -497,15 +497,15 @@ The candidate list in `WorkflowResult.all_candidates` is sorted by ASF distance 
 
 The non-dominated candidate set is always returned in `WorkflowResult.pareto_frontier`. Frontier members are tagged by their leading dimension and capped at 10 members.
 
-**GenNav navigation mode (opt-in, v2.1.0)**
+**GenNav navigation mode (opt-in, production v4, 2026-09-04)**
 
-Setting `navigation: true` replaces the single static ODesign gear with the E14-validated generation-layer constraint navigation (pure-function core: `agent_core/generation/gennav_aptamer.py`):
+Setting `navigation: true` replaces the single static ODesign gear with the generation-layer constraint navigation (pure-function core: `agent_core/generation/gennav_aptamer.py`; the v2/v3/v4 repair rounds were measured on the Exp-29 campaign arc — see DECISIONS.md rows 29–30):
 
-1. **Lattice probe** — one ODesign sample at each of the 17 densified lattice lengths (25–80 nt, seed 42), each candidate folded with LinearFold (8015) and graded against the pre-registered constraint matrix v3 (per-profile length band, GC window, homopolymer cap, stem cap).
-2. **Guaranteed-repair reinforcement** — cycling allocation (one round per repairable delivery band before any band's second) of ODesign requests (≤ 6 samples, seeds 7/99) chosen by Laplace-smoothed per-length pass rates; mechanized band-gap-first proposals fill any remaining budget. Deterministic — zero LLM calls.
-3. **Per-profile delivery** — matrix-pass filter → fixed utility order (stem asc, |GC−0.55| asc) → D1 greedy top-5 (pairwise normalized edit distance ≥ 0.15) per profile (compact 25–34 / standard 40–55 / extended 61–80 nt). Shortfalls are explicit degrades.
+1. **Staged band-central probe** — one ODesign sample at each of the six lattice lengths nearest the three band centres (seed 42), folded with LinearFold (8015) and graded against the pre-registered constraint matrix v3 (per-profile length band, GC window, homopolymer cap, stem cap). The remaining lattice stays available as explore gears with band-mean imputed rates.
+2. **Adaptive reinforcement** — rounds of ODesign requests (≤ 6 samples, seeds 7/99; endgame closing rounds may commit the remainder up to 12) with the band served least-served-first (anti-starvation rotation) and the gear within the band chosen by a shrunken pass rate (k + m·band_rate)/(n + m) plus a UCB optimism bonus c/√(n+1) — unsampled gears compete with sampled ones on the same scale. Deterministic — zero LLM calls.
+3. **D1-aware stopping and delivery** — a band counts as complete only when the diversity-greedy delivery actually yields the full five (the matrix-pass count alone used to declare false completion); delivery = matrix-pass filter → fixed utility order (stem asc, |GC−0.55| asc) → D1 greedy top-5 (pairwise normalized edit distance ≥ 0.15) per profile (compact 25–34 / standard 40–55 / extended 61–80 nt). Shortfalls are explicit degrades.
 
-The generation budget is capped at 48 raw candidates per run; the loop stops early once every profile is deliverable. Every ODesign/LinearFold call goes through the capability layer (CapGate audit trail), and the full navigation trace (probe, rounds, gaps, deliveries) is written to `_state_writeback["_gennav_trace"]`. Delivered candidates then enter the standard two-stage evaluation and ASF ranking with `nav_bands` / `nav_gear` / `nav_matrix_pass` metadata. A run where no candidate passes any profile fails with the dedicated `navigation_delivery_empty` error (explicit degrade, not a silent empty result).
+The generation budget is capped at 48 raw candidates by default; `navigation_raw_budget` (6–200) overrides the cap for budget-constrained campaigns — on the 39-target expanded pool the navigator is significantly better under tight caps (10:2, McNemar P = 0.039 at cap 16) and the static-split parity regime begins near 24–32 (the two-sided regime characterization, `experiments/results/exp29_aptamer_campaign_arc/expanded_summary.json`). The loop stops early once every profile's delivery is full. Every ODesign/LinearFold call goes through the capability layer (CapGate audit trail), and the full navigation trace (probe, rounds, gaps, deliveries) is written to `_state_writeback["_gennav_trace"]`. Delivered candidates then enter the standard two-stage evaluation and ASF ranking with `nav_bands` / `nav_gear` / `nav_matrix_pass` metadata. A run where no candidate passes any profile fails with the dedicated `navigation_delivery_empty` error (explicit degrade, not a silent empty result).
 
 **QualityAgent** (advisory by default): produces a `QualityReport` for every run. The `QualityAgent` focuses on user-intent alignment and exploration strategy. Retry decisions are made by the `SpecialistAgent` based on the `QualityReport` and the `quality_auto_retry` setting; retry is triggered on hard failures (tool failures, empty candidates).
 
@@ -513,9 +513,10 @@ The generation budget is capped at 48 raw candidates per run; the loop stops ear
 > hotspot expansion / length-seed-sample adjustments) was removed on
 > 2026-08-18 after the coordination-gain narrative was falsified
 > (DECISIONS.md (a), (m)); the ASF/Pareto ranking shown above is unchanged.
-> The E6 mRNA-side λ-lattice navigation remains validated campaign machinery
-> (evidence under `experiments/results/`); the distilled production core is
-> the aptamer-side module above.
+> Both navigation modes are production paths: the aptamer-side module above
+> (v2.1.0) and the mRNA-side GenNav-λ (v1.2.0 wiring, parameters v2.4 —
+> budget-matched, registered-anchor bands, synonymous-diversity expander;
+> see §2).
 
 ---
 

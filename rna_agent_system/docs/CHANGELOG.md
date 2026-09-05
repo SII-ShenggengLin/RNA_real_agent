@@ -1,12 +1,29 @@
 # Change Log
 
+- **终稿一致性修正案（2026-09-05，用户指示）**：PA_028（全库唯一导航会话）在最终 v4 导航器下重测——表单生产入口 2/2 turns、4084 s（−35%）；Exp 24 审计切片外科重冻结（`exp24_refreeze_pa028.py`：10,331 事件、reject 709→654、其余 240 会话逐字节保留、新 SHA-256 清单与披露块——原分析器的静默轨迹断言在如今繁忙的审计轨迹上不可重申，故注册外科式替换）；Exp 25 PA_028 三臂串行重跑（并发同靶会互相风暴，改串行）→ 93/93 恒等性保持；fig2i/4f/4g/4h 重渲染；PAPER_DRAFT 审计构成与运行时数字全部更新（10,331/8,810/1,337/184；68.1 min）。
+- **Exp 29 / Fig 5e–5g + Fig 5h（第四次重置，§2.5 实验 3，2026-09-03→04）**：适配体战役弧全量重跑（`experiments/exp29_aptamer_campaign_arc.py`，预注册 docstring，RNA-BioBench-Aptamer 20 靶池，双臂 48-cap 预算匹配，零 LLM，100 组配对运行零预算违规，`--verify` 60 记录+判定字节级一致）。四段弧：seg1 松矩阵饱和（b:c=1:1，55/60 both-pass，导航臂 32.7/48 同交付 −32% 成本）；seg2 重锚定稀缺（10:9，静态失败 33%）；seg3 决定性面板 NO-GO（8:9）；seg4 确认（1:8，P=0.039 静态占优）；合并 9:17 P=0.17——**四次分配器版本（shipped/v2/v3/v3b）逐格等价，如实报告为扩散生成器上的诚实边界**。三轮生产修复（v2 收官轮+中心探针；v3 收缩估计+UCB+D1 感知停止判据；v3b 循环选带+UCB 选齿轮）各有单格级可归因修复但总量不动；机制诊断：+15pp/样本信号、ICC 0.30、同齿轮多样性等同——识别成本吃掉集中收益。**保留优势**：seg3 e2e 4:0（唯一端到端交付全来自导航臂）；seg1 −32% 同交付成本；预注册预算扫描（sweep 模式，2026-09-04）：cap24 导航 8 vs 静态 3（b:c=8:3）、cap32 8:8、cap48 持平——**紧预算下交付 2.7×、同交付省 25% raw**（Fig 5h 重定位为成本-交付曲线+成本节省 inset）。生产变更：`gennav_aptamer.py` v3b（central_probe_lengths/adaptive_round/delivery_gaps/shrunken_gear_rate，旧 E8-E14 函数逐字保留）；工作流新增 `navigation_raw_budget` 生产旋钮；测试 test_gennav_aptamer_v2.py 新增、全套 650 passed 1 skipped。机器注记：2026-09-04 恢复 3-GPU（bring-up 均衡分卡恢复），12 ODesign 副本分三卡 + taskset 钉核（GPU 组 0-41/42-83/84-127）+ OMP 封顶——每请求 ~90s 子进程加载的 CPU 瓶颈驯服，sweep 阶段 24 靶 ~90 分钟。**Exp 30（图 5h 原生产实跑设计）2026-09-04 用户指示停止**：pilot IFN-γ 3/3 全交付（47/48 提前停）+ Ang2/FGF2 记录 + mRNA 5 靶已确认清单（PTH/LEP/CSF3/THPO/PLAT）保留于 `exp30_production_navigation_live/`，后续按用户指示处置。论文重定位：§2.5 适配体段 + Fig 5 图例 (e)-(h) + FIGURE_PLAN 5e-h 全部改写为上述结果；Discussion 增加适用边界机制（生成器确定性 moderator：mRNA-λ 确定性格点 17:6 决定性胜 vs 扩散格点等价）。
 > **Scope**: interface changes and major workflow introductions.
-> **Last updated**: 2026-09-02
+> **Last updated**: 2026-09-03
 
 > **History policy**: this log records the current interface state and a
 > condensed register of the most recent change eras. Full narratives live in
 > git history and the audit-evidence directories cited per entry; the
 > experimental do-not-repeat register is [`DECISIONS.md`](DECISIONS.md).
+
+## 2026-09-03 — Exp 28：GenNav mRNA 主终点修复重跑（图 5b/5c）+ 生产导航 v2.4 + GPU 变更
+
+- **Exp 29 终版追加（2026-09-04→05，用户指示的 1+3 组合）**：v4 生产导航器（最少服务优先带轮转，修 seg4 带独占缺陷）→ seg3 改善至 **10:3 P=0.092（C24:A17，e2e 4:0）**，seg4 1:8 如实保留；**扩池 RNA-BioBench-Aptamer-Expanded**（12 复合物结构靶 RNA 链剥离 + 7 序列靶 ProteinX 一次折叠缓存）39 靶 × cap 16/20/24/32/48 双臂全档扫描：**cap16 10:2 P=0.0386 显著导航胜（适配体侧升格点）；cap32 10:22 P=0.050、cap48 12:30 P=0.0079 静态胜（双向披露）**；全曲线 nav [10,9,18,17,34] vs static [2,4,15,29,52]（`expanded_summary.json`）。工程：常驻 ODesign 服务（权重驻 GPU、22 s/请求 vs 90 s 子进程路径、输出逐字节一致，`start_resident.sh` 入库）、`navigation_raw_budget` 生产旋钮、ProteinX 折叠按靶缓存、两次关机保存恢复（RESTORE_NOTE）。fig5e/f/g/h 终版重渲染（QA 绿）+ §2.5/图例/FIGURE_PLAN/FACT_SHEET/DECISIONS(29,30)/AGENTS 全部落定。
+
+- **第四次重置第 2 个实验的修复轮（§2.5 实验 2 / paper registry E6，论文引用口径）**：Exp 27 测得 shipped 默认参数批量饥饿（0:24 反转）后，生产导航按注册锚修复——预算匹配（35 = 规则臂原始生成调用数，违规 0）、λ 网格加密至 35 值、带参数逐维对齐注册矩阵（CAI 0.80=CAI_MIN 全带生效、茎 ≤30bp=C7 新增 CDS 级维度、GC 窗 [0.30,0.80]=C1、同聚物 <14=C2）、恢复 legacy E6 组件 3 同义多样化扩展器（密度 0.15、每带 30 上限、零生成预算）、CDS 级 D1 门槛 0.03=P3 标定值、探测并行（>800aa 自适应 2 线程）。三轮 pilot 逐根因校准（D1 贪心/茎维/上限耗尽/稀释边际/stability CAI），护栏测试更新后 25+110 全绿。
+- **全量 20/20 零失败，`--verify` 逐字节一致**：**McNemar b:c = 17:6, p = 0.0347, n = 60——配对不一致检验显著偏向导航**；导航 35/60 JCD 格 vs 规则 24/60；18/20 靶有交付（6 靶 3/3）；**HER2（legacy 零可行档靶）交付 1 个导航专属格**；GFP 反向边界（E. coli 滑窗 GC，3 格）；e2e 联合项 0.45 < 0.8 与复合辅终点（Wilcoxon 0.73 NS）如实披露；零 LLM。图 5b/5c 重渲于 exp28 数据（脚本改指新目录），raster QA 全绿。墙钟两段：18 靶 12-LPT-worker ≈ 5.3 h + HER2/Spike 2-worker 8.9 h。
+- **中途事件**：2026-09-02 深夜 Spike LD 子进程并发内存下被 SIGKILL（returncode −9）→ RetryInstrument 90 s 单次重试 + 大蛋白探测降并发修复；**2026-09-03 机器关机迁移（GPU 3 卡 → 2 卡，可用仅 0 号，1 号他任务占用）**：bring-up 脚本 GPU 映射全部改钉 0（后续实验同此），exp28 关机保存点后无损续跑（RESTORE_NOTE 留档）。
+- 文档同步：PAPER_DRAFT（摘要/贡献 4/§2.5/讨论/Fig 5 图例 b–d/Methods/LLM 用量/数据可用性——描述最终修复系统与实测结果；Exp 27 降为内部边界登记）、PAPER_FACT_SHEET（Exp 28 小节 + 判读核对 + 关键数字 18；Exp 27 标注 superseded）、FIGURE_PLAN_V5 行 b/c/d、MANUSCRIPT E6 行、MODEL_API_USAGE Exp 28 行、AGENTS.md（含 GPU 现状）。
+
+## 2026-09-02 (b) — Exp 27：GenNav mRNA 主终点重跑（图 5b/5c）+ 数据集记录修正（修复前边界测量，内部登记）
+
+- **第四次重置第 2 个实验**（§2.5 实验 2 / paper registry E6）：E6 S2 双终点战役在现行生产平台重测——A 臂 = 注册静态配方池（Exp-26 仪器逐字复用，315 构造体）+ 规则交付；C 臂 = 生产 GenNav-λ 导航模式（`mrna_cds_design navigation=True`，deterministic zero-LLM）；JCD 判据 v8 与双终点从 git `e601913`/`b6dad08` 逐字移植（scope 修正用户拍板 2026-09-02：18 → **20 靶**（+OTC/PDGFB），n = 60）。pilot 2/2 + `--verify` 逐字节一致；**全量 20/20 零失败：主终点 NO-GO 且方向反转——b:c = 0:24（全部偏向规则臂），McNemar p = 1.19e-07，c_e2e_gene = 0.0 vs a_e2e_gene = 1.0**（legacy 30:0 偏向导航臂不复现：决定性优势属于驱动器层的 lattice+GEMORNA 兜底行+LLM 修复轮机制，均不存在于现行 shipped 模式；机制 = 批量饥饿——49/60 格交付 <5 条 CDS、0/60 e2e，而有交付处多样性机制通过（CAI 跨度 0.10–0.18））。辅终点败并披露（约束率 < 0.9、无靶 ≥3 档）；**零 LLM**（legacy 43）。并行提速修正（用户指示 2026-09-02，重启前登记）：8 个靶独占 worker（Exp-24 惯例），墙钟 ≈ 7.2 h（并发负载口径）。图 `fig5b_gennav_mcnemar.{pdf,png}`（配对 dumbbell + 计数 + 置换零分布 inset，Robin EDF 4c 惯例）+ `fig5c_delivery_mosaic.{pdf,png}`（20×3 配对结果 mosaic + gene-e2e 列）；palette rev 7、6 pt 纯黑、绝对 mm、1200 dpi；确定性 raster QA 全绿（精确画布、零边缘墨、纯调色板；画布溢出断言拦下统计块超宽与图例行超宽两次）。
+- **数据集记录修正**（用户指示"有误的信息要及时修改"，2026-09-02）：`RNA-BioBench-FullLength-mRNA` 的 manifest 与 `sequences/` 陈旧（列 Factor_VIII/Zika_E、无 OTC/PDGFB），与全部驱动实际读取的 `targets/*.json`（= 现行 20 靶 18+OTC+PDGFB）不一致——manifest targets 列表改正 + 注记、sequences/ 补 OTC.fa/PDGFB.fa 删两个陈旧 fasta、benchmarks README 靶表与总表对齐（含图号列按 FIGURE_PLAN_V5 重定位、PA 行改 31 会话）。
+- 文档同步：PAPER_DRAFT（摘要/贡献 4/§2.5/讨论/Fig 5 图例 b–d/Methods 统计/LLM 用量/数据可用性——全部改基到重测的反转结论，适配体侧标注"待其自身重跑"）、PAPER_FACT_SHEET（Exp 27 小节 + 判读核对 + 关键数字 18 改基；legacy E6 小节标 superseded）、FIGURE_PLAN_V5 行 b/c/d、MANUSCRIPT E6 行、MODEL_API_USAGE Exp 27 行、AGENTS.md。
 
 ## 2026-09-02 — AGENTS.md 压缩（96 KB → 24.6 KB，用户指示，doc-only）
 

@@ -1,0 +1,114 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 24,
+    "nav_raw_spent_mean": 24.0,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "cap": 24,
+  "delivered_cells": {
+    "A": 3,
+    "C": 9
+  },
+  "delivered_fraction": {
+    "A": 0.0833,
+    "C": 0.25
+  },
+  "e2e_targets": {
+    "A": 0,
+    "C": 0
+  },
+  "lever": "budget sweep, cap 24 (static equal split 8/8/8)",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 9,
+    "c_rule_only": 3,
+    "n_discordant": 12,
+    "p_exact": 0.14599609375,
+    "p_permutation_1e4": 0.1448
+  },
+  "n_cells": 36,
+  "n_targets": 12,
+  "pair_outcomes": {
+    "both": 0,
+    "nav": 9,
+    "none": 24,
+    "rule": 3
+  },
+  "per_target": {
+    "BSA": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Concanavalin_A": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Ferritin": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Lysozyme": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "MBP": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Myoglobin": {
+      "A": 0,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Pepsin": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "RNase_A": {
+      "A": 0,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "SARS-CoV-2_Nucleocapsid": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Streptavidin": {
+      "A": 0,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "TNF_alpha": {
+      "A": 0,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "VEGF": {
+      "A": 1,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    }
+  },
+  "segment": "sweep_cap24",
+  "targets_missing_boundary": []
+}

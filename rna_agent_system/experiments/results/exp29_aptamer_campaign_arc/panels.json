@@ -1,0 +1,130 @@
+{
+  "rule": "rank by static-arm delivered cells under v3 in seg2 (ascending, most delivery-scarce first; ties by dataset manifest order); panel D = first 12 (decisive), panel C = complement 8 (confirmation)",
+  "seg2_static_cells": {
+    "BSA": {
+      "target_id": "BSA",
+      "static_cells_seg2": 1,
+      "nav_cells_seg2": 0
+    },
+    "Carbonic_anhydrase_II": {
+      "target_id": "Carbonic_anhydrase_II",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 3
+    },
+    "Chymotrypsinogen": {
+      "target_id": "Chymotrypsinogen",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 3
+    },
+    "Concanavalin_A": {
+      "target_id": "Concanavalin_A",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 3
+    },
+    "Cytochrome_c": {
+      "target_id": "Cytochrome_c",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 3
+    },
+    "Ferritin": {
+      "target_id": "Ferritin",
+      "static_cells_seg2": 0,
+      "nav_cells_seg2": 0
+    },
+    "GFP": {
+      "target_id": "GFP",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 2
+    },
+    "Lysozyme": {
+      "target_id": "Lysozyme",
+      "static_cells_seg2": 1,
+      "nav_cells_seg2": 1
+    },
+    "MBP": {
+      "target_id": "MBP",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 0
+    },
+    "Myoglobin": {
+      "target_id": "Myoglobin",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 1
+    },
+    "Papain": {
+      "target_id": "Papain",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 3
+    },
+    "Pepsin": {
+      "target_id": "Pepsin",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 2
+    },
+    "RNase_A": {
+      "target_id": "RNase_A",
+      "static_cells_seg2": 1,
+      "nav_cells_seg2": 2
+    },
+    "SARS-CoV-2_Nucleocapsid": {
+      "target_id": "SARS-CoV-2_Nucleocapsid",
+      "static_cells_seg2": 1,
+      "nav_cells_seg2": 3
+    },
+    "Streptavidin": {
+      "target_id": "Streptavidin",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 2
+    },
+    "Subtilisin": {
+      "target_id": "Subtilisin",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 2
+    },
+    "TNF_alpha": {
+      "target_id": "TNF_alpha",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 3
+    },
+    "Thrombin": {
+      "target_id": "Thrombin",
+      "static_cells_seg2": 3,
+      "nav_cells_seg2": 2
+    },
+    "Trypsin": {
+      "target_id": "Trypsin",
+      "static_cells_seg2": 2,
+      "nav_cells_seg2": 3
+    },
+    "VEGF": {
+      "target_id": "VEGF",
+      "static_cells_seg2": 1,
+      "nav_cells_seg2": 3
+    }
+  },
+  "panel_D_decisive": [
+    "Ferritin",
+    "BSA",
+    "Lysozyme",
+    "RNase_A",
+    "SARS-CoV-2_Nucleocapsid",
+    "VEGF",
+    "Concanavalin_A",
+    "MBP",
+    "Myoglobin",
+    "Pepsin",
+    "Streptavidin",
+    "TNF_alpha"
+  ],
+  "panel_C_confirmation": [
+    "Trypsin",
+    "Carbonic_anhydrase_II",
+    "Chymotrypsinogen",
+    "Cytochrome_c",
+    "GFP",
+    "Papain",
+    "Subtilisin",
+    "Thrombin"
+  ],
+  "selected_at": "2026-09-04T03:33:54"
+}

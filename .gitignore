@@ -70,3 +70,4 @@ rna_agent_system/get-docker.sh
 rna_agent_system/**/__pycache__/
 rna_agent_system/**/*.pyc
 rna_agent_system/**/.pytest_cache/
+rna_agent_system/microservices/odesign_service/resident_outputs/

@@ -1,0 +1,276 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 48,
+    "nav_raw_spent_mean": 47.69,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "cap": 48,
+  "delivered_cells": {
+    "A": 52,
+    "C": 34
+  },
+  "delivered_fraction": {
+    "A": 0.4444,
+    "C": 0.2906
+  },
+  "e2e_targets": {
+    "A": 8,
+    "C": 4
+  },
+  "lever": "budget sweep, cap 48 (the registered cap, 16/16/16)",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 12,
+    "c_rule_only": 30,
+    "n_discordant": 42,
+    "p_exact": 0.007915897334896727,
+    "p_permutation_1e4": 0.009
+  },
+  "n_cells": 117,
+  "n_targets": 39,
+  "pair_outcomes": {
+    "both": 22,
+    "nav": 12,
+    "none": 53,
+    "rule": 30
+  },
+  "per_target": {
+    "Angiopoietin_2": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Autotaxin": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "BSA": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Carbonic_anhydrase_II": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Chymotrypsinogen": {
+      "A": 2,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    },
+    "Concanavalin_A": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Cytochrome_c": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "FGF2": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Factor_IXa": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Factor_Xa": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Ferritin": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "GFP": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "GRK2": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "HIV1_RT": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "IFN_gamma": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "IL_17A": {
+      "A": 1,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "IgE_Fc": {
+      "A": 3,
+      "C": 0,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Influenza_H3N2_HA": {
+      "A": 2,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Lysozyme": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "MBP": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Myoglobin": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "NF_kB": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "P._falciparum_LDH": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "P._vivax_LDH": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "PDGF_BB": {
+      "A": 0,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "PSMA": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Papain": {
+      "A": 3,
+      "C": 0,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Pepsin": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "RNase_A": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "SARS-CoV-2_Nucleocapsid": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "SARS-CoV-2_RBD": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Streptavidin": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Subtilisin": {
+      "A": 3,
+      "C": 1,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "TNF_alpha": {
+      "A": 1,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    },
+    "Thrombin": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Transferrin_receptor_1": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Trypsin": {
+      "A": 2,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "VEGF": {
+      "A": 1,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Von_Willebrand_factor": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    }
+  },
+  "segment": "sweep_cap48",
+  "targets_missing_boundary": []
+}

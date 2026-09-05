@@ -1,0 +1,120 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 48,
+    "nav_raw_spent_mean": 47.0,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "delivered_cells": {
+    "A": 17,
+    "C": 18
+  },
+  "delivered_fraction": {
+    "A": 0.4722,
+    "C": 0.5
+  },
+  "e2e_targets": {
+    "A": 0,
+    "C": 1
+  },
+  "go_rule": {
+    "b": 10,
+    "c": 9,
+    "p_exact": 1.0,
+    "rule": "exact McNemar p < 0.05 AND b > c (navigation-only > rule-only)",
+    "verdict": "NO-GO"
+  },
+  "lever": "+ guaranteed-repair allocation (production mode verbatim)",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 10,
+    "c_rule_only": 9,
+    "n_discordant": 19,
+    "p_exact": 1.0,
+    "p_permutation_1e4": 1.0
+  },
+  "n_cells": 36,
+  "n_targets": 12,
+  "pair_outcomes": {
+    "both": 8,
+    "nav": 10,
+    "none": 9,
+    "rule": 9
+  },
+  "per_target": {
+    "BSA": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Concanavalin_A": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Ferritin": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Lysozyme": {
+      "A": 1,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "MBP": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Myoglobin": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Pepsin": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "RNase_A": {
+      "A": 1,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "SARS-CoV-2_Nucleocapsid": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Streptavidin": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "TNF_alpha": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "VEGF": {
+      "A": 1,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    }
+  },
+  "segment": "seg3_decisive",
+  "targets_missing_boundary": []
+}

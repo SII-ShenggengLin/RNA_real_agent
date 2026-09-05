@@ -87,6 +87,15 @@ def _build_registry(cai_mode: str = "normal", mfe_mode: str = "normal") -> dict[
         lam = _decode_lambda(args["filepath"])
         if cai_mode == "low":
             return {"cai_score": round(0.50 + 0.001 * lam, 4)}
+        if cai_mode == "expression_probe_dip":
+            # v2 gap scenario: every probe λ underperforms CAI (0.73 < the
+            # 0.80 floor — matrix membership is per-candidate, the λ region is
+            # only an allocation hint); interstitial refinements restore it
+            # (0.85), so the guaranteed-repair path fills the CAI bands from
+            # the refinement lattice.
+            if lam in set(MrnaNavConfig().probe_lambdas):
+                return {"cai_score": 0.73}
+            return {"cai_score": 0.85}
         return {"cai_score": round(0.832 + 0.003 * lam, 4)}
 
     def _fold(args: dict) -> dict:
@@ -140,6 +149,11 @@ def _run(caps: dict[str, _StubCap], **inp_kwargs):
 
 
 def test_navigation_early_stop_full_delivery():
+    # v2 (2026-09-02 repair): with the CAI floor anchored at the registered
+    # 0.80, the stub's probe curve already fills every band — the registered
+    # early-stop semantics now stop at the probe itself (zero reinforcement
+    # rounds, budget saved); the guaranteed-repair path is pinned separately
+    # below (``test_navigation_guarantee_rounds_repair_gap``).
     caps = _build_registry()
     result = _run(caps, navigation=True, design_tool="all")
 
@@ -147,16 +161,16 @@ def test_navigation_early_stop_full_delivery():
     assert result.errors == []
     trace = result._state_writeback["_gennav_trace"]
     assert trace["protocol"] == "gennav_lambda_production_v1"
-    assert trace["raw_spent"] == len(CONFIG.probe_lambdas) + 1  # probe + one guarantee round
-    assert len(trace["rounds"]) == 1 and trace["rounds"][0]["kind"] == "guarantee"
+    assert trace["raw_spent"] == len(CONFIG.probe_lambdas)  # probe only
+    assert trace["rounds"] == []
     assert trace["raw_spent"] <= CONFIG.raw_budget
-    assert trace["pool_size"] == len(CONFIG.probe_lambdas) + 1
+    assert trace["pool_size"] == len(CONFIG.probe_lambdas)
     for prof in CONFIG.profile_order:
         d = trace["deliveries"][prof]
         assert len(d["ids"]) == CONFIG.delivery_size
         assert d["degraded"] is False
     # every delivered candidate carries navigation metadata + bands
-    assert len(result.all_candidates) >= 9
+    assert len(result.all_candidates) >= CONFIG.delivery_size
     for cand in result.all_candidates:
         assert cand.metadata["nav_bands"], cand.source
         assert cand.metadata["nav_matrix_pass"]
@@ -164,9 +178,31 @@ def test_navigation_early_stop_full_delivery():
     # audited LinearDesign calls: one per probed λ, no RNARL/GEMORNA on this path
     ld = caps["design_mrna_cds_with_lineardesign"]
     assert len(ld.calls) == trace["raw_spent"]
-    assert {float(c["lambda_value"]) for c in ld.calls} == set(CONFIG.probe_lambdas) | {12.0}
+    assert {float(c["lambda_value"]) for c in ld.calls} == set(CONFIG.probe_lambdas)
     assert caps["design_mrna_cds_with_rnarl"].calls == []
     assert caps["design_mrna_cds_with_gemorna"].calls == []
+
+
+def test_navigation_guarantee_rounds_repair_gap():
+    # v2 gap scenario: every expression-region probe λ fails the CAI floor;
+    # the cycling guaranteed-repair allocation fills the band from the
+    # smallest unsampled expression-region refinements, then stops early.
+    caps = _build_registry(cai_mode="expression_probe_dip")
+    result = _run(caps, navigation=True)
+
+    assert result.success is True
+    trace = result._state_writeback["_gennav_trace"]
+    assert trace["rounds"], "the gap must trigger guaranteed-repair rounds"
+    assert all(r["kind"] == "guarantee" for r in trace["rounds"])
+    round_lams = {float(r["lambda"]) for r in trace["rounds"]}
+    assert round_lams <= set(CONFIG.refinement_lambdas)  # interstitial only
+    expected = set(CONFIG.probe_lambdas) | round_lams
+    assert trace["raw_spent"] == len(expected)
+    ld = caps["design_mrna_cds_with_lineardesign"]
+    assert {float(c["lambda_value"]) for c in ld.calls} == expected
+    for prof in ("expression", "balanced"):   # the CAI-floored bands repair
+        d = trace["deliveries"][prof]
+        assert len(d["ids"]) == CONFIG.delivery_size and d["degraded"] is False
 
 
 def test_navigation_pareto_annotation_without_changing_order():

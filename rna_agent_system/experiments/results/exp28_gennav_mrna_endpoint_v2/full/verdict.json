@@ -1,0 +1,58 @@
+{
+  "a_e2e_gene": 1,
+  "budget_matching": {
+    "nav_cap": 35,
+    "nav_raw_spent_max": 35,
+    "nav_raw_spent_mean": 24.55,
+    "rule_raw_spend": 35,
+    "violations": 0
+  },
+  "c_e2e_gene": 0.45,
+  "constraint_rate_C_ge_0.9": true,
+  "endpoint1_jcd_mcnemar": false,
+  "endpoint2_composite_wilcoxon": false,
+  "endpoint2_not_passed_disclosed": false,
+  "go_no_go": "NO-GO",
+  "mcnemar_C_vs_A": {
+    "b": 17,
+    "c": 6,
+    "p": 0.03468966484069824
+  },
+  "n_pairs": 60,
+  "n_targets": 20,
+  "permutation_null": {
+    "draws": 10000,
+    "n_discordant": 23,
+    "null_b_histogram": {
+      "0": 0,
+      "1": 0,
+      "10": 1401,
+      "11": 1551,
+      "12": 1660,
+      "13": 1344,
+      "14": 993,
+      "15": 600,
+      "16": 288,
+      "17": 126,
+      "18": 34,
+      "19": 14,
+      "2": 0,
+      "20": 2,
+      "21": 0,
+      "22": 0,
+      "23": 0,
+      "3": 2,
+      "4": 12,
+      "5": 26,
+      "6": 115,
+      "7": 281,
+      "8": 585,
+      "9": 966
+    },
+    "null_b_mean": 11.5248,
+    "observed_b": 17,
+    "seed": 0
+  },
+  "quality_bundle": false,
+  "wilcoxon_C_vs_A_p": 0.7308624557799387
+}

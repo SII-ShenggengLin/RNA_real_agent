@@ -16,6 +16,8 @@ from __future__ import annotations
 
 import json
 import logging
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from typing import Any, Callable, Literal, Optional
 
@@ -31,6 +33,9 @@ from agent_core.sequence_utils import (
 )
 from agent_core.constants.species import DEFAULT_CAI_SPECIES, DEFAULT_RNARL_MODEL_TYPE, RNARLModelType, format_cai_species_aliases, format_rnarl_model_types
 from agent_core.generation.gennav_mrna_lambda import (
+    codon_synonyms,
+    longest_stem_bp,
+    synonymous_diversify,
     MrnaNavConfig,
     deliver_profile,
     evaluate_matrix,
@@ -38,6 +43,7 @@ from agent_core.generation.gennav_mrna_lambda import (
     guarantee_round,
     max_homopolymer_run,
     mechanized_proposals,
+    utility_key,
     profile_gaps,
 )
 from agent_core.workflow_models import Candidate, ToolCallRecord, WorkflowResult, sort_candidates_by_score
@@ -552,32 +558,38 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         guaranteed_bands: set[str] = set()
         records_by_lam: dict[float, list[ToolCallRecord]] = {}
         fold_cache: dict[str, Optional[float]] = {}
+        struct_cache: dict[str, str] = {}
         cai_cache: dict[str, Optional[float]] = {}
         gear_lam: float = 0.0
+        nav_lock = threading.Lock()
 
-        def _mfe_per_nt(seq: str) -> Optional[float]:
+        def _mfe_per_nt(seq: str, lam: Optional[float] = None) -> Optional[float]:
+            """LinearFold MFE/nt for one CDS; records attribute to *lam*
+            (``gear_lam`` fallback keeps the sequential reinforcement path)."""
             if seq in fold_cache:
                 return fold_cache[seq]
             fp = save_sequence(seq, prefix="gennav_mrna_fold")
             res = self._nav_invoke(
                 "predict_rna_secondary_structure_with_linearfold",
                 {"filepath": fp},
-                records_by_lam.setdefault(gear_lam, []),
+                records_by_lam.setdefault(gear_lam if lam is None else lam, []),
                 step_name="gennav_linearfold",
             )
             mfe = _pick_float(res.output, "mfe") if res.success else None
             value = (mfe / len(seq)) if mfe is not None else None
             fold_cache[seq] = value
+            if res.success:
+                struct_cache[seq] = str(res.output.get("structure", ""))
             return value
 
-        def _cai(seq: str) -> Optional[float]:
+        def _cai(seq: str, lam: Optional[float] = None) -> Optional[float]:
             if seq in cai_cache:
                 return cai_cache[seq]
             fp = save_sequence(seq, prefix="gennav_mrna_cai")
             res = self._nav_invoke(
                 "compute_cai_for_cds_sequence",
                 {"filepath": fp, "species": inp.cai_species},
-                records_by_lam.setdefault(gear_lam, []),
+                records_by_lam.setdefault(gear_lam if lam is None else lam, []),
                 step_name="gennav_cai",
             )
             value = _pick_float(res.output, "cai_score") if res.success else None
@@ -608,6 +620,8 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             homo = max_homopolymer_run(seq)
             cai = _cai(seq)
             mfe_per_nt = _mfe_per_nt(seq)
+            stem = (longest_stem_bp(struct_cache[seq])
+                    if seq in struct_cache else None)
             pool.append({
                 "id": f"nav:lambda{lam:g}",
                 "sequence": seq,
@@ -616,14 +630,116 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
                 "mfe_per_nt": round(mfe_per_nt, 6) if mfe_per_nt is not None else None,
                 "gc": round(gc, 4),
                 "max_homopolymer_run": homo,
-                "matrix_pass": evaluate_matrix(cai, mfe_per_nt, gc, homo, config),
+                "stem_bp": stem,
+                "matrix_pass": evaluate_matrix(cai, mfe_per_nt, gc, homo,
+                                               config, stem=stem),
             })
 
-        # ── Phase 1: λ-curve probe (E6 lattice) ──
+        def _probe_call(lam: float) -> Optional[dict[str, Any]]:
+            """One LinearDesign gear call at λ (probe phase) — no shared-state
+            mutation, so probe λs can be fetched concurrently; the caller
+            integrates the results in fixed λ order (deterministic pool).
+
+            ``gear_lam`` bookkeeping and the fold/CAI caches are guarded by
+            ``nav_lock`` (double fetches are harmless — both services are
+            deterministic — but concurrent dict writes are not."""
+            args: dict[str, Any] = {"filepath": protein_fp, "lambda_value": lam}
+            if ld_codon_table:
+                args["codon_usage_path"] = ld_codon_table
+            res = self._nav_invoke(
+                "design_mrna_cds_with_lineardesign", args, [],
+                step_name=f"gennav_lineardesign:lambda{lam:g}",
+            )
+            if not res.success:
+                return None
+            seq = str(res.output.get("generated_sequence", ""))
+            if not seq:
+                return None
+            gc = gc_fraction(seq)
+            homo = max_homopolymer_run(seq)
+            with nav_lock:
+                cai = _cai(seq)
+                mfe_per_nt = _mfe_per_nt(seq)
+            stem = (longest_stem_bp(struct_cache[seq])
+                    if seq in struct_cache else None)
+            return {
+                "id": f"nav:lambda{lam:g}",
+                "sequence": seq,
+                "gear": {"lambda": lam},
+                "cai": cai,
+                "mfe_per_nt": round(mfe_per_nt, 6) if mfe_per_nt is not None else None,
+                "gc": round(gc, 4),
+                "max_homopolymer_run": homo,
+                "stem_bp": stem,
+                "matrix_pass": evaluate_matrix(cai, mfe_per_nt, gc, homo,
+                                               config, stem=stem),
+            }
+
+        def _probe_call(lam: float) -> Optional[dict[str, Any]]:
+            """One LinearDesign gear call at λ (probe phase) — no shared-state
+            mutation, so probe λs can be fetched concurrently; the caller
+            integrates the results in fixed λ order (deterministic pool).
+
+            The CAI/fold measurement calls are serialized behind ``nav_lock``:
+            double fetches would be harmless (both services deterministic) but
+            concurrent dict writes are not; their records attribute to *lam*."""
+            args: dict[str, Any] = {"filepath": protein_fp, "lambda_value": lam}
+            if ld_codon_table:
+                args["codon_usage_path"] = ld_codon_table
+            res = self._nav_invoke(
+                "design_mrna_cds_with_lineardesign", args,
+                records_by_lam.setdefault(lam, []),
+                step_name=f"gennav_lineardesign:lambda{lam:g}",
+            )
+            if not res.success:
+                return None
+            seq = str(res.output.get("generated_sequence", ""))
+            if not seq:
+                return None
+            gc = gc_fraction(seq)
+            homo = max_homopolymer_run(seq)
+            with nav_lock:
+                cai = _cai(seq, lam)
+                mfe_per_nt = _mfe_per_nt(seq, lam)
+            stem = (longest_stem_bp(struct_cache[seq])
+                    if seq in struct_cache else None)
+            return {
+                "id": f"nav:lambda{lam:g}",
+                "sequence": seq,
+                "gear": {"lambda": lam},
+                "cai": cai,
+                "mfe_per_nt": round(mfe_per_nt, 6) if mfe_per_nt is not None else None,
+                "gc": round(gc, 4),
+                "max_homopolymer_run": homo,
+                "stem_bp": stem,
+                "matrix_pass": evaluate_matrix(cai, mfe_per_nt, gc, homo,
+                                               config, stem=stem),
+            }
+
+        # ── Phase 1: λ-curve probe (E6 lattice) — concurrent fetch over the
+        #    mutually independent probe λs, fixed-order integration (only the
+        #    reinforcement rounds depend on earlier results).  Concurrency is
+        #    memory-adaptive: LinearDesign RSS grows ~quadratically with
+        #    protein length (~7.5 GB at 500 aa), so big proteins probe with 2
+        #    workers (thread count affects scheduling only — the integration
+        #    order stays fixed and the pool is identical). ──
+        n_probe_workers = 2 if len(inp.protein_sequence) > 800 else \
+            len(config.probe_lambdas)
+        with ThreadPoolExecutor(max_workers=n_probe_workers) as ex:
+            probe_futures = {lam: ex.submit(_probe_call, lam)
+                             for lam in config.probe_lambdas}
         for lam in config.probe_lambdas:
             if raw_spent >= config.raw_budget:
                 break
-            _probe_or_reinforce(lam)
+            cand = probe_futures[lam].result()
+            raw_spent += 1
+            gears.append({"lambda": lam})
+            if cand is None:
+                continue
+            if cand["sequence"] in seen:
+                continue
+            seen.add(cand["sequence"])
+            pool.append(cand)
         _LOGGER.info(
             "gennav_mrna_probe_done lambdas=%d raw_spent=%d pool=%d",
             len(config.probe_lambdas), raw_spent, len(pool),
@@ -656,6 +772,92 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
                 kind, gear["lambda"], raw_spent,
             )
 
+        # ── Phase 2.5: diversity expansion (E6 component 3, restored) ──
+        # Same-λ-region designs are near-clones under the registered 2%
+        # floor, so a band can hold ≥ 5 matrix-passing candidates yet deliver
+        # < 5 post-D1 (measured by the v2 pilot).  Synonymous diversification
+        # of the band's best unexpanded gear restores batch volume WITHOUT
+        # spending LinearDesign budget — variants are local codon
+        # substitutions, measured through the audited CAI/fold calls and
+        # matrix-filtered like any pool entry.  Deterministic: fixed utility
+        # order, seeded per (λ, band).
+        expansions: list[dict[str, Any]] = []
+        variants_by_band: dict[str, int] = {p_: 0 for p_ in config.profile_order}
+        syn_table: Optional[dict[str, list[tuple[str, float]]]] = None
+        from agent_core.sequence_utils import (
+            _load_builtin_codon_tables, resolve_species_name)
+        tables = _load_builtin_codon_tables()
+        canonical = resolve_species_name(inp.cai_species)
+        if canonical in tables:
+            syn_table = codon_synonyms(tables[canonical])
+        if syn_table:
+            expanded_seeds: set[str] = set()
+            for prof in config.profile_order:
+                for _pass in range(6):  # bounded expansion passes per band
+                    d_try = deliver_profile(pool, prof, config)
+                    need = config.delivery_size - len(d_try["candidates"])
+                    if need <= 0:
+                        break
+                    seeds = [c for c in pool
+                             if c["matrix_pass"].get(prof)
+                             and c["id"] not in expanded_seeds]
+                    if not seeds:
+                        break
+                    seeds.sort(key=lambda c: utility_key(c, prof, config))
+                    seed = seeds[0]
+                    expanded_seeds.add(seed["id"])
+                    if variants_by_band[prof] >= config.expansion_variant_cap:
+                        break
+                    want = min(need * 5, config.expansion_variant_cap
+                               - variants_by_band[prof])
+                    variants = synonymous_diversify(
+                        seed["sequence"], syn_table, config.diversity_density,
+                        n=want,
+                        seed=int(seed["gear"]["lambda"] * 1000)
+                        + 7919 * config.profile_order.index(prof))
+                    n_added = 0
+                    for v_idx, var in enumerate(variants):
+                        if var in seen:
+                            continue
+                        gc_v = gc_fraction(var)
+                        homo_v = max_homopolymer_run(var)
+                        with nav_lock:
+                            cai_v = _cai(var)
+                            mfe_v = _mfe_per_nt(var)
+                        stem_v = (longest_stem_bp(struct_cache[var])
+                                  if var in struct_cache else None)
+                        matrix_v = evaluate_matrix(cai_v, mfe_v, gc_v, homo_v,
+                                                   config, stem=stem_v)
+                        entry = {
+                            "id": (f"nav:lambda{seed['gear']['lambda']:g}"
+                                   f":v{v_idx}"),
+                            "sequence": var,
+                            "gear": {"lambda": seed["gear"]["lambda"]},
+                            "cai": cai_v,
+                            "mfe_per_nt": (round(mfe_v, 6)
+                                           if mfe_v is not None else None),
+                            "gc": round(gc_v, 4),
+                            "max_homopolymer_run": homo_v,
+                            "stem_bp": stem_v,
+                            "matrix_pass": matrix_v,
+                        }
+                        seen.add(var)
+                        pool.append(entry)
+                        variants_by_band[prof] += 1
+                        if matrix_v.get(prof):
+                            n_added += 1
+                    expansions.append({
+                        "profile": prof,
+                        "seed_lambda": seed["gear"]["lambda"],
+                        "seed_id": seed["id"],
+                        "n_variants": len(variants),
+                        "n_passing_band": n_added,
+                    })
+                    _LOGGER.info(
+                        "gennav_mrna_expansion prof=%s seed_lambda=%s "
+                        "variants=%d passing=%d",
+                        prof, seed["gear"]["lambda"], len(variants), n_added)
+
         # ── Phase 3: per-profile mechanized delivery ──
         deliveries = {
             prof: deliver_profile(pool, prof, config)
@@ -665,6 +867,7 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
             "protocol": "gennav_lambda_production_v1",
             "raw_budget": config.raw_budget,
             "raw_spent": raw_spent,
+            "expansions": expansions,
             "probe": {"lambdas": list(config.probe_lambdas)},
             "rounds": rounds,
             "final_gaps": profile_gaps(pool, config),

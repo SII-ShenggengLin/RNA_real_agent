@@ -1,0 +1,9 @@
+{
+  "rna_sequence": "GCAGAUCUGAGCCUGGGAGCUCUCUGGC",
+  "smiles": "C1C(C(C(C(C1N)OC2C(C(C(C(O2)CN)O)O)N)OC3C(C(C(O3)CO)OC4C(C(C(C(O4)CN)O)O)N)O)O)N",
+  "secondary_structure": "(((((...((((....))))...)))))",
+  "scoring_tools": [
+    "rnasmol",
+    "gernabind"
+  ]
+}

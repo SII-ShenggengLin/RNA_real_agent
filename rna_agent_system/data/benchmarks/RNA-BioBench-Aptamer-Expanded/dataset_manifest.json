@@ -1,0 +1,39 @@
+{
+  "dataset_name": "RNA-BioBench-Aptamer-Expanded",
+  "schema_version": "1.0.0",
+  "description": "Expanded aptamer campaign pool (Exp 29 follow-up, user-approved 2026-09-04): 19 new targets on top of the frozen RNA-BioBench-Aptamer 20-pool — 12 docking-anchor complex proteins (protein chains retained, RNA/other chains stripped; registered preprocessing) + 7 anchor-set uniprot_fasta proteins (ProteinX structure prediction on first use). Provenance per target in its JSON. Frozen 20-pool stays untouched; this dataset is consumed via --pool expanded.",
+  "created_date": "2026-09-04",
+  "targets": [
+    "Angiopoietin_2",
+    "Autotaxin",
+    "FGF2",
+    "Factor_IXa",
+    "Factor_Xa",
+    "GRK2",
+    "HIV1_RT",
+    "IFN_gamma",
+    "IL_17A",
+    "IgE_Fc",
+    "Influenza_H3N2_HA",
+    "NF_kB",
+    "P._falciparum_LDH",
+    "P._vivax_LDH",
+    "PDGF_BB",
+    "PSMA",
+    "SARS-CoV-2_RBD",
+    "Transferrin_receptor_1",
+    "Von_Willebrand_factor"
+  ],
+  "target_count": 19,
+  "fields": [
+    "target_id",
+    "target_name",
+    "pdb_id",
+    "pdb_chain",
+    "protein_sequence",
+    "protein_length_aa",
+    "structure_path",
+    "provenance",
+    "source"
+  ]
+}

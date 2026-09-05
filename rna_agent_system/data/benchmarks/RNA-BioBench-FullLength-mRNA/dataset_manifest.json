@@ -1,14 +1,13 @@
 {
   "dataset_name": "RNA-BioBench-FullLength-mRNA",
   "schema_version": "1.1.0",
-  "description": "Benchmark dataset for full-length mRNA design (Type-I BMC) — expanded to 20 targets",
+  "description": "Benchmark dataset for full-length mRNA design (Type-I BMC) \u2014 expanded to 20 targets",
   "created_date": "2026-05-28",
   "targets": [
     "A1AT",
     "Albumin",
     "Beta_galactosidase",
     "EPO",
-    "Factor_VIII",
     "GFP",
     "Growth_hormone",
     "HER2",
@@ -19,11 +18,12 @@
     "Influenza_HA_H1N1",
     "Insulin",
     "Luciferase",
+    "OTC",
     "Ovalbumin",
+    "PDGFB",
     "RSV_F_protein",
     "SARS-CoV-2_Spike_WT",
-    "Transferrin",
-    "Zika_E_protein"
+    "Transferrin"
   ],
   "target_count": 20,
   "fields": [
@@ -37,5 +37,7 @@
     "expression_system",
     "expected_cds_length_nt",
     "paper_references"
-  ]
+  ],
+  "updated_date": "2026-09-02",
+  "revision_note": "Target list corrected to the operative set read by all experiment drivers (targets/*.json): Factor_VIII and Zika_E_protein (retired 2026-05-28: 2352/3420 aa exceed the CDS-length working line, no WT CDS anchors in the operative chain) were replaced by OTC and PDGFB. This manifest previously still listed the retired pair; sequences/ now mirrors targets/."
 }

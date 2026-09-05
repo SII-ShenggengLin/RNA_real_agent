@@ -18,8 +18,9 @@ the E6 U-score machinery was deleted per DECISIONS.md (n)):
   rather than re-sampling a gear.
 - delivery profiles (E6 semantics, CDS-level bands on platform metrics):
   ``expression`` (CAI-led), ``stability`` (structure-led), ``balanced``.
-  The CAI floor 0.85 is anchored to E6's A1AT λ-curve pass boundary
-  (λ=1 CAI 0.8377 failed, λ=2 CAI 0.8717 passed).
+  The CAI floor 0.80 is anchored to the registered constraint matrix
+  (CAI_MIN; v2 — the v1 default 0.85 structurally emptied the expression
+  band on CAI-ceiling targets, measured by the Exp-27 endpoint re-run).
 - λ-region affinity (allocation hint only; matrix membership is
   per-candidate): λ ≤ 2 repairs stability gaps (MFE-most-negative region),
   2 < λ < 8 repairs balanced gaps, λ ≥ 8 repairs expression gaps (CAI
@@ -41,32 +42,75 @@ from typing import Optional
 
 @dataclass(frozen=True)
 class MrnaNavConfig:
-    """λ gear lattice, constraint matrix and delivery rules of one run."""
+    """λ gear lattice, constraint matrix and delivery rules of one run.
+
+    v2 (2026-09-02 repair, user-directed; the Exp-27 endpoint re-run measured
+    the v1 defaults failing the registered mRNA endpoint 0:24 through batch
+    starvation — 49/60 profile cells delivered < 5 candidates): the raw budget
+    is budget-matched to the registered rule-arm static recipe (4 LinearDesign
+    λ + 1 RNARL + 30 GEMORNA = 35 raw generator calls), and the lattice is
+    densified to 35 distinct λ values so each budgeted call can land on its
+    own gear; the expression band's CAI floor is anchored to the registered
+    constraint matrix (CAI_MIN 0.80 — the v1 default 0.85 structurally emptied
+    the expression band on CAI-ceiling targets such as Insulin, whose designs
+    top out ≈ 0.84).
+    """
 
     profiles: dict[str, dict] = field(default_factory=lambda: {
         # profile   CAI floor  MFE/nt ≤   GC window     homo
-        # expression: CAI-led (E6 A1AT pass boundary ≈ 0.85)
-        "expression": {"cai_lo": 0.85, "mfe_per_nt_max": None,
-                       "gc_lo": 0.40, "gc_hi": 0.65, "homo": 10},
-        # stability: structure-led (more negative MFE per nt)
-        "stability": {"cai_lo": None, "mfe_per_nt_max": -0.25,
-                      "gc_lo": 0.40, "gc_hi": 0.65, "homo": 10},
+        # expression: CAI-led (CAI floor = registered CAI_MIN, v2 anchor)
+        # v2.2 anchors: every dimension with a registered counterpart uses
+        # the registered value — CAI floor 0.80 (CAI_MIN), stem 30 (C7),
+        # GC window [0.30, 0.80] (the C1 sliding bounds), homopolymer < 14
+        # (C2).  The v1 GC [0.40, 0.65] / homo < 10 defaults were stricter
+        # than the registered matrix and starved GC-poor genes.
+        "expression": {"cai_lo": 0.80, "mfe_per_nt_max": None,
+                       "gc_lo": 0.30, "gc_hi": 0.80, "homo": 14,
+                       "stem_max": 30},
+        # stability: structure-led (more negative MFE per nt).  v2.4: the
+        # registered CAI_MIN hard constraint applies to every registered
+        # delivery, structure-led bands included — a stability design below
+        # CAI 0.80 passes the CDS-level matrix yet fails the registered
+        # full-length matrix at composition (measured: EPO/GFP/GH stability
+        # deliveries failing CAI).
+        "stability": {"cai_lo": 0.80, "mfe_per_nt_max": -0.25,
+                      "gc_lo": 0.30, "gc_hi": 0.80, "homo": 14,
+                      "stem_max": 30},
         # balanced: both, relaxed
         "balanced": {"cai_lo": 0.80, "mfe_per_nt_max": -0.20,
-                     "gc_lo": 0.40, "gc_hi": 0.68, "homo": 10},
+                     "gc_lo": 0.30, "gc_hi": 0.80, "homo": 14,
+                     "stem_max": 30},
     })
     profile_order: tuple[str, ...] = ("expression", "stability", "balanced")
     delivery_size: int = 5
     # E6 λ-curve probe (feasibility); interstitial densification follows.
     probe_lambdas: tuple[float, ...] = (0.0, 1.0, 2.0, 4.0, 8.0, 10.0, 20.0, 50.0)
-    refinement_lambdas: tuple[float, ...] = (0.5, 1.5, 3.0, 6.0, 12.0, 15.0, 30.0, 40.0)
-    raw_budget: int = 16           # LinearDesign calls: 8 probe + ≤8 refinement
+    # v2 densified interstitial lattice — 27 values completing a 35-point grid
+    # (probe ∪ refinement), so the budget-matched 35-raw run can spend every
+    # call on a distinct gear.
+    refinement_lambdas: tuple[float, ...] = (
+        0.25, 0.5, 0.75, 1.25, 1.5, 1.75, 2.25, 2.5, 3.0, 3.5, 4.5, 5.0,
+        5.5, 6.0, 6.5, 7.0, 7.5, 9.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        17.0, 18.0, 30.0,
+    )
+    # Budget-matched to the rule arm's raw generation spend (v2; v1 = 16).
+    raw_budget: int = 35           # LinearDesign calls: 8 probe + ≤27 refinement
     guarantee_rate_min: float = 0.25
-    # Delivery-level within-batch diversity, domain-calibrated: CDS designs at
-    # adjacent λ are near-clones (edit distance 1–5% on the fresh-data IFN-γ
-    # run), unlike 25–80-nt aptamers; 0.05 on a ~500-nt CDS ≈ 25 nt of codon
-    # differences — proportionally the same floor as the aptamer-side 0.15.
-    d1_min_pairwise: float = 0.05
+    # Delivery-level within-batch diversity at CDS level: the legacy P3
+    # calibration value (3%) — the registered 2% gate applies to FULL-LENGTH
+    # sequences and the UTR presets dilute CDS-level distance by the CDS
+    # fraction (~0.80–0.90 measured), so 3% CDS-level ⇒ ≈ 2.4–2.7%
+    # full-length, clearing the gate with margin.  (v2.3's 2.5% landed at
+    # 1.95–2.0% full-length on short genes — measured, then restored to the
+    # tested value.)
+    d1_min_pairwise: float = 0.03
+    # v2.2 diversity expansion (E6 component 3, restored): synonymous
+    # diversification density (legacy P3 calibration 0.10, ×1.5 in v2.3 for
+    # the UTR dilution margin) and caps — same-λ-region designs are
+    # near-clones under the floor; variants are local codon substitutions
+    # (no LinearDesign budget), measured through the audited CAI/fold calls.
+    diversity_density: float = 0.15
+    expansion_variant_cap: int = 30   # per profile band
     utility_gc_target: float = 0.50  # utility tie-break key: |GC − 0.50| asc
 
     def region_of(self, lam: float) -> Optional[str]:
@@ -103,22 +147,50 @@ def gc_fraction(seq: str) -> float:
     return sum(1 for c in seq if c in "GC") / len(seq)
 
 
+def longest_stem_bp(structure: str) -> int:
+    """Longest continuous stem (bp) from a dot-bracket string (the registered
+    C7 semantics, ported verbatim): a stem's half is a contiguous run of
+    '(' or ')'; the stem length in base pairs equals that run length."""
+    best = 0
+    run = 0
+    for ch in structure:
+        if ch in "(":
+            run += 1
+            best = max(best, run)
+        else:
+            run = 0
+    run = 0
+    for ch in structure:
+        if ch in ")":
+            run += 1
+            best = max(best, run)
+        else:
+            run = 0
+    return best
+
+
 def evaluate_matrix(
     cai: Optional[float],
     mfe_per_nt: Optional[float],
     gc: float,
     homo: int,
     config: MrnaNavConfig,
+    stem: Optional[int] = None,
 ) -> dict[str, bool]:
     """Per-profile constraint-matrix verdict for one λ candidate.
 
     A dimension measured as ``None`` (oracle blocked / service failure)
-    evaluates as *failed* in every band that requires it — evaluation
-    failure never buys matrix membership.
-    """
+    evaluates as *failed`` in every band that requires it — evaluation
+    failure never buys matrix membership.  ``stem`` (longest CDS-internal
+    stem, bp) is the registered C7 dimension evaluated at CDS level
+    (v2.1: the v2 pilot measured delivered designs violating the
+    full-length stem gate — the matrix now respects the constraint it can
+    measure)."""
     verdict: dict[str, bool] = {}
     for prof, spec in config.profiles.items():
         ok = spec["gc_lo"] <= gc <= spec["gc_hi"] and homo < spec["homo"]
+        if ok and spec.get("stem_max") is not None:
+            ok = stem is not None and stem <= spec["stem_max"]
         if ok and spec["cai_lo"] is not None:
             ok = cai is not None and cai >= spec["cai_lo"]
         if ok and spec["mfe_per_nt_max"] is not None:
@@ -126,6 +198,69 @@ def evaluate_matrix(
         verdict[prof] = ok
     return verdict
 
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Diversity expansion (E6 component 3, restored verbatim from the tested
+# driver-level machinery — git 1b45138~1 gennav_core.synonymous_diversify)
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def codon_synonyms(codon_fractions: dict[str, Any]) -> dict[str, list[tuple[str, float]]]:
+    """aa → [(codon, fraction)] from a builtin Kazusa table dict."""
+    groups: dict[str, list[tuple[str, float]]] = {}
+    for codon, info in codon_fractions.items():
+        if not info.get("fraction"):
+            continue
+        groups.setdefault(str(info.get("aa", "")), []).append(
+            (codon, float(info["fraction"])))
+    return groups
+
+
+def _codon_aa(codon: str, syn: dict[str, list[tuple[str, float]]]) -> Optional[str]:
+    for aa, cf in syn.items():
+        for c, _f in cf:
+            if c == codon:
+                return aa
+    return None
+
+
+def synonymous_diversify(cds: str, syn: dict[str, list[tuple[str, float]]],
+                         density: float, n: int = 6, seed: int = 0) -> list[str]:
+    """Whole-CDS synonymous diversification (AUG/stop/single-synonym sites
+    excluded; P3-calibrated density 0.10): each variant replaces a ``density``
+    fraction of variable sites with fraction-weighted random synonymous
+    codons; returns n seeded, reproducible variants.  ``weights`` kept out of
+    the signature — generation does not consume CAI weights (legacy parity)."""
+    import random as _random
+    positions = []
+    for i in range(0, len(cds) - 2, 3):
+        codon = cds[i:i + 3]
+        if codon in ("AUG", "UAA", "UAG", "UGA"):
+            continue
+        aa = _codon_aa(codon, syn)
+        if aa is None or aa == "*":
+            continue
+        syns = [c for c, _ in syn[aa] if c != codon]
+        if len(syns) <= 1:
+            continue
+        positions.append((i, aa, codon, syn[aa]))
+    n_mutate = max(1, round(len(positions) * density))
+    rng = _random.Random(seed)
+    out: list[str] = []
+    seen = {cds}
+    while len(out) < n and len(seen) < 1 + n * 10:
+        seq_list = list(cds)
+        for i, aa, orig, syns in rng.sample(positions, min(n_mutate, len(positions))):
+            cands = [c for c, _ in syns if c != orig]
+            seq_list[i:i + 3] = list(
+                rng.choices(cands, weights=[f for c, f in syns if c != orig])[0])
+        new = "".join(seq_list)
+        if new in seen:
+            continue
+        seen.add(new)
+        out.append(new)
+    return out
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Navigation allocation (E12/E14 levers on the λ axis)

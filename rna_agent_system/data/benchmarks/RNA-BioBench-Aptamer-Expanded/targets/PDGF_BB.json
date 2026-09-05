@@ -1,0 +1,11 @@
+{
+  "target_id": "PDGF_BB",
+  "target_name": "PDGF-BB",
+  "pdb_id": null,
+  "pdb_chain": null,
+  "protein_sequence": "SLGSLTIAEPAMIAECKTRTEVFEISRRLIDRTNANFLVWPPCVEVQRCSGCCNNRNVQCRPTQVQLRPVQVRKIEIVRKKPIFKKATVTLEDHLACKCETVAAARPVT",
+  "protein_length_aa": 109,
+  "structure_path": null,
+  "provenance": "e1 anchor set v3 uniprot_fasta target (anchor fasta); structure predicted by the production ProteinX path on first use",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 entries"
+}

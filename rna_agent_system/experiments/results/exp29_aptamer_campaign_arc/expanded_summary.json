@@ -1,0 +1,120 @@
+{
+  "caps": {
+    "16": {
+      "n_targets": 39,
+      "delivered": {
+        "A": 2,
+        "C": 10
+      },
+      "mcnemar": {
+        "b_nav_only": 10,
+        "c_rule_only": 2,
+        "n_discordant": 12,
+        "p_exact": 0.03857421875,
+        "p_permutation_1e4": 0.0398
+      },
+      "e2e_targets": {
+        "A": 0,
+        "C": 0
+      },
+      "e2e_paired": {
+        "nav_only": 0,
+        "static_only": 0,
+        "p_sign": 1.0
+      }
+    },
+    "20": {
+      "n_targets": 39,
+      "delivered": {
+        "A": 4,
+        "C": 9
+      },
+      "mcnemar": {
+        "b_nav_only": 9,
+        "c_rule_only": 4,
+        "n_discordant": 13,
+        "p_exact": 0.266845703125,
+        "p_permutation_1e4": 0.2664
+      },
+      "e2e_targets": {
+        "A": 0,
+        "C": 0
+      },
+      "e2e_paired": {
+        "nav_only": 0,
+        "static_only": 0,
+        "p_sign": 1.0
+      }
+    },
+    "24": {
+      "n_targets": 39,
+      "delivered": {
+        "A": 15,
+        "C": 18
+      },
+      "mcnemar": {
+        "b_nav_only": 13,
+        "c_rule_only": 10,
+        "n_discordant": 23,
+        "p_exact": 0.6776394844055176,
+        "p_permutation_1e4": 0.6789
+      },
+      "e2e_targets": {
+        "A": 0,
+        "C": 0
+      },
+      "e2e_paired": {
+        "nav_only": 0,
+        "static_only": 0,
+        "p_sign": 1.0
+      }
+    },
+    "32": {
+      "n_targets": 39,
+      "delivered": {
+        "A": 29,
+        "C": 17
+      },
+      "mcnemar": {
+        "b_nav_only": 10,
+        "c_rule_only": 22,
+        "n_discordant": 32,
+        "p_exact": 0.050102459732443094,
+        "p_permutation_1e4": 0.0534
+      },
+      "e2e_targets": {
+        "A": 1,
+        "C": 2
+      },
+      "e2e_paired": {
+        "nav_only": 2,
+        "static_only": 1,
+        "p_sign": 1.0
+      }
+    },
+    "48": {
+      "n_targets": 39,
+      "delivered": {
+        "A": 52,
+        "C": 34
+      },
+      "mcnemar": {
+        "b_nav_only": 12,
+        "c_rule_only": 30,
+        "n_discordant": 42,
+        "p_exact": 0.007915897334896727,
+        "p_permutation_1e4": 0.009
+      },
+      "e2e_targets": {
+        "A": 8,
+        "C": 4
+      },
+      "e2e_paired": {
+        "nav_only": 2,
+        "static_only": 6,
+        "p_sign": 0.2890625
+      }
+    }
+  },
+  "created": "2026-09-05T06:27:41"
+}

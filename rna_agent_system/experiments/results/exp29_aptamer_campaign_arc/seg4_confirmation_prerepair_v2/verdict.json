@@ -1,0 +1,89 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 48,
+    "nav_raw_spent_mean": 46.5,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "delivered_cells": {
+    "A": 23,
+    "C": 18
+  },
+  "delivered_fraction": {
+    "A": 0.9583,
+    "C": 0.75
+  },
+  "e2e_targets": {
+    "A": 7,
+    "C": 5
+  },
+  "lever": "confirmation on the scarcity complement (production mode)",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 1,
+    "c_rule_only": 6,
+    "n_discordant": 7,
+    "p_exact": 0.125,
+    "p_permutation_1e4": 0.1242
+  },
+  "n_cells": 24,
+  "n_targets": 8,
+  "pair_outcomes": {
+    "both": 17,
+    "nav": 1,
+    "none": 0,
+    "rule": 6
+  },
+  "per_target": {
+    "Carbonic_anhydrase_II": {
+      "A": 3,
+      "C": 0,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Chymotrypsinogen": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Cytochrome_c": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "GFP": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Papain": {
+      "A": 3,
+      "C": 1,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Subtilisin": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Thrombin": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Trypsin": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    }
+  },
+  "segment": "seg4_confirmation",
+  "targets_missing_boundary": []
+}

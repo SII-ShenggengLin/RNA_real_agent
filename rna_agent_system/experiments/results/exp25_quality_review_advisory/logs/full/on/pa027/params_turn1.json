@@ -1,0 +1,11 @@
+{
+  "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1mbo.pdb",
+  "chain_id": "A",
+  "aptamer_length": 30,
+  "n_odesign_samples": 5,
+  "reference_point": {
+    "egarps_component": 0.5,
+    "rhofold_component": 0.5,
+    "iptm_component": 0.5
+  }
+}

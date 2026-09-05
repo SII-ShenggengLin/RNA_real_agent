@@ -1,0 +1,161 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 48,
+    "nav_raw_spent_mean": 46.8,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "delivered_cells": {
+    "A": 40,
+    "C": 41
+  },
+  "delivered_fraction": {
+    "A": 0.6667,
+    "C": 0.6833
+  },
+  "e2e_targets": {
+    "A": 7,
+    "C": 9
+  },
+  "lever": "re-anchored matrix v3; densified lattice; S1 priors",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 10,
+    "c_rule_only": 9,
+    "n_discordant": 19,
+    "p_exact": 1.0,
+    "p_permutation_1e4": 1.0
+  },
+  "n_cells": 60,
+  "n_targets": 20,
+  "pair_outcomes": {
+    "both": 31,
+    "nav": 10,
+    "none": 10,
+    "rule": 9
+  },
+  "per_target": {
+    "BSA": {
+      "A": 1,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Carbonic_anhydrase_II": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Chymotrypsinogen": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Concanavalin_A": {
+      "A": 2,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    },
+    "Cytochrome_c": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Ferritin": {
+      "A": 0,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "GFP": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Lysozyme": {
+      "A": 1,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "MBP": {
+      "A": 2,
+      "C": 0,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Myoglobin": {
+      "A": 2,
+      "C": 1,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Papain": {
+      "A": 3,
+      "C": 3,
+      "e2e_A": true,
+      "e2e_C": true
+    },
+    "Pepsin": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "RNase_A": {
+      "A": 1,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "SARS-CoV-2_Nucleocapsid": {
+      "A": 1,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    },
+    "Streptavidin": {
+      "A": 2,
+      "C": 2,
+      "e2e_A": false,
+      "e2e_C": false
+    },
+    "Subtilisin": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "TNF_alpha": {
+      "A": 2,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    },
+    "Thrombin": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Trypsin": {
+      "A": 2,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    },
+    "VEGF": {
+      "A": 1,
+      "C": 3,
+      "e2e_A": false,
+      "e2e_C": true
+    }
+  },
+  "segment": "seg2_reanchor",
+  "targets_missing_boundary": []
+}

@@ -70,6 +70,22 @@ class AptamerNavConfig:
     sampled_depth: int = 8  # a gear counts as sampled only at >= this depth
     d1_min_pairwise: float = 0.15   # delivery-level within-batch diversity
     utility_gc_target: float = 0.55  # utility key: |GC − 0.55| ascending
+    # ── production v2 repair (2026-09-04; defects root-caused on the Exp-29
+    #    decisive panel — see the module addendum below) ──
+    closing_round_n_max: int = 12  # endgame round may commit the remainder
+    # ── production v3 repair (2026-09-04, same day; the measured signal
+    #    behind it: a single probe sample carries +15pp of true rate
+    #    information, per-target length rates spread >= 0.4 in half the
+    #    (target, band) groups — but raw 1-2-sample Laplace ranks are
+    #    noise-dominated, so v2 allocated ~randomly and tied the static
+    #    grid's centre lottery) ──
+    rate_shrinkage_m: float = 2.5  # gear rate = (k + m*band_rate)/(n + m)
+    ucb_c: float = 0.15            # optimism bonus ucb_c/sqrt(n_gear + 1)
+    delivery_margin: int = 0       # gap = delivery_size + margin - D1
+                                    # survivors (the v1/v2 matrix-pass count
+                                    # declared false completion when D1
+                                    # attrition left 4 of 5; margin 0 is
+                                    # exact — 5 survivors IS full delivery)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -326,6 +342,197 @@ def guarantee_round(
     if guaranteed_bands:
         return guarantee_round(pool, gears, raw_spent, config, prior=prior, guaranteed_bands=set())
     return None, guaranteed_bands
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Production v2 repair (2026-09-04) — two root-caused defects of the shipped
+# navigation loop, measured on the Exp-29 decisive panel:
+#
+#   defect 1 (exploration tax): the shipped mode probes ALL 17 lattice
+#   lengths before any reinforcement — 35% of the 48 budget spent learning
+#   what a sensible default order already knows (band-interior lengths pass
+#   more often).  Fix: a staged central probe (the lattice lengths nearest
+#   each band centre first) plus a unified explore/exploit round in which
+#   unexplored gears compete for budget using band-mean imputed rates.
+#
+#   defect 2 (endgame starvation): with all bands gapped, guarantee rounds
+#   cycle near-uniformly and leave bands at 4-of-5 delivered with the
+#   budget fully spent (8 of 9 measured losses were exactly one candidate
+#   short, diversity healthy).  Fix: a closing round — once less than a
+#   full standard round remains (or cycling and the mechanized pass find
+#   nothing), the remainder is committed in one round of up to
+#   ``closing_round_n_max`` samples to the gear with the highest expected
+#   marginal repair, with no rate floor (unspent budget has no value).
+#
+# The E8–E14-era functions above (mechanized_proposals, guarantee_round)
+# are left byte-identical: they remain the registered semantics of the
+# era-reconstruction arms and of the pinned unit tests.
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def central_probe_lengths(config: AptamerNavConfig) -> tuple[int, ...]:
+    """The staged probe order (defect-1 fix): the two lattice lengths
+    nearest each band's centre, band order, innermost first."""
+    out: list[int] = []
+    for prof in config.profile_order:
+        spec = config.profiles[prof]
+        centre = (spec["lo"] + spec["hi"]) / 2.0
+        in_band = [L for L in config.lattice_lengths
+                   if spec["lo"] <= L <= spec["hi"]]
+        in_band.sort(key=lambda L: (abs(L - centre), L))
+        out.extend(in_band[:2])
+    return tuple(out)
+
+
+def band_mean_rate(pool: list[dict], profile: str,
+                   config: AptamerNavConfig) -> float:
+    """Laplace-smoothed any-band pass rate pooled over *profile*'s band:
+    (k + 1) / (n + 2).  Used to impute a rate for unexplored gears so that
+    exploration competes with exploitation on the same scale."""
+    spec = config.profiles[profile]
+    n = k = 0
+    for cand in pool:
+        if spec["lo"] <= cand["gear"]["aptamer_length"] <= spec["hi"]:
+            n += 1
+            k += 1 if any(cand["matrix_pass"].values()) else 0
+    return (k + 1) / (n + 2)
+
+
+def delivery_gaps(pool: list[dict], config: AptamerNavConfig) -> dict[str, int]:
+    """Delivery-aware gaps (v3): ``delivery_size + margin`` minus the D1
+    greedy survivors of the actual delivery rule.  The v1/v2 matrix-pass
+    gap declared false completion whenever D1 attrition left 4 of 5 —
+    measured as a direct cause of one-short cells on the decisive panel."""
+    gaps: dict[str, int] = {}
+    for profile in config.profile_order:
+        survivors = len(deliver_profile(pool, profile, config)["ids"])
+        gaps[profile] = max(
+            0, config.delivery_size + config.delivery_margin - survivors)
+    return gaps
+
+
+def shrunken_gear_rate(observed: list[dict], band_rate: float,
+                       config: AptamerNavConfig) -> float:
+    """Shrinkage gear rate (v3): (k + m*band_rate) / (n + m) — a 1-sample
+    estimate no longer outranks a 7-sample estimate on noise."""
+    n = len(observed)
+    k = sum(1 for c in observed if any(c["matrix_pass"].values()))
+    m = config.rate_shrinkage_m
+    return (k + m * band_rate) / (n + m)
+
+
+def adaptive_round(
+    pool: list[dict],
+    gears: list[dict],
+    raw_spent: int,
+    config: AptamerNavConfig,
+    prior: Optional[list[dict]] = None,
+    guaranteed_bands: Optional[set[str]] = None,
+) -> tuple[Optional[dict], str, set[str]]:
+    """One production-v3 navigation round.  Deterministic, zero LLM.
+
+    v2 defects fixed here (2026-09-04, both measured on the decisive
+    panel): the matrix-pass gap ignored D1 attrition (false completion —
+    now ``delivery_gaps`` with a safety margin), and reinforcement ranked
+    gears by raw 1-2-sample Laplace rates, which is noise-dominated
+    (allocation degenerated to the static grid's expectation).  v3 scores
+    every candidate gear by a shrunken rate plus a UCB optimism bonus
+    (ucb_c/sqrt(n+1)) — unsampled gears get explored exactly while their
+    uncertainty could change the decision, then the budget concentrates on
+    the measured-best gears; endgame remains the floor-free closing round.
+
+    Returns (gear | None, kind, guaranteed_bands) with kind one of
+    'guarantee' | 'mechanized' | 'closing' | '' (no proposal).
+    """
+    remaining = config.raw_budget_per_target - raw_spent
+    if remaining <= 0:
+        return None, "", (guaranteed_bands or set())
+    gaps = delivery_gaps(pool, config)
+    if all(g == 0 for g in gaps.values()):
+        return None, "", (guaranteed_bands or set())
+
+    # candidate gears scored by shrunken rate + UCB optimism bonus
+    def _candidates(n_round: int) -> list[dict]:
+        out: list[dict] = []
+        for profile in config.profile_order:
+            spec = config.profiles[profile]
+            band_rate = band_mean_rate(pool, profile, config)
+            for length in config.lattice_lengths:
+                if not (spec["lo"] <= length <= spec["hi"]):
+                    continue
+                for seed in config.request_seeds:
+                    depth = sum(
+                        g["n_samples"] for g in gears
+                        if g["aptamer_length"] == length and g["seed"] == seed
+                    )
+                    if depth >= config.sampled_depth:
+                        continue
+                    observed = [
+                        c for c in pool
+                        if c["gear"]["aptamer_length"] == length
+                        and c["gear"]["seed"] == seed
+                    ]
+                    n_obs = len(observed)
+                    if n_obs:
+                        rate = shrunken_gear_rate(observed, band_rate, config)
+                    else:
+                        rate = band_rate
+                    index = rate + config.ucb_c / ((n_obs + 1) ** 0.5)
+                    expected_new = index * n_round
+                    score = min(gaps[profile], expected_new)
+                    if score > 0:
+                        out.append({
+                            "length": length, "seed": seed,
+                            "n_samples": n_round, "band": profile,
+                            "rate": round(rate, 3),
+                            "ucb_index": round(index, 3),
+                            "repair_score": round(score, 2),
+                            "expected_passers": round(expected_new, 2),
+                        })
+        out.sort(key=lambda g: (-g["repair_score"], -g["ucb_index"],
+                                g["length"], g["seed"]))
+        return out
+
+    # endgame first: the remaining budget is below one closing round —
+    # commit the whole remainder in a single gap-weighted, floor-free
+    # closing round (split rounds starve the largest gap)
+    if remaining <= config.closing_round_n_max:
+        proposals = _candidates(min(config.closing_round_n_max, remaining))
+        if proposals:
+            best = proposals[0]
+            best["n_samples"] = remaining
+            return best, "closing", guaranteed_bands
+        return None, "", guaranteed_bands
+
+    # standard rounds: anti-starvation band cycling (each gapped band
+    # receives its first allocation before any band a second — the E14
+    # semantics) with the gear WITHIN the band chosen by the v3 UCB index.
+    # The shipped guarantee_round chose that gear by raw 1-2-sample Laplace
+    # — noise-dominated, which degenerated allocation to the static grid's
+    # expectation (measured on the decisive panel: guarantee rounds made
+    # every decision and the repaired estimators never fired).
+    proposals = _candidates(min(config.request_n_max, remaining))
+    if not proposals:
+        return None, "", guaranteed_bands
+    # band choice: least-served-first among gapped bands (stateless — the
+    # per-band sample count derives from the gears table; deterministic and
+    # resume-safe).  Pure score ranking lets repair-score ties (every band
+    # capped at the same gap) collapse onto one lucky gear and starve the
+    # rest — the seg4 regression: bands at 4-of-5 with 26 samples in a
+    # sibling band and 8 in theirs).
+    def _served(profile: str) -> int:
+        spec = config.profiles[profile]
+        return sum(g["n_samples"] for g in gears
+                   if spec["lo"] <= g["aptamer_length"] <= spec["hi"])
+    gapped = [p for p in config.profile_order if gaps[p] > 0]
+    if gapped:
+        band = min(gapped, key=lambda prof: (_served(prof),
+                                             config.profile_order.index(prof)))
+        in_band = [p for p in proposals if p["band"] == band]
+        if in_band:
+            guaranteed_bands = (guaranteed_bands or set()) | {band}
+            return in_band[0], "guarantee", guaranteed_bands
+    return proposals[0], "mechanized", guaranteed_bands
 
 
 # ─────────────────────────────────────────────────────────────────────────────

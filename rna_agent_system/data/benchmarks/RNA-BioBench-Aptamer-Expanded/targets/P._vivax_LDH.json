@@ -1,0 +1,11 @@
+{
+  "target_id": "P._vivax_LDH",
+  "target_name": "P. vivax LDH",
+  "pdb_id": "5HRU",
+  "pdb_chain": "A",
+  "protein_sequence": "KPKIVLVGSGMIGGVMATLIVQKNLGDVVMFDVVKNMPQGKALDTSHSNVMAYSNCKVTGSNSYDDLKGADVVIVTAGFTKAPRDDLLPLNNKIMIEIGGHIKNLCPNAFIIVVTNPVDVMVQLLFEHSGVPKNKIIGLGGVLDTSRLKYYISQKLNVCPRDVNALIVGAHGNKMVLLKRYITVGGIPLQEFINNKKITDEEVEGIFDRTVNTALEIVNLLASPYVAPAAAIIEMAESYLKDIKKVLVCSTLLEGQYGHSNIFGGTPLVIGGTGVEQVIELQLNAEEKTKFDEAVAETKRMKALI",
+  "protein_length_aa": 305,
+  "structure_path": "data/benchmarks/RNA-BioBench-Aptamer-Expanded/structures/5HRU_protein.pdb",
+  "provenance": "docking anchor v3 (X-ray 1.71 A; Choi SJ, et al. Sci Rep 2016;6:34998. doi:10.1038/srep34998); protein chains ['A'] retained, other chains stripped (registered preprocessing, the BSA-CB-repair convention)",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 docking_anchors"
+}

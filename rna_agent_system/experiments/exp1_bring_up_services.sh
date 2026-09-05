@@ -1,6 +1,7 @@
 #!/bin/bash
 # GPU-pinned bring-up of all 21 platform microservices for the experiment
-# programme (usable GPUs: 0, 1, 2 — GPU 3 is occupied by another user).
+# programme (2026-09-04 machine change: usable GPUs 0/1/2 again, more CPU —
+# balanced 3-GPU map restored; GPU 3 occupied by other tasks).
 #
 # Services not listed under a GPU are CPU-only. Already-healthy services are
 # skipped, so this script is safe to re-run. Platform workflows' pre-flight

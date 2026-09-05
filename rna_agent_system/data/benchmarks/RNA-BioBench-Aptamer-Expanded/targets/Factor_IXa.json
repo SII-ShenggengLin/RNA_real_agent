@@ -1,0 +1,11 @@
+{
+  "target_id": "Factor_IXa",
+  "target_name": "Factor IXa",
+  "pdb_id": "8EPK",
+  "pdb_chain": "A",
+  "protein_sequence": "LDVTCNIKNGRCEQFCKNSADNKVVCSCTEGYRLAENQKSCEPAVPFPCGRVSVSVVGGEDAKPGQFPWQVVLNGKVDAFCGGSIVNEKWIVTAAHCVEGVKITVVAGEHNIEETEHTEQKRNVIRIIPHHNYNINKYNHDIALLELDEPLVLNSYVTPICIADKEYTFLKFGSGYVSGWGRVFHKGRSALVLQYLRVPLVDRATCLRSTKFTIYNNMFCAGHEGGDSCQGDAGGPHVTEVEGTSFLTGIISWGEECAKGKYGIYTKVSRYVNWIKEKTKLT",
+  "protein_length_aa": 282,
+  "structure_path": "data/benchmarks/RNA-BioBench-Aptamer-Expanded/structures/8EPK_protein.pdb",
+  "provenance": "docking anchor v3 (X-ray 2.65 A; Kolyadko et al. PNAS 2024, 121:e2401136121 (PMC11260126)); protein chains ['A', 'B'] retained, other chains stripped (registered preprocessing, the BSA-CB-repair convention)",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 docking_anchors"
+}

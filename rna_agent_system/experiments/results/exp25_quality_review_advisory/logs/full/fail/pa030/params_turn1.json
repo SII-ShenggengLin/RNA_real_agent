@@ -1,0 +1,7 @@
+{
+  "target_mrna_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/10_aso_target_screening/inputs/test_mrna.fa",
+  "aso_length": 20,
+  "window_step": 1,
+  "top_n_windows": 10,
+  "binding_evaluation_tool": "rnaup"
+}

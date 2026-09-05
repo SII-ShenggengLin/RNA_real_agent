@@ -1,6 +1,6 @@
 # RNA-BioBench: Benchmark Datasets for RNADesignAgent
 
-> **Last updated**: 2026-07-17
+> **Last updated**: 2026-09-02 (FullLength-mRNA target list corrected to the operative set; paper-section column re-based to FIGURE_PLAN_V5 lettering)
 
 This directory contains all benchmark datasets used in the RNADesignAgent paper experiments.
 For the experiment plan that consumes these datasets, see [`../../docs/MANUSCRIPT.md`](../../docs/MANUSCRIPT.md).
@@ -9,10 +9,10 @@ For the experiment plan that consumes these datasets, see [`../../docs/MANUSCRIP
 
 | Dataset | Purpose | Size | Paper Section |
 |---------|---------|------|---------------|
-| `RNA-BioBench-FullLength-mRNA` | Type-I BMC core experiments (full-length mRNA design) | **20 targets** | Fig 3 |
-| `RNA-BioBench-Aptamer` | Type-II BMC core experiments (RNA aptamer design) | **20 targets** (2 with known aptamers: Thrombin/TBA, SARS-CoV-2 N) | Fig 4 |
-| `RNA-BioBench-Platform` | Biological output quality across 11 workflows | **210 tasks** | Fig 2 |
-| `RNA-BioBench-ProcessAware` | Cross-LLM process-metric behavior analysis | **26 tasks** (PA_001–PA_026) × 6 LLM backends | Fig 6 |
+| `RNA-BioBench-FullLength-mRNA` | Full-length mRNA design (CDS + full-length construct campaigns) | **20 targets** (16 human + 2 *E. coli*: GFP, β-galactosidase) | Fig 2b/c, Fig 4d, Fig 5a–c |
+| `RNA-BioBench-Aptamer` | RNA aptamer design (oracle-power panels + GenNav campaigns) | **20 targets** (2 with known aptamers: Thrombin/TBA, SARS-CoV-2 N) | Fig 3a–d,h, Fig 5e–h |
+| `RNA-BioBench-Platform` | Biological output quality across 11 workflows | **210 tasks** | Fig 2a/2h/2i, Fig 4f |
+| `RNA-BioBench-ProcessAware` | Process-level CLI regressions through the user form entries | **31 sessions** (PA_006–PA_036) | Fig 4g/4h |
 
 ## Directory Structure
 
@@ -29,11 +29,11 @@ benchmarks/
 │   │   ├── Luciferase.json                 # UniProt P08659, 550 aa
 │   │   ├── HIV-1_Env_gp120.json            # UniProt P04578, 856 aa
 │   │   ├── RSV_F_protein.json              # UniProt P03420, 574 aa
-│   │   ├── Zika_E_protein.json             # UniProt Q32ZE1, 3419 aa
+│   │   ├── OTC.json                        # UniProt P00480, 354 aa
+│   │   ├── PDGFB.json                      # UniProt P01127, 241 aa
 │   │   ├── HPV16_L1.json                   # UniProt P03101, 505 aa
 │   │   ├── Insulin.json                    # UniProt P01308, 110 aa
-│   │   ├── Factor_VIII.json                # UniProt P00451, 2351 aa
-│   │   ├── IFN_alpha_2a.json               # UniProt P01563, 188 aa
+│   │   ├── IFN_alpha_2a.json               # UniProt P01562, 188 aa
 │   │   ├── IL-2.json                       # UniProt P60568, 153 aa
 │   │   ├── HER2.json                       # UniProt P04626, 1255 aa
 │   │   ├── A1AT.json                       # UniProt P01009, 418 aa

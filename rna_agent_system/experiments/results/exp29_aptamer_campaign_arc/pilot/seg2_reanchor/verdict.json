@@ -1,0 +1,53 @@
+{
+  "budget": {
+    "nav_raw_spent_max": 48,
+    "nav_raw_spent_mean": 48.0,
+    "static_raw_spend": 48,
+    "violations": 0
+  },
+  "delivered_cells": {
+    "A": 6,
+    "C": 4
+  },
+  "delivered_fraction": {
+    "A": 1.0,
+    "C": 0.6667
+  },
+  "e2e_targets": {
+    "A": 2,
+    "C": 0
+  },
+  "lever": "re-anchored matrix v3; densified lattice; S1 priors",
+  "llm_calls": 0,
+  "mcnemar": {
+    "b_nav_only": 0,
+    "c_rule_only": 2,
+    "n_discordant": 2,
+    "p_exact": 0.5,
+    "p_permutation_1e4": 0.5053
+  },
+  "n_cells": 6,
+  "n_targets": 2,
+  "pair_outcomes": {
+    "both": 4,
+    "nav": 0,
+    "none": 0,
+    "rule": 2
+  },
+  "per_target": {
+    "GFP": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    },
+    "Thrombin": {
+      "A": 3,
+      "C": 2,
+      "e2e_A": true,
+      "e2e_C": false
+    }
+  },
+  "segment": "seg2_reanchor",
+  "targets_missing_boundary": []
+}

@@ -1,0 +1,30 @@
+{
+  "a_e2e_gene": 1,
+  "c_e2e_gene": 1,
+  "constraint_rate_C_ge_0.9": true,
+  "endpoint1_jcd_mcnemar": false,
+  "endpoint2_composite_wilcoxon": false,
+  "endpoint2_not_passed_disclosed": false,
+  "go_no_go": "NO-GO",
+  "mcnemar_C_vs_A": {
+    "b": 2,
+    "c": 0,
+    "p": 0.5
+  },
+  "n_pairs": 6,
+  "n_targets": 2,
+  "permutation_null": {
+    "draws": 10000,
+    "n_discordant": 2,
+    "null_b_histogram": {
+      "0": 2566,
+      "1": 4947,
+      "2": 2487
+    },
+    "null_b_mean": 0.9921,
+    "observed_b": 2,
+    "seed": 0
+  },
+  "quality_bundle": false,
+  "wilcoxon_C_vs_A_p": 0.25
+}

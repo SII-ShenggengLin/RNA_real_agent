@@ -1,0 +1,54 @@
+{
+  "purpose": "Exp 30 mRNA-arm new targets (form-entry navigation campaigns)",
+  "created": "2026-09-03T16:43:04",
+  "status": "USER_CONFIRMED",
+  "selection_rule": "human therapeutic proteins absent from the FullLength-mRNA 20-target pool, the aptamer 20-target pool and the aptamer anchor 6; length spread for lattice diversity; single UniProt isoform; below the LinearDesign memory guard",
+  "targets": [
+    {
+      "gene": "PTH",
+      "display": "Parathyroid hormone",
+      "uniprot": "P01270",
+      "protein_sequence": "MIPAKDMAKVMIVMLAICFLTKSDGKSVKKRSVSEIQLMHNLGKHLNSMERVEWLRKKLQDVHNFVALGAPLAPRDAGSQRPRKKEDNVLVESHEKSLGEADKADVNVLTKAKSQ",
+      "protein_length_aa": 115,
+      "species_for_codon_optimization": "Homo sapiens",
+      "rationale": "very-short extreme (preproprotein)"
+    },
+    {
+      "gene": "LEP",
+      "display": "Leptin",
+      "uniprot": "P41159",
+      "protein_sequence": "MHWGTLCGFLWLWPYLFYVQAVPIQKVQDDTKTLIKTIVTRINDISHTQSVSSKQKVTGLDFIPGLHPILTLSKMDQTLAVYQQILTSMPSRNVIQISNDLENLRDLLHVLAFSKSCHLPWASGLETLDSLGGVLEASGYSTEVVALSRLQGSLQDMLWQLDLSPGC",
+      "protein_length_aa": 167,
+      "species_for_codon_optimization": "Homo sapiens",
+      "rationale": "short cytokine-class therapeutic"
+    },
+    {
+      "gene": "CSF3",
+      "display": "G-CSF",
+      "uniprot": "P09905",
+      "protein_sequence": "VHLTGEEKSGLTALWAKVNVEEIGGEALGRLLVVYPWTQRFFEHFGDLSTADAVMKNPKVKKHGQKVLASFGEGLKHLDNLKGTFATLSELHCDKLHVDPENFRLLGNVLVVVLARHFGKEFTPELQTAYQKVVAGVANALAHKYH",
+      "protein_length_aa": 146,
+      "species_for_codon_optimization": "Homo sapiens",
+      "rationale": "established biologic (filgrastim class)"
+    },
+    {
+      "gene": "THPO",
+      "display": "Thrombopoietin",
+      "uniprot": "P40225",
+      "protein_sequence": "MELTELLLVVMLLLTARLTLSSPAPPACDLRVLSKLLRDSHVLHSRLSQCPEVHPLPTPVLLPAVDFSLGEWKTQMEETKAQDILGAVTLLLEGVMAARGQLGPTCLSSLLGQLSGQVRLLLGALQSLLGTQLPPQGRTTAHKDPNAIFLSFQHLLRGKVRFLMLVGGSTLCVRRAPPTTAVPSRTSLVLTLNELPNRTSGLLETNFTASARTTGSGLLKWQQGFRAKIPGLLNQTSRSLDQIPGYLNRIHELLNGTRGLFPGPSRRTLGAPDISSGTSDTGSLPPNLQPGYSPSPTHPPTGQYTLFPLPPTLPTPVVQLHPLLPDPSAPTPTPTSPLLNTSYTHSQNLSQEG",
+      "protein_length_aa": 353,
+      "species_for_codon_optimization": "Homo sapiens",
+      "rationale": "mid-length growth factor"
+    },
+    {
+      "gene": "PLAT",
+      "display": "tPA",
+      "uniprot": "P00750",
+      "protein_sequence": "MDAMKRGLCCVLLLCGAVFVSPSQEIHARFRRGARSYQVICRDEKTQMIYQQHQSWLRPVLRSNRVEYCWCNSGRAQCHSVPVKSCSEPRCFNGGTCQQALYFSDFVCQCPEGFAGKCCEIDTRATCYEDQGISYRGTWSTAESGAECTNWNSSALAQKPYSGRRPDAIRLGLGNHNYCRNPDRDSKPWCYVFKAGKYSSEFCSTPACSEGNSDCYFGNGSAYRGTHSLTESGASCLPWNSMILIGKVYTAQNPSAQALGLGKHNYCRNPDGDAKPWCHVLKNRRLTWEYCDVPSCSTCGLRQYSQPQFRIKGGLFADIASHPWQAAIFAKHRRSPGERFLCGGILISSCWILSAAHCFQERFPPHHLTVILGRTYRVVPGEEEQKFEVEKYIVHKEFDDDTYDNDIALLQLKSDSSRCAQESSVVRTVCLPPADLQLPDWTECELSGYGKHEALSPFYSERLKEAHVRLYPSSRCTSQHLLNRTVTDNMLCAGDTRSGGPQANLHDACQGDSGGPLVCLNDGRMTLVGIISWGLGCGQKDVPGVYTKVTNYLDWIRDNMRP",
+      "protein_length_aa": 562,
+      "species_for_codon_optimization": "Homo sapiens",
+      "rationale": "large serine protease"
+    }
+  ],
+  "confirmed_at": "2026-09-03 user message (PTH/LEP/CSF3/THPO/PLAT approved)"
+}

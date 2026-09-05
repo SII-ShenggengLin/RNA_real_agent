@@ -1,0 +1,11 @@
+{
+  "target_id": "IFN_gamma",
+  "target_name": "IFN-gamma",
+  "pdb_id": null,
+  "pdb_chain": null,
+  "protein_sequence": "MKYTSYILAFQLCIVLGSLGCYCQDPYVKEAENLKKYFNAGHSDVADNGTLFLGILKNWKEESDRKIMQSQIVSFYFKLFKNFKDDQSIQKSVETIKEDMNVKFFNSNKKKRDDFEKLTNYSVTDLNVQRKAIHELIQVMAELSPAAKTGKRKRSQMLFRGRRASQ",
+  "protein_length_aa": 166,
+  "structure_path": null,
+  "provenance": "e1 anchor set v3 uniprot_fasta target (anchor fasta); structure predicted by the production ProteinX path on first use",
+  "source": "external_anchors/aptamers e1_anchor_set_v3 entries"
+}
