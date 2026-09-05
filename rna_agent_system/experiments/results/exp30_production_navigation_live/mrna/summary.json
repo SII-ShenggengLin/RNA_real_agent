@@ -1,0 +1,48 @@
+{
+  "stage": "mrna",
+  "n_campaigns": 5,
+  "n_with_trace": 5,
+  "raw_caps": [
+    35
+  ],
+  "cap_hits": 0,
+  "early_stops": 5,
+  "delivered_cells": {
+    "PTH": 3,
+    "CSF3": 3,
+    "LEP": 2,
+    "THPO": 3,
+    "PLAT": 2
+  },
+  "total_delivered_cells": 13,
+  "wall_seconds": {
+    "PTH": 173.1,
+    "CSF3": 301.4,
+    "LEP": 381.3,
+    "THPO": 2621.3,
+    "PLAT": 3115.0
+  },
+  "spend": {
+    "PTH": [
+      11,
+      35
+    ],
+    "CSF3": [
+      11,
+      35
+    ],
+    "LEP": [
+      12,
+      35
+    ],
+    "THPO": [
+      28,
+      35
+    ],
+    "PLAT": [
+      24,
+      35
+    ]
+  },
+  "budget_violations": 0
+}

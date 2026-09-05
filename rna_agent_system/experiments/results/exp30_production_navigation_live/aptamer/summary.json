@@ -1,0 +1,54 @@
+{
+  "stage": "aptamer",
+  "n_campaigns": 6,
+  "n_with_trace": 6,
+  "raw_caps": [
+    48
+  ],
+  "cap_hits": 5,
+  "early_stops": 1,
+  "delivered_cells": {
+    "FGF2": 1,
+    "Angiopoietin-2": 1,
+    "IFN-gamma": 3,
+    "IL-17A": 1,
+    "PDGF-BB": 2,
+    "Influenza H3N2 HA": 0
+  },
+  "total_delivered_cells": 8,
+  "wall_seconds": {
+    "FGF2": 5278.8,
+    "Angiopoietin-2": 5804.9,
+    "IFN-gamma": 3910.2,
+    "IL-17A": 1340.7,
+    "PDGF-BB": 1369.5,
+    "Influenza H3N2 HA": 1928.0
+  },
+  "spend": {
+    "FGF2": [
+      48,
+      48
+    ],
+    "Angiopoietin-2": [
+      48,
+      48
+    ],
+    "IFN-gamma": [
+      47,
+      48
+    ],
+    "IL-17A": [
+      48,
+      48
+    ],
+    "PDGF-BB": [
+      48,
+      48
+    ],
+    "Influenza H3N2 HA": [
+      48,
+      48
+    ]
+  },
+  "budget_violations": 0
+}

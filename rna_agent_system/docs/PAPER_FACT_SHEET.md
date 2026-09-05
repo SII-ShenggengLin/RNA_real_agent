@@ -537,7 +537,7 @@
 | 预算扫描（Fig 5h）：紧预算交付 2.7× | cap24：C8 vs A3（b:c=8:3）；cap32 8:8；cap48 16:17 | `exp29_aptamer_campaign_arc/sweep_curve.json` |
 | 扩散生成器边界机制 | 信号 +15pp/样本；GC ICC 0.30；margin 模型 holdout 38% < binary 57% | 机制诊断脚本输出（对话记录 2026-09-04）；mRNA 对照 17:6 P=0.035 = `exp28_.../verdict.json` |
 | 零 LLM / 零预算违规（全部 100+48 组运行） | violations=0；llm_calls=0 | 各 verdict.json budget 块 |
-| Exp 30 停止时点资产 | pilot IFN-γ 3/3（47/48）；mRNA 清单 USER_CONFIRMED 未跑 | `exp30_production_navigation_live/{pilot,curated_mrna_targets.json}` |
+| Exp 30 完成（2026-09-05 重启并行跑） | 11/11 表单会话、verify 字节级一致、violations=0；适配体 6 靶 8 细胞（IFN-γ 3/3@47/48、PDGF-BB 2/3、Ang2/FGF2/IL-17A 各 1/3、swH3HA 0/3@48 cap）；mRNA 5 靶 13 细胞（PTH/CSF3/THPO 3/3、LEP/PLAT 2/3 D1 交付降级，spend 11-28/35）；图 5h 重绘于本数据（帕累托散点+阶梯 inset）；结构复用 3 靶披露于 run 记录 | `exp30_production_navigation_live/{aptamer,mrna}/summary.json`；图 `experiments/plots/output/fig5h_production_navigation_pareto.{png,pdf}` |
 
 ## Exp 29 expanded-pool campaign (2026-09-04→05, final)
 
