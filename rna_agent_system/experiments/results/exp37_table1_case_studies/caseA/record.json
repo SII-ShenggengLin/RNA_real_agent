@@ -1,0 +1,8 @@
+{
+ "case": "A",
+ "session_id": "exp37_caseA_spike",
+ "workflow_success": false,
+ "exit_code": -1,
+ "wall_seconds": 14400.04,
+ "error": "timeout"
+}

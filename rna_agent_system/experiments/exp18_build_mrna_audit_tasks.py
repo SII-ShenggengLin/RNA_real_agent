@@ -206,6 +206,21 @@ def cds_pool(designs: dict[str, dict]) -> dict[tuple[str, str], str]:
     return pool
 
 
+def nearest_gear(pool, target: str, anchor_str: str) -> tuple[str, str]:
+    """Resolve a static-era λ anchor to the nearest delivered gear key.
+
+    AMENDMENT (2026-09-06, navigation era): GenNav deliveries carry the
+    35-value lattice gears; static-era anchors (0.0/4.0/10.0) may be absent.
+    Nearest gear, ties → lower. Returns (gear_key_str, sequence).
+    """
+    anchor = float(anchor_str)
+    gears = {float(k): v for (t, k), v in pool.items() if t == target}
+    if not gears:
+        raise KeyError(f"missing {target} in the production design pool")
+    gear = anchor if anchor in gears else min(gears, key=lambda g: (abs(g - anchor), g))
+    return f"{gear:g}", gears[gear]
+
+
 def construct_pool(designs: dict[str, dict], target: str) -> list[dict]:
     """Top-3 ranked unique full-length constructs of a target (production ranking).
 
@@ -217,25 +232,32 @@ def construct_pool(designs: dict[str, dict], target: str) -> list[dict]:
     ``cds_source`` and asserted prefix-consistent with the echo.
     """
     res = designs[("full_length", target)]
-    cds_by_source = {}
+    # AMENDMENT (2026-09-06, navigation era): multiple delivered CDSs can
+    # share one source label (synonymous-expansion variants inherit the seed
+    # gear, e.g. two sequences both sourced cds_design_gennav:lambda1.75) —
+    # collect a multi-map and accept a match against any variant.
+    cds_by_source: dict[str, list[str]] = {}
     for kind, tid in designs:
         if kind == "cds" and tid == target:
             for cand in designs[(kind, tid)].get("candidates") or []:
-                cds_by_source[cand.get("source")] = \
-                    cand["sequence"].upper().replace("T", "U")
+                cds_by_source.setdefault(cand.get("source"), []).append(
+                    cand["sequence"].upper().replace("T", "U"))
     expected = len(json.loads(
         (TARGETS_DIR / f"{target}.json").read_text(encoding="utf-8")
     )["protein_sequence"]) * 3  # designed CDSs carry no terminal stop (exp2 convention)
 
     def _true_cds(source: str, echo: str) -> str:
-        cds = cds_by_source.get(source)
-        assert cds is not None, f"{target}: no CDS-design candidate for {source}"
-        assert len(cds) == expected and set(cds) <= set("AUCG"), (target, source)
-        if echo.endswith("...(truncated)"):
-            assert echo == cds[:200] + "...(truncated)", (target, source)
-        else:
-            assert echo == cds, (target, source)
-        return cds
+        variants = cds_by_source.get(source) or []
+        assert variants, f"{target}: no CDS-design candidate for {source}"
+        for cds in variants:
+            if len(cds) == expected and set(cds) <= set("AUCG") and (
+                (echo.endswith("...(truncated)")
+                 and echo == cds[:200] + "...(truncated)")
+                or (not echo.endswith("...(truncated)") and echo == cds)
+            ):
+                return cds
+        raise AssertionError(
+            f"{target}: echo matches no delivered variant for {source}")
 
     cands_out = res.get("candidates") or []
     seen: set[str] = set()
@@ -326,12 +348,25 @@ def build_trusted_tasks(pool, targets_meta, ex, scratch) -> list[dict]:
     tasks: list[dict] = []
 
     def cands_for(target: str) -> list[dict]:
+        """Three λ-anchored designs for the task set.
+
+        AMENDMENT (2026-09-06, navigation era): the production default now
+        delivers GenNav-λ CDSs whose gears come from the 35-value lattice —
+        the exact static-era anchors λ{0,4,10} may not be among the delivered
+        gears. Each anchor resolves to the delivered candidate with the
+        NEAREST gear (ties → lower gear), keeping the CAI–MFE axis spanned;
+        candidate ids carry the delivered gear.
+        """
         out = []
+        target_pool = {float(k): v for (t, k), v in pool.items() if t == target}
+        if not target_pool:
+            raise KeyError(f"missing {target} in the production design pool")
         for lam in LAMBDA_TASK:
-            cds = pool.get((target, lam))
-            if cds is None:
-                raise KeyError(f"missing {target} λ{lam} in the production λ grid")
-            out.append({"candidate_id": f"{target}_ld{lam}", "sequence": cds})
+            anchor = float(lam)
+            gear = anchor if anchor in target_pool else \
+                min(target_pool, key=lambda g: (abs(g - anchor), g))
+            out.append({"candidate_id": f"{target}_ld{gear:g}",
+                        "sequence": target_pool[gear]})
         return out
 
     # 1-4: CAI report
@@ -422,7 +457,9 @@ def build_trusted_tasks(pool, targets_meta, ex, scratch) -> list[dict]:
     # 9-10: relative CAI comparison
     for idx, target in enumerate(RELATIVE_TARGETS):
         a, b = LAMBDA_COMPARE
-        cds_a, cds_b = pool[(target, a)], pool[(target, b)]
+        gear_a, cds_a = nearest_gear(pool, target, a)
+        gear_b, cds_b = nearest_gear(pool, target, b)
+        a, b = gear_a, gear_b
         species = targets_meta[target]["species_for_codon_optimization"]
         cai_a = round(ground_truth_cai(ex, scratch, cds_a, species), 6)
         cai_b = round(ground_truth_cai(ex, scratch, cds_b, species), 6)

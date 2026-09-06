@@ -1,0 +1,41 @@
+{
+ "case": "C",
+ "session_id": "exp37_caseC_nsp12",
+ "workflow_success": true,
+ "exit_code": 0,
+ "wall_seconds": 106.04,
+ "error": null,
+ "top5": [
+  {
+   "sequence": "UAGUUGGUAUACCAGUCAUGU",
+   "off_target_hits": 0,
+   "gc_content": 0.38095238095238093,
+   "duplex_mfe": -34.5
+  },
+  {
+   "sequence": "UUAGUUGGUAUACCAGUCAUG",
+   "off_target_hits": 0,
+   "gc_content": 0.38095238095238093,
+   "duplex_mfe": -33.79999923706055
+  },
+  {
+   "sequence": "UCUCACAUAAUUCUGCAAGUC",
+   "off_target_hits": 0,
+   "gc_content": 0.38095238095238093,
+   "duplex_mfe": -33.70000076293945
+  },
+  {
+   "sequence": "UAACCCUCUCACAUAAUUCUG",
+   "off_target_hits": 0,
+   "gc_content": 0.38095238095238093,
+   "duplex_mfe": -33.70000076293945
+  },
+  {
+   "sequence": "UUUCCAUUGUCAAUGACCAGU",
+   "off_target_hits": 0,
+   "gc_content": 0.38095238095238093,
+   "duplex_mfe": -33.79999923706055
+  }
+ ],
+ "n_candidates": 5
+}

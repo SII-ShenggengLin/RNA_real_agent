@@ -260,7 +260,7 @@ def run_case_a(*, pilot: bool = False) -> dict[str, Any]:
         log_line("caseA pilot: input construction OK (navigation unset → default)")
         return {"pilot": "ok"}
 
-    timeout = 3600 * 4
+    timeout = None  # no cap (user direction 2026-09-06); watchdog monitors
     log_line(f"caseA: Spike full-length ({tgt['protein_length_aa']} aa) form entry, "
              f"timeout {timeout}s — this is the long case")
     results, exit_code, elapsed, error = run_cli(
@@ -363,7 +363,7 @@ def run_case_b(*, pilot: bool = False) -> dict[str, Any]:
         log_line("caseB pilot: input construction OK (v4 navigation pinned)")
         return {"pilot": "ok"}
 
-    timeout = 3600 * 3
+    timeout = None
     log_line("caseB: anti-VEGF aptamer v4 navigation form entry (48-raw cap)")
     results, exit_code, elapsed, error = run_cli(
         "rna_aptamer_design", params, session_id="exp37_caseB_vegf_nav",
@@ -480,7 +480,7 @@ def run_case_c(*, production: bool = False) -> dict[str, Any]:
     task = ns12_task()
     params = dict(task["structured_input"])
     session = "exp37_caseC_nsp12" if production else "exp37_pilotC_nsp12"
-    timeout = 1800
+    timeout = None
     log_line("caseC: NSP12 siRNA form entry (antiviral Evitar + bowtie2 scan)")
     results, exit_code, elapsed, error = run_cli(
         "sirna_design", params, session_id=session, timeout=timeout,

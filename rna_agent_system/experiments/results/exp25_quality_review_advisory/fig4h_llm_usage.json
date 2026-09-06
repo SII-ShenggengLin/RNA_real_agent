@@ -112,8 +112,14 @@
     },
     {
       "campaign": "exp18_mrna_dual_arm",
-      "n_tasks": 40,
+      "n_tasks": 46,
       "per_task_llm_calls": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
         2,
         2,
         2,
@@ -155,7 +161,7 @@
         2,
         2
       ],
-      "total_llm_calls": 80,
+      "total_llm_calls": 92,
       "mean_llm_calls_per_task": 2.0,
       "note": "E3-M mRNA dual arm: plan + report per task per arm (40 runs; 32 superseded runs excluded)"
     },
@@ -182,8 +188,12 @@
     },
     {
       "campaign": "exp24_production_campaign",
-      "n_tasks": 241,
+      "n_tasks": 245,
       "per_task_llm_calls": [
+        2,
+        2,
+        2,
+        2,
         2,
         2,
         2,
@@ -426,10 +436,10 @@
         6,
         6
       ],
-      "total_llm_calls": 482,
+      "total_llm_calls": 490,
       "mean_llm_calls_per_task": 2.0,
       "note": "241 production form runs (210 suite + 31 PA): advisory QualityAgent review calls only — measured as the sum of _diagnosis_history entries over each run's saved results JSONs",
-      "n_runs": 241,
+      "n_runs": 245,
       "sessions_without_results_json": 0
     },
     {
@@ -478,19 +488,18 @@
       "n_tasks": 31,
       "per_task_llm_calls": [
         8,
+        0,
         8,
         0,
         0,
         6,
+        7,
+        6,
+        6,
+        6,
+        6,
         0,
-        6,
-        6,
-        6,
-        6,
-        6,
         0,
-        0,
-        6,
         6,
         6,
         6,
@@ -501,6 +510,7 @@
         6,
         8,
         0,
+        6,
         6,
         6,
         6,
@@ -509,8 +519,8 @@
         6,
         4
       ],
-      "total_llm_calls": 144,
-      "mean_llm_calls_per_task": 4.645,
+      "total_llm_calls": 145,
+      "mean_llm_calls_per_task": 4.677,
       "note": "production quality review on: successful review calls per session (2 per passing reviewed turn)",
       "failed_review_attempts": 0
     },

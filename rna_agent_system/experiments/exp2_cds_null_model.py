@@ -300,7 +300,9 @@ def design_one(target: dict[str, Any], *, capgate: str) -> dict[str, Any]:
     # (Beta_galactosidase E. coli GC-boundary, HER2 zero-feasible, Spike)
     # each burned their 13,840-16,330 s caps under concurrent campaign load;
     # solo-wave cap 21,600 s (6 h) for the >1,000-aa class.
-    timeout = int(max(3600, 3600 + 10.0 * aa_len, 21600 if aa_len > 1000 else 0))
+    timeout = None  # AMENDMENT (2026-09-06, user direction): no time cap —
+    # runs complete on their own merits; the campaign watchdog monitors
+    # liveness via the audit trail instead of killing slow runs.
     session_id = f"exp2nd_{tid}"
     print(f"[design] {tid} ({aa_len} aa, timeout={timeout}s) ...", flush=True)
     results, exit_code, elapsed, error = run_cli(

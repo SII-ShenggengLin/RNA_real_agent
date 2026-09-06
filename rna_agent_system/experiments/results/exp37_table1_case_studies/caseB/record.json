@@ -1,0 +1,16 @@
+{
+ "case": "B",
+ "session_id": "exp37_caseB_vegf_nav",
+ "workflow_success": true,
+ "exit_code": 0,
+ "wall_seconds": 1402.61,
+ "error": null,
+ "row_b_unification": "plan note said EGF; no EGF target/structure/anchor on disk — registered anti-VEGF row + pegaptanib anchor panel + self-audit narrative kept (user-delegated 2026-09-06)",
+ "best": {
+  "sequence": "GGUGUUAGUAAGGAGACGAACGGAC",
+  "egarps_component": null,
+  "rhofold_component": 0.5440380952380934,
+  "iptm_component": 0.30652087926864624,
+  "asf_distance": null
+ }
+}

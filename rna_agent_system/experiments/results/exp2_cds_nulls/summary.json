@@ -4,18 +4,18 @@
     "fig2b_cai",
     "fig2c_mfe_per_nt"
   ],
-  "generated": "2026-09-06T08:38:20",
+  "generated": "2026-09-06T20:36:34",
   "capgate_policy_primary_arm": "advisory",
   "designed_arm_config": "mrna_cds_design design_tool=all (LinearDesign λ∈{0,1,4,10} + RNARL + GEMORNA → evaluate → score → rank), best-ranked",
   "random_arm": "10 seeded synonymous draws per WT (uniform, standard code, seed 'exp2:<target>:<draw>')",
-  "n_scored_records": 237,
+  "n_scored_records": 238,
   "cai": {
     "arms": {
       "designed": {
-        "n": 17,
-        "median": 0.8903,
-        "q1": 0.8384,
-        "q3": 0.9118
+        "n": 18,
+        "median": 0.8928,
+        "q1": 0.841,
+        "q3": 0.9102
       },
       "wt": {
         "n": 20,
@@ -31,12 +31,12 @@
       }
     },
     "designed_vs_wt": {
-      "n_x": 17,
+      "n_x": 18,
       "n_y": 20,
-      "median_x": 0.8903,
+      "median_x": 0.8928,
       "median_y": 0.7286,
-      "mannwhitney_p": 4.504087905000833e-06,
-      "cliffs_delta": 0.8882
+      "mannwhitney_p": 2.7020289337666753e-06,
+      "cliffs_delta": 0.8944
     },
     "wt_vs_random": {
       "n_x": 20,
@@ -47,21 +47,21 @@
       "cliffs_delta": 0.6745
     },
     "designed_vs_random": {
-      "n_x": 17,
+      "n_x": 18,
       "n_y": 200,
-      "median_x": 0.8903,
+      "median_x": 0.8928,
       "median_y": 0.6745,
-      "mannwhitney_p": 8.01742299169133e-12,
+      "mannwhitney_p": 2.210469496945219e-12,
       "cliffs_delta": 1.0
     }
   },
   "mfe_per_nt": {
     "arms": {
       "designed": {
-        "n": 17,
-        "median": -0.3081,
-        "q1": -0.3378,
-        "q3": -0.2687
+        "n": 18,
+        "median": -0.3061,
+        "q1": -0.3367,
+        "q3": -0.2686
       },
       "wt": {
         "n": 20,
@@ -77,11 +77,11 @@
       }
     },
     "designed_vs_wt": {
-      "n_x": 17,
+      "n_x": 18,
       "n_y": 20,
-      "median_x": -0.3081,
+      "median_x": -0.3061,
       "median_y": -0.0508,
-      "mannwhitney_p": 2.395424410632698e-07,
+      "mannwhitney_p": 1.5398434476269312e-07,
       "cliffs_delta": -1.0
     },
     "wt_vs_random": {
@@ -93,21 +93,21 @@
       "cliffs_delta": -0.1425
     },
     "designed_vs_random": {
-      "n_x": 17,
+      "n_x": 18,
       "n_y": 200,
-      "median_x": -0.3081,
+      "median_x": -0.3061,
       "median_y": -0.0473,
-      "mannwhitney_p": 8.01742299169133e-12,
+      "mannwhitney_p": 2.210469496945219e-12,
       "cliffs_delta": -1.0
     }
   },
   "gc_content_control": {
     "arms": {
       "designed": {
-        "n": 17,
-        "median": 0.5822,
-        "q1": 0.5661,
-        "q3": 0.5986
+        "n": 18,
+        "median": 0.5858,
+        "q1": 0.5665,
+        "q3": 0.601
       },
       "wt": {
         "n": 20,

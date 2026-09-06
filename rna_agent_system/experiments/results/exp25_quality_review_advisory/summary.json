@@ -27,17 +27,17 @@
           true,
           true
         ],
-        "008": [
-          true,
-          true,
-          true
-        ],
         "012": [
           true,
           true,
           true
         ],
         "014": [
+          true,
+          true,
+          true
+        ],
+        "008": [
           true,
           true,
           true
@@ -58,12 +58,12 @@
           true,
           true
         ],
-        "017": [
+        "011": [
           true,
           true,
           true
         ],
-        "011": [
+        "017": [
           true,
           true,
           true
@@ -83,12 +83,12 @@
           false,
           true
         ],
-        "019": [
+        "022": [
           true,
           true,
           true
         ],
-        "022": [
+        "019": [
           true,
           true,
           true
@@ -133,12 +133,17 @@
           true,
           true
         ],
-        "034": [
+        "020": [
           true,
           true,
           true
         ],
         "035": [
+          true,
+          true,
+          true
+        ],
+        "034": [
           true,
           true,
           true
@@ -150,11 +155,6 @@
         ],
         "009": [
           true,
-          true,
-          true,
-          true
-        ],
-        "020": [
           true,
           true,
           true
@@ -186,9 +186,9 @@
       "n_session_workflow_success": 30,
       "n_turns": 96,
       "n_turn_workflow_success": 94,
-      "total_retry_count": 0,
-      "sessions_with_retries": 0,
-      "total_successful_review_calls": 144,
+      "total_retry_count": 1,
+      "sessions_with_retries": 1,
+      "total_successful_review_calls": 145,
       "total_failed_review_calls": 0,
       "workflow_failed_sessions": [
         "023"
@@ -200,13 +200,13 @@
           true,
           true
         ],
-        "007": [
-          true,
+        "010": [
           true,
           true,
           true
         ],
-        "010": [
+        "007": [
+          true,
           true,
           true,
           true
@@ -216,12 +216,12 @@
           true,
           true
         ],
-        "008": [
+        "014": [
           true,
           true,
           true
         ],
-        "014": [
+        "008": [
           true,
           true,
           true
@@ -236,12 +236,12 @@
           true,
           true
         ],
-        "015": [
+        "018": [
           true,
           true,
           true
         ],
-        "018": [
+        "013": [
           true,
           true,
           true
@@ -261,11 +261,6 @@
           true,
           true
         ],
-        "013": [
-          true,
-          true,
-          true
-        ],
         "019": [
           true,
           true,
@@ -276,17 +271,17 @@
           false,
           true
         ],
+        "015": [
+          true,
+          true,
+          true
+        ],
         "025": [
           true,
           true,
           true
         ],
         "026": [
-          true,
-          true,
-          true
-        ],
-        "024": [
           true,
           true,
           true
@@ -317,7 +312,7 @@
           true,
           true
         ],
-        "034": [
+        "024": [
           true,
           true,
           true
@@ -328,6 +323,11 @@
           true
         ],
         "020": [
+          true,
+          true,
+          true
+        ],
+        "034": [
           true,
           true,
           true
@@ -409,11 +409,6 @@
           true,
           true
         ],
-        "015": [
-          true,
-          true,
-          true
-        ],
         "016": [
           true,
           true,
@@ -449,6 +444,11 @@
           false,
           true
         ],
+        "013": [
+          true,
+          true,
+          true
+        ],
         "025": [
           true,
           true,
@@ -459,12 +459,7 @@
           true,
           true
         ],
-        "013": [
-          true,
-          true,
-          true
-        ],
-        "024": [
+        "015": [
           true,
           true,
           true
@@ -484,8 +479,7 @@
           true,
           true
         ],
-        "009": [
-          true,
+        "024": [
           true,
           true,
           true
@@ -495,7 +489,8 @@
           true,
           true
         ],
-        "034": [
+        "009": [
+          true,
           true,
           true,
           true
@@ -505,12 +500,17 @@
           true,
           true
         ],
-        "020": [
+        "034": [
           true,
           true,
           true
         ],
         "036": [
+          true,
+          true,
+          true
+        ],
+        "020": [
           true,
           true,
           true
@@ -558,7 +558,7 @@
     ],
     "retry_counts": {
       "off": 0,
-      "on": 0,
+      "on": 1,
       "fail": 0
     },
     "advisory_holds": true

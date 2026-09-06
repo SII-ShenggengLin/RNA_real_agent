@@ -221,6 +221,10 @@ def main() -> int:
     if key_w + 2 * ML > fig_w:
         block_gap += (key_w + 2 * ML - fig_w) / 2
         fig_w = panel_w(block_gap)
+    # 2026-09-06: the navigation-era re-run recorded one retry (on-arm) —
+    # the first non-empty retries column; widen the canvas for it.
+    if any_retries:
+        fig_w += 9.0
     retry_x = label_right + GAP_TB + 3 * block_w + 2 * block_gap + retry_gap
 
     row_h, row_gap = 1.7, 0.7
