@@ -320,12 +320,30 @@ def analyze() -> dict[str, Any]:
     gap_events: Counter[str] = Counter()
     nokey_unattributed: list[dict] = []
     unknown_key_events: list[dict] = []
+    # AMENDMENT (2026-09-06, navigation-era re-run): the superseded r2
+    # navigation sessions ran before the probe-thread context fix, so their
+    # probe-phase tool_calls (64 LinearDesign + 60 CAI + 60 LinearFold,
+    # root-caused and fixed the same day — see the driver note) sit in the
+    # trail unstamped. Unstamped tool_calls that fall inside an EXCLUDED
+    # session's window are inventoried as known-defect exclusions (disclosed
+    # in the manifest) instead of contamination; anything else inside the
+    # span still hard-fails.
+    excluded_windows: list[tuple[datetime, datetime]] = []
+    for recs in (excluded_events,):
+        by_sid: dict[str, list[datetime]] = defaultdict(list)
+        for r in recs:
+            by_sid[(r.get("payload") or {}).get("session_id", "?")].append(_ts(r))
+        excluded_windows = [(min(v), max(v)) for v in by_sid.values()]
+    known_defect_unstamped = 0
     span_unstamped_calls = 0
     for rec in unstamped:
         ts = _ts(rec)
         if not (span_lo <= ts <= span_hi):
             continue
         if rec["event_type"] == "tool_call":
+            if any(lo <= ts <= hi for lo, hi in excluded_windows):
+                known_defect_unstamped += 1
+                continue
             span_unstamped_calls += 1  # contamination: hard fail below
             continue
         wf = event_workflow_key(rec)
@@ -524,6 +542,7 @@ def analyze() -> dict[str, Any]:
             "unknown_stamped_sessions": sorted(
                 {(r.get("payload") or {}).get("session_id") for r in unknown_stamped}
             ),
+            "unstamped_tool_calls_in_excluded_windows": known_defect_unstamped,
             "events_in_excluded_windows": dict(
                 Counter(r["event_type"] for r in excluded_events)
             ),

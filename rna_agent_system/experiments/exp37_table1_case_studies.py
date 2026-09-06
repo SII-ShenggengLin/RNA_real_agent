@@ -42,6 +42,13 @@ convention) with ASF ranking governance.
   time, per-candidate off-target hit counts (top-5), GC, duplex MFE; scan
   evidence trace-verified against the session workspace (Exp-6 convention).
 
+PROTOCOL AMENDMENT (2026-09-06, user-directed utilization pass): the three
+cases run inside the declared maximal-parallelism wave (the affected-experiment
+re-runs and the big-target trio running concurrently) — case wall times are
+therefore measured under DISCLOSED concurrent platform load (the Exp-24
+campaign's registered convention), not on an otherwise-quiet machine; the
+Table-1 legend states the measurement condition.
+
 PROTOCOL: pilot-first (case C + the case-A anchor recomputation — fast, zero
 LLM drivers) before the production cases (A then B then C again on the
 production path — case C's production re-run uses a fresh session id).

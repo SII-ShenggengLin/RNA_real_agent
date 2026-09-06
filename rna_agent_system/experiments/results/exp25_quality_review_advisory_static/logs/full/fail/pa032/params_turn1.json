@@ -1,0 +1,5 @@
+{
+  "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1y26_clean.pdb",
+  "design_tools": "rhodesign",
+  "n_samples_per_tool": 3
+}

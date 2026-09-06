@@ -1,0 +1,566 @@
+{
+  "pilot": false,
+  "n_sessions_expected": 31,
+  "arms": {
+    "off": {
+      "n_sessions": 31,
+      "n_session_completion": 31,
+      "n_session_workflow_success": 30,
+      "n_turns": 96,
+      "n_turn_workflow_success": 94,
+      "total_retry_count": 0,
+      "sessions_with_retries": 0,
+      "total_successful_review_calls": 0,
+      "total_failed_review_calls": 0,
+      "workflow_failed_sessions": [
+        "023"
+      ],
+      "outcome_tuples": {
+        "007": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "010": [
+          true,
+          true,
+          true
+        ],
+        "008": [
+          true,
+          true,
+          true
+        ],
+        "012": [
+          true,
+          true,
+          true
+        ],
+        "014": [
+          true,
+          true,
+          true
+        ],
+        "016": [
+          true,
+          true,
+          true
+        ],
+        "006": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "018": [
+          true,
+          true,
+          true
+        ],
+        "017": [
+          true,
+          true,
+          true
+        ],
+        "011": [
+          true,
+          true,
+          true
+        ],
+        "013": [
+          true,
+          true,
+          true
+        ],
+        "021": [
+          true,
+          true,
+          true
+        ],
+        "023": [
+          false,
+          false,
+          true
+        ],
+        "019": [
+          true,
+          true,
+          true
+        ],
+        "022": [
+          true,
+          true,
+          true
+        ],
+        "026": [
+          true,
+          true,
+          true
+        ],
+        "025": [
+          true,
+          true,
+          true
+        ],
+        "015": [
+          true,
+          true,
+          true
+        ],
+        "029": [
+          true,
+          true,
+          true
+        ],
+        "030": [
+          true,
+          true,
+          true
+        ],
+        "031": [
+          true,
+          true,
+          true
+        ],
+        "024": [
+          true,
+          true,
+          true
+        ],
+        "033": [
+          true,
+          true,
+          true
+        ],
+        "034": [
+          true,
+          true,
+          true
+        ],
+        "035": [
+          true,
+          true,
+          true
+        ],
+        "036": [
+          true,
+          true,
+          true
+        ],
+        "009": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "020": [
+          true,
+          true,
+          true
+        ],
+        "032": [
+          true,
+          true,
+          true
+        ],
+        "027": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "028": [
+          true,
+          true
+        ]
+      },
+      "checks": {
+        "zero_diagnosis_entries": true,
+        "zero_review_error_markers": true
+      }
+    },
+    "on": {
+      "n_sessions": 31,
+      "n_session_completion": 31,
+      "n_session_workflow_success": 30,
+      "n_turns": 96,
+      "n_turn_workflow_success": 94,
+      "total_retry_count": 0,
+      "sessions_with_retries": 0,
+      "total_successful_review_calls": 144,
+      "total_failed_review_calls": 0,
+      "workflow_failed_sessions": [
+        "023"
+      ],
+      "outcome_tuples": {
+        "006": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "007": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "010": [
+          true,
+          true,
+          true
+        ],
+        "011": [
+          true,
+          true,
+          true
+        ],
+        "008": [
+          true,
+          true,
+          true
+        ],
+        "014": [
+          true,
+          true,
+          true
+        ],
+        "012": [
+          true,
+          true,
+          true
+        ],
+        "016": [
+          true,
+          true,
+          true
+        ],
+        "015": [
+          true,
+          true,
+          true
+        ],
+        "018": [
+          true,
+          true,
+          true
+        ],
+        "017": [
+          true,
+          true,
+          true
+        ],
+        "021": [
+          true,
+          true,
+          true
+        ],
+        "022": [
+          true,
+          true,
+          true
+        ],
+        "013": [
+          true,
+          true,
+          true
+        ],
+        "019": [
+          true,
+          true,
+          true
+        ],
+        "023": [
+          false,
+          false,
+          true
+        ],
+        "025": [
+          true,
+          true,
+          true
+        ],
+        "026": [
+          true,
+          true,
+          true
+        ],
+        "024": [
+          true,
+          true,
+          true
+        ],
+        "029": [
+          true,
+          true,
+          true
+        ],
+        "030": [
+          true,
+          true,
+          true
+        ],
+        "031": [
+          true,
+          true,
+          true
+        ],
+        "009": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "033": [
+          true,
+          true,
+          true
+        ],
+        "034": [
+          true,
+          true,
+          true
+        ],
+        "035": [
+          true,
+          true,
+          true
+        ],
+        "020": [
+          true,
+          true,
+          true
+        ],
+        "036": [
+          true,
+          true,
+          true
+        ],
+        "027": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "032": [
+          true,
+          true,
+          true
+        ],
+        "028": [
+          true,
+          true
+        ]
+      },
+      "checks": {
+        "reviewed_turns_have_review": true,
+        "exempt_turns_have_zero_reviews": true
+      }
+    },
+    "fail": {
+      "n_sessions": 31,
+      "n_session_completion": 31,
+      "n_session_workflow_success": 30,
+      "n_turns": 96,
+      "n_turn_workflow_success": 94,
+      "total_retry_count": 0,
+      "sessions_with_retries": 0,
+      "total_successful_review_calls": 0,
+      "total_failed_review_calls": 144,
+      "workflow_failed_sessions": [
+        "023"
+      ],
+      "outcome_tuples": {
+        "006": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "007": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "008": [
+          true,
+          true,
+          true
+        ],
+        "010": [
+          true,
+          true,
+          true
+        ],
+        "011": [
+          true,
+          true,
+          true
+        ],
+        "012": [
+          true,
+          true,
+          true
+        ],
+        "014": [
+          true,
+          true,
+          true
+        ],
+        "015": [
+          true,
+          true,
+          true
+        ],
+        "016": [
+          true,
+          true,
+          true
+        ],
+        "017": [
+          true,
+          true,
+          true
+        ],
+        "018": [
+          true,
+          true,
+          true
+        ],
+        "019": [
+          true,
+          true,
+          true
+        ],
+        "021": [
+          true,
+          true,
+          true
+        ],
+        "022": [
+          true,
+          true,
+          true
+        ],
+        "023": [
+          false,
+          false,
+          true
+        ],
+        "025": [
+          true,
+          true,
+          true
+        ],
+        "026": [
+          true,
+          true,
+          true
+        ],
+        "013": [
+          true,
+          true,
+          true
+        ],
+        "024": [
+          true,
+          true,
+          true
+        ],
+        "029": [
+          true,
+          true,
+          true
+        ],
+        "030": [
+          true,
+          true,
+          true
+        ],
+        "031": [
+          true,
+          true,
+          true
+        ],
+        "009": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "033": [
+          true,
+          true,
+          true
+        ],
+        "034": [
+          true,
+          true,
+          true
+        ],
+        "035": [
+          true,
+          true,
+          true
+        ],
+        "020": [
+          true,
+          true,
+          true
+        ],
+        "036": [
+          true,
+          true,
+          true
+        ],
+        "032": [
+          true,
+          true,
+          true
+        ],
+        "027": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "028": [
+          true,
+          true
+        ]
+      },
+      "checks": {
+        "reviewed_turns_marked_unavailable": true,
+        "zero_diagnosis_entries": true,
+        "exempt_turns_unmarked": true,
+        "no_turn_failed_from_marker": true
+      }
+    }
+  },
+  "headline": {
+    "n_sessions_per_arm": 31,
+    "completion_counts": {
+      "off": 31,
+      "on": 31,
+      "fail": 31
+    },
+    "workflow_success_counts": {
+      "off": 30,
+      "on": 30,
+      "fail": 30
+    },
+    "paired_outcome_identity": true,
+    "paired_outcome_mismatches": [],
+    "workflow_failed_sessions": [
+      "023"
+    ],
+    "retry_counts": {
+      "off": 0,
+      "on": 0,
+      "fail": 0
+    },
+    "advisory_holds": true
+  }
+}

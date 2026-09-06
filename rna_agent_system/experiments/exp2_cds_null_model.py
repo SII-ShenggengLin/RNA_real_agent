@@ -296,7 +296,11 @@ def design_one(target: dict[str, Any], *, capgate: str) -> dict[str, Any]:
     # Static-era formula (900 + 2.5·aa); first rescale (1800 + 4·aa) still
     # timed out Beta_galactosidase/HER2. Final: 3600 + 10·aa, 1 h floor;
     # failed targets re-run via --resume.
-    timeout = int(max(3600, 3600 + 10.0 * aa_len))
+    # Second revision (same day, post-campaign): the >1,000-aa trio
+    # (Beta_galactosidase E. coli GC-boundary, HER2 zero-feasible, Spike)
+    # each burned their 13,840-16,330 s caps under concurrent campaign load;
+    # solo-wave cap 21,600 s (6 h) for the >1,000-aa class.
+    timeout = int(max(3600, 3600 + 10.0 * aa_len, 21600 if aa_len > 1000 else 0))
     session_id = f"exp2nd_{tid}"
     print(f"[design] {tid} ({aa_len} aa, timeout={timeout}s) ...", flush=True)
     results, exit_code, elapsed, error = run_cli(

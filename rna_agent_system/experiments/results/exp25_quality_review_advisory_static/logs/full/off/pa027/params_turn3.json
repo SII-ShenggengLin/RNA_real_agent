@@ -1,0 +1,12 @@
+{
+  "protein_structure_path": "",
+  "protein_sequence": "MKALIVLGLVLLSVTVQGKVFERCELARTLKRLGMDGYRGISLANWMCLAKWESGYNTRATNYNAGDRSTDYGIFQINSRYWCNDGKTPGAVNACHLSCSALLQDNIADAVACAKRVVRDPQGIRAWVAWRNRCQNRDVRQYVQGCGV",
+  "chain_id": "A",
+  "aptamer_length": 25,
+  "n_odesign_samples": 10,
+  "reference_point": {
+    "egarps_component": 0.7,
+    "rhofold_component": 0.3,
+    "iptm_component": 0.5
+  }
+}

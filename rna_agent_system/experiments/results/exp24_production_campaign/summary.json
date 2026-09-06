@@ -1,6 +1,6 @@
 {
   "experiment": "exp24_production_campaign",
-  "generated": "2026-09-01T16:07:04",
+  "generated": "2026-09-06T12:13:57",
   "capgate_policy": "advisory (regression convention; see docstring)",
   "services": "pre-warmed via experiments/exp1_bring_up_services.sh (GPU-pinned 0/1/2)",
   "measurement": "subprocess wall clock per task/session; successful runs only",
@@ -14,10 +14,10 @@
   "n_success": 241,
   "all_pass": true,
   "grand_elapsed_s": {
-    "median": 139.4,
-    "mean": 257.8,
+    "median": 129.8,
+    "mean": 240.1,
     "min": 2.5,
-    "max": 6291.5
+    "max": 4297.5
   },
   "per_workflow": {
     "aso_target_screening": {
@@ -27,11 +27,11 @@
       "n_pa_regression": 3,
       "failures": [],
       "elapsed_s": {
-        "min": 3.7,
+        "min": 3.8,
         "median": 17.1,
-        "mean": 45.6,
-        "p90": 66.9,
-        "max": 306.4
+        "mean": 45.9,
+        "p90": 68.0,
+        "max": 307.6
       }
     },
     "full_length_mrna_design": {
@@ -41,11 +41,11 @@
       "n_pa_regression": 3,
       "failures": [],
       "elapsed_s": {
-        "min": 107.8,
-        "median": 211.8,
-        "mean": 347.8,
-        "p90": 927.6,
-        "max": 1194.5
+        "min": 75.9,
+        "median": 219.6,
+        "mean": 438.9,
+        "p90": 939.1,
+        "max": 2899.3
       }
     },
     "ires_prediction": {
@@ -55,11 +55,11 @@
       "n_pa_regression": 3,
       "failures": [],
       "elapsed_s": {
-        "min": 55.3,
-        "median": 98.5,
-        "mean": 124.3,
-        "p90": 234.8,
-        "max": 343.4
+        "min": 49.5,
+        "median": 109.3,
+        "mean": 142.5,
+        "p90": 328.6,
+        "max": 355.0
       }
     },
     "mrna_cds_design": {
@@ -69,11 +69,11 @@
       "n_pa_regression": 2,
       "failures": [],
       "elapsed_s": {
-        "min": 48.5,
-        "median": 154.1,
-        "mean": 311.3,
-        "p90": 792.6,
-        "max": 1596.5
+        "min": 60.5,
+        "median": 152.0,
+        "mean": 494.3,
+        "p90": 1043.8,
+        "max": 4297.5
       }
     },
     "mrna_sequence_scoring": {
@@ -84,9 +84,9 @@
       "failures": [],
       "elapsed_s": {
         "min": 2.5,
-        "median": 2.7,
-        "mean": 3.6,
-        "p90": 9.2,
+        "median": 2.9,
+        "mean": 3.7,
+        "p90": 9.6,
         "max": 9.7
       }
     },
@@ -97,11 +97,11 @@
       "n_pa_regression": 4,
       "failures": [],
       "elapsed_s": {
-        "min": 216.3,
-        "median": 383.1,
-        "mean": 984.8,
-        "p90": 2761.3,
-        "max": 6291.5
+        "min": 144.4,
+        "median": 282.8,
+        "mean": 585.3,
+        "p90": 2102.2,
+        "max": 2263.9
       }
     },
     "rna_secondary_structure_design": {
@@ -111,11 +111,11 @@
       "n_pa_regression": 2,
       "failures": [],
       "elapsed_s": {
-        "min": 32.4,
-        "median": 62.7,
-        "mean": 79.4,
-        "p90": 132.3,
-        "max": 201.7
+        "min": 26.8,
+        "median": 87.1,
+        "mean": 83.9,
+        "p90": 118.2,
+        "max": 218.7
       }
     },
     "rna_small_molecule_interaction": {
@@ -125,11 +125,11 @@
       "n_pa_regression": 3,
       "failures": [],
       "elapsed_s": {
-        "min": 2.6,
-        "median": 14.8,
+        "min": 2.7,
+        "median": 14.9,
         "mean": 18.4,
-        "p90": 43.7,
-        "max": 46.6
+        "p90": 42.9,
+        "max": 44.2
       }
     },
     "rna_tertiary_structure_design": {
@@ -139,11 +139,11 @@
       "n_pa_regression": 2,
       "failures": [],
       "elapsed_s": {
-        "min": 149.2,
-        "median": 260.8,
-        "mean": 376.8,
-        "p90": 637.4,
-        "max": 1059.0
+        "min": 131.4,
+        "median": 276.4,
+        "mean": 319.3,
+        "p90": 431.2,
+        "max": 1121.3
       }
     },
     "sgrna_design": {
@@ -153,11 +153,11 @@
       "n_pa_regression": 4,
       "failures": [],
       "elapsed_s": {
-        "min": 81.9,
-        "median": 147.3,
-        "mean": 203.6,
-        "p90": 519.2,
-        "max": 818.8
+        "min": 58.8,
+        "median": 135.6,
+        "mean": 188.0,
+        "p90": 467.0,
+        "max": 805.9
       }
     },
     "sirna_design": {
@@ -167,11 +167,11 @@
       "n_pa_regression": 3,
       "failures": [],
       "elapsed_s": {
-        "min": 71.2,
-        "median": 154.7,
-        "mean": 193.8,
-        "p90": 354.3,
-        "max": 487.4
+        "min": 58.0,
+        "median": 148.8,
+        "mean": 185.8,
+        "p90": 336.7,
+        "max": 493.9
       }
     }
   }

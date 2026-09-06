@@ -1,0 +1,7 @@
+{"target_id": "Insulin", "kind": "cds", "session_id": "exp18probe_Insulin", "exit_code": 0, "elapsed_seconds": 182.0, "error": null, "success": true, "note": "probe run, params identical to builder", "timestamp": "2026-09-01T04:41:22.664129+00:00"}
+{"target_id": "Insulin", "kind": "full_length", "session_id": "exp18probe_FL_Insulin", "exit_code": 0, "elapsed_seconds": 758.6, "error": null, "success": true, "note": "probe run, params identical to builder", "timestamp": "2026-09-01T04:41:22.664141+00:00"}
+{"target_id": "A1AT", "kind": "cds", "session_id": "exp18_cds_A1AT", "exit_code": 0, "elapsed_seconds": 425.8, "error": null, "success": true, "timestamp": "2026-09-01T04:48:28.763607+00:00"}
+{"target_id": "EPO", "kind": "cds", "session_id": "exp18_cds_EPO", "exit_code": 0, "elapsed_seconds": 198.3, "error": null, "success": true, "timestamp": "2026-09-01T04:51:47.035892+00:00"}
+{"target_id": "GFP", "kind": "cds", "session_id": "exp18_cds_GFP", "exit_code": 0, "elapsed_seconds": 251.6, "error": null, "success": true, "timestamp": "2026-09-01T04:55:58.669966+00:00"}
+{"target_id": "EPO", "kind": "full_length", "session_id": "exp18_ful_EPO", "exit_code": 0, "elapsed_seconds": 908.4, "error": null, "success": true, "timestamp": "2026-09-01T05:11:07.075208+00:00"}
+{"target_id": "A1AT", "kind": "full_length", "session_id": "exp18_ful_A1AT", "exit_code": 0, "elapsed_seconds": 1126.0, "error": null, "success": true, "timestamp": "2026-09-01T05:29:53.126864+00:00"}

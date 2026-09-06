@@ -745,13 +745,32 @@ class MrnaCdsDesignWorkflow(BaseDomainWorkflow[MrnaCdsDesignInput, WorkflowResul
         #    mutually independent probe λs, fixed-order integration (only the
         #    reinforcement rounds depend on earlier results).  Concurrency is
         #    memory-adaptive: LinearDesign RSS grows ~quadratically with
-        #    protein length (~7.5 GB at 500 aa), so big proteins probe with 2
-        #    workers (thread count affects scheduling only — the integration
-        #    order stays fixed and the pool is identical). ──
-        n_probe_workers = 2 if len(inp.protein_sequence) > 800 else \
+        #    protein length (~7.5 GB at 500 aa), so big proteins probe with
+        #    reduced workers (thread count affects scheduling only — the
+        #    integration order stays fixed and the pool is identical).
+        #    AMENDMENT (2026-09-06, user-directed utilization pass, DECISIONS
+        #    (aa) era): big-protein probe workers 2 → 4 — the 2-worker cap
+        #    was calibrated on the smaller-memory machine era; on the current
+        #    1 TB host, 4 × ~47 GB (~1,200 aa worst case) = ~190 GB per
+        #    navigation run with several runs concurrent is well inside
+        #    budget, and probe wall halves. Output-neutral by construction. ──
+        n_probe_workers = 4 if len(inp.protein_sequence) > 800 else \
             len(config.probe_lambdas)
+        # Context propagation (2026-09-06 fix): the session id lives in a
+        # contextvars.ContextVar, which does NOT follow submissions into
+        # ThreadPoolExecutor worker threads — probe-phase capability calls
+        # (LinearDesign/CAI/LinearFold) landed in the platform audit trail
+        # without their session stamp (measured: 184 unstamped tool_calls in
+        # the Exp-24 re-run span, exactly the probe set). Copy the parent
+        # context per submission so every probe-thread call is stamped.
+        import contextvars
+
+        def _submit_probe(ex: ThreadPoolExecutor, lam: float):
+            ctx = contextvars.copy_context()
+            return ex.submit(ctx.run, _probe_call, lam)
+
         with ThreadPoolExecutor(max_workers=n_probe_workers) as ex:
-            probe_futures = {lam: ex.submit(_probe_call, lam)
+            probe_futures = {lam: _submit_probe(ex, lam)
                              for lam in config.probe_lambdas}
         for lam in config.probe_lambdas:
             if raw_spent >= config.raw_budget:
