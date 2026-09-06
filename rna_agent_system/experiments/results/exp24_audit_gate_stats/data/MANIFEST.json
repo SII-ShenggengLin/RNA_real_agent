@@ -1,11 +1,11 @@
 {
   "source_trail": "workspace/audit/platform_audit.jsonl",
-  "source_trail_bytes": 46270620,
-  "source_trail_lines": 112014,
-  "source_trail_sha256": "b37add6f04b7b6e32b579a3935136809a033d8dc571a4f162060ae9d14c1d734",
+  "source_trail_bytes": 91866708,
+  "source_trail_lines": 218265,
+  "source_trail_sha256": "406200b1a979d743303f92a61e5a8aba004bb898e5321ab06487e0de05ae5718",
   "torn_lines_repaired": 0,
   "frozen_slice": "experiments/results/exp24_audit_gate_stats/data/exp24_corpus.jsonl",
-  "frozen_slice_sha256": "8a1f6e3e36e89a8436af835c4c981bbfe21ebf3437beb8760fea7b24f2ed7c16",
+  "frozen_slice_sha256": "7406fe58db2e238042be0384e8504e3582ab72a3b921431685ba833ca0bf83d6",
   "selection_rule": "payload.session_id in corpus sessions (tool_call); workflow-key attribution for unstamped gate/ranking/claim events (workflow-exclusive parallel campaign: same-workflow sessions never overlap; ambiguity fails); choke-point adjacency fallback for keyless gate events; events resolving to no corpus session are excluded",
-  "frozen_at": "2026-09-01T16:12:01"
+  "frozen_at": "2026-09-06T14:36:04"
 }

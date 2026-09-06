@@ -41,7 +41,8 @@ import exp24_production_campaign as camp  # noqa: E402
 RESULTS_DIR = camp.RESULTS_DIR
 PREFIX = "exp24_r3"
 
-CHAIN_CDS = [("task", "01_mrna_cds_design_009"), ("pa", "015"), ("pa", "034")]
+CHAIN_CDS = [("task", "01_mrna_cds_design_009"), ("task", "01_mrna_cds_design_018"),
+              ("task", "01_mrna_cds_design_019"), ("pa", "015"), ("pa", "034")]
 CHAIN_FL = [("task", "02_full_length_mrna_design_009_ovalbumin"), ("pa", "024"), ("pa", "036")]
 
 

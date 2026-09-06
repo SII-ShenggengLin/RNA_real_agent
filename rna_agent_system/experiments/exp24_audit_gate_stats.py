@@ -94,7 +94,7 @@ import json
 import re
 import sys
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -240,6 +240,25 @@ def load_corpus_sessions() -> tuple[dict[str, dict], dict[str, Any]]:
     }
 
 
+def _raw_excluded_records(excluded_sids: set[str]) -> list[dict]:
+    """Raw campaign records (any attempt) of the excluded sessions — their
+    timestamp + elapsed_seconds give the full-run interval, which covers the
+    pre-first-stamped-event probe phase (AMENDMENT 2026-09-06)."""
+    out: list[dict] = []
+    for lane in sorted(CAMPAIGN_DIR.glob("lane_*.jsonl")) + \
+            sorted(CAMPAIGN_DIR.glob("pa_batch*.jsonl")):
+        for line in lane.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if rec.get("session_id") in excluded_sids:
+                out.append(rec)
+    return out
+
+
 def analyze() -> dict[str, Any]:
     if not AUDIT_TRAIL.exists():
         _fail(f"audit trail not found: {AUDIT_TRAIL}")
@@ -322,18 +341,30 @@ def analyze() -> dict[str, Any]:
     unknown_key_events: list[dict] = []
     # AMENDMENT (2026-09-06, navigation-era re-run): the superseded r2
     # navigation sessions ran before the probe-thread context fix, so their
-    # probe-phase tool_calls (64 LinearDesign + 60 CAI + 60 LinearFold,
-    # root-caused and fixed the same day — see the driver note) sit in the
-    # trail unstamped. Unstamped tool_calls that fall inside an EXCLUDED
-    # session's window are inventoried as known-defect exclusions (disclosed
-    # in the manifest) instead of contamination; anything else inside the
-    # span still hard-fails.
+    # probe-phase tool_calls (root-caused and fixed the same day) sit in the
+    # trail unstamped. Excluded-session windows are therefore built from TWO
+    # sources: the stamped events (as before) AND the raw campaign records'
+    # full-run intervals [timestamp − elapsed_seconds, timestamp] — the
+    # probe phase PRECEDES a navigation run's first stamped event (its
+    # generation-phase reinforcement/evaluation calls), so event-only
+    # windows miss exactly the probe unstamped events. Unstamped tool_calls
+    # inside an excluded session's full-run window are inventoried as
+    # known-defect exclusions (disclosed in the manifest); anything else
+    # inside the span still hard-fails.
     excluded_windows: list[tuple[datetime, datetime]] = []
-    for recs in (excluded_events,):
-        by_sid: dict[str, list[datetime]] = defaultdict(list)
-        for r in recs:
-            by_sid[(r.get("payload") or {}).get("session_id", "?")].append(_ts(r))
-        excluded_windows = [(min(v), max(v)) for v in by_sid.values()]
+    by_sid: dict[str, list[datetime]] = defaultdict(list)
+    for r in excluded_events:
+        by_sid[(r.get("payload") or {}).get("session_id", "?")].append(_ts(r))
+    excluded_windows = [(min(v), max(v)) for v in by_sid.values()]
+    for rec in _raw_excluded_records(excluded_sids):
+        try:
+            end = datetime.fromisoformat(rec["timestamp"])
+            if end.tzinfo is None:  # campaign records are naive local-UTC
+                end = end.replace(tzinfo=timezone.utc)
+            start = end - timedelta(seconds=float(rec.get("elapsed_seconds") or 0.0))
+            excluded_windows.append((start, end))
+        except (KeyError, ValueError, TypeError):
+            continue
     known_defect_unstamped = 0
     span_unstamped_calls = 0
     for rec in unstamped:
