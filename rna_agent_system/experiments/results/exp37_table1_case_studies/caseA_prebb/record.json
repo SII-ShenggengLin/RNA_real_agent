@@ -1,0 +1,43 @@
+{
+ "case": "A",
+ "session_id": "exp37_caseA_spike",
+ "workflow_success": true,
+ "exit_code": 0,
+ "wall_seconds": 23906.83,
+ "error": null,
+ "best": {
+  "source": "full_length:cds_design_gennav:lambda6.5:utr5_short:utr3_short",
+  "cds_source": "cds_design_gennav:lambda6.5",
+  "cds_cai": 0.9685353490369739,
+  "cds_mfe": -758.41,
+  "cds_mfe_per_nt": -0.19858863576852578,
+  "cds_length": 3819,
+  "total_length": 3909,
+  "utr5_preset": "short",
+  "utr3_preset": "short",
+  "asf_distance": 0.07355440473951276,
+  "cds_sequence": "AUGUUUGUGUUCCUGGUGCUGCUGCCCCUGGUGAGCAGCCAGUGCGUGAACCUGACCACCAGGACCCAGCUGCCACCAGCCUACACAAACAGCUUCACCAGGGGGGUGUACUACCCCGACAAGGUGUUCAGGUCCUCCGUGCUGCACAGCACCCAGGACCUGUUCCUGCCUUUCUUCUCCAACGUGACCUGGUUCCACGC...(truncated)"
+ },
+ "n_candidates": 54,
+ "gennav_trace": {
+  "raw_spent": 35,
+  "raw_budget": 35,
+  "pool_size": 54,
+  "deliveries": {
+   "expression": {
+    "n": 5,
+    "degraded": false
+   },
+   "stability": {
+    "n": 0,
+    "degraded": true
+   },
+   "balanced": {
+    "n": 1,
+    "degraded": true
+   }
+  }
+ },
+ "anchor_bnt162b2_cds_cai": 0.9515304128311646,
+ "_note": "PRE-CHANGE REGISTER (DECISIONS (bb)): caseA Spike full-length run under the OLD full-length workflow (3x3 GEMORNA UTR grid per CDS, utr3_stability as ASF dim) — completed 2026-09-07 11:27 UTC after 23907 s as the third uncapped attempt. Superseded by the post-change re-run in ../caseA/."
+}
