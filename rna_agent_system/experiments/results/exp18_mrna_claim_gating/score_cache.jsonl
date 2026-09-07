@@ -1,31 +1,41 @@
-{"candidate_id": "cand_91555c50c0e1", "oracle": "gemorna_3utr_stability", "value": 6.51, "error": null}
-{"candidate_id": "cand_f0c7641abdaf", "oracle": "gemorna_3utr_stability", "value": 5.14, "error": null}
-{"candidate_id": "cand_0664c8a9c6c7", "oracle": "gemorna_3utr_stability", "value": 3.58, "error": null}
+{"candidate_id": "cand_77296c8b177c", "oracle": "gemorna_3utr_stability", "value": 3.01, "error": null}
+{"candidate_id": "cand_5c290ba2e7d0", "oracle": "gemorna_3utr_stability", "value": 2.75, "error": null}
+{"candidate_id": "cand_587c630ba635", "oracle": "gemorna_3utr_stability", "value": 3.15, "error": null}
 {"candidate_id": "novel_utr7_a", "oracle": "gemorna_5utr_mrl", "value": 6.32, "error": null}
 {"candidate_id": "novel_utr7_b", "oracle": "gemorna_5utr_mrl", "value": 4.02, "error": null}
 {"candidate_id": "novel_utr7_c", "oracle": "gemorna_5utr_mrl", "value": 6.19, "error": null}
-{"candidate_id": "cand_7df94a12e403", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": 0.0097, "ddg_open_w1": 8.35}, "error": null}
-{"candidate_id": "cand_e9b89459ccbf", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0107, "ddg_open_w1": 10.63}, "error": null}
-{"candidate_id": "cand_0767c2c1d2b4", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": 0.0097, "ddg_open_w1": 9.61}, "error": null}
+{"candidate_id": "cand_f2718ed974a1", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0925, "ddg_open_w1": 15.51}, "error": null}
+{"candidate_id": "cand_0c06ee5630f5", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0925, "ddg_open_w1": 17.86}, "error": null}
+{"candidate_id": "cand_70d71d60dae3", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0925, "ddg_open_w1": 13.2}, "error": null}
 {"candidate_id": "hi01_egfp_random50", "oracle": "gemorna_5utr_mrl", "value": 6.28, "error": null}
 {"candidate_id": "lo01_egfp_random50", "oracle": "gemorna_5utr_mrl", "value": 2.06, "error": null}
 {"candidate_id": "rk01_egfp_random50", "oracle": "gemorna_5utr_mrl", "value": 2.45, "error": null}
 {"candidate_id": "rk02_egfp_random50", "oracle": "gemorna_5utr_mrl", "value": 2.49, "error": null}
-{"candidate_id": "cand_bdb12b5a6cb8", "oracle": "gemorna_3utr_stability", "value": 5.01, "error": null}
-{"candidate_id": "cand_5daa67fb2faf", "oracle": "gemorna_3utr_stability", "value": 3.85, "error": null}
-{"candidate_id": "cand_d44f4f2f0331", "oracle": "gemorna_3utr_stability", "value": 4.97, "error": null}
-{"candidate_id": "cand_7df94a12e403", "oracle": "gemorna_3utr_stability", "value": 6.45, "error": null}
-{"candidate_id": "cand_e9b89459ccbf", "oracle": "gemorna_3utr_stability", "value": 5.24, "error": null}
-{"candidate_id": "cand_0767c2c1d2b4", "oracle": "gemorna_3utr_stability", "value": 5.23, "error": null}
+{"candidate_id": "cand_94fe48430092", "oracle": "gemorna_3utr_stability", "value": 1.94, "error": null}
+{"candidate_id": "cand_6b3d0a682fa5", "oracle": "gemorna_3utr_stability", "value": 3.44, "error": null}
+{"candidate_id": "cand_c6cead33c619", "oracle": "gemorna_3utr_stability", "value": 3.15, "error": null}
+{"candidate_id": "cand_f2718ed974a1", "oracle": "gemorna_3utr_stability", "value": 2.19, "error": null}
+{"candidate_id": "cand_0c06ee5630f5", "oracle": "gemorna_3utr_stability", "value": 2.02, "error": null}
+{"candidate_id": "cand_70d71d60dae3", "oracle": "gemorna_3utr_stability", "value": 3.15, "error": null}
 {"candidate_id": "novel_utr11_a", "oracle": "gemorna_5utr_mrl", "value": 3.0, "error": null}
 {"candidate_id": "novel_utr11_b", "oracle": "gemorna_5utr_mrl", "value": 6.57, "error": null}
 {"candidate_id": "novel_utr11_c", "oracle": "gemorna_5utr_mrl", "value": 6.18, "error": null}
 {"candidate_id": "novel_utr13_a", "oracle": "gemorna_5utr_mrl", "value": 5.56, "error": null}
 {"candidate_id": "novel_utr13_b", "oracle": "gemorna_5utr_mrl", "value": 4.93, "error": null}
 {"candidate_id": "novel_utr13_c", "oracle": "gemorna_5utr_mrl", "value": 5.22, "error": null}
-{"candidate_id": "cand_91555c50c0e1", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0495, "ddg_open_w1": 3.72}, "error": null}
-{"candidate_id": "cand_f0c7641abdaf", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0165, "ddg_open_w1": 2.51}, "error": null}
-{"candidate_id": "cand_0664c8a9c6c7", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": -0.0027, "ddg_open_w1": 2.13}, "error": null}
+{"candidate_id": "cand_77296c8b177c", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": 0.0018, "ddg_open_w1": 4.1}, "error": null}
+{"candidate_id": "cand_5c290ba2e7d0", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": 0.0018, "ddg_open_w1": 2.57}, "error": null}
+{"candidate_id": "cand_587c630ba635", "oracle": "junction_metric", "value": {"j1_mfe_per_nt": 0.0018, "ddg_open_w1": 3.39}, "error": null}
+{"candidate_id": "novel_utr11_a", "oracle": "gemorna_5utr_mrl", "value": 3.0, "error": null}
+{"candidate_id": "novel_utr11_b", "oracle": "gemorna_5utr_mrl", "value": 6.57, "error": null}
+{"candidate_id": "novel_utr11_c", "oracle": "gemorna_5utr_mrl", "value": 6.18, "error": null}
+{"candidate_id": "hi01_vl_human", "oracle": "gemorna_5utr_mrl", "value": 6.37, "error": null}
+{"candidate_id": "hi16_vl_human", "oracle": "gemorna_5utr_mrl", "value": 6.3, "error": null}
+{"candidate_id": "hi30_vl_human", "oracle": "gemorna_5utr_mrl", "value": 6.4, "error": null}
+{"candidate_id": "hi44_vl_human", "oracle": "gemorna_5utr_mrl", "value": 5.96, "error": null}
+{"candidate_id": "novel_utr13_a", "oracle": "gemorna_5utr_mrl", "value": 5.56, "error": null}
+{"candidate_id": "novel_utr13_b", "oracle": "gemorna_5utr_mrl", "value": 4.93, "error": null}
+{"candidate_id": "novel_utr13_c", "oracle": "gemorna_5utr_mrl", "value": 5.22, "error": null}
 {"candidate_id": "hi01_vl_human", "oracle": "gemorna_5utr_mrl", "value": 6.37, "error": null}
 {"candidate_id": "hi16_vl_human", "oracle": "gemorna_5utr_mrl", "value": 6.3, "error": null}
 {"candidate_id": "hi30_vl_human", "oracle": "gemorna_5utr_mrl", "value": 6.4, "error": null}

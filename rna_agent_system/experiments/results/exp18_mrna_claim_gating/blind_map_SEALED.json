@@ -1,217 +1,192 @@
 {
   "0": {
-    "task_id": "cross_family_expression_0",
-    "arm": "gated",
+    "task_id": "cds_cai_report_0",
+    "arm": "ungated",
     "claim_id": "c1"
   },
   "1": {
-    "task_id": "cds_mfe_report_1",
+    "task_id": "cds_constraint_report_1",
     "arm": "ungated",
     "claim_id": "c1"
   },
   "2": {
-    "task_id": "cross_family_expression_1",
+    "task_id": "cds_cai_report_0",
+    "arm": "gated",
+    "claim_id": "c2"
+  },
+  "3": {
+    "task_id": "cds_constraint_report_0",
     "arm": "gated",
     "claim_id": "c1"
   },
-  "3": {
-    "task_id": "cds_cai_report_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
   "4": {
-    "task_id": "junction_quality_1",
-    "arm": "ungated",
+    "task_id": "cds_cai_report_1",
+    "arm": "gated",
     "claim_id": "c1"
   },
   "5": {
-    "task_id": "cross_family_expression_1",
-    "arm": "ungated",
+    "task_id": "mrl_optimum_1",
+    "arm": "gated",
     "claim_id": "c1"
   },
   "6": {
-    "task_id": "cds_relative_compare_0",
-    "arm": "ungated",
+    "task_id": "cross_family_expression_2",
+    "arm": "gated",
     "claim_id": "c1"
   },
   "7": {
-    "task_id": "cds_cai_report_1",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "8": {
-    "task_id": "utr3_stability_rank_2",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "9": {
-    "task_id": "cross_family_expression_2",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "10": {
     "task_id": "cds_constraint_report_0",
     "arm": "ungated",
     "claim_id": "c1"
   },
+  "8": {
+    "task_id": "cross_family_expression_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "9": {
+    "task_id": "cds_cai_report_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "10": {
+    "task_id": "mrl_optimum_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
   "11": {
-    "task_id": "cds_cai_report_0",
+    "task_id": "cds_mfe_report_1",
     "arm": "ungated",
     "claim_id": "c1"
   },
   "12": {
-    "task_id": "mrl_optimum_0",
+    "task_id": "cds_relative_compare_1",
     "arm": "ungated",
     "claim_id": "c1"
   },
   "13": {
     "task_id": "cds_relative_compare_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "14": {
-    "task_id": "cds_cai_report_2",
     "arm": "gated",
     "claim_id": "c1"
   },
+  "14": {
+    "task_id": "cds_relative_compare_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
   "15": {
-    "task_id": "cds_relative_compare_1",
+    "task_id": "mrl_optimum_1",
     "arm": "ungated",
     "claim_id": "c1"
   },
   "16": {
-    "task_id": "cds_mfe_report_0",
+    "task_id": "junction_quality_1",
     "arm": "ungated",
     "claim_id": "c1"
   },
   "17": {
-    "task_id": "cross_family_expression_2",
-    "arm": "gated",
+    "task_id": "cds_cai_report_3",
+    "arm": "ungated",
     "claim_id": "c1"
   },
   "18": {
-    "task_id": "cds_cai_report_1",
-    "arm": "gated",
+    "task_id": "cross_family_expression_0",
+    "arm": "ungated",
     "claim_id": "c1"
   },
   "19": {
-    "task_id": "cds_relative_compare_0",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "20": {
-    "task_id": "cds_cai_report_3",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "21": {
-    "task_id": "mrl_optimum_0",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "22": {
-    "task_id": "cds_constraint_report_1",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "23": {
-    "task_id": "utr3_stability_rank_1",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "24": {
-    "task_id": "utr3_stability_rank_2",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "25": {
-    "task_id": "utr3_stability_rank_0",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "26": {
-    "task_id": "cds_relative_compare_1",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "27": {
-    "task_id": "cross_family_expression_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "28": {
-    "task_id": "mrl_optimum_1",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "29": {
-    "task_id": "junction_quality_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "30": {
-    "task_id": "cds_cai_report_3",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "31": {
-    "task_id": "cds_cai_report_2",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "32": {
-    "task_id": "cds_constraint_report_1",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "33": {
-    "task_id": "junction_quality_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "34": {
-    "task_id": "cds_mfe_report_0",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "35": {
-    "task_id": "cross_family_expression_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "36": {
-    "task_id": "mrl_optimum_1",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "37": {
-    "task_id": "cds_mfe_report_1",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "38": {
-    "task_id": "cds_constraint_report_0",
-    "arm": "gated",
-    "claim_id": "c1"
-  },
-  "39": {
-    "task_id": "utr3_stability_rank_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "40": {
-    "task_id": "utr3_stability_rank_0",
-    "arm": "ungated",
-    "claim_id": "c1"
-  },
-  "41": {
     "task_id": "cds_cai_report_0",
     "arm": "gated",
     "claim_id": "c1"
   },
-  "42": {
-    "task_id": "mrl_optimum_0",
+  "20": {
+    "task_id": "cds_mfe_report_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "21": {
+    "task_id": "junction_quality_0",
     "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "22": {
+    "task_id": "cross_family_expression_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "23": {
+    "task_id": "cds_cai_report_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "24": {
+    "task_id": "cross_family_expression_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "25": {
+    "task_id": "cds_mfe_report_1",
+    "arm": "ungated",
+    "claim_id": "c2"
+  },
+  "26": {
+    "task_id": "utr3_stability_rank_1",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "27": {
+    "task_id": "cds_mfe_report_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "28": {
+    "task_id": "mrl_optimum_0",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "29": {
+    "task_id": "cross_family_expression_0",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "30": {
+    "task_id": "cds_constraint_report_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "31": {
+    "task_id": "cds_cai_report_3",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "32": {
+    "task_id": "cds_relative_compare_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "33": {
+    "task_id": "utr3_stability_rank_1",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "34": {
+    "task_id": "utr3_stability_rank_2",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "35": {
+    "task_id": "utr3_stability_rank_0",
+    "arm": "ungated",
+    "claim_id": "c1"
+  },
+  "36": {
+    "task_id": "cds_mfe_report_0",
+    "arm": "gated",
+    "claim_id": "c1"
+  },
+  "37": {
+    "task_id": "cds_cai_report_2",
+    "arm": "gated",
     "claim_id": "c1"
   }
 }

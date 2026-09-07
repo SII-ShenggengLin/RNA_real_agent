@@ -83,9 +83,8 @@ FULL_LENGTH_REFS = {
     "utr5_mrl": ObjectiveRef(
         "utr5_mrl", "predict_5utr_mrl_with_gemorna", "gemorna_5utr_mrl"
     ),
-    "utr3_stability": ObjectiveRef(
-        "utr3_stability", "predict_3utr_stability_with_gemorna", "gemorna_3utr_stability"
-    ),
+    # DECISIONS (bb): utr3_stability demoted from a ranking objective to a
+    # report-only diagnostic — no longer in the full-length ref table.
 }
 
 SGRNA_REFS = {
@@ -117,18 +116,15 @@ def test_assembly_pinning_aptamer_all_demoted(packaged_self_model) -> None:
 
 
 def test_assembly_pinning_full_length_all_kept(packaged_self_model) -> None:
-    objectives = ["cds_component", "utr5_mrl", "utr3_stability", "full_mfe_score"]
+    objectives = ["cds_component", "utr5_mrl", "full_mfe_score"]
     a = assemble_ranking_objectives(
         objectives, FULL_LENGTH_REFS, packaged_self_model, "full_length_mrna"
     )
     # utr5_mrl: E7-verified on all families -> transferred-verified (keep+flag).
-    # utr3_stability: gemorna_3utr_stability has no records -> unprofiled (keep+flag).
     # cds_component / full_mfe_score: deterministic compute, no ref.
+    # utr3_stability: demoted out of the objective set entirely (DECISIONS (bb)).
     assert a.ranking_dims == objectives
-    assert a.kept_flags == {
-        "utr5_mrl": "transferred",
-        "utr3_stability": "unprofiled",
-    }
+    assert a.kept_flags == {"utr5_mrl": "transferred"}
     assert a.demoted == {}
     assert a.degrade_reason is None
 

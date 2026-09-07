@@ -1,35 +1,35 @@
 {
   "experiment": "exp18_mrna_claim_gating (E3-M dual-arm, Fig 4d)",
-  "date": "2026-09-06T22:20:38.188474+00:00",
+  "date": "2026-09-07T16:09:53.233004+00:00",
   "n_tasks": 20,
   "failed_runs": [],
-  "n_claims": 43,
+  "n_claims": 38,
   "arms": {
     "ungated": {
-      "TP": 14,
-      "FP": 8,
-      "neutral": 4,
+      "TP": 12,
+      "FP": 6,
+      "neutral": 3,
       "borderline": 0,
       "suppressed": 0,
-      "fp_rate": 0.36363636363636365,
+      "fp_rate": 0.3333333333333333,
       "fp_rate_ci95": [
-        0.1973,
-        0.5705
+        0.1628,
+        0.5625
       ],
-      "overreach_events": 7,
-      "mrl_ranking_events": 7,
+      "overreach_events": 5,
+      "mrl_ranking_events": 5,
       "abstentions": 0
     },
     "gated": {
-      "TP": 11,
+      "TP": 12,
       "FP": 1,
-      "neutral": 5,
+      "neutral": 3,
       "borderline": 0,
-      "suppressed": 0,
-      "fp_rate": 0.08333333333333333,
+      "suppressed": 1,
+      "fp_rate": 0.07692307692307693,
       "fp_rate_ci95": [
-        0.0149,
-        0.3539
+        0.0137,
+        0.3331
       ],
       "overreach_events": 0,
       "mrl_ranking_events": 5,
@@ -39,7 +39,7 @@
   "by_category": {
     "ungated": {
       "trusted_deterministic": {
-        "TP": 12,
+        "TP": 11,
         "FP": 0,
         "neutral": 0,
         "borderline": 0,
@@ -47,31 +47,31 @@
         "fp_rate": 0.0,
         "fp_rate_ci95": [
           0.0,
-          0.2425
+          0.2588
         ],
         "overreach_events": 0,
         "mrl_ranking_events": 0,
         "abstentions": 0
       },
       "untrusted_oracle": {
-        "TP": 2,
-        "FP": 8,
-        "neutral": 4,
+        "TP": 1,
+        "FP": 6,
+        "neutral": 3,
         "borderline": 0,
         "suppressed": 0,
-        "fp_rate": 0.8,
+        "fp_rate": 0.8571428571428571,
         "fp_rate_ci95": [
-          0.4902,
-          0.9433
+          0.4869,
+          0.9743
         ],
-        "overreach_events": 7,
-        "mrl_ranking_events": 7,
+        "overreach_events": 5,
+        "mrl_ranking_events": 5,
         "abstentions": 0
       }
     },
     "gated": {
       "trusted_deterministic": {
-        "TP": 10,
+        "TP": 11,
         "FP": 0,
         "neutral": 0,
         "borderline": 0,
@@ -79,7 +79,7 @@
         "fp_rate": 0.0,
         "fp_rate_ci95": [
           0.0,
-          0.2775
+          0.2588
         ],
         "overreach_events": 0,
         "mrl_ranking_events": 0,
@@ -88,9 +88,9 @@
       "untrusted_oracle": {
         "TP": 1,
         "FP": 1,
-        "neutral": 5,
+        "neutral": 3,
         "borderline": 0,
-        "suppressed": 0,
+        "suppressed": 1,
         "fp_rate": 0.5,
         "fp_rate_ci95": [
           0.0945,
@@ -105,7 +105,7 @@
   "by_task_family": {
     "ungated": {
       "cds_cai_report": {
-        "TP": 5,
+        "TP": 4,
         "FP": 0,
         "neutral": 0,
         "borderline": 0,
@@ -113,7 +113,7 @@
         "fp_rate": 0.0,
         "fp_rate_ci95": [
           0.0,
-          0.4345
+          0.4899
         ],
         "overreach_events": 0,
         "mrl_ranking_events": 0,
@@ -135,21 +135,6 @@
         "abstentions": 0
       },
       "cds_mfe_report": {
-        "TP": 2,
-        "FP": 0,
-        "neutral": 0,
-        "borderline": 0,
-        "suppressed": 0,
-        "fp_rate": 0.0,
-        "fp_rate_ci95": [
-          0.0,
-          0.6576
-        ],
-        "overreach_events": 0,
-        "mrl_ranking_events": 0,
-        "abstentions": 0
-      },
-      "cds_relative_compare": {
         "TP": 3,
         "FP": 0,
         "neutral": 0,
@@ -164,19 +149,64 @@
         "mrl_ranking_events": 0,
         "abstentions": 0
       },
+      "cds_relative_compare": {
+        "TP": 2,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.6576
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
       "cross_family_expression": {
         "TP": 0,
         "FP": 0,
-        "neutral": 4,
+        "neutral": 3,
         "borderline": 0,
         "suppressed": 0,
         "fp_rate": null,
         "fp_rate_ci95": null,
         "overreach_events": 0,
-        "mrl_ranking_events": 4,
+        "mrl_ranking_events": 3,
         "abstentions": 0
       },
       "junction_quality": {
+        "TP": 0,
+        "FP": 2,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 1.0,
+        "fp_rate_ci95": [
+          0.3424,
+          1.0
+        ],
+        "overreach_events": 2,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "mrl_optimum": {
+        "TP": 1,
+        "FP": 1,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.5,
+        "fp_rate_ci95": [
+          0.0945,
+          0.9055
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 2,
+        "abstentions": 0
+      },
+      "utr3_stability_rank": {
         "TP": 0,
         "FP": 3,
         "neutral": 0,
@@ -190,41 +220,11 @@
         "overreach_events": 3,
         "mrl_ranking_events": 0,
         "abstentions": 0
-      },
-      "mrl_optimum": {
-        "TP": 2,
-        "FP": 1,
-        "neutral": 0,
-        "borderline": 0,
-        "suppressed": 0,
-        "fp_rate": 0.3333333333333333,
-        "fp_rate_ci95": [
-          0.0615,
-          0.7923
-        ],
-        "overreach_events": 0,
-        "mrl_ranking_events": 3,
-        "abstentions": 0
-      },
-      "utr3_stability_rank": {
-        "TP": 0,
-        "FP": 4,
-        "neutral": 0,
-        "borderline": 0,
-        "suppressed": 0,
-        "fp_rate": 1.0,
-        "fp_rate_ci95": [
-          0.5101,
-          1.0
-        ],
-        "overreach_events": 4,
-        "mrl_ranking_events": 0,
-        "abstentions": 0
       }
     },
     "gated": {
       "cds_cai_report": {
-        "TP": 4,
+        "TP": 5,
         "FP": 0,
         "neutral": 0,
         "borderline": 0,
@@ -232,7 +232,7 @@
         "fp_rate": 0.0,
         "fp_rate_ci95": [
           0.0,
-          0.4899
+          0.4345
         ],
         "overreach_events": 0,
         "mrl_ranking_events": 0,
@@ -313,9 +313,9 @@
       "utr3_stability_rank": {
         "TP": 0,
         "FP": 0,
-        "neutral": 2,
+        "neutral": 0,
         "borderline": 0,
-        "suppressed": 0,
+        "suppressed": 1,
         "fp_rate": null,
         "fp_rate_ci95": null,
         "overreach_events": 0,
@@ -324,30 +324,30 @@
       }
     }
   },
-  "tp_retention": 0.7857142857142857,
+  "tp_retention": 1.0,
   "tp_counts": {
-    "ungated": 14,
-    "gated": 11
+    "ungated": 12,
+    "gated": 12
   },
-  "fp_relative_reduction": 0.7708333333333334,
+  "fp_relative_reduction": 0.7692307692307692,
   "go_no_go": {
     "fp_reduction_gate": 0.5,
     "tp_retention_gate": 0.9,
     "fp_reduction_pass": true,
-    "tp_retention_pass": false
+    "tp_retention_pass": true
   },
   "per_task_matrix": {
     "cds_cai_report_0": {
       "ungated": {
-        "TP": 2
+        "TP": 1
       },
       "gated": {
-        "TP": 1
+        "TP": 2
       }
     },
     "cds_relative_compare_0": {
       "ungated": {
-        "TP": 2
+        "TP": 1
       },
       "gated": {
         "TP": 1
@@ -355,15 +355,12 @@
     },
     "utr3_stability_rank_0": {
       "ungated": {
-        "FP": 2
-      },
-      "gated": {
-        "neutral": 1
+        "FP": 1
       }
     },
     "cross_family_expression_0": {
       "ungated": {
-        "neutral": 2
+        "neutral": 1
       },
       "gated": {
         "neutral": 1
@@ -371,12 +368,12 @@
     },
     "junction_quality_0": {
       "ungated": {
-        "FP": 2
+        "FP": 1
       }
     },
     "mrl_optimum_0": {
       "ungated": {
-        "TP": 2
+        "TP": 1
       },
       "gated": {
         "TP": 1
@@ -416,7 +413,7 @@
     },
     "cds_mfe_report_1": {
       "ungated": {
-        "TP": 1
+        "TP": 2
       },
       "gated": {
         "TP": 1
@@ -449,14 +446,14 @@
     "utr3_stability_rank_1": {
       "ungated": {
         "FP": 1
+      },
+      "gated": {
+        "suppressed": 1
       }
     },
     "utr3_stability_rank_2": {
       "ungated": {
         "FP": 1
-      },
-      "gated": {
-        "neutral": 1
       }
     },
     "cross_family_expression_1": {
@@ -492,8 +489,8 @@
   "gate_engagement": {
     "blocked_plan_requests": 5,
     "claim_gate_verdicts": {
-      "pass": 14,
-      "reject": 0,
+      "pass": 13,
+      "reject": 1,
       "downgrade": 3
     },
     "abstentions": 0

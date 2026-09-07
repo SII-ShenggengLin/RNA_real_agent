@@ -1,0 +1,178 @@
+{
+  "experiment": "exp24_production_campaign",
+  "generated": "2026-09-06T12:13:57",
+  "capgate_policy": "advisory (regression convention; see docstring)",
+  "services": "pre-warmed via experiments/exp1_bring_up_services.sh (GPU-pinned 0/1/2)",
+  "measurement": "subprocess wall clock per task/session; successful runs only",
+  "shared_instrument_for": [
+    "fig2a_coverage",
+    "fig2h_audit_trail",
+    "fig2i_runtime_ecdf",
+    "fig4f_gate_decisions"
+  ],
+  "total_runs": 241,
+  "n_success": 241,
+  "all_pass": true,
+  "grand_elapsed_s": {
+    "median": 129.8,
+    "mean": 240.1,
+    "min": 2.5,
+    "max": 4297.5
+  },
+  "per_workflow": {
+    "aso_target_screening": {
+      "n_runs": 17,
+      "n_success": 17,
+      "n_rnadesign210": 14,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 3.8,
+        "median": 17.1,
+        "mean": 45.9,
+        "p90": 68.0,
+        "max": 307.6
+      }
+    },
+    "full_length_mrna_design": {
+      "n_runs": 25,
+      "n_success": 25,
+      "n_rnadesign210": 22,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 75.9,
+        "median": 219.6,
+        "mean": 438.9,
+        "p90": 939.1,
+        "max": 2899.3
+      }
+    },
+    "ires_prediction": {
+      "n_runs": 15,
+      "n_success": 15,
+      "n_rnadesign210": 12,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 49.5,
+        "median": 109.3,
+        "mean": 142.5,
+        "p90": 328.6,
+        "max": 355.0
+      }
+    },
+    "mrna_cds_design": {
+      "n_runs": 21,
+      "n_success": 21,
+      "n_rnadesign210": 19,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 60.5,
+        "median": 152.0,
+        "mean": 494.3,
+        "p90": 1043.8,
+        "max": 4297.5
+      }
+    },
+    "mrna_sequence_scoring": {
+      "n_runs": 15,
+      "n_success": 15,
+      "n_rnadesign210": 13,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 2.5,
+        "median": 2.9,
+        "mean": 3.7,
+        "p90": 9.6,
+        "max": 9.7
+      }
+    },
+    "rna_aptamer_design": {
+      "n_runs": 22,
+      "n_success": 22,
+      "n_rnadesign210": 18,
+      "n_pa_regression": 4,
+      "failures": [],
+      "elapsed_s": {
+        "min": 144.4,
+        "median": 282.8,
+        "mean": 585.3,
+        "p90": 2102.2,
+        "max": 2263.9
+      }
+    },
+    "rna_secondary_structure_design": {
+      "n_runs": 27,
+      "n_success": 27,
+      "n_rnadesign210": 25,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 26.8,
+        "median": 87.1,
+        "mean": 83.9,
+        "p90": 118.2,
+        "max": 218.7
+      }
+    },
+    "rna_small_molecule_interaction": {
+      "n_runs": 18,
+      "n_success": 18,
+      "n_rnadesign210": 15,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 2.7,
+        "median": 14.9,
+        "mean": 18.4,
+        "p90": 42.9,
+        "max": 44.2
+      }
+    },
+    "rna_tertiary_structure_design": {
+      "n_runs": 22,
+      "n_success": 22,
+      "n_rnadesign210": 20,
+      "n_pa_regression": 2,
+      "failures": [],
+      "elapsed_s": {
+        "min": 131.4,
+        "median": 276.4,
+        "mean": 319.3,
+        "p90": 431.2,
+        "max": 1121.3
+      }
+    },
+    "sgrna_design": {
+      "n_runs": 34,
+      "n_success": 34,
+      "n_rnadesign210": 30,
+      "n_pa_regression": 4,
+      "failures": [],
+      "elapsed_s": {
+        "min": 58.8,
+        "median": 135.6,
+        "mean": 188.0,
+        "p90": 467.0,
+        "max": 805.9
+      }
+    },
+    "sirna_design": {
+      "n_runs": 25,
+      "n_success": 25,
+      "n_rnadesign210": 22,
+      "n_pa_regression": 3,
+      "failures": [],
+      "elapsed_s": {
+        "min": 58.0,
+        "median": 148.8,
+        "mean": 185.8,
+        "p90": 336.7,
+        "max": 493.9
+      }
+    }
+  }
+}

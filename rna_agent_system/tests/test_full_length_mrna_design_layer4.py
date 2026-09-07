@@ -152,7 +152,9 @@ def _build_full_registry(ires_score: float = 0.1) -> _StubRegistry:
             "predict_rna_secondary_structure_with_linearfold",
             {
                 "structure": "." * 300,
-                "mfe": -55.0,
+                # mild MFE so the Kozak admission gates (U3 cap-entry -30 on
+                # 60-nt windows, U4 scanning-path -61) pass for every construct
+                "mfe": -8.0,
             },
         ),
         "compute_rna_sequence_gc_content": _StubCapability(
@@ -171,14 +173,14 @@ def _build_full_registry(ires_score: float = 0.1) -> _StubRegistry:
             "compute_cai_for_cds_sequence",
             {"cai_score": 0.85, "species": "Homo sapiens"},
         ),
-        # UTR design tools
+        # UTR design tools (AUG-free / ARE-free so the admission rules pass)
         "design_5utr_with_gemorna": _StubCapability(
             "design_5utr_with_gemorna",
-            {"generated_sequence": "AUGC" * 15},  # 60 nt
+            {"generated_sequence": "ACGU" * 15},  # 60 nt
         ),
         "design_3utr_with_gemorna": _StubCapability(
             "design_3utr_with_gemorna",
-            {"generated_sequence": "AUGC" * 15},  # 60 nt
+            {"generated_sequence": "ACGU" * 15},  # 60 nt
         ),
         # UTR prediction tools
         "predict_5utr_mrl_with_gemorna": _StubCapability(
@@ -337,11 +339,13 @@ def test_quality_agent_builds_full_length_context():
     assert "utr5_mrl_range" in stats
     assert "utr3_stability_range" in stats
 
-    # Best candidate breakdown should exist since we have candidates
+    # Best candidate breakdown should exist since we have candidates. The
+    # stub MRL oracle ties every 5'UTR at 5.0, so the benchmark-first
+    # tie-break (DECISIONS (bb)) can legitimately win the best slot.
     best_breakdown = ctx.get("best_candidate_breakdown")
     assert best_breakdown is not None
-    assert best_breakdown.get("utr5_preset") == "short"
-    assert best_breakdown.get("utr3_preset") == "short"
+    assert best_breakdown.get("utr5_preset") in {"short", "benchmark"}
+    assert best_breakdown.get("utr3_preset") in {"short", "benchmark"}
 
 
 def test_quality_agent_review_with_mocked_llm():

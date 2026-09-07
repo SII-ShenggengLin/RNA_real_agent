@@ -997,7 +997,10 @@ TOOL_SPECS: Dict[str, ToolSpec] = {
         kind=ToolKind.predictor,
         oracle=OracleDescriptor(
             oracle_id="gemorna_3utr_stability",
-            evidence_use=OracleEvidenceUse.ranking_objective,
+            # DECISIONS (bb): demoted from ranking_objective to
+            # scoring_annotation - the oracle is unprofiled under every
+            # registered task type and must not order candidate ranking.
+            evidence_use=OracleEvidenceUse.scoring_annotation,
             governance=OracleGovernance.enforce,
             default_task_type="full_length_mrna",
             oracle_version="0.2.0",

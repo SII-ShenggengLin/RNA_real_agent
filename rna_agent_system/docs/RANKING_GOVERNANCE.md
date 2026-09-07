@@ -7,10 +7,15 @@
 > **Related**: [`DECISIONS.md`](DECISIONS.md) (e), (j), (k), (l), (o), (p) · [`WORKFLOWS.md`](WORKFLOWS.md)
 > **Governing principle**: the verdicts in (e)/(j)/(l) are *preserved unchanged* — this design changes only how the ranking layer *consumes* them.
 >
-> **Implementation corrections (2026-08-21)**: three facts established while
-> implementing, superseding the original design draft: (1) full-length
-> `utr3_stability` is backed by `gemorna_3utr_stability` (no SelfModel
-> records → keep + `unprofiled` flag); RNASTOP's `overall_stability` is a
+> **Implementation corrections (2026-08-21; amended 2026-09-07 by DECISIONS (bb))**:
+> three facts established while implementing, superseding the original design
+> draft: (1) full-length `utr3_stability` is backed by `gemorna_3utr_stability`
+> (no SelfModel records → keep + `unprofiled` flag) — **amended 2026-09-07
+> (DECISIONS (bb)): the dim was removed from the full-length ASF objective set
+> entirely and its ToolSpec evidence use demoted to `scoring_annotation`; the
+> metric is still computed and reported as a diagnostic, and 3'UTR pool
+> selection is governed by the UTR admission rules plus whole-construct
+> objectives only**; RNASTOP's `overall_stability` is a
 > report-only diagnostic, not an ASF dimension, so the E18 ranking failure
 > demotes nothing in the current objective sets. (2) sgrNA
 > `crisot_specificity_component` is aggregate compute (`ToolKind.compute`),
@@ -126,7 +131,8 @@ tool-call gating can never disagree about what a record means.
 Each workflow declares its `ObjectiveRef` table next to its existing `_OBJECTIVES`
 tuple and filters before calling `apply_reference_point_ranking`:
 
-- `full_length_mrna_design.py:695` — refs for `utr5_mrl`, `utr3_stability`
+- `full_length_mrna_design.py` — ref for `utr5_mrl` only (DECISIONS (bb): the
+  `utr3_stability` ref was removed with the dim's demotion to a diagnostic)
 - `rna_aptamer_design.py:1108` — refs for all three components
 - `sirna_design.py:543` — no oracle-backed dims (all compute); empty ref list, zero behavior change
 - `aso_target_screening.py` (v1.1.0, 2026-08-22) — same shape as siRNA: accessibility/binding are deterministic Vienna computes; empty ref list, zero demotions
@@ -141,12 +147,11 @@ dims. The two mechanisms are distinct and both surface in state:
 `objectives` list. Weight renormalization (sgRNA/tertiary `weight_*` inputs) proceeds
 over kept dims only, exactly as the existing code already renormalizes over ranking dims.
 
-For `full_length_mrna_design`: the locked user-facing `reference_point` keys
-(`utr5_mrl`, `utr3_stability`, `full_mfe_score`) remain accepted input. If
-`utr3_stability` is demoted, a reference point containing it no longer silently
-restricts the ranking — the `asf_ranking_note` must state *why*
-(`utr3_stability demoted by ranking governance: E18 ranking ρ=0.579 < 0.6`), preserving
-the loud-restriction semantics of (o).
+For `full_length_mrna_design` (DECISIONS (bb) amendment): the user-facing
+`reference_point` keys are `utr5_mrl` and `full_mfe_score`. `utr3_stability` is
+rejected loudly at input validation with the demotion reason (unprofiled oracle;
+ranking on it contradicted the governance narrative) rather than demoted
+mid-ranking.
 
 ### 3.5 Gated annotations are expected outcomes, not errors
 

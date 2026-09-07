@@ -369,6 +369,58 @@ structure/small-molecule campaigns and every GenNav endpoint experiment
 (exp26/27/28/30/31 — all flag-pinned or instrument-built pools). Tests:
 672 passed, 1 skipped (baseline 646 + navigation-default suite).
 
+### (bb) Full-length two-step redesign for the wet-lab programme (2026-09-07, user-directed)
+
+`full_length_mrna_design` was rebuilt around a two-step protocol and a
+governed UTR pool, motivated by the wet-lab validation programme (unmodified
+nucleotides, five-arm comparison vs wild-type / LinearDesign / GEMORNA /
+RNARL / this system). Four changes, all literature-anchored:
+
+1. **Two-step design** (the GEMORNA-paper protocol order): step 1 selects
+   ≤3 delivered CDS (best per navigation profile; static recipe keeps its
+   top three) by the shared CDS combined score; step 2 pairs the selected
+   CDS with one UTR pool per run. UTR draws are never resampled per CDS, so
+   CDS ranking cannot be confounded by UTR sampling variance.
+2. **Benchmark-anchored pool** (`agent_core/generation/utr_pool.py` +
+   assertion-checked asset `agent_core/data/utr_benchmarks/`): 12 GEMORNA
+   5'UTR + 10 GEMORNA 3'UTR draws (the GEMORNA paper's own screening scale)
+   plus the BNT162b2 UTR pair (5'UTR in the template-verified 51-nt
+   alpha-globin-derived form from GenBank PP544446; 3'UTR the 94-nt
+   AES–mtRNR1 form published verbatim in the LinearDesign supplement), the
+   LinearDesign-paper synthetic 5'UTR, and the natural HBA1 pair (RefSeq
+   NM_000558.5; three-source verified). The 5'UTR shortlist (≤6) is ranked
+   by the certified MRL oracle — a generated UTR wins only by outranking
+   the clinical benchmarks in-silico. Every sequence was extracted
+   programmatically from its primary source (zero manual transcription);
+   the asset verifies md5/length/purity/rule-passage at load time.
+3. **Literature-grounded admission rules** — only rules with citable
+   quantitative thresholds: U1 no-AUG in designed 5'UTRs (Kozak
+   1986/1989 scanning model; Sample et al. 2019 MPRA), U2 no Class-II
+   tandem-AUUUA ARE in 3'UTRs (Chen & Shyu 1995), U3 cap-entry structure
+   (5'-terminal 60-nt window MFE > −30 kcal/mol; Kozak 1989), U4
+   scanning-path stall (no 150-nt window ≤ −61 kcal/mol through AUG+15;
+   Kozak 1989 hp7). Deliberately NOT implemented (no citable threshold —
+   do not reinvent): U-content caps and GU-rich TLR motif counts
+   (Vaidyanathan 2018 recodes globally, publishes no per-sequence rule),
+   and internal AAUAAA screens (a delivered mRNA never meets the nuclear
+   cleavage machinery; BNT162b2's own 5'UTR carries a cap-proximal AAUAAA).
+4. **`utr3_stability` demoted** from ASF ranking objective to a report-only
+   diagnostic (ToolSpec evidence use → `scoring_annotation`): the
+   gemorna_3utr_stability oracle is unprofiled under every registered task
+   type, and ranking on an unprofiled oracle contradicted (e). 3'UTR pool
+   selection is governed by the admission rules + whole-construct
+   objectives only; `reference_point` keys naming it fail loudly.
+
+The output construct stays 5'UTR + CDS + 3'UTR (no poly(A)/cap emission —
+user direction 2026-09-07: the wet-lab team caps and tails by protocol).
+**Impact register + re-runs**: Exp 24 (Figs 2a/2h/2i/4f — the 22 full-length
+tasks and PA full-length sessions), Exp 18 (Fig 4d — E3-M task rebuild), Exp
+37 caseA (Table 1 §2.7). Unaffected: exp26/27/28/30/31 (self-contained
+instruments with frozen UTR caches — the navigation layer they measure is
+unchanged), exp2/3/5/14/25 and all aptamer/siRNA/structure campaigns. The
+in-flight pre-change exp37 caseA run is retained as the internal pre-change
+register (exp27→28 pattern). Tests: 686 passed, 1 skipped.
+
 ---
 
 ## Part 2 — Confirmed Positive Results (established, citable)

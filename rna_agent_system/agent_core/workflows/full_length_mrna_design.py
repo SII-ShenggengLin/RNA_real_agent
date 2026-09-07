@@ -1,8 +1,37 @@
 """Full-length mRNA design workflow — 5'UTR + CDS + 3'UTR (Layer 2).
 
 Protein sequence → CDS candidates via MrnaCdsDesignWorkflow (generate + evaluate)
-→ UTR combinations (GEMORNA short/medium/long) → full-length / UTR incremental
-evaluation → full-length scoring → ranking → WorkflowResult.
+→ CDS selection → UTR pool → full-length assembly → full-length / UTR
+incremental evaluation → full-length scoring → ranking → WorkflowResult.
+
+Two-step design (DECISIONS (bb), 2026-09-07 wet-lab-preparation redesign,
+following the GEMORNA Science 2025 full-length protocol "first select the
+optimal CDS, then pair UTRs"):
+
+* Step 1 — CDS generation via MrnaCdsDesignWorkflow (delegation unchanged;
+  GenNav-λ navigation by default), then CDS evaluation and selection of at
+  most one CDS per navigation profile (expression/stability/balanced; the
+  static recipe selects its top three), ranked by the shared CDS combined
+  score. UTR draws are never resampled per CDS, so CDS ranking cannot be
+  confounded by UTR sampling variance.
+* Step 2 — one UTR pool per run at the GEMORNA screening scale (12 generated
+  5'UTRs + 10 generated 3'UTRs across the short/medium/long presets) plus the
+  assertion-verified benchmark pool (BNT162b2 UTR pair, LinearDesign-paper
+  5'UTR, natural HBA1 pair — ``agent_core/generation/utr_pool.py``). The pool
+  passes the literature-grounded admission rules (U1 no-upstream-AUG,
+  U2 no-Class-II-ARE) and the assembled constructs pass the Kozak structure
+  gates (U3 cap-entry, U4 scanning-path stall); the 5'UTR shortlist is ranked
+  by the certified MRL oracle and a generated UTR is therefore only selected
+  when it outranks the clinical benchmarks in-silico.
+
+Ranking governance: the ASF objective set is (cds_component, utr5_mrl,
+full_mfe_score). ``utr3_stability`` was demoted from a ranking objective to a
+report-only diagnostic dimension (DECISIONS (bb)): its GEMORNA predictor
+oracle carries no profiling evidence under this task type (SelfModel
+``unprofiled``), and ranking on an unprofiled oracle contradicted the
+platform's own governance narrative. The metric is still computed and
+reported for every candidate; 3'UTR selection is governed by the admission
+rules and the whole-construct objectives only.
 
 Architecture: Full-length workflow reuses MrnaCdsDesignWorkflow for CDS
 generation and evaluation; only full-length and UTR metrics are computed here.
@@ -31,6 +60,7 @@ from agent_core.constants.species import (
 )
 from agent_core.capabilities.base import CapabilityRegistry
 from agent_core.file_manager import save_sequence
+from agent_core.generation import utr_pool
 from agent_core.workflow_models import Candidate, WorkflowResult
 from agent_core.workflows.base import BaseDomainWorkflow, SubWorkflowEvaluator
 from agent_core.workflows.evaluators import (
@@ -58,11 +88,15 @@ _LOGGER = logging.getLogger("agent_core.workflows.full_length_mrna_design")
 _UTR_PRESETS: list[str] = ["short", "medium", "long"]
 
 # User-facing objectives used for reference-point (ASF) selection and the
-# Pareto frontier. Junction scores remain internal diagnostics.
+# Pareto frontier. Junction scores and utr3_stability remain internal
+# diagnostics: utr3_stability was demoted from a ranking objective to a
+# report-only diagnostic (DECISIONS (bb)) because its GEMORNA predictor
+# oracle carries no profiling evidence under this task type (SelfModel
+# ``unprofiled``) and ranking on an unprofiled oracle contradicted the
+# platform's governance narrative.
 _USER_FACING_OBJECTIVES: tuple[str, ...] = (
     "cds_component",
     "utr5_mrl",
-    "utr3_stability",
     "full_mfe_score",
 )
 
@@ -77,11 +111,6 @@ _ORACLE_BACKED_OBJECTIVES: dict[str, ObjectiveRef] = {
         dim="utr5_mrl",
         tool_name="predict_5utr_mrl_with_gemorna",
         oracle_id="gemorna_5utr_mrl",
-    ),
-    "utr3_stability": ObjectiveRef(
-        dim="utr3_stability",
-        tool_name="predict_3utr_stability_with_gemorna",
-        oracle_id="gemorna_3utr_stability",
     ),
 }
 
@@ -183,7 +212,7 @@ class FullLengthMrnaDesignInput(BaseModel):
         default=DEFAULT_CAI_SPECIES,
         description=f"Species for CAI computation. Built-in: {format_cai_species_aliases()}.",
     )
-    utr_mode: Literal["short", "medium", "long", "all"] = Field(default="all", description="UTR generation mode. 'gemorna' generates 5'/3' UTRs with GEMORNA; 'none' skips UTR generation.")
+    utr_mode: Literal["short", "medium", "long", "all"] = Field(default="all", description="UTR pool presets drawn from GEMORNA generation (DECISIONS (bb)): 'all' draws 12 5'UTRs + 10 3'UTRs across short/medium/long (the GEMORNA paper's screening scale); a single preset draws only that preset. The assertion-verified benchmark UTR pool (BNT162b2 pair, LinearDesign-paper 5'UTR, natural HBA1 pair) is always included and competes in the same admission + ASF ranking.")
     run_fold: bool = Field(default=True, description="Whether to fold the full-length mRNA sequence for secondary-structure evaluation.")
     run_gc: bool = Field(default=True, description="Whether to compute GC-content of the full-length mRNA sequence.")
     reference_point: Optional[dict[str, float]] = Field(
@@ -191,9 +220,11 @@ class FullLengthMrnaDesignInput(BaseModel):
         description=(
             "Per-objective reference point for Achievement Scalarizing Function selection. "
             "If omitted, a utopian point is derived from the candidate pool. "
-            "User-facing keys: utr5_mrl, utr3_stability, full_mfe_score. "
+            "User-facing keys: utr5_mrl, full_mfe_score. "
             "Use target_cds_mfe and target_cds_cai to specify CDS objectives; they are "
-            "automatically converted into the internal cds_component."
+            "automatically converted into the internal cds_component. "
+            "utr3_stability is no longer a ranking objective (demoted to a report-only "
+            "diagnostic, DECISIONS (bb)) and is rejected here loudly."
         ),
     )
     target_cds_mfe: Optional[float] = Field(
@@ -250,9 +281,18 @@ class FullLengthMrnaDesignInput(BaseModel):
         it is synthesized from target_cds_mfe and target_cds_cai when provided.
         """
         if self.reference_point is not None:
-            allowed = {"utr5_mrl", "utr3_stability", "full_mfe_score"}
+            allowed = {"utr5_mrl", "full_mfe_score"}
             unknown = set(self.reference_point.keys()) - allowed
             if unknown:
+                if "utr3_stability" in unknown:
+                    raise ValueError(
+                        "reference_point key 'utr3_stability' is no longer a ranking "
+                        "objective: the GEMORNA 3'UTR stability predictor is unprofiled "
+                        "under this task type and was demoted to a report-only "
+                        "diagnostic dimension (DECISIONS (bb)). Allowed: "
+                        f"{allowed}. Use target_cds_mfe and target_cds_cai to specify "
+                        "CDS objectives."
+                    )
                 raise ValueError(
                     f"reference_point contains unknown objectives: {unknown}. "
                     f"Allowed: {allowed}. "
@@ -343,10 +383,13 @@ class FullLengthMrnaDesignWorkflow(
     input_model = FullLengthMrnaDesignInput
     description = (
         "Design full-length mRNA (5'UTR + CDS + 3'UTR) from protein sequence: "
-        "CDS sub-design via MrnaCdsDesignWorkflow (GenNav-λ constraint "
-        "navigation by default under the platform 'all' recipe), GEMORNA UTR "
-        "generation, incremental full-length + UTR evaluation, CapGate-"
-        "governed ASF ranking."
+        "two-step design (DECISIONS (bb)) — CDS sub-design via "
+        "MrnaCdsDesignWorkflow (GenNav-λ constraint navigation by default) "
+        "with per-profile CDS selection, then one UTR pool per run (GEMORNA "
+        "screening-scale draws + verified benchmark UTRs) under "
+        "literature-grounded admission rules and Kozak structure gates, "
+        "incremental full-length + UTR evaluation, CapGate-governed ASF "
+        "ranking over (cds_component, utr5_mrl, full_mfe_score)."
     )
     required_capabilities = [
         # UTR design / prediction
@@ -451,15 +494,20 @@ class FullLengthMrnaDesignWorkflow(
         return result
 
     def generate_candidates(self, inp: FullLengthMrnaDesignInput) -> list[Candidate]:
-        """Generate full-length candidates: CDS baseline + UTR append.
+        """Generate full-length candidates via the two-step design (DECISIONS (bb)).
 
-        Step 1: Delegate CDS generation to MrnaCdsDesignWorkflow (evaluate via
-        SubWorkflowEvaluator in ``evaluate()``) — GenNav-λ navigation by
-        default (up to 15 delivered CDS; static recipe up to 6).
-        Step 2: For each CDS, generate 3×3 UTR combinations.
-        Total: navigation ≤ 15 × 9 = 135; static ≤ 6 × 9 = 54 candidates.
+        Step 1: Delegate CDS generation to MrnaCdsDesignWorkflow (GenNav-λ
+        navigation by default: up to 15 delivered CDS; static recipe up to 6),
+        evaluate every delivered CDS once (cached by sequence for ``evaluate()``)
+        and select at most one CDS per navigation profile — the static recipe
+        selects its top three — by the shared CDS combined score.
+        Step 2: Build one UTR pool per run (GEMORNA screening-scale draws +
+        benchmark UTRs), apply the literature-grounded admission rules, rank
+        the 5'UTR shortlist by the certified MRL oracle, and assemble the
+        selected CDS × shortlist combinations under the Kozak structure gates.
+        Total: ≤ 3 CDS × ≤ 6 × ≤ 6 = ≤ 108 candidates (before gates).
         """
-        # ── Step 1: Generate CDS candidates (evaluation deferred to evaluate()) ──
+        # ── Step 1: Generate CDS candidates via the CDS workflow ──
         # navigation passes through verbatim: None = inherit the CDS-layer
         # platform default (v2.0.0 GenNav-λ under the default 'all' recipe).
         cds_inp = MrnaCdsDesignInput(
@@ -486,11 +534,26 @@ class FullLengthMrnaDesignWorkflow(
             len(cds_candidates),
         )
 
-        # ── Step 2: UTR combinations ──
-        utr_presets = self._resolve_utr_presets(inp.utr_mode)
-        full_candidates: list[Candidate] = []
+        # ── Step 1b: two-step design — evaluate and select ≤3 CDS ──
+        selected_cds = self._select_cds_for_full_length(cds_candidates)
+        if not selected_cds:
+            _LOGGER.warning("cds_selection produced no candidates")
+            return []
 
-        for cds_cand in cds_candidates:
+        # ── Step 2: UTR pool (built once per run) ──
+        pool = self._build_utr_pool(inp)
+
+        # ── Step 3: assemble full-length candidates under the Kozak gates ──
+        full_candidates: list[Candidate] = []
+        gate_rejects: list[dict[str, Any]] = []
+        fold_cache: dict[str, Optional[float]] = {}
+
+        def fold_mfe(seq: str) -> Optional[float]:
+            if seq not in fold_cache:
+                fold_cache[seq] = self._fold_mfe(seq)
+            return fold_cache[seq]
+
+        for cds_cand in selected_cds:
             cds_seq = cds_cand.sequence
             if len(cds_seq) % 3 != 0:
                 _LOGGER.warning(
@@ -500,42 +563,56 @@ class FullLengthMrnaDesignWorkflow(
                 )
                 continue
 
-            for utr5_preset in utr_presets:
-                utr5_seq = self._generate_utr("5utr", utr5_preset)
-                if utr5_seq is None:
-                    continue
-                for utr3_preset in utr_presets:
-                    utr3_seq = self._generate_utr("3utr", utr3_preset)
-                    if utr3_seq is None:
+            for u5 in pool["utr5_shortlist"]:
+                for u3 in pool["utr3_shortlist"]:
+                    full_seq = u5["sequence"] + cds_seq + u3["sequence"]
+                    cap = utr_pool.check_cap_entry(full_seq, fold_mfe)
+                    stall = utr_pool.check_scanning_path(full_seq, len(u5["sequence"]), fold_mfe)
+                    if not (cap["ok"] and stall["ok"]):
+                        gate_rejects.append(
+                            {
+                                "cds_source": cds_cand.source,
+                                "utr5_id": u5["id"],
+                                "utr3_id": u3["id"],
+                                "cap_entry": cap,
+                                "scanning_path": stall,
+                            }
+                        )
                         continue
-
-                    full_seq = utr5_seq + cds_seq + utr3_seq
                     candidate = Candidate(
                         sequence=full_seq,
                         sequence_type="mrna",
-                        source=f"full_length:{cds_cand.source}:utr5_{utr5_preset}:utr3_{utr3_preset}",
+                        source=f"full_length:{cds_cand.source}:utr5_{u5['id']}:utr3_{u3['id']}",
                         metadata={
-                            "utr5_sequence": utr5_seq,
+                            "utr5_sequence": u5["sequence"],
                             "cds_sequence": cds_seq,
-                            "utr3_sequence": utr3_seq,
-                            "utr5_length": len(utr5_seq),
-                            "utr3_length": len(utr3_seq),
-                            "utr5_preset": utr5_preset,
-                            "utr3_preset": utr3_preset,
+                            "utr3_sequence": u3["sequence"],
+                            "utr5_length": len(u5["sequence"]),
+                            "utr3_length": len(u3["sequence"]),
+                            "utr5_id": u5["id"],
+                            "utr3_id": u3["id"],
+                            "utr5_origin": u5["origin"],
+                            "utr3_origin": u3["origin"],
+                            "utr5_preset": u5["preset"],
+                            "utr3_preset": u3["preset"],
                             "cds_length": len(cds_seq),
                             "cds_source": cds_cand.source,
+                            "cds_nav_bands": list(cds_cand.metadata.get("nav_bands", [])),
                             "protein_sequence": inp.protein_sequence,
                             "cai_species": inp.cai_species,
+                            "kozak_gates": {"cap_entry": cap, "scanning_path": stall},
                         },
                     )
                     full_candidates.append(candidate)
                     _LOGGER.info(
                         "full_candidate_generated cds_source=%s utr5=%s utr3=%s total_len=%d",
                         cds_cand.source,
-                        utr5_preset,
-                        utr3_preset,
+                        u5["id"],
+                        u3["id"],
                         len(full_seq),
                     )
+
+        self._workflow_state.setdefault("_utr_pool", {})["gate_rejects"] = gate_rejects
 
         # Deduplicate by full sequence
         seen: set[str] = set()
@@ -545,12 +622,255 @@ class FullLengthMrnaDesignWorkflow(
                 seen.add(c.sequence)
                 unique.append(c)
 
+        if not unique:
+            # Benchmarks always pass U1–U4 (asset assertion + A-rich leaders),
+            # so an empty pool is a hard anomaly — surface it loudly.
+            self._workflow_state["_utr_assembly_empty"] = (
+                f"all {len(gate_rejects)} assembled combinations rejected by Kozak gates"
+            )
+            _LOGGER.error("utr_assembly_empty rejects=%d", len(gate_rejects))
+
         _LOGGER.info(
-            "full_candidates_generated total=%d unique=%d",
+            "full_candidates_generated total=%d unique=%d gate_rejects=%d",
             len(full_candidates),
             len(unique),
+            len(gate_rejects),
         )
         return unique
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Two-step design helpers (DECISIONS (bb))
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _select_cds_for_full_length(
+        self, cds_candidates: list[Candidate]
+    ) -> list[Candidate]:
+        """Step-1 CDS selection: evaluate every delivered CDS once, then keep
+        at most one per navigation profile (best CDS combined score; the
+        static recipe keeps its top three), deduplicated by sequence.
+
+        The shared CDS scoring lives in the CDS layer
+        (``score_full_length_mrna_candidate`` → ``score_mrna_candidate``);
+        this method only decides the full-length pairing policy. Evaluation
+        runs through the same cached ``SubWorkflowEvaluator`` used by
+        ``evaluate()``, so no CDS is folded twice.
+        """
+        context: dict[str, Any] = {"workflow_state": self._workflow_state}
+        scored: list[tuple[float, Candidate]] = []
+        for cand in cds_candidates:
+            if len(cand.sequence) % 3 != 0:
+                _LOGGER.warning(
+                    "cds_length_not_multiple_of_3 source=%s len=%d",
+                    cand.source,
+                    len(cand.sequence),
+                )
+                continue
+            cand.metadata.setdefault("cds_sequence", cand.sequence)
+            metrics = self._cds_evaluator.evaluate(cand, context)
+            comp = score_full_length_mrna_candidate(metrics).get("cds_component")
+            scored.append((comp if comp is not None else float("-inf"), cand))
+
+        if not scored:
+            return []
+
+        has_nav = any(c.metadata.get("nav_bands") for _, c in scored)
+        selected: list[Candidate] = []
+        seen_seqs: set[str] = set()
+
+        def _try_pick(cand: Candidate) -> None:
+            if cand.sequence in seen_seqs:
+                return
+            seen_seqs.add(cand.sequence)
+            selected.append(cand)
+
+        if has_nav:
+            bands: list[str] = []
+            for _, cand in scored:
+                for band in cand.metadata.get("nav_bands", []):
+                    if band not in bands:
+                        bands.append(band)
+            for band in bands:
+                group_best = max(
+                    (pair for pair in scored if band in pair[1].metadata.get("nav_bands", [])),
+                    key=lambda pair: pair[0],
+                    default=None,
+                )
+                if group_best is not None:
+                    _try_pick(group_best[1])
+        else:
+            for _, cand in sorted(scored, key=lambda pair: pair[0], reverse=True)[:3]:
+                _try_pick(cand)
+
+        # Fill up to three with the global best unselected CDS (keeps pool
+        # diversity when a band's best duplicates another band's pick).
+        for _, cand in sorted(scored, key=lambda pair: pair[0], reverse=True):
+            if len(selected) >= 3:
+                break
+            _try_pick(cand)
+
+        self._workflow_state["_cds_selection"] = {
+            "policy": "two_step_best_per_band (DECISIONS (bb))",
+            "pool_size": len(scored),
+            "selected": [
+                {
+                    "source": c.source,
+                    "cds_component": next(
+                        (comp for comp, cc in scored if cc is c), None
+                    ),
+                    "nav_bands": list(c.metadata.get("nav_bands", [])),
+                }
+                for c in selected
+            ],
+        }
+        _LOGGER.info(
+            "cds_selected_for_full_length pool=%d selected=%d sources=%s",
+            len(scored),
+            len(selected),
+            [c.source for c in selected],
+        )
+        return selected
+
+    def _build_utr_pool(self, inp: FullLengthMrnaDesignInput) -> dict[str, Any]:
+        """Build the per-run UTR pool (DECISIONS (bb)).
+
+        GEMORNA draws at the paper's screening scale + the benchmark UTRs,
+        admission-screened by U1/U2; the 5'UTR shortlist is ranked by the
+        certified MRL oracle, so a generated UTR must outrank the clinical
+        benchmarks in-silico to be selected. The 3'UTR shortlist is
+        admission-survival order (benchmarks first, then generation order) —
+        a compute cap, not a ranking: ``utr3_stability`` is a report-only
+        diagnostic (DECISIONS (bb)) and no unprofiled oracle orders the pool.
+        """
+        presets = self._resolve_utr_presets(inp.utr_mode)
+        pool5: list[dict[str, Any]] = []
+        pool3: list[dict[str, Any]] = []
+
+        for e in utr_pool.load_utr_benchmarks():
+            entry = {
+                "id": e["id"],
+                "origin": "benchmark",
+                "preset": "benchmark",
+                "sequence": e["sequence"],
+                "length_nt": e["length_nt"],
+            }
+            if e["side"] == "5utr":
+                entry["admission"] = utr_pool.admit_utr5(e["sequence"])
+                pool5.append(entry)
+            else:
+                entry["admission"] = utr_pool.admit_utr3(e["sequence"])
+                pool3.append(entry)
+
+        for preset in presets:
+            for k in range(1, utr_pool.GEMORNA_5UTR_DRAWS_PER_PRESET + 1):
+                seq = self._generate_utr("5utr", preset)
+                if seq is None:
+                    continue
+                pool5.append(
+                    {
+                        "id": f"gemorna_5utr_{preset}_{k}",
+                        "origin": "gemorna",
+                        "preset": preset,
+                        "sequence": seq,
+                        "length_nt": len(seq),
+                        "admission": utr_pool.admit_utr5(seq),
+                    }
+                )
+        for preset in presets:
+            draws = utr_pool.GEMORNA_3UTR_DRAWS_PER_PRESET.get(preset, 0)
+            for k in range(1, draws + 1):
+                seq = self._generate_utr("3utr", preset)
+                if seq is None:
+                    continue
+                pool3.append(
+                    {
+                        "id": f"gemorna_3utr_{preset}_{k}",
+                        "origin": "gemorna",
+                        "preset": preset,
+                        "sequence": seq,
+                        "length_nt": len(seq),
+                        "admission": utr_pool.admit_utr3(seq),
+                    }
+                )
+
+        survivors5 = [e for e in pool5 if e["admission"]["ok"]]
+        survivors3 = [e for e in pool3 if e["admission"]["ok"]]
+
+        # 5'UTR ranking: certified MRL oracle over admission survivors. The
+        # evaluator reuses the audited capability path (pseudo-candidate).
+        context: dict[str, Any] = {"workflow_state": self._workflow_state}
+        for e in survivors5:
+            pseudo = Candidate(
+                sequence=e["sequence"],
+                sequence_type="rna",
+                source=f"utr_pool:{e['id']}",
+                metadata={"utr5_sequence": e["sequence"]},
+            )
+            mrl_metrics = self._utr5_mrl_evaluator.evaluate(pseudo, context)
+            e["predicted_mrl"] = mrl_metrics.get("utr5_predicted_mrl")
+        survivors5.sort(
+            key=lambda e: (
+                -(e["predicted_mrl"] if e["predicted_mrl"] is not None else float("-inf")),
+                # stable tie-break keeps benchmark entries ahead on exact ties
+                # (including the no-oracle MRL=None case)
+                0 if e["origin"] == "benchmark" else 1,
+                e["id"],
+            )
+        )
+        shortlist5 = survivors5[: utr_pool.UTR5_SHORTLIST_MAX]
+
+        # 3'UTR shortlist: admission-survival order (benchmarks first, then
+        # generation order) capped for compute — explicitly NOT oracle-ranked.
+        shortlist3 = sorted(
+            survivors3, key=lambda e: (0 if e["origin"] == "benchmark" else 1, e["id"])
+        )[: utr_pool.UTR3_SHORTLIST_MAX]
+
+        pool_state = {
+            "policy": "gemorna_screening_scale_plus_benchmarks (DECISIONS (bb))",
+            "utr5_pool": pool5,
+            "utr3_pool": pool3,
+            "utr5_shortlist": shortlist5,
+            "utr3_shortlist": shortlist3,
+        }
+        expected5 = len(presets) * utr_pool.GEMORNA_5UTR_DRAWS_PER_PRESET
+        expected3 = sum(utr_pool.GEMORNA_3UTR_DRAWS_PER_PRESET.get(p, 0) for p in presets)
+        pool_state["gemorna_draw_failures_5utr"] = expected5 - sum(
+            1 for e in pool5 if e["origin"] == "gemorna"
+        )
+        pool_state["gemorna_draw_failures_3utr"] = expected3 - sum(
+            1 for e in pool3 if e["origin"] == "gemorna"
+        )
+        self._workflow_state["_utr_pool"] = pool_state
+        _LOGGER.info(
+            "utr_pool_built pool5=%d(surv=%d,shortlist=%d) pool3=%d(surv=%d,shortlist=%d)",
+            len(pool5), len(survivors5), len(shortlist5),
+            len(pool3), len(survivors3), len(shortlist3),
+        )
+        return pool_state
+
+    def _fold_mfe(self, seq: str) -> Optional[float]:
+        """Fold a short subsequence via LinearFold (ViennaRNA fallback) for
+        the Kozak admission gates — same invoke pattern as
+        :class:`SecondaryStructureEvaluator`. Returns None on any failure
+        (the gate then records ``unverified`` and never rejects on outage)."""
+        try:
+            fp = save_sequence(seq, prefix="utr_admission_fold")
+            args = {"filepath": fp}
+            for cap_name in (
+                "predict_rna_secondary_structure_with_linearfold",
+                "predict_rna_secondary_structure",
+            ):
+                if not self.capabilities.has(cap_name):
+                    continue
+                res = self.capabilities.get(cap_name).invoke(
+                    args, state=self._workflow_state
+                )
+                if res.success:
+                    mfe = res.output.get("mfe")
+                    return float(mfe) if mfe is not None else None
+            return None
+        except Exception as exc:  # noqa: BLE001
+            _LOGGER.warning("utr_admission_fold_failed err=%s", exc)
+            return None
 
     def _resolve_utr_presets(self, utr_mode: str) -> list[str]:
         if utr_mode == "all":
@@ -795,8 +1115,8 @@ class FullLengthMrnaDesignWorkflow(
                 f"#{i}",
                 f"source={c.source}",
                 f"total_len={mb.get('total_length')}nt",
-                f"utr5={mb.get('utr5_length')}nt({c.metadata.get('utr5_preset', '?')})",
-                f"utr3={mb.get('utr3_length')}nt({c.metadata.get('utr3_preset', '?')})",
+                f"utr5={mb.get('utr5_length')}nt({c.metadata.get('utr5_id', '?')})",
+                f"utr3={mb.get('utr3_length')}nt({c.metadata.get('utr3_id', '?')})",
                 f"cds_source={c.metadata.get('cds_source', '?')}",
                 f"GC={mb.get('cds_gc'):.3f}" if mb.get("cds_gc") is not None else "GC=N/A",
                 f"fullGC={mb.get('full_length_gc'):.3f}" if mb.get("full_length_gc") is not None else "fullGC=N/A",

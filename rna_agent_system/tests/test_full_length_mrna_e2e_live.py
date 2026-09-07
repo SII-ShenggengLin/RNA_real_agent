@@ -458,13 +458,22 @@ class TestLayer2Workflow:
         cands = wf.generate_candidates(inp)
         assert len(cands) > 0
 
-        # Should have diverse UTR presets
-        utr5_presets = {c.metadata.get("utr5_preset") for c in cands}
-        utr3_presets = {c.metadata.get("utr3_preset") for c in cands}
-        assert "short" in utr5_presets
-        assert "long" in utr5_presets
-        assert "short" in utr3_presets
-        assert "long" in utr3_presets
+        # DECISIONS (bb): preset coverage lives in the pool (short/medium/long
+        # draws), while the ranked shortlist selects freely across presets and
+        # the always-included benchmark UTRs.
+        pool = wf._workflow_state["_utr_pool"]
+        pool5_presets = {e["preset"] for e in pool["utr5_pool"] if e["origin"] == "gemorna"}
+        pool3_presets = {e["preset"] for e in pool["utr3_pool"] if e["origin"] == "gemorna"}
+        assert {"short", "medium", "long"} <= pool5_presets
+        assert {"short", "medium", "long"} <= pool3_presets
+        bench5 = {e["id"] for e in pool["utr5_shortlist"] if e["origin"] == "benchmark"}
+        assert bench5 == {"bnt162b2_5utr", "lineardesign_paper_5utr", "hba1_5utr"}
+        bench3 = {e["id"] for e in pool["utr3_shortlist"] if e["origin"] == "benchmark"}
+        assert bench3 == {"bnt162b2_3utr", "hba1_3utr"}
+        origins = {c.metadata.get("utr5_origin") for c in cands} | {
+            c.metadata.get("utr3_origin") for c in cands
+        }
+        assert "benchmark" in origins
 
     def test_workflow_evaluates_full_length_metrics(self):
         """evaluate() should compute full-length and UTR-specific metrics."""

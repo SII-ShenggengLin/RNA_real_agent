@@ -1,0 +1,2 @@
+{"task_id": "pa_014", "pa_id": "014", "workflow": "mrna_sequence_scoring", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_r2_pa014", "exit_code": 0, "elapsed_seconds": 9.73, "timestamp": "2026-09-06T08:40:07", "error": null, "success": true}
+{"task_id": "pa_033", "pa_id": "033", "workflow": "mrna_sequence_scoring", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_r2_pa033", "exit_code": 0, "elapsed_seconds": 9.64, "timestamp": "2026-09-06T08:40:16", "error": null, "success": true}

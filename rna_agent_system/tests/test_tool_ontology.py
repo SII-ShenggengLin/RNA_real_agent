@@ -23,7 +23,8 @@ EXPECTED_ENFORCED_ORACLES = {
     "predict_rna_protein_complex_with_proteinx": ("proteinx_ipTM", "ranking_objective", "rna_aptamer_design"),
     "predict_rna_tertiary_structure_with_rhofold": ("rhofold_mean_plddt", "ranking_objective", "rna_aptamer_design"),
     "predict_5utr_mrl_with_gemorna": ("gemorna_5utr_mrl", "ranking_objective", "full_length_mrna"),
-    "predict_3utr_stability_with_gemorna": ("gemorna_3utr_stability", "ranking_objective", "full_length_mrna"),
+    # DECISIONS (bb): demoted to a report-only annotation use
+    "predict_3utr_stability_with_gemorna": ("gemorna_3utr_stability", "scoring_annotation", "full_length_mrna"),
     "score_rna_ligand_binding_with_rnasmol": ("rnasmol", "screening_evaluation", "rna_small_molecule"),
     # E16/E17/E18 graded 2026-08-18 (all failed their declared-use gates;
     # records in default_self_model.json -> enforced, see verdict.json).

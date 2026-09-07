@@ -1,0 +1,510 @@
+{
+  "experiment": "exp18_mrna_claim_gating (E3-M dual-arm, Fig 4d)",
+  "date": "2026-09-06T22:20:38.188474+00:00",
+  "n_tasks": 20,
+  "failed_runs": [],
+  "n_claims": 43,
+  "arms": {
+    "ungated": {
+      "TP": 14,
+      "FP": 8,
+      "neutral": 4,
+      "borderline": 0,
+      "suppressed": 0,
+      "fp_rate": 0.36363636363636365,
+      "fp_rate_ci95": [
+        0.1973,
+        0.5705
+      ],
+      "overreach_events": 7,
+      "mrl_ranking_events": 7,
+      "abstentions": 0
+    },
+    "gated": {
+      "TP": 11,
+      "FP": 1,
+      "neutral": 5,
+      "borderline": 0,
+      "suppressed": 0,
+      "fp_rate": 0.08333333333333333,
+      "fp_rate_ci95": [
+        0.0149,
+        0.3539
+      ],
+      "overreach_events": 0,
+      "mrl_ranking_events": 5,
+      "abstentions": 0
+    }
+  },
+  "by_category": {
+    "ungated": {
+      "trusted_deterministic": {
+        "TP": 12,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.2425
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "untrusted_oracle": {
+        "TP": 2,
+        "FP": 8,
+        "neutral": 4,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.8,
+        "fp_rate_ci95": [
+          0.4902,
+          0.9433
+        ],
+        "overreach_events": 7,
+        "mrl_ranking_events": 7,
+        "abstentions": 0
+      }
+    },
+    "gated": {
+      "trusted_deterministic": {
+        "TP": 10,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.2775
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "untrusted_oracle": {
+        "TP": 1,
+        "FP": 1,
+        "neutral": 5,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.5,
+        "fp_rate_ci95": [
+          0.0945,
+          0.9055
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 5,
+        "abstentions": 0
+      }
+    }
+  },
+  "by_task_family": {
+    "ungated": {
+      "cds_cai_report": {
+        "TP": 5,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.4345
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cds_constraint_report": {
+        "TP": 2,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.6576
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cds_mfe_report": {
+        "TP": 2,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.6576
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cds_relative_compare": {
+        "TP": 3,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.5615
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cross_family_expression": {
+        "TP": 0,
+        "FP": 0,
+        "neutral": 4,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": null,
+        "fp_rate_ci95": null,
+        "overreach_events": 0,
+        "mrl_ranking_events": 4,
+        "abstentions": 0
+      },
+      "junction_quality": {
+        "TP": 0,
+        "FP": 3,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 1.0,
+        "fp_rate_ci95": [
+          0.4385,
+          1.0
+        ],
+        "overreach_events": 3,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "mrl_optimum": {
+        "TP": 2,
+        "FP": 1,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.3333333333333333,
+        "fp_rate_ci95": [
+          0.0615,
+          0.7923
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 3,
+        "abstentions": 0
+      },
+      "utr3_stability_rank": {
+        "TP": 0,
+        "FP": 4,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 1.0,
+        "fp_rate_ci95": [
+          0.5101,
+          1.0
+        ],
+        "overreach_events": 4,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      }
+    },
+    "gated": {
+      "cds_cai_report": {
+        "TP": 4,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.4899
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cds_constraint_report": {
+        "TP": 2,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.6576
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cds_mfe_report": {
+        "TP": 2,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.6576
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cds_relative_compare": {
+        "TP": 2,
+        "FP": 0,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.0,
+        "fp_rate_ci95": [
+          0.0,
+          0.6576
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      },
+      "cross_family_expression": {
+        "TP": 0,
+        "FP": 0,
+        "neutral": 3,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": null,
+        "fp_rate_ci95": null,
+        "overreach_events": 0,
+        "mrl_ranking_events": 3,
+        "abstentions": 0
+      },
+      "mrl_optimum": {
+        "TP": 1,
+        "FP": 1,
+        "neutral": 0,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": 0.5,
+        "fp_rate_ci95": [
+          0.0945,
+          0.9055
+        ],
+        "overreach_events": 0,
+        "mrl_ranking_events": 2,
+        "abstentions": 0
+      },
+      "utr3_stability_rank": {
+        "TP": 0,
+        "FP": 0,
+        "neutral": 2,
+        "borderline": 0,
+        "suppressed": 0,
+        "fp_rate": null,
+        "fp_rate_ci95": null,
+        "overreach_events": 0,
+        "mrl_ranking_events": 0,
+        "abstentions": 0
+      }
+    }
+  },
+  "tp_retention": 0.7857142857142857,
+  "tp_counts": {
+    "ungated": 14,
+    "gated": 11
+  },
+  "fp_relative_reduction": 0.7708333333333334,
+  "go_no_go": {
+    "fp_reduction_gate": 0.5,
+    "tp_retention_gate": 0.9,
+    "fp_reduction_pass": true,
+    "tp_retention_pass": false
+  },
+  "per_task_matrix": {
+    "cds_cai_report_0": {
+      "ungated": {
+        "TP": 2
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_relative_compare_0": {
+      "ungated": {
+        "TP": 2
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "utr3_stability_rank_0": {
+      "ungated": {
+        "FP": 2
+      },
+      "gated": {
+        "neutral": 1
+      }
+    },
+    "cross_family_expression_0": {
+      "ungated": {
+        "neutral": 2
+      },
+      "gated": {
+        "neutral": 1
+      }
+    },
+    "junction_quality_0": {
+      "ungated": {
+        "FP": 2
+      }
+    },
+    "mrl_optimum_0": {
+      "ungated": {
+        "TP": 2
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_cai_report_1": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_cai_report_2": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_cai_report_3": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_mfe_report_0": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_mfe_report_1": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_constraint_report_0": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_constraint_report_1": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "cds_relative_compare_1": {
+      "ungated": {
+        "TP": 1
+      },
+      "gated": {
+        "TP": 1
+      }
+    },
+    "utr3_stability_rank_1": {
+      "ungated": {
+        "FP": 1
+      }
+    },
+    "utr3_stability_rank_2": {
+      "ungated": {
+        "FP": 1
+      },
+      "gated": {
+        "neutral": 1
+      }
+    },
+    "cross_family_expression_1": {
+      "ungated": {
+        "neutral": 1
+      },
+      "gated": {
+        "neutral": 1
+      }
+    },
+    "cross_family_expression_2": {
+      "ungated": {
+        "neutral": 1
+      },
+      "gated": {
+        "neutral": 1
+      }
+    },
+    "junction_quality_1": {
+      "ungated": {
+        "FP": 1
+      }
+    },
+    "mrl_optimum_1": {
+      "ungated": {
+        "FP": 1
+      },
+      "gated": {
+        "FP": 1
+      }
+    }
+  },
+  "gate_engagement": {
+    "blocked_plan_requests": 5,
+    "claim_gate_verdicts": {
+      "pass": 14,
+      "reject": 0,
+      "downgrade": 3
+    },
+    "abstentions": 0
+  },
+  "fp_reasons_gated": [
+    "asserted best hi30_vl_human != measured truth hi01_vl_human"
+  ],
+  "instrument": {
+    "llm": "DeepSeek deepseek-v4-pro, temperature 0, 2 calls per task, both arms; prompts byte-identical to legacy E3-M (git e337ac5) modulo the gated arm's gate-feedback block",
+    "capgate": "gated arm enforce / ungated arm advisory; packaged default SelfModel (E7/Exp-14 GEMORNA-MRL profile) + deterministic report metrics registered per family; gate key (full_length_mrna, target_family)",
+    "oracle_path": "ToolExecutor.run_tool -> GEMORNA 8004 / LinearFold 8015 (live, per-(candidate, oracle) dedup cache); junction metric = current platform junction report (MFE/nt + ddG_open_w1)",
+    "task_set": "experiments/e18_audit_tasks_mrna.json (builder experiments/exp18_build_mrna_audit_tasks.py)"
+  }
+}

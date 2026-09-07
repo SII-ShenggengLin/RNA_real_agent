@@ -1,13 +1,13 @@
 {
- "task_id": "mrna_cds_20260906_200523",
+ "task_id": "mrna_cds_20260907_142708",
  "success": true,
- "timestamp": "2026-09-06T20:08:14.625058",
+ "timestamp": "2026-09-07T14:30:11.692299",
  "session_id": "exp18_cds_GFP",
  "candidate_count": 5,
  "candidates": [
   {
    "rank": 1,
-   "id": "cand_8216bdf9c7f7",
+   "id": "cand_f4786e800297",
    "source": "cds_design_gennav:lambda2",
    "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
    "sequence_type": "mrna",
@@ -34,7 +34,7 @@
      "lambda_value": 2.0
     },
     "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
-    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
     "cai_species": "E. coli",
     "nav_id": "nav:lambda2",
     "nav_bands": [
@@ -52,7 +52,7 @@
     },
     "nav_cai": 0.8436514779805928,
     "nav_mfe_per_nt": -0.214216,
-    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
     "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).)))...(truncated)",
     "fold_tool": "LinearFold",
     "pareto_tag": "mfe_per_nt"
@@ -73,7 +73,7 @@
   },
   {
    "rank": 2,
-   "id": "cand_2bb0e82f2d5a",
+   "id": "cand_3346dcbce12b",
    "source": "cds_design_gennav:lambda2.5",
    "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
    "sequence_type": "mrna",
@@ -100,7 +100,7 @@
      "lambda_value": 2.5
     },
     "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
-    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
     "cai_species": "E. coli",
     "nav_id": "nav:lambda2.5",
     "nav_bands": [
@@ -117,7 +117,7 @@
     },
     "nav_cai": 0.8831311793641136,
     "nav_mfe_per_nt": -0.173249,
-    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
     "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).)))...(truncated)",
     "fold_tool": "LinearFold",
     "pareto_tag": "balanced"
@@ -138,7 +138,7 @@
   },
   {
    "rank": 3,
-   "id": "cand_a8312152eca0",
+   "id": "cand_995611cf859a",
    "source": "cds_design_gennav:lambda3",
    "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
    "sequence_type": "mrna",
@@ -165,7 +165,7 @@
      "lambda_value": 3.0
     },
     "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
-    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
     "cai_species": "E. coli",
     "nav_id": "nav:lambda3",
     "nav_bands": [
@@ -182,7 +182,7 @@
     },
     "nav_cai": 0.9181680185415222,
     "nav_mfe_per_nt": -0.155924,
-    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
     "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((....(truncated)",
     "fold_tool": "LinearFold",
     "pareto_tag": "balanced"
@@ -203,7 +203,7 @@
   },
   {
    "rank": 4,
-   "id": "cand_0a331648f725",
+   "id": "cand_67d48e576984",
    "source": "cds_design_gennav:lambda5",
    "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
    "sequence_type": "mrna",
@@ -230,7 +230,7 @@
      "lambda_value": 5.0
     },
     "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
-    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
     "cai_species": "E. coli",
     "nav_id": "nav:lambda5",
     "nav_bands": [
@@ -247,7 +247,7 @@
     },
     "nav_cai": 0.967716222463299,
     "nav_mfe_per_nt": -0.093291,
-    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
     "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((....(truncated)",
     "fold_tool": "LinearFold",
     "pareto_tag": "balanced"
@@ -268,7 +268,7 @@
   },
   {
    "rank": 5,
-   "id": "cand_e87a6d7c5626",
+   "id": "cand_bf34820ba923",
    "source": "cds_design_gennav:lambda50",
    "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
    "sequence_type": "mrna",
@@ -295,7 +295,7 @@
      "lambda_value": 50.0
     },
     "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
-    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
     "cai_species": "E. coli",
     "nav_id": "nav:lambda50",
     "nav_bands": [
@@ -312,7 +312,7 @@
     },
     "nav_cai": 1.0,
     "nav_mfe_per_nt": -0.046611,
-    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
     "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....)))))))...(truncated)",
     "fold_tool": "LinearFold",
     "pareto_tag": "cai_score"
@@ -334,7 +334,7 @@
  ],
  "best_candidate": {
   "rank": 1,
-  "id": "cand_8216bdf9c7f7",
+  "id": "cand_f4786e800297",
   "source": "cds_design_gennav:lambda2",
   "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
   "sequence_type": "mrna",
@@ -361,7 +361,7 @@
     "lambda_value": 2.0
    },
    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
-   "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+   "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
    "cai_species": "E. coli",
    "nav_id": "nav:lambda2",
    "nav_bands": [
@@ -379,7 +379,7 @@
    },
    "nav_cai": 0.8436514779805928,
    "nav_mfe_per_nt": -0.214216,
-   "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+   "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).)))...(truncated)",
    "fold_tool": "LinearFold",
    "pareto_tag": "mfe_per_nt"
@@ -401,63 +401,35 @@
  "summary": "candidates=5\nbest_total_score=112.48623711266404\npareto_frontier_size=5\n---\n#1 | source=cds_design_gennav:lambda2 | len=714nt | GC=0.501 | MFE=-152.95(LinearFold) | MFE/nt=-0.2142 | unpaired=0.283 | RNASTOP=0.5546 | CAI=0.8437 | U=0.218 | total_score=112.486\n#2 | source=cds_design_gennav:lambda2.5 | len=714nt | GC=0.494 | MFE=-123.70(LinearFold) | MFE/nt=-0.1732 | unpaired=0.297 | RNASTOP=0.5600 | CAI=0.8831 | U=0.223 | total_score=94.121\n#3 | source=cds_design_gennav:lambda3 | len=714nt | GC=0.490 | MFE=-111.33(LinearFold) | MFE/nt=-0.1559 | unpaired=0.347 | RNASTOP=0.5731 | CAI=0.9182 | U=0.223 | total_score=91.011\n#4 | source=cds_design_gennav:lambda5 | len=714nt | GC=0.493 | MFE=-66.61(LinearFold) | MFE/nt=-0.0933 | unpaired=0.451 | RNASTOP=0.6157 | CAI=0.9677 | U=0.217 | total_score=58.800\n#5 | source=cds_design_gennav:lambda50 | len=714nt | GC=0.486 | MFE=-33.28(LinearFold) | MFE/nt=-0.0466 | unpaired=0.630 | RNASTOP=0.6110 | CAI=1.0000 | U=0.221 | total_score=33.280",
  "_diagnosis_history": [
   {
-   "overall_assessment": "Candidate metrics are strong for E. coli expression (CAI 0.844-1.000, GC ~49%, MFE/nt -0.214 to -0.047), but all five candidates come from the same cds_design_gennav lambda source rather than from multiple design tools. This leaves the intended 'all' tool diversity unfulfilled and RNARL/GEMORNA unexplored. Additionally, lambda50 exceeds the recommended range and yields a nearly unstructured candidate.",
-   "quality_score": 0.68,
+   "overall_assessment": "All five candidates achieve high E. coli CAI (0.844-1.000), with the top candidate reaching CAI 1.0. However, all candidates are from the same cds_design_gennav/LinearDesign lambda sweep, so design_tool='all' did not produce RNARL or GEMORNA variants. One candidate was generated at lambda=50, outside the supported lambda<=20 range, and has very weak secondary structure. Retry with an alternative species-matched tool is recommended.",
+   "quality_score": 0.62,
    "issues": [
     {
      "severity": "warning",
-     "category": "design_tool_diversity",
-     "description": "All 5 candidates come from cds_design_gennav lambda sources; no RNARL or GEMORNA candidates are present despite design_tool='all'.",
+     "category": "tool_diversity",
+     "description": "design_tool='all' should run multiple design tools, but all 5 candidates originate from cds_design_gennav (LinearDesign/GenNav lambda sweep). No RNARL or GEMORNA candidate is present.",
      "metric_value": null,
      "threshold": null
     },
     {
      "severity": "warning",
-     "category": "lambda_parameter",
-     "description": "Candidate e87a6d7c5626 from lambda50 exceeds the typical lambda cap of 20 and has very weak secondary structure (MFE -33.28 kcal/mol, unpaired fraction 0.630).",
-     "metric_value": -33.28,
-     "threshold": null
-    },
-    {
-     "severity": "info",
-     "category": "cai",
-     "description": "All candidates have high E. coli CAI (0.844-1.000), indicating successful codon adaptation.",
-     "metric_value": 1.0,
-     "threshold": null
-    }
-   ],
-   "action": "retry_with_alternative",
-   "parameter_overrides": {
-    "model_type": "Escherichia coli mRNA"
-   },
-   "reasoning": "The current GenNav-dominated set has good CAI and reasonable folding metrics, but it lacks the tool diversity expected from design_tool='all'. Retrying with RNARL and the E. coli mRNA model should provide an independent species-specific alternative while preserving E. coli CAI. GEMORNA would also be a reasonable alternative.",
-   "confidence": 0.8,
-   "evaluator_only": false,
-   "affected_evaluators": []
-  },
-  {
-   "overall_assessment": "All 5 candidates come from the same GenNav lambda source; no RNARL or GEMORNA candidates are present despite design_tool='all'. Codon adaptation is strong for E. coli (CAI 0.844-1.000), but tool diversity is insufficient and the lambda50 candidate exceeds the typical lambda cap with very weak secondary structure. Retry with a specific alternative tool is recommended.",
-   "quality_score": 0.55,
-   "issues": [
-    {
-     "severity": "warning",
-     "category": "design_tool_diversity",
-     "description": "All 5 candidates come from cds_design_gennav lambda sources; no RNARL or GEMORNA candidates are present despite design_tool='all'.",
-     "metric_value": null,
-     "threshold": null
-    },
-    {
-     "severity": "warning",
-     "category": "lambda_parameter",
-     "description": "Candidate e87a6d7c5626 comes from lambda50, which exceeds the typical lambda cap of 20, and has very weak secondary structure (MFE -33.28 kcal/mol, MFE/nt -0.0466, unpaired fraction 0.630).",
+     "category": "lambda_range",
+     "description": "Candidate cand_bf34820ba923 was generated with lambda=50, exceeding the input schema cap of 20 and the typical recommended range of <=10. This extreme setting sacrifices secondary structure for maximal CAI.",
      "metric_value": 50.0,
      "threshold": 20.0
     },
     {
      "severity": "info",
-     "category": "cai",
-     "description": "All candidates have high E. coli CAI (0.844-1.000), indicating successful codon adaptation.",
-     "metric_value": 1.0,
+     "category": "secondary_structure",
+     "description": "Top-ranked lambda50 candidate has very weak predicted structure (MFE -33.28 kcal/mol, -0.047 kcal/mol/nt; unpaired fraction 0.630), which may be acceptable for translation but is less balanced than intermediate lambda candidates.",
+     "metric_value": -0.0466,
+     "threshold": null
+    },
+    {
+     "severity": "info",
+     "category": "gc_content",
+     "description": "GC content across candidates is 48.6-50.1%, within a typical range for E. coli CDS; no action needed.",
+     "metric_value": 0.5014,
      "threshold": null
     }
    ],
@@ -465,10 +437,58 @@
    "parameter_overrides": {
     "model_type": "Escherichia coli mRNA"
    },
-   "reasoning": "The current run repeats the previous tool-diversity issue: design_tool='all' yielded only GenNav lambda candidates. Switching to a specific alternative tool should produce candidates from a different design method. RNARL is chosen because it has an E. coli mRNA model matching the requested CAI species.",
-   "confidence": 0.78,
+   "reasoning": "The current run performs well on CAI but is not truly multi-tool despite design_tool='all', and includes an out-of-range lambda candidate. Switching to RNARL with the Escherichia coli mRNA model provides an independent, species-matched design path while retaining CAI evaluation for E. coli.",
+   "confidence": 0.7,
    "evaluator_only": false,
-   "affected_evaluators": []
+   "affected_evaluators": [
+    "mfe",
+    "cai"
+   ]
+  },
+  {
+   "overall_assessment": "All 5 candidates come from the same LinearDesign/GenNav lambda sweep even though design_tool='all' was requested. In addition, the top-ranked candidate was generated with lambda=50, which exceeds the input schema cap of 20, and it has very weak predicted secondary structure. Intermediate lambda candidates provide a better CAI/MFE balance. A retry with a different design tool is recommended.",
+   "quality_score": 0.45,
+   "issues": [
+    {
+     "severity": "critical",
+     "category": "lambda_range",
+     "description": "Top-ranked candidate cand_bf34820ba923 was generated with lambda=50, exceeding the input schema cap of 20 and the typical recommended range of <=10. This extreme setting drives CAI to 1.0 but sacrifices secondary structure.",
+     "metric_value": 50.0,
+     "threshold": 20.0
+    },
+    {
+     "severity": "warning",
+     "category": "tool_diversity",
+     "description": "design_tool='all' should run multiple design tools, but all 5 candidates originate from cds_design_gennav (LinearDesign/GenNav lambda sweep). No RNARL or GEMORNA candidate is present, so the previously flagged tool-diversity issue persists.",
+     "metric_value": null,
+     "threshold": null
+    },
+    {
+     "severity": "info",
+     "category": "secondary_structure",
+     "description": "The top-ranked lambda50 candidate has very weak predicted secondary structure (MFE -33.28 kcal/mol, -0.0466 kcal/mol/nt; unpaired fraction 0.630). This may be less balanced than intermediate lambda3/lambda5 candidates (MFE per nt -0.156/-0.093, CAI 0.918/0.968).",
+     "metric_value": -0.04661064425770308,
+     "threshold": null
+    },
+    {
+     "severity": "info",
+     "category": "gc_content",
+     "description": "GC content across candidates is 48.6-50.1%, within a typical range for E. coli CDS; no action needed.",
+     "metric_value": 0.5014005602240896,
+     "threshold": null
+    }
+   ],
+   "action": "retry_with_alternative",
+   "parameter_overrides": {
+    "model_type": "Escherichia coli mRNA"
+   },
+   "reasoning": "The current run repeats prior issues: all candidates come from the LinearDesign/GenNav lambda sweep and lambda50 exceeds the allowed cap. The top-ranked lambda50 candidate is CAI-maximal but structurally weak. Switching to RNARL with the Escherichia coli mRNA model should provide tool diversity and a more balanced design while still targeting E. coli codon usage.",
+   "confidence": 0.85,
+   "evaluator_only": false,
+   "affected_evaluators": [
+    "cds_design_gennav",
+    "fold"
+   ]
   }
  ],
  "_quality_auto_retry": false,
@@ -969,14 +989,14 @@
   {
    "step_name": "gennav_lineardesign:lambda50",
    "tool_name": "design_mrna_cds_with_lineardesign",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 50.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_a50c2f4013.fasta\", \"generated_sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"lambda_value\": 50.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_48536a04ef.fasta\", \"generated_sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGA",
    "success": true,
    "error": null,
-   "elapsed_time": 18.32335102884099,
+   "elapsed_time": 18.322027787100524,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
-    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_a50c2f4013.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_48536a04ef.fasta",
     "generated_sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
     "structure": ".........(((............(((((((...(((((....(((((.((.(((((..((..((.(...((((((......((((..((.((....))....)).))))....))))))....).))..))..))))).)).))))).)))))...))))))))))((.((((....)))).))((((....(((((((.(((..((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((....((((.((....(((((...............((.((..((.((((...(((......)))...)))).)))).))....)))))..))))))....))....))))))).)))))))))))((((....(((((((........)))))))....))))....(((((...((((....((((((((((..........((.........))..........)))))))))))))).....)))))(((((((..((((..(.((((((((.((((..((.((((...(((....)))))).).))))))..)))))........))).)..)))).)))))))..(((..((((((.........)).))))......)))))))).....))))))))))))))))))))))))))))..)).))...........",
     "mfe": -184.6,
@@ -988,18 +1008,18 @@
     "model": "LinearDesign"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:56:36.114546Z"
+   "created_at": "2026-09-07T14:18:12.663094Z"
   },
   {
    "step_name": "gennav_cai",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_db92f15570.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_db92f15570.fasta\", \"cai_score\": 1.0, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_3342d058a7.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_3342d058a7.fasta\", \"cai_score\": 1.0, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.003150214906781912,
+   "elapsed_time": 0.003566824132576585,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_db92f15570.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_3342d058a7.fasta",
     "cai_score": 1.0,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1010,18 +1030,18 @@
     "model": "cai-kazusa"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:56:36.119073Z"
+   "created_at": "2026-09-07T14:18:12.667914Z"
   },
   {
    "step_name": "gennav_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b4ce8561c7.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b4ce8561c7.fasta\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_db14262df6.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_db14262df6.fasta\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAA",
    "success": true,
    "error": null,
-   "elapsed_time": 0.342231716029346,
+   "elapsed_time": 0.3433386308606714,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b4ce8561c7.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_db14262df6.fasta",
     "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
     "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................",
     "mfe": -33.28,
@@ -1029,19 +1049,19 @@
     "model": "LinearFold"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:56:36.462263Z"
+   "created_at": "2026-09-07T14:18:13.012373Z"
   },
   {
-   "step_name": "cand_e87a6d7c5626_compute_rna_sequence_gc_content",
+   "step_name": "cand_bf34820ba923_compute_rna_sequence_gc_content",
    "tool_name": "compute_rna_sequence_gc_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 155, \"gc_count\": 347, \"gc_content\": 0.48599439775910364, \"model\": \"rna-sequence-metrics-gc\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 155, \"gc_count\": 347, \"gc_content\": 0.48599439775910364, \"model\": \"rna-sequence-metrics-gc\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.00597172393463552,
+   "elapsed_time": 0.005903332028537989,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
     "sequence_length": 714,
     "g_count": 192,
     "c_count": 155,
@@ -1053,19 +1073,19 @@
     "gc_content": 0.48599439775910364,
     "sequence_length": 714
    },
-   "created_at": "2026-09-06T20:05:15.732028Z"
+   "created_at": "2026-09-07T14:26:59.054570Z"
   },
   {
-   "step_name": "cand_e87a6d7c5626_compute_rna_sequence_u_content",
+   "step_name": "cand_bf34820ba923_compute_rna_sequence_u_content",
    "tool_name": "compute_rna_sequence_u_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"sequence_length\": 714, \"u_count\": 158, \"u_fraction\": 0.22128851540616246, \"model\": \"rna-u-content\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"sequence_length\": 714, \"u_count\": 158, \"u_fraction\": 0.22128851540616246, \"model\": \"rna-u-content\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.003991334931924939,
+   "elapsed_time": 0.003123889910057187,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
     "sequence_length": 714,
     "u_count": 158,
     "u_fraction": 0.22128851540616246,
@@ -1075,18 +1095,18 @@
     "u_fraction": 0.22128851540616246,
     "u_count": 158
    },
-   "created_at": "2026-09-06T20:05:15.736634Z"
+   "created_at": "2026-09-07T14:26:59.058034Z"
   },
   {
-   "step_name": "cand_e87a6d7c5626_predict_rna_secondary_structure_with_linearfold",
+   "step_name": "cand_bf34820ba923_predict_rna_secondary_structure_with_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGG",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGG",
    "success": true,
    "error": null,
-   "elapsed_time": 0.3374902850482613,
+   "elapsed_time": 0.3379010600037873,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
     "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
     "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................",
     "mfe": -33.28,
@@ -1098,19 +1118,19 @@
     "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................",
     "fold_tool": "LinearFold"
    },
-   "created_at": "2026-09-06T20:05:16.074685Z"
+   "created_at": "2026-09-07T14:26:59.396341Z"
   },
   {
-   "step_name": "cand_e87a6d7c5626_compute_dot_bracket_unpaired_fraction",
+   "step_name": "cand_bf34820ba923_compute_dot_bracket_unpaired_fraction",
    "tool_name": "compute_dot_bracket_unpaired_fraction",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_866690592b.db\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_866690592b.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_866690592b.db\", \"structure_length\": 714, \"dot_count\": 450, \"unpaired_fraction\": 0.6302521008403361, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_6364465500.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_6364465500.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_6364465500.db\", \"structure_length\": 714, \"dot_count\": 450, \"unpaired_fraction\": 0.6302521008403361, \"model\": \"rna-sequence-metrics-unpaired\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.004248837940394878,
+   "elapsed_time": 0.0036767020355910063,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_866690592b.db",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_866690592b.db",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_6364465500.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_6364465500.db",
     "structure_length": 714,
     "dot_count": 450,
     "unpaired_fraction": 0.6302521008403361,
@@ -1119,19 +1139,19 @@
    "metrics": {
     "unpaired_fraction": 0.6302521008403361
    },
-   "created_at": "2026-09-06T20:05:16.080288Z"
+   "created_at": "2026-09-07T14:26:59.401300Z"
   },
   {
-   "step_name": "cand_e87a6d7c5626_predict_mrna_stability_with_rnastop",
+   "step_name": "cand_bf34820ba923_predict_mrna_stability_with_rnastop",
    "tool_name": "predict_mrna_stability_with_rnastop",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"structure\": \".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_fc1784ef69.json\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGC",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"structure\": \".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_9634eac099.json\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGC",
    "success": true,
    "error": null,
-   "elapsed_time": 1.2445216649211943,
+   "elapsed_time": 1.2179637309163809,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
-    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_fc1784ef69.json",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_9634eac099.json",
     "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
     "used_sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAU",
     "sequence_length": 714,
@@ -1151,18 +1171,18 @@
    "metrics": {
     "rnastop_overall_stability": 0.610974907875061
    },
-   "created_at": "2026-09-06T20:05:17.325297Z"
+   "created_at": "2026-09-07T14:27:00.619739Z"
   },
   {
-   "step_name": "cand_e87a6d7c5626_compute_cai_for_cds_sequence",
+   "step_name": "cand_bf34820ba923_compute_cai_for_cds_sequence",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"cai_score\": 1.0, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta\", \"cai_score\": 1.0, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0009067801292985678,
+   "elapsed_time": 0.0009022408630698919,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_d24bf28f4a.fasta",
     "cai_score": 1.0,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1176,19 +1196,19 @@
     "cai_score": 1.0,
     "cai_species": "E. coli"
    },
-   "created_at": "2026-09-06T20:05:17.326565Z"
+   "created_at": "2026-09-07T14:27:00.620930Z"
   },
   {
    "step_name": "gennav_lineardesign:lambda5",
    "tool_name": "design_mrna_cds_with_lineardesign",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 5.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_5b9c828f3a.fasta\", \"generated_sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"lambda_value\": 5.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_9d1ea72aac.fasta\", \"generated_sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGA",
    "success": true,
    "error": null,
-   "elapsed_time": 18.117864289786667,
+   "elapsed_time": 18.65332301799208,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
-    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_5b9c828f3a.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_9d1ea72aac.fasta",
     "generated_sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
     "structure": "...((((((((((.......((.(((((((((.(.((((..((((((...))))))((((.((....)).))))((((((((((((.((.(.((.(((((.........)).))).)).)...)).)))))).)))))).......((((((((...))))))))...))))).)))))))))))))))))).)))(((.((((.(((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((((..((((.((....(((((((.((((((((..(.(((((...............)))...)).)..)))))))).)).....)))))..))))))..))))....))))))).)))))))))))((((..(((((((((........)))))))))..))))....(((((.......((((((((((((((..........((.........))..........)))))))))))))).....))))).(((.(((((.(.(((((((((((((((.(......).).)))))))))))))).)))))))))(((((((...))))))).(((((..((.((((((...((..........))...)))))).))....)))))))))).....)))))))))))))))))))...)))).)))................",
     "mfe": -249.3,
@@ -1200,18 +1220,18 @@
     "model": "LinearDesign"
    },
    "metrics": {},
-   "created_at": "2026-09-06T20:00:22.122186Z"
+   "created_at": "2026-09-07T14:22:00.324282Z"
   },
   {
    "step_name": "gennav_cai",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_e06e924a31.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_e06e924a31.fasta\", \"cai_score\": 0.967716222463299, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_7ff39d28e0.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_7ff39d28e0.fasta\", \"cai_score\": 0.967716222463299, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0031014590058475733,
+   "elapsed_time": 0.0009442311711609364,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_e06e924a31.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_7ff39d28e0.fasta",
     "cai_score": 0.967716222463299,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1222,18 +1242,18 @@
     "model": "cai-kazusa"
    },
    "metrics": {},
-   "created_at": "2026-09-06T20:00:22.126545Z"
+   "created_at": "2026-09-07T14:22:00.326021Z"
   },
   {
    "step_name": "gennav_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_4fd41beef7.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_4fd41beef7.fasta\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b3b87130b9.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b3b87130b9.fasta\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAA",
    "success": true,
    "error": null,
-   "elapsed_time": 0.33705819910392165,
+   "elapsed_time": 0.363502630032599,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_4fd41beef7.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b3b87130b9.fasta",
     "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
     "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............",
     "mfe": -66.61,
@@ -1241,19 +1261,19 @@
     "model": "LinearFold"
    },
    "metrics": {},
-   "created_at": "2026-09-06T20:00:22.464572Z"
+   "created_at": "2026-09-07T14:22:00.690247Z"
   },
   {
-   "step_name": "cand_0a331648f725_compute_rna_sequence_gc_content",
+   "step_name": "cand_67d48e576984_compute_rna_sequence_gc_content",
    "tool_name": "compute_rna_sequence_gc_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"sequence_length\": 714, \"g_count\": 195, \"c_count\": 157, \"gc_count\": 352, \"gc_content\": 0.49299719887955185, \"model\": \"rna-sequence-metrics-gc\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"sequence_length\": 714, \"g_count\": 195, \"c_count\": 157, \"gc_count\": 352, \"gc_content\": 0.49299719887955185, \"model\": \"rna-sequence-metrics-gc\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.004749214975163341,
+   "elapsed_time": 0.003661148948594928,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
     "sequence_length": 714,
     "g_count": 195,
     "c_count": 157,
@@ -1265,19 +1285,19 @@
     "gc_content": 0.49299719887955185,
     "sequence_length": 714
    },
-   "created_at": "2026-09-06T20:05:17.332606Z"
+   "created_at": "2026-09-07T14:27:00.625743Z"
   },
   {
-   "step_name": "cand_0a331648f725_compute_rna_sequence_u_content",
+   "step_name": "cand_67d48e576984_compute_rna_sequence_u_content",
    "tool_name": "compute_rna_sequence_u_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"sequence_length\": 714, \"u_count\": 155, \"u_fraction\": 0.21708683473389356, \"model\": \"rna-u-content\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"sequence_length\": 714, \"u_count\": 155, \"u_fraction\": 0.21708683473389356, \"model\": \"rna-u-content\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.004627260845154524,
+   "elapsed_time": 0.002486069919541478,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
     "sequence_length": 714,
     "u_count": 155,
     "u_fraction": 0.21708683473389356,
@@ -1287,18 +1307,18 @@
     "u_fraction": 0.21708683473389356,
     "u_count": 155
    },
-   "created_at": "2026-09-06T20:05:17.337637Z"
+   "created_at": "2026-09-07T14:27:00.628511Z"
   },
   {
-   "step_name": "cand_0a331648f725_predict_rna_secondary_structure_with_linearfold",
+   "step_name": "cand_67d48e576984_predict_rna_secondary_structure_with_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGG",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGG",
    "success": true,
    "error": null,
-   "elapsed_time": 0.3377406559884548,
+   "elapsed_time": 0.33682609093375504,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
     "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
     "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............",
     "mfe": -66.61,
@@ -1310,19 +1330,19 @@
     "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............",
     "fold_tool": "LinearFold"
    },
-   "created_at": "2026-09-06T20:05:17.676125Z"
+   "created_at": "2026-09-07T14:27:00.965800Z"
   },
   {
-   "step_name": "cand_0a331648f725_compute_dot_bracket_unpaired_fraction",
+   "step_name": "cand_67d48e576984_compute_dot_bracket_unpaired_fraction",
    "tool_name": "compute_dot_bracket_unpaired_fraction",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_98859321bd.db\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_98859321bd.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_98859321bd.db\", \"structure_length\": 714, \"dot_count\": 322, \"unpaired_fraction\": 0.45098039215686275, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_0326bfe1d4.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_0326bfe1d4.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_0326bfe1d4.db\", \"structure_length\": 714, \"dot_count\": 322, \"unpaired_fraction\": 0.45098039215686275, \"model\": \"rna-sequence-metrics-unpaired\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.00422780797816813,
+   "elapsed_time": 0.003622964024543762,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_98859321bd.db",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_98859321bd.db",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_0326bfe1d4.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_0326bfe1d4.db",
     "structure_length": 714,
     "dot_count": 322,
     "unpaired_fraction": 0.45098039215686275,
@@ -1331,19 +1351,19 @@
    "metrics": {
     "unpaired_fraction": 0.45098039215686275
    },
-   "created_at": "2026-09-06T20:05:17.681577Z"
+   "created_at": "2026-09-07T14:27:00.970478Z"
   },
   {
-   "step_name": "cand_0a331648f725_predict_mrna_stability_with_rnastop",
+   "step_name": "cand_67d48e576984_predict_mrna_stability_with_rnastop",
    "tool_name": "predict_mrna_stability_with_rnastop",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"structure\": \"......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_d7350728e5.json\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGC",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"structure\": \"......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_26b38cf1e6.json\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGC",
    "success": true,
    "error": null,
-   "elapsed_time": 1.2342591809574515,
+   "elapsed_time": 1.223144997144118,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
-    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_d7350728e5.json",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_26b38cf1e6.json",
     "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
     "used_sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAU",
     "sequence_length": 714,
@@ -1363,18 +1383,18 @@
    "metrics": {
     "rnastop_overall_stability": 0.6156983971595764
    },
-   "created_at": "2026-09-06T20:05:18.916301Z"
+   "created_at": "2026-09-07T14:27:02.194020Z"
   },
   {
-   "step_name": "cand_0a331648f725_compute_cai_for_cds_sequence",
+   "step_name": "cand_67d48e576984_compute_cai_for_cds_sequence",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"cai_score\": 0.967716222463299, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta\", \"cai_score\": 0.967716222463299, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0008879320230334997,
+   "elapsed_time": 0.0008535401429980993,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5554b8cd8a.fasta",
     "cai_score": 0.967716222463299,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1388,19 +1408,19 @@
     "cai_score": 0.967716222463299,
     "cai_species": "E. coli"
    },
-   "created_at": "2026-09-06T20:05:18.917546Z"
+   "created_at": "2026-09-07T14:27:02.195138Z"
   },
   {
    "step_name": "gennav_lineardesign:lambda3",
    "tool_name": "design_mrna_cds_with_lineardesign",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 3.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_d7ce8160c4.fasta\", \"generated_sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"lambda_value\": 3.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_f38595f7fd.fasta\", \"generated_sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGA",
    "success": true,
    "error": null,
-   "elapsed_time": 18.30263721407391,
+   "elapsed_time": 18.228067300049588,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
-    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_d7ce8160c4.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_f38595f7fd.fasta",
     "generated_sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
     "structure": "....(((((((((.......((.(((((((((((.((((...(((((((.(((((.((((((.((((((.........((((((((((((.((.(((((...(((...))))))).).))..)))))))))))))))))).).))))))))))...))))))).....))))))))))))))))))))))))))(((((.((((((((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((.(.(((((((((((((((.(......).).)))))))))))))).)))))))))(((((((...))))))).(((((..((.((((((...((..........))...)))))).))....)))))))))).....)))))))))))))))))))..))))).)))))..............",
     "mfe": -300.2,
@@ -1412,18 +1432,18 @@
     "model": "LinearDesign"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:58:30.366894Z"
+   "created_at": "2026-09-07T14:20:06.957249Z"
   },
   {
    "step_name": "gennav_cai",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_6e4ae635e8.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_6e4ae635e8.fasta\", \"cai_score\": 0.9181680185415222, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_209d410368.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_209d410368.fasta\", \"cai_score\": 0.9181680185415222, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.00111534190364182,
+   "elapsed_time": 0.0009510631207376719,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_6e4ae635e8.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_209d410368.fasta",
     "cai_score": 0.9181680185415222,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1434,18 +1454,18 @@
     "model": "cai-kazusa"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:58:30.368986Z"
+   "created_at": "2026-09-07T14:20:06.958967Z"
   },
   {
    "step_name": "gennav_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_6b0f448b48.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_6b0f448b48.fasta\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_00074a35f4.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_00074a35f4.fasta\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
    "success": true,
    "error": null,
-   "elapsed_time": 0.3394561931490898,
+   "elapsed_time": 0.3417472450528294,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_6b0f448b48.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_00074a35f4.fasta",
     "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
     "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............",
     "mfe": -111.33,
@@ -1453,19 +1473,19 @@
     "model": "LinearFold"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:58:30.709401Z"
+   "created_at": "2026-09-07T14:20:07.301709Z"
   },
   {
-   "step_name": "cand_a8312152eca0_compute_rna_sequence_gc_content",
+   "step_name": "cand_995611cf859a_compute_rna_sequence_gc_content",
    "tool_name": "compute_rna_sequence_gc_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 158, \"gc_count\": 350, \"gc_content\": 0.49019607843137253, \"model\": \"rna-sequence-metrics-gc\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 158, \"gc_count\": 350, \"gc_content\": 0.49019607843137253, \"model\": \"rna-sequence-metrics-gc\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.004089683061465621,
+   "elapsed_time": 0.0036772768944501877,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
     "sequence_length": 714,
     "g_count": 192,
     "c_count": 158,
@@ -1477,19 +1497,19 @@
     "gc_content": 0.49019607843137253,
     "sequence_length": 714
    },
-   "created_at": "2026-09-06T20:05:18.922893Z"
+   "created_at": "2026-09-07T14:27:02.199988Z"
   },
   {
-   "step_name": "cand_a8312152eca0_compute_rna_sequence_u_content",
+   "step_name": "cand_995611cf859a_compute_rna_sequence_u_content",
    "tool_name": "compute_rna_sequence_u_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"sequence_length\": 714, \"u_count\": 159, \"u_fraction\": 0.22268907563025211, \"model\": \"rna-u-content\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"sequence_length\": 714, \"u_count\": 159, \"u_fraction\": 0.22268907563025211, \"model\": \"rna-u-content\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.002986758016049862,
+   "elapsed_time": 0.0024832850322127342,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
     "sequence_length": 714,
     "u_count": 159,
     "u_fraction": 0.22268907563025211,
@@ -1499,18 +1519,18 @@
     "u_fraction": 0.22268907563025211,
     "u_count": 159
    },
-   "created_at": "2026-09-06T20:05:18.926235Z"
+   "created_at": "2026-09-07T14:27:02.202755Z"
   },
   {
-   "step_name": "cand_a8312152eca0_predict_rna_secondary_structure_with_linearfold",
+   "step_name": "cand_995611cf859a_predict_rna_secondary_structure_with_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
    "success": true,
    "error": null,
-   "elapsed_time": 0.33872878598049283,
+   "elapsed_time": 0.33793420204892755,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
     "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
     "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............",
     "mfe": -111.33,
@@ -1522,19 +1542,19 @@
     "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............",
     "fold_tool": "LinearFold"
    },
-   "created_at": "2026-09-06T20:05:19.265410Z"
+   "created_at": "2026-09-07T14:27:02.541096Z"
   },
   {
-   "step_name": "cand_a8312152eca0_compute_dot_bracket_unpaired_fraction",
+   "step_name": "cand_995611cf859a_compute_dot_bracket_unpaired_fraction",
    "tool_name": "compute_dot_bracket_unpaired_fraction",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db\", \"structure_length\": 714, \"dot_count\": 248, \"unpaired_fraction\": 0.3473389355742297, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_8c0eddb855.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_8c0eddb855.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_8c0eddb855.db\", \"structure_length\": 714, \"dot_count\": 248, \"unpaired_fraction\": 0.3473389355742297, \"model\": \"rna-sequence-metrics-unpaired\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.004062565974891186,
+   "elapsed_time": 0.003444305155426264,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_8c0eddb855.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_8c0eddb855.db",
     "structure_length": 714,
     "dot_count": 248,
     "unpaired_fraction": 0.3473389355742297,
@@ -1543,19 +1563,19 @@
    "metrics": {
     "unpaired_fraction": 0.3473389355742297
    },
-   "created_at": "2026-09-06T20:05:19.270951Z"
+   "created_at": "2026-09-07T14:27:02.545708Z"
   },
   {
-   "step_name": "cand_a8312152eca0_predict_mrna_stability_with_rnastop",
+   "step_name": "cand_995611cf859a_predict_mrna_stability_with_rnastop",
    "tool_name": "predict_mrna_stability_with_rnastop",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"structure\": \"....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_c668a3345d.json\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGC",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"structure\": \"....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_91271bd01c.json\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGC",
    "success": true,
    "error": null,
-   "elapsed_time": 1.2492806790396571,
+   "elapsed_time": 2.3911612920928746,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
-    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_c668a3345d.json",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_91271bd01c.json",
     "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
     "used_sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAU",
     "sequence_length": 714,
@@ -1575,18 +1595,18 @@
    "metrics": {
     "rnastop_overall_stability": 0.5731382369995117
    },
-   "created_at": "2026-09-06T20:05:20.520759Z"
+   "created_at": "2026-09-07T14:27:04.937272Z"
   },
   {
-   "step_name": "cand_a8312152eca0_compute_cai_for_cds_sequence",
+   "step_name": "cand_995611cf859a_compute_cai_for_cds_sequence",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"cai_score\": 0.9181680185415222, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta\", \"cai_score\": 0.9181680185415222, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.001031349878758192,
+   "elapsed_time": 0.0008578000124543905,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_b6444023ad.fasta",
     "cai_score": 0.9181680185415222,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1600,19 +1620,19 @@
     "cai_score": 0.9181680185415222,
     "cai_species": "E. coli"
    },
-   "created_at": "2026-09-06T20:05:20.522159Z"
+   "created_at": "2026-09-07T14:27:04.938385Z"
   },
   {
    "step_name": "gennav_lineardesign:lambda2.5",
    "tool_name": "design_mrna_cds_with_lineardesign",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 2.5, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_0aecd18e1d.fasta\", \"generated_sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"lambda_value\": 2.5, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_7025edcadf.fasta\", \"generated_sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGA",
    "success": true,
    "error": null,
-   "elapsed_time": 18.110240207985044,
+   "elapsed_time": 18.23978759907186,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
-    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_0aecd18e1d.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_7025edcadf.fasta",
     "generated_sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
     "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.((((((.(((((((((((...(((((.(((((((((((...((....))..))))))))))).)))))))))).....)))))).).))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((.((((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).)).))))))).)))))))(((((((((((((((...))))))).))).))))))))))))))))...))))))...))..)))))))......))))))))((.((((((((...((((.(((.....))).))))...)))))))).))....",
     "mfe": -325.2,
@@ -1624,18 +1644,18 @@
     "model": "LinearDesign"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:57:53.178598Z"
+   "created_at": "2026-09-07T14:19:29.667596Z"
   },
   {
    "step_name": "gennav_cai",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_df6e95ba1f.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_df6e95ba1f.fasta\", \"cai_score\": 0.8831311793641136, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_9581536588.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_9581536588.fasta\", \"cai_score\": 0.8831311793641136, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0013098709750920534,
+   "elapsed_time": 0.001165958121418953,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_df6e95ba1f.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_9581536588.fasta",
     "cai_score": 0.8831311793641136,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1646,18 +1666,18 @@
     "model": "cai-kazusa"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:57:53.181043Z"
+   "created_at": "2026-09-07T14:19:29.669637Z"
   },
   {
    "step_name": "gennav_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_62ca10ba70.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_62ca10ba70.fasta\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_2af471f7af.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_2af471f7af.fasta\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
    "success": true,
    "error": null,
-   "elapsed_time": 0.34262590715661645,
+   "elapsed_time": 0.3532569350209087,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_62ca10ba70.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_2af471f7af.fasta",
     "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
     "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......",
     "mfe": -123.7,
@@ -1665,19 +1685,19 @@
     "model": "LinearFold"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:57:53.524948Z"
+   "created_at": "2026-09-07T14:19:30.023652Z"
   },
   {
-   "step_name": "cand_2bb0e82f2d5a_compute_rna_sequence_gc_content",
+   "step_name": "cand_3346dcbce12b_compute_rna_sequence_gc_content",
    "tool_name": "compute_rna_sequence_gc_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 161, \"gc_count\": 353, \"gc_content\": 0.4943977591036415, \"model\": \"rna-sequence-metrics-gc\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 161, \"gc_count\": 353, \"gc_content\": 0.4943977591036415, \"model\": \"rna-sequence-metrics-gc\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.005390862002968788,
+   "elapsed_time": 0.0034769088961184025,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
     "sequence_length": 714,
     "g_count": 192,
     "c_count": 161,
@@ -1689,19 +1709,19 @@
     "gc_content": 0.4943977591036415,
     "sequence_length": 714
    },
-   "created_at": "2026-09-06T20:05:20.529309Z"
+   "created_at": "2026-09-07T14:27:04.942701Z"
   },
   {
-   "step_name": "cand_2bb0e82f2d5a_compute_rna_sequence_u_content",
+   "step_name": "cand_3346dcbce12b_compute_rna_sequence_u_content",
    "tool_name": "compute_rna_sequence_u_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"sequence_length\": 714, \"u_count\": 159, \"u_fraction\": 0.22268907563025211, \"model\": \"rna-u-content\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"sequence_length\": 714, \"u_count\": 159, \"u_fraction\": 0.22268907563025211, \"model\": \"rna-u-content\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0033847379963845015,
+   "elapsed_time": 0.002448586979880929,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
     "sequence_length": 714,
     "u_count": 159,
     "u_fraction": 0.22268907563025211,
@@ -1711,18 +1731,18 @@
     "u_fraction": 0.22268907563025211,
     "u_count": 159
    },
-   "created_at": "2026-09-06T20:05:20.533114Z"
+   "created_at": "2026-09-07T14:27:04.945445Z"
   },
   {
-   "step_name": "cand_2bb0e82f2d5a_predict_rna_secondary_structure_with_linearfold",
+   "step_name": "cand_3346dcbce12b_predict_rna_secondary_structure_with_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
    "success": true,
    "error": null,
-   "elapsed_time": 0.33959329407662153,
+   "elapsed_time": 0.3426204230636358,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
     "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
     "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......",
     "mfe": -123.7,
@@ -1734,19 +1754,19 @@
     "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......",
     "fold_tool": "LinearFold"
    },
-   "created_at": "2026-09-06T20:05:20.873154Z"
+   "created_at": "2026-09-07T14:27:05.288409Z"
   },
   {
-   "step_name": "cand_2bb0e82f2d5a_compute_dot_bracket_unpaired_fraction",
+   "step_name": "cand_3346dcbce12b_compute_dot_bracket_unpaired_fraction",
    "tool_name": "compute_dot_bracket_unpaired_fraction",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db\", \"structure_length\": 714, \"dot_count\": 212, \"unpaired_fraction\": 0.2969187675070028, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_0e197324c6.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_0e197324c6.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_0e197324c6.db\", \"structure_length\": 714, \"dot_count\": 212, \"unpaired_fraction\": 0.2969187675070028, \"model\": \"rna-sequence-metrics-unpaired\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0034214709885418415,
+   "elapsed_time": 0.00331855402328074,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_0e197324c6.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_0e197324c6.db",
     "structure_length": 714,
     "dot_count": 212,
     "unpaired_fraction": 0.2969187675070028,
@@ -1755,19 +1775,19 @@
    "metrics": {
     "unpaired_fraction": 0.2969187675070028
    },
-   "created_at": "2026-09-06T20:05:20.877690Z"
+   "created_at": "2026-09-07T14:27:05.292688Z"
   },
   {
-   "step_name": "cand_2bb0e82f2d5a_predict_mrna_stability_with_rnastop",
+   "step_name": "cand_3346dcbce12b_predict_mrna_stability_with_rnastop",
    "tool_name": "predict_mrna_stability_with_rnastop",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"structure\": \"((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_a72900bedb.json\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGC",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"structure\": \"((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_0c876bc367.json\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGC",
    "success": true,
    "error": null,
-   "elapsed_time": 1.2645884221419692,
+   "elapsed_time": 1.332057244842872,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
-    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_a72900bedb.json",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_0c876bc367.json",
     "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
     "used_sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAU",
     "sequence_length": 714,
@@ -1787,18 +1807,18 @@
    "metrics": {
     "rnastop_overall_stability": 0.5599966049194336
    },
-   "created_at": "2026-09-06T20:05:22.142737Z"
+   "created_at": "2026-09-07T14:27:06.625153Z"
   },
   {
-   "step_name": "cand_2bb0e82f2d5a_compute_cai_for_cds_sequence",
+   "step_name": "cand_3346dcbce12b_compute_cai_for_cds_sequence",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"cai_score\": 0.8831311793641136, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta\", \"cai_score\": 0.8831311793641136, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0009043158497661352,
+   "elapsed_time": 0.0008661311585456133,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_62132ca4ab.fasta",
     "cai_score": 0.8831311793641136,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1812,19 +1832,19 @@
     "cai_score": 0.8831311793641136,
     "cai_species": "E. coli"
    },
-   "created_at": "2026-09-06T20:05:22.143989Z"
+   "created_at": "2026-09-07T14:27:06.626308Z"
   },
   {
    "step_name": "gennav_lineardesign:lambda2",
    "tool_name": "design_mrna_cds_with_lineardesign",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 2.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_812198ffe8.fasta\", \"generated_sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"lambda_value\": 2.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_b354a9f6bd.fasta\", \"generated_sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGA",
    "success": true,
    "error": null,
-   "elapsed_time": 18.526938036782667,
+   "elapsed_time": 18.529131281888112,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
-    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_812198ffe8.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_974fc0b998.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_b354a9f6bd.fasta",
     "generated_sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
     "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.((((((.(((((((((((...(((((((((((((((((...((....))..)))))))))))))))))))))).....)))))).).))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((.((((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((((...))))))).))).)))))))).)))))))...))))))...))..)))))))......))))))))(((((((((((...((((.(((.....))).))))...)))))))))))....",
     "mfe": -349.0,
@@ -1836,18 +1856,18 @@
     "model": "LinearDesign"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:56:36.314258Z"
+   "created_at": "2026-09-07T14:18:12.867926Z"
   },
   {
    "step_name": "gennav_cai",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_04727ceb37.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_04727ceb37.fasta\", \"cai_score\": 0.8436514779805928, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_86d7eaa425.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_86d7eaa425.fasta\", \"cai_score\": 0.8436514779805928, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0008458059746772051,
+   "elapsed_time": 0.0016947868280112743,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_04727ceb37.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_86d7eaa425.fasta",
     "cai_score": 0.8436514779805928,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -1858,18 +1878,18 @@
     "model": "cai-kazusa"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:56:38.398894Z"
+   "created_at": "2026-09-07T14:18:13.015579Z"
   },
   {
    "step_name": "gennav_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_9c68facad3.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_9c68facad3.fasta\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_dcce0f283d.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_dcce0f283d.fasta\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
    "success": true,
    "error": null,
-   "elapsed_time": 0.34420327586121857,
+   "elapsed_time": 0.34362136013805866,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_9c68facad3.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_dcce0f283d.fasta",
     "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
     "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....",
     "mfe": -152.95,
@@ -1877,19 +1897,19 @@
     "model": "LinearFold"
    },
    "metrics": {},
-   "created_at": "2026-09-06T19:56:38.744179Z"
+   "created_at": "2026-09-07T14:18:13.360701Z"
   },
   {
-   "step_name": "cand_8216bdf9c7f7_compute_rna_sequence_gc_content",
+   "step_name": "cand_f4786e800297_compute_rna_sequence_gc_content",
    "tool_name": "compute_rna_sequence_gc_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"sequence_length\": 714, \"g_count\": 188, \"c_count\": 170, \"gc_count\": 358, \"gc_content\": 0.5014005602240896, \"model\": \"rna-sequence-metrics-gc\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"sequence_length\": 714, \"g_count\": 188, \"c_count\": 170, \"gc_count\": 358, \"gc_content\": 0.5014005602240896, \"model\": \"rna-sequence-metrics-gc\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.004223776049911976,
+   "elapsed_time": 0.0033598891459405422,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
     "sequence_length": 714,
     "g_count": 188,
     "c_count": 170,
@@ -1901,19 +1921,19 @@
     "gc_content": 0.5014005602240896,
     "sequence_length": 714
    },
-   "created_at": "2026-09-06T20:05:22.149439Z"
+   "created_at": "2026-09-07T14:27:06.630476Z"
   },
   {
-   "step_name": "cand_8216bdf9c7f7_compute_rna_sequence_u_content",
+   "step_name": "cand_f4786e800297_compute_rna_sequence_u_content",
    "tool_name": "compute_rna_sequence_u_content",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"sequence_length\": 714, \"u_count\": 156, \"u_fraction\": 0.2184873949579832, \"model\": \"rna-u-content\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"sequence_length\": 714, \"u_count\": 156, \"u_fraction\": 0.2184873949579832, \"model\": \"rna-u-content\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.002975761890411377,
+   "elapsed_time": 0.0024771650787442923,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
     "sequence_length": 714,
     "u_count": 156,
     "u_fraction": 0.2184873949579832,
@@ -1923,18 +1943,18 @@
     "u_fraction": 0.2184873949579832,
     "u_count": 156
    },
-   "created_at": "2026-09-06T20:05:22.152763Z"
+   "created_at": "2026-09-07T14:27:06.633233Z"
   },
   {
-   "step_name": "cand_8216bdf9c7f7_predict_rna_secondary_structure_with_linearfold",
+   "step_name": "cand_f4786e800297_predict_rna_secondary_structure_with_linearfold",
    "tool_name": "predict_rna_secondary_structure_with_linearfold",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\"}",
-   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
    "success": true,
    "error": null,
-   "elapsed_time": 0.3393707750365138,
+   "elapsed_time": 0.3385012340731919,
    "artifacts": {
-    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
     "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
     "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....",
     "mfe": -152.95,
@@ -1946,19 +1966,19 @@
     "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....",
     "fold_tool": "LinearFold"
    },
-   "created_at": "2026-09-06T20:05:22.492539Z"
+   "created_at": "2026-09-07T14:27:06.972088Z"
   },
   {
-   "step_name": "cand_8216bdf9c7f7_compute_dot_bracket_unpaired_fraction",
+   "step_name": "cand_f4786e800297_compute_dot_bracket_unpaired_fraction",
    "tool_name": "compute_dot_bracket_unpaired_fraction",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db\", \"structure_length\": 714, \"dot_count\": 202, \"unpaired_fraction\": 0.28291316526610644, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_b6dba6343d.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_b6dba6343d.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_b6dba6343d.db\", \"structure_length\": 714, \"dot_count\": 202, \"unpaired_fraction\": 0.28291316526610644, \"model\": \"rna-sequence-metrics-unpaired\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.005740720080211759,
+   "elapsed_time": 0.003142683068290353,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db",
-    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_b6dba6343d.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_b6dba6343d.db",
     "structure_length": 714,
     "dot_count": 202,
     "unpaired_fraction": 0.28291316526610644,
@@ -1967,19 +1987,19 @@
    "metrics": {
     "unpaired_fraction": 0.28291316526610644
    },
-   "created_at": "2026-09-06T20:05:22.500396Z"
+   "created_at": "2026-09-07T14:27:06.976319Z"
   },
   {
-   "step_name": "cand_8216bdf9c7f7_predict_mrna_stability_with_rnastop",
+   "step_name": "cand_f4786e800297_predict_mrna_stability_with_rnastop",
    "tool_name": "predict_mrna_stability_with_rnastop",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"structure\": \"((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_021f86ad6f.json\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGC",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"structure\": \"((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_4880b7711d.json\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGC",
    "success": true,
    "error": null,
-   "elapsed_time": 1.266725717112422,
+   "elapsed_time": 1.235474222805351,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
-    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_021f86ad6f.json",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_4880b7711d.json",
     "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
     "used_sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAU",
     "sequence_length": 714,
@@ -1999,18 +2019,18 @@
    "metrics": {
     "rnastop_overall_stability": 0.5545513033866882
    },
-   "created_at": "2026-09-06T20:05:23.767573Z"
+   "created_at": "2026-09-07T14:27:08.212190Z"
   },
   {
-   "step_name": "cand_8216bdf9c7f7_compute_cai_for_cds_sequence",
+   "step_name": "cand_f4786e800297_compute_cai_for_cds_sequence",
    "tool_name": "compute_cai_for_cds_sequence",
-   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"species\": \"E. coli\"}",
-   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"cai_score\": 0.8436514779805928, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta\", \"cai_score\": 0.8436514779805928, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
    "success": true,
    "error": null,
-   "elapsed_time": 0.0008882381953299046,
+   "elapsed_time": 0.0008689688984304667,
    "artifacts": {
-    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_f809a4603c.fasta",
     "cai_score": 0.8436514779805928,
     "species": "Escherichia coli K-12",
     "cds_length_nt": 714,
@@ -2024,7 +2044,7 @@
     "cai_score": 0.8436514779805928,
     "cai_species": "E. coli"
    },
-   "created_at": "2026-09-06T20:05:23.768798Z"
+   "created_at": "2026-09-07T14:27:08.213332Z"
   }
  ]
 }

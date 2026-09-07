@@ -3,7 +3,9 @@
 Covers:
 1. score_full_length_mrna_candidate unit scoring
 2. FullLengthMrnaDesignInput Pydantic validation
-3. UTR combination generation logic (6 × 9 = 54 candidates)
+3. Two-step generation logic (DECISIONS (bb)): CDS selection ≤3 + UTR pool
+   (GEMORNA screening-scale draws + benchmark UTRs + admission gates + Kozak
+   gates) with mocked capabilities
 4. Workflow integration with mocked capabilities
 """
 
@@ -151,7 +153,13 @@ def test_input_dict_coercion():
 
 
 def _make_registry_with_mocks() -> MagicMock:
-    """Build a mock registry that returns deterministic sequences for every tool."""
+    """Mock registry for the two-step design (DECISIONS (bb)).
+
+    Every GEMORNA UTR draw returns a unique, passable sequence per (side,
+    preset, draw index); MRL is derived from the sequence (G count) so the
+    5'UTR shortlist ranking is deterministic; the fold mock returns a mild
+    MFE so the Kozak gates pass for every construct.
+    """
     reg = MagicMock()
 
     # CDS tools
@@ -159,40 +167,23 @@ def _make_registry_with_mocks() -> MagicMock:
     cap_rnarl = make_mock_capability({"generated_sequence": "AUGGGGCCCUUU"})
     cap_gemorna_cds = make_mock_capability({"generated_sequence": "AUGUUUGGGCCC"})
 
-    # UTR tools
-    cap_utr5_short = make_mock_capability({"generated_sequence": "GGGAAA"})
-    cap_utr5_medium = make_mock_capability({"generated_sequence": "GGGAAACCCUUU"})
-    cap_utr5_long = make_mock_capability({"generated_sequence": "GGGAAACCCUUUGGGAAA"})
-    cap_utr3_short = make_mock_capability({"generated_sequence": "AAAUUU"})
-    cap_utr3_medium = make_mock_capability({"generated_sequence": "AAAUUUGGGCCC"})
-    cap_utr3_long = make_mock_capability({"generated_sequence": "AAAUUUGGGCCCUUUAAA"})
+    counters: dict[tuple[str, str], int] = {}
 
-    caps = {
-        "design_mrna_cds_with_lineardesign": cap_ld,
-        "design_mrna_cds_with_rnarl": cap_rnarl,
-        "design_mrna_cds_with_gemorna": cap_gemorna_cds,
-        "design_5utr_with_gemorna": MagicMock(),
-        "design_3utr_with_gemorna": MagicMock(),
-    }
-
-    # UTR presets: return different sequences for each preset
-    utr5_sequences = {
-        "short": "GGGAAA",
-        "medium": "GGGAAACCCUUU",
-        "long": "GGGAAACCCUUUGGGAAA",
-    }
-    utr3_sequences = {
-        "short": "AAAUUU",
-        "medium": "AAAUUUGGGCCC",
-        "long": "AAAUUUGGGCCCUUUAAA",
-    }
+    def _draw(side: str, preset: str) -> str:
+        key = (side, preset)
+        counters[key] = counters.get(key, 0) + 1
+        n = counters[key]
+        if side == "5utr":
+            # unique per draw, AUG-free (U1), unstructured
+            return "GGGAAA" + "CCCUUU" * {"short": 0, "medium": 1, "long": 2}[preset] + f"GG{n:02d}"
+        return "AAACCC" + "GGGUUU" * {"short": 0, "medium": 1, "long": 2}[preset] + f"AA{n:02d}"
 
     def _utr5_invoke(args, state=None):
         preset = args.get("utr_length", "medium")
         return CapabilityResult(
             success=True,
             tool_name="design_5utr_with_gemorna",
-            output={"generated_sequence": utr5_sequences[preset]},
+            output={"generated_sequence": _draw("5utr", preset)},
         )
 
     def _utr3_invoke(args, state=None):
@@ -200,11 +191,46 @@ def _make_registry_with_mocks() -> MagicMock:
         return CapabilityResult(
             success=True,
             tool_name="design_3utr_with_gemorna",
-            output={"generated_sequence": utr3_sequences[preset]},
+            output={"generated_sequence": _draw("3utr", preset)},
         )
 
+    def _mrl_invoke(args, state=None):
+        from agent_core.file_manager import read_sequence
+
+        seq = read_sequence(args["filepath"]).upper().replace("T", "U")
+        return CapabilityResult(
+            success=True,
+            tool_name="predict_5utr_mrl_with_gemorna",
+            output={"predicted_mrl": 1.0 + seq.count("G")},
+        )
+
+    def _fold_invoke(args, state=None):
+        from agent_core.file_manager import read_sequence
+
+        seq = read_sequence(args["filepath"])
+        return CapabilityResult(
+            success=True,
+            tool_name="linearfold",
+            output={"mfe": -0.1 * len(seq), "structure": "." * len(seq)},
+        )
+
+    caps = {
+        "design_mrna_cds_with_lineardesign": cap_ld,
+        "design_mrna_cds_with_rnarl": cap_rnarl,
+        "design_mrna_cds_with_gemorna": cap_gemorna_cds,
+        "design_5utr_with_gemorna": MagicMock(),
+        "design_3utr_with_gemorna": MagicMock(),
+        "predict_5utr_mrl_with_gemorna": MagicMock(),
+        "predict_3utr_stability_with_gemorna": MagicMock(),
+        "predict_rna_secondary_structure_with_linearfold": MagicMock(),
+    }
     caps["design_5utr_with_gemorna"].invoke = _utr5_invoke
     caps["design_3utr_with_gemorna"].invoke = _utr3_invoke
+    caps["predict_5utr_mrl_with_gemorna"].invoke = _mrl_invoke
+    caps["predict_3utr_stability_with_gemorna"].invoke = lambda args, state=None: CapabilityResult(
+        success=True, tool_name="stab", output={"predicted_stability": 1.5}
+    )
+    caps["predict_rna_secondary_structure_with_linearfold"].invoke = _fold_invoke
 
     def _has(name: str) -> bool:
         return name in caps
@@ -217,11 +243,12 @@ def _make_registry_with_mocks() -> MagicMock:
     return reg
 
 
-def test_generate_candidates_6cds_9utr_54_total():
-    """With 3 unique CDS tools and 3×3 UTR combos, verify 54 candidates.
+def test_generate_candidates_two_step_static_counts():
+    """Two-step design (DECISIONS (bb)), static recipe path (navigation=False).
 
-    Static recipe path (navigation=False): the v2.0.0 default recipe would
-    otherwise delegate CDS design to GenNav-λ navigation.
+    3 unique CDS selected (top-3 of the static pool) × 5'UTR shortlist
+    (6 = 3 benchmarks + 3 best GEMORNA by MRL) × 3'UTR shortlist (6 = 2
+    benchmarks + 4 GEMORNA in generation order) = 108 unique candidates.
     """
     reg = _make_registry_with_mocks()
     wf = FullLengthMrnaDesignWorkflow(reg)
@@ -229,39 +256,69 @@ def test_generate_candidates_6cds_9utr_54_total():
         protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
     )
     candidates = wf.generate_candidates(inp)
-    # 3 CDS tools (lineardesign produces 4, but we mock same cap) × 9 UTR combos
-    # Actually lineardesign cap returns same sequence every time, so after dedup:
-    # lineardesign: 4 calls → 1 unique (all same mocked seq)
-    # rnarl: 1 unique
-    # gemorna: 1 unique
-    # Total unique CDS = 3
-    # 3 × 9 = 27 unique full-length candidates
-    assert len(candidates) == 27
+    assert len(candidates) == 108
 
-    # Verify every candidate has the required metadata
+    sel = wf._workflow_state["_cds_selection"]
+    assert sel["pool_size"] >= 3
+    assert len(sel["selected"]) == 3
+
+    pool = wf._workflow_state["_utr_pool"]
+    assert pool["gemorna_draw_failures_5utr"] == 0
+    assert pool["gemorna_draw_failures_3utr"] == 0
+    assert len(pool["utr5_pool"]) == 12 + 3      # 12 draws + 3 benchmarks
+    assert len(pool["utr3_pool"]) == 10 + 2      # 10 draws + 2 benchmarks
+    assert len(pool["utr5_shortlist"]) == 6
+    assert len(pool["utr3_shortlist"]) == 6
+    # benchmark UTRs compete in the same ranking
+    assert {e["id"] for e in pool["utr5_shortlist"] if e["origin"] == "benchmark"} == {
+        "bnt162b2_5utr", "lineardesign_paper_5utr", "hba1_5utr",
+    }
+
     for c in candidates:
         assert c.metadata["utr5_sequence"] != ""
         assert c.metadata["cds_sequence"] != ""
         assert c.metadata["utr3_sequence"] != ""
-        assert "utr5_preset" in c.metadata
-        assert "utr3_preset" in c.metadata
+        assert "utr5_id" in c.metadata and "utr3_id" in c.metadata
+        assert "utr5_origin" in c.metadata
         assert "cds_source" in c.metadata
+        assert c.metadata["cds_nav_bands"] == []
+        assert "kozak_gates" in c.metadata
         assert len(c.sequence) == (
             c.metadata["utr5_length"] + c.metadata["cds_length"] + c.metadata["utr3_length"]
         )
 
 
+def test_generate_candidates_pool_built_once_not_resampled_per_cds():
+    """The UTR pool is drawn once per run — the same UTR ids appear under every
+    selected CDS (no resampling confound; DECISIONS (bb))."""
+    reg = _make_registry_with_mocks()
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
+    candidates = wf.generate_candidates(inp)
+    by_cds: dict[str, set[str]] = {}
+    for c in candidates:
+        by_cds.setdefault(c.metadata["cds_source"], set()).add(
+            (c.metadata["utr5_id"], c.metadata["utr3_id"])
+        )
+    assert len(by_cds) == 3
+    combo_sets = list(by_cds.values())
+    assert combo_sets[0] == combo_sets[1] == combo_sets[2]
+    # 22 draws total: 12 5'UTR + 10 3'UTR — one pool per run
+    assert sum(1 for e in wf._workflow_state["_utr_pool"]["utr5_pool"] if e["origin"] == "gemorna") == 12
+
+
 def test_generate_candidates_dedup_full_sequence():
-    """If two combinations produce identical full sequences, only one survives."""
+    """If combinations produce identical full sequences, only one survives."""
     reg = MagicMock()
 
-    # All tools return identical sequences → after dedup we get 1 CDS × 9 UTR
     cap = make_mock_capability({"generated_sequence": "AUGCCC"})
 
     utr_seqs = {
-        "short": "SSS",
-        "medium": "MMM",
-        "long": "LLL",
+        "short": "GGGAAA",
+        "medium": "GGGAAACCC",
+        "long": "GGGAAACCCUUU",
     }
 
     def _utr_invoke(args, state=None):
@@ -290,8 +347,16 @@ def test_generate_candidates_dedup_full_sequence():
         protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
     )
     candidates = wf.generate_candidates(inp)
-    # 1 unique CDS × 3 UTR5 × 3 UTR3 = 9 unique full sequences
-    assert len(candidates) == 9
+    # 1 unique CDS. With no MRL oracle in this registry, the 5' shortlist is
+    # [3 benchmarks + gemorna long_1..3] = 4 unique sequences; the 3'
+    # shortlist is [2 benchmarks + gemorna long_1..3 + medium_1] = 4 unique
+    # sequences → 1 × 4 × 4 = 16 unique full sequences (duplicate draws of a
+    # preset collapse under full-sequence dedup).
+    unique_combos = {
+        (c.metadata["utr5_sequence"], c.metadata["utr3_sequence"]) for c in candidates
+    }
+    assert len(unique_combos) == 16
+    assert len(candidates) == 16
 
 
 def test_generate_candidates_skips_cds_not_multiple_of_3():
@@ -312,8 +377,9 @@ def test_generate_candidates_skips_cds_not_multiple_of_3():
     assert len(candidates) == 0
 
 
-def test_generate_candidates_utr_mode_filter():
-    """utr_mode='short' should produce only 1 UTR preset per end → 1 combo per CDS."""
+def test_generate_candidates_utr_mode_single_preset():
+    """utr_mode='short' restricts GEMORNA draws to the short preset; the
+    benchmark pool is always included."""
     reg = _make_registry_with_mocks()
     wf = FullLengthMrnaDesignWorkflow(reg)
     inp = FullLengthMrnaDesignInput(
@@ -321,11 +387,104 @@ def test_generate_candidates_utr_mode_filter():
         navigation=False,
     )
     candidates = wf.generate_candidates(inp)
-    # 3 unique CDS × 1 UTR5(short) × 1 UTR3(short) = 3
-    assert len(candidates) == 3
-    for c in candidates:
-        assert c.metadata["utr5_preset"] == "short"
-        assert c.metadata["utr3_preset"] == "short"
+    pool = wf._workflow_state["_utr_pool"]
+    assert len(pool["utr5_pool"]) == 4 + 3       # 4 short draws + 3 benchmarks
+    assert len(pool["utr3_pool"]) == 4 + 2       # 4 short draws + 2 benchmarks
+    for e in pool["utr5_pool"]:
+        if e["origin"] == "gemorna":
+            assert e["preset"] == "short"
+    assert len(candidates) == 3 * 6 * 6
+
+
+def test_generate_candidates_admission_rejects_upstream_aug():
+    """U1: a GEMORNA 5'UTR containing AUG never reaches the shortlist."""
+    reg = _make_registry_with_mocks()
+    reg.get("design_5utr_with_gemorna").invoke = lambda args, state=None: CapabilityResult(
+        success=True,
+        tool_name="design_5utr_with_gemorna",
+        output={"generated_sequence": "GGGAAACCCAUGGGGUUU"},   # contains AUG
+    )
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
+    candidates = wf.generate_candidates(inp)
+    pool = wf._workflow_state["_utr_pool"]
+    assert all(not e["admission"]["ok"] for e in pool["utr5_pool"] if e["origin"] == "gemorna")
+    # only the benchmarks survive on the 5' side
+    assert {e["id"] for e in pool["utr5_shortlist"]} == {
+        "bnt162b2_5utr", "lineardesign_paper_5utr", "hba1_5utr",
+    }
+    assert all("AUG" not in c.metadata["utr5_sequence"] for c in candidates)
+
+
+def test_generate_candidates_admission_rejects_class2_are():
+    """U2: a GEMORNA 3'UTR with tandem AUUUA repeats is rejected."""
+    reg = _make_registry_with_mocks()
+    reg.get("design_3utr_with_gemorna").invoke = lambda args, state=None: CapabilityResult(
+        success=True,
+        tool_name="design_3utr_with_gemorna",
+        output={"generated_sequence": "AAACCCGGGAUUUAUUUACCC"},  # AUUUAUUUA tandem
+    )
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
+    candidates = wf.generate_candidates(inp)
+    pool = wf._workflow_state["_utr_pool"]
+    assert all(not e["admission"]["ok"] for e in pool["utr3_pool"] if e["origin"] == "gemorna")
+    assert {e["id"] for e in pool["utr3_shortlist"]} == {"bnt162b2_3utr", "hba1_3utr"}
+    assert all("AUUUAUUUA" not in c.metadata["utr3_sequence"] for c in candidates)
+
+
+def test_generate_candidates_kozak_gate_rejects_cap_entry_structure():
+    """U3: an assembled construct whose 60-nt cap window folds at ≤ -30 is
+    rejected and recorded as a gate reject."""
+    reg = _make_registry_with_mocks()
+
+    def _bad_fold_invoke(args, state=None):
+        from agent_core.file_manager import read_sequence
+
+        seq = read_sequence(args["filepath"])
+        return CapabilityResult(
+            success=True,
+            tool_name="linearfold",
+            output={"mfe": -99.0, "structure": "." * len(seq)},
+        )
+
+    reg.get("predict_rna_secondary_structure_with_linearfold").invoke = _bad_fold_invoke
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
+    candidates = wf.generate_candidates(inp)
+    assert candidates == []
+    rejects = wf._workflow_state["_utr_pool"]["gate_rejects"]
+    # every rejected combo failed at least one verified gate (mock constructs
+    # shorter than 60 nt report the cap window as unverified and fall to U4)
+    assert rejects and all(
+        (not r["cap_entry"]["ok"]) or (not r["scanning_path"]["ok"]) for r in rejects
+    )
+    assert wf._workflow_state["_utr_assembly_empty"]
+
+
+def test_generate_candidates_fold_outage_never_rejects():
+    """A fold-service outage leaves the Kozak gates unverified — candidates
+    pass through (gates reject on evidence, never on outage)."""
+    reg = _make_registry_with_mocks()
+
+    def _dead_fold(args, state=None):
+        return CapabilityResult(success=False, tool_name="linearfold", error="down")
+
+    reg.get("predict_rna_secondary_structure_with_linearfold").invoke = _dead_fold
+    wf = FullLengthMrnaDesignWorkflow(reg)
+    inp = FullLengthMrnaDesignInput(
+        protein_sequence="MKTLVVPFGQ", design_tool="all", navigation=False
+    )
+    candidates = wf.generate_candidates(inp)
+    assert len(candidates) == 108
+    rejects = wf._workflow_state["_utr_pool"]["gate_rejects"]
+    assert rejects == []
 
 
 def test_generate_candidates_propagates_cai_species():
@@ -341,8 +500,8 @@ def test_generate_candidates_propagates_cai_species():
         utr_mode="short",
     )
     candidates = wf.generate_candidates(inp)
-    assert len(candidates) == 1
-    assert candidates[0].metadata["cai_species"] == "Mus musculus"
+    assert candidates
+    assert all(c.metadata["cai_species"] == "Mus musculus" for c in candidates)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -664,6 +823,16 @@ def test_reference_point_validation():
         )
 
 
+def test_reference_point_rejects_utr3_stability_loudly():
+    """DECISIONS (bb): utr3_stability is demoted to a report-only diagnostic —
+    a user reference point naming it fails loudly with the demotion reason."""
+    with pytest.raises(ValueError, match="utr3_stability.*demoted"):
+        FullLengthMrnaDesignInput(
+            protein_sequence="MP",
+            reference_point={"utr3_stability": 2.0},
+        )
+
+
 def test_target_cds_mfe_cai_converts_to_cds_component():
     """target_cds_mfe and target_cds_cai are converted to a cds_component reference."""
     inp = FullLengthMrnaDesignInput(
@@ -782,7 +951,8 @@ def _make_nav_registry():
 
 def test_full_length_default_recipe_delegates_to_navigation():
     """v2.0.0: unset navigation + the default 'all' recipe runs GenNav-λ in
-    the CDS sub-workflow; the navigation trace lands in the merged
+    the CDS sub-workflow; DECISIONS (bb): step-1 then selects ≤3 delivered CDS
+    (one per navigation profile); the navigation trace lands in the merged
     full-length state writeback; candidates carry the gennav source."""
     caps, reg = _make_nav_registry()
     wf = FullLengthMrnaDesignWorkflow(reg)
@@ -790,19 +960,23 @@ def test_full_length_default_recipe_delegates_to_navigation():
     assert inp.navigation is None  # tristate default — inherit
     candidates = wf.generate_candidates(inp)
 
-    assert candidates, "navigation delivery must compose with UTR presets"
+    assert candidates, "navigation delivery must compose with the UTR pool"
     sources = {c.metadata.get("cds_source", "") for c in candidates}
     assert any(s.startswith("cds_design_gennav:lambda") for s in sources)
     for c in candidates:
-        # every full-length candidate wraps a delivered navigation CDS
+        # every full-length candidate wraps a selected navigation CDS
         assert c.metadata["cds_source"].startswith("cds_design_gennav:lambda")
         assert c.metadata["cds_length"] % 3 == 0
+    # two-step CDS selection: at most one CDS per navigation profile
+    n_cds = len({c.metadata["cds_sequence"] for c in candidates})
+    assert 1 <= n_cds <= 3
+    assert len(wf._workflow_state["_cds_selection"]["selected"]) == n_cds
+    # the UTR pool carries the benchmark entries under the navigation path too
+    pool_ids = {e["id"] for e in wf._workflow_state["_utr_pool"]["utr5_shortlist"]}
+    assert pool_ids & {"bnt162b2_5utr", "lineardesign_paper_5utr", "hba1_5utr"}
     # navigation trace captured from the sub-workflow state
     trace = wf._cds_state_writeback.get("_gennav_trace")
     assert trace is not None and trace["raw_spent"] > 0
-    # UTR composition is unchanged: 9 combos per unique CDS
-    n_cds = len({c.metadata["cds_sequence"] for c in candidates})
-    assert len(candidates) <= n_cds * 9
     # RNARL/GEMORNA CDS generation never runs on the navigation path
     assert "design_mrna_cds_with_rnarl" not in caps
     assert "design_mrna_cds_with_gemorna" not in caps

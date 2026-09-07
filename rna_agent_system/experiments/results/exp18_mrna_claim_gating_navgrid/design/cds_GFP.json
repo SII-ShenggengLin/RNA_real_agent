@@ -1,0 +1,2030 @@
+{
+ "task_id": "mrna_cds_20260906_200523",
+ "success": true,
+ "timestamp": "2026-09-06T20:08:14.625058",
+ "session_id": "exp18_cds_GFP",
+ "candidate_count": 5,
+ "candidates": [
+  {
+   "rank": 1,
+   "id": "cand_8216bdf9c7f7",
+   "source": "cds_design_gennav:lambda2",
+   "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+   "sequence_type": "mrna",
+   "total_length": 714,
+   "total_score": 112.48623711266404,
+   "scores": {
+    "mfe_per_nt": -0.2142156862745098,
+    "cai_score": 0.8436514779805928,
+    "combined_score": 112.48623711266404,
+    "total_score": 112.48623711266404,
+    "gc_content": 0.5014005602240896,
+    "gc_content_local": 0.5014005602240896,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -152.95,
+    "unpaired_fraction": 0.28291316526610644,
+    "rnastop_overall_stability": 0.5545513033866882,
+    "u_fraction": 0.2184873949579832,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 2.0
+    },
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "cai_species": "E. coli",
+    "nav_id": "nav:lambda2",
+    "nav_bands": [
+     "expression",
+     "balanced"
+    ],
+    "nav_delivery_rank": 5,
+    "nav_gear": {
+     "lambda": 2.0
+    },
+    "nav_matrix_pass": {
+     "expression": true,
+     "stability": false,
+     "balanced": true
+    },
+    "nav_cai": 0.8436514779805928,
+    "nav_mfe_per_nt": -0.214216,
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).)))...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "mfe_per_nt"
+   },
+   "metrics": {
+    "gc_content": 0.5014005602240896,
+    "gc_content_local": 0.5014005602240896,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -152.95,
+    "mfe_per_nt": -0.2142156862745098,
+    "unpaired_fraction": 0.28291316526610644,
+    "rnastop_overall_stability": 0.5545513033866882,
+    "cai_score": 0.8436514779805928,
+    "u_fraction": 0.2184873949579832,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   }
+  },
+  {
+   "rank": 2,
+   "id": "cand_2bb0e82f2d5a",
+   "source": "cds_design_gennav:lambda2.5",
+   "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
+   "sequence_type": "mrna",
+   "total_length": 714,
+   "total_score": 94.12099623817994,
+   "scores": {
+    "mfe_per_nt": -0.17324929971988795,
+    "cai_score": 0.8831311793641136,
+    "combined_score": 94.12099623817994,
+    "total_score": 94.12099623817994,
+    "gc_content": 0.4943977591036415,
+    "gc_content_local": 0.4943977591036415,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -123.7,
+    "unpaired_fraction": 0.2969187675070028,
+    "rnastop_overall_stability": 0.5599966049194336,
+    "u_fraction": 0.22268907563025211,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 2.5
+    },
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "cai_species": "E. coli",
+    "nav_id": "nav:lambda2.5",
+    "nav_bands": [
+     "expression"
+    ],
+    "nav_delivery_rank": 4,
+    "nav_gear": {
+     "lambda": 2.5
+    },
+    "nav_matrix_pass": {
+     "expression": true,
+     "stability": false,
+     "balanced": false
+    },
+    "nav_cai": 0.8831311793641136,
+    "nav_mfe_per_nt": -0.173249,
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).)))...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.4943977591036415,
+    "gc_content_local": 0.4943977591036415,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -123.7,
+    "mfe_per_nt": -0.17324929971988795,
+    "unpaired_fraction": 0.2969187675070028,
+    "rnastop_overall_stability": 0.5599966049194336,
+    "cai_score": 0.8831311793641136,
+    "u_fraction": 0.22268907563025211,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   }
+  },
+  {
+   "rank": 3,
+   "id": "cand_a8312152eca0",
+   "source": "cds_design_gennav:lambda3",
+   "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
+   "sequence_type": "mrna",
+   "total_length": 714,
+   "total_score": 91.01077894667587,
+   "scores": {
+    "mfe_per_nt": -0.15592436974789917,
+    "cai_score": 0.9181680185415222,
+    "combined_score": 91.01077894667587,
+    "total_score": 91.01077894667587,
+    "gc_content": 0.49019607843137253,
+    "gc_content_local": 0.49019607843137253,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -111.33,
+    "unpaired_fraction": 0.3473389355742297,
+    "rnastop_overall_stability": 0.5731382369995117,
+    "u_fraction": 0.22268907563025211,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 3.0
+    },
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "cai_species": "E. coli",
+    "nav_id": "nav:lambda3",
+    "nav_bands": [
+     "expression"
+    ],
+    "nav_delivery_rank": 3,
+    "nav_gear": {
+     "lambda": 3.0
+    },
+    "nav_matrix_pass": {
+     "expression": true,
+     "stability": false,
+     "balanced": false
+    },
+    "nav_cai": 0.9181680185415222,
+    "nav_mfe_per_nt": -0.155924,
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((....(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.49019607843137253,
+    "gc_content_local": 0.49019607843137253,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -111.33,
+    "mfe_per_nt": -0.15592436974789917,
+    "unpaired_fraction": 0.3473389355742297,
+    "rnastop_overall_stability": 0.5731382369995117,
+    "cai_score": 0.9181680185415222,
+    "u_fraction": 0.22268907563025211,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   }
+  },
+  {
+   "rank": 4,
+   "id": "cand_0a331648f725",
+   "source": "cds_design_gennav:lambda5",
+   "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
+   "sequence_type": "mrna",
+   "total_length": 714,
+   "total_score": 58.79969839525677,
+   "scores": {
+    "mfe_per_nt": -0.09329131652661064,
+    "cai_score": 0.967716222463299,
+    "combined_score": 58.79969839525677,
+    "total_score": 58.79969839525677,
+    "gc_content": 0.49299719887955185,
+    "gc_content_local": 0.49299719887955185,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -66.61,
+    "unpaired_fraction": 0.45098039215686275,
+    "rnastop_overall_stability": 0.6156983971595764,
+    "u_fraction": 0.21708683473389356,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 5.0
+    },
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "cai_species": "E. coli",
+    "nav_id": "nav:lambda5",
+    "nav_bands": [
+     "expression"
+    ],
+    "nav_delivery_rank": 2,
+    "nav_gear": {
+     "lambda": 5.0
+    },
+    "nav_matrix_pass": {
+     "expression": true,
+     "stability": false,
+     "balanced": false
+    },
+    "nav_cai": 0.967716222463299,
+    "nav_mfe_per_nt": -0.093291,
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((....(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "balanced"
+   },
+   "metrics": {
+    "gc_content": 0.49299719887955185,
+    "gc_content_local": 0.49299719887955185,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -66.61,
+    "mfe_per_nt": -0.09329131652661064,
+    "unpaired_fraction": 0.45098039215686275,
+    "rnastop_overall_stability": 0.6156983971595764,
+    "cai_score": 0.967716222463299,
+    "u_fraction": 0.21708683473389356,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   }
+  },
+  {
+   "rank": 5,
+   "id": "cand_e87a6d7c5626",
+   "source": "cds_design_gennav:lambda50",
+   "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
+   "sequence_type": "mrna",
+   "total_length": 714,
+   "total_score": 33.28,
+   "scores": {
+    "mfe_per_nt": -0.04661064425770308,
+    "cai_score": 1.0,
+    "combined_score": 33.28,
+    "total_score": 33.28,
+    "gc_content": 0.48599439775910364,
+    "gc_content_local": 0.48599439775910364,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -33.28,
+    "unpaired_fraction": 0.6302521008403361,
+    "rnastop_overall_stability": 0.610974907875061,
+    "u_fraction": 0.22128851540616246,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   },
+   "metadata": {
+    "design_tool": "lineardesign",
+    "design_params": {
+     "lambda_value": 50.0
+    },
+    "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
+    "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "cai_species": "E. coli",
+    "nav_id": "nav:lambda50",
+    "nav_bands": [
+     "expression"
+    ],
+    "nav_delivery_rank": 1,
+    "nav_gear": {
+     "lambda": 50.0
+    },
+    "nav_matrix_pass": {
+     "expression": true,
+     "stability": false,
+     "balanced": false
+    },
+    "nav_cai": 1.0,
+    "nav_mfe_per_nt": -0.046611,
+    "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....)))))))...(truncated)",
+    "fold_tool": "LinearFold",
+    "pareto_tag": "cai_score"
+   },
+   "metrics": {
+    "gc_content": 0.48599439775910364,
+    "gc_content_local": 0.48599439775910364,
+    "sequence_length": 714,
+    "mfe_kcal_per_mol": -33.28,
+    "mfe_per_nt": -0.04661064425770308,
+    "unpaired_fraction": 0.6302521008403361,
+    "rnastop_overall_stability": 0.610974907875061,
+    "cai_score": 1.0,
+    "u_fraction": 0.22128851540616246,
+    "fold_tool": "LinearFold",
+    "cai_species": "E. coli"
+   }
+  }
+ ],
+ "best_candidate": {
+  "rank": 1,
+  "id": "cand_8216bdf9c7f7",
+  "source": "cds_design_gennav:lambda2",
+  "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+  "sequence_type": "mrna",
+  "total_length": 714,
+  "total_score": 112.48623711266404,
+  "scores": {
+   "mfe_per_nt": -0.2142156862745098,
+   "cai_score": 0.8436514779805928,
+   "combined_score": 112.48623711266404,
+   "total_score": 112.48623711266404,
+   "gc_content": 0.5014005602240896,
+   "gc_content_local": 0.5014005602240896,
+   "sequence_length": 714,
+   "mfe_kcal_per_mol": -152.95,
+   "unpaired_fraction": 0.28291316526610644,
+   "rnastop_overall_stability": 0.5545513033866882,
+   "u_fraction": 0.2184873949579832,
+   "fold_tool": "LinearFold",
+   "cai_species": "E. coli"
+  },
+  "metadata": {
+   "design_tool": "lineardesign",
+   "design_params": {
+    "lambda_value": 2.0
+   },
+   "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHY...(truncated)",
+   "protein_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+   "cai_species": "E. coli",
+   "nav_id": "nav:lambda2",
+   "nav_bands": [
+    "expression",
+    "balanced"
+   ],
+   "nav_delivery_rank": 5,
+   "nav_gear": {
+    "lambda": 2.0
+   },
+   "nav_matrix_pass": {
+    "expression": true,
+    "stability": false,
+    "balanced": true
+   },
+   "nav_cai": 0.8436514779805928,
+   "nav_mfe_per_nt": -0.214216,
+   "workspace_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+   "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).)))...(truncated)",
+   "fold_tool": "LinearFold",
+   "pareto_tag": "mfe_per_nt"
+  },
+  "metrics": {
+   "gc_content": 0.5014005602240896,
+   "gc_content_local": 0.5014005602240896,
+   "sequence_length": 714,
+   "mfe_kcal_per_mol": -152.95,
+   "mfe_per_nt": -0.2142156862745098,
+   "unpaired_fraction": 0.28291316526610644,
+   "rnastop_overall_stability": 0.5545513033866882,
+   "cai_score": 0.8436514779805928,
+   "u_fraction": 0.2184873949579832,
+   "fold_tool": "LinearFold",
+   "cai_species": "E. coli"
+  }
+ },
+ "summary": "candidates=5\nbest_total_score=112.48623711266404\npareto_frontier_size=5\n---\n#1 | source=cds_design_gennav:lambda2 | len=714nt | GC=0.501 | MFE=-152.95(LinearFold) | MFE/nt=-0.2142 | unpaired=0.283 | RNASTOP=0.5546 | CAI=0.8437 | U=0.218 | total_score=112.486\n#2 | source=cds_design_gennav:lambda2.5 | len=714nt | GC=0.494 | MFE=-123.70(LinearFold) | MFE/nt=-0.1732 | unpaired=0.297 | RNASTOP=0.5600 | CAI=0.8831 | U=0.223 | total_score=94.121\n#3 | source=cds_design_gennav:lambda3 | len=714nt | GC=0.490 | MFE=-111.33(LinearFold) | MFE/nt=-0.1559 | unpaired=0.347 | RNASTOP=0.5731 | CAI=0.9182 | U=0.223 | total_score=91.011\n#4 | source=cds_design_gennav:lambda5 | len=714nt | GC=0.493 | MFE=-66.61(LinearFold) | MFE/nt=-0.0933 | unpaired=0.451 | RNASTOP=0.6157 | CAI=0.9677 | U=0.217 | total_score=58.800\n#5 | source=cds_design_gennav:lambda50 | len=714nt | GC=0.486 | MFE=-33.28(LinearFold) | MFE/nt=-0.0466 | unpaired=0.630 | RNASTOP=0.6110 | CAI=1.0000 | U=0.221 | total_score=33.280",
+ "_diagnosis_history": [
+  {
+   "overall_assessment": "Candidate metrics are strong for E. coli expression (CAI 0.844-1.000, GC ~49%, MFE/nt -0.214 to -0.047), but all five candidates come from the same cds_design_gennav lambda source rather than from multiple design tools. This leaves the intended 'all' tool diversity unfulfilled and RNARL/GEMORNA unexplored. Additionally, lambda50 exceeds the recommended range and yields a nearly unstructured candidate.",
+   "quality_score": 0.68,
+   "issues": [
+    {
+     "severity": "warning",
+     "category": "design_tool_diversity",
+     "description": "All 5 candidates come from cds_design_gennav lambda sources; no RNARL or GEMORNA candidates are present despite design_tool='all'.",
+     "metric_value": null,
+     "threshold": null
+    },
+    {
+     "severity": "warning",
+     "category": "lambda_parameter",
+     "description": "Candidate e87a6d7c5626 from lambda50 exceeds the typical lambda cap of 20 and has very weak secondary structure (MFE -33.28 kcal/mol, unpaired fraction 0.630).",
+     "metric_value": -33.28,
+     "threshold": null
+    },
+    {
+     "severity": "info",
+     "category": "cai",
+     "description": "All candidates have high E. coli CAI (0.844-1.000), indicating successful codon adaptation.",
+     "metric_value": 1.0,
+     "threshold": null
+    }
+   ],
+   "action": "retry_with_alternative",
+   "parameter_overrides": {
+    "model_type": "Escherichia coli mRNA"
+   },
+   "reasoning": "The current GenNav-dominated set has good CAI and reasonable folding metrics, but it lacks the tool diversity expected from design_tool='all'. Retrying with RNARL and the E. coli mRNA model should provide an independent species-specific alternative while preserving E. coli CAI. GEMORNA would also be a reasonable alternative.",
+   "confidence": 0.8,
+   "evaluator_only": false,
+   "affected_evaluators": []
+  },
+  {
+   "overall_assessment": "All 5 candidates come from the same GenNav lambda source; no RNARL or GEMORNA candidates are present despite design_tool='all'. Codon adaptation is strong for E. coli (CAI 0.844-1.000), but tool diversity is insufficient and the lambda50 candidate exceeds the typical lambda cap with very weak secondary structure. Retry with a specific alternative tool is recommended.",
+   "quality_score": 0.55,
+   "issues": [
+    {
+     "severity": "warning",
+     "category": "design_tool_diversity",
+     "description": "All 5 candidates come from cds_design_gennav lambda sources; no RNARL or GEMORNA candidates are present despite design_tool='all'.",
+     "metric_value": null,
+     "threshold": null
+    },
+    {
+     "severity": "warning",
+     "category": "lambda_parameter",
+     "description": "Candidate e87a6d7c5626 comes from lambda50, which exceeds the typical lambda cap of 20, and has very weak secondary structure (MFE -33.28 kcal/mol, MFE/nt -0.0466, unpaired fraction 0.630).",
+     "metric_value": 50.0,
+     "threshold": 20.0
+    },
+    {
+     "severity": "info",
+     "category": "cai",
+     "description": "All candidates have high E. coli CAI (0.844-1.000), indicating successful codon adaptation.",
+     "metric_value": 1.0,
+     "threshold": null
+    }
+   ],
+   "action": "retry_with_alternative",
+   "parameter_overrides": {
+    "model_type": "Escherichia coli mRNA"
+   },
+   "reasoning": "The current run repeats the previous tool-diversity issue: design_tool='all' yielded only GenNav lambda candidates. Switching to a specific alternative tool should produce candidates from a different design method. RNARL is chosen because it has an E. coli mRNA model matching the requested CAI species.",
+   "confidence": 0.78,
+   "evaluator_only": false,
+   "affected_evaluators": []
+  }
+ ],
+ "_quality_auto_retry": false,
+ "retry_count": 0,
+ "_user_explicit_params": [
+  "cai_species",
+  "design_tool",
+  "protein_sequence",
+  "run_fold",
+  "run_gc"
+ ],
+ "_tool_timings": {},
+ "_last_form_params": {
+  "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
+  "design_tool": "all",
+  "cai_species": "E. coli",
+  "run_fold": true,
+  "run_gc": true
+ },
+ "workflow_input": {
+  "lineardesign_filepath": null,
+  "lineardesign_service_url": "http://127.0.0.1:8014/generate/cds",
+  "lineardesign_lambda_value": 0.0,
+  "lineardesign_codon_usage_path": null,
+  "lineardesign_verbose": false,
+  "rnarl_filepath": null,
+  "rnarl_service_url": "http://127.0.0.1:8008/generate/cds",
+  "rnarl_model_type": "Homo sapiens mRNA",
+  "rnarl_checkpoint_path": null,
+  "rnarl_esm2_model_path": null,
+  "rnarl_device": null,
+  "gemorna_filepath": null,
+  "gemorna_service_url": "http://127.0.0.1:8004/generate/cds",
+  "vienna_fold_filepath": null,
+  "vienna_fold_temp_c": 37.0,
+  "vienna_fold_dangles": 2,
+  "vienna_fold_no_lp": false,
+  "vienna_fold_no_gu": false,
+  "vienna_fold_no_closing_gu": false,
+  "vienna_fold_salt": null,
+  "vienna_fold_no_tetra": false,
+  "vienna_fold_energy_model": null,
+  "vienna_fold_nsp": null,
+  "vienna_fold_param_file": null,
+  "vienna_fold_constraint": null,
+  "vienna_fold_shape_file": null,
+  "vienna_fold_shape_method": "D",
+  "vienna_fold_partfunc": false,
+  "vienna_fold_circ": false,
+  "vienna_fold_gquad": false,
+  "vienna_fold_service_url": "http://127.0.0.1:8003/fold",
+  "vienna_fold_noDP": false,
+  "vienna_fold_maxBPspan": -1,
+  "vienna_fold_MEA": null,
+  "vienna_fold_batch": false,
+  "vienna_fold_canonicalBPonly": false,
+  "vienna_fold_enforceConstraint": false,
+  "vienna_fold_shapeConversion": "O",
+  "vienna_fold_verbose": false,
+  "linearfold_filepath": null,
+  "linearfold_beam_size": 100,
+  "linearfold_use_vienna": false,
+  "linearfold_dangles": 2,
+  "linearfold_sharpturn": false,
+  "linearfold_constraints": null,
+  "linearfold_shape_file_path": null,
+  "linearfold_service_url": "http://127.0.0.1:8015/fold",
+  "linearfold_fasta": false,
+  "linearfold_verbose": false,
+  "gc_filepath": null,
+  "gc_service_url": "http://127.0.0.1:8020/gc-content",
+  "gc_timeout_seconds": 120.0,
+  "u_content_filepath": null,
+  "u_content_service_url": "http://127.0.0.1:8020/u-content",
+  "u_content_timeout_seconds": 120.0,
+  "unpaired_filepath": null,
+  "unpaired_service_url": "http://127.0.0.1:8020/unpaired-fraction",
+  "unpaired_timeout_seconds": 120.0,
+  "rnastop_filepath": null,
+  "rnastop_service_url": "http://127.0.0.1:8009/predict/stability",
+  "rnastop_structure": null,
+  "rnastop_loop_type": null,
+  "rnastop_checkpoint_path": null,
+  "rnastop_device": null,
+  "rnastop_rnafm_model_path": null,
+  "rnastop_dnabert_model_path": null,
+  "cai_filepath": null,
+  "cai_custom_codon_table_path": null,
+  "protein_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
+  "truncate_n_terminal": null,
+  "truncate_c_terminal": null,
+  "design_tool": "all",
+  "navigation": null,
+  "lambda_value": null,
+  "model_type": "Homo sapiens mRNA",
+  "cai_species": "E. coli",
+  "run_fold": true,
+  "run_gc": true
+ },
+ "_gennav_trace": {
+  "protocol": "gennav_lambda_production_v1",
+  "raw_budget": 35,
+  "raw_spent": 35,
+  "expansions": [
+   {
+    "profile": "balanced",
+    "seed_lambda": 2.0,
+    "seed_id": "nav:lambda2",
+    "n_variants": 20,
+    "n_passing_band": 0
+   }
+  ],
+  "probe": {
+   "lambdas": [
+    0.0,
+    1.0,
+    2.0,
+    4.0,
+    8.0,
+    10.0,
+    20.0,
+    50.0
+   ]
+  },
+  "rounds": [
+   {
+    "kind": "guarantee",
+    "lambda": 0.25,
+    "region": "stability",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 2.25,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 0.5,
+    "region": "stability",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 2.5,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 0.75,
+    "region": "stability",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 3.0,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 1.25,
+    "region": "stability",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 3.5,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 1.5,
+    "region": "stability",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 4.5,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 1.75,
+    "region": "stability",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 5.0,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 5.5,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 6.0,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 6.5,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 7.0,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "guarantee",
+    "lambda": 7.5,
+    "region": "balanced",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 9.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 11.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 12.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 13.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 14.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 15.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 16.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 17.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 18.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   },
+   {
+    "kind": "mechanized",
+    "lambda": 30.0,
+    "region": "expression",
+    "gaps_before": {
+     "expression": 0,
+     "stability": 5,
+     "balanced": 4
+    }
+   }
+  ],
+  "final_gaps": {
+   "expression": 0,
+   "stability": 5,
+   "balanced": 4
+  },
+  "pool_size": 46,
+  "deliveries": {
+   "expression": {
+    "profile": "expression",
+    "ids": [
+     "nav:lambda50",
+     "nav:lambda5",
+     "nav:lambda3",
+     "nav:lambda2.5",
+     "nav:lambda2"
+    ],
+    "candidates": [
+     {
+      "id": "nav:lambda50",
+      "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
+      "lambda": 50.0,
+      "cai": 1.0,
+      "mfe_per_nt": -0.046611,
+      "gc": 0.486,
+      "max_homopolymer_run": 8
+     },
+     {
+      "id": "nav:lambda5",
+      "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
+      "lambda": 5.0,
+      "cai": 0.967716222463299,
+      "mfe_per_nt": -0.093291,
+      "gc": 0.493,
+      "max_homopolymer_run": 5
+     },
+     {
+      "id": "nav:lambda3",
+      "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
+      "lambda": 3.0,
+      "cai": 0.9181680185415222,
+      "mfe_per_nt": -0.155924,
+      "gc": 0.4902,
+      "max_homopolymer_run": 5
+     },
+     {
+      "id": "nav:lambda2.5",
+      "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
+      "lambda": 2.5,
+      "cai": 0.8831311793641136,
+      "mfe_per_nt": -0.173249,
+      "gc": 0.4944,
+      "max_homopolymer_run": 5
+     },
+     {
+      "id": "nav:lambda2",
+      "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+      "lambda": 2.0,
+      "cai": 0.8436514779805928,
+      "mfe_per_nt": -0.214216,
+      "gc": 0.5014,
+      "max_homopolymer_run": 5
+     }
+    ],
+    "n_passing_in_region": 34,
+    "d1_min_dist": 0.0308,
+    "degraded": false,
+    "degrade_reason": ""
+   },
+   "stability": {
+    "profile": "stability",
+    "ids": [],
+    "candidates": [],
+    "n_passing_in_region": 0,
+    "d1_min_dist": null,
+    "degraded": true,
+    "degrade_reason": "post-D1 deliverable 0/5 (0 matrix-passing in region; D1>=0.03 greedy keeps 0) after budget exhaustion"
+   },
+   "balanced": {
+    "profile": "balanced",
+    "ids": [
+     "nav:lambda2"
+    ],
+    "candidates": [
+     {
+      "id": "nav:lambda2",
+      "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+      "lambda": 2.0,
+      "cai": 0.8436514779805928,
+      "mfe_per_nt": -0.214216,
+      "gc": 0.5014,
+      "max_homopolymer_run": 5
+     }
+    ],
+    "n_passing_in_region": 1,
+    "d1_min_dist": null,
+    "degraded": true,
+    "degrade_reason": "post-D1 deliverable 1/5 (1 matrix-passing in region; D1>=0.03 greedy keeps 1) after budget exhaustion"
+   }
+  }
+ },
+ "trace": [
+  {
+   "step_name": "gennav_lineardesign:lambda50",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 50.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_a50c2f4013.fasta\", \"generated_sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 18.32335102884099,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_a50c2f4013.fasta",
+    "generated_sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
+    "structure": ".........(((............(((((((...(((((....(((((.((.(((((..((..((.(...((((((......((((..((.((....))....)).))))....))))))....).))..))..))))).)).))))).)))))...))))))))))((.((((....)))).))((((....(((((((.(((..((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((....((((.((....(((((...............((.((..((.((((...(((......)))...)))).)))).))....)))))..))))))....))....))))))).)))))))))))((((....(((((((........)))))))....))))....(((((...((((....((((((((((..........((.........))..........)))))))))))))).....)))))(((((((..((((..(.((((((((.((((..((.((((...(((....)))))).).))))))..)))))........))).)..)))).)))))))..(((..((((((.........)).))))......)))))))).....))))))))))))))))))))))))))))..)).))...........",
+    "mfe": -184.6,
+    "cai_score": 1.0,
+    "lambda_value": 50.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nj=580\nj=581\nj=582\nj=583\nj=584\nj=585\nj=586\nj=587\nj=588\nj=589\nj=590\nj=591\nj=592\nj=593\nj=594\nj=595\nj=596\nj=597\nj=598\nj=599\nj=600\nj=601\nj=602\nj=603\nj=604\nj=605\nj=606\nj=607\nj=608\nj=609\nj=610\nj=611\nj=612\nj=613\nj=614\nj=615\nj=616\nj=617\nj=618\nj=619\nj=620\nj=621\nj=622\nj=623\nj=624\nj=625\nj=626\nj=627\nj=628\nj=629\nj=630\nj=631\nj=632\nj=633\nj=634\nj=635\nj=636\nj=637\nj=638\nj=639\nj=640\nj=641\nj=642\nj=643\nj=644\nj=645\nj=646\nj=647\nj=648\nj=649\nj=650\nj=651\nj=652\nj=653\nj=654\nj=655\nj=656\nj=657\nj=658\nj=659\nj=660\nj=661\nj=662\nj=663\nj=664\nj=665\nj=666\nj=667\nj=668\nj=669\nj=670\nj=671\nj=672\nj=673\nj=674\nj=675\nj=676\nj=677\nj=678\nj=679\nj=680\nj=681\nj=682\nj=683\nj=684\nj=685\nj=686\nj=687\nj=688\nj=689\nj=690\nj=691\nj=692\nj=693\nj=694\nj=695\nj=696\nj=697\nj=698\nj=699\nj=700\nj=701\nj=702\nj=703\nj=704\nj=705\nj=706\nj=707\nj=708\nj=709\nj=710\nj=711\nj=712\nj=713\nj=714\nmRNA sequence:  AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA\nmRNA structure: .........(((............(((((((...(((((....(((((.((.(((((..((..((.(...((((((......((((..((.((....))....)).))))....))))))....).))..))..))))).)).))))).)))))...))))))))))((.((((....)))).))((((....(((((((.(((..((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((....((((.((....(((((...............((.((..((.((((...(((......)))...)))).)))).))....)))))..))))))....))....))))))).)))))))))))((((....(((((((........)))))))....))))....(((((...((((....((((((((((..........((.........))..........)))))))))))))).....)))))(((((((..((((..(.((((((((.((((..((.((((...(((....)))))).).))))))..)))))........))).)..)))).)))))))..(((..((((((.........)).))))......)))))))).....))))))))))))))))))))))))))))..)).))...........\nmRNA folding free energy: -184.60 kcal/mol; mRNA CAI: 1.000\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:56:36.114546Z"
+  },
+  {
+   "step_name": "gennav_cai",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_db92f15570.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_db92f15570.fasta\", \"cai_score\": 1.0, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.003150214906781912,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_db92f15570.fasta",
+    "cai_score": 1.0,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:56:36.119073Z"
+  },
+  {
+   "step_name": "gennav_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b4ce8561c7.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b4ce8561c7.fasta\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.342231716029346,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_b4ce8561c7.fasta",
+    "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
+    "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................",
+    "mfe": -33.28,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:56:36.462263Z"
+  },
+  {
+   "step_name": "cand_e87a6d7c5626_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 155, \"gc_count\": 347, \"gc_content\": 0.48599439775910364, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00597172393463552,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "sequence_length": 714,
+    "g_count": 192,
+    "c_count": 155,
+    "gc_count": 347,
+    "gc_content": 0.48599439775910364,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.48599439775910364,
+    "sequence_length": 714
+   },
+   "created_at": "2026-09-06T20:05:15.732028Z"
+  },
+  {
+   "step_name": "cand_e87a6d7c5626_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"sequence_length\": 714, \"u_count\": 158, \"u_fraction\": 0.22128851540616246, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.003991334931924939,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "sequence_length": 714,
+    "u_count": 158,
+    "u_fraction": 0.22128851540616246,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.22128851540616246,
+    "u_count": 158
+   },
+   "created_at": "2026-09-06T20:05:15.736634Z"
+  },
+  {
+   "step_name": "cand_e87a6d7c5626_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.3374902850482613,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
+    "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................",
+    "mfe": -33.28,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -33.28,
+    "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-06T20:05:16.074685Z"
+  },
+  {
+   "step_name": "cand_e87a6d7c5626_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_866690592b.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_866690592b.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_866690592b.db\", \"structure_length\": 714, \"dot_count\": 450, \"unpaired_fraction\": 0.6302521008403361, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004248837940394878,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_866690592b.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_866690592b.db",
+    "structure_length": 714,
+    "dot_count": 450,
+    "unpaired_fraction": 0.6302521008403361,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.6302521008403361
+   },
+   "created_at": "2026-09-06T20:05:16.080288Z"
+  },
+  {
+   "step_name": "cand_e87a6d7c5626_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"structure\": \".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))............((((((((..(((((((.(((((.((((..(.......)..)))).))))).)))(((((.....(((((.......)))))))))))))).)))))))).....................((((.((((..................)))).))))..(((.....))).......................\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_fc1784ef69.json\", \"sequence\": \"AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.2445216649211943,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_fc1784ef69.json",
+    "sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUAUCAGCAGAACACCCCGAUUGGCGAUGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAACGAAAAACGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCAUGGCAUGGAUGAACUGUAUAAA",
+    "used_sequence": "AUGAGCAAAGGCGAAGAACUGUUUACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAACGGCCAUAAAUUUAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUAUGGCAAACUGACCCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACCCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCAUAUGAAACAGCAUGAUUUUUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUUUUUAAAGAUGAUGGCAACUAUAAAACCCGCGCGGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAACUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAACAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUUCGCCAUAACAU",
+    "sequence_length": 714,
+    "used_length": 512,
+    "truncated": true,
+    "structure": ".........(((((((.(((((..(((((((...(((((....(((((...............................................................................................))))).)))))...)))))))((((((((.......(((....)))....))))))))..))))).)))).)))(((.(((((......................................))))).)))...((.(((((.....(((((((((((((((.(((((......................................................................))))).))))))))))))))).....))))).))........................................(((((((((((.................................)))))))))))...",
+    "loop_type": "EEEEEEEEEIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIIIMMMIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIEEE",
+    "mfe": -142.60000610351562,
+    "mean_reactivity": 0.5270069241523743,
+    "mean_deg_mg_ph10": 0.6277245283126831,
+    "mean_deg_mg_50c": 0.678193211555481,
+    "overall_stability": 0.610974907875061,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.610974907875061
+   },
+   "created_at": "2026-09-06T20:05:17.325297Z"
+  },
+  {
+   "step_name": "cand_e87a6d7c5626_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta\", \"cai_score\": 1.0, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009067801292985678,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_5c6a636f02.fasta",
+    "cai_score": 1.0,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 1.0,
+    "cai_species": "E. coli"
+   },
+   "created_at": "2026-09-06T20:05:17.326565Z"
+  },
+  {
+   "step_name": "gennav_lineardesign:lambda5",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 5.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_5b9c828f3a.fasta\", \"generated_sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 18.117864289786667,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_5b9c828f3a.fasta",
+    "generated_sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
+    "structure": "...((((((((((.......((.(((((((((.(.((((..((((((...))))))((((.((....)).))))((((((((((((.((.(.((.(((((.........)).))).)).)...)).)))))).)))))).......((((((((...))))))))...))))).)))))))))))))))))).)))(((.((((.(((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((((..((((.((....(((((((.((((((((..(.(((((...............)))...)).)..)))))))).)).....)))))..))))))..))))....))))))).)))))))))))((((..(((((((((........)))))))))..))))....(((((.......((((((((((((((..........((.........))..........)))))))))))))).....))))).(((.(((((.(.(((((((((((((((.(......).).)))))))))))))).)))))))))(((((((...))))))).(((((..((.((((((...((..........))...)))))).))....)))))))))).....)))))))))))))))))))...)))).)))................",
+    "mfe": -249.3,
+    "cai_score": 0.968,
+    "lambda_value": 5.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nj=580\nj=581\nj=582\nj=583\nj=584\nj=585\nj=586\nj=587\nj=588\nj=589\nj=590\nj=591\nj=592\nj=593\nj=594\nj=595\nj=596\nj=597\nj=598\nj=599\nj=600\nj=601\nj=602\nj=603\nj=604\nj=605\nj=606\nj=607\nj=608\nj=609\nj=610\nj=611\nj=612\nj=613\nj=614\nj=615\nj=616\nj=617\nj=618\nj=619\nj=620\nj=621\nj=622\nj=623\nj=624\nj=625\nj=626\nj=627\nj=628\nj=629\nj=630\nj=631\nj=632\nj=633\nj=634\nj=635\nj=636\nj=637\nj=638\nj=639\nj=640\nj=641\nj=642\nj=643\nj=644\nj=645\nj=646\nj=647\nj=648\nj=649\nj=650\nj=651\nj=652\nj=653\nj=654\nj=655\nj=656\nj=657\nj=658\nj=659\nj=660\nj=661\nj=662\nj=663\nj=664\nj=665\nj=666\nj=667\nj=668\nj=669\nj=670\nj=671\nj=672\nj=673\nj=674\nj=675\nj=676\nj=677\nj=678\nj=679\nj=680\nj=681\nj=682\nj=683\nj=684\nj=685\nj=686\nj=687\nj=688\nj=689\nj=690\nj=691\nj=692\nj=693\nj=694\nj=695\nj=696\nj=697\nj=698\nj=699\nj=700\nj=701\nj=702\nj=703\nj=704\nj=705\nj=706\nj=707\nj=708\nj=709\nj=710\nj=711\nj=712\nj=713\nj=714\nmRNA sequence:  AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA\nmRNA structure: ...((((((((((.......((.(((((((((.(.((((..((((((...))))))((((.((....)).))))((((((((((((.((.(.((.(((((.........)).))).)).)...)).)))))).)))))).......((((((((...))))))))...))))).)))))))))))))))))).)))(((.((((.(((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((((..((((.((....(((((((.((((((((..(.(((((...............)))...)).)..)))))))).)).....)))))..))))))..))))....))))))).)))))))))))((((..(((((((((........)))))))))..))))....(((((.......((((((((((((((..........((.........))..........)))))))))))))).....))))).(((.(((((.(.(((((((((((((((.(......).).)))))))))))))).)))))))))(((((((...))))))).(((((..((.((((((...((..........))...)))))).))....)))))))))).....)))))))))))))))))))...)))).)))................\nmRNA folding free energy: -249.30 kcal/mol; mRNA CAI: 0.968\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T20:00:22.122186Z"
+  },
+  {
+   "step_name": "gennav_cai",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_e06e924a31.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_e06e924a31.fasta\", \"cai_score\": 0.967716222463299, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0031014590058475733,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_e06e924a31.fasta",
+    "cai_score": 0.967716222463299,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T20:00:22.126545Z"
+  },
+  {
+   "step_name": "gennav_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_4fd41beef7.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_4fd41beef7.fasta\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.33705819910392165,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_4fd41beef7.fasta",
+    "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
+    "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............",
+    "mfe": -66.61,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T20:00:22.464572Z"
+  },
+  {
+   "step_name": "cand_0a331648f725_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"sequence_length\": 714, \"g_count\": 195, \"c_count\": 157, \"gc_count\": 352, \"gc_content\": 0.49299719887955185, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004749214975163341,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "sequence_length": 714,
+    "g_count": 195,
+    "c_count": 157,
+    "gc_count": 352,
+    "gc_content": 0.49299719887955185,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.49299719887955185,
+    "sequence_length": 714
+   },
+   "created_at": "2026-09-06T20:05:17.332606Z"
+  },
+  {
+   "step_name": "cand_0a331648f725_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"sequence_length\": 714, \"u_count\": 155, \"u_fraction\": 0.21708683473389356, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004627260845154524,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "sequence_length": 714,
+    "u_count": 155,
+    "u_fraction": 0.21708683473389356,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.21708683473389356,
+    "u_count": 155
+   },
+   "created_at": "2026-09-06T20:05:17.337637Z"
+  },
+  {
+   "step_name": "cand_0a331648f725_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.3377406559884548,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
+    "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............",
+    "mfe": -66.61,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -66.61,
+    "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-06T20:05:17.676125Z"
+  },
+  {
+   "step_name": "cand_0a331648f725_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_98859321bd.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_98859321bd.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_98859321bd.db\", \"structure_length\": 714, \"dot_count\": 322, \"unpaired_fraction\": 0.45098039215686275, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00422780797816813,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_98859321bd.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_98859321bd.db",
+    "structure_length": 714,
+    "dot_count": 322,
+    "unpaired_fraction": 0.45098039215686275,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.45098039215686275
+   },
+   "created_at": "2026-09-06T20:05:17.681577Z"
+  },
+  {
+   "step_name": "cand_0a331648f725_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"structure\": \"......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))..(((((.((((..((((((..(((((........(((((.....((((.....((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).))))))))))(((((..(((((((((........)))))))))..........(((((.......((((((((((((((.................................)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..)))))))).......))))).....((((((..((.((((((....................)))))).))....)))))))))).....)))))..)))))))))))....)))).)))))..............\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_d7350728e5.json\", \"sequence\": \"AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.2342591809574515,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_d7350728e5.json",
+    "sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGAUCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACCCACGGCAUGGAUGAACUGUAUAAA",
+    "used_sequence": "AUGAGCAAAGGUGAAGAACUGUUCACCGGCGUGGUGCCGAUUCUGGUGGAACUGGAUGGCGAUGUGAAUGGCCAUAAAUUCAGCGUGAGCGGCGAAGGCGAAGGCGAUGCGACCUACGGCAAACUGACGCUGAAAUUUAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGAUUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUUUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGCGCCGAAGUGAAAUUUGAAGGCGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUUGAUUUUAAAGAAGAUGGCAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAACGGCAUUAAAGUGAACUUUAAAAUCCGCCAUAAUAU",
+    "sequence_length": 714,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "......(((((((.........((((((((((...((((..((((((...)))))))))).........((((((...((((((((.((...((.(((((.........)).))).)).....)).))))))))............(((((((.....)))))))..)))))).)))))))))).)))))))......................................................((((((((((...(((((((....((((..((((.((....(((((...((((((((....................................))))))))........)))))..))))))..))))....))))))).)))))))))).......(((((((((........)))))))))......................((((((((((((((.................................))))))))))))))",
+    "loop_type": "EEEEEEIIIIIIIIIIIIIIIIIIIIIIIIIMMMMIIIIIIIIIIIHHHHHIIIIIIIIIMMMMMMMMMIIIIIMMMMIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIMMMMMMMMMMMMIIIIIIHHHHHHHIIIIIIMMMIIIIIMMIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEIIIIIIIIHHHHHHHHHHIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIIIHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIII",
+    "mfe": -171.8000030517578,
+    "mean_reactivity": 0.5407251119613647,
+    "mean_deg_mg_ph10": 0.6166778802871704,
+    "mean_deg_mg_50c": 0.6896922588348389,
+    "overall_stability": 0.6156983971595764,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.6156983971595764
+   },
+   "created_at": "2026-09-06T20:05:18.916301Z"
+  },
+  {
+   "step_name": "cand_0a331648f725_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta\", \"cai_score\": 0.967716222463299, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0008879320230334997,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_3b3b1a0c2a.fasta",
+    "cai_score": 0.967716222463299,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.967716222463299,
+    "cai_species": "E. coli"
+   },
+   "created_at": "2026-09-06T20:05:18.917546Z"
+  },
+  {
+   "step_name": "gennav_lineardesign:lambda3",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 3.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_d7ce8160c4.fasta\", \"generated_sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 18.30263721407391,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_d7ce8160c4.fasta",
+    "generated_sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
+    "structure": "....(((((((((.......((.(((((((((((.((((...(((((((.(((((.((((((.((((((.........((((((((((((.((.(((((...(((...))))))).).))..)))))))))))))))))).).))))))))))...))))))).....))))))))))))))))))))))))))(((((.((((((((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((.(.(((((((((((((((.(......).).)))))))))))))).)))))))))(((((((...))))))).(((((..((.((((((...((..........))...)))))).))....)))))))))).....)))))))))))))))))))..))))).)))))..............",
+    "mfe": -300.2,
+    "cai_score": 0.918,
+    "lambda_value": 3.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nj=580\nj=581\nj=582\nj=583\nj=584\nj=585\nj=586\nj=587\nj=588\nj=589\nj=590\nj=591\nj=592\nj=593\nj=594\nj=595\nj=596\nj=597\nj=598\nj=599\nj=600\nj=601\nj=602\nj=603\nj=604\nj=605\nj=606\nj=607\nj=608\nj=609\nj=610\nj=611\nj=612\nj=613\nj=614\nj=615\nj=616\nj=617\nj=618\nj=619\nj=620\nj=621\nj=622\nj=623\nj=624\nj=625\nj=626\nj=627\nj=628\nj=629\nj=630\nj=631\nj=632\nj=633\nj=634\nj=635\nj=636\nj=637\nj=638\nj=639\nj=640\nj=641\nj=642\nj=643\nj=644\nj=645\nj=646\nj=647\nj=648\nj=649\nj=650\nj=651\nj=652\nj=653\nj=654\nj=655\nj=656\nj=657\nj=658\nj=659\nj=660\nj=661\nj=662\nj=663\nj=664\nj=665\nj=666\nj=667\nj=668\nj=669\nj=670\nj=671\nj=672\nj=673\nj=674\nj=675\nj=676\nj=677\nj=678\nj=679\nj=680\nj=681\nj=682\nj=683\nj=684\nj=685\nj=686\nj=687\nj=688\nj=689\nj=690\nj=691\nj=692\nj=693\nj=694\nj=695\nj=696\nj=697\nj=698\nj=699\nj=700\nj=701\nj=702\nj=703\nj=704\nj=705\nj=706\nj=707\nj=708\nj=709\nj=710\nj=711\nj=712\nj=713\nj=714\nmRNA sequence:  AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA\nmRNA structure: ....(((((((((.......((.(((((((((((.((((...(((((((.(((((.((((((.((((((.........((((((((((((.((.(((((...(((...))))))).).))..)))))))))))))))))).).))))))))))...))))))).....))))))))))))))))))))))))))(((((.((((((((((((..(((((.....((.(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((.(.(((((((((((((((.(......).).)))))))))))))).)))))))))(((((((...))))))).(((((..((.((((((...((..........))...)))))).))....)))))))))).....)))))))))))))))))))..))))).)))))..............\nmRNA folding free energy: -300.20 kcal/mol; mRNA CAI: 0.918\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:58:30.366894Z"
+  },
+  {
+   "step_name": "gennav_cai",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_6e4ae635e8.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_6e4ae635e8.fasta\", \"cai_score\": 0.9181680185415222, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.00111534190364182,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_6e4ae635e8.fasta",
+    "cai_score": 0.9181680185415222,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:58:30.368986Z"
+  },
+  {
+   "step_name": "gennav_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_6b0f448b48.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_6b0f448b48.fasta\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.3394561931490898,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_6b0f448b48.fasta",
+    "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
+    "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............",
+    "mfe": -111.33,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:58:30.709401Z"
+  },
+  {
+   "step_name": "cand_a8312152eca0_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 158, \"gc_count\": 350, \"gc_content\": 0.49019607843137253, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004089683061465621,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "sequence_length": 714,
+    "g_count": 192,
+    "c_count": 158,
+    "gc_count": 350,
+    "gc_content": 0.49019607843137253,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.49019607843137253,
+    "sequence_length": 714
+   },
+   "created_at": "2026-09-06T20:05:18.922893Z"
+  },
+  {
+   "step_name": "cand_a8312152eca0_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"sequence_length\": 714, \"u_count\": 159, \"u_fraction\": 0.22268907563025211, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002986758016049862,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "sequence_length": 714,
+    "u_count": 159,
+    "u_fraction": 0.22268907563025211,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.22268907563025211,
+    "u_count": 159
+   },
+   "created_at": "2026-09-06T20:05:18.926235Z"
+  },
+  {
+   "step_name": "cand_a8312152eca0_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.33872878598049283,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
+    "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............",
+    "mfe": -111.33,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -111.33,
+    "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-06T20:05:19.265410Z"
+  },
+  {
+   "step_name": "cand_a8312152eca0_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db\", \"structure_length\": 714, \"dot_count\": 248, \"unpaired_fraction\": 0.3473389355742297, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004062565974891186,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_ab557c021d.db",
+    "structure_length": 714,
+    "dot_count": 248,
+    "unpaired_fraction": 0.3473389355742297,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.3473389355742297
+   },
+   "created_at": "2026-09-06T20:05:19.270951Z"
+  },
+  {
+   "step_name": "cand_a8312152eca0_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"structure\": \"....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))(((((.((((((((((((..(((((........(((((.....(((((...(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))....(((((.......((((((((((((((......((((.((((......)))).))))...)))))))))))))).....))))).(((.(((((...((((((((((((((..(.......)..))))))))))))))..))))))))(((((.......))))).(((((..((.((((((....................)))))).))....)))))))))).....)))))..))))))))))))..))))).)))))..............\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_c668a3345d.json\", \"sequence\": \"AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.2492806790396571,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_c668a3345d.json",
+    "sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAUUGAAGAUGGCAGCGUGCAGCUGGCGGACCAUUACCAGCAGAACACCCCGAUUGGUGAUGGUCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACCCAGAGCGCGCUGAGCAAAGAUCCGAAUGAAAAGCGCGAUCAUAUGGUGCUGCUGGAAUUUGUGACCGCGGCGGGCAUUACGCACGGCAUGGAUGAACUGUAUAAA",
+    "used_sequence": "AUGUCUAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGCCAUAAAUUCAGCGUCAGCGGCGAAGGUGAAGGCGAUGCCACCUAUGGCAAGCUGACGCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUUAGCUAUGGCGUGCAGUGCUUUAGCCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAACGUGUAUAUUAUGGCGGAUAAACAGAAAAAUGGCAUUAAAGUCAAUUUUAAAAUCCGCCAUAAUAU",
+    "sequence_length": 714,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "....(((((((((.........((((((((((((.((((...(((((((.(((((.(((((..((((((.........((((((((((((.((..(((((..........)))))...))..))))))))))))))))))...))))))))))...))))))).....)))))))))))))))).)))))))))...................................................(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))................((((((((((((((......((((.((((......)))).))))...))))))))))))))",
+    "loop_type": "EEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIII",
+    "mfe": -208.1999969482422,
+    "mean_reactivity": 0.5138964653015137,
+    "mean_deg_mg_ph10": 0.5742458701133728,
+    "mean_deg_mg_50c": 0.6312722563743591,
+    "overall_stability": 0.5731382369995117,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.5731382369995117
+   },
+   "created_at": "2026-09-06T20:05:20.520759Z"
+  },
+  {
+   "step_name": "cand_a8312152eca0_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta\", \"cai_score\": 0.9181680185415222, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.001031349878758192,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_420495830f.fasta",
+    "cai_score": 0.9181680185415222,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.9181680185415222,
+    "cai_species": "E. coli"
+   },
+   "created_at": "2026-09-06T20:05:20.522159Z"
+  },
+  {
+   "step_name": "gennav_lineardesign:lambda2.5",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 2.5, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_0aecd18e1d.fasta\", \"generated_sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 18.110240207985044,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_0aecd18e1d.fasta",
+    "generated_sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
+    "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.((((((.(((((((((((...(((((.(((((((((((...((....))..))))))))))).)))))))))).....)))))).).))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((.((((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).)).))))))).)))))))(((((((((((((((...))))))).))).))))))))))))))))...))))))...))..)))))))......))))))))((.((((((((...((((.(((.....))).))))...)))))))).))....",
+    "mfe": -325.2,
+    "cai_score": 0.883,
+    "lambda_value": 2.5,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nj=580\nj=581\nj=582\nj=583\nj=584\nj=585\nj=586\nj=587\nj=588\nj=589\nj=590\nj=591\nj=592\nj=593\nj=594\nj=595\nj=596\nj=597\nj=598\nj=599\nj=600\nj=601\nj=602\nj=603\nj=604\nj=605\nj=606\nj=607\nj=608\nj=609\nj=610\nj=611\nj=612\nj=613\nj=614\nj=615\nj=616\nj=617\nj=618\nj=619\nj=620\nj=621\nj=622\nj=623\nj=624\nj=625\nj=626\nj=627\nj=628\nj=629\nj=630\nj=631\nj=632\nj=633\nj=634\nj=635\nj=636\nj=637\nj=638\nj=639\nj=640\nj=641\nj=642\nj=643\nj=644\nj=645\nj=646\nj=647\nj=648\nj=649\nj=650\nj=651\nj=652\nj=653\nj=654\nj=655\nj=656\nj=657\nj=658\nj=659\nj=660\nj=661\nj=662\nj=663\nj=664\nj=665\nj=666\nj=667\nj=668\nj=669\nj=670\nj=671\nj=672\nj=673\nj=674\nj=675\nj=676\nj=677\nj=678\nj=679\nj=680\nj=681\nj=682\nj=683\nj=684\nj=685\nj=686\nj=687\nj=688\nj=689\nj=690\nj=691\nj=692\nj=693\nj=694\nj=695\nj=696\nj=697\nj=698\nj=699\nj=700\nj=701\nj=702\nj=703\nj=704\nj=705\nj=706\nj=707\nj=708\nj=709\nj=710\nj=711\nj=712\nj=713\nj=714\nmRNA sequence:  AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA\nmRNA structure: ((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.((((((.(((((((((((...(((((.(((((((((((...((....))..))))))))))).)))))))))).....)))))).).))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((.((((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).)).))))))).)))))))(((((((((((((((...))))))).))).))))))))))))))))...))))))...))..)))))))......))))))))((.((((((((...((((.(((.....))).))))...)))))))).))....\nmRNA folding free energy: -325.20 kcal/mol; mRNA CAI: 0.883\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:57:53.178598Z"
+  },
+  {
+   "step_name": "gennav_cai",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_df6e95ba1f.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_df6e95ba1f.fasta\", \"cai_score\": 0.8831311793641136, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0013098709750920534,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_df6e95ba1f.fasta",
+    "cai_score": 0.8831311793641136,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:57:53.181043Z"
+  },
+  {
+   "step_name": "gennav_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_62ca10ba70.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_62ca10ba70.fasta\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.34262590715661645,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_62ca10ba70.fasta",
+    "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
+    "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......",
+    "mfe": -123.7,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:57:53.524948Z"
+  },
+  {
+   "step_name": "cand_2bb0e82f2d5a_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"sequence_length\": 714, \"g_count\": 192, \"c_count\": 161, \"gc_count\": 353, \"gc_content\": 0.4943977591036415, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.005390862002968788,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "sequence_length": 714,
+    "g_count": 192,
+    "c_count": 161,
+    "gc_count": 353,
+    "gc_content": 0.4943977591036415,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.4943977591036415,
+    "sequence_length": 714
+   },
+   "created_at": "2026-09-06T20:05:20.529309Z"
+  },
+  {
+   "step_name": "cand_2bb0e82f2d5a_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"sequence_length\": 714, \"u_count\": 159, \"u_fraction\": 0.22268907563025211, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0033847379963845015,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "sequence_length": 714,
+    "u_count": 159,
+    "u_fraction": 0.22268907563025211,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.22268907563025211,
+    "u_count": 159
+   },
+   "created_at": "2026-09-06T20:05:20.533114Z"
+  },
+  {
+   "step_name": "cand_2bb0e82f2d5a_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.33959329407662153,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
+    "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......",
+    "mfe": -123.7,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -123.7,
+    "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-06T20:05:20.873154Z"
+  },
+  {
+   "step_name": "cand_2bb0e82f2d5a_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db\", \"structure_length\": 714, \"dot_count\": 212, \"unpaired_fraction\": 0.2969187675070028, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0034214709885418415,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_c77ae9e0d1.db",
+    "structure_length": 714,
+    "dot_count": 212,
+    "unpaired_fraction": 0.2969187675070028,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.2969187675070028
+   },
+   "created_at": "2026-09-06T20:05:20.877690Z"
+  },
+  {
+   "step_name": "cand_2bb0e82f2d5a_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"structure\": \"((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))....(((((((((((.(((((((.(((((((((.((.......)).))).)))))).)))))))(((((((((((((.......))))).))).))))))))))))))))...)))))).......)))))))......))))))))...((((((((...((((.(((.....))).))))...)))))))).......\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_a72900bedb.json\", \"sequence\": \"AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.2645884221419692,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_a72900bedb.json",
+    "sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGCAGCGUGCAGCUGGCCGAUCACUAUCAGCAGAACACGCCGAUUGGUGAUGGGCCGGUUCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGAGCGCGCUGUCAAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUGUAUAAA",
+    "used_sequence": "AUGUCGAAAGGUGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUAGCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGUAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCAGCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGAUGAUGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAU",
+    "sequence_length": 714,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "((((((..((.(((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((.(((((((((((..(.......)..))))))))))).)))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).))))).)).))))))...........................((((......)))).(((((((((((...(((((((....((((..((((.((....((((((((((((((((..((((((((.............))))...))))..))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....)))))))))))...............((((((.((((((((....)))))))).))))))",
+    "loop_type": "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIHHHHHHHHIIIEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIEEIIIIIIIIIIHHHHHHIIIIIIIIIIEEEEEEEEEEEEEEEIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIII",
+    "mfe": -219.60000610351562,
+    "mean_reactivity": 0.4980572462081909,
+    "mean_deg_mg_ph10": 0.5622271299362183,
+    "mean_deg_mg_50c": 0.6197054982185364,
+    "overall_stability": 0.5599966049194336,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.5599966049194336
+   },
+   "created_at": "2026-09-06T20:05:22.142737Z"
+  },
+  {
+   "step_name": "cand_2bb0e82f2d5a_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta\", \"cai_score\": 0.8831311793641136, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0009043158497661352,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_12e11d8bcf.fasta",
+    "cai_score": 0.8831311793641136,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.8831311793641136,
+    "cai_species": "E. coli"
+   },
+   "created_at": "2026-09-06T20:05:22.143989Z"
+  },
+  {
+   "step_name": "gennav_lineardesign:lambda2",
+   "tool_name": "design_mrna_cds_with_lineardesign",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"lambda_value\": 2.0, \"codon_usage_path\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta\", \"output_filepath\": \"workspace/sessions/exp18_cds_GFP/lineardesign_cds_812198ffe8.fasta\", \"generated_sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 18.526938036782667,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/protein_97298d15d8.fasta",
+    "output_filepath": "workspace/sessions/exp18_cds_GFP/lineardesign_cds_812198ffe8.fasta",
+    "generated_sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.((((((.(((((((((((...(((((((((((((((((...((....))..)))))))))))))))))))))).....)))))).).))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((.((((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((((...))))))).))).)))))))).)))))))...))))))...))..)))))))......))))))))(((((((((((...((((.(((.....))).))))...)))))))))))....",
+    "mfe": -349.0,
+    "cai_score": 0.844,
+    "lambda_value": 2.0,
+    "codon_usage_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/agent_core/data/codon_usage_lineardesign/Escherichia_coli_K-12.csv",
+    "raw_output": "j=0\nj=1\nj=2\nj=3\nj=4\nj=5\nj=6\nj=7\nj=8\nj=9\nj=10\nj=11\nj=12\nj=13\nj=14\nj=15\nj=16\nj=17\nj=18\nj=19\nj=20\nj=21\nj=22\nj=23\nj=24\nj=25\nj=26\nj=27\nj=28\nj=29\nj=30\nj=31\nj=32\nj=33\nj=34\nj=35\nj=36\nj=37\nj=38\nj=39\nj=40\nj=41\nj=42\nj=43\nj=44\nj=45\nj=46\nj=47\nj=48\nj=49\nj=50\nj=51\nj=52\nj=53\nj=54\nj=55\nj=56\nj=57\nj=58\nj=59\nj=60\nj=61\nj=62\nj=63\nj=64\nj=65\nj=66\nj=67\nj=68\nj=69\nj=70\nj=71\nj=72\nj=73\nj=74\nj=75\nj=76\nj=77\nj=78\nj=79\nj=80\nj=81\nj=82\nj=83\nj=84\nj=85\nj=86\nj=87\nj=88\nj=89\nj=90\nj=91\nj=92\nj=93\nj=94\nj=95\nj=96\nj=97\nj=98\nj=99\nj=100\nj=101\nj=102\nj=103\nj=104\nj=105\nj=106\nj=107\nj=108\nj=109\nj=110\nj=111\nj=112\nj=113\nj=114\nj=115\nj=116\nj=117\nj=118\nj=119\nj=120\nj=121\nj=122\nj=123\nj=124\nj=125\nj=126\nj=127\nj=128\nj=129\nj=130\nj=131\nj=132\nj=133\nj=134\nj=135\nj=136\nj=137\nj=138\nj=139\nj=140\nj=141\nj=142\nj=143\nj=144\nj=145\nj=146\nj=147\nj=148\nj=149\nj=150\nj=151\nj=152\nj=153\nj=154\nj=155\nj=156\nj=157\nj=158\nj=159\nj=160\nj=161\nj=162\nj=163\nj=164\nj=165\nj=166\nj=167\nj=168\nj=169\nj=170\nj=171\nj=172\nj=173\nj=174\nj=175\nj=176\nj=177\nj=178\nj=179\nj=180\nj=181\nj=182\nj=183\nj=184\nj=185\nj=186\nj=187\nj=188\nj=189\nj=190\nj=191\nj=192\nj=193\nj=194\nj=195\nj=196\nj=197\nj=198\nj=199\nj=200\nj=201\nj=202\nj=203\nj=204\nj=205\nj=206\nj=207\nj=208\nj=209\nj=210\nj=211\nj=212\nj=213\nj=214\nj=215\nj=216\nj=217\nj=218\nj=219\nj=220\nj=221\nj=222\nj=223\nj=224\nj=225\nj=226\nj=227\nj=228\nj=229\nj=230\nj=231\nj=232\nj=233\nj=234\nj=235\nj=236\nj=237\nj=238\nj=239\nj=240\nj=241\nj=242\nj=243\nj=244\nj=245\nj=246\nj=247\nj=248\nj=249\nj=250\nj=251\nj=252\nj=253\nj=254\nj=255\nj=256\nj=257\nj=258\nj=259\nj=260\nj=261\nj=262\nj=263\nj=264\nj=265\nj=266\nj=267\nj=268\nj=269\nj=270\nj=271\nj=272\nj=273\nj=274\nj=275\nj=276\nj=277\nj=278\nj=279\nj=280\nj=281\nj=282\nj=283\nj=284\nj=285\nj=286\nj=287\nj=288\nj=289\nj=290\nj=291\nj=292\nj=293\nj=294\nj=295\nj=296\nj=297\nj=298\nj=299\nj=300\nj=301\nj=302\nj=303\nj=304\nj=305\nj=306\nj=307\nj=308\nj=309\nj=310\nj=311\nj=312\nj=313\nj=314\nj=315\nj=316\nj=317\nj=318\nj=319\nj=320\nj=321\nj=322\nj=323\nj=324\nj=325\nj=326\nj=327\nj=328\nj=329\nj=330\nj=331\nj=332\nj=333\nj=334\nj=335\nj=336\nj=337\nj=338\nj=339\nj=340\nj=341\nj=342\nj=343\nj=344\nj=345\nj=346\nj=347\nj=348\nj=349\nj=350\nj=351\nj=352\nj=353\nj=354\nj=355\nj=356\nj=357\nj=358\nj=359\nj=360\nj=361\nj=362\nj=363\nj=364\nj=365\nj=366\nj=367\nj=368\nj=369\nj=370\nj=371\nj=372\nj=373\nj=374\nj=375\nj=376\nj=377\nj=378\nj=379\nj=380\nj=381\nj=382\nj=383\nj=384\nj=385\nj=386\nj=387\nj=388\nj=389\nj=390\nj=391\nj=392\nj=393\nj=394\nj=395\nj=396\nj=397\nj=398\nj=399\nj=400\nj=401\nj=402\nj=403\nj=404\nj=405\nj=406\nj=407\nj=408\nj=409\nj=410\nj=411\nj=412\nj=413\nj=414\nj=415\nj=416\nj=417\nj=418\nj=419\nj=420\nj=421\nj=422\nj=423\nj=424\nj=425\nj=426\nj=427\nj=428\nj=429\nj=430\nj=431\nj=432\nj=433\nj=434\nj=435\nj=436\nj=437\nj=438\nj=439\nj=440\nj=441\nj=442\nj=443\nj=444\nj=445\nj=446\nj=447\nj=448\nj=449\nj=450\nj=451\nj=452\nj=453\nj=454\nj=455\nj=456\nj=457\nj=458\nj=459\nj=460\nj=461\nj=462\nj=463\nj=464\nj=465\nj=466\nj=467\nj=468\nj=469\nj=470\nj=471\nj=472\nj=473\nj=474\nj=475\nj=476\nj=477\nj=478\nj=479\nj=480\nj=481\nj=482\nj=483\nj=484\nj=485\nj=486\nj=487\nj=488\nj=489\nj=490\nj=491\nj=492\nj=493\nj=494\nj=495\nj=496\nj=497\nj=498\nj=499\nj=500\nj=501\nj=502\nj=503\nj=504\nj=505\nj=506\nj=507\nj=508\nj=509\nj=510\nj=511\nj=512\nj=513\nj=514\nj=515\nj=516\nj=517\nj=518\nj=519\nj=520\nj=521\nj=522\nj=523\nj=524\nj=525\nj=526\nj=527\nj=528\nj=529\nj=530\nj=531\nj=532\nj=533\nj=534\nj=535\nj=536\nj=537\nj=538\nj=539\nj=540\nj=541\nj=542\nj=543\nj=544\nj=545\nj=546\nj=547\nj=548\nj=549\nj=550\nj=551\nj=552\nj=553\nj=554\nj=555\nj=556\nj=557\nj=558\nj=559\nj=560\nj=561\nj=562\nj=563\nj=564\nj=565\nj=566\nj=567\nj=568\nj=569\nj=570\nj=571\nj=572\nj=573\nj=574\nj=575\nj=576\nj=577\nj=578\nj=579\nj=580\nj=581\nj=582\nj=583\nj=584\nj=585\nj=586\nj=587\nj=588\nj=589\nj=590\nj=591\nj=592\nj=593\nj=594\nj=595\nj=596\nj=597\nj=598\nj=599\nj=600\nj=601\nj=602\nj=603\nj=604\nj=605\nj=606\nj=607\nj=608\nj=609\nj=610\nj=611\nj=612\nj=613\nj=614\nj=615\nj=616\nj=617\nj=618\nj=619\nj=620\nj=621\nj=622\nj=623\nj=624\nj=625\nj=626\nj=627\nj=628\nj=629\nj=630\nj=631\nj=632\nj=633\nj=634\nj=635\nj=636\nj=637\nj=638\nj=639\nj=640\nj=641\nj=642\nj=643\nj=644\nj=645\nj=646\nj=647\nj=648\nj=649\nj=650\nj=651\nj=652\nj=653\nj=654\nj=655\nj=656\nj=657\nj=658\nj=659\nj=660\nj=661\nj=662\nj=663\nj=664\nj=665\nj=666\nj=667\nj=668\nj=669\nj=670\nj=671\nj=672\nj=673\nj=674\nj=675\nj=676\nj=677\nj=678\nj=679\nj=680\nj=681\nj=682\nj=683\nj=684\nj=685\nj=686\nj=687\nj=688\nj=689\nj=690\nj=691\nj=692\nj=693\nj=694\nj=695\nj=696\nj=697\nj=698\nj=699\nj=700\nj=701\nj=702\nj=703\nj=704\nj=705\nj=706\nj=707\nj=708\nj=709\nj=710\nj=711\nj=712\nj=713\nj=714\nmRNA sequence:  AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA\nmRNA structure: ((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.((((((.(((((((((((...(((((((((((((((((...((....))..)))))))))))))))))))))).....)))))).).))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((.((((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((((...))))))).))).)))))))).)))))))...))))))...))..)))))))......))))))))(((((((((((...((((.(((.....))).))))...)))))))))))....\nmRNA folding free energy: -349.00 kcal/mol; mRNA CAI: 0.844\n\n",
+    "stderr": "",
+    "model": "LinearDesign"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:56:36.314258Z"
+  },
+  {
+   "step_name": "gennav_cai",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_04727ceb37.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_04727ceb37.fasta\", \"cai_score\": 0.8436514779805928, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0008458059746772051,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_cai_04727ceb37.fasta",
+    "cai_score": 0.8436514779805928,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:56:38.398894Z"
+  },
+  {
+   "step_name": "gennav_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_9c68facad3.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_9c68facad3.fasta\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAA",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.34420327586121857,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/gennav_mrna_fold_9c68facad3.fasta",
+    "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....",
+    "mfe": -152.95,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {},
+   "created_at": "2026-09-06T19:56:38.744179Z"
+  },
+  {
+   "step_name": "cand_8216bdf9c7f7_compute_rna_sequence_gc_content",
+   "tool_name": "compute_rna_sequence_gc_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"sequence_length\": 714, \"g_count\": 188, \"c_count\": 170, \"gc_count\": 358, \"gc_content\": 0.5014005602240896, \"model\": \"rna-sequence-metrics-gc\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.004223776049911976,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "sequence_length": 714,
+    "g_count": 188,
+    "c_count": 170,
+    "gc_count": 358,
+    "gc_content": 0.5014005602240896,
+    "model": "rna-sequence-metrics-gc"
+   },
+   "metrics": {
+    "gc_content": 0.5014005602240896,
+    "sequence_length": 714
+   },
+   "created_at": "2026-09-06T20:05:22.149439Z"
+  },
+  {
+   "step_name": "cand_8216bdf9c7f7_compute_rna_sequence_u_content",
+   "tool_name": "compute_rna_sequence_u_content",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"sequence_length\": 714, \"u_count\": 156, \"u_fraction\": 0.2184873949579832, \"model\": \"rna-u-content\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.002975761890411377,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "sequence_length": 714,
+    "u_count": 156,
+    "u_fraction": 0.2184873949579832,
+    "model": "rna-u-content"
+   },
+   "metrics": {
+    "u_fraction": 0.2184873949579832,
+    "u_count": 156
+   },
+   "created_at": "2026-09-06T20:05:22.152763Z"
+  },
+  {
+   "step_name": "cand_8216bdf9c7f7_predict_rna_secondary_structure_with_linearfold",
+   "tool_name": "predict_rna_secondary_structure_with_linearfold",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\"}",
+   "output_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGG",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.3393707750365138,
+   "artifacts": {
+    "filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....",
+    "mfe": -152.95,
+    "backend": "LinearFold-C",
+    "model": "LinearFold"
+   },
+   "metrics": {
+    "mfe_kcal_per_mol": -152.95,
+    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....",
+    "fold_tool": "LinearFold"
+   },
+   "created_at": "2026-09-06T20:05:22.492539Z"
+  },
+  {
+   "step_name": "cand_8216bdf9c7f7_compute_dot_bracket_unpaired_fraction",
+   "tool_name": "compute_dot_bracket_unpaired_fraction",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db\", \"resolved_filepath\": \"/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db\", \"structure_length\": 714, \"dot_count\": 202, \"unpaired_fraction\": 0.28291316526610644, \"model\": \"rna-sequence-metrics-unpaired\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.005740720080211759,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db",
+    "resolved_filepath": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/workspace/sessions/exp18_cds_GFP/structure_7119ef9330.db",
+    "structure_length": 714,
+    "dot_count": 202,
+    "unpaired_fraction": 0.28291316526610644,
+    "model": "rna-sequence-metrics-unpaired"
+   },
+   "metrics": {
+    "unpaired_fraction": 0.28291316526610644
+   },
+   "created_at": "2026-09-06T20:05:22.500396Z"
+  },
+  {
+   "step_name": "cand_8216bdf9c7f7_predict_mrna_stability_with_rnastop",
+   "tool_name": "predict_mrna_stability_with_rnastop",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"structure\": \"((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))((((((((..(((((((...((((((.((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....))))))))))).............((((((((.((((((((....)))))))).))))))))..(((((((((((((.(((((.((....)).))))).)))))))))))))..(((((((.(((.(((((((((((((.......))))).))).)))))))).)))))))...)))))).......)))))))......)))))))).((((((((((...((((.(((.....))).))))...)))))))))).....\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"prediction_filepath\": \"workspace/sessions/exp18_cds_GFP/rnastop_prediction_021f86ad6f.json\", \"sequence\": \"AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGC",
+   "success": true,
+   "error": null,
+   "elapsed_time": 1.266725717112422,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "prediction_filepath": "workspace/sessions/exp18_cds_GFP/rnastop_prediction_021f86ad6f.json",
+    "sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAUCGAAGAUGGGAGUGUUCAGCUGGCGGAUCACUACCAGCAGAACACUCCCAUCGGCGACGGCCCGGUGCUGCUGCCGGAUAACCAUUAUCUGAGCACGCAGUCCGCGCUGUCGAAAGAUCCGAACGAAAAGCGCGAUCAUAUGGUGCUGCUGGAGUUCGUCACCGCCGCGGGCAUUACCCACGGCAUGGACGAACUCUAUAAA",
+    "used_sequence": "AUGUCGAAAGGAGAAGAACUGUUCACCGGCGUCGUGCCGAUUCUGGUGGAGCUGGAUGGUGAUGUGAAUGGUCAUAAGUUUUCCGUGAGUGGCGAAGGCGAAGGCGACGCCACUUACGGAAAACUGACCCUGAAAUUCAUUUGCACCACCGGCAAACUGCCGGUGCCGUGGCCGACGCUGGUGACCACCUUCUCCUACGGCGUGCAGUGCUUUUCGCGCUAUCCGGAUCACAUGAAACAGCAUGACUUCUUUAAAAGCGCGAUGCCGGAAGGCUAUGUGCAGGAACGCACCAUCUUCUUCAAAGACGACGGCAACUAUAAAACCCGUGCCGAAGUCAAAUUUGAAGGAGAUACCCUGGUGAACCGCAUUGAGCUGAAAGGCAUCGAUUUUAAAGAAGAUGGUAAUAUUCUGGGCCAUAAACUGGAAUAUAACUAUAACAGCCAUAAUGUGUACAUUAUGGCUGAUAAACAGAAAAACGGUAUUAAGGUGAAUUUUAAAAUUCGCCAUAAUAU",
+    "sequence_length": 714,
+    "used_length": 512,
+    "truncated": true,
+    "structure": "((((((..((((((((...((.((((((((((((.((((...(((((((.(((((.(((((..((((((((((...((((((((((((((((((..(.......)..)))))))))))))))))))))).....))))))...))))))))))...))))))).....)))))))))))))))).)).)))))))).))))))...........................((((......)))).(((((((((((...(((((((....((((..((((.((....(((((((((((((((((((..(((((.............)))))..)))...))))))))))).....)))))..))))))..))))....))))))).)))))))))))(((((.(((((((((........))))))))).)))))..(((((((((((....)))))))))))...............((((((.((((((((....)))))))).))))))",
+    "loop_type": "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIHHHHHHHHIIIEIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIHHHHHHHHHHIIIIIIIIIIIIIIEEIIIIIIIIIIHHHHHHIIIIIIIIIIEEEEEEEEEEEEEEEIIIIIIIIIIIIIIHHHHHHIIIIIIIIIIIIII",
+    "mfe": -230.60000610351562,
+    "mean_reactivity": 0.49767550826072693,
+    "mean_deg_mg_ph10": 0.5552207827568054,
+    "mean_deg_mg_50c": 0.61075758934021,
+    "overall_stability": 0.5545513033866882,
+    "checkpoint_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/external_repos/RNASTOP/models/best_model_weights_withoutDNABERT",
+    "device": "cuda:0",
+    "model": "RNASTOP"
+   },
+   "metrics": {
+    "rnastop_overall_stability": 0.5545513033866882
+   },
+   "created_at": "2026-09-06T20:05:23.767573Z"
+  },
+  {
+   "step_name": "cand_8216bdf9c7f7_compute_cai_for_cds_sequence",
+   "tool_name": "compute_cai_for_cds_sequence",
+   "input_summary": "{\"filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"species\": \"E. coli\"}",
+   "output_summary": "{\"input_filepath\": \"workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta\", \"cai_score\": 0.8436514779805928, \"species\": \"Escherichia coli K-12\", \"cds_length_nt\": 714, \"codon_count\": 238, \"valid_codons\": 238, \"invalid_codons\": 0, \"stop_codons_encountered\": 0, \"model\": \"cai-kazusa\"}",
+   "success": true,
+   "error": null,
+   "elapsed_time": 0.0008882381953299046,
+   "artifacts": {
+    "input_filepath": "workspace/sessions/exp18_cds_GFP/mrna_cds_0bc4c72d2c.fasta",
+    "cai_score": 0.8436514779805928,
+    "species": "Escherichia coli K-12",
+    "cds_length_nt": 714,
+    "codon_count": 238,
+    "valid_codons": 238,
+    "invalid_codons": 0,
+    "stop_codons_encountered": 0,
+    "model": "cai-kazusa"
+   },
+   "metrics": {
+    "cai_score": 0.8436514779805928,
+    "cai_species": "E. coli"
+   },
+   "created_at": "2026-09-06T20:05:23.768798Z"
+  }
+ ]
+}

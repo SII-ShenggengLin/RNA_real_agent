@@ -1,0 +1,2 @@
+{"task_id": "pa_013", "pa_id": "013", "workflow": "rna_tertiary_structure_design", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_r2_pa013", "exit_code": 0, "elapsed_seconds": 686.64, "timestamp": "2026-09-06T10:17:45", "error": null, "success": true}
+{"task_id": "pa_032", "pa_id": "032", "workflow": "rna_tertiary_structure_design", "n_turns": 3, "source": "pa_regression", "session_id": "exp24_r2_pa032", "exit_code": 0, "elapsed_seconds": 1121.26, "timestamp": "2026-09-06T10:36:26", "error": null, "success": true}

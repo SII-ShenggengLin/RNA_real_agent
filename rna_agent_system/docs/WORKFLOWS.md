@@ -131,13 +131,14 @@ total_score = combined_score
 
 > **File**: `workflows/full_length_mrna_design.py` | **QualityProfile**: `FULL_LENGTH_MRNA_QUALITY_PROFILE`
 
-**Purpose**: Design complete mRNA (5'UTR + CDS + 3'UTR). Reuses `MrnaCdsDesignWorkflow` for CDS, then appends UTR combinations and evaluates full-length metrics, ranking by reference-point (ASF) optimization.
+**Purpose**: Design complete mRNA (5'UTR + CDS + 3'UTR) via the two-step protocol (DECISIONS (bb), the GEMORNA-paper "first select the optimal CDS, then pair UTRs" order): CDS selection, then one benchmark-anchored UTR pool per run under literature-grounded admission rules, ranking by reference-point (ASF) optimization.
 
 **Pipeline**
-1. **Generate** — CDS via `MrnaCdsDesignWorkflow` × UTR presets (short/medium/long) → full-length candidates
-2. **Evaluate** — full-length MFE, 5'UTR MRL, 3'UTR stability, U content, **full-length GC content**, **junction MFE** (5'UTR–CDS, CDS–3'UTR), **junction GC diff**, **junction full-length ddG** (5'UTR–CDS, report-only; IRES potential and RNASTOP overall stability are computed by underlying tools but are not propagated into the coordinator metrics in the current implementation)
-3. **Score** — per-module raw scores are computed for reference-point optimization
-4. **Rank** — `rank_and_format()` sorts candidates by ASF distance to the reference point and returns a Pareto frontier on the user-facing objectives
+1. **Generate — Step 1 (CDS)** — CDS via `MrnaCdsDesignWorkflow` (GenNav-λ navigation by default); every delivered CDS is evaluated once and at most one CDS per navigation profile (static recipe: top three) is selected by the shared CDS combined score — UTR draws are never resampled per CDS, so CDS ranking cannot be confounded by UTR sampling variance.
+2. **Generate — Step 2 (UTR pool)** — one pool per run: GEMORNA draws at the paper's screening scale (12 5'UTRs + 10 3'UTRs across short/medium/long) plus the assertion-verified benchmark UTRs (`agent_core/generation/utr_pool.py`, `agent_core/data/utr_benchmarks/`: BNT162b2 5'UTR (template-verified 51-nt alpha-globin-derived form) + 94-nt AES–mtRNR1 3'UTR, the LinearDesign-paper 5'UTR, the natural HBA1 pair). The pool passes the admission rules U1 (no upstream AUG — Kozak 1986/1989; Sample et al. 2019) and U2 (no Class-II AUUUA tandem ARE — Chen & Shyu 1995); assembled constructs pass the Kozak structure gates U3 (5'-terminal 60-nt window MFE > −30 kcal/mol; −30 hairpin 12 nt from the cap blocked 40S entry) and U4 (no 150-nt window ≤ −61 kcal/mol through AUG+15; hp7 stall threshold). The 5'UTR shortlist (≤6) is ranked by the certified MRL oracle — a generated UTR is only selected when it outranks the clinical benchmarks in-silico; the 3'UTR shortlist (≤6) is admission-survival order (benchmarks first) — a compute cap, not a ranking.
+3. **Evaluate** — full-length MFE, 5'UTR MRL, 3'UTR stability (report-only diagnostic since DECISIONS (bb)), U content, **full-length GC content**, **junction MFE** (5'UTR–CDS, CDS–3'UTR), **junction GC diff**, **junction full-length ddG** (5'UTR–CDS, report-only; IRES potential and RNASTOP overall stability are computed by underlying tools but are not propagated into the coordinator metrics in the current implementation)
+4. **Score** — per-module raw scores are computed for reference-point optimization
+5. **Rank** — `rank_and_format()` sorts candidates by ASF distance to the reference point and returns a Pareto frontier on the user-facing objectives
 
 **Reference-point ranking**
 
@@ -151,8 +152,9 @@ total_score = combined_score
 | Dimension | Module(s) | Interpretation |
 |-----------|-----------|----------------|
 | `utr5_mrl` | 5'UTR | Predicted mean ribosomal load (higher = better) |
-| `utr3_stability` | 3'UTR | Predicted 3'UTR stability (higher = better) |
 | `full_mfe_score` | 5'UTR, CDS, 3'UTR | Inverted full-length MFE (higher = less negative) |
+
+`utr3_stability` was demoted from a ranking objective to a report-only diagnostic (DECISIONS (bb)): its GEMORNA predictor oracle is unprofiled under this task type and ranking on an unprofiled oracle contradicted the platform's governance narrative. The metric is still computed and reported; `reference_point` keys naming it fail loudly with the demotion reason.
 
 The CDS dimension is supplied indirectly via `target_cds_mfe` and `target_cds_cai` (see below); it is synthesized into the internal `cds_component` = (`-mfe + codons*log(CAI)`) / `cds_length_nt`.
 

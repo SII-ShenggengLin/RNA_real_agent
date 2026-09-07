@@ -1,0 +1,75 @@
+{
+ "version": "1.0.0",
+ "curated": "2026-09-07",
+ "decision": "DECISIONS (bb) - wet-lab-preparation UTR benchmark pool, assertion-first curation per docs/ANCHORS.md",
+ "purpose": "Clinical/published UTR references admitted to every full-length mRNA design pool. Sequences were extracted programmatically from the cited primary sources (zero manual transcription); each entry is verified at load time (length, md5, ACGU purity, and passage of the U1/U2 admission rules of agent_core.generation.utr_pool).",
+ "entries": [
+  {
+   "id": "bnt162b2_5utr",
+   "side": "5utr",
+   "label": "BNT162b2 5'UTR (alpha-globin-derived, template-verified 51-nt form)",
+   "sequence": "AAUAAACUAGUAUUCUUCUGGUCCCCACAGACUCAGAGAGAACCCGCCACC",
+   "length_nt": 51,
+   "md5": "6afa4c67e22a10e48a9569a48dc08ea1",
+   "sources": [
+    "GenBank PP544446.1 (Vector BNT162b2 clone Vacc_Batch_FP9359, complete sequence; Raoult direct submission 2024) - interval between the annotated T7 promoter end (position 3526) and the BNT162b2 CDS start (position 3578), T->U",
+    "Xia & Lim 2021 Vaccines 9:734 sec 3.3.2 + Fig 2A: BNT162b2 5'UTR = human alpha-globin 5'UTR (shared by HBA1/HBA2) with the Kozak consensus optimized to GCCACCAUG",
+    "NCBI RefSeq NM_000558.5 (HBA1) 5'UTR core cross-match: CTTCTGGTCCCCACAGACTCAGAGAGAACC[C->G]CCACC"
+   ]
+  },
+  {
+   "id": "bnt162b2_3utr",
+   "side": "3utr",
+   "label": "BNT162b2 3'UTR AES-mtRNR1 (99-nt form, LinearDesign-supplement verbatim)",
+   "sequence": "GCUGCCUUCUGCGGGGCUUGCCUUCUGGCCAUGCCCUUCUUCUCUCCCUUGCACCUGUACCUCUUGGUCUUUGAAUAAAGCCUGAGUAGGAAGU",
+   "length_nt": 94,
+   "md5": "7dbe1080376a4e479547e75dbd9cc2a0",
+   "sources": [
+    "LinearDesign Nature 2023 supplement (Zhang et al., 10.1038/s41586-023-06127-z), 'The 5' and 3' UTR sequences used in the COVID mRNA vaccine experiments' - 3'UTR block, verbatim (identical block repeated in the VZV gE section)",
+    "Xia & Lim 2021 Vaccines 9:734 sec 3.5: BNT162b2 3'UTR comprises AES/TLE5 and mtRNR1 segments (AES-derived 5' portion + mtRNR1-derived 3' portion)"
+   ]
+  },
+  {
+   "id": "lineardesign_paper_5utr",
+   "side": "5utr",
+   "label": "LinearDesign Nature-2023 COVID-construct 5'UTR (synthetic leader, supplement verbatim)",
+   "sequence": "GGGAAAAAGAGAGAAAAGAAGAGAAGAAGAAAAAAGAGCCACC",
+   "length_nt": 43,
+   "md5": "ea37b458b776469aa533abfceea10676",
+   "sources": [
+    "LinearDesign Nature 2023 supplement, COVID mRNA vaccine experiments 5'UTR block, verbatim (T->U); a Moderna-style synthetic leader ending in the GCCACC Kozak"
+   ]
+  },
+  {
+   "id": "hba1_5utr",
+   "side": "5utr",
+   "label": "Human alpha-globin HBA1 natural 5'UTR (RefSeq NM_000558.5)",
+   "sequence": "ACUCUUCUGGUCCCCACAGACUCAGAGAGAACCCACC",
+   "length_nt": 37,
+   "md5": "19735ce176fdb241396fab906beeffdb",
+   "sources": [
+    "NCBI RefSeq NM_000558.5 (Homo sapiens hemoglobin subunit alpha 1, mRNA) 5'UTR, 37 nt",
+    "Ensembl ENST00000320868 (HBA1 canonical) 5'UTR - byte-identical",
+    "NCBI RefSeq NM_000517.5 (HBA2) 5'UTR shared suffix - identical (Xia & Lim 2021: '5'-UTR is identical between human HBA1 and HBA2')"
+   ]
+  },
+  {
+   "id": "hba1_3utr",
+   "side": "3utr",
+   "label": "Human alpha-globin HBA1 natural 3'UTR (RefSeq NM_000558.5)",
+   "sequence": "GCUGGAGCCUCGGUGGCCAUGCUUCUUGCCCCUUGGGCCUCCCCCCAGCCCCUCCUCCCCUUCCUGCACCCGUACCCCCGUGGUCUUUGAAUAAAGUCUGAGUGGGCGGCA",
+   "length_nt": 111,
+   "md5": "6be07be9a83ce9dce78074c0a8396dc2",
+   "sources": [
+    "NCBI RefSeq NM_000558.5 (HBA1) 3'UTR, 111 nt (stop-codon-exclusive)",
+    "NCBI RefSeq NM_000517.5 (HBA2) 3'UTR paralogue consistency (shared prefix/suffix)",
+    "Xia & Lim 2021 Vaccines 9:734 sec 3.4: mRNA-1273 uses 'the 110-nt 3'-UTR of human alpha-globin gene (HBA1)'"
+   ]
+  }
+ ],
+ "notes": [
+  "bnt162b2_5utr: the template-verified 51-nt form is used. The repo anchor data/benchmarks/external_anchors/vaccine_mrna/bnt162b2_full.fa and the 2021 decoded-transcript assemblies carry a 3-nt 5' GAG prefix before this sequence; the PP544446 batch-plasmid template does not encode it, so it is treated as an assembly artifact and excluded.",
+  "bnt162b2_3utr: the 94-nt AES-mtRNR1 form is the verbatim sequence published (and used unmodified-nucleotide wet-lab validated) in the LinearDesign Nature 2023 supplement; Xia & Lim 2021 describe the full BNT162b2 3'UTR as longer AES(136-nt)+mtRNR1(139-nt) segments, for which no verbatim authoritative public sequence is available - the LinearDesign-published form is used and disclosed.",
+  "hba1_3utr length is 111 nt from NM_000558.5; mRNA-1273's patent design uses a 110-nt HBA1 3'UTR (Xia & Lim 2021) - the natural RefSeq form is used here."
+ ]
+}
