@@ -8,7 +8,7 @@
 - **EPO = UniProt P01588，193 aa**：与靶点资产逐残基一致；RefSeq NM_000799.4 全 mRNA（1662 nt）中以精确翻译 ORF 定位 CDS 579 nt（天然终止码 UGA），翻译与蛋白一致。注意当前 RefSeq 版本是 **.4**（.5 不存在）。
 - **HA = UniProt P03452（HEMA_I34A1，A/Puerto Rico/8/1934 H1N1），565 aa**：与靶点资产逐残基一致；GenBank **ABD77675.1**（segment 4 记录 **CY009444** 的注释 CDS）与之逐残基一致，WT CDS 1695 nt（天然 UGA）从中提取。
 - **发现并修正的真实错误**：靶点资产原 `ncbi_reference: AAL09324.1` 解析为**狒狒 duffy 抗原**（错误引用），已修正为 ABD77675.1（蛋白序列本身未变，镜像 fasta 一致）。
-- **565/566 疑问的根源（披露）**：PR8 HA 存在两个常用谱系——UniProt P03452/CY009444 = 565 aa（本实验采用，与既往全部实验记录连续）；RefSeq NC_002017.1 与 V01088 = 566 aa 另一谱系（自第 ~145/146 位残基起大量分歧），不采用、已留档。
+- **565/566 疑问的根源（披露）**：PR8 HA 存在两个常用谱系——UniProt P03452/CY009444 = 565 aa（本实验采用，与既往全部实验记录连续）；RefSeq NC_002017.1 = V01088 = **Winter/Fields/Brownlee Nature 1981 经典测序谱系**（566 aa），与所用 565 aa 序列**仅差 8 个 HA1 残基**（TK146-147N，即 1-aa 缺失+替换；E155A、P199S、E203D、L207I、M268R、Y308F、T397S，按 565 编号；98.6% 氨基酸一致），不采用、已留档。565 aa = **Mount Sinai 谱系**（NIAID 对 St. Jude Webster/Hoffmann 库存的重测序），也是 UniProt 收录的规范条目、Hoffmann-Webster 八质粒反向遗传学体系和商品化 PR8 HA 试剂（Sino Biological 等，Asp18–Gln528 胞外域构建）所用的谱系。
 
 ### BNT162b2 UTR 底盘（三渠道）
 - **5'UTR 51 nt**（α-珠蛋白衍生、GCCACCAUG Kozak 优化形）：= 疫苗批种质粒 **PP544446.1（FP9359）T7 启动子后 3527..3577 区间**（其后紧跟 ATG）；亦在第二批质粒 **PP544445.1（FP8191）中逐字出现**；与天然 HBA1（NM_000558.5）leader 核心一致（仅 Kozak C→G 差异，Xia & Lim 2021）。

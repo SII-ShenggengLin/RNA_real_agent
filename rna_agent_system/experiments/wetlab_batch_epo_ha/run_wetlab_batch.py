@@ -70,9 +70,11 @@ NCBI_PROTEIN = {"HA": "ABD77675.1"}     # GenBank PR8 segment-4 protein, EXACT m
                                          # xrefs - the asset's original AAL09324.1 ref was WRONG,
                                          # baboon duffy antigen, corrected by this batch)
 HA_SEGMENT_ACC = "CY009444"              # GenBank PR8 segment 4 whose CDS = ABD77675.1 = the
-                                         # SAME 565-aa HA as the target asset. Disclosed NOT-used
-                                         # variants: RefSeq NC_002017.1 and V01088 = the OTHER
-                                         # PR8 lineage, 566 aa, diverging from residue ~146
+                                         # SAME 565-aa HA as the target asset (Mount Sinai lineage,
+                                         # NIAID re-sequencing). Disclosed NOT-used variant: RefSeq
+                                         # NC_002017.1 = V01088 = Winter 1981 lineage (566 aa),
+                                         # differing by only 8 HA1 residues (TK146-147N + E155A/
+                                         # P199S/E203D/L207I/M268R/Y308F/T397S, 98.6% identity)
 REFSEQ_MRNA = {"EPO": "NM_000799.4"}   # current RefSeq version (esummary-verified 2026-09-08)
 BNT_VECTOR_ACC = "PP544446.1"         # BNT162b2 vector (Raoult direct submission 2024)
 HBA1_REFSEQ = "NM_000558.5"
@@ -835,7 +837,7 @@ def stage_xlsx() -> None:
     ws2.append(["湿实验拼接", "加尾/加帽/修饰核苷酸由湿实验统一处理（十臂一致）"])
     ws2.append(["HA 毒株", "A/Puerto Rico/8/1934 (H1N1), UniProt P03452 / GenBank ABD77675.1 (segment CY009444), 565 aa"])
     ws2.append(["HA 引用修正", "靶点资产原 ncbi_reference=AAL09324.1 有误（解析为狒狒 duffy 抗原），本批次已修正为 ABD77675.1（与 UniProt P03452 逐残基一致；蛋白序列本身未变）"])
-    ws2.append(["HA 变体披露", "RefSeq NC_002017.1 / V01088 编码的是另一 PR8 谱系（566 aa，自第 ~145/146 位起分歧），本实验不用；565/566 的疑问即源于此双谱系"])
+    ws2.append(["HA 变体披露", "PR8 有两个常用谱系：本表 565 aa = Mount Sinai 谱系（UniProt P03452 / CY009444，即 Hoffmann-Webster 反向遗传学体系、商品化 PR8 HA 试剂与近期晶体结构所用谱系）；RefSeq NC_002017.1 = V01088 = Winter 1981 经典测序谱系（566 aa），与前者仅差 8 个 HA1 残基（TK146-147N 即 1-aa 缺失+替换，E155A/P199S/E203D/L207I/M268R/Y308F/T397S，98.6% 一致）——565/566 的疑问即源于此，已披露不采用"])
     ws2.append(["EPO 参考版本", "UniProt P01588 (193 aa) = 靶点资产 = RefSeq NM_000799.4 CDS 翻译（WT CDS 取自该记录，天然终止码 UGA）"])
     ws2.append(["BNT162b2 底盘", f"5'UTR 51 nt (PP544446.1:3527-3577) + 3'UTR 94 nt (AES-mtRNR1, LinearDesign 补充材料逐字)"])
     ws2.append(["MRL/稳定性指标", "GEMORNA 自家 PRED-5UTR/PRED-3UTR checkpoint（与其基线臂选择同一模型，全臂统一）"])

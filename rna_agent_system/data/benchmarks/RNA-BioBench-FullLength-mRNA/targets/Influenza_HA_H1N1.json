@@ -18,5 +18,5 @@
   "entry_name": "HEMA_I34A1",
   "expected_cds_length_nt": 1695,
   "uniprot_accession": "P03452",
-  "ncbi_reference_note": "Corrected 2026-09-08 (wetlab batch verification): the previous value AAL09324.1 resolved to Papio hamadryas duffy antigen (wrong record). ABD77675.1 = GenBank CY009444 segment-4 CDS, an EXACT translation match to UniProt P03452 (565 aa); verified against all five UniProt EMBL xrefs. RefSeq NC_002017.1/V01088 encode the OTHER PR8 lineage (566 aa, diverging from residue ~146) and are NOT this target."
+  "ncbi_reference_note": "Corrected 2026-09-08 (wetlab batch verification): the previous value AAL09324.1 resolved to Papio hamadryas duffy antigen (wrong record). ABD77675.1 = GenBank CY009444 segment-4 CDS (Mount Sinai lineage, NIAID Influenza Genome Sequencing Project), an EXACT translation match to UniProt P03452 (565 aa). PR8 dual-lineage disclosure: RefSeq NC_002017.1 = V01088 = Winter/Fields/Brownlee Nature 1981 lineage (566 aa) differs from this target by only 8 residues in HA1 (TK146-147N i.e. one 1-aa deletion plus a substitution, E155A, P199S, E203D, L207I, M268R, Y308F, T397S in 565-numbering; 98.6% aa identity) and is NOT this target."
 }
