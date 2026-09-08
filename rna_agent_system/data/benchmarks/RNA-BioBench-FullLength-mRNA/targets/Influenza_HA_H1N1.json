@@ -4,7 +4,7 @@
   "target_type": "vaccine",
   "source_database": "UniProt",
   "accession": "P03452",
-  "ncbi_reference": "AAL09324.1",
+  "ncbi_reference": "ABD77675.1",
   "species_for_codon_optimization": "Homo sapiens",
   "expression_system": "HEK293",
   "paper_references": [
@@ -17,5 +17,6 @@
   "organism_scientific": "Influenza A virus (strain A/Puerto Rico/8/1934 H1N1)",
   "entry_name": "HEMA_I34A1",
   "expected_cds_length_nt": 1695,
-  "uniprot_accession": "P03452"
+  "uniprot_accession": "P03452",
+  "ncbi_reference_note": "Corrected 2026-09-08 (wetlab batch verification): the previous value AAL09324.1 resolved to Papio hamadryas duffy antigen (wrong record). ABD77675.1 = GenBank CY009444 segment-4 CDS, an EXACT translation match to UniProt P03452 (565 aa); verified against all five UniProt EMBL xrefs. RefSeq NC_002017.1/V01088 encode the OTHER PR8 lineage (566 aa, diverging from residue ~146) and are NOT this target."
 }

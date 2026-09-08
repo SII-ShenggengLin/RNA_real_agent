@@ -1,0 +1,83 @@
+LOCUS       V01088                  1778 bp    RNA     linear   VRL 18-APR-2005
+DEFINITION  Influenza A virus (A/PR/8/34(HON1)) hemagglutinin gene.
+ACCESSION   V01088 J02143
+VERSION     V01088.1
+KEYWORDS    haemagglutinin.
+SOURCE      Influenza A virus (A/Puerto Rico/8/1934(H1N1))
+  ORGANISM  Influenza A virus (A/Puerto Rico/8/1934(H1N1))
+            Viruses; Riboviria; Orthornavirae; Negarnaviricota;
+            Polyploviricotina; Insthoviricetes; Articulavirales;
+            Orthomyxoviridae; Alphainfluenzavirus; Alphainfluenzavirus
+            influenzae.
+REFERENCE   1  (bases 1 to 1778)
+  AUTHORS   Winter,G., Fields,S. and Brownlee,G.G.
+  TITLE     Nucleotide sequence of the haemagglutinin gene of a human influenza
+            virus H1 subtype
+  JOURNAL   Nature 292 (5818), 72-75 (1981)
+   PUBMED   7278968
+COMMENT     On Jun 5, 2002 this sequence version replaced J02143.1.
+FEATURES             Location/Qualifiers
+     source          1..1778
+                     /organism="Influenza A virus (A/Puerto Rico/8/1934(H1N1))"
+                     /mol_type="genomic RNA"
+                     /strain="A/PR/8/34(HON1)"
+                     /db_xref="taxon:211044"
+     CDS             33..1733
+                     /codon_start=1
+                     /product="haemagglutinin"
+                     /protein_id="CAA24272.1"
+                     /db_xref="GOA:P03452"
+                     /db_xref="InterPro:IPR000149"
+                     /db_xref="InterPro:IPR001364"
+                     /db_xref="InterPro:IPR008980"
+                     /db_xref="InterPro:IPR013827"
+                     /db_xref="InterPro:IPR013828"
+                     /db_xref="InterPro:IPR013829"
+                     /db_xref="PDB:1RU7"
+                     /db_xref="PDB:1RVX"
+                     /db_xref="PDB:1RVZ"
+                     /db_xref="UniProtKB/Swiss-Prot:P03452"
+                     /translation="MKANLLVLLCALAAADADTICIGYHANNSTDTVDTVLEKNVTVT
+                     HSVNLLEDSHNGKLCRLKGIAPLQLGKCNIAGWLLGNPECDPLLPVRSWSYIVETPNS
+                     ENGICYPGDFIDYEELREQLSSVSSFERFEIFPKESSWPNHNTTKGVTAACSHAGKSS
+                     FYRNLLWLTEKEGSYPKLKNSYVNKKGKEVLVLWGIHHPSNSKDQQNIYQNENAYVSV
+                     VTSNYNRRFTPEIAERPKVRDQAGRMNYYWTLLKPGDTIIFEANGNLIAPRYAFALSR
+                     GFGSGIITSNASMHECNTKCQTPLGAINSSLPFQNIHPVTIGECPKYVRSAKLRMVTG
+                     LRNIPSIQSRGLFGAIAGFIEGGWTGMIDGWYGYHHQNEQGSGYAADQKSTQNAINGI
+                     TNKVNSVIEKMNIQFTAVGKEFNKLEKRMENLNKKVDDGFLDIWTYNAELLVLLENER
+                     TLDFHDSNVKNLYEKVKSQLKNNAKEIGNGCFEFYHKCDNECMESVRNGTYDYPKYSE
+                     ESKLNREKVDGVKLESMGIYQILAIYSTVASSLVLLVSLGAISFWMCSNGSLQCRICI
+                     "
+ORIGIN      
+        1 agcaaaagca ggggaaaata aaaacaacca aaatgaaggc aaacctactg gtcctgttat
+       61 gtgcacttgc agctgcagat gcagacacaa tatgtatagg ctaccatgcg aacaattcaa
+      121 ccgacactgt tgacacagtg ctcgagaaga atgtgacagt gacacactct gttaacctgc
+      181 tcgaagacag ccacaacgga aaactatgta gattaaaagg aatagcccca ctacaattgg
+      241 ggaaatgtaa catcgccgga tggctcttgg gaaacccaga atgcgaccca ctgcttccag
+      301 tgagatcatg gtcctacatt gtagaaacac caaactctga gaatggaata tgttatccag
+      361 gagatttcat cgactatgag gagctgaggg agcaattgag ctcagtgtca tcattcgaaa
+      421 gattcgaaat atttcccaaa gaaagctcat ggcccaacca caacacaacc aaaggagtaa
+      481 cggcagcatg ctcccatgcg gggaaaagca gtttttacag aaatttgcta tggctgacgg
+      541 agaaggaggg ctcataccca aagctgaaaa attcttatgt gaacaagaaa gggaaagaag
+      601 tccttgtact gtggggtatt catcacccgt ctaacagtaa ggatcaacag aatatctatc
+      661 agaatgaaaa tgcttatgtc tctgtagtga cttcaaatta taacaggaga tttaccccgg
+      721 aaatagcaga aagacccaaa gtaagagatc aagctgggag gatgaactat tactggacct
+      781 tgctaaaacc cggagacaca ataatatttg aggcaaatgg aaatctaata gcaccaaggt
+      841 atgctttcgc actgagtaga ggctttgggt ccggcatcat cacctcaaac gcatcaatgc
+      901 atgagtgtaa cacgaagtgt caaacacccc tgggagctat aaacagcagt ctccctttcc
+      961 agaatataca cccagtcaca ataggagagt gcccaaaata cgtcaggagt gccaaattga
+     1021 ggatggttac aggactaagg aacattccgt ccattcaatc cagaggtcta tttggagcca
+     1081 ttgccggttt tattgaaggg ggatggactg gaatgataga tggatggtac ggttatcatc
+     1141 atcagaatga acagggatca ggctatgcag cggatcaaaa aagcacacaa aatgccatta
+     1201 acgggattac aaacaaggtg aactctgtta tcgagaaaat gaacattcaa ttcacagctg
+     1261 tgggtaaaga attcaacaaa ttagaaaaaa ggatggaaaa tttaaataaa aaagttgatg
+     1321 atggatttct ggacatttgg acatataatg cagaattgtt agttctactg gaaaatgaaa
+     1381 ggactctgga tttccatgac tcaaatgtga agaatctgta tgagaaagta aaaagccaat
+     1441 taaagaataa tgccaaagaa atcggaaatg gatgttttga gttctaccac aagtgtgaca
+     1501 atgaatgcat ggaaagtgta agaaatggga cttatgatta tcccaaatat tcagaagagt
+     1561 caaagttgaa cagggaaaag gtagatggag tgaaattgga atcaatgggg atctatcaga
+     1621 ttctggcgat ctactcaact gtcgccagtt cactggtgct tttggtctcc ctgggggcaa
+     1681 tcagtttctg gatgtgttct aatggatctt tgcagtgcag aatatgcatc tgagattaga
+     1741 atttcagaaa tatgaggaaa aacacccttg tttctact
+//
+

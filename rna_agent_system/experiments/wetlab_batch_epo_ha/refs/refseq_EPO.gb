@@ -1,0 +1,248 @@
+LOCUS       NM_000799               1662 bp    mRNA    linear   PRI 06-SEP-2026
+DEFINITION  Homo sapiens erythropoietin (EPO), mRNA.
+ACCESSION   NM_000799
+VERSION     NM_000799.4
+KEYWORDS    RefSeq; MANE Select.
+SOURCE      Homo sapiens (human)
+  ORGANISM  Homo sapiens
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hominidae; Homo.
+REFERENCE   1  (bases 1 to 1662)
+  AUTHORS   Maltaneri,R.E., Chamorro,M.E., Gionco,S.E., Nesse,A.B. and
+            Vittori,D.C.
+  TITLE     Erythropoietin enhances iron bioavailability in HepG2 cells by
+            downregulating hepcidin through mTOR, C/EBPalpha and HIF-1alpha
+  JOURNAL   Biochim Biophys Acta Mol Cell Res 1871 (7), 119800 (2024)
+   PUBMED   39047915
+  REMARK    GeneRIF: Erythropoietin enhances iron bioavailability in HepG2
+            cells by downregulating hepcidin through mTOR, C/EBPalpha and
+            HIF-1alpha.
+REFERENCE   2  (bases 1 to 1662)
+  AUTHORS   Wu,G., Cao,B., Zhai,H., Liu,B., Huang,Y., Chen,X., Ling,H.,
+            Ling,S., Jin,S., Yang,X. and Wang,J.
+  TITLE     EPO promotes the progression of rheumatoid arthritis by inducing
+            desialylation via increasing the expression of neuraminidase 3
+  JOURNAL   Ann Rheum Dis 83 (5), 564-575 (2024)
+   PUBMED   38272667
+  REMARK    GeneRIF: EPO promotes the progression of rheumatoid arthritis by
+            inducing desialylation via increasing the expression of
+            neuraminidase 3.
+REFERENCE   3  (bases 1 to 1662)
+  AUTHORS   Jin,X., Jin,W., Li,G., Zheng,J. and Xu,X.
+  TITLE     Erythropoietin alleviates lung ischemia-reperfusion injury by
+            activating the FGF23/FGFR4/ERK signaling pathway
+  JOURNAL   PeerJ 12, e17123 (2024)
+   PUBMED   38560469
+  REMARK    GeneRIF: Erythropoietin alleviates lung ischemia-reperfusion injury
+            by activating the FGF23/FGFR4/ERK signaling pathway.
+REFERENCE   4  (bases 1 to 1662)
+  AUTHORS   Amalia,L. and Saputra,G.N.
+  TITLE     Serum erythropoietin in acute ischemic stroke: preliminary findings
+  JOURNAL   Sci Rep 14 (1), 2661 (2024)
+   PUBMED   38302546
+  REMARK    GeneRIF: Serum erythropoietin in acute ischemic stroke: preliminary
+            findings.
+REFERENCE   5  (bases 1 to 1662)
+  AUTHORS   Bunn,H.F.
+  TITLE     Erythropoietin
+  JOURNAL   Cold Spring Harb Perspect Med 3 (3), a011619 (2013)
+   PUBMED   23457296
+  REMARK    Review article
+REFERENCE   6  (bases 1 to 1662)
+  AUTHORS   Wenger,R.H. and Kurtz,A.
+  TITLE     Erythropoietin
+  JOURNAL   Compr Physiol 1 (4), 1759-1794 (2011)
+   PUBMED   23733688
+  REMARK    Review article
+REFERENCE   7  (bases 1 to 1662)
+  AUTHORS   Takeuchi,M. and Kobata,A.
+  TITLE     Structures and functional roles of the sugar chains of human
+            erythropoietins
+  JOURNAL   Glycobiology 1 (4), 337-346 (1991)
+   PUBMED   1820196
+  REMARK    Review article
+REFERENCE   8  (bases 1 to 1662)
+  AUTHORS   Jones,S.S., D'Andrea,A.D., Haines,L.L. and Wong,G.G.
+  TITLE     Human erythropoietin receptor: cloning, expression, and biologic
+            characterization
+  JOURNAL   Blood 76 (1), 31-35 (1990)
+   PUBMED   2163696
+REFERENCE   9  (bases 1 to 1662)
+  AUTHORS   Goldberg,M.A., Dunning,S.P. and Bunn,H.F.
+  TITLE     Regulation of the erythropoietin gene: evidence that the oxygen
+            sensor is a heme protein
+  JOURNAL   Science 242 (4884), 1412-1415 (1988)
+   PUBMED   2849206
+REFERENCE   10 (bases 1 to 1662)
+  AUTHORS   Watkins,P.C., Eddy,R., Hoffman,N., Stanislovitis,P., Beck,A.K.,
+            Galli,J., Vellucci,V., Gusella,J.F. and Shows,T.B.
+  TITLE     Regional assignment of the erythropoietin gene to human chromosome
+            region 7pter----q22
+  JOURNAL   Cytogenet Cell Genet 42 (4), 214-218 (1986)
+   PUBMED   2875851
+COMMENT     REVIEWED REFSEQ: This record has been curated by NCBI staff. The
+            reference sequence was derived from AC009488.5, X02157.1 and
+            S65458.1.
+            This sequence is a reference standard in the RefSeqGene project.
+            
+            On Nov 22, 2018 this sequence version replaced NM_000799.3.
+            
+            Summary: This gene encodes a secreted, glycosylated cytokine
+            composed of four alpha helical bundles. The encoded protein is
+            mainly synthesized in the kidney, secreted into the blood plasma,
+            and binds to the erythropoietin receptor to promote red blood cell
+            production, or erythropoiesis, in the bone marrow. Expression of
+            this gene is upregulated under hypoxic conditions, in turn leading
+            to increased erythropoiesis and enhanced oxygen-carrying capacity
+            of the blood. Expression of this gene has also been observed in
+            brain and in the eye, and elevated expression levels have been
+            observed in diabetic retinopathy and ocular hypertension.
+            Recombinant forms of the encoded protein exhibit neuroprotective
+            activity against a variety of potential brain injuries, as well as
+            antiapoptotic functions in several tissue types, and have been used
+            in the treatment of anemia and to enhance the efficacy of cancer
+            therapies. [provided by RefSeq, Aug 2017].
+            
+            Publication Note:  This RefSeq record includes a subset of the
+            publications that are available for this gene. Please see the Gene
+            record to access additional publications.
+            
+            ##Evidence-Data-START##
+            Transcript exon combination :: X02157.1, BC093628.1 [ECO:0000332]
+            RNAseq introns              :: single sample supports all introns
+                                           SAMEA2158188, SAMEA2159368
+                                           [ECO:0000348]
+            ##Evidence-Data-END##
+            
+            ##RefSeq-Attributes-START##
+            MANE Ensembl match     :: ENST00000252723.3/ ENSP00000252723.2
+            RefSeq Select criteria :: based on single protein-coding transcript
+            ##RefSeq-Attributes-END##
+            COMPLETENESS: full length.
+PRIMARY     REFSEQ_SPAN         PRIMARY_IDENTIFIER PRIMARY_SPAN        COMP
+            1-332               AC009488.5         61278-61609
+            333-929             X02157.1           1-597
+            930-932             S65458.1           248-250
+            933-1476            X02157.1           601-1144
+            1477-1477           AC009488.5         64325-64325
+            1478-1662           X02157.1           1146-1330
+FEATURES             Location/Qualifiers
+     source          1..1662
+                     /organism="Homo sapiens"
+                     /mol_type="mRNA"
+                     /db_xref="taxon:9606"
+                     /chromosome="7"
+                     /map="7q22.1"
+     gene            1..1662
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="erythropoietin"
+                     /db_xref="GeneID:2056"
+                     /db_xref="HGNC:HGNC:3415"
+                     /db_xref="MIM:133170"
+     exon            1..526
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /inference="alignment:Splign:2.1.0"
+     misc_feature    448..450
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="upstream in-frame stop codon"
+     CDS             514..1095
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="epoetin"
+                     /codon_start=1
+                     /product="erythropoietin precursor"
+                     /protein_id="NP_000790.2"
+                     /db_xref="CCDS:CCDS5705.1"
+                     /db_xref="GeneID:2056"
+                     /db_xref="HGNC:HGNC:3415"
+                     /db_xref="MIM:133170"
+                     /translation="MGVHECPAWLWLLLSLLSLPLGLPVLGAPPRLICDSRVLERYLL
+                     EAKEAENITTGCAEHCSLNENITVPDTKVNFYAWKRMEVGQQAVEVWQGLALLSEAVL
+                     RGQALLVNSSQPWEPLQLHVDKAVSGLRSLTTLLRALGAQKEAISPPDAASAAPLRTI
+                     TADTFRKLFRVYSNFLRGKLKLYTGEACRTGDR"
+     sig_peptide     514..594
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /inference="COORDINATES: ab initio prediction:SignalP:6.0"
+     misc_feature    664..666
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="N-linked (GlcNAc...) asparagine.
+                     /evidence=ECO:0000269|PubMed:3949763. /id=CAR_000052;
+                     propagated from UniProtKB/Swiss-Prot (P01588.1);
+                     glycosylation site"
+     misc_feature    706..708
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="N-linked (GlcNAc...) asparagine.
+                     /evidence=ECO:0000269|PubMed:3949763. /id=CAR_000166;
+                     propagated from UniProtKB/Swiss-Prot (P01588.1);
+                     glycosylation site"
+     misc_feature    841..843
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="N-linked (GlcNAc...) asparagine.
+                     /evidence=ECO:0000269|PubMed:3949763. /id=CAR_000192;
+                     propagated from UniProtKB/Swiss-Prot (P01588.1);
+                     glycosylation site"
+     misc_feature    970..972
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="O-linked (GalNAc...) serine.
+                     /evidence=ECO:0000269|PubMed:3949763; propagated from
+                     UniProtKB/Swiss-Prot (P01588.1); glycosylation site"
+     exon            527..672
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /inference="alignment:Splign:2.1.0"
+     exon            673..759
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /inference="alignment:Splign:2.1.0"
+     exon            760..939
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /inference="alignment:Splign:2.1.0"
+     exon            940..1662
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /inference="alignment:Splign:2.1.0"
+     polyA_site      1662
+                     /gene="EPO"
+                     /gene_synonym="DBAL; ECYT5; EP; MVCD2"
+                     /note="major polyA site"
+ORIGIN      
+        1 cctttcccag atagcacgct ccgccagtcc caagggtgcg caaccggctg cactcccctc
+       61 ccgcgaccca gggcccggga gcagccccca tgacccacac gcacgtctgc agcagccccg
+      121 ctcacgcccc ggcgagcctc aacccaggcg tcctgcccct gctctgaccc cgggtggccc
+      181 ctacccctgg cgacccctca cgcacacagc ctctccccca cccccacccg cgcacgcaca
+      241 catgcagata acagccccga cccccggcca gagccgcaga gtccctgggc caccccggcc
+      301 gctcgctgcg ctgcgccgca ccgcgctgtc ctcccggagc cggaccgggg ccaccgcgcc
+      361 cgctctgctc cgacaccgcg ccccctggac agccgccctc tcctccaggc ccgtggggct
+      421 ggccctgcac cgccgagctt cccgggatga gggcccccgg tgtggtcacc cggcgcgccc
+      481 caggtcgctg agggaccccg gccaggcgcg gagatggggg tgcacgaatg tcctgcctgg
+      541 ctgtggcttc tcctgtccct gctgtcgctc cctctgggcc tcccagtcct gggcgcccca
+      601 ccacgcctca tctgtgacag ccgagtcctg gagaggtacc tcttggaggc caaggaggcc
+      661 gagaatatca cgacgggctg tgctgaacac tgcagcttga atgagaatat cactgtccca
+      721 gacaccaaag ttaatttcta tgcctggaag aggatggagg tcgggcagca ggccgtagaa
+      781 gtctggcagg gcctggccct gctgtcggaa gctgtcctgc ggggccaggc cctgttggtc
+      841 aactcttccc agccgtggga gcccctgcag ctgcatgtgg ataaagccgt cagtggcctt
+      901 cgcagcctca ccactctgct tcgggctctg ggagcccaga aggaagccat ctcccctcca
+      961 gatgcggcct cagctgctcc actccgaaca atcactgctg acactttccg caaactcttc
+     1021 cgagtctact ccaatttcct ccggggaaag ctgaagctgt acacagggga ggcctgcagg
+     1081 acaggggaca gatgaccagg tgtgtccacc tgggcatatc caccacctcc ctcaccaaca
+     1141 ttgcttgtgc cacaccctcc cccgccactc ctgaaccccg tcgaggggct ctcagctcag
+     1201 cgccagcctg tcccatggac actccagtgc cagcaatgac atctcagggg ccagaggaac
+     1261 tgtccagaga gcaactctga gatctaagga tgtcacaggg ccaacttgag ggcccagagc
+     1321 aggaagcatt cagagagcag ctttaaactc agggacagag ccatgctggg aagacgcctg
+     1381 agctcactcg gcaccctgca aaatttgatg ccaggacacg ctttggaggc gatttacctg
+     1441 ttttcgcacc taccatcagg gacaggatga cctggataac ttaggtggca agctgtgact
+     1501 tctccaggtc tcacgggcat gggcactccc ttggtggcaa gagccccctt gacaccgggg
+     1561 tggtgggaac catgaagaca ggatgggggc tggcctctgg ctctcatggg gtccaagttt
+     1621 tgtgtattct tcaacctcat tgacaagaac tgaaaccacc aa
+//
+
