@@ -3,7 +3,8 @@
 Where it sits: governs every Layer-0 tool call (DecisionGate) and every
 Layer-4 outgoing claim (ClaimGate). Upper evidence band: assertion-curated
 anchor sets -> pre-registered profiling -> SelfModel capability map. Lower
-enforcement band: planned tool call -> DecisionGate verdicts; draft claim ->
+enforcement band: planned tool call -> pre-execution interception ->
+DecisionGate verdicts; draft claim -> pre-publication interception ->
 ClaimGate scope ladder; every decision appended to the audit trail.
 """
 import style as S
@@ -87,27 +88,37 @@ def build(B):
     B.txt(18, 7.8, "from SynthesisAgent", size=5.0)
     B.txt(18, 5.4, "or a workflow", size=5.0)
 
+    # interception points — actions pre-execution, claims pre-publication
+    B.card(35.5, 14, 34, 9.5, face=S.C_TERRACOTTA, alpha=0.13)
+    B.txt(52.5, 21.0, "intercept · pre-execution", size=5.8, weight="bold")
+    B.txt(52.5, 18.2, "ToolExecutor choke point", size=5.0)
+    B.txt(52.5, 15.8, "every call audit-stamped", size=5.0)
+    B.card(35.5, 3.5, 34, 9.5, face=S.C_TERRACOTTA, alpha=0.13)
+    B.txt(52.5, 10.6, "intercept · pre-publication", size=5.8, weight="bold")
+    B.txt(52.5, 7.8, "every outgoing claim", size=5.0)
+    B.txt(52.5, 5.4, "checked vs capability evidence", size=5.0)
+
     # DecisionGate
-    B.card(37, 14, 67, 10.5, face=S.C_TERRACOTTA, alpha=0.13)
-    B.txt(70.5, 22.2, "DecisionGate · planned actions", size=5.8,
+    B.card(75, 14, 67, 10.5, face=S.C_TERRACOTTA, alpha=0.13)
+    B.txt(108.5, 22.2, "DecisionGate · planned actions", size=5.8,
           weight="bold")
     verdicts = (("allow", 9.5, S.C_SAGE), ("downgrade", 13.0, S.C_SAND),
                 ("reject", 9.0, S.C_TERRACOTTA),
                 ("require profiling", 19.0, S.C_DARK))
-    x = 39.5
+    x = 77.5
     for name, vw, col in verdicts:
         B.card(x, 17.2, vw, 3.4, face=col, alpha=0.30, lw=0.4, radius=0.5)
         B.txt(x + vw / 2, 18.9, name, size=5.0)
         x += vw + 0.7
-    B.txt(70.5, 15.5, "allow executes · never-profiled oracle blocked",
+    B.txt(108.5, 15.5, "allow executes · never-profiled oracle blocked",
           size=5.0)
 
     # ClaimGate
-    B.card(37, 2.8, 67, 10.5, face=S.C_TERRACOTTA, alpha=0.13)
-    B.txt(70.5, 11.0, "ClaimGate · outgoing claims", size=5.8, weight="bold")
+    B.card(75, 2.8, 67, 10.5, face=S.C_TERRACOTTA, alpha=0.13)
+    B.txt(108.5, 11.0, "ClaimGate · outgoing claims", size=5.8, weight="bold")
     ladder = (("absolute", 10.0, S.C_SAGE), ("target-relative", 16.0, S.C_SAND),
               ("trend", 8.5, S.C_KHAKI), ("suppressed", 12.5, S.C_DARK))
-    x = 39.5
+    x = 77.5
     for i, (name, lw_, col) in enumerate(ladder):
         B.card(x, 6.2, lw_, 3.4, face=col, alpha=0.30, lw=0.4, radius=0.5)
         B.txt(x + lw_ / 2, 7.9, name, size=5.0)
@@ -115,7 +126,7 @@ def build(B):
             B.flow(x + lw_ + 0.15, 7.9, x + lw_ + 1.75, 7.9, kind="gate",
                    lw=0.8, ms=6)
         x += lw_ + 2.0
-    B.txt(70.5, 4.2, "over-reaching claim → downgraded one step", size=5.0)
+    B.txt(108.5, 4.2, "over-reaching claim → downgraded one step", size=5.0)
 
     # audit trail
     B.card(150, 3.5, 26, 20, face=S.C_MAUVE_GREY, alpha=0.16)
@@ -125,14 +136,17 @@ def build(B):
     B.txt(163, 9.0, "every gate decision", size=5.0)
     B.txt(163, 6.6, "recorded", size=5.0)
 
-    # gates consult the SelfModel; inputs reach the gates; decisions are logged
-    B.flow(110, 27.6, 72, 24.9, kind="data", lw=1.0)
-    B.line(120, 27.5, 120, 11, color=S.C_SLATE, lw=0.9)
-    B.flow(120, 11, 104.3, 11, kind="data", lw=1.0)
-    B.flow(31.3, 18.7, 36.7, 18.7, kind="data", lw=1.1)
-    B.flow(31.3, 8.2, 36.7, 8.2, kind="data", lw=1.1)
-    B.flow(104.3, 18.9, 149.7, 18.9, kind="gate", lw=1.0)
-    B.flow(104.3, 7.9, 149.7, 7.9, kind="gate", lw=1.0)
+    # gates consult the SelfModel; inputs reach the gates via the interception
+    # points; decisions are logged
+    B.flow(110, 27.6, 110, 24.9, kind="data", lw=1.0)
+    B.line(146, 27.5, 146, 11, color=S.C_SLATE, lw=0.9)
+    B.flow(146, 11, 142.3, 11, kind="data", lw=1.0)
+    B.flow(31.3, 18.7, 35.2, 18.7, kind="data", lw=1.1)
+    B.flow(69.8, 18.7, 74.7, 18.7, kind="data", lw=1.1)
+    B.flow(31.3, 8.2, 35.2, 8.2, kind="data", lw=1.1)
+    B.flow(69.8, 8.2, 74.7, 8.2, kind="data", lw=1.1)
+    B.flow(142.3, 18.9, 149.7, 18.9, kind="gate", lw=1.0)
+    B.flow(142.3, 7.9, 149.7, 7.9, kind="gate", lw=1.0)
 
 
 def main():
