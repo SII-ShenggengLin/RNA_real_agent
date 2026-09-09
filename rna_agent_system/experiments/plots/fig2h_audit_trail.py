@@ -19,7 +19,7 @@ analyzer's stats.json — not drawn. No in-figure titles (Nature style — the
 headline lives in the caption); every text element one 6-pt ink-black style.
 
 Colours (palette rev 7): tool calls grey blue; gate decisions by verdict
-(reject terracotta, require_profiling sand, downgrade mauve grey); ranking
+(reject terracotta, require_profiling sand, downgrade mauve grey, allow sage green); ranking
 assemblies khaki; failed calls the held-out dark warm grey; lane/gap
 reference lines non-data grey; all text ink black.
 
@@ -64,6 +64,7 @@ C_CALL = PALETTE_BY_NAME["grey_blue"]        # #8FA6BB — audited tool calls
 C_REJECT = PALETTE_BY_NAME["terracotta"]     # #C08B7C — gate: reject
 C_REQPROF = PALETTE_BY_NAME["sand"]          # #D9C3A9 — gate: require_profiling
 C_DOWNGRADE = PALETTE_BY_NAME["mauve_grey"]  # #A99AAF — gate: downgrade
+C_ALLOW = PALETTE_BY_NAME["sage_green"]      # #A3B18A — gate: allow (fig4e convention)
 C_RANKING = PALETTE_BY_NAME["khaki"]         # #CDBF9E — ranking assemblies
 C_FAIL = PALETTE_BY_NAME["dark_warm_grey"]   # #7A7672 — failed calls
 
@@ -71,6 +72,7 @@ VERDICT_COLOR = {
     "reject": C_REJECT,
     "require_profiling": C_REQPROF,
     "downgrade": C_DOWNGRADE,
+    "allow": C_ALLOW,
 }
 
 
@@ -137,13 +139,14 @@ def draw_track(ax, rep: dict) -> None:
 
     # Legend from the mark kinds actually present, in reading order, inside
     # the empty upper-right of the track (turn 1 occupies only x <~ 0.5).
-    order = ["call ok", "reject", "require_profiling", "downgrade", "ranking assembly"]
+    order = ["call ok", "reject", "require_profiling", "downgrade", "allow", "ranking assembly"]
     style = {
         "call ok": ("o", 7, C_CALL),
         "call failed": ("o", 7, C_FAIL),
         "reject": ("D", 13, C_REJECT),
         "require_profiling": ("D", 13, C_REQPROF),
         "downgrade": ("D", 13, C_DOWNGRADE),
+        "allow": ("D", 13, C_ALLOW),
         "ranking assembly": ("v", 10, C_RANKING),
     }
     handles = [

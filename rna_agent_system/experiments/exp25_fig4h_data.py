@@ -14,14 +14,18 @@ measured from frozen campaign records — never assumed:
   workspaces: each run's saved ``workflow_results_*.json`` carries
   ``_diagnosis_history`` (one entry per completed advisory review call;
   structurally 2 per passing reviewed turn), summed per session id over the
-  frozen run records (210 suite tasks + 31 PA sessions). The Fig-5 GenNav
-  navigation campaigns (2.4 calls/gene mRNA, single-call aptamer) are NOT
-  included — they have not been re-run under the reset yet and will be added
-  by their own campaign drivers (registered note).
+  frozen run records (210 suite tasks + 31 PA sessions).
 * ``exp25_quality_advisory`` — this experiment's three arms (off / on /
   fail-injected): successful review calls per session from records.jsonl;
   the fail arm's attempts all error before any completion (counted
   separately as failed attempts, zero successful).
+* The navigation campaigns — re-run under the reset since the 2026-09-01
+  registration of this assembly and now included (the earlier exclusion
+  note retired): Exp 27/28 (mRNA endpoint) and Exp 29 (aptamer arc +
+  expanded budget sweep) are deterministic in both arms — ``llm_calls`` = 0
+  read from each segment's verdict file; Exp 30 (production navigation
+  through the form entry, quality review on) and Exp 37 (Table-1 case
+  studies) are MEASURED from their session workspaces like Exp 24.
 
 Output: experiments/results/exp25_quality_review_advisory/fig4h_llm_usage.json
 Usage : PYTHONPATH=. python experiments/exp25_fig4h_data.py
@@ -92,7 +96,7 @@ def main() -> int:
     campaigns.append(campaign(
         "exp18_mrna_dual_arm",
         per_task,
-        "E3-M mRNA dual arm: plan + report per task per arm (40 runs; 32 superseded runs excluded)",
+        "E3-M mRNA dual arm: plan + report per task per arm (40 runs, kept records only)",
     ))
 
     # Exp 23 — selective gating decision matrix (12 cells, zero LLM)
@@ -152,10 +156,75 @@ def main() -> int:
                     failed_review_attempts=failed_attempts.get(arm, 0),
                 ))
 
+    # Navigation campaigns — re-run under the reset since the 2026-09-01
+    # registration of this assembly; measured, not assumed. Exp 27/28 (mRNA
+    # endpoint) and Exp 29 (aptamer arc + expanded sweep) are deterministic
+    # in both arms: llm_calls read from each segment's verdict file. Exp 30
+    # (production navigation through the form entry, quality review on) and
+    # Exp 37 (Table-1 case studies) are measured from their session
+    # workspaces like Exp 24.
+    def _zero_row(verdicts: list[Path]) -> list[int]:
+        per: list[int] = []
+        for v in verdicts:
+            d = json.loads(v.read_text(encoding="utf-8"))
+            assert int(d.get("llm_calls") or 0) == 0, f"{v} reports non-zero llm_calls"
+            n = int(d.get("n_targets") or 0)
+            assert n > 0, f"{v} carries no n_targets"
+            per += [0] * n
+        return per
+
+    campaigns.append(campaign(
+        "exp27_gennav_mrna_boundary",
+        _zero_row([RESULTS / "exp27_gennav_mrna_endpoint" / "full" / "verdict.json"]),
+        "mRNA navigation endpoint, pre-repair boundary measurement — deterministic, zero LLM calls",
+    ))
+    campaigns.append(campaign(
+        "exp28_gennav_mrna_endpoint",
+        _zero_row([RESULTS / "exp28_gennav_mrna_endpoint_v2" / "full" / "verdict.json"]),
+        "mRNA navigation endpoint on the repaired shipped navigator — deterministic, zero LLM calls",
+    ))
+    arc = RESULTS / "exp29_aptamer_campaign_arc"
+    campaigns.append(campaign(
+        "exp29_aptamer_arc",
+        _zero_row([arc / s / "verdict.json" for s in
+                   ("seg1_migration", "seg2_reanchor", "seg3_decisive", "seg4_confirmation")]),
+        "aptamer navigation campaign arc (four segments) — deterministic, zero LLM calls",
+    ))
+    campaigns.append(campaign(
+        "exp29_expanded_sweep",
+        _zero_row([arc / f"expanded_cap{c}" / "full_pool_verdict.json" for c in (16, 20, 24, 32, 48)]),
+        "aptamer expanded-pool budget sweep (39 targets × 5 caps) — deterministic, zero LLM calls",
+    ))
+
+    def _measured_sessions(session_ids: list[str]) -> list[int]:
+        return [_session_review_calls(sid) for sid in session_ids]
+
+    e30 = RESULTS / "exp30_production_navigation_live"
+    e30_sids: list[str] = []
+    for part in ("aptamer", "mrna"):
+        for r in _records(e30 / part / "runs.jsonl"):
+            if r.get("session_id"):
+                e30_sids.append(r["session_id"])
+    campaigns.append(campaign(
+        "exp30_production_navigation",
+        _measured_sessions(e30_sids),
+        "production navigation on new targets through the user form entry (quality review on): "
+        "advisory review calls per session",
+    ))
+    e37 = RESULTS / "exp37_table1_case_studies"
+    e37_sids = [json.loads((e37 / c / "record.json").read_text(encoding="utf-8"))["session_id"]
+                for c in ("caseA", "caseB", "caseC")]
+    campaigns.append(campaign(
+        "exp37_case_studies",
+        _measured_sessions(e37_sids),
+        "Table-1 end-to-end case studies on the platform defaults (quality review on): "
+        "advisory review calls per case",
+    ))
+
     out = {
-        "registered": "2026-09-01, Exp 25 (Fig 4h): per-campaign LLM usage — measured counts only",
-        "excluded_registered": "Fig-5 GenNav navigation campaigns (mRNA 2.4 calls/gene, aptamer single call) — "
-                               "not yet re-run under the reset; to be added by their own campaign drivers",
+        "registered": "2026-09-01, Exp 25 (Fig 4h): per-campaign LLM usage — measured counts only; "
+                      "2026-09-09: navigation campaigns added after their reset re-runs "
+                      "(Exp 27/28/29 zero-LLM; Exp 30/37 measured from session workspaces)",
         "campaigns": campaigns,
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)

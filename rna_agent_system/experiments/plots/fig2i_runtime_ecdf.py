@@ -23,7 +23,7 @@ workflow's colour, median runtime and sample size. No in-figure title
 Colours (palette rev 7): each workflow's canonical WORKFLOW_COLORS entry;
 reference line and all text in ink black.
 
-Data  : experiments/results/exp24_production_campaign/{pilot,lane_*,pa_batch}.jsonl
+Data  : experiments/results/exp24_production_campaign/{pilot,lane_*,pa_batch*}.jsonl
 Usage : python experiments/plots/fig2i_runtime_ecdf.py
 Output : experiments/plots/output/fig2i_runtime_ecdf.{pdf,png}
 """
@@ -86,7 +86,8 @@ def latest_records(paths: list[Path]) -> dict[str, dict]:
 
 def fmt_min(minutes: float) -> str:
     if minutes < 1:
-        return f"{minutes * 60:.0f} s"
+        secs = minutes * 60
+        return f"{secs:.1f} s" if secs < 10 else f"{secs:.0f} s"
     if minutes < 10:
         return f"{minutes:.1f} min"
     return f"{minutes:.0f} min"
@@ -100,8 +101,11 @@ def median(vals: list[float]) -> float:
 
 def main() -> int:
     lane_files = sorted(RESULTS_DIR.glob("lane_*.jsonl"))
+    pa_files = sorted(RESULTS_DIR.glob("pa_batch*.jsonl"))
     records = latest_records(
-        [RESULTS_DIR / "pilot.jsonl", *lane_files, RESULTS_DIR / "pa_batch.jsonl"]
+        [RESULTS_DIR / "pilot.jsonl", *lane_files, *pa_files]
+        if (RESULTS_DIR / "pilot.jsonl").exists()
+        else [*lane_files, *pa_files]
     )
     by_wf: dict[str, list[float]] = {}
     for rec in records.values():

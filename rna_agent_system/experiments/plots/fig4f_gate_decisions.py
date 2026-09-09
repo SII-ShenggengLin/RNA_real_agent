@@ -4,7 +4,7 @@ plot; §2.4 实验 5, Exp 24).
 
 One row per oracle (rows ordered by total decision count, descending — the
 Cleveland ordered-dot-plot convention), one marker per gate-decision class
-(reject / require_profiling / downgrade), thin light-grey dumbbell connectors
+(reject / require_profiling / downgrade / allow), thin light-grey dumbbell connectors
 spanning each row's markers, and the decision count printed adjacent to every
 marker (CASCADE Fig. 5d/e convention). X axis = decisions issued by the
 production DecisionGate across the 241-run production campaign (Exp 24:
@@ -25,7 +25,7 @@ against those panels); absolute-mm geometry; 1200-dpi PNG + vector PDF
 requirement and the PDF keeps text as editable TrueType.
 
 Colours (palette rev 7): verdict colours follow the fig2h/fig4e gate
-convention — reject terracotta (#C08B7C), require_profiling sand (#D9C3A9),
+convention — reject terracotta (#C08B7C), require_profiling sand (#D9C3A9), allow sage green (#A3B18A, the fig4e allow/pass colour),
 downgrade mauve grey (#A99AAF); dumbbell connectors and gridlines non-data
 grey; all text pure black.
 
@@ -71,21 +71,24 @@ plt.rcParams.update({
     "pdf.fonttype": 42,
 })
 
-VERDICTS = ("reject", "require_profiling", "downgrade")
+VERDICTS = ("reject", "require_profiling", "downgrade", "allow")
 VERDICT_LABELS = {
     "reject": "reject",
     "require_profiling": "require profiling",
     "downgrade": "downgrade",
+    "allow": "allow",
 }
 VERDICT_COLOR = {
     "reject": PALETTE_BY_NAME["terracotta"],       # #C08B7C (fig2h convention)
     "require_profiling": PALETTE_BY_NAME["sand"],  # #D9C3A9
     "downgrade": PALETTE_BY_NAME["mauve_grey"],    # #A99AAF
+    "allow": PALETTE_BY_NAME["sage_green"],        # #A3B18A (fig4e allow/pass)
 }
 VERDICT_MARKER = {
     "reject": "o",
     "require_profiling": "D",
     "downgrade": "s",
+    "allow": "^",
 }
 
 # Concise row labels: tool name + the gated metric, generic suffixes dropped
@@ -148,9 +151,9 @@ def main() -> int:
         (fig_h_mm - top_mm - bottom_mm) / fig_h_mm,
     ])
 
-    # Marker vertical offsets so three same-row markers at close counts stay
+    # Marker vertical offsets so same-row markers at close counts stay
     # legible (small fixed offsets in row units; value labels sit beside).
-    dy = {"reject": 0.16, "require_profiling": 0.0, "downgrade": -0.16}
+    dy = {"reject": 0.24, "require_profiling": 0.08, "downgrade": -0.08, "allow": -0.24}
 
     for i, o in enumerate(rows):
         y_row = n_rows - 1 - i  # top row first

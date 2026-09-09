@@ -4,7 +4,9 @@ One row per audit task (20 tasks grouped into the eight task families,
 trusted-deterministic families above the divider, untrusted-oracle families
 below), two column blocks (Ungated control arm / Gated treatment arm); one
 colour tile per published claim — sage = true positive, terracotta = false
-claim, warm grey = neutral relative-scope claim; an outlined empty cell means
+claim, warm grey = neutral relative-scope claim, dark warm grey = suppressed
+at the claim gate (the fig4b convention; one gated 3′UTR-stability claim in
+the DECISIONS-(bb) re-run); an outlined empty cell means
 the arm published no claim on that task (the gated arm's plan-layer blocks
 make the model abstain on the utr3/junction families — the mechanism this
 panel shows).
@@ -94,9 +96,11 @@ VERDICT_COLORS = {
     "TP": PALETTE_BY_NAME["sage_green"],
     "FP": PALETTE_BY_NAME["terracotta"],
     "neutral": PALETTE_BY_NAME["warm_grey"],
+    "suppressed": PALETTE_BY_NAME["dark_warm_grey"],  # the fig4b convention
 }
-VERDICT_LABELS = {"TP": "True positive", "FP": "False claim", "neutral": "Neutral"}
-VERDICT_ORDER = ("TP", "FP", "neutral")
+VERDICT_LABELS = {"TP": "True positive", "FP": "False claim", "neutral": "Neutral",
+                  "suppressed": "Suppressed"}
+VERDICT_ORDER = ("TP", "FP", "neutral", "suppressed")
 ARM_ORDER = ("ungated", "gated")
 ARM_LABELS = {"ungated": "Ungated", "gated": "Gated"}
 
@@ -232,8 +236,8 @@ def main() -> int:
     content_bottom = y
 
     key_top = content_bottom + 3.2
-    key_cy = (key_top + 1.0, key_top + 3.2)  # two centred key rows
-    fig_h = key_top + 4.2 + ML
+    key_cy = (key_top + 1.0, key_top + 3.2, key_top + 5.4)  # three centred key rows
+    fig_h = key_top + 6.4 + ML
 
     fig = plt.figure(figsize=(fig_w / 25.4, fig_h / 25.4), facecolor="white")
 
@@ -283,20 +287,23 @@ def main() -> int:
         fig.text(fx(bx + block_w / 2), fy(header_y), ARM_LABELS[arm],
                  ha="center", va="center", fontsize=FONT, color=INK)
 
-    # ── verdict key: two rows on a shared column grid, block centred ─────
+    # ── verdict key: three rows on a shared column grid, block centred ────
     key_rows = [
         [("TP", VERDICT_LABELS["TP"]), ("FP", VERDICT_LABELS["FP"])],
-        [("neutral", VERDICT_LABELS["neutral"]), ("none", "No published claim")],
+        [("neutral", VERDICT_LABELS["neutral"]),
+         ("suppressed", VERDICT_LABELS["suppressed"])],
+        [("none", "No published claim")],
     ]
     sw_w, sw_h, gap_st, gap_e = 2.4, 1.6, 0.8, 3.0
-    # column widths shared across both rows -> swatch/label left edges align
+    # column widths shared across the rows -> swatch/label left edges align
+    n_cols = max(len(row) for row in key_rows)
     widths = {(v, lbl): key_w.get(v, none_w) for row in key_rows for v, lbl in row}
-    col_ws = [max(widths[row[c]] for row in key_rows) for c in range(2)]
+    col_ws = [max(widths[row[c]] for row in key_rows if c < len(row)) for c in range(n_cols)]
     key_block_w = sum(sw_w + gap_st + w for w in col_ws) + gap_e
     assert key_block_w <= fig_w - 2 * ML, f"verdict key {key_block_w:.1f} mm > canvas"
     for entries, cy in zip(key_rows, key_cy):
         x = (fig_w - key_block_w) / 2
-        for (v, lbl), cw in zip(entries, col_ws):
+        for c, (v, lbl) in enumerate(entries):
             fig.patches.append(Rectangle(
                 (fx(x), fy(cy + sw_h / 2)), fx(sw_w), hm(sw_h),
                 facecolor=VERDICT_COLORS.get(v, "white"),
@@ -304,7 +311,7 @@ def main() -> int:
                 linewidth=0.5, transform=fig.transFigure))
             fig.text(fx(x + sw_w + gap_st), fy(cy), lbl,
                      ha="left", va="center", fontsize=FONT, color=INK)
-            x += sw_w + gap_st + cw + gap_e
+            x += sw_w + gap_st + col_ws[c] + gap_e
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
