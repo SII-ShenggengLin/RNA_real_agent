@@ -1,143 +1,107 @@
-"""Fig 1d — CapGate: capability-layer evidence gating.
+"""Fig 1d — GenNav: constraint navigation (181 × 42 mm).
 
-Top band (evidence): assertion-curated anchor sets -> pre-registered
-profiling -> SelfModel capability map (tile matrix). Bottom band
-(enforcement): DecisionGate on planned actions + ClaimGate on outgoing
-claims (scope ladder), every decision appended to the audit trail.
-121 × 46 mm.
+Where it sits: the Layer-2 generation step (mRNA CDS and aptamer workflows).
+Input: design profile (objective band · constraints · budget). Mechanism:
+probe a generation-parameter lattice (CDS: LinearDesign λ, 35 gears; aptamer:
+length 25–80 nt) feasibility-first -> allocate the raw-call budget across
+bands -> deliver a per-band quota with a diversity floor, or declare degrade.
 """
 import style as S
-from matplotlib.patches import Rectangle
 
-# (oracle row, [screening, ranking, docking]) — verified/failed/na, from the
-# packaged default SelfModel (gemorna MRL families verified; RNAsmol/RNASTOP
-# verified screening, failed ranking; structure oracles failed; GerNA-Bind
-# failed).
-MATRIX = [
-    ("MRL · 5′UTR", ["verified", "verified", "na"]),
-    ("RNAsmol", ["verified", "failed", "na"]),
-    ("RNASTOP", ["verified", "failed", "na"]),
-    ("RhoFold · EGARPS", ["failed", "failed", "failed"]),
-    ("GerNA-Bind", ["failed", "failed", "na"]),
-]
-TILE = {"verified": (S.C_SAGE, 0.55), "failed": (S.C_TERRACOTTA, 0.55),
-        "na": (S.C_WARM_GREY, 0.18)}
+W, H = 181, 42
+
+LANES = [("stability", "λ ≤ 2", 0, 12), ("balanced", "2 < λ < 8", 13, 20),
+         ("expression", "λ ≥ 8", 21, 34)]
+DELIVERED = {0: [1, 3, 5, 7, 9], 1: [14, 15, 17, 18, 19],
+             2: [22, 25, 28, 31, 33]}
+N_GEARS = 35
+X0, X1 = 56.0, 140.0
+
+
+def build(B):
+    B.txt(4, 39.3, "GenNav · constraint navigation", size=6.5, weight="bold",
+          ha="left")
+    B.txt(40, 39.3, "Layer-2 generation step · mRNA CDS · aptamer", size=5.0,
+          ha="left")
+
+    # dot legend (top right)
+    B.dot(102, 39.3, 0.55, face=S.C_SAGE)
+    B.txt(103.6, 39.3, "feasible", size=5.0, ha="left")
+    B.dot(114.5, 39.3, 0.55, face="white", edge=S.C_DARK, lw=0.4)
+    B.txt(116.1, 39.3, "infeasible", size=5.0, ha="left")
+    B.dot(128.5, 39.3, 0.62, face="white", edge=S.C_SLATE, lw=0.7)
+    B.txt(130.3, 39.3, "delivered", size=5.0, ha="left")
+
+    # ---- input: design profile ---------------------------------------------
+    B.card(4, 10, 30, 26, face=S.C_ROSE, alpha=0.20)
+    B.txt(19, 32.5, "Design profile", size=5.8, weight="bold")
+    B.txt(19, 28.6, "objective band", size=5.0)
+    B.txt(19, 26.0, "stability · balanced", size=5.0)
+    B.txt(19, 23.4, "or expression", size=5.0)
+    B.txt(19, 19.8, "constraints", size=5.0)
+    B.txt(19, 16.2, "budget · 35 calls", size=5.0)
+
+    # ---- mechanism: feasibility map over the parameter lattice --------------
+    B.card(40, 17, 106, 18.5, face=S.C_KHAKI, alpha=0.08, edge=False,
+           radius=1.4)
+
+    def gx(i):
+        return X0 + (X1 - X0) * i / (N_GEARS - 1)
+
+    lane_y = [31.5, 27.7, 23.9]
+    for li, (name, lam, a, b) in enumerate(LANES):
+        y = lane_y[li]
+        B.txt(54.0, y + 0.9, name, size=5.0, weight="bold", ha="right")
+        B.txt(54.0, y - 1.5, lam, size=5.0, ha="right")
+        for gi in range(N_GEARS):
+            feasible = a <= gi <= b
+            if feasible:
+                B.dot(gx(gi), y, 0.42, face=S.C_SAGE)
+            else:
+                B.dot(gx(gi), y, 0.34, face="white", edge=S.C_DARK, lw=0.35)
+        for gi in DELIVERED[li]:
+            B.dot(gx(gi), y, 0.66, face="white", edge=S.C_SLATE, lw=0.65)
+
+    B.line(X0, 21.2, X1, 21.2, color=S.C_DARK, lw=0.5)
+    B.line(X0, 21.2, X0, 20.7, color=S.C_DARK, lw=0.5)
+    B.line(X1, 21.2, X1, 20.7, color=S.C_DARK, lw=0.5)
+    B.txt(X0, 19.9, "λ = 0", size=5.0)
+    B.txt(X1, 19.9, "λ = 50", size=5.0)
+    B.txt(98, 18.3, "generation-parameter lattice — CDS: LinearDesign λ "
+          "(35 gears) · aptamer: length 25–80 nt", size=5.0)
+
+    # ---- probe -> allocate -> deliver ----------------------------------------
+    chips = ((44, 26, "probe", "feasibility-first"),
+             (76, 30, "allocate", "35 raw calls"),
+             (112, 30, "deliver", "5 per band · D1 ≥ 0.03"))
+    for xc, wch, title, sub in chips:
+        B.card(xc, 10, wch, 5.2, face=S.C_GREY_BLUE, alpha=0.18)
+        B.txt(xc + wch / 2, 13.8, title, size=5.2, weight="bold")
+        B.txt(xc + wch / 2, 11.5, sub, size=5.0)
+    B.flow(70.3, 12.6, 75.7, 12.6, kind="data", lw=0.9)
+    B.flow(106.3, 12.6, 111.7, 12.6, kind="data", lw=0.9)
+    B.line(57, 16.7, 57, 15.5, color=S.C_SLATE, lw=0.6)
+
+    # degrade path
+    B.card(70, 3.2, 48, 4.4, face=S.C_DARK, alpha=0.10, lw=0.5, radius=0.6)
+    B.txt(94, 5.4, "no feasible gear → declared degrade", size=5.0)
+    B.flow(91, 9.7, 91, 7.9, kind="advisory", lw=0.8, ms=6)
+
+    # ---- input/output arrows + output card -------------------------------------
+    B.flow(34.3, 16.5, 43.7, 13.2, kind="data", lw=1.0)
+    B.card(152, 10, 26, 26, face=S.C_SAGE, alpha=0.16)
+    B.txt(165, 32.5, "Candidate set", size=5.8, weight="bold")
+    B.txt(165, 28.6, "meets the band", size=5.0)
+    B.txt(165, 26.0, "constraints", size=5.0)
+    B.txt(165, 22.4, "quota per band", size=5.0)
+    B.txt(165, 19.8, "diversity floor", size=5.0)
+    B.txt(165, 16.2, "or declared degrade", size=5.0)
+    B.flow(142.3, 12.6, 151.7, 12.6, kind="data", lw=1.0)
 
 
 def main():
-    W, H = 121, 46
     fig, ax = S.canvas(W, H)
-
-    S.txt(ax, 2, 44.7, "CapGate — profiled oracles · gated claims", size=6.4,
-          weight="bold", color=S.C_SLATE, ha="left")
-
-    # ================= top band: evidence =================
-    # anchor sets
-    S.card(ax, 2, 28, 22, 15, face=S.C_SAND, alpha=0.22)
-    S.icon_doc(ax, 6.2, 39.2, 3.4, S.C_TERRACOTTA, lw=0.7)
-    S.txt(ax, 15.6, 40.4, "Anchor sets", size=5.8, weight="bold")
-    S.txt(ax, 13.0, 37.4, "assertion-curated", size=5.0, color=S.C_DARK)
-    S.txt(ax, 13.0, 34.9, "v3 · 95 entries", size=5.0, color=S.C_DARK)
-    S.icon_doc(ax, 7.6, 32.3, 2.6, S.C_SAND, lw=0.6)
-    S.icon_doc(ax, 12.6, 32.3, 2.6, S.C_SAND, lw=0.6)
-    S.icon_doc(ax, 17.6, 32.3, 2.6, S.C_SAND, lw=0.6)
-
-    # profiling
-    S.card(ax, 28, 28, 28, 15, face=S.C_KHAKI, alpha=0.22)
-    S.txt(ax, 42, 40.4, "Profiling", size=5.8, weight="bold")
-    for i, t in enumerate(("screening — AUROC > 0.8", "ranking — ρ ≥ 0.6",
-                           "docking — top-1 ≥ 2/3")):
-        S.card(ax, 30, 36.0 - i * 2.8, 24, 2.5, face=S.C_KHAKI, alpha=0.30,
-               lw=0.4, radius=0.5)
-        S.txt(ax, 42, 37.25 - i * 2.8, t, size=5.0)
-
-    # SelfModel capability map
-    S.card(ax, 60, 28, 58, 15, face=S.C_GREY_BLUE, alpha=0.14)
-    S.txt(ax, 89, 40.4, "SelfModel · capability map", size=5.8, weight="bold")
-    cols = ("screening", "ranking", "docking")
-    for j, cn in enumerate(cols):
-        S.txt(ax, 76.9 + j * 7.8, 38.4, cn, size=5.0, color=S.C_DARK)
-    for i, (row, grades) in enumerate(MATRIX):
-        y = 36.6 - i * 2.15
-        S.txt(ax, 72.2, y, row, size=5.0, ha="right", color=S.C_DARK)
-        for j, g in enumerate(grades):
-            col, alpha = TILE[g]
-            ax.add_patch(Rectangle((73.0 + j * 7.8, y - 0.85), 7.4, 1.7,
-                                   facecolor=col, alpha=alpha, edgecolor="white",
-                                   lw=0.3, zorder=4))
-    S.txt(ax, 98.6, 36.3, "transfer decay ×0.5", size=5.0, ha="left",
-          color=S.C_DARK)
-    S.txt(ax, 98.6, 33.9, "worst family poisons", size=5.0, ha="left",
-          color=S.C_DARK)
-    ax.add_patch(Rectangle((98.6, 30.6), 1.6, 1.6, facecolor=S.C_SAGE,
-                           alpha=0.55, edgecolor="none"))
-    S.txt(ax, 100.8, 31.4, "verified", size=5.0, ha="left")
-    ax.add_patch(Rectangle((98.6, 28.4), 1.6, 1.6, facecolor=S.C_TERRACOTTA,
-                           alpha=0.55, edgecolor="none"))
-    S.txt(ax, 100.8, 29.2, "failed", size=5.0, ha="left")
-    ax.add_patch(Rectangle((110.0, 30.6), 1.6, 1.6, facecolor=S.C_WARM_GREY,
-                           alpha=0.2, edgecolor="none"))
-    S.txt(ax, 112.2, 31.4, "n.a.", size=5.0, ha="left")
-
-    S.flow(ax, (24.2, 35.5), (27.7, 35.5), kind="data", lw=1.1, ms=8)
-    S.flow(ax, (56.2, 35.5), (59.7, 35.5), kind="data", lw=1.1, ms=8)
-
-    # ================= bottom band: enforcement =================
-    # DecisionGate
-    S.card(ax, 2, 2.4, 42, 17, face=S.C_TERRACOTTA, alpha=0.13)
-    S.txt(ax, 23, 16.6, "DecisionGate · planned actions", size=5.8, weight="bold")
-    S.txt(ax, 23, 14.3, "one choke point · every tool call", size=5.0,
-          color=S.C_DARK, style="italic")
-    verdicts = (("allow", 7.0, S.C_SAGE), ("downgrade", 8.6, S.C_SAND),
-                ("reject", 7.0, S.C_TERRACOTTA), ("require profiling", 13.4, S.C_DARK))
-    x = 3.8
-    for name, vw, col in verdicts:
-        S.card(ax, x, 9.6, vw, 3.4, face=col, alpha=0.30, lw=0.4, radius=0.5)
-        S.txt(ax, x + vw / 2, 11.3, name, size=5.0)
-        x += vw + 0.6
-    S.icon_cross(ax, 6.8, 6.2, 1.0, color=S.C_TERRACOTTA, lw=0.9)
-    S.txt(ax, 8.6, 6.2, "never-profiled oracle → blocked", size=5.0, ha="left")
-    S.txt(ax, 23, 3.8, "11 governed oracles · 9 enforce · 2 pending", size=5.0,
-          color=S.C_DARK)
-
-    # ClaimGate
-    S.card(ax, 48, 2.4, 42, 17, face=S.C_TERRACOTTA, alpha=0.13)
-    S.txt(ax, 69, 16.6, "ClaimGate · outgoing claims", size=5.8, weight="bold")
-    S.txt(ax, 69, 14.3, "no claim without verification", size=5.0,
-          color=S.C_DARK, style="italic")
-    ladder = (("absolute", 7.2, S.C_SAGE), ("target-relative", 11.4, S.C_SAND),
-              ("trend", 6.6, S.C_KHAKI), ("suppressed", 8.2, S.C_DARK))
-    x = 49.9
-    for i, (name, lw_, col) in enumerate(ladder):
-        S.card(ax, x, 9.6, lw_, 3.4, face=col, alpha=0.30, lw=0.4, radius=0.5)
-        S.txt(ax, x + lw_ / 2, 11.3, name, size=5.0)
-        if i < 3:
-            S.flow(ax, (x + lw_ + 0.15, 11.3), (x + lw_ + 1.95, 11.3),
-                   kind="gate", lw=0.8, ms=6)
-        x += lw_ + 2.1
-    S.txt(ax, 69, 6.2, "over-reaching claim → downgraded one step", size=5.0)
-    S.txt(ax, 69, 3.8, "FP 54.5 → 0% · 33.3 → 7.7% · TP kept", size=5.0,
-          color=S.C_DARK)
-
-    # audit trail
-    S.card(ax, 94, 2.4, 25, 17, face=S.C_MAUVE_GREY, alpha=0.16)
-    S.icon_db(ax, 106.5, 13.2, 6.0, 6.6, S.C_MAUVE_GREY, lw=0.8)
-    S.txt(ax, 106.5, 8.6, "audit trail", size=5.6, weight="bold")
-    S.txt(ax, 106.5, 6.3, "append-only · every", size=5.0, color=S.C_DARK)
-    S.txt(ax, 106.5, 4.3, "gate decision recorded", size=5.0, color=S.C_DARK)
-
-    # gates consult the SelfModel; decisions land in the trail
-    S.flow(ax, (66, 27.8), (30, 19.8), kind="data", lw=1.0, ms=7, rad=0.18)
-    S.flow(ax, (88, 27.8), (66, 19.8), kind="data", lw=1.0, ms=7, rad=0.14)
-    S.flow(ax, (90.2, 11.0), (93.7, 11.0), kind="gate", lw=1.0, ms=7)
-    # elbow: DecisionGate decisions sweep under ClaimGate into the trail
-    dashed = (0, (2.6, 1.6))
-    ax.plot([12, 12, 103, 103], [2.1, 0.8, 0.8, 1.5], color=S.C_TERRACOTTA,
-            lw=0.9, linestyle=dashed, zorder=4)
-    ax.annotate("", xy=(103, 2.6), xytext=(103, 1.4),
-                arrowprops=dict(arrowstyle="-|>", color=S.C_TERRACOTTA, lw=0.9,
-                                linestyle=dashed), zorder=4)
-
+    build(S.MplBackend(ax))
     __import__("qa_check").qa(fig, ax, W, H)
     S.save(fig, "d")
 

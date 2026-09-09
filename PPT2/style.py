@@ -98,8 +98,12 @@ def txt(ax, x, y, s, *, size=6, weight="normal", color=INK, ha="center",
 
 def card(ax, x, y, w, h, *, face="#FFFFFF", alpha=0.18, edge=None, lw=0.8,
          radius=0.9, dashed=False, zorder=3, fill=True):
-    """Rounded card in mm; edge defaults to the face colour at full strength."""
-    edge = edge or face
+    """Rounded card in mm; edge defaults to the face colour at full strength.
+    edge=False draws no border (soft background zone)."""
+    if edge is False:
+        edge = "none"
+    else:
+        edge = edge or face
     box = FancyBboxPatch((x + radius, y + radius), w - 2 * radius, h - 2 * radius,
                          boxstyle=f"round,pad={radius}",
                          facecolor=to_rgba(face, alpha) if fill else "none",
@@ -242,3 +246,53 @@ def badge(ax, x, y, w, h, text, *, color, icon=None, size=5.4, weight="bold", al
         icon_check(ax, x + 2.0, y + h / 2, 1.0, color=C_SAGE, lw=0.9)
         tx = x + w / 2 + 1.4
     txt(ax, tx, y + h / 2, text, size=size, weight=weight)
+
+
+def dot(ax, cx, cy, r, face, edge=None, lw=0.5, zorder=5):
+    """Small marker circle; face=None -> unfilled."""
+    ax.add_patch(Circle((cx, cy), r, facecolor=face if face else "none",
+                        edgecolor=edge if edge else "none", lw=lw, zorder=zorder))
+
+
+_ICONS = {"rna": icon_rna, "doc": icon_doc, "person": icon_person,
+          "check": icon_check, "cross": icon_cross}
+
+
+class MplBackend:
+    """Backend-agnostic drawing API over the matplotlib helpers above.
+
+    Panel scripts (`panel_*.py:build(B)`) call only these methods, so the same
+    panel can be rendered to matplotlib (PDF/PNG) or to native PowerPoint
+    shapes (pptx_backend.PptxBackend).
+    """
+
+    def __init__(self, ax):
+        self.ax = ax
+
+    def card(self, x, y, w, h, *, face, alpha=0.16, edge=None, dashed=False,
+             lw=0.8, radius=0.9):
+        return card(self.ax, x, y, w, h, face=face, alpha=alpha, edge=edge,
+                    lw=lw, radius=radius, dashed=dashed)
+
+    def txt(self, x, y, s, *, size=6, weight="normal", color=INK, ha="center",
+            va="center", style=None, rotation=0):
+        return txt(self.ax, x, y, s, size=size, weight=weight, color=color,
+                   ha=ha, va=va, style=style, rotation=rotation)
+
+    def flow(self, x0, y0, x1, y1, *, kind="data", lw=1.0, both=False, ms=7.5,
+             rad=0.0):
+        return flow(self.ax, (x0, y0), (x1, y1), kind=kind, lw=lw, both=both,
+                    ms=ms, rad=rad)
+
+    def line(self, x0, y0, x1, y1, *, color=C_SLATE, lw=0.5, dash=None):
+        ls = {"dash": (0, (2.6, 1.6)), "dot": (0, (1.0, 1.5))}.get(dash, "solid")
+        return plain_line(self.ax, (x0, y0), (x1, y1), color=color, lw=lw,
+                          linestyle=ls)
+
+    def dot(self, cx, cy, r, *, face, edge=None, lw=0.5):
+        return dot(self.ax, cx, cy, r, face, edge=edge, lw=lw)
+
+    def icon(self, name, cx, cy, s, color, lw=0.7):
+        if name == "db":
+            return icon_db(self.ax, cx, cy, s * 0.85, s, color, lw=lw)
+        return _ICONS[name](self.ax, cx, cy, s, color, lw=lw)
