@@ -1,29 +1,38 @@
-"""Fig 5h — Production navigation live run: cost-delivery Pareto +
-breakthrough step-line inset (Experiment 30, 2026-09-05, the paper's
-citation; replaces the interim Exp-29 sweep curve registered mid-stop).
+"""Fig 5h — Production navigation live run: cost–delivery Pareto
+(Experiment 30, 2026-09-05, the paper's citation).
 
-Main panel — every Exp-30 form-entry campaign on its shipped navigator,
-raw generator spend (x) against delivered profile cells (0-3, y): the
-mRNA arm (GenNav-lambda, 35-raw cap, grey blue circles — 5 targets, 13/15
-cells, all early stops 11-28/35) against the aptamer arm (ODesign
-lattice, 48-raw cap, mauve triangles — 6 targets, 8/18 cells, 47-48/48).
-Dashed verticals mark the two caps; equal-capture rings mark each arm's
-Pareto corner (best delivery per raw: PTH+CSF3 3/3 at 11, IFN-gamma 3/3
-at 47) joined by the 4.3x same-delivery cost annotation.  swH3 HA
-(48 raw, 0 cells) is the measured scarcity boundary.
+Single-view scatter (the 2026-09-08 one-plot-per-panel user-directed
+convention, as applied to fig5d/5f/5g): every Exp-30 form-entry campaign
+on its shipped navigator — raw generator spend (x) against delivered
+profile cells (0–3, y).  The mRNA arm (GenNav-λ, 35-raw cap, grey blue
+circles — 5 targets, 13/15 cells, all early stops 11–28/35) against the
+aptamer arm (ODesign lattice, 48-raw cap, mauve triangles — 6 targets,
+8/18 cells, 47–48/48).  Dashed verticals mark the two caps
+(arm-coloured); black rings mark each arm's Pareto corner (best delivery
+per raw: PTH + CSF3 3/3 at 11, IFN-γ 3/3 at 47) joined by the 4.3×
+same-delivery cost annotation.  swine H3 HA (48 raw, 0 cells) is the
+measured scarcity boundary.
 
-Inset — aptamer breakthrough step-lines (gap-chain reconstruction, exact:
-probe + round n_samples sums equal raw_spent and the final step equals
-the recorded cells): IFN-gamma delivers at 29/35/47 raw, PDGF-BB only at
-36/48, swH3 HA never (flat zero to the cap).  mRNA step-lines are not
-drawn: their gap-to-cell mapping is cut by the delivery-stage D1 floor
-(LEP/PLAT end at 2 cells with all matrix gaps zero — shown in the main
-panel as 2-cell points).
+2026-09-08 figure-repair pass (user direction): the aptamer
+breakthrough step-line inset was removed — one plot per panel, and the
+inset shared neither axis nor observation unit with the Pareto scatter
+(per-round cumulative trajectories vs per-campaign final coordinates).
+Its numbers are text-reported verbatim in the Fig. 5h caption and §2.5
+(IFN-γ steps up at 29/35/47 raw, PDGF-BB only at 36/48, swine H3 HA flat
+to the cap; the mRNA gap→cell mapping is cut by the delivery-stage D1
+floor, so no mRNA step-line exists).  The in-axes inset title ("Aptamer
+breakthrough") went with it — Nature-style panels carry no in-figure
+title (the panel letter is added at assembly).  All text unified to one
+6-pt pure-black style; the arm key (the fig5g two-row convention, one
+marker per row) carries the per-arm delivery/spend summary; the separate
+cap labels and the in-axes stat lines are gone; the coincident PTH/CSF3
+pair is drawn as one marker with a shared label instead of a dodge.
 
-Style (the fig5b-5g house style): no in-figure title; every text element
+Style (the fig5b–5g house style): no in-figure title; every text element
 one 6-pt pure-black style; colours exclusively from palette rev 7;
 absolute-mm geometry, single column; 1200-dpi PNG + vector PDF (fonttype
-42).
+42); renderer-measured guards — every text inside the canvas, no
+text–text collision, no text–marker collision.
 
 Data  : experiments/results/exp30_production_navigation_live/
         {aptamer,mrna}/runs.jsonl
@@ -40,8 +49,10 @@ from pathlib import Path
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.image as mpimg  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
+from matplotlib.transforms import Bbox  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
@@ -52,16 +63,10 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 62.0
+W_MM, H_MM = 89.0, 52.5
 
-C_MRNA = PALETTE_BY_NAME["grey_blue"]        # mRNA navigation arm
+C_MRNA = PALETTE_BY_NAME["grey_blue"]         # mRNA navigation arm
 C_APT = PALETTE_BY_NAME["dusty_mauve_pink"]   # aptamer navigation arm
-C_STEP = {  # inset step-lines, decorative (named at line ends)
-    "IFN-gamma": PALETTE_BY_NAME["slate_blue"],
-    "PDGF-BB": PALETTE_BY_NAME["mauve_grey"],
-    "swH3": PALETTE_BY_NAME["dark_warm_grey"],
-}
-C_GRID = "#D9D9D9"
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -76,9 +81,8 @@ plt.rcParams.update({
     "pdf.fonttype": 42,
 })
 
-MM = 1 / 25.4
 DPI = 1200
-W_PX = round(W_MM / 25.4 * DPI)
+W_PX = round(W_MM / 25.4 * DPI)   # exact 1200-dpi canvas pixels
 H_PX = round(H_MM / 25.4 * DPI)
 
 
@@ -88,156 +92,90 @@ def load_records(stage: str) -> list[dict]:
             in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
 
 
-def staircase(rec: dict) -> tuple[list[int], list[int]]:
-    """Exact aptamer gap-chain reconstruction: cumulative raw spend (x)
-    against delivered cells (y) at probe end and after every round.
-
-    Delivery gap zero == a delivered cell for the aptamer arm (verified:
-    final gap-0 count == the recorded cells_pass_count for all six
-    campaigns), gaps are monotone non-increasing (pool only grows), and
-    probe + round n_samples sums equal raw_spent.
-    """
-    spend = rec["probe"]["n_lengths"]
-    rounds, fg = rec["rounds"], rec["final_gaps"]
-    cells0 = sum(1 for v in rounds[0]["gaps_before"].values() if v == 0) \
-        if rounds else sum(1 for v in fg.values() if v == 0)
-    xs, ys = [0, spend], [0, cells0]
-    for i, rd in enumerate(rounds):
-        spend += rd["n_samples"]
-        gaps = rounds[i + 1]["gaps_before"] if i + 1 < len(rounds) else fg
-        xs.append(spend)
-        ys.append(sum(1 for v in gaps.values() if v == 0))
-    assert spend == rec["raw_spent"], (rec["target_id"], spend)
-    assert ys[-1] == rec["cells_pass_count"], (rec["target_id"], ys[-1])
-    return xs, ys
-
-
 def main() -> int:
     apt = load_records("aptamer")
     mrna = load_records("mrna")
 
+    # ── every drawn coordinate and printed number derived from the records ──
+    pts = {r["target_id"]: (r["raw_spent"], r["cells_pass_count"])
+           for r in mrna + apt}
+    assert pts == {
+        "PTH": (11, 3), "CSF3": (11, 3), "LEP": (12, 2), "PLAT": (24, 2),
+        "THPO": (28, 3), "IFN-gamma": (47, 3), "PDGF-BB": (48, 2),
+        "FGF2": (48, 1), "IL-17A": (48, 1), "Angiopoietin-2": (48, 1),
+        "Influenza H3N2 HA": (48, 0),
+    }
+    mrna_cells = sum(r["cells_pass_count"] for r in mrna)
+    apt_cells = sum(r["cells_pass_count"] for r in apt)
+    mrna_mean = sum(r["raw_spent"] for r in mrna) / len(mrna)
+    apt_mean = sum(r["raw_spent"] for r in apt) / len(apt)
+    assert (mrna_cells, apt_cells) == (13, 8)
+    assert f"{mrna_mean:.1f}" == "17.2" and f"{apt_mean:.1f}" == "47.8"
+
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI))
-    ax = fig.add_axes([0.105, 0.315, 0.545, 0.60])
+    ax = fig.add_axes([0.105, 0.335, 0.86, 0.615])
 
-    label_texts: list[tuple[str, matplotlib.text.Text]] = []
+    texts: list[matplotlib.text.Text] = []
 
-    def note(axis, s: str, xy, **kw) -> matplotlib.text.Text:
-        art = axis.annotate(s, xy, **kw)
-        if s:
-            label_texts.append((s, art))
-        return art
+    def note(s: str, xy, va: str = "center", **kw) -> None:
+        art = ax.annotate(s, xy, va=va, fontsize=FONT, color=INK, **kw)
+        texts.append(art)
 
-    # ── caps ──
-    for cap, colour, ha, x_txt in ((35, C_MRNA, "right", 34.3),
-                                   (48, C_APT, "left", 48.5)):
+    # ── caps (arm-coloured; identified by the key, no separate labels) ──
+    for cap, colour in ((35, C_MRNA), (48, C_APT)):
         ax.axvline(cap, color=colour, lw=0.6, ls=(0, (3, 2)), zorder=1)
-        note(ax, f"cap {cap}", (x_txt, 3.54), ha=ha, va="center",
-             fontsize=FONT - 0.5, color=INK)
 
-    # ── mRNA points (dodge the coincident PTH/CSF3 pair) ──
-    mrna_pts = [  # (x, y, label, dx_label_pt, dy_label_pt, ha)
-        (10.5, 3, None, 0, 0, "center"),          # PTH (dodged)
-        (11.5, 3, "PTH + CSF3", 0, -13, "center"),  # CSF3 (dodged) + shared label
-        (12, 2, "LEP", 5, -9, "center"),
-        (24, 2, "PLAT", 0, -9, "center"),
-        (28, 3, "THPO", 2, -9, "center"),
+    # ── points + target labels (PTH/CSF3 coincide at (11, 3) → one marker,
+    #    shared label; the three 48-raw 1-cell aptamer campaigns fanned
+    #    ±0.8 for visibility) ──
+    markers: list[tuple[float, float, float]] = []  # (x, y, ms) for guards
+    mrna_pts = [  # (x, y, label, dx_pt, dy_pt, ha)
+        (11, 3, "PTH + CSF3", 0, -11, "center"),
+        (12, 2, "LEP", 0, -10, "center"),
+        (24, 2, "PLAT", 0, -10, "center"),
+        (28, 3, "THPO", 0, -10, "center"),
     ]
     for x, y, label, dx, dy, ha in mrna_pts:
-        ax.plot(x, y, "o", color=C_MRNA, ms=3.4, zorder=3)
-        if label:
-            note(ax, label, (x, y), xytext=(dx, dy),
-                 textcoords="offset points", ha=ha,
-                 fontsize=FONT - 0.5, color=INK)
+        ax.plot(x, y, "o", color=C_MRNA, ms=3.6, zorder=3)
+        markers.append((x, y, 3.6))
+        note(label, (x, y), xytext=(dx, dy), textcoords="offset points", ha=ha)
 
-    # ── aptamer points (dodge the 48/1 trio; labels left of the cap line,
-    #    staggered in two rows; Ang2 sits right of the line) ──
     apt_pts = [
-        (47, 3, "IFN-\u03b3", -14, -2, "right"),
-        (48, 2, "PDGF-BB", -7, -9, "right"),
-        (47.2, 1, "FGF2", -4, -8, "right"),
-        (48.0, 1, "IL-17A", -8, -19, "right"),
-        (48.8, 1, "Ang2", 4, -8, "left"),
-        (48, 0, "swH3 HA", -9, -2, "right"),
+        (47, 3, "IFN-\u03b3", -8, 0, "right"),
+        (48, 2, "PDGF-BB", -7, 0, "right"),
+        (47.2, 1, "FGF2", -6, 0, "right"),
+        (48, 1, "IL-17A", -8, -8, "right"),
+        (48.8, 1, "Ang2", 6, 0, "left"),
+        (48, 0, "swine H3 HA", -7, -1, "right"),
     ]
     for x, y, label, dx, dy, ha in apt_pts:
-        ax.plot(x, y, "^", color=C_APT, ms=3.9, zorder=3)
-        note(ax, label, (x, y), xytext=(dx, dy),
-             textcoords="offset points", ha=ha,
-             fontsize=FONT - 0.5, color=INK)
+        ax.plot(x, y, "^", color=C_APT, ms=4.0, zorder=3)
+        markers.append((x, y, 4.0))
+        note(label, (x, y), xytext=(dx, dy), textcoords="offset points", ha=ha)
 
     # ── Pareto corners + the same-delivery cost ratio ──
-    for x, y in ((11.0, 3), (47, 3)):
-        ax.plot(x, y, "o", ms=6.4, mfc="none", mec=INK, mew=0.7, zorder=4)
-    ax.annotate("", xy=(46.0, 3.30), xytext=(12.0, 3.30),
+    for x, y in ((11, 3), (47, 3)):
+        ax.plot(x, y, "o", ms=7, mfc="none", mec=INK, mew=0.7, zorder=4)
+        markers.append((x, y, 7))
+    ax.annotate("", xy=(45.5, 3.3), xytext=(12.5, 3.3),
                 arrowprops=dict(arrowstyle="<->", lw=0.6, color=INK,
                                 shrinkA=0, shrinkB=0))
-    note(ax, "equal 3/3 \u00b7 4.3\u00d7 raw", (23.0, 3.30),
-         xytext=(0, -10), textcoords="offset points", ha="center",
-         fontsize=FONT - 0.5, color=INK)
+    note("equal 3/3 \u00b7 4.3\u00d7 raw", (27, 3.3), xytext=(0, 3),
+         textcoords="offset points", ha="center", va="bottom")
 
-    # ── per-arm summary block (bottom-left free zone) ──
-    label_texts.append(("stats-mrna", ax.text(
-        6.2, 0.62, "mRNA: 13/15 cells \u00b7 mean 17.2/35 raw",
-        fontsize=FONT - 0.5, color=INK)))
-    label_texts.append(("stats-apt", ax.text(
-        6.2, 0.18, "aptamer: 8/18 cells \u00b7 mean 47.8/48 raw",
-        fontsize=FONT - 0.5, color=INK)))
-
-    ax.set_xlim(5, 52)
-    ax.set_ylim(-0.45, 3.62)
+    ax.set_xlim(5, 53.5)
+    ax.set_ylim(-0.5, 3.75)
     ax.set_xticks([10, 20, 30, 40, 50])
     ax.set_yticks([0, 1, 2, 3])
     ax.set_xlabel("Raw generator spend", fontsize=FONT)
-    ax.set_ylabel("Delivered cells (of 3)", fontsize=FONT)
-    ax.tick_params(length=2.0, pad=1.8)
+    ax.set_ylabel("Delivered profile cells (of 3)", fontsize=FONT)
+    ax.tick_params(length=2.0, pad=1.8, labelsize=FONT)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    # ── inset: aptamer breakthrough step-lines (exact reconstruction) ──
-    axi = fig.add_axes([0.700, 0.425, 0.225, 0.27])
-    recs = {r["target_id"]: r for r in apt}
-    inset_lines = [  # (record, colour, end label, label dx/dy, ha)
-        (recs["IFN-gamma"], C_STEP["IFN-gamma"], "IFN-\u03b3 3", (-3, 1.5), "right"),
-        (recs["PDGF-BB"], C_STEP["PDGF-BB"], "PDGF-BB 2", (-3, -7.5), "right"),
-        (recs["Influenza H3N2 HA"], C_STEP["swH3"], "swH3 HA 0", (-3, 2.5), "right"),
-    ]
-    for rec, colour, label, (dx, dy), ha in inset_lines:
-        xs, ys = staircase(rec)
-        axi.step(xs, ys, where="post", color=colour, lw=1.0, zorder=3)
-        axi.plot(xs[-1], ys[-1], "o", color=colour, ms=2.4, zorder=4)
-        note(axi, label, (xs[-1], ys[-1]), xytext=(dx, dy),
-             textcoords="offset points", ha=ha,
-             fontsize=FONT - 0.5, color=INK)
-    axi.axvline(48, color=C_APT, lw=0.5, ls=(0, (3, 2)), zorder=1)
-    axi.set_xlim(0, 55)
-    axi.set_ylim(-0.3, 3.45)
-    axi.set_xticks([0, 24, 48])
-    axi.set_yticks([0, 1, 2, 3])
-    axi.set_xlabel("Cumulative raw", fontsize=FONT, labelpad=1.0)
-    axi.set_ylabel("Cells", fontsize=FONT, labelpad=1.0)
-    axi.tick_params(length=1.5, pad=1.2, labelsize=FONT - 0.5)
-    axi.set_title("Aptamer breakthrough", fontsize=FONT, color=INK, pad=2.0)
-    for s in axi.spines.values():
-        s.set_linewidth(0.4)
-
-    # ── programmatic collision check: every annotation/label text box the
-    #    script created must be pairwise disjoint (1-px tol) and in-canvas
-    #    (axis tick labels excluded — managed by the axis machinery) ──
+    # ── arm key (the fig5g two-row convention: one marker per row, per-arm
+    #    summary appended; renderer-measured, block-centred) ──
     fig.canvas.draw()
-    rend = fig.canvas.get_renderer()
-    issues = []
-    for i, (t1, a1) in enumerate(label_texts):
-        b1 = a1.get_window_extent(rend)
-        if b1.x0 < 0 or b1.y0 < 0 or b1.x1 > fig.bbox.width or b1.y1 > fig.bbox.height:
-            issues.append(f"outside canvas: {t1!r}")
-        for t2, a2 in label_texts[i + 1:]:
-            b2 = a2.get_window_extent(rend)
-            if (b1.x0 - 1 < b2.x1 and b2.x0 - 1 < b1.x1 and
-                    b1.y0 - 1 < b2.y1 and b2.y0 - 1 < b1.y1):
-                issues.append(f"text overlap: {t1!r} <-> {t2!r}")
-    assert not issues, "; ".join(issues)
-
-    # key row (renderer-measured widths, canvas-overflow assert)
     renderer = fig.canvas.get_renderer()
 
     def text_w(s: str) -> float:
@@ -247,29 +185,62 @@ def main() -> int:
         return w
 
     key_items = [
-        ("o", C_MRNA, "mRNA GenNav-\u03bb (cap 35)"),
-        ("^", C_APT, "aptamer ODesign lattice (cap 48)"),
+        ("o", C_MRNA,
+         f"mRNA GenNav-\u03bb (cap 35) \u00b7 {mrna_cells}/15 cells "
+         f"\u00b7 mean {mrna_mean:.1f} raw"),
+        ("^", C_APT,
+         f"aptamer ODesign lattice (cap 48) \u00b7 {apt_cells}/18 cells "
+         f"\u00b7 mean {apt_mean:.1f} raw"),
     ]
-    gap = 0.030
-    widths = [0.016 + 0.006 + text_w(label) + gap for _, _, label in key_items]
-    total_w = sum(widths)
-    assert total_w < 0.90, f"key row overflows canvas: {total_w:.3f}"
-    x = 0.5 - total_w / 2
-    y = 0.065
-    for (marker, colour, label), w in zip(key_items, widths):
-        fig.add_artist(Line2D([x, x + 0.016], [y, y], color=colour,
-                              lw=0.0, marker=marker, ms=3.6))
-        fig.text(x + 0.022, y - 0.003, label, fontsize=FONT, color=INK,
-                 va="center_baseline")
-        x += w
+    row_w = [0.014 + 0.008 + text_w(label) for _, _, label in key_items]
+    assert max(row_w) < 0.92, f"key row overflows canvas: {max(row_w):.3f}"
+    x0 = 0.5 - max(row_w) / 2
+    key_texts = []
+    for (marker, colour, label), y in zip(key_items, (0.128, 0.053)):
+        fig.add_artist(Line2D([x0], [y], color=colour, lw=0.0,
+                              marker=marker, ms=3.6))
+        key_texts.append(fig.text(x0 + 0.022, y, label, fontsize=FONT,
+                                  color=INK, va="center"))
+
+    # ── renderer-measured guards (the house pattern): every text inside the
+    #    canvas, no text–text collision, no text–marker collision ──
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    all_texts = (texts + key_texts + [ax.xaxis.label, ax.yaxis.label]
+                 + list(ax.get_xticklabels()) + list(ax.get_yticklabels()))
+    boxes = []
+    for t in all_texts:
+        bb = t.get_window_extent(renderer)
+        assert (bb.x0 >= 0 and bb.x1 <= fig.bbox.width
+                and bb.y0 >= 0 and bb.y1 <= fig.bbox.height), \
+            f"text overflows canvas: {t.get_text()!r}"
+        boxes.append(bb)
+    for i in range(len(boxes)):
+        for j in range(i + 1, len(boxes)):
+            assert not boxes[i].overlaps(boxes[j]), \
+                f"text collision: {all_texts[i].get_text()!r} x " \
+                f"{all_texts[j].get_text()!r}"
+    pad = 0.4 / 25.4 * fig.dpi  # 0.4 mm clearance around every marker
+    for x, y, ms in markers:
+        px, py = ax.transData.transform((x, y))
+        r = ms / 2 / 72 * fig.dpi + pad
+        mb = Bbox([[px - r, py - r], [px + r, py + r]])
+        for t, bb in zip(all_texts, boxes):
+            assert not mb.overlaps(bb), \
+                f"text on marker ({x}, {y}): {t.get_text()!r}"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         fig.savefig(OUT_DIR / f"fig5h_production_navigation_pareto.{ext}",
-                    dpi=1200)
+                    dpi=DPI)
     plt.close(fig)
-    print("wrote fig5h_production_navigation_pareto "
-          f"(Exp 30: {len(apt)} aptamer + {len(mrna)} mRNA campaigns)")
+
+    img = mpimg.imread(OUT_DIR / "fig5h_production_navigation_pareto.png")
+    assert img.shape[1] == W_PX and img.shape[0] == H_PX, \
+        f"canvas {img.shape[1]}x{img.shape[0]} != {W_PX}x{H_PX}"
+    print(f"wrote {OUT_DIR / 'fig5h_production_navigation_pareto'}.{{pdf,png}} "
+          f"({W_MM}x{H_MM} mm, {W_PX}x{H_PX} px @ {DPI} dpi; "
+          f"Exp 30: {len(apt)} aptamer + {len(mrna)} mRNA campaigns)")
     return 0
 
 

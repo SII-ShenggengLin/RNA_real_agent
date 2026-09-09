@@ -1,22 +1,35 @@
 """Fig 5e — Aptamer campaign arc: discordance and exact McNemar P per
-campaign, with the pre-registered lever ladder labelled (Experiment 29).
+campaign, one lollipop pair per segment (Experiment 29).
 
 One lollipop pair per campaign (x): the navigation-only discordant cells b
-(sage stem-and-head) and the rule-only discordant cells c (terracotta), with
-the exact two-sided McNemar P annotated above each pair and the campaign's
-cell count n in the tick block.  The four campaigns follow the arc order —
-initial migration (delivery-easy matrix v0, sparse lattice, mechanized
-reinforcement only) → re-anchoring (production scarce matrix v3, densified
-lattice, S1-measured priors) → decisive (the shipped production mode with
-cycling guaranteed-repair allocation; the pre-registered primary endpoint
-panel) → confirmation (the scarcity-complement panel; Fig 6f data).  The
-pooled decisive+confirmation discordance is annotated when both segments are
-present.  Rows are lollipop stems from zero; heads carry the counts.
+(sage stem-and-head) and the static-grid-only discordant cells c
+(terracotta), with the exact two-sided McNemar P annotated above each pair
+and the campaign's cell count n beneath the phase label.  The four
+campaigns follow the arc order — initial migration (delivery-easy matrix
+v0) → re-anchoring (production scarce matrix v3) → decisive (the shipped
+production mode; the pre-registered primary endpoint panel) → confirmation
+(the scarcity-complement panel).  The pooled decisive+confirmation
+discordance is annotated as one line in the reserved strip above the
+axes; the key is a one-column legend inside the axes' upper-left corner.
 
-Style (the fig5b/5c house style): no in-figure title — the panel letter is
-added at assembly; every text element one 6-pt pure-black style; colours
-exclusively from palette rev 7; absolute-mm geometry, single column;
-1200-dpi PNG + vector PDF (fonttype 42).
+2026-09-08 figure-repair pass (user direction): the five-line tick blocks
+(phase name + two lever-ladder descriptor lines + cell count) collided
+with the bottom key row and the pooled line, and the phase labels broke
+mid-word ("Confirm-ation").  The lever ladder leaves the panel (the
+per-campaign levers are stated in §2.5 and the Fig. 5e legend — nothing
+lost); the tick blocks are now phase name (natural word breaks) + n; the
+pooled note moves from the bottom of the canvas to a reserved strip above
+the axes (the fig5b/5d stat-strip convention) and the key becomes a
+one-column legend inside the axes' upper-left corner (the seg-1 region
+above the two count-1 lollipops is empty), renderer-measured and
+collision-asserted; the key label "rule-only" is renamed
+"static-grid-only" to match the Fig. 5e legend wording.  All text one
+6-pt pure-black style.
+
+Style (the fig3/fig4/fig5a–d house style): no in-figure title — the panel
+letter is added at assembly; every text element one 6-pt pure-black style;
+colours exclusively from palette rev 7; absolute-mm geometry, single
+column; 1200-dpi PNG + vector PDF (fonttype 42).
 
 Data  : experiments/results/exp29_aptamer_campaign_arc/arc.json
 Usage : python experiments/plots/fig5e_campaign_arc_lollipop.py
@@ -32,7 +45,9 @@ from pathlib import Path
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.image as mpimg  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.patches import Rectangle  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
@@ -47,8 +62,7 @@ FONT = 6
 W_MM, H_MM = 89.0, 58.0
 
 C_NAV = PALETTE_BY_NAME["sage_green"]    # navigation-only discordance (b)
-C_RULE = PALETTE_BY_NAME["terracotta"]   # rule-only discordance (c)
-C_POOL = PALETTE_BY_NAME["grey_blue"]    # pooled annotation
+C_RULE = PALETTE_BY_NAME["terracotta"]   # static-grid-only discordance (c)
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -65,18 +79,14 @@ plt.rcParams.update({
 
 MM = 1 / 25.4
 DPI = 1200
-W_PX = round(W_MM / 25.4 * DPI)
+W_PX = round(W_MM / 25.4 * DPI)   # exact 1200-dpi canvas pixels
 H_PX = round(H_MM / 25.4 * DPI)
 
 SEGMENTS = [
-    ("seg1_migration", "Initial\nmigration",
-     "matrix v0 · sparse\nlattice · mechanized"),
-    ("seg2_reanchor", "Re-\nanchoring",
-     "matrix v3 · densified\nlattice · S1 priors"),
-    ("seg3_decisive", "Decisive\n(primary)",
-     "+ guaranteed repair\n(production mode)"),
-    ("seg4_confirmation", "Confirm-\nation",
-     "scarcity-complement\npanel"),
+    ("seg1_migration", "Initial\nmigration"),
+    ("seg2_reanchor", "Re-anchoring"),
+    ("seg3_decisive", "Decisive\n(primary)"),
+    ("seg4_confirmation", "Confirmation"),
 ]
 
 
@@ -91,15 +101,13 @@ def main() -> int:
     segs = arc["segments"]
 
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI))
-    ax = fig.add_axes([0.085, 0.235, 0.905, 0.62])
+    ax = fig.add_axes([0.080, 0.185, 0.900, 0.693])
     ymax = 1
-    xs: list[float] = []
-    for i, (key, _, _) in enumerate(SEGMENTS):
+    for i, (key, _) in enumerate(SEGMENTS):
         v = segs.get(key)
         if v is None:
             continue
         x = i
-        xs.append(x)
         b = v["mcnemar"]["b_nav_only"]
         c_ = v["mcnemar"]["c_rule_only"]
         p = v["mcnemar"]["p_exact"]
@@ -113,78 +121,76 @@ def main() -> int:
                     xytext=(0, 3), ha="center", fontsize=FONT, color=INK)
         ax.annotate(fmt_p(p), (x, max(b, c_)), textcoords="offset points",
                     xytext=(0, 10.5), ha="center", fontsize=FONT, color=INK)
-        go = (v.get("go_rule") or {}).get("verdict")
-        if go == "GO":
-            ax.annotate("GO", (x, max(b, c_)), textcoords="offset points",
-                        xytext=(0, 18), ha="center", fontsize=FONT, color=INK)
     ax.set_xlim(-0.62, len(SEGMENTS) - 0.38)
-    ax.set_ylim(0, ymax * 1.42 + 1.0)
+    ax.set_ylim(0, 13.2)
+    ax.set_yticks([0, 2, 4, 6, 8, 10, 12])
     ax.set_xticks([i for i in range(len(SEGMENTS))])
     ax.set_xticklabels(
-        [f"{name}\n{lever}\nn = {segs[key]['n_cells']} cells"
-         if key in segs else name
-         for key, name, lever in SEGMENTS],
+        [f"{name}\nn = {segs[key]['n_cells']}" if key in segs else name
+         for key, name in SEGMENTS],
         fontsize=FONT, linespacing=1.25)
     ax.set_ylabel("Discordant cells", fontsize=FONT)
     ax.tick_params(length=2.0, pad=1.8)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    # pooled decisive + confirmation annotation (bottom-right text block)
+    # ── legend: one column inside the axes' upper-left corner (the seg-1
+    #    region above the two count-1 lollipops is empty) ──
+    key_items = [(C_NAV, "navigation-only (b)"),
+                 (C_RULE, "static-grid-only (c)")]
+    lx, sw_w, sw_h = 0.015, 0.016, 0.020
+    for (color, label), yc in zip(key_items, (0.955, 0.885)):
+        ax.add_patch(Rectangle((lx, yc - sw_h / 2), sw_w, sw_h,
+                               transform=ax.transAxes, facecolor=color,
+                               edgecolor="none", zorder=3))
+        ax.text(lx + sw_w + 0.008, yc, label,
+                transform=ax.transAxes, va="center",
+                fontsize=FONT, color=INK)
+
+    # ── pooled decisive + confirmation note: one line in the reserved strip
+    #    above the axes (the fig5b/5d stat-strip convention) ──
+    strip_texts = []
     pooled = arc.get("pooled_seg3_seg4")
     if pooled:
-        ax.annotate(
-            f"pooled decisive + confirmation: "
-            f"b = {pooled['b']} : c = {pooled['c']}, "
+        strip_texts.append(fig.text(
+            0.5, 0.896,
+            f"Pooled decisive + confirmation: "
+            f"b = {pooled['b']}, c = {pooled['c']}, "
             f"{fmt_p(pooled['p_exact'])}",
-            xy=(1.0, -0.315), xycoords="axes fraction",
-            ha="right", va="top", fontsize=FONT, color=INK)
+            ha="center", va="bottom", fontsize=FONT, color=INK))
 
-    # key: swatch + label row, renderer-measured (fig4g/5c convention)
+    # ── renderer-measured guards (the fig5d house pattern): every text
+    #    inside the canvas, no text–text collision anywhere ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-
-    def text_w(s: str) -> float:
-        t = fig.text(0, 0, s, fontsize=FONT)
-        w = t.get_window_extent(renderer).width / fig.bbox.width
-        t.remove()
-        return w
-
-    key_items = [(C_NAV, "navigation-only (b)"),
-                 (C_RULE, "rule-only (c)")]
-    swatch_w = 0.014
-    gap_in, gap_out = 0.006, 0.024
-    parts: list[tuple[str, object]] = []
-    for color, label in key_items:
-        parts.append(("swatch", color))
-        parts.append(("label", label))
-    widths = [swatch_w + gap_in if k == "swatch" else
-              text_w(v) + gap_out for k, v in parts]
-    total_w = sum(widths)
-    assert total_w < 0.90, f"key row overflows canvas: {total_w:.3f}"
-    x = 0.5 - total_w / 2
-    y = 0.045
-    for (kind, val), w in zip(parts, widths):
-        if kind == "swatch":
-            ax = fig.add_axes([x, y - 0.008, swatch_w, 0.014])
-            ax.set_xticks([]), ax.set_yticks([])
-            for s in ax.spines.values():
-                s.set_visible(False)
-            ax.set_facecolor(val)
-        else:
-            fig.text(x, y - 0.003, val, fontsize=FONT, color=INK,
-                     va="center_baseline")
-        x += w
+    texts = (list(ax.texts) + strip_texts + [ax.yaxis.label]
+             + list(ax.get_xticklabels()) + list(ax.get_yticklabels()))
+    boxes = []
+    for t in texts:
+        bb = t.get_window_extent(renderer)
+        assert (bb.x0 >= 0 and bb.x1 <= fig.bbox.width
+                and bb.y0 >= 0 and bb.y1 <= fig.bbox.height), \
+            f"text overflows canvas: {t.get_text()!r}"
+        boxes.append(bb)
+    for i in range(len(boxes)):
+        for j in range(i + 1, len(boxes)):
+            assert not boxes[i].overlaps(boxes[j]), \
+                f"text collision: {texts[i].get_text()!r} x {texts[j].get_text()!r}"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig5e_campaign_arc_lollipop.{ext}", dpi=1200)
+        fig.savefig(OUT_DIR / f"fig5e_campaign_arc_lollipop.{ext}", dpi=DPI)
     plt.close(fig)
+
+    img = mpimg.imread(OUT_DIR / "fig5e_campaign_arc_lollipop.png")
+    assert img.shape[1] == W_PX and img.shape[0] == H_PX, \
+        f"canvas {img.shape[1]}x{img.shape[0]} != {W_PX}x{H_PX}"
     summary = ", ".join(
         f"{key.split('_')[0]}: b{v['mcnemar']['b_nav_only']}"
         f"/c{v['mcnemar']['c_rule_only']}"
         for key, v in segs.items())
-    print(f"wrote fig5e_campaign_arc_lollipop ({summary})")
+    print(f"wrote fig5e_campaign_arc_lollipop ({summary}; "
+          f"{W_MM}x{H_MM} mm, {W_PX}x{H_PX} px @ {DPI} dpi)")
     return 0
 
 

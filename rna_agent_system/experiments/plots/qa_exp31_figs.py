@@ -22,7 +22,7 @@ OUT = Path(__file__).resolve().parents[2] / "experiments" / "plots" / "output"
 DPI = 1200
 
 FIGS = [
-    ("fig5d_secondary_endpoint.png", 89.0, 74.0),
+    ("fig5d_secondary_endpoint.png", 89.0, 35.0),
 ]
 
 PALETTE_RGB = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in PALETTE]

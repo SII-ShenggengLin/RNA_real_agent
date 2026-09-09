@@ -21,19 +21,24 @@ block of the repaired-navigator endpoint re-run (the paper's citation):
   35-call cap (mean 24.55), rule spend 35, violations 0, LLM calls 0.
 
 REGISTERED PANEL ENCODING (re-registration of the FIGURE_PLAN_V5 row-d
-"bullet bars + annotation", pending since 2026-09-03): three stacked
-blocks on one 89-mm column — (top) registered-criteria bullet bars (light
-0–1 track, arm-coloured measure bar, dashed gate per criterion group,
-values + counts printed at the bars); (middle) the Δ-composite stacked-dot
-distribution (one dot per paired cell, the fig2d/2f stacking convention,
-colours by direction with the Fig-5b semantics — sage = navigation-
-favouring, terracotta = rule-favouring, grey blue = tied — stack counts
-printed, Wilcoxon P annotated); (bottom) the per-target navigation raw
-spend strip (one dot per target, coincident values stacked, dashed cap at
-35, mean tick, zero-violation / zero-LLM annotation).  House style: no
-in-figure title (the panel letter lands at assembly), single 6-pt
-pure-black text style, palette rev 7 only, absolute-mm geometry,
-1200-dpi PNG + vector PDF (fonttype 42).
+encoding, pending since 2026-09-03; single-view repair 2026-09-08, user
+direction): the Δ-composite stacked-dot distribution alone on one 89-mm
+column — one dot per paired cell, the fig2d/2f stacking convention,
+colours by direction with the Fig-5b semantics (sage = navigation-
+favouring, terracotta = rule-favouring, grey blue = tied), tall-stack
+counts printed, the sign counts + Wilcoxon P annotated as one line in a
+reserved strip above the axes.  The original three-block stack
+(registered-criteria bullet bars above, per-target spend strip below) was
+removed in the 2026-09-08 figure-repair pass — one plot per panel (the
+fig5a/5b/5c same-day convention); the removed blocks shared neither axis
+nor observation unit with the Δ distribution (rates vs per-cell score
+differences vs per-target call counts), so their numbers (gene-e2e
+0.45 = 9/20 vs the ≥ 0.8 legacy-era gate, rule-pool 1.00 = 20/20 context;
+constraint rate 0.944 ≥ 0.9; spend mean 24.55 of the 35-call cap,
+0 violations · 0 LLM) are text-reported verbatim in the Fig. 5d caption
+and §2.5.  House style: no in-figure title (the panel letter lands at
+assembly), single 6-pt pure-black text style, palette rev 7 only,
+absolute-mm geometry, 1200-dpi PNG + vector PDF (fonttype 42).
 
 Outputs: results/exp31_fig5d_secondary/panel_data.json (the plot script's
 single data source) + experiments/plots/fig5d_secondary_endpoint.{pdf,png}
