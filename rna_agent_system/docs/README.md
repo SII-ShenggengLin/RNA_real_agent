@@ -94,7 +94,7 @@ rna_agent_system/
 
 ## 4. Quick Start
 
-> **Vendored repos note (read before first run).** Clone with `--recurse-submodules`. Three submodules (LinearDesign, RhoDesign, RhoFold) are pinned to public forks carrying one local patch each on top of upstream — the clone gets the patched code automatically, but LinearDesign additionally **requires compiling** (`make` + wrapper restore, DEPLOYMENT §3.1), and several services need manually placed model weights (DEPLOYMENT §3.2). Full patch table and rationale: [`DEPLOYMENT.md` §1.4](DEPLOYMENT.md).
+> **Vendored repos note (read before first run).** Clone with `--recurse-submodules`. Three submodules (LinearDesign, RhoDesign, RhoFold) are pinned to public forks carrying one local patch each on top of upstream — the clone gets the patched code automatically, but LinearDesign additionally **requires compiling** (`make` + wrapper restore, DEPLOYMENT §3.1), and several services need manually placed model weights (DEPLOYMENT §3.2). **No external repository needs any hand source edit** — the pinned commits (all 20 codes, DEPLOYMENT §1.5) are complete; system-specific behaviour lives only in the three forks' committed patches and in our microservice wrappers (DEPLOYMENT §1.6). If you fetch external repos separately, place them under `external_repos/<name>` at the pinned commits — for the three forks use the `SII-ShenggengLin/` URLs, not the originals. Post-setup `git status` shows expected `?` (weights) / ` m` (GerNA-Bind `.pyc` bytecode) entries — see DEPLOYMENT §1.7. Full patch table and rationale: [`DEPLOYMENT.md` §1.4](DEPLOYMENT.md).
 
 ### 4.1 Install main agent environment
 

@@ -1,7 +1,7 @@
 # Deployment & Testing Guide
 
 > **Scope**: environment setup, deployment procedures, testing recipes, and microservice curl examples.
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-09-09 (external-repo adaptation register: §1.5 pinned-commit table for all 20 codes, §1.6 adaptation model, §1.7 expected post-setup `git status`)
 
 ---
 
@@ -45,6 +45,58 @@ Three submodules do **not** point at the original upstream repositories: `.gitmo
 | RhoFold | `SII-ShenggengLin/RhoFold` @ `6761653` | [ml4bio/RhoFold](https://github.com/ml4bio/RhoFold) | 2026-08-10 "local inference patch + local weights path notes" | `inference.py`: skips the HuggingFace `snapshot_download` when the local checkpoint already exists (offline / air-gapped servers); `pretrained/README.md` notes on local weights; drops two `.DS_Store` |
 
 The remaining 14 registered submodules are pinned to unmodified upstream commits; RNARL and RNASTOP are lab-original repositories (not forks).
+
+### 1.5 Complete pinned-commit register (all 20 external codes)
+
+Every external code the platform can invoke, with the exact commit a deployment must be on. `git submodule status` at the repo root reproduces this table (all 17 pinned — no `+`, no `-`); `git ls-files -s rna_agent_system/external_repos/` is the machine-readable source of truth. **In no case does a deployment hand-edit an external repository's source** — see §1.6.
+
+| External code | Clone source (`.gitmodules` URL) | Pinned commit | After checkout |
+|---|---|---|---|
+| LinearDesign | fork `SII-ShenggengLin/LinearDesign` | `ef10882` | no source edit (patch is a commit in the fork, §1.4); **compile** per §3.1 |
+| RhoDesign | fork `SII-ShenggengLin/RhoDesign` | `0dc7c54` | no source edit (patch in the fork, §1.4); weights §3.2 |
+| RhoFold | fork `SII-ShenggengLin/RhoFold` | `6761653` | no source edit (patch in the fork, §1.4); weights §3.2 |
+| GEMORNA | upstream `RainaBio/GEMORNA` | `3bba88e` | none; weights §3.2 |
+| GerNA-Bind | upstream `GENTEL-lab/GerNA-Bind` | `4b87cf0` (`v1.0.0-3`) | none; PyG GPU install §3.1, weights §3.2, `.pyc` note §1.7 |
+| RNARL | lab-original `SII-ShenggengLin/RNARL` | `8d4131c` (`v1.0.0`) | none; weights §3.2 |
+| RNASTOP | lab-original `SII-ShenggengLin/RNASTOP` | `9a6463e` | none; weights §3.2 |
+| RNAsmol | upstream `hongli-ma/RNAsmol` | `0e97fd0` | none — the platform-side preprocessing port (case-preserving verbatim + uppercase/T→U tool path) lives in `microservices/rnasmol_service/`, not in the repo; weights §3.2 |
+| CRISOT | upstream `bm2-lab/CRISOT` | `ecbfa31` | none; weights §3.2 |
+| ODesign | upstream `OTeam-AI4S/ODesign` | `43944e9` | none; weights §3.2 |
+| IRESfinder | upstream `xiaofengsong/IRESfinder` | `20a929b` (`v1.1.0-1`) | none |
+| LinearFold | upstream `LinearFold/LinearFold` | `c3ee9bd` | none; **compile** per §3.1 |
+| Evitar | upstream `dingyaozhang/Evitar` | `2f6e645` | none |
+| ViennaRNA | upstream `ViennaRNA/ViennaRNA` | `1ffec79` (`v2.7.2`) | none; the service builds it via `microservices/viennarna_fold/build_from_submodule_linux.sh` |
+| sgrna_design (CRGPT) | upstream `bitguolab/sgrna_design` | `d03da5d` | none; weights §3.2 |
+| InstructNA | upstream `zhimingzhang275/InstructNA` | `89b1e68` | none |
+| codonw-slim | upstream `smsaladi/codonw-slim` | `1035b28` | none (legacy — service removed 2026-08-18, submodule stays registered) |
+| EGARPS | **vendored in this repo** (plain tracked files; not a submodule) | n/a | none — the code ships with the clone; only weights §3.2 (`esm2_models/`, `rna_fm_models/`) |
+| Protenix | **vendored in this repo** (plain tracked files) | n/a | none — code ships with the clone; only weights §3.2 (`checkpoints/`) |
+| RiboDiffusion | **vendored in this repo** (plain tracked files) | n/a | none — code ships with the clone; PyG extensions §3.1, weights §3.2 |
+
+If you clone an external repo **separately** instead of via `--recurse-submodules` (e.g. behind a mirror): place it at `external_repos/<name>`, check out the pinned commit from the table, and for the three forks make sure the URL is the `SII-ShenggengLin/` fork, not the original upstream — otherwise the LinearDesign memory-guard wrapper, RhoDesign `--seed` flag and RhoFold offline-checkpoint path will be missing. Everything else is byte-identical to upstream.
+
+### 1.6 Adaptation model — where system-specific changes live
+
+The platform never adapts an external code by editing its working tree. System-specific behaviour lives in exactly two places, both version-controlled and public:
+
+1. **Pinned forks** (§1.4) — three repos where the adaptation is a single committed patch on top of upstream: LinearDesign (junction-aware objective + memory-guard wrapper), RhoDesign (reproducible `--seed` sampling), RhoFold (local-checkpoint-first inference). The pin records the exact patched SHA.
+2. **Our microservice wrapper layer** (`microservices/*/`) — service contracts, input normalization, checkpoint resolution, resource guards. Example: the RNAsmol deployment-fidelity work (Exp 7/15) — the verbatim case-preserving endpoint and the uppercase + T→U tool-path normalization are implemented in `microservices/rnasmol_service/`; the RNAsmol repository itself is unmodified upstream. Likewise GerNA-Bind's deployment needs are entirely on our side (`microservices/gernabind_service/install_pyg_gpu.sh`, conda env, weights placement §3.2) — its repository needs no edits.
+
+**Consequences for a deployment:**
+- After checking out the pinned commits (§1.5), **no external repository requires any hand source modification**. The remaining per-repo work is purely environmental: compile (§3.1), per-service conda envs, PyG extensions, weight placement (§3.2).
+- **Never commit local changes inside `external_repos/`** and **never vendor external code into the agent core** — external codes stay external (submodule or vendored directory, weights untracked), which is what keeps this repository small and the upgrade path tractable. A needed behavioural change goes either into the fork (committed, pinned, public) or into the microservice wrapper (tracked here).
+
+### 1.7 Expected `git status` after a correct setup (read before wondering)
+
+With submodules initialized, §3.1 done and §3.2 weights placed, `git status --short` at the repo root will typically show entries under `rna_agent_system/external_repos/` — **all of them expected, none of them source modifications**:
+
+- ` ? rna_agent_system/external_repos/<name>` — the submodule contains *untracked content only*: the weights you placed per §3.2 (plus `__pycache__` caches). This is what a **completed** weight setup looks like. Nothing to do.
+- ` m rna_agent_system/external_repos/GerNA-Bind` — the only submodule that can show *modified tracked content*, and the modified files are exclusively `__pycache__/*.pyc` bytecode: the upstream repository committed Python-3.8-compiled `.pyc` files, and Python regenerates bytecode on first import under the local interpreter, so the bytes differ. It is a **runtime artifact, not a system adaptation** — GerNA-Bind's adaptations all live in our wrapper (§1.6). Verify with:
+  ```bash
+  git -C rna_agent_system/external_repos/GerNA-Bind diff --name-only   # → .pyc paths only, no .py / source files
+  ```
+  Safe to leave as-is; to silence it per clone: `git config diff.ignoresubmodules dirty` (or restore the bytecode: `git -C rna_agent_system/external_repos/GerNA-Bind checkout -- '*.pyc'`). Never commit it.
+- `git submodule status` — all 17 registered submodules pinned at exactly the §1.5 commits (no `+` ahead / `-` missing prefix). Any `+` means someone moved a submodule off its pin — investigate before running experiments.
 
 ---
 
