@@ -1,9 +1,9 @@
-"""Fig 4c — decision-layer overreach events of the E3 dual-arm re-run.
+"""Fig 4f — decision-layer overreach events of the E3 dual-arm re-run.
 
 Paired bars per oracle x intended use (plan requests of a structural oracle
 as ranking objective / screening evaluation): ungated control arm (Exp 5,
 59 events, terracotta) vs gated treatment arm (Exp 17, 0 events, sage) —
-arm colours as Fig. 4a; a bracket annotation carries the registered delta
+arm colours as Fig. 4d; a bracket annotation carries the registered delta
 (59 -> 0). Use is carried by the x-axis cells (ranking / screening), oracle
 labels centred on their cell pairs (the fig3e group-label convention). The
 gated arm's 71 blocked plan requests (the mechanism behind the zero) are
@@ -20,16 +20,16 @@ directly under the panel (the fig3e convention — legend attached to the
 panel); the y-axis label was shortened from the 31-character
 "Decision-layer overreach events" (which overflowed the 23-mm axis at 6 pt)
 to "Overreach events" — the decision-layer qualifier is stated verbatim in
-the Fig. 4c caption; and the figure geometry was rebalanced to the new
+the Fig. 4f caption; and the figure geometry was rebalanced to the new
 stack (44 → 40.5 mm tall).
 
 Data  : experiments/results/exp5_claim_overreach/runs_summary.json (ungated)
         experiments/results/exp17_claim_gating/summary.json (gated)
-Usage : python experiments/plots/fig4c_overreach_events.py
-        FIG4C_LAYOUT=tall python experiments/plots/fig4c_overreach_events.py
+Usage : python experiments/plots/fig4f_overreach_events.py
+        FIG4F_LAYOUT=tall python experiments/plots/fig4f_overreach_events.py
             (composite stack variant — same data, taller axes)
-Output : experiments/plots/output/fig4c_overreach_events.{pdf,png}
-         (+ fig4c_overreach_events_tall.{pdf,png} for the tall variant)
+Output : experiments/plots/output/fig4f_overreach_events.{pdf,png}
+         (+ fig4f_overreach_events_tall.{pdf,png} for the tall variant)
 """
 
 from __future__ import annotations
@@ -65,15 +65,15 @@ ORACLE_LABELS = {"rhofold_mean_plddt": "RhoFold", "proteinx_ipTM": "ProteinX",
 USES = ["ranking_objective", "screening_evaluation"]
 USE_LABELS = {"ranking_objective": "Ranking", "screening_evaluation": "Screening"}
 
-# Composite-layout variant (the fig3c convention): FIG4C_LAYOUT=tall renders
+# Composite-layout variant (the fig3c convention): FIG4F_LAYOUT=tall renders
 # the same frozen data on a taller canvas (axes stretched vertically, same
-# 6-pt text, no data change) so the panel fills the Fig. 4 composite's row-1
-# stack (a over c) flush with panel b's height; the standalone render is the
+# 6-pt text, no data change) so the panel fills the Fig. 4 composite's row-2
+# stack (d over f) flush with panel e's height; the standalone render is the
 # default and is untouched. Output goes to a separate _tall file pair.
-LAYOUT = os.environ.get("FIG4C_LAYOUT", "standalone")
+LAYOUT = os.environ.get("FIG4F_LAYOUT", "standalone")
 FIG_H_MM = 71.7 if LAYOUT == "tall" else 40.5
 AX_H_MM = 54.7 if LAYOUT == "tall" else 23.5
-OUT_STEM = "fig4c_overreach_events_tall" if LAYOUT == "tall" else "fig4c_overreach_events"
+OUT_STEM = "fig4f_overreach_events_tall" if LAYOUT == "tall" else "fig4f_overreach_events"
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -170,7 +170,7 @@ def main() -> int:
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
-    print(f"fig4c ({LAYOUT}) -> {OUT_DIR / f'{OUT_STEM}.pdf'} (+png 1200 dpi); "
+    print(f"fig4f ({LAYOUT}) -> {OUT_DIR / f'{OUT_STEM}.pdf'} (+png 1200 dpi); "
           f"overreach {sum(ungated)} -> 0 by oracle x use "
           f"({', '.join(str(n) for n in ungated)})")
     return 0

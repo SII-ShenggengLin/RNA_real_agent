@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3h — Confounded improvement: the coordination-loop apparent effect
+"""Fig. 3f — Confounded improvement: the coordination-loop apparent effect
 dissolves under pre-registered controls (annotated slope + gate +
 permutation-null histogram inset, observed δ marked).
 
@@ -19,7 +19,7 @@ fig3e convention — the gate tag had been dark warm grey and the observed-δ
 tag terracotta, the rest palette-TEXT #1A1A1A); the two in-figure
 title-like strings removed (Nature style — the italic "n = 56 paired cells;
 self-audit claim survival 0/2" summary line and the "δ null, apparent
-effect" inset title; both facts already live in the Fig-3h caption); the
+effect" inset title; both facts already live in the Fig-3f caption); the
 inset moved to a fixed upper-left rect audited against the frozen summary
 so it clears the gate line, every stage dot and every two-line stage label
 (the earlier quadrant-adaptive placement scored only dots/lines and covered
@@ -33,13 +33,13 @@ grey; gate line dark warm grey dashed (the fig3a/fig3b gate convention);
 zero line neutral grid grey; null bars warm grey with the observed-δ marker
 line terracotta. All text ink black.
 
-Style: the fig2d–fig3g conventions — no in-figure title (the headline lives
+Style: the fig2d–fig3h conventions — no in-figure title (the headline lives
 in the caption), every text element one 6-pt font size and pure black,
 single-column geometry, 1200-dpi PNG.
 
 Data  : experiments/results/exp16_confounded_improvement/summary.json
-Usage : python experiments/plots/fig3h_dissolution.py
-Output: experiments/plots/output/fig3h_dissolution.{pdf,png}
+Usage : python experiments/plots/fig3f_dissolution.py
+Output: experiments/plots/output/fig3f_dissolution.{pdf,png}
 """
 from __future__ import annotations
 
@@ -182,10 +182,10 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig3h_dissolution.{ext}",
+        fig.savefig(OUT_DIR / f"fig3f_dissolution.{ext}",
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
-    print(f"written: {OUT_DIR}/fig3h_dissolution.{{pdf,png}}")
+    print(f"written: {OUT_DIR}/fig3f_dissolution.{{pdf,png}}")
     return 0
 
 

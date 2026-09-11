@@ -1,0 +1,71 @@
+{
+ "registered": "2026-09-11 PA_023 restore addendum (exp25b); frozen Exp-25 corpus untouched",
+ "arms": {
+  "off": {
+   "session_id": "exp25b_off_pa023_20260911_162552_2246310",
+   "n_turns": 3,
+   "turns_workflow_success": 3,
+   "session_success": true,
+   "total_retry_count": 0,
+   "total_successful_review_calls": 0,
+   "total_failed_review_calls": 0,
+   "outcome_tuple": [
+    true,
+    true,
+    true
+   ]
+  },
+  "on": {
+   "session_id": "exp25b_on_pa023_20260911_162603_2246310",
+   "n_turns": 3,
+   "turns_workflow_success": 3,
+   "session_success": true,
+   "total_retry_count": 0,
+   "total_successful_review_calls": 6,
+   "total_failed_review_calls": 0,
+   "outcome_tuple": [
+    true,
+    true,
+    true
+   ]
+  },
+  "fail": {
+   "session_id": "exp25b_fail_pa023_20260911_163138_2246310",
+   "n_turns": 3,
+   "turns_workflow_success": 3,
+   "session_success": true,
+   "total_retry_count": 0,
+   "total_successful_review_calls": 0,
+   "total_failed_review_calls": 6,
+   "outcome_tuple": [
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "merged_reporting": {
+  "note": "frozen Exp-25 corpus for the other 30 sessions + this addendum for PA_023 (latest-record-wins)",
+  "workflow_level_success_per_arm": "31/31",
+  "on_arm_completed_calls_total": 145,
+  "outage_arm_failed_attempts_total": 144,
+  "retries_by_arm": [
+   0,
+   1,
+   0
+  ]
+ },
+ "checks": {
+  "three_arms_present": true,
+  "all_turns_exit_zero": true,
+  "all_turns_workflow_success": true,
+  "outcome_identical_across_arms": true,
+  "off_zero_review_calls": true,
+  "on_two_calls_per_turn": true,
+  "on_six_total": true,
+  "fail_zero_completions": true,
+  "fail_two_attempts_per_turn": true,
+  "fail_error_marker_every_turn": true,
+  "zero_retries": true
+ }
+}

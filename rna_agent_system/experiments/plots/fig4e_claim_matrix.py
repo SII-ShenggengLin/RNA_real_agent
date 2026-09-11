@@ -1,4 +1,4 @@
-"""Fig 4b — per-claim adjudication matrix of the E3 dual-arm re-run.
+"""Fig 4e — per-claim adjudication matrix of the E3 dual-arm re-run.
 
 One row per audit task (45 tasks; trusted-deterministic block above,
 untrusted-oracle block below), two column blocks (Ungated control arm =
@@ -9,7 +9,7 @@ dark warm grey; borderline claims warm grey.
 
 2026-09-01 user-directed revision: the arm x verdict mosaic inset at the
 panel's top right was removed (its counts are already stated in the
-Fig. 4b caption and main text, its duplicated arm headers cramped against
+Fig. 4e caption and main text, its duplicated arm headers cramped against
 each other, and it left a tall empty column below it — the fig2h-donut /
 fig3f-waffle precedent); row labels now follow the fig3 target-label
 convention ("IFN-gamma" -> "IFN-γ", "Influenza H3N2 HA" -> "swine H3 HA")
@@ -22,8 +22,8 @@ geometry.
 
 Data  : experiments/results/exp17_claim_gating/summary.json
         (+ experiments/e5_audit_tasks.json for task order/labels)
-Usage : python experiments/plots/fig4b_claim_matrix.py
-Output : experiments/plots/output/fig4b_claim_matrix.{pdf,png}
+Usage : python experiments/plots/fig4e_claim_matrix.py
+Output : experiments/plots/output/fig4e_claim_matrix.{pdf,png}
 """
 
 from __future__ import annotations
@@ -187,13 +187,13 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4b_claim_matrix.{ext}", format=ext,
+        fig.savefig(OUT_DIR / f"fig4e_claim_matrix.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     arms = summary["arms"]
     u, g = arms["ungated"], arms["gated"]
-    print(f"fig4b -> {OUT_DIR / 'fig4b_claim_matrix.pdf'} (+png 1200 dpi); "
+    print(f"fig4e -> {OUT_DIR / 'fig4e_claim_matrix.pdf'} (+png 1200 dpi); "
           f"ungated TP {u['TP']}/FP {u['FP']}, gated TP {g['TP']}/FP {g['FP']}/"
           f"supp {g['suppressed']}")
     return 0

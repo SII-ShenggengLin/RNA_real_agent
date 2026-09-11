@@ -43,7 +43,7 @@ the workflow ships the predictor with its published default parameters and
 no panel-specific tuning was performed. The capability-map consequence is
 visible in production: across the 241-run campaign the DecisionGate recorded
 24 reject verdicts for IRESfinder-dependent ranking/claim requests and none
-in any other class (Fig. 4f).
+in any other class (Fig. 4h).
 
 **Supplementary Fig. S1** (`experiments/plots/output/figS1_ires_panel.png`):
 the sliding-window (mode-2) ROC arm with its bootstrap 95% confidence band
@@ -192,7 +192,7 @@ decision register (DECISIONS.md (l)) prohibits improvising self-referential
 anchors; the anchor-gap closure campaigns are pre-registered and reserved
 as E19/E20. Until those land, the DecisionGate treats both predictors as
 unprofiled — visible in production as the require-profiling verdicts of
-Fig. 4f (CRGPT 244, CRISOT 25). No biological-validity claim is made for
+Fig. 4h (CRGPT 244, CRISOT 25). No biological-validity claim is made for
 this workflow; the evidence is completion only — all 30 sgRNA benchmark
 tasks succeed end-to-end (210/210, Fig. 2a; re-measured 30/30 in the
 2026-09-07 Exp-24 campaign lane).

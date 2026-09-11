@@ -1,4 +1,4 @@
-"""Fig 4a — capability gating eliminates false claims, preserves true ones.
+"""Fig 4d — capability gating eliminates false claims, preserves true ones.
 
 Grouped bar headline of the E3 dual-arm re-run (Experiment 17, gated
 treatment arm, paired with the Exp-5 ungated control arm on the identical
@@ -8,17 +8,17 @@ Value labels above every bar; both panels carry identical two-line arm
 tick labels with the per-arm claim basis n (the fig2b convention, kept
 consistent across panels). Arm colours: ungated terracotta / gated sage
 green — the same warm/cool semantics as the per-claim verdict colours of
-Fig. 4b (FP terracotta, TP sage).
+Fig. 4e (FP terracotta, TP sage).
 
 Style (Nature conventions, the fig3-panel house style): no in-figure
 titles or summary statistics — the panel letter is added at assembly and
-the headline numbers live in the Fig. 4a caption; every text element one
+the headline numbers live in the Fig. 4d caption; every text element one
 6-pt pure-black style; colours only from palette rev 7; 1200-dpi PNG +
 vector PDF (fonttype 42); absolute-mm geometry, single-column width.
 
 Data  : experiments/results/exp17_claim_gating/summary.json
-Usage : python experiments/plots/fig4a_claim_gating_headline.py
-Output : experiments/plots/output/fig4a_claim_gating.{pdf,png}
+Usage : python experiments/plots/fig4d_claim_gating_headline.py
+Output : experiments/plots/output/fig4d_claim_gating.{pdf,png}
 """
 
 from __future__ import annotations
@@ -125,11 +125,11 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4a_claim_gating.{ext}", format=ext,
+        fig.savefig(OUT_DIR / f"fig4d_claim_gating.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
-    print(f"fig4a -> {OUT_DIR / 'fig4a_claim_gating.pdf'} (+png 1200 dpi); "
+    print(f"fig4d -> {OUT_DIR / 'fig4d_claim_gating.pdf'} (+png 1200 dpi); "
           f"FP rate {100 * arms['ungated']['fp_rate']:.1f}% -> "
           f"{100 * arms['gated']['fp_rate']:.1f}%, "
           f"TP {tp['ungated']} -> {tp['gated']} "

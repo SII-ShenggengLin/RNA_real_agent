@@ -1,4 +1,4 @@
-"""Fig 4e — selective gating decision matrix (Exp 23, §2.4 实验 4).
+"""Fig 4b — selective gating decision matrix (Exp 23, §2.4 实验 4).
 
 One tile per query condition: the two production gate layers reviewed the
 GEMORNA 5'UTR MRL oracle and the 3'UTR stability oracle across certified /
@@ -15,7 +15,7 @@ the Exp-14 cache bit-exactly, E2 executed, E3 blocked as GatedActionError
 before any service call); column headers carry the per-column cell counts.
 
 Colours (palette rev 7): sage = allow/pass, mauve grey = downgrade, sand =
-require-profiling, terracotta = reject (the fig2h gate-verdict convention);
+require-profiling, terracotta = reject (the fig2g gate-verdict convention);
 hairline rules in the non-data neutral grid grey. The per-row oracle colour
 strips of the previous revision were dropped — the rotated group labels and
 the row labels already carry the oracle identity.
@@ -23,7 +23,7 @@ the row labels already carry the oracle identity.
 Style (Nature conventions, the fig3/fig4 house style): no in-figure title —
 the two gate layers are marked only by short left-aligned block labels;
 every text element one 6-pt pure-black style; absolute-mm geometry with
-renderer-measured text extents (the fig4b/fig4d convention): the horizontal
+renderer-measured text extents (the fig4e/fig4g convention): the horizontal
 layout follows the measured label/annotation widths with fixed clearances
 between the zones, so no dead whitespace; plus a post-draw audit asserting
 every text is pure black, no two texts overlap, no text crosses a tile edge,
@@ -32,8 +32,8 @@ at a content-measured width x 72 mm — within Nature Methods resolution and
 size guidance.
 
 Data  : experiments/results/exp23_selective_gating/cells.jsonl (frozen)
-Usage : python experiments/plots/fig4e_selective_gating_matrix.py
-Output : experiments/plots/output/fig4e_selective_gating.{pdf,png}
+Usage : python experiments/plots/fig4b_selective_gating_matrix.py
+Output : experiments/plots/output/fig4b_selective_gating.{pdf,png}
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ COL_OF_VERDICT = {
 }
 ORACLE_ROTATED = {"mrl": "5′UTR MRL", "utr3": "3′UTR"}
 
-# cell, block, oracle, row label (family names follow the fig4d short-name
+# cell, block, oracle, row label (family names follow the fig4g short-name
 # convention); the one-line annotation is built from the frozen cells below
 ROWS = [
     ("D1", "decision", "mrl", "certified · EGFP random-50"),
@@ -152,14 +152,14 @@ def main() -> int:
             c = json.loads(line)
             cells[c["cell"]] = c
     assert len(cells) == 12 and all(c["expectation_met"] for c in cells.values()), (
-        "fig4e draws only the frozen all-met Exp-23 result"
+        "fig4b draws only the frozen all-met Exp-23 result"
     )
     for e in ("E1", "E2", "E3"):
         assert cells[e]["expectation_met"]
     assert cells["E1"]["detail"]["exact_match"]
     assert cells["E3"]["detail"]["error"]["type"] == "GatedActionError"
 
-    # renderer-measured text extents (the fig4b/fig4d convention)
+    # renderer-measured text extents (the fig4e/fig4g convention)
     probe = plt.figure(figsize=(4, 4))
 
     def w_mm(s: str) -> float:
@@ -309,11 +309,11 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4e_selective_gating.{ext}", format=ext,
+        fig.savefig(OUT_DIR / f"fig4b_selective_gating.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None,
                     facecolor="white", pad_inches=0)
     plt.close(fig)
-    print(f"fig4e -> {OUT_DIR / 'fig4e_selective_gating.pdf'} (+png 1200 dpi); "
+    print(f"fig4b -> {OUT_DIR / 'fig4b_selective_gating.pdf'} (+png 1200 dpi); "
           f"{n_met}/{len(cells)} frozen cells, all expectations met")
     return 0
 

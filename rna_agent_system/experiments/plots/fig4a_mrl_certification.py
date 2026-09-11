@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3f — MRL expression-oracle certification (forest dot + CI vs gates).
+"""Fig. 4a — MRL expression-oracle certification (forest dot + CI vs gates).
 
 The positive side of the capability profile: the GEMORNA 5′UTR MRL expression
 oracle on the three measured-MRL anchor families (Sample et al. 2019 MPRA).
@@ -24,7 +24,7 @@ Figure revision 2026-08-30 (user-directed): every text element pure black
 6-pt anti-aliasing); the chance/zero reference lines dropped — the
 certification reading rests on the pre-registered gates (kept, dashed,
 labelled in black), the chance level stays visible on the shared 0–1 metric
-axis and is stated in the Fig-3f caption (the fig2g second-revision
+axis and is stated in the Fig-4a caption (the fig2g second-revision
 convention); the two x-label second lines shortened — they had mutually
 overlapped at the inter-panel gap (the screening tier n's moved into the
 caption); row labels rewritten as the Sample-2019 5′UTR library names; value
@@ -33,8 +33,8 @@ rebalanced (wider inter-panel gap, shorter figure). PNG at 1200 dpi (Nature
 Methods line-art guidance) + vector PDF (fonttype 42).
 
 Data  : experiments/results/exp14_mrl_oracle_certification/summary.json
-Usage : python experiments/plots/fig3f_mrl_certification.py
-Output : experiments/plots/output/fig3f_mrl_certification.{pdf,png}
+Usage : python experiments/plots/fig4a_mrl_certification.py
+Output : experiments/plots/output/fig4a_mrl_certification.{pdf,png}
 """
 from __future__ import annotations
 
@@ -174,7 +174,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig3f_mrl_certification.{ext}"
+        out = OUT_DIR / f"fig4a_mrl_certification.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 3 composite — assemble the eight finished panels (a–h) into one figure.
+"""Fig. 3 composite — assemble the six finished panels (a–f) into one figure.
 
 Panel composition follows the Nature conventions surveyed in
 `relevant_references/` (DeepRare main Figs. 2–4, Nature 651, 2026): bold
@@ -10,20 +10,19 @@ one fixed column grid. Every panel carries the reset programme's single
 6-pt text style, so every panel is placed at scale 1.0 — no row is
 fit-scaled.
 
-Layout (2026-08-31, user-directed revision): a (screening balloon matrix)
-spans the full width; **b and c share row 2** — b is the tall 27-cell
-ranking dot plot, so panel c is embedded in its two-sub-row composite
-layout (`fig3c_docking_lollipop_composite.pdf`, rendered by
-`FIG3C_LAYOUT=composite python experiments/plots/fig3c_docking_lollipop.py`;
+Layout (2026-09-11, user-directed revision — one figure per subsection): a
+(screening balloon matrix) spans the full width; **b and c share row 2** —
+b is the tall 27-cell ranking dot plot, so panel c is embedded in its
+two-sub-row composite layout (`fig3c_docking_lollipop_composite.pdf`,
+rendered by `FIG3C_LAYOUT=composite python experiments/plots/fig3c_docking_lollipop.py`;
 the 19 lollipops wrap 11 + 8 at the SARS-CoV-2 RBD | PSMA group boundary)
 so the two fill the row edge to edge at uniform text scale; d and e share
 row 3 as **matched-height panels** (d re-rendered smaller, e re-rendered
 larger — 86.7 x 44.1 mm vs 85.5 x 41.4 mm — so the earlier height-mismatch
-blank band under e is gone; no data change); **f g h share one row drawn at
-one equal height** (the fig2 fgh-row convention: per-panel scales differ —
-≈ 0.69/0.64/0.81 — widths follow their aspects and the leftover width
-becomes even gutters; user direction — h does not need the full width, so
-the full-width closing panel of the first composite layout is retired).
+blank band under e is gone; no data change); f (confounded improvement,
+re-lettered from h the same day) closes the figure centred on the content
+width at scale 1.0 (the fig2 full-span convention; its text returns to the
+uniform 6-pt size after the former fit-row downscaling).
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
 placed just above-left of each panel corner (Nature style — no period, no
@@ -53,16 +52,21 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 # Panel PDFs in lettering order. Panel c is the composite-layout render
 # (see the module docstring); all other panels are the standalone
 # reset-programme panels (d and e re-rendered as matched-height panels for
-# row 3, same day, no data change).
+# row 3, same day, no data change). Re-lettered 2026-09-11 (user-directed):
+# confounded improvement h→f (last §2.3 panel), MRL certification f→g and
+# RNAsmol deployed-artifact fidelity g→h (both first cited in the CapGate
+# section §2.4) — panels stay in first-citation alphabetical order; no
+# panel content changed, only letters and file names. Same-day second
+# revision (the one-figure-per-subsection principle): the certification and
+# fidelity panels moved out of Fig. 3 into Fig. 4 (a/b there), leaving Fig. 3
+# the six failure-mode panels a–f.
 PANELS: dict[str, str] = {
     "a": "fig3a_oracle_screening.pdf",
     "b": "fig3b_oracle_ranking.pdf",
     "c": "fig3c_docking_lollipop_composite.pdf",
     "d": "fig3d_affinity_calibration.pdf",
     "e": "fig3e_claim_overreach.pdf",
-    "f": "fig3f_mrl_certification.pdf",
-    "g": "fig3g_rnasmol_fidelity.pdf",
-    "h": "fig3h_dissolution.pdf",
+    "f": "fig3f_dissolution.pdf",
 }
 
 # Row plan in strict reading order. Mode "full" centres one panel on the
@@ -76,7 +80,7 @@ ROWS: list[tuple[str, list[str]]] = [
     ("full", ["a"]),
     ("flush", ["b", "c"]),
     ("grid", ["d", "e"]),
-    ("fit", ["f", "g", "h"]),
+    ("full", ["f"]),
 ]
 
 # Grid constants (PDF points) — identical to the fig2 composite.

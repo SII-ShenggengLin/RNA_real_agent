@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 4f — production gate decisions by oracle (horizontal Cleveland dot
+"""Fig. 4h — production gate decisions by oracle (horizontal Cleveland dot
 plot; §2.4 实验 5, Exp 24).
 
 One row per oracle (rows ordered by total decision count, descending — the
@@ -30,8 +30,8 @@ downgrade mauve grey (#A99AAF); dumbbell connectors and gridlines non-data
 grey; all text pure black.
 
 Data  : experiments/results/exp24_audit_gate_stats/stats.json
-Usage : python experiments/plots/fig4f_gate_decisions.py
-Output : experiments/plots/output/fig4f_gate_decisions.{pdf,png}
+Usage : python experiments/plots/fig4h_gate_decisions.py
+Output : experiments/plots/output/fig4h_gate_decisions.{pdf,png}
 """
 from __future__ import annotations
 
@@ -223,7 +223,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig4f_gate_decisions.{ext}"
+        out = OUT_DIR / f"fig4h_gate_decisions.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white")
         print(f"written {out}")

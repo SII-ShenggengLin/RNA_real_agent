@@ -1,4 +1,4 @@
-"""Fig 4g — Exp 25: advisory quality review, paired strip (31 PA sessions × 3 arms).
+"""Fig 4i — Exp 25: advisory quality review, paired strip (31 PA sessions × 3 arms).
 
 One row per process-aware regression session (31 sessions PA_006–PA_036,
 grouped by workflow in the canonical workflow order, reviewed workflows
@@ -9,45 +9,62 @@ colour directly encodes the session's combined outcome × review state
 (no overlaid glyphs):
 
   sage green   = succeeds · review completed    (Review-on arm, reviewed
-                                                 workflows — 144 calls)
+                                                 workflows — 145 calls)
   grey blue    = succeeds · review unavailable  (outage arm, reviewed
-                                                 workflows — 144 calls
-                                                 absorbed, audit metadata only)
+                                                 workflows — 144 attempted
+                                                 calls absorbed, audit
+                                                 metadata only)
   warm grey    = succeeds · no review           (Review-off arm, and the
                                                  deterministic-exempt
                                                  workflows in every arm)
-  terracotta   = failed                         (PA_023 only, identically in
-                                                 all three arms — the
-                                                 inherited input-fixture gap)
+
+2026-09-11 PA_023 restore merge (user-directed; frozen Exp-25 corpus
+untouched): the frozen corpus's one exception — PA_023 turns 1–2 failed
+identically in all three arms on a pre-reset ephemeral-workspace input
+file never migrated into the tracked fixtures — is re-measured by the
+Exp-25b restore addendum (`experiments/results/exp25b_pa023_restore_addendum/`),
+which restores the file byte-identically from the task's own
+constants.UTR5_SEQUENCE and re-runs the session under the identical
+three-arm protocol: 3/3 turns succeed in every arm, per-turn outcomes
+identical across arms, on-arm 6 completed calls, outage-arm 6 failed
+attempts, zero retries. The panel draws the merged latest-record-wins
+state (31/31 succeed in every arm; the call totals are unchanged by the
+merge — review runs even on failed turns, so PA_023 contributed 6 on-arm
+calls and 6 outage-arm attempts in both eras, keeping 145 and 144); the
+frozen 30/31 measurement stays in the registers. No terracotta tile
+remains — the failed-state colour is kept in the map only as a defensive
+assert.
 
 2026-09-02 user-directed repair pass (same frozen Exp-25 records, no
 re-run):
   - every text element is pure black — the workflow group headers no
     longer pick up the workflow carpet colours and the category divider
-    draws in ink at 0.6 lw instead of de-facto grey (the fig4d
+    draws in ink at 0.6 lw instead of de-facto grey (the fig4e
     convention);
   - the arm headers were vertically misaligned (the one-line headers sat
     on the first of the two-line header's rows) and the whole panel was
     shifted left by a retry-annotation column that the zero-retry data
     never fills — the headers are now a fixed two-line block (arm name +
-    a per-arm numbers line "30/31 succeed · N calls", aligned across
+    a per-arm numbers line "31/31 succeed · N calls", aligned across
     arms) and the retry column is only reserved when retries exist;
   - second pass (same day, user-directed): the first repair's key split
     the encoding into tile fill × overlaid dot/ring glyphs with two
     lead-in rows — judged too complex; the encoding is now direct, one
-    colour per state, four plain colour swatches in a two-row key.
+    colour per state, plain colour swatches in a two-row key.
 
 Style (Nature conventions, the fig3/fig4 house style): no in-figure titles —
 the headline lives in the caption and the arm names are plain column
 headers; every text element one 6-pt pure-black style; colours only from
 palette rev 7; 1200-dpi PNG + vector PDF (fonttype 42); absolute-mm
 geometry; exact canvas (no tight crop); renderer-measured label widths
-inside a canvas-overflow assert (the fig4b/fig4e convention).
+inside a canvas-overflow assert (the fig4e/fig4g convention).
 
 Data  : experiments/results/exp25_quality_review_advisory/{records.jsonl,summary.json}
+        + experiments/results/exp25b_pa023_restore_addendum/records.jsonl
+          (the PA_023 latest-record-wins merge; see above)
         (+ pa_benchmarks.json for session order/workflows)
-Usage : python experiments/plots/fig4g_quality_advisory_strip.py
-Output : experiments/plots/output/fig4g_quality_advisory_strip.{pdf,png}
+Usage : python experiments/plots/fig4i_quality_advisory_strip.py
+Output : experiments/plots/output/fig4i_quality_advisory_strip.{pdf,png}
 """
 
 from __future__ import annotations
@@ -86,14 +103,15 @@ STATE_COLORS = {
     "completed": PALETTE_BY_NAME["sage_green"],   # succeeds · review completed
     "unavailable": PALETTE_BY_NAME["grey_blue"],  # succeeds · review unavailable
     "none": PALETTE_BY_NAME["warm_grey"],         # succeeds · no review
-    "fail": PALETTE_BY_NAME["terracotta"],        # failed
+    "fail": PALETTE_BY_NAME["terracotta"],        # failed (defensive only —
+    # the merged state carries no failed session; asserted in main())
 }
-STATE_ORDER = ("completed", "unavailable", "none", "fail")
+STATE_ORDER = ("completed", "unavailable", "none")
 STATE_LABELS = {
     "completed": "Succeeds · review completed",
     "unavailable": "Succeeds · review unavailable",
     "none": "Succeeds · no review",
-    "fail": "Failed (PA_023, all arms)",
+    "fail": "Failed",
 }
 
 plt.rcParams.update({
@@ -120,14 +138,41 @@ def text_w_mm(fig, s: str) -> float:
 
 
 def load_rows() -> list[dict]:
-    """Session rows in canonical workflow order → PA id order."""
+    """Session rows in canonical workflow order → PA id order.
+
+    The 2026-09-11 PA_023 restore merge: the frozen Exp-25 records supply
+    the 30 unaffected sessions; the three PA_023 rows come from the
+    Exp-25b restore addendum (latest-record-wins). The frozen rows are
+    asserted to carry the registered identical fixture-gap failure (2
+    failed turns in every arm) and the addendum rows to succeed 3/3, so
+    the merge can never silently mask a different failure.
+    """
     benchmarks = json.loads(BENCHMARKS.read_text(encoding="utf-8"))
     records = [
         json.loads(l)
         for l in (RESULTS / "records.jsonl").read_text(encoding="utf-8").splitlines()
         if l.strip()
     ]
+    addendum_path = (PROJECT_ROOT / "experiments" / "results"
+                     / "exp25b_pa023_restore_addendum" / "records.jsonl")
+    addendum = [
+        json.loads(l)
+        for l in addendum_path.read_text(encoding="utf-8").splitlines()
+        if l.strip()
+    ]
+    assert {a["arm"] for a in addendum} == set(ARM_ORDER) and all(
+        a["pa_id"] == "023" for a in addendum
+    ), "addendum must supply exactly the three PA_023 arm records"
+    assert all(a["session_success"] for a in addendum), "addendum PA_023 must succeed"
+    for r in records:  # the registered frozen failure, asserted not assumed
+        if r.get("pilot") or r["pa_id"] != "023":
+            continue
+        assert r["failed_turns"] == 2 and not r["session_success"], (
+            "frozen PA_023 rows must carry the registered 2-failed-turn gap"
+        )
     by_key = {(r["arm"], r["pa_id"]): r for r in records if not r.get("pilot")}
+    for a in addendum:  # latest-record-wins overlay
+        by_key[(a["arm"], a["pa_id"])] = a
 
     def wf_rank(pa: str) -> tuple[int, int, str]:
         # two-band layout: reviewed workflows above, deterministic-exempt
@@ -148,18 +193,31 @@ def load_rows() -> list[dict]:
     return rows
 
 
-def arm_stat_lines(summary: dict) -> dict[str, str]:
-    """Per-arm numbers line under each header: successes · review calls."""
-    head = summary["headline"]
-    n = head["n_sessions_per_arm"]
+def arm_stat_lines(rows: list[dict]) -> dict[str, str]:
+    """Per-arm numbers line under each header: successes · review calls.
+
+    Computed from the merged records (frozen 30 + PA_023 addendum) and
+    asserted against the merged-reporting registration: 31/31 succeed per
+    arm, on-arm 145 completed calls (unchanged — PA_023 contributed 6 in
+    both eras), outage-arm 148 failed attempts (frozen 144 with PA_023's
+    2 pre-review-failure attempts replaced by 6 restored-input attempts).
+    """
     lines = {}
     for arm in ARM_ORDER:
-        s = head["workflow_success_counts"][arm]
-        ok = summary["arms"][arm]["total_successful_review_calls"]
-        failed = summary["arms"][arm]["total_failed_review_calls"]
-        calls = ok if arm == "on" else failed if arm == "fail" else 0
-        suffix = {"off": "0 calls", "on": f"{calls} calls",
-                  "fail": f"{calls} failed"}[arm]
+        recs = [r["arms"][arm] for r in rows]
+        n = len(recs)
+        s = sum(1 for r in recs if r.get("session_success"))
+        ok = sum(r.get("total_successful_review_calls", 0) for r in recs)
+        failed = sum(r.get("total_failed_review_calls", 0) for r in recs)
+        assert n == 31 and s == 31, f"{arm}: merged state must be 31/31, got {s}/{n}"
+        if arm == "on":
+            assert ok == 145 and failed == 0, f"on-arm merged calls {ok}/{failed}"
+        elif arm == "fail":
+            assert ok == 0 and failed == 144, f"outage-arm merged attempts {ok}/{failed}"
+        else:
+            assert ok == 0 and failed == 0, f"off-arm merged calls {ok}/{failed}"
+        suffix = {"off": "0 calls", "on": f"{ok} calls",
+                  "fail": f"{failed} failed"}[arm]
         lines[arm] = f"{s}/{n} succeed · {suffix}"
     return lines
 
@@ -176,10 +234,9 @@ def cell_state(arm: str, reviewed: bool, success: bool) -> str:
 
 def main() -> int:
     rows = load_rows()
-    summary = json.loads((RESULTS / "summary.json").read_text(encoding="utf-8"))
     missing = [(arm, r["pa"]) for r in rows for arm in ARM_ORDER if r["arms"][arm] is None]
     assert not missing, f"missing records for {missing[:5]} — run the full campaign first"
-    stat_lines = arm_stat_lines(summary)
+    stat_lines = arm_stat_lines(rows)
     # the retry-annotation column only exists when the data has retries
     any_retries = any((rec["arms"][a].get("total_retry_count") or 0) > 0
                       for rec in rows for a in ARM_ORDER)
@@ -196,8 +253,8 @@ def main() -> int:
     hdr_w = max(text_w_mm(probe, t) for t in
                 list(ARM_HEADERS.values()) + list(stat_lines.values()))
     retry_w = text_w_mm(probe, "8·8·8") if any_retries else 0.0
-    col_ws = [max(text_w_mm(probe, STATE_LABELS[row[c]]) for row in key_rows)
-              for c in range(2)]
+    col_ws = [max(text_w_mm(probe, STATE_LABELS[row[c]]) for row in key_rows
+                  if len(row) > c) for c in range(2)]
     key_w = sum(TILE_W + SW_LABEL_GAP + w for w in col_ws) + ENTRY_GAP
     plt.close(probe)
 
@@ -285,6 +342,10 @@ def main() -> int:
             arm_rec = rec["arms"][arm]
             bx = label_right + GAP_TB + i * (block_w + block_gap)
             state = cell_state(arm, rec["reviewed"], bool(arm_rec.get("session_success")))
+            assert state != "fail", (
+                f"merged state must carry no failed session, found {state} on "
+                f"PA_{rec['pa']}/{arm}"
+            )
             ax.add_patch(Rectangle((bx, rec["y"]), block_w, row_h,
                                    facecolor=STATE_COLORS[state], edgecolor="none"))
         if any_retries:
@@ -312,12 +373,12 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4g_quality_advisory_strip.{ext}", dpi=1200)
+        fig.savefig(OUT_DIR / f"fig4i_quality_advisory_strip.{ext}", dpi=1200)
     plt.close(fig)
 
     # raster QA: exact canvas, no ink on the outer border
     from PIL import Image
-    im = Image.open(OUT_DIR / "fig4g_quality_advisory_strip.png")
+    im = Image.open(OUT_DIR / "fig4i_quality_advisory_strip.png")
     assert abs(im.width / 1200 * 25.4 - fig_w) < 0.05 and abs(im.height / 1200 * 25.4 - fig_h) < 0.05, \
         f"canvas mismatch: {im.size} vs {fig_w:.1f}×{fig_h:.1f} mm"
     px = im.convert("L")
@@ -325,9 +386,9 @@ def main() -> int:
     for edge in (px.crop((0, 0, w, 1)), px.crop((0, h - 1, w, h)),
                  px.crop((0, 0, 1, h)), px.crop((w - 1, 0, w, h))):
         assert edge.getextrema()[0] == 255, "ink at the outer border"
-    print(f"[fig4g] {fig_w:.1f} × {fig_h:.1f} mm, {len(rows)} sessions × 3 arms, "
+    print(f"[fig4i] {fig_w:.1f} × {fig_h:.1f} mm, {len(rows)} sessions × 3 arms, "
           f"retries {'shown' if any_retries else 'none (column dropped)'} — "
-          f"raster QA green → {OUT_DIR / 'fig4g_quality_advisory_strip.png'}")
+          f"raster QA green → {OUT_DIR / 'fig4i_quality_advisory_strip.png'}")
     return 0
 
 

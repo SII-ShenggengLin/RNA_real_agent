@@ -1,11 +1,11 @@
-"""Fig 4d — E3-M mRNA-side dual-arm re-run: per-task-family verdict strips.
+"""Fig 4g — E3-M mRNA-side dual-arm re-run: per-task-family verdict strips.
 
 One row per audit task (20 tasks grouped into the eight task families,
 trusted-deterministic families above the divider, untrusted-oracle families
 below), two column blocks (Ungated control arm / Gated treatment arm); one
 colour tile per published claim — sage = true positive, terracotta = false
 claim, warm grey = neutral relative-scope claim, dark warm grey = suppressed
-at the claim gate (the fig4b convention; one gated 3′UTR-stability claim in
+at the claim gate (the fig4e convention; one gated 3′UTR-stability claim in
 the DECISIONS-(bb) re-run); an outlined empty cell means
 the arm published no claim on that task (the gated arm's plan-layer blocks
 make the model abstain on the utr3/junction families — the mechanism this
@@ -13,7 +13,7 @@ panel shows).
 
 2026-09-01 user-directed repair pass:
   - the arm × verdict mosaic inset was removed (its counts are stated in the
-    Fig. 4d caption and main text — the fig4b precedent);
+    Fig. 4g caption and main text — the fig4e precedent);
   - all left labels rebuilt with renderer-measured text extents so family /
     target / category labels can never overlap; the four longest family
     labels wrap onto two lines;
@@ -30,7 +30,7 @@ re-run):
     caption), answering the "two left columns read too wide" review;
   - row labels made biologically explicit and cross-figure consistent:
     "Novel 5′UTR 7/11/13" (the prime the repair pass had dropped), and the
-    Sample-2019 libraries under their Fig. 3f names "Random 50-nt 5′UTRs" /
+    Sample-2019 libraries under their Fig. 4a names "Random 50-nt 5′UTRs" /
     "Varying-length human 5′UTRs"; family headers unwrapped to single lines
     ("3′UTR stability rank", "Cross-family MRL", "Junction quality", "MRL
     optimum", "Relative comparison");
@@ -65,8 +65,8 @@ geometry; exact canvas (no tight crop).
 
 Data  : experiments/results/exp18_mrna_claim_gating/summary.json
         (+ experiments/e18_audit_tasks_mrna.json for task order/labels)
-Usage : python experiments/plots/fig4d_mrna_family_strip.py
-Output : experiments/plots/output/fig4d_mrna_family_strip.{pdf,png}
+Usage : python experiments/plots/fig4g_mrna_family_strip.py
+Output : experiments/plots/output/fig4g_mrna_family_strip.{pdf,png}
 """
 
 from __future__ import annotations
@@ -121,7 +121,7 @@ FAMILY_LABELS = {
 # the two Sample-2019 libraries carry the compact fig4e short names (the
 # fig3f full names "Random 50-nt 5′UTRs" / "Varying-length human 5′UTRs"
 # alone set a 22.5-mm label column — shortened on same-day user review;
-# their full names remain in Fig. 3f and the Fig. 4e legend), and the
+# their full names remain in Fig. 4a and the Fig. 4b legend), and the
 # never-profiled families their e18 production numbering, with the 5′ prime.
 _ROW_LABEL_OVERRIDES = {
     "sample2019_egfp_random50": "EGFP random-50",
@@ -315,11 +315,11 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4d_mrna_family_strip.{ext}", format=ext,
+        fig.savefig(OUT_DIR / f"fig4g_mrna_family_strip.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None, facecolor="white")
     plt.close(fig)
     u, g = arms["ungated"], arms["gated"]
-    print(f"fig4d -> {OUT_DIR / 'fig4d_mrna_family_strip.pdf'} (+png 1200 dpi); "
+    print(f"fig4g -> {OUT_DIR / 'fig4g_mrna_family_strip.pdf'} (+png 1200 dpi); "
           f"canvas {fig_w:.1f} x {fig_h:.1f} mm; "
           f"ungated TP {u['TP']}/FP {u['FP']}/neutral {u['neutral']}, "
           f"gated TP {g['TP']}/FP {g['FP']}/neutral {g['neutral']}; "

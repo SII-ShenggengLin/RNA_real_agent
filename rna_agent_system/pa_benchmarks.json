@@ -672,7 +672,8 @@
     "constants": {
       "UTR5_SEQUENCE": "AGCGAAUGCGGAGGAAGAUGUACGUCGGUAUAAUCAUAUAAGGCGGGCACCGCUAAGAGCUAAAUUGGCCGUUCACUCCCACAUCGUAGGGAUCGCUAUUGAAACAGCCUUCAGUUCAAGUAUAGCGUUUCGUUGAGUUGCACUCGAAGCUACAGGCAGGGAGUUGGAGGUACUUGGCCCAAUGCCUCGCCCCUCUAGUUUUUGAGCGCUCUCCUUAAGCUAAUGAAUGUGGAAGGUCAACAAUGAGCACCUGCUUGGCUUUCGUAAUAGUCAUGGGACAAGACAUUGCCGUACUACGGUUAUAGGCUUUUGCGUUCAGUUUUUGACUUUUCUGUUGUCCUGGGCUUCACUAUGUGUCGCACAACACAGUAAUACGACCUACCCCCGCUAUACAGCCAAC",
       "MODE1_FILE": "data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/pa023_mode1_5utr.fa"
-    }
+    },
+    "legacy_input_note": "Turns 1-2 reference workspace/pa023_5utr.fa — an absolute path into the ephemeral workspace root registered in the pre-reset era (the file was never git-tracked; 291 commits checked). The sequence is preserved verbatim in this entry's constants.UTR5_SEQUENCE (the turn-3 fixture pa023_mode1_5utr.fa is its 100-300 window). The canonical copy now lives at data/benchmarks/RNA-BioBench-ProcessAware/fixtures/pa023_5utr.fa; copy it to workspace/pa023_5utr.fa before running PA_023 (the frozen exp8/exp24/exp25 corpora recorded turns 1-2 failing on its absence; restored 2026-09-11 and re-measured by experiments/exp25b_pa023_restore_addendum.py — see benchmarks README)."
   },
   "024": {
     "workflow": "full_length_mrna_design",

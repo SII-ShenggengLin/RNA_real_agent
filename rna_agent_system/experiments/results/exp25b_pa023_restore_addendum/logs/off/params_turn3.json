@@ -1,0 +1,5 @@
+{
+  "sequence_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/11_ires_prediction/pa023_mode1_5utr.fa",
+  "iresfinder_mode": 1,
+  "probability_threshold": 0.5
+}

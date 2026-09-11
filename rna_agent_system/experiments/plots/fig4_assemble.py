@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 4 composite — assemble the eight finished panels (a–h) into one figure.
+"""Fig. 4 composite — assemble the ten finished panels (a–j) into one figure.
 
 Panel composition follows the Nature conventions surveyed in
 `relevant_references/` (DeepRare main Figs. 2–5, Nature 651, 2026): bold
@@ -10,20 +10,33 @@ Every panel carries the reset programme's single 6-pt text style, so
 panels are placed at scale 1.0 unless a row must shrink to fit (the one
 exception below).
 
-Layout (2026-09-02): row 1 is a stack block — the two short Exp-17 bar
-panels stack in the left column (a over c) against the tall claim matrix
-b on the right; c is the tall-layout render
-(`FIG4C_LAYOUT=tall python experiments/plots/fig4c_overreach_events.py`,
+Layout (2026-09-11, second same-day revision — the CapGate subsection merge,
+user-directed: the selective-gating matrix panel moves up next to the
+certification panel it operationalizes, b = selective gating):
+row 1 pairs the subsection's two evidence-semantics panels — a (MRL
+certification) and b (selective-gating matrix) — one equal-height fit row
+(per-panel scales ≈ 1.15/0.73; the cert forest is drawn up and the matrix
+down to the shared band height, the widest aspect spread of any fit row in
+the figure set, accepted to keep the merged narrative on one band); row 2
+pairs fidelity c with the gating headline d as a second equal-height fit
+row (scales ≈ 0.95/0.84); row 3 pairs the tall claim matrix e with the
+overreach panel f — f is the tall-layout render
+(`FIG4F_LAYOUT=tall python experiments/plots/fig4f_overreach_events.py`,
 same frozen data, axes stretched vertically, no data change — the fig3c
-composite-layout convention) so the stack fills the row flush with b's
-height instead of leaving a blank band under c. Row 2 pairs the two
-claim-strip panels d (mRNA) and e (selective-gating matrix) as one centred
-group at scale 1.0. Row 3 draws f and h at one equal height (the fig2/fig3
-fgh-row convention: per-panel scales ≈ 0.83/0.91, leftover width becomes
-the gutter). Row 4 closes with the 31-session quality strip g centred on
-the content width (the fig2 full-span convention). Content width = 183 mm
+composite-layout convention) — top-aligned at scale 1.0, the ≈ 39 mm band
+under f the row's accepted underhang (the claim matrix is the tallest
+panel in the figure and no in-order partner matches its 105 mm height;
+the previous composite's stack workaround needed the headline panel,
+which now fills row 2). Row 4 pairs the campaign panels g (mRNA family
+strip) and h (production gate decisions) as one centred group at scale
+1.0 (≈ 16 mm underhang under h, the previous composite's accepted
+group-row underhang). Rows 5–6 close with the two wide strips at native
+scale — the 31-session quality strip i and the LLM-usage strip j — each
+centred on the content width (the fig2 full-span convention; the pair no
+longer shares a fit row because h moved up to row 4, and a shared fit
+band would shrink both to ≈ 0.6×). Content width = 183 mm
 (Nature double column, the fig3 composite width); every gutter is one
-COL_GAP, so no row carries a blank band.
+COL_GAP.
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
 placed just above-left of each panel corner (Nature style — no period, no
@@ -50,18 +63,27 @@ from palette import TEXT  # noqa: E402
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
-# Panel PDFs in lettering order. Panel c is the tall-layout render (see the
+# Panel PDFs in lettering order. Panel f is the tall-layout render (see the
 # module docstring); all other panels are the standalone reset-programme
-# panels.
+# panels. Re-lettered 2026-09-11 (user-directed, the CapGate-subsection
+# merge): the selective-gating matrix moves from g to b, next to the MRL
+# certification panel (a) whose capability grades it exercises; fidelity
+# b→c, headline c→d, claim matrix d→e, overreach e→f, mRNA strip f→g;
+# h/i/j keep their letters. No panel content changed, only letters and
+# file names (the 2026-09-11 first re-lettering had moved a/b in from
+# Fig. 3's 3g/3h and shifted the gating panels +2; frozen data files keep
+# their as-written names).
 PANELS: dict[str, str] = {
-    "a": "fig4a_claim_gating.pdf",
-    "b": "fig4b_claim_matrix.pdf",
-    "c": "fig4c_overreach_events_tall.pdf",
-    "d": "fig4d_mrna_family_strip.pdf",
-    "e": "fig4e_selective_gating.pdf",
-    "f": "fig4f_gate_decisions.pdf",
-    "g": "fig4g_quality_advisory_strip.pdf",
-    "h": "fig4h_llm_usage_bubble.pdf",
+    "a": "fig4a_mrl_certification.pdf",
+    "b": "fig4b_selective_gating.pdf",
+    "c": "fig4c_rnasmol_fidelity.pdf",
+    "d": "fig4d_claim_gating.pdf",
+    "e": "fig4e_claim_matrix.pdf",
+    "f": "fig4f_overreach_events_tall.pdf",
+    "g": "fig4g_mrna_family_strip.pdf",
+    "h": "fig4h_gate_decisions.pdf",
+    "i": "fig4i_quality_advisory_strip.pdf",
+    "j": "fig4j_llm_usage_bubble.pdf",
 }
 
 # Row plan in strict reading order. "stack" piles the left-column letters
@@ -73,10 +95,12 @@ PANELS: dict[str, str] = {
 # leftover width become the gutter (the fig2/fig3 fgh-row convention);
 # "full" centres one panel on the content width.
 ROWS: list[tuple[str, object]] = [
-    ("stack", (["a", "c"], "b")),
-    ("group", ["d", "e"]),
-    ("fit", ["f", "h"]),
-    ("full", ["g"]),
+    ("fit", ["a", "b"]),
+    ("fit", ["c", "d"]),
+    ("group", ["e", "f"]),
+    ("group", ["g", "h"]),
+    ("full", ["i"]),
+    ("full", ["j"]),
 ]
 
 # Grid constants (PDF points) — identical to the fig2/fig3 composites.
@@ -94,6 +118,19 @@ INK = tuple(int(TEXT[i : i + 2], 16) / 255 for i in (1, 3, 5))
 
 
 def main() -> None:
+    # every lettered panel must be placed exactly once (guards the row plan
+    # against dropped panels when letters shift)
+    placed_letters: list[str] = []
+    for mode, spec in ROWS:
+        if mode == "stack":
+            col_letters, right = spec  # type: ignore[misc]
+            placed_letters.extend([*col_letters, right])
+        else:
+            placed_letters.extend(spec)  # type: ignore[arg-type]
+    assert sorted(placed_letters) == sorted(PANELS), (
+        f"row plan places {sorted(placed_letters)} but panels are {sorted(PANELS)}"
+    )
+
     sources: dict[str, fitz.Document] = {}
     sizes: dict[str, tuple[float, float]] = {}
     for letter, name in PANELS.items():

@@ -1,4 +1,4 @@
-"""Fig 4h — per-campaign LLM usage, bubble strip (Exp 25 companion panel).
+"""Fig 4j — per-campaign LLM usage, bubble strip (Exp 25 companion panel).
 
 Campaigns re-run to date as rows; one bubble per executed unit (suite task,
 task×arm run, decision-matrix cell or PA session — the right-hand annotation
@@ -29,8 +29,8 @@ canvas (no tight crop); renderer-measured label widths inside a
 canvas-overflow assert.
 
 Data  : experiments/results/exp25_quality_review_advisory/fig4h_llm_usage.json
-Usage : python experiments/plots/fig4h_llm_usage_bubble.py
-Output : experiments/plots/output/fig4h_llm_usage_bubble.{pdf,png}
+Usage : python experiments/plots/fig4j_llm_usage_bubble.py
+Output : experiments/plots/output/fig4j_llm_usage_bubble.{pdf,png}
 """
 
 from __future__ import annotations
@@ -215,12 +215,12 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT_DIR / f"fig4h_llm_usage_bubble.{ext}", dpi=1200)
+        fig.savefig(OUT_DIR / f"fig4j_llm_usage_bubble.{ext}", dpi=1200)
     plt.close(fig)
 
     # raster QA: exact canvas, no ink on the outer border
     from PIL import Image
-    im = Image.open(OUT_DIR / "fig4h_llm_usage_bubble.png")
+    im = Image.open(OUT_DIR / "fig4j_llm_usage_bubble.png")
     assert abs(im.width / 1200 * 25.4 - fig_w) < 0.05 and abs(im.height / 1200 * 25.4 - fig_h) < 0.05, \
         f"canvas mismatch: {im.size} vs {fig_w:.1f}×{fig_h:.1f} mm"
     px = im.convert("L")
@@ -229,7 +229,7 @@ def main() -> int:
                  px.crop((0, 0, 1, h)), px.crop((w - 1, 0, w, h))):
         assert edge.getextrema()[0] == 255, "ink at the outer border"
     print(f"[fig4h] {fig_w:.1f} × {fig_h:.1f} mm, {len(campaigns)} campaign rows — "
-          f"raster QA green → {OUT_DIR / 'fig4h_llm_usage_bubble.png'}")
+          f"raster QA green → {OUT_DIR / 'fig4j_llm_usage_bubble.png'}")
     return 0
 
 
