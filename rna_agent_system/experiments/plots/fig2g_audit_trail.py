@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""Fig. 2h — production audit trail: representative-session milestone track
+"""Fig. 2g — production audit trail: representative-session milestone track
 (Exp-24 re-run).
+
+Re-lettered h → g on 2026-09-11 (user direction) when the IRES panel moved
+out of Fig. 2 to Supplementary Fig. S1; data and rendering unchanged.
 
 Single panel: the session selected by the pre-registered rule (multi-turn PA
 sessions; most distinct gate verdict types; ties → median event count;
@@ -24,8 +27,8 @@ assemblies khaki; failed calls the held-out dark warm grey; lane/gap
 reference lines non-data grey; all text ink black.
 
 Data  : experiments/results/exp24_audit_gate_stats/representative_session.json
-Usage : python experiments/plots/fig2h_audit_trail.py
-Output : experiments/plots/output/fig2h_audit_trail.{pdf,png}
+Usage : python experiments/plots/fig2g_audit_trail.py
+Output : experiments/plots/output/fig2g_audit_trail.{pdf,png}
 """
 from __future__ import annotations
 
@@ -173,7 +176,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig2h_audit_trail.{ext}"
+        out = OUT_DIR / f"fig2g_audit_trail.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")

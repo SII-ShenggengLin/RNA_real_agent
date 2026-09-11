@@ -1,0 +1,476 @@
+{
+ "arm_sizes": {
+  "random": 200,
+  "vaccine": 2,
+  "wt": 20
+ },
+ "arms_total_score": {
+  "random": {
+   "median": -110.8085,
+   "n": 200,
+   "q1": -155.5846,
+   "q3": -58.1728
+  },
+  "vaccine": {
+   "median": 332.7147,
+   "n": 2,
+   "q1": 224.6218,
+   "q3": 440.8076
+  },
+  "wt": {
+   "median": -43.0796,
+   "n": 20,
+   "q1": -137.8096,
+   "q3": 9.5932
+  }
+ },
+ "cai_species": "Homo sapiens",
+ "components": {
+  "cai_score": {
+   "arms": {
+    "random": {
+     "median": 0.6797,
+     "n": 200,
+     "q1": 0.6624,
+     "q3": 0.6905
+    },
+    "vaccine": {
+     "median": 0.9651,
+     "n": 2,
+     "q1": 0.9447,
+     "q3": 0.9854
+    },
+    "wt": {
+     "median": 0.7251,
+     "n": 20,
+     "q1": 0.6994,
+     "q3": 0.817
+    }
+   },
+   "vaccine_plus_wt_vs_random": {
+    "cliffs_delta": 0.7395,
+    "mannwhitney_p": 1.2847342098689262e-08,
+    "median_x": 0.7463,
+    "median_y": 0.6797,
+    "n_x": 22,
+    "n_y": 200
+   },
+   "vaccine_vs_random": {
+    "cliffs_delta": 1.0,
+    "mannwhitney_p": 9.851731441800897e-05,
+    "median_x": 0.9651,
+    "median_y": 0.6797,
+    "n_x": 2,
+    "n_y": 200
+   },
+   "wt_vs_random": {
+    "cliffs_delta": 0.7135,
+    "mannwhitney_p": 1.4740724317307136e-07,
+    "median_x": 0.7251,
+    "median_y": 0.6797,
+    "n_x": 20,
+    "n_y": 200
+   }
+  },
+  "gc_content": {
+   "arms": {
+    "random": {
+     "median": 0.4715,
+     "n": 200,
+     "q1": 0.4548,
+     "q3": 0.4991
+    },
+    "vaccine": {
+     "median": 0.5966,
+     "n": 2,
+     "q1": 0.5568,
+     "q3": 0.6365
+    },
+    "wt": {
+     "median": 0.4501,
+     "n": 20,
+     "q1": 0.392,
+     "q3": 0.5629
+    }
+   },
+   "vaccine_plus_wt_vs_random": {
+    "cliffs_delta": 0.0032,
+    "mannwhitney_p": 0.9818644451046118,
+    "median_x": 0.4705,
+    "median_y": 0.4715,
+    "n_x": 22,
+    "n_y": 200
+   },
+   "vaccine_vs_random": {
+    "cliffs_delta": 1.0,
+    "mannwhitney_p": 0.015297154518777945,
+    "median_x": 0.5966,
+    "median_y": 0.4715,
+    "n_x": 2,
+    "n_y": 200
+   },
+   "wt_vs_random": {
+    "cliffs_delta": -0.0965,
+    "mannwhitney_p": 0.47817042552312117,
+    "median_x": 0.4501,
+    "median_y": 0.4715,
+    "n_x": 20,
+    "n_y": 200
+   }
+  },
+  "mfe_kcal_per_mol": {
+   "arms": {
+    "random": {
+     "median": -58.39,
+     "n": 200,
+     "q1": -101.41,
+     "q3": -33.545
+    },
+    "vaccine": {
+     "median": -378.065,
+     "n": 2,
+     "q1": -459.3125,
+     "q3": -296.8175
+    },
+    "wt": {
+     "median": -67.74,
+     "n": 20,
+     "q1": -106.3525,
+     "q3": -45.5025
+    }
+   },
+   "vaccine_plus_wt_vs_random": {
+    "cliffs_delta": -0.1791,
+    "mannwhitney_p": 0.1687839731628752,
+    "median_x": -72.865,
+    "median_y": -58.39,
+    "n_x": 22,
+    "n_y": 200
+   },
+   "vaccine_vs_random": {
+    "cliffs_delta": -1.0,
+    "mannwhitney_p": 0.015298010129380838,
+    "median_x": -378.065,
+    "median_y": -58.39,
+    "n_x": 2,
+    "n_y": 200
+   },
+   "wt_vs_random": {
+    "cliffs_delta": -0.097,
+    "mannwhitney_p": 0.47589027845691323,
+    "median_x": -67.74,
+    "median_y": -58.39,
+    "n_x": 20,
+    "n_y": 200
+   }
+  },
+  "mfe_per_nt": {
+   "arms": {
+    "random": {
+     "median": -0.0473,
+     "n": 200,
+     "q1": -0.06,
+     "q3": -0.0394
+    },
+    "vaccine": {
+     "median": -0.099,
+     "n": 2,
+     "q1": -0.1203,
+     "q3": -0.0777
+    },
+    "wt": {
+     "median": -0.0508,
+     "n": 20,
+     "q1": -0.0966,
+     "q3": -0.0358
+    }
+   },
+   "vaccine_plus_wt_vs_random": {
+    "cliffs_delta": -0.2195,
+    "mannwhitney_p": 0.09153308915034947,
+    "median_x": -0.0638,
+    "median_y": -0.0473,
+    "n_x": 22,
+    "n_y": 200
+   },
+   "vaccine_vs_random": {
+    "cliffs_delta": -0.99,
+    "mannwhitney_p": 0.0003940692576720359,
+    "median_x": -0.099,
+    "median_y": -0.0473,
+    "n_x": 2,
+    "n_y": 200
+   },
+   "wt_vs_random": {
+    "cliffs_delta": -0.1425,
+    "mannwhitney_p": 0.2945435734207976,
+    "median_x": -0.0508,
+    "median_y": -0.0473,
+    "n_x": 20,
+    "n_y": 200
+   }
+  }
+ },
+ "experiment": "exp39_scoring_anchor_direction",
+ "n_failed": 0,
+ "n_records": 222,
+ "notes": "Pooled total_score contrasts mix lengths across proteins (total_score scales with length); the per-target stratified contrast is the length-controlled primary. Vaccine n = 2 — its Mann–Whitney P is descriptive only.",
+ "pooled_comparisons_total_score": {
+  "vaccine_plus_wt_vs_random": {
+   "cliffs_delta": 0.4291,
+   "mannwhitney_p": 0.0009684248114476448,
+   "median_x": -28.5548,
+   "median_y": -110.8085,
+   "n_x": 22,
+   "n_y": 200
+  },
+  "vaccine_vs_random": {
+   "cliffs_delta": 1.0,
+   "mannwhitney_p": 9.851731441800897e-05,
+   "median_x": 332.7147,
+   "median_y": -110.8085,
+   "n_x": 2,
+   "n_y": 200
+  },
+  "vaccine_vs_spike_random": {
+   "cliffs_delta": 1.0,
+   "mannwhitney_p": 0.030303030303030304,
+   "median_x": 332.7147,
+   "median_y": -320.0124,
+   "n_x": 2,
+   "n_y": 10
+  },
+  "vaccine_vs_wt": {
+   "cliffs_delta": 1.0,
+   "mannwhitney_p": 0.008658008658008658,
+   "median_x": 332.7147,
+   "median_y": -43.0796,
+   "n_x": 2,
+   "n_y": 20
+  },
+  "wt_vs_random": {
+   "cliffs_delta": 0.372,
+   "mannwhitney_p": 0.006156323360043608,
+   "median_x": -43.0796,
+   "median_y": -110.8085,
+   "n_x": 20,
+   "n_y": 200
+  }
+ },
+ "primary_stratified": {
+  "median_cliffs_delta": 1.0,
+  "median_delta_vs_median": 37.9606,
+  "metric": "total_score",
+  "n_targets": 20,
+  "n_wt_above_all_draws": 12,
+  "n_wt_above_random_median": 15,
+  "per_target": [
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 127.66277974929334,
+    "n_draws": 10,
+    "random_median_total_score": -116.19945400372734,
+    "target_id": "A1AT",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 11.463325745565996
+   },
+   {
+    "cliffs_delta": 0.8,
+    "delta_vs_median": 15.259728798025776,
+    "n_draws": 10,
+    "random_median_total_score": -144.42862396269567,
+    "target_id": "Albumin",
+    "wt_above_all_draws": false,
+    "wt_above_median": true,
+    "wt_total_score": -129.1688951646699
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 145.72818974537125,
+    "n_draws": 10,
+    "random_median_total_score": -163.78244820464994,
+    "target_id": "Beta_galactosidase",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": -18.054258459278685
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 83.60607607217169,
+    "n_draws": 10,
+    "random_median_total_score": -46.17092809747778,
+    "target_id": "EPO",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 37.43514797469391
+   },
+   {
+    "cliffs_delta": -1.0,
+    "delta_vs_median": -19.59299923009233,
+    "n_draws": 10,
+    "random_median_total_score": -55.01551671658319,
+    "target_id": "GFP",
+    "wt_above_all_draws": false,
+    "wt_above_median": false,
+    "wt_total_score": -74.60851594667552
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 68.58557061640232,
+    "n_draws": 10,
+    "random_median_total_score": -64.60275307099488,
+    "target_id": "Growth_hormone",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 3.9828175454074355
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 477.1959630001917,
+    "n_draws": 10,
+    "random_median_total_score": -220.97554841436724,
+    "target_id": "HER2",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 256.2204145858244
+   },
+   {
+    "cliffs_delta": 0.2,
+    "delta_vs_median": 5.05643602108654,
+    "n_draws": 10,
+    "random_median_total_score": -204.14873929673257,
+    "target_id": "HIV-1_Env_gp120",
+    "wt_above_all_draws": false,
+    "wt_above_median": true,
+    "wt_total_score": -199.09230327564603
+   },
+   {
+    "cliffs_delta": -1.0,
+    "delta_vs_median": -32.76879979610125,
+    "n_draws": 10,
+    "random_median_total_score": -112.83546377082307,
+    "target_id": "HPV16_L1",
+    "wt_above_all_draws": false,
+    "wt_above_median": false,
+    "wt_total_score": -145.60426356692432
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 58.23398976014296,
+    "n_draws": 10,
+    "random_median_total_score": -56.01407715344376,
+    "target_id": "IFN_alpha_2a",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 2.2199126066992036
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 8.120538908805727,
+    "n_draws": 10,
+    "random_median_total_score": -55.224450637532385,
+    "target_id": "IL-2",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": -47.10391172872666
+   },
+   {
+    "cliffs_delta": 0.2,
+    "delta_vs_median": 5.230012685775108,
+    "n_draws": 10,
+    "random_median_total_score": -139.39243757991133,
+    "target_id": "Influenza_HA_H1N1",
+    "wt_above_all_draws": false,
+    "wt_above_median": true,
+    "wt_total_score": -134.16242489413622
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 53.363950128541696,
+    "n_draws": 10,
+    "random_median_total_score": -21.108247262619322,
+    "target_id": "Insulin",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 32.25570286592237
+   },
+   {
+    "cliffs_delta": -1.0,
+    "delta_vs_median": -16.018403504893982,
+    "n_draws": 10,
+    "random_median_total_score": -123.00697144122996,
+    "target_id": "Luciferase",
+    "wt_above_all_draws": false,
+    "wt_above_median": false,
+    "wt_total_score": -139.02537494612395
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 23.960845325807455,
+    "n_draws": 10,
+    "random_median_total_score": -95.49782477421849,
+    "target_id": "OTC",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": -71.53697944841103
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 51.96026212391557,
+    "n_draws": 10,
+    "random_median_total_score": -91.01558021268646,
+    "target_id": "Ovalbumin",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": -39.05531808877089
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 88.05441553713243,
+    "n_draws": 10,
+    "random_median_total_score": -49.805016127001046,
+    "target_id": "PDGFB",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": 38.24939941013139
+   },
+   {
+    "cliffs_delta": -1.0,
+    "delta_vs_median": -42.85501689963911,
+    "n_draws": 10,
+    "random_median_total_score": -164.08263882991574,
+    "target_id": "RSV_F_protein",
+    "wt_above_all_draws": false,
+    "wt_above_median": false,
+    "wt_total_score": -206.93765572955485
+   },
+   {
+    "cliffs_delta": -0.4,
+    "delta_vs_median": -8.588061868042587,
+    "n_draws": 10,
+    "random_median_total_score": -320.01235910173557,
+    "target_id": "SARS-CoV-2_Spike_WT",
+    "wt_above_all_draws": false,
+    "wt_above_median": false,
+    "wt_total_score": -328.60042096977816
+   },
+   {
+    "cliffs_delta": 1.0,
+    "delta_vs_median": 123.52794547250855,
+    "n_draws": 10,
+    "random_median_total_score": -135.0250110651518,
+    "target_id": "Transferrin",
+    "wt_above_all_draws": true,
+    "wt_above_median": true,
+    "wt_total_score": -11.497065592643253
+   }
+  ],
+  "sign_test_p": 0.04138946533203125,
+  "wilcoxon_signed_rank_p_on_delta_vs_median": 0.00830841064453125
+ },
+ "random_arm": "10 seeded synonymous draws per WT (uniform, standard code, seed 'exp2:<target>:<draw>') — regenerates the frozen Exp-2 null corpus verbatim",
+ "scoring_path": "ToolExecutor.run_tool: compute_rna_sequence_gc_content (:8020) + predict_rna_secondary_structure_with_linearfold (:8015) + compute_cai_for_cds_sequence (Kazusa, Homo sapiens); total_score = -mfe + codon_count*log(CAI) via agent_core.sequence_utils.score_mrna_candidate",
+ "vaccine_arm": "BNT162b2 / mRNA-1273 putative assembled contigs, longest-ORF extraction as registered in Exp 37, terminal stop stripped",
+ "workflow": "mrna_sequence_scoring"
+}

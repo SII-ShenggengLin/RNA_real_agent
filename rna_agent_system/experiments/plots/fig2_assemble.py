@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 2 composite — assemble the nine finished panels (a–i) into one figure.
+"""Fig. 2 composite — assemble the eight finished panels (a–h) into one figure.
 
 Panel composition follows the Nature conventions surveyed in
 `relevant_references/` (DeepRare Fig. 2 / Fig. 4): bold lowercase panel
@@ -8,15 +8,16 @@ column grid, rows top-aligned so the letters sit on one line per row.
 Every panel carries the reset programme's single 6-pt ink-black text
 style, so all panels share one scale unless a row must shrink to fit.
 
-Layout (2026-08-28, user-directed): a (tile carpet) spans the full
-width; b c and d e flow two per row at scale 1.0, each centred in its
-column; **f g h share one row drawn at one equal height** (f's squarer
-aspect made it look bigger than g/h under a uniform row scale; per-panel
-scales differ, ≈ 0.59/0.67/0.71, widths follow their aspects and the
-leftover width becomes even gutters), sized so the row fills edge to
-edge; i (ECDF) closes the figure full width. Panel lettering follows
-the 2026-08-28 letter swap (audit trail = h, runtime ECDF = i), so the
-composite reads in strict lettering order a → i.
+Layout (2026-09-11, user-directed re-lettering): the former panel e (IRES
+literature-panel ROC) moved out of Fig. 2 to Supplementary Fig. S1
+(`figS1_ires_panel.py`, same frozen data and rendering); the former f–i
+panels are re-lettered e–h. a (tile carpet) spans the full width; b c,
+d e and f g flow two per row at scale 1.0, each centred in its column —
+with only two panels left on the old f g h equal-height "fit" row, that
+row reverts to the standard two-per-row convention, so every panel now
+draws at its natural size on one uniform text scale; h (ECDF) closes the
+figure full width. The composite reads in strict lettering order a → h.
+(The generic "fit" row machinery below is retained but currently unused.)
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (#1A1A1A),
 placed just above-left of each panel corner (Nature style — no period,
@@ -50,11 +51,10 @@ PANELS: dict[str, str] = {
     "b": "fig2b_cai.pdf",
     "c": "fig2c_mfe_per_nt.pdf",
     "d": "fig2d_inverse_folding.pdf",
-    "e": "fig2e_ires_roc.pdf",
-    "f": "fig2f_sirna_offtarget.pdf",
-    "g": "fig2g_rnasmol_boundary.pdf",
-    "h": "fig2h_audit_trail.pdf",
-    "i": "fig2i_runtime_ecdf.pdf",
+    "e": "fig2e_sirna_offtarget.pdf",
+    "f": "fig2f_rnasmol_boundary.pdf",
+    "g": "fig2g_audit_trail.pdf",
+    "h": "fig2h_runtime_ecdf.pdf",
 }
 
 # Row plan: (panels, scale). Panels are (letter, span) with span 2 =
@@ -65,8 +65,8 @@ ROWS: list[tuple[list[tuple[str, int]], float | str]] = [
     ([("a", 2)], 1.0),
     ([("b", 1), ("c", 1)], 1.0),
     ([("d", 1), ("e", 1)], 1.0),
-    ([("f", 1), ("g", 1), ("h", 1)], "fit"),
-    ([("i", 2)], 1.0),
+    ([("f", 1), ("g", 1)], 1.0),
+    ([("h", 2)], 1.0),
 ]
 
 # Grid constants (PDF points).

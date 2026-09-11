@@ -146,11 +146,15 @@ Each dataset includes a `schema_version` field in its manifest. Current versions
 | RNA-BioBench-Platform | 2.0.0 |
 | RNA-BioBench-ProcessAware | 1.20.0 |
 
+### Known legacy naming (registered 2026-09-11)
+
+- `RNA-BioBench-Platform/tasks/04_sirna_design/04_sirna_design_013_blast_identity_70.json`: the task id and `description` predate the platform default and are retained verbatim because the frozen Exp-6 records embed the description byte-for-byte. The bowtie2 score floor `G,10,4` is the platform default (`agent_core/workflows/sirna_design.py`), not a task-specific strict threshold, and "identity-70" is only an analogy with the BLAST `perc_identity` floor. The task's actual edge character is its synthetic target — a verbatim 86-nt fragment of the segmentally duplicated human lncRNA locus DDX11L2/DDX11L16; see the task JSON's `legacy_name_note` field and the Exp-6 frozen records.
+
 ## Citation
 
 If you use these datasets, please cite the RNADesignAgent paper (in preparation):
 
-> RNADesignAgent: a tool-first agent platform for RNA design with bounded multi-module coordination
+> A multi-agent system for RNA design with capability-gated prediction and constraint-navigated generation
 
 ## License
 

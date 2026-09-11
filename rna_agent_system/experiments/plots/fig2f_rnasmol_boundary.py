@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Fig. 2g — small-molecule oracle two-sided boundary (forest dot + CI).
+"""Fig. 2f — small-molecule oracle two-sided boundary (forest dot + CI).
+
+Re-lettered g → f on 2026-09-11 (user direction) when the IRES panel moved
+out of Fig. 2 to Supplementary Fig. S1; data and rendering unchanged.
 
 Four AUROC rows on one axis: the deployed RNAsmol service on its own official
 held-out test splits (in-distribution) versus the literature short-aptamer
@@ -9,7 +12,7 @@ CIs; the dot is the point AUROC, printed with its CI directly above each dot.
 Colours (palette rev 7): in-distribution rows in the RNA–small-molecule
 workflow's khaki; out-of-distribution rows in the held-out dark warm grey
 (the palette's neutral-dark semantic for undemonstrated power, matching the
-fig2d miss / fig2f nonzero convention).
+fig2d miss / fig2e nonzero convention).
 
 Figure revision 2026-08-28 (user-directed, second revision): removed the
 in-figure title (Nature style — the headline lives in the caption, panels
@@ -22,8 +25,8 @@ thinner CI bars; x-axis extended past 1 so the CI caps no longer touch the
 panel edge.
 
 Data  : experiments/results/exp7_rnasmol_boundary/summary.json
-Usage : python experiments/plots/fig2g_rnasmol_boundary.py
-Output : experiments/plots/output/fig2g_rnasmol_boundary.{pdf,png}
+Usage : python experiments/plots/fig2f_rnasmol_boundary.py
+Output : experiments/plots/output/fig2f_rnasmol_boundary.{pdf,png}
 """
 from __future__ import annotations
 
@@ -107,7 +110,7 @@ def main() -> int:
         },
     ]
 
-    fig_w, fig_h = 88 / 25.4, 58 / 25.4  # single-column panel (fig2b–f geometry)
+    fig_w, fig_h = 88 / 25.4, 58 / 25.4  # single-column panel (fig2b–g geometry)
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     # absolute-mm geometry: 24 mm label column | plot to the right edge
     ax = fig.add_axes([
@@ -151,7 +154,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig2g_rnasmol_boundary.{ext}"
+        out = OUT_DIR / f"fig2f_rnasmol_boundary.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")

@@ -1,0 +1,1149 @@
+{
+ "data_source": "experiments/results/exp24_production_campaign/lane_07_rna_tertiary_structure.jsonl + session workflow_results JSONs",
+ "errors": [],
+ "experiment": "exp38_tertiary_validity_pool",
+ "n_errors": 0,
+ "n_tasks": 20,
+ "n_tasks_with_any_pass": 12,
+ "n_tasks_with_records": 20,
+ "notes": "Zero new computation: every value re-read from the frozen campaign session artifacts. alignment_rmsd is the RhoFold refold of the designed sequence vs the task's input reference chain; designed sequences deliberately differ from the reference sequence (recovery_rate < 1), so the RMSD axis is an inverse-folding fidelity bound — reported as measured, mixed/negative outcomes included.",
+ "per_reference": {
+  "1EHZ": {
+   "n_candidates": 5,
+   "n_pass_plddt": 5,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 4,
+   "n_rmsd_gated": 1,
+   "n_tasks": 3,
+   "pass_rate": 0.8,
+   "plddt": {
+    "max": 78.96432266009853,
+    "mean": 78.42241390375133,
+    "median": 78.96432266009853,
+    "min": 77.60955076923052,
+    "n": 5
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 0.9921052631578947,
+    "median": 0.9868421052631579,
+    "min": 0.9868421052631579,
+    "n": 5
+   },
+   "rmsd": {
+    "max": 21.007848739624023,
+    "mean": 20.990100479125978,
+    "median": 21.007848739624023,
+    "min": 20.963478088378906,
+    "n": 5
+   },
+   "tm_score": {
+    "max": 0.018860077363765743,
+    "mean": 0.01867713253889506,
+    "median": 0.018555169322314605,
+    "min": 0.018555169322314605,
+    "n": 5
+   }
+  },
+  "1F7U": {
+   "n_candidates": 14,
+   "n_pass_plddt": 14,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 14,
+   "n_rmsd_gated": 0,
+   "n_tasks": 2,
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 84.03200246457205,
+    "mean": 81.88149119334726,
+    "median": 82.5952036744758,
+    "min": 71.2349012345681,
+    "n": 14
+   },
+   "recovery_rate": {
+    "max": 0.8947,
+    "mean": 0.7969872180451129,
+    "median": 0.8026315789473685,
+    "min": 0.7105263157894737,
+    "n": 14
+   },
+   "rmsd": {
+    "max": 21.34510612487793,
+    "mean": 21.21752166748047,
+    "median": 21.222769737243652,
+    "min": 21.06462287902832,
+    "n": 14
+   },
+   "tm_score": {
+    "max": 0.030212665284972982,
+    "mean": 0.025669396879150513,
+    "median": 0.025781800646438383,
+    "min": 0.022692417135752364,
+    "n": 14
+   }
+  },
+  "1GID": {
+   "n_candidates": 12,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 1,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 6,
+   "n_tasks": 3,
+   "pass_rate": 0.16666666666666666,
+   "plddt": {
+    "max": 70.21081017149615,
+    "mean": 34.38607814594602,
+    "median": 28.25320880768677,
+    "min": 24.632263368390255,
+    "n": 12
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 0.660337552742616,
+    "median": 0.5917721518987342,
+    "min": 0.569620253164557,
+    "n": 12
+   },
+   "rmsd": {
+    "max": 28.425979614257812,
+    "mean": 18.624995946884155,
+    "median": 19.974703788757324,
+    "min": 2.641885757446289,
+    "n": 12
+   },
+   "tm_score": {
+    "max": 0.1756626122425692,
+    "mean": 0.06792575662234022,
+    "median": 0.04976908145808958,
+    "min": 0.022375598794152764,
+    "n": 12
+   }
+  },
+  "1HR2": {
+   "n_candidates": 11,
+   "n_pass_plddt": 5,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 3,
+   "n_rmsd_gated": 7,
+   "n_tasks": 3,
+   "pass_rate": 0.2727272727272727,
+   "plddt": {
+    "max": 70.73214834515332,
+    "mean": 46.15618404796428,
+    "median": 27.410972531551764,
+    "min": 24.642171589728814,
+    "n": 11
+   },
+   "recovery_rate": {
+    "max": 0.9905,
+    "mean": 0.787541847041847,
+    "median": 0.6412698412698413,
+    "min": 0.6095238095238096,
+    "n": 11
+   },
+   "rmsd": {
+    "max": 27.99635887145996,
+    "mean": 16.627868175506592,
+    "median": 23.65528106689453,
+    "min": 5.712854385375977,
+    "n": 11
+   },
+   "tm_score": {
+    "max": 0.17973715122594225,
+    "mean": 0.09384832878258687,
+    "median": 0.02880745400250306,
+    "min": 0.02061522689536191,
+    "n": 11
+   }
+  },
+  "1MME": {
+   "n_candidates": 18,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "n_tasks": 3,
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 52.10283125707827,
+    "mean": 35.91491164755572,
+    "median": 36.345356755048776,
+    "min": 29.631965811965774,
+    "n": 18
+   },
+   "recovery_rate": {
+    "max": 0.6951219512195121,
+    "mean": 0.5562330623306233,
+    "median": 0.5426731707317073,
+    "min": 0.439,
+    "n": 18
+   },
+   "rmsd": {
+    "max": 11.913152694702148,
+    "mean": 9.758783234490288,
+    "median": 9.656554698944092,
+    "min": 7.9882354736328125,
+    "n": 18
+   },
+   "tm_score": {
+    "max": 0.002675536158771833,
+    "mean": 0.0008815825495425048,
+    "median": 0.00065874575463284,
+    "min": 0.00016508611689941154,
+    "n": 18
+   }
+  },
+  "1Y26": {
+   "n_candidates": 2,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 0,
+   "n_tasks": 2,
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 80.95873193166888,
+    "mean": 75.2161540235772,
+    "median": 75.2161540235772,
+    "min": 69.47357611548553,
+    "n": 2
+   },
+   "recovery_rate": {
+    "max": 0.9583,
+    "mean": 0.8819277777777779,
+    "median": 0.8819277777777779,
+    "min": 0.8055555555555556,
+    "n": 2
+   },
+   "rmsd": {
+    "max": 4.410857200622559,
+    "mean": 3.4493874311447144,
+    "median": 3.4493874311447144,
+    "min": 2.48791766166687,
+    "n": 2
+   },
+   "tm_score": {
+    "max": 0.15734865979723492,
+    "mean": 0.1285492024170159,
+    "median": 0.1285492024170159,
+    "min": 0.09974974503679684,
+    "n": 2
+   }
+  },
+  "2GDI": {
+   "n_candidates": 7,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 0,
+   "n_tasks": 2,
+   "pass_rate": 0.2857142857142857,
+   "plddt": {
+    "max": 71.66466116676496,
+    "mean": 42.52541053516536,
+    "median": 26.643429334916785,
+    "min": 25.146874258600445,
+    "n": 7
+   },
+   "recovery_rate": {
+    "max": 0.7257,
+    "mean": 0.6979943942133815,
+    "median": 0.689873417721519,
+    "min": 0.6582278481012658,
+    "n": 7
+   },
+   "rmsd": {
+    "max": 19.576597213745117,
+    "mean": 15.076579366411481,
+    "median": 18.784048080444336,
+    "min": 6.255264759063721,
+    "n": 7
+   },
+   "tm_score": {
+    "max": 0.0930997897280163,
+    "mean": 0.040072865534582405,
+    "median": 0.02874153851989759,
+    "min": 0.01672568881095191,
+    "n": 7
+   }
+  },
+  "3D2V": {
+   "n_candidates": 4,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 0,
+   "n_tasks": 2,
+   "pass_rate": 0.25,
+   "plddt": {
+    "max": 70.53584894259815,
+    "mean": 38.01605560471271,
+    "median": 27.71019976053701,
+    "min": 26.107973955178682,
+    "n": 4
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 0.7808441558441558,
+    "median": 0.7142857142857142,
+    "min": 0.6948051948051948,
+    "n": 4
+   },
+   "rmsd": {
+    "max": 18.993227005004883,
+    "mean": 14.49326753616333,
+    "median": 17.789114952087402,
+    "min": 3.401613235473633,
+    "n": 4
+   },
+   "tm_score": {
+    "max": 0.5211656518262653,
+    "mean": 0.1482939411103028,
+    "median": 0.025878683994130625,
+    "min": 0.020252744626684645,
+    "n": 4
+   }
+  }
+ },
+ "per_task": {
+  "07_rna_tertiary_structure_001_basic": {
+   "mean_plddt_threshold": 70.0,
+   "n_candidates": 1,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 1,
+   "paper_reference": "1EHZ",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 78.96432266009853,
+    "mean": 78.96432266009853,
+    "median": 78.96432266009853,
+    "min": 78.96432266009853,
+    "n": 1
+   },
+   "recovery_rate": {
+    "max": 0.9868421052631579,
+    "mean": 0.9868421052631579,
+    "median": 0.9868421052631579,
+    "min": 0.9868421052631579,
+    "n": 1
+   },
+   "rmsd": {
+    "max": 21.007848739624023,
+    "mean": 21.007848739624023,
+    "median": 21.007848739624023,
+    "min": 21.007848739624023,
+    "n": 1
+   },
+   "rmsd_threshold": 2.0,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.018555169322314605,
+    "mean": 0.018555169322314605,
+    "median": 0.018555169322314605,
+    "min": 0.018555169322314605,
+    "n": 1
+   }
+  },
+  "07_rna_tertiary_structure_002_dual_tool": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 4,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1MME",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 37.369229898074614,
+    "mean": 35.29817776548267,
+    "median": 36.345356755048776,
+    "min": 31.13276765375852,
+    "n": 4
+   },
+   "recovery_rate": {
+    "max": 0.6829268292682927,
+    "mean": 0.5670634146341463,
+    "median": 0.5670634146341463,
+    "min": 0.4512,
+    "n": 4
+   },
+   "rmsd": {
+    "max": 11.086568832397461,
+    "mean": 9.264070272445679,
+    "median": 8.99073839187622,
+    "min": 7.9882354736328125,
+    "n": 4
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.0007794887724835442,
+    "mean": 0.000671350601280899,
+    "median": 0.00065874575463284,
+    "min": 0.0005884221233743718,
+    "n": 4
+   }
+  },
+  "07_rna_tertiary_structure_003_ribodiffusion_only": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 1,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1Y26",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 80.95873193166888,
+    "mean": 80.95873193166888,
+    "median": 80.95873193166888,
+    "min": 80.95873193166888,
+    "n": 1
+   },
+   "recovery_rate": {
+    "max": 0.9583,
+    "mean": 0.9583,
+    "median": 0.9583,
+    "min": 0.9583,
+    "n": 1
+   },
+   "rmsd": {
+    "max": 2.48791766166687,
+    "mean": 2.48791766166687,
+    "median": 2.48791766166687,
+    "min": 2.48791766166687,
+    "n": 1
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.15734865979723492,
+    "mean": 0.15734865979723492,
+    "median": 0.15734865979723492,
+    "min": 0.15734865979723492,
+    "n": 1
+   }
+  },
+  "07_rna_tertiary_structure_004_rhodesign_high_temp": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 3,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "paper_reference": "3D2V",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 28.579139654650344,
+    "mean": 27.17612449208423,
+    "median": 26.841259866423673,
+    "min": 26.107973955178682,
+    "n": 3
+   },
+   "recovery_rate": {
+    "max": 0.7207792207792207,
+    "mean": 0.7077922077922078,
+    "median": 0.7077922077922078,
+    "min": 0.6948051948051948,
+    "n": 3
+   },
+   "rmsd": {
+    "max": 18.993227005004883,
+    "mean": 18.19048563639323,
+    "median": 18.254919052124023,
+    "min": 17.32331085205078,
+    "n": 3
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.026978597143001663,
+    "mean": 0.024003370871648628,
+    "median": 0.024778770845259587,
+    "min": 0.020252744626684645,
+    "n": 3
+   }
+  },
+  "07_rna_tertiary_structure_005_rhodesign_low_temp": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 5,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1GID",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 29.05316194991825,
+    "mean": 28.195781929129986,
+    "median": 28.34173900162922,
+    "min": 26.866752592592874,
+    "n": 5
+   },
+   "recovery_rate": {
+    "max": 0.620253164556962,
+    "mean": 0.5949367088607594,
+    "median": 0.5917721518987342,
+    "min": 0.5759493670886076,
+    "n": 5
+   },
+   "rmsd": {
+    "max": 22.2086124420166,
+    "mean": 19.282114601135255,
+    "median": 18.99896240234375,
+    "min": 15.910666465759277,
+    "n": 5
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.07460553175047921,
+    "mean": 0.05286927932319646,
+    "median": 0.05551077910390557,
+    "min": 0.022375598794152764,
+    "n": 5
+   }
+  },
+  "07_rna_tertiary_structure_006_dual_equal": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 6,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 0,
+   "paper_reference": "2GDI",
+   "pass_rate": 0.3333333333333333,
+   "plddt": {
+    "max": 71.66466116676496,
+    "mean": 45.34369076840476,
+    "median": 41.80723476202096,
+    "min": 25.146874258600445,
+    "n": 6
+   },
+   "recovery_rate": {
+    "max": 0.7257,
+    "mean": 0.7025124472573839,
+    "median": 0.7077867088607595,
+    "min": 0.6582278481012658,
+    "n": 6
+   },
+   "rmsd": {
+    "max": 19.576597213745117,
+    "mean": 14.39526637395223,
+    "median": 17.343467235565186,
+    "min": 6.255264759063721,
+    "n": 6
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.0930997897280163,
+    "mean": 0.04396406165518749,
+    "median": 0.032482867238948304,
+    "min": 0.01804559765405566,
+    "n": 6
+   }
+  },
+  "07_rna_tertiary_structure_007_ribodiffusion_high_step": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 2,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1HR2",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 70.73214834515332,
+    "mean": 70.37450409569885,
+    "median": 70.37450409569885,
+    "min": 70.0168598462444,
+    "n": 2
+   },
+   "recovery_rate": {
+    "max": 0.9905,
+    "mean": 0.9905,
+    "median": 0.9905,
+    "min": 0.9905,
+    "n": 2
+   },
+   "rmsd": {
+    "max": 5.861373424530029,
+    "mean": 5.787113904953003,
+    "median": 5.787113904953003,
+    "min": 5.712854385375977,
+    "n": 2
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.17973715122594225,
+    "mean": 0.1759888669274312,
+    "median": 0.1759888669274312,
+    "min": 0.1722405826289202,
+    "n": 2
+   }
+  },
+  "07_rna_tertiary_structure_008_rhofold_heavy": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 4,
+   "n_pass_plddt": 4,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 4,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1F7U",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 84.03200246457205,
+    "mean": 83.26176807413451,
+    "median": 83.32614516922563,
+    "min": 82.36277949351475,
+    "n": 4
+   },
+   "recovery_rate": {
+    "max": 0.8947,
+    "mean": 0.8519552631578948,
+    "median": 0.8552447368421052,
+    "min": 0.8026315789473685,
+    "n": 4
+   },
+   "rmsd": {
+    "max": 21.34510612487793,
+    "mean": 21.267173290252686,
+    "median": 21.253982543945312,
+    "min": 21.215621948242188,
+    "n": 4
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.02602976776221016,
+    "mean": 0.024580198790376057,
+    "median": 0.024799305131770852,
+    "min": 0.022692417135752364,
+    "n": 4
+   }
+  },
+  "07_rna_tertiary_structure_009_rmsd_heavy": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 2,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1EHZ",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 78.96432266009853,
+    "mean": 78.28693671466453,
+    "median": 78.28693671466453,
+    "min": 77.60955076923052,
+    "n": 2
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 0.993421052631579,
+    "median": 0.993421052631579,
+    "min": 0.9868421052631579,
+    "n": 2
+   },
+   "rmsd": {
+    "max": 21.007848739624023,
+    "mean": 20.985663414001465,
+    "median": 20.985663414001465,
+    "min": 20.963478088378906,
+    "n": 2
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.018860077363765743,
+    "mean": 0.018707623343040172,
+    "median": 0.018707623343040172,
+    "min": 0.018555169322314605,
+    "n": 2
+   }
+  },
+  "07_rna_tertiary_structure_010_all_tools": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 8,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1MME",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 52.10283125707827,
+    "mean": 36.0208361753068,
+    "median": 33.96433101427519,
+    "min": 30.00214123006805,
+    "n": 8
+   },
+   "recovery_rate": {
+    "max": 0.6829268292682927,
+    "mean": 0.5487682926829268,
+    "median": 0.5365731707317073,
+    "min": 0.439,
+    "n": 8
+   },
+   "rmsd": {
+    "max": 11.443293571472168,
+    "mean": 9.742255926132202,
+    "median": 9.427855491638184,
+    "min": 7.9882354736328125,
+    "n": 8
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.002675536158771833,
+    "mean": 0.0009733149018662851,
+    "median": 0.0008069531363423623,
+    "min": 0.00022911973384710327,
+    "n": 8
+   }
+  },
+  "07_rna_tertiary_structure_011_rhodesign_2d_assisted": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 1,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1Y26",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 69.47357611548553,
+    "mean": 69.47357611548553,
+    "median": 69.47357611548553,
+    "min": 69.47357611548553,
+    "n": 1
+   },
+   "recovery_rate": {
+    "max": 0.8055555555555556,
+    "mean": 0.8055555555555556,
+    "median": 0.8055555555555556,
+    "min": 0.8055555555555556,
+    "n": 1
+   },
+   "rmsd": {
+    "max": 4.410857200622559,
+    "mean": 4.410857200622559,
+    "median": 4.410857200622559,
+    "min": 4.410857200622559,
+    "n": 1
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.09974974503679684,
+    "mean": 0.09974974503679684,
+    "median": 0.09974974503679684,
+    "min": 0.09974974503679684,
+    "n": 1
+   }
+  },
+  "07_rna_tertiary_structure_012_ribodiffusion_defaults": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 1,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 0,
+   "paper_reference": "3D2V",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 70.53584894259815,
+    "mean": 70.53584894259815,
+    "median": 70.53584894259815,
+    "min": 70.53584894259815,
+    "n": 1
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "n": 1
+   },
+   "rmsd": {
+    "max": 3.401613235473633,
+    "mean": 3.401613235473633,
+    "median": 3.401613235473633,
+    "min": 3.401613235473633,
+    "n": 1
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.5211656518262653,
+    "mean": 0.5211656518262653,
+    "median": 0.5211656518262653,
+    "min": 0.5211656518262653,
+    "n": 1
+   }
+  },
+  "07_rna_tertiary_structure_013_ribodiffusion_large_ckpt": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 1,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1GID",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 70.21081017149615,
+    "mean": 70.21081017149615,
+    "median": 70.21081017149615,
+    "min": 70.21081017149615,
+    "n": 1
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "n": 1
+   },
+   "rmsd": {
+    "max": 2.641885757446289,
+    "mean": 2.641885757446289,
+    "median": 2.641885757446289,
+    "min": 2.641885757446289,
+    "n": 1
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.1756626122425692,
+    "mean": 0.1756626122425692,
+    "median": 0.1756626122425692,
+    "min": 0.1756626122425692,
+    "n": 1
+   }
+  },
+  "07_rna_tertiary_structure_014_rhodesign_default_temp": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 1,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "paper_reference": "2GDI",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 25.61572913572901,
+    "mean": 25.61572913572901,
+    "median": 25.61572913572901,
+    "min": 25.61572913572901,
+    "n": 1
+   },
+   "recovery_rate": {
+    "max": 0.6708860759493671,
+    "mean": 0.6708860759493671,
+    "median": 0.6708860759493671,
+    "min": 0.6708860759493671,
+    "n": 1
+   },
+   "rmsd": {
+    "max": 19.164457321166992,
+    "mean": 19.164457321166992,
+    "median": 19.164457321166992,
+    "min": 19.164457321166992,
+    "n": 1
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.01672568881095191,
+    "mean": 0.01672568881095191,
+    "median": 0.01672568881095191,
+    "min": 0.01672568881095191,
+    "n": 1
+   }
+  },
+  "07_rna_tertiary_structure_015_min_samples": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 2,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1HR2",
+   "pass_rate": 0.5,
+   "plddt": {
+    "max": 70.0168598462444,
+    "mean": 48.05591250281084,
+    "median": 48.05591250281084,
+    "min": 26.094965159377274,
+    "n": 2
+   },
+   "recovery_rate": {
+    "max": 0.9873,
+    "mean": 0.7984119047619047,
+    "median": 0.7984119047619047,
+    "min": 0.6095238095238096,
+    "n": 2
+   },
+   "rmsd": {
+    "max": 23.983051300048828,
+    "mean": 14.922212362289429,
+    "median": 14.922212362289429,
+    "min": 5.861373424530029,
+    "n": 2
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.17973715122594225,
+    "mean": 0.10017618906065208,
+    "median": 0.10017618906065208,
+    "min": 0.02061522689536191,
+    "n": 2
+   }
+  },
+  "07_rna_tertiary_structure_016_max_samples": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 10,
+   "n_pass_plddt": 10,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 10,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1F7U",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 84.03200246457205,
+    "mean": 81.32938044103234,
+    "median": 82.42031719211822,
+    "min": 71.2349012345681,
+    "n": 10
+   },
+   "recovery_rate": {
+    "max": 0.8157894736842105,
+    "mean": 0.775,
+    "median": 0.7828947368421053,
+    "min": 0.7105263157894737,
+    "n": 10
+   },
+   "rmsd": {
+    "max": 21.277488708496094,
+    "mean": 21.197661018371583,
+    "median": 21.21904182434082,
+    "min": 21.06462287902832,
+    "n": 10
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.030212665284972982,
+    "mean": 0.026105076114660297,
+    "median": 0.026036787290806725,
+    "min": 0.023248611667535037,
+    "n": 10
+   }
+  },
+  "07_rna_tertiary_structure_017_rhofold_only_weight": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 2,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 2,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1EHZ",
+   "pass_rate": 1.0,
+   "plddt": {
+    "max": 78.96432266009853,
+    "mean": 78.28693671466453,
+    "median": 78.28693671466453,
+    "min": 77.60955076923052,
+    "n": 2
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 0.993421052631579,
+    "median": 0.993421052631579,
+    "min": 0.9868421052631579,
+    "n": 2
+   },
+   "rmsd": {
+    "max": 21.007848739624023,
+    "mean": 20.985663414001465,
+    "median": 20.985663414001465,
+    "min": 20.963478088378906,
+    "n": 2
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.018860077363765743,
+    "mean": 0.018707623343040172,
+    "median": 0.018707623343040172,
+    "min": 0.018555169322314605,
+    "n": 2
+   }
+  },
+  "07_rna_tertiary_structure_018_rmsd_only_weight": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 6,
+   "n_pass_plddt": 0,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 0,
+   "paper_reference": "1MME",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 52.10283125707827,
+    "mean": 36.18483486526964,
+    "median": 33.6926305544807,
+    "min": 29.631965811965774,
+    "n": 6
+   },
+   "recovery_rate": {
+    "max": 0.6951219512195121,
+    "mean": 0.5589658536585366,
+    "median": 0.5528682926829268,
+    "min": 0.4472,
+    "n": 6
+   },
+   "rmsd": {
+    "max": 11.913152694702148,
+    "mean": 10.110628286997477,
+    "median": 10.03425407409668,
+    "min": 7.9882354736328125,
+    "n": 6
+   },
+   "rmsd_threshold": null,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.002675536158771833,
+    "mean": 0.000899427378618535,
+    "median": 0.0006330324353768086,
+    "min": 0.00016508611689941154,
+    "n": 6
+   }
+  },
+  "07_rna_tertiary_structure_019_full_group_i_intron": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 6,
+   "n_pass_plddt": 1,
+   "n_pass_rmsd": 1,
+   "n_pass_rubric": 1,
+   "n_rmsd_gated": 6,
+   "paper_reference": "1GID",
+   "pass_rate": 0.16666666666666666,
+   "plddt": {
+    "max": 70.21081017149615,
+    "mean": 33.57386965570104,
+    "median": 26.215706794503497,
+    "min": 24.632263368390255,
+    "n": 6
+   },
+   "recovery_rate": {
+    "max": 1.0,
+    "mean": 0.6582278481012659,
+    "median": 0.5901898734177216,
+    "min": 0.569620253164557,
+    "n": 6
+   },
+   "rmsd": {
+    "max": 28.425979614257812,
+    "mean": 20.74124876658122,
+    "median": 24.467875480651855,
+    "min": 2.641885757446289,
+    "n": 6
+   },
+   "rmsd_threshold": 3.0,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.1756626122425692,
+    "mean": 0.06251667843492185,
+    "median": 0.03783991947941284,
+    "min": 0.027779708155296064,
+    "n": 6
+   }
+  },
+  "07_rna_tertiary_structure_020_full_p4_p6_domain": {
+   "mean_plddt_threshold": 65.0,
+   "n_candidates": 7,
+   "n_pass_plddt": 2,
+   "n_pass_rmsd": 0,
+   "n_pass_rubric": 0,
+   "n_rmsd_gated": 7,
+   "paper_reference": "1HR2",
+   "pass_rate": 0.0,
+   "plddt": {
+    "max": 70.73214834515332,
+    "mean": 38.69388447579825,
+    "median": 27.23779955456587,
+    "min": 24.642171589728814,
+    "n": 7
+   },
+   "recovery_rate": {
+    "max": 0.9886,
+    "mean": 0.7264480725623583,
+    "median": 0.6222222222222222,
+    "min": 0.6126984126984127,
+    "n": 7
+   },
+   "rmsd": {
+    "max": 27.99635887145996,
+    "mean": 20.212556770869664,
+    "median": 23.97991943359375,
+    "min": 5.712854385375977,
+    "n": 7
+   },
+   "rmsd_threshold": 3.0,
+   "session_era": "exp24 (bb) 2026-09-07",
+   "tm_score": {
+    "max": 0.17973715122594225,
+    "mean": 0.06857164351889841,
+    "median": 0.026911712927198943,
+    "min": 0.021656469510922437,
+    "n": 7
+   }
+  }
+ },
+ "pooled": {
+  "n_candidates": 73,
+  "n_pass_plddt": 31,
+  "n_pass_rmsd": 1,
+  "n_pass_rubric": 28,
+  "n_rmsd_gated": 14,
+  "pass_rate": 0.3835616438356164,
+  "plddt": {
+   "max": 84.03200246457205,
+   "mean": 50.75954414209237,
+   "median": 37.369229898074614,
+   "min": 24.632263368390255,
+   "n": 73
+  },
+  "recovery_rate": {
+   "max": 1.0,
+   "mean": 0.7190513202626004,
+   "median": 0.689873417721519,
+   "min": 0.439,
+   "n": 73
+  },
+  "rmsd": {
+   "max": 28.425979614257812,
+   "mean": 15.814634326386125,
+   "median": 18.784048080444336,
+   "min": 2.48791766166687,
+   "n": 73
+  },
+  "tm_score": {
+   "max": 0.5211656518262653,
+   "mean": 0.04721713190394802,
+   "median": 0.025449378876536227,
+   "min": 0.00016508611689941154,
+   "n": 73
+  }
+ },
+ "rubric_rule": "pass = rhofold_mean_plddt >= task mean_plddt_threshold AND (no task rmsd_threshold OR alignment_rmsd <= threshold)",
+ "session_era": "exp24 (bb) 2026-09-07",
+ "workflow": "rna_tertiary_structure_design"
+}

@@ -3,6 +3,7 @@
   "workflow": "sirna_design",
   "category": "edge",
   "description": "siRNA design with strict Bowtie2 score-min threshold (analogous to 70% BLAST identity) using Bowtie2 off-target scan",
+  "legacy_name_note": "Registered 2026-09-11: the task id and description predate the platform default and are retained verbatim because the frozen Exp-6 records embed this description byte-for-byte. The bowtie2 score floor G,10,4 is the platform default (agent_core/workflows/sirna_design.py), not a task-specific strict threshold, and 'identity-70' is only an analogy with the BLAST perc_identity floor. The task's actual edge character is its synthetic target — a verbatim 86-nt fragment of the human lncRNA DDX11L2, a segmentally duplicated locus: the scan's three hits are perfect full-length (21/21, zero-mismatch) alignments to the DDX11L2 source transcript and its two identical paralogous copies in DDX11L16 (Exp-6 frozen records; paper Fig. 2e).",
   "input": {
     "mode": "generic",
     "target_sequence": "GUUAACUUGCCGUCAGCCUUUUCUUUGACCUCUUCUUUCUGUUCAUGUGUAUUUGCUGUCUCUUAGCCCAGACUUCCCGUG",

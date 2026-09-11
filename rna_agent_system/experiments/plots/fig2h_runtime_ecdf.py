@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Fig. 2i — end-to-end runtime by workflow (log-axis ECDF; Exp-24 re-run).
+"""Fig. 2h — end-to-end runtime by workflow (log-axis ECDF; Exp-24 re-run).
+
+Re-lettered i → h on 2026-09-11 (user direction) when the IRES panel moved
+out of Fig. 2 to Supplementary Fig. S1; data and rendering unchanged.
 
 One cumulative-distribution step curve per workflow (SeFMol Fig. 2b/c style):
 x = wall-clock minutes per run on a log axis, y = fraction of runs completed
@@ -10,7 +13,7 @@ experiments/exp24_production_campaign.py docstring for the registered
 measurement boundary). Successful runs only.
 
 Exp-24 shared-instrument re-measurement (2026-09-01): the campaign is the
-registered third-reset production campaign feeding Figs. 2a/2h/2i/4f; this
+registered third-reset production campaign feeding Figs. 2a/2g/2h/4f; this
 panel re-draws from its records (superseding the second-reset Exp-8 numbers
 in the caption and paper text).
 
@@ -24,8 +27,8 @@ Colours (palette rev 7): each workflow's canonical WORKFLOW_COLORS entry;
 reference line and all text in ink black.
 
 Data  : experiments/results/exp24_production_campaign/{pilot,lane_*,pa_batch*}.jsonl
-Usage : python experiments/plots/fig2i_runtime_ecdf.py
-Output : experiments/plots/output/fig2i_runtime_ecdf.{pdf,png}
+Usage : python experiments/plots/fig2h_runtime_ecdf.py
+Output : experiments/plots/output/fig2h_runtime_ecdf.{pdf,png}
 """
 from __future__ import annotations
 
@@ -176,7 +179,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig2i_runtime_ecdf.{ext}"
+        out = OUT_DIR / f"fig2h_runtime_ecdf.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")

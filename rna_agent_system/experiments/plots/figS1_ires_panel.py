@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Fig. 2e — IRES literature-panel prediction: ROC curve with bootstrap CI band.
+"""Supplementary Fig. S1 — IRES literature-panel prediction: ROC curve with
+bootstrap CI band.
+
+Moved out of main Fig. 2 (where it was panel e) into the supplement on
+2026-09-11 (user direction) — data, arm registration and rendering unchanged;
+the panel script never drew a letter (panel letters are an assembler
+responsibility), so the supplementary panel stands without one.
 
 Threshold-free discrimination of the ``ires_prediction`` workflow on 9
 literature IRES 5′UTRs vs 50 random human 5′UTR negatives (GENCODE v46).
@@ -7,7 +13,7 @@ literature IRES 5′UTRs vs 50 random human 5′UTR negatives (GENCODE v46).
 scanning arm** (window 174 / step 50 at upstream defaults — the oracle's
 native regime and the legacy panel's protocol). The pre-registered mode-0
 default-path primary remains the analysis record and renders as the archived
-variant ``--arm mode0`` → ``fig2e_ires_roc_mode0.*``. Statistics from the
+variant ``--arm mode0`` → ``figS1_ires_panel_mode0.*``. Statistics from the
 driver's ``summary.json`` (stratified bootstrap, 10,000 replicates, seed
 20260825).
 
@@ -25,9 +31,9 @@ the full-resolution band grid for both arms (legend top 0.095 vs band floor
 the band floor rises above it).
 
 Data   : experiments/results/exp5_ires_panel/summary.json
-Usage  : python experiments/plots/fig2e_ires_roc.py [--arm mode0]
-Output : experiments/plots/output/fig2e_ires_roc.{pdf,png}   (mode-2 endpoint)
-         experiments/plots/output/fig2e_ires_roc_mode0.{pdf,png} (archived arm)
+Usage  : python experiments/plots/figS1_ires_panel.py [--arm mode0]
+Output : experiments/plots/output/figS1_ires_panel.{pdf,png}   (mode-2 endpoint)
+         experiments/plots/output/figS1_ires_panel_mode0.{pdf,png} (archived arm)
 """
 from __future__ import annotations
 
@@ -127,7 +133,7 @@ def main() -> int:
             fontsize=FONT, color=BLACK, linespacing=1.5)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    stem = "fig2e_ires_roc" if arm == "mode2" else "fig2e_ires_roc_mode0"
+    stem = "figS1_ires_panel" if arm == "mode2" else "figS1_ires_panel_mode0"
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"{stem}.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,

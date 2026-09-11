@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Fig. 2f — siRNA off-target scanning: predicted off-target hits per task.
+"""Fig. 2e — siRNA off-target scanning: predicted off-target hits per task.
+
+Re-lettered f → e on 2026-09-11 (user direction) when the IRES panel moved
+out of Fig. 2 to Supplementary Fig. S1; data and rendering unchanged.
 
 Single panel, stacked dot plot (Wilkinson): one dot per benchmark task,
 stacked above the predicted off-target hit count of the delivered
@@ -24,8 +27,8 @@ legend labels shortened to "<hits> hits, <scan status> (n)".
 Data  : experiments/results/exp6_sirna_offtarget/records.jsonl
         (+ summary.json for the annotated counts)
 
-Usage : python experiments/plots/fig2f_sirna_offtarget.py
-Output : experiments/plots/output/fig2f_sirna_offtarget.{pdf,png}
+Usage : python experiments/plots/fig2e_sirna_offtarget.py
+Output : experiments/plots/output/fig2e_sirna_offtarget.{pdf,png}
 """
 from __future__ import annotations
 
@@ -185,7 +188,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        out = OUT_DIR / f"fig2f_sirna_offtarget.{ext}"
+        out = OUT_DIR / f"fig2e_sirna_offtarget.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white", bbox_inches="tight", pad_inches=0.02)
         print(f"written {out}")
