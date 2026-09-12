@@ -1,0 +1,11 @@
+{
+  "target_id": "PTH",
+  "target_name": "Parathyroid hormone",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P01270",
+  "species_for_codon_optimization": "Homo sapiens",
+  "protein_sequence": "MIPAKDMAKVMIVMLAICFLTKSDGKSVKKRSVSEIQLMHNLGKHLNSMERVEWLRKKLQDVHNFVALGAPLAPRDAGSQRPRKKEDNVLVESHEKSLGEADKADVNVLTKAKSQ",
+  "protein_length_aa": 115,
+  "provenance": "Exp-30 curated deployment target (USER_CONFIRMED 2026-09-03T16:43:04); Exp-40 static-arm completion"
+}

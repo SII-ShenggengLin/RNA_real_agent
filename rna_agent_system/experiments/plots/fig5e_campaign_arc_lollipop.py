@@ -1,5 +1,6 @@
 """Fig 5e — Aptamer campaign arc: discordance and exact McNemar P per
-campaign, one lollipop pair per segment (Experiment 29).
+campaign, one lollipop pair per segment (Experiment 29 + Experiment 40
+deployment completion).
 
 One lollipop pair per campaign (x): the navigation-only discordant cells b
 (sage stem-and-head) and the static-grid-only discordant cells c
@@ -55,11 +56,13 @@ from palette import PALETTE_BY_NAME  # noqa: E402
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ARC = (PROJECT_ROOT / "experiments" / "results"
        / "exp29_aptamer_campaign_arc" / "arc.json")
+POOLED = (PROJECT_ROOT / "experiments" / "results"
+          / "exp40_static_completion" / "pooled" / "aptamer_pooled_verdict.json")
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 58.0
+W_MM, H_MM = 89.0, 62.0
 
 C_NAV = PALETTE_BY_NAME["sage_green"]    # navigation-only discordance (b)
 C_RULE = PALETTE_BY_NAME["terracotta"]   # static-grid-only discordance (c)
@@ -87,6 +90,7 @@ SEGMENTS = [
     ("seg2_reanchor", "Re-anchoring"),
     ("seg3_decisive", "Decisive\n(primary)"),
     ("seg4_confirmation", "Confirmation"),
+    ("deployment", "Deployment\n(new targets)"),
 ]
 
 
@@ -98,10 +102,17 @@ def fmt_p(p: float) -> str:
 
 def main() -> int:
     arc = json.loads(ARC.read_text(encoding="utf-8"))
-    segs = arc["segments"]
+    segs = dict(arc["segments"])
+    pooled_doc = json.loads(POOLED.read_text(encoding="utf-8"))
+    dep = pooled_doc["cohort_splits"]["deployment_6"]["mcnemar"]
+    segs["deployment"] = {
+        "n_cells": 18,
+        "mcnemar": {"b_nav_only": dep["b"], "c_rule_only": dep["c"],
+                    "p_exact": dep["p"]},
+    }
 
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI))
-    ax = fig.add_axes([0.080, 0.185, 0.900, 0.693])
+    ax = fig.add_axes([0.080, 0.185, 0.900, 0.640])
     ymax = 1
     for i, (key, _) in enumerate(SEGMENTS):
         v = segs.get(key)
@@ -122,7 +133,7 @@ def main() -> int:
         ax.annotate(fmt_p(p), (x, max(b, c_)), textcoords="offset points",
                     xytext=(0, 10.5), ha="center", fontsize=FONT, color=INK)
     ax.set_xlim(-0.62, len(SEGMENTS) - 0.38)
-    ax.set_ylim(0, 13.2)
+    ax.set_ylim(0, max(13.2, ymax + 2.5))
     ax.set_yticks([0, 2, 4, 6, 8, 10, 12])
     ax.set_xticks([i for i in range(len(SEGMENTS))])
     ax.set_xticklabels(
@@ -147,17 +158,25 @@ def main() -> int:
                 transform=ax.transAxes, va="center",
                 fontsize=FONT, color=INK)
 
-    # ── pooled decisive + confirmation note: one line in the reserved strip
-    #    above the axes (the fig5b/5d stat-strip convention) ──
+    # ── pooled notes: two lines in the reserved strip above the axes (the
+    #    fig5b/5d stat-strip convention) ──
     strip_texts = []
     pooled = arc.get("pooled_seg3_seg4")
     if pooled:
         strip_texts.append(fig.text(
-            0.5, 0.896,
-            f"Pooled decisive + confirmation: "
+            0.5, 0.918,
+            f"Pooled decisive + confirmation (20 targets): "
             f"b = {pooled['b']}, c = {pooled['c']}, "
             f"{fmt_p(pooled['p_exact'])}",
             ha="center", va="bottom", fontsize=FONT, color=INK))
+    mc_all = pooled_doc["mcnemar_nav_vs_static"]
+    strip_texts.append(fig.text(
+        0.5, 0.862,
+        f"Pooled all 26 targets: b = {mc_all['b']}, c = {mc_all['c']}, "
+        f"{fmt_p(mc_all['p'])}  (delivered cells "
+        f"{pooled_doc['delivered_nav']} navigation vs "
+        f"{pooled_doc['delivered_static']} static)",
+        ha="center", va="bottom", fontsize=FONT, color=INK))
 
     # ── renderer-measured guards (the fig5d house pattern): every text
     #    inside the canvas, no text–text collision anywhere ──

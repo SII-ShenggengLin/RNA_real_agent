@@ -1,5 +1,6 @@
-"""Fig 5c — GenNav mRNA delivery map: the 20 × 3 pair-outcome mosaic
-(Experiment 28, paper registry E6).
+"""Fig 5c — GenNav mRNA delivery map: the 25 × 3 pair-outcome mosaic
+(Experiment 28 registered 20-target cohort + Experiment 40 deployment
+completion — the pooled 25-target analysis).
 
 One tile per (target, profile) cell, coloured by the paired JCD outcome of
 the two arms — navigation-only pass (sage), both arms pass (grey blue),
@@ -7,10 +8,12 @@ rule-only pass (terracotta), neither passes (dark warm grey).  A right-hand
 marker column carries the gene-level navigation end-to-end delivery glyph
 (filled = navigation delivered a passing batch in all three profiles — the
 primary endpoint's c_e2e_gene term).  Rows follow the registered target
-order (alphabetical); the three profile columns are headed Expression /
-Stability / Balanced; a one-line context strip above the panel states the
-tile semantics; the key below carries the per-class cell counts and a
-second row explaining the gene-e2e glyph.
+order (alphabetical) with the five deployment targets (Exp-30 form-entry
+campaigns, static arm completed by Exp 40) below a labelled divider; the
+three profile columns are headed Expression / Stability / Balanced; a
+one-line context strip above the panel states the tile semantics; the key
+below carries the per-class cell counts and a second row explaining the
+gene-e2e glyph.
 
 2026-09-08 figure-repair pass (user direction):
 - row labels (gene names) restored — the marker-column axes previously
@@ -26,6 +29,12 @@ second row explaining the gene-e2e glyph.
   warm grey;
 - canvas 89 × 118 → 89 × 106 mm.
 
+2026-09-12 pooled re-render (user-directed merge): 20 → 25 rows (the five
+Exp-30 deployment targets appended below a labelled divider line; their
+navigation cells are the frozen form-session traces evaluated by Exp 40
+under the identical full-length stack); canvas 89 × 106 → 89 × 127.8 mm
+(25 rows at the unchanged 4.35-mm row pitch).
+
 Style (the fig4d/fig4g carpet house style): no in-figure title (the panel
 letter is added at assembly); every text element one 6-pt pure-black
 style; colours exclusively from palette rev 7; absolute-mm geometry,
@@ -34,8 +43,10 @@ guards: every text in-canvas, pairwise text non-collision, header-baseline
 equality, row-label/mosaic clearance, exact canvas pixels, raster palette
 purity (greys + palette↔white/black blends only), white outer border.
 
-Data  : experiments/results/exp28_gennav_mrna_endpoint_v2/full/
-        {runs.jsonl, verdict.json}
+Data  : experiments/results/exp28_gennav_mrna_endpoint_v2/full/runs.jsonl
+        + experiments/results/exp40_static_completion/mrna/runs.jsonl
+        + experiments/results/exp40_static_completion/pooled/
+          mrna_pooled_verdict.json
 Usage : python experiments/plots/fig5c_delivery_mosaic.py
 Output : experiments/plots/output/fig5c_delivery_mosaic.{pdf,png}
 """
@@ -58,15 +69,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-RUNS = (PROJECT_ROOT / "experiments" / "results"
-        / "exp28_gennav_mrna_endpoint_v2" / "full" / "runs.jsonl")
-VERDICT = (PROJECT_ROOT / "experiments" / "results"
-           / "exp28_gennav_mrna_endpoint_v2" / "full" / "verdict.json")
+RUNS_E28 = (PROJECT_ROOT / "experiments" / "results"
+            / "exp28_gennav_mrna_endpoint_v2" / "full" / "runs.jsonl")
+RUNS_E40 = (PROJECT_ROOT / "experiments" / "results"
+            / "exp40_static_completion" / "mrna" / "runs.jsonl")
+POOLED = (PROJECT_ROOT / "experiments" / "results"
+          / "exp40_static_completion" / "pooled" / "mrna_pooled_verdict.json")
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 106.0
+W_MM, H_MM = 89.0, 127.8
 
 C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both arms pass
 C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only pass
@@ -100,19 +113,25 @@ GAP_MID_MM = 3.5      # mosaic → marker column
 MARK_W_MM = 4.5
 # absolute-mm vertical layout
 MOSAIC_BOT_MM = 12.5
-MOSAIC_H_MM = 87.0
+MOSAIC_H_MM = 108.75
 LEG1_Y_MM = 8.6       # key row 1 (tile outcomes) baseline
 LEG2_Y_MM = 4.8       # key row 2 (gene-e2e glyph) baseline
 
-CONTEXT = ("One tile per gene × constraint-profile cell — "
-           "colour marks the delivering arm(s)")
+CONTEXT = "Tile colour marks the delivering arm(s); * marks the five deployment targets"
+
+DEPLOYMENT_TARGETS = ["CSF3", "LEP", "PLAT", "PTH", "THPO"]
+N_REGISTERED = 20
 
 
 def main() -> int:
-    records = [json.loads(ln) for ln in RUNS.read_text(encoding="utf-8").splitlines()
-               if ln.strip()]
-    records = {r["target_id"]: r for r in records if r.get("success")}
-    verdict = json.loads(VERDICT.read_text(encoding="utf-8"))
+    records = {}
+    for path in (RUNS_E28, RUNS_E40):
+        for ln in path.read_text(encoding="utf-8").splitlines():
+            if ln.strip():
+                rec = json.loads(ln)
+                if rec.get("success") and rec["target_id"] not in records:
+                    records[rec["target_id"]] = rec
+    verdict = json.loads(POOLED.read_text(encoding="utf-8"))
     targets = [t for t in FULL_TARGET_ORDER if t in records]
 
     n = len(targets)
@@ -131,7 +150,8 @@ def main() -> int:
     ax.set_xticklabels(PROFILE_LABELS)
     ax.xaxis.set_ticks_position("top")
     ax.set_yticks([i + 0.5 for i in range(n)])
-    ax.set_yticklabels([short_name(t) for t in targets])
+    ax.set_yticklabels([short_name(t) + ("*" if t in DEPLOYMENT_TARGETS else "")
+                        for t in targets])
     ax.tick_params(length=0, pad=1.8)
     for s in ax.spines.values():
         s.set_visible(False)
@@ -191,6 +211,14 @@ def main() -> int:
     axg.set_yticks([])
     for s in axg.spines.values():
         s.set_visible(False)
+
+    # cohort divider between the registered 20 and the deployment 5 (the
+    # inter-row gap: registered tiles end at row 19.86, deployment start 20.14)
+    if n > N_REGISTERED:
+        ax.plot([-0.02, 3.02], [N_REGISTERED, N_REGISTERED],
+                color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
+        axg.plot([-0.06, 1.06], [N_REGISTERED, N_REGISTERED],
+                 color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
 
     # ── headers: "Gene e2e" as a fourth column header on the same baseline
     #    as the three profile headers (measured, not a floating title) ──
@@ -327,6 +355,8 @@ FULL_TARGET_ORDER = [
     "IL-2", "Influenza_HA_H1N1", "Insulin", "Luciferase", "OTC",
     "Ovalbumin", "PDGFB", "RSV_F_protein", "SARS-CoV-2_Spike_WT",
     "Transferrin",
+    # deployment cohort (Exp-30 form entry; static arm completed by Exp 40)
+    "CSF3", "LEP", "PLAT", "PTH", "THPO",
 ]
 
 _SHORT = {

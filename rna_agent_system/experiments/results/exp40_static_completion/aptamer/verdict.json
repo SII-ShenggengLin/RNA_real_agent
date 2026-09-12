@@ -1,0 +1,76 @@
+{
+  "budget": {
+    "nav_spend_mean": 47.833333333333336,
+    "nav_violations": 0,
+    "static_raw_spend": 48,
+    "static_violations": 0
+  },
+  "cohort": "exp30 deployment targets (static completion vs frozen nav cells)",
+  "delivered_nav": 8,
+  "delivered_static": 2,
+  "e2e_nav": 1,
+  "e2e_static": 0,
+  "mcnemar_nav_vs_static": {
+    "b": 7,
+    "c": 1,
+    "p": 0.0703125
+  },
+  "n_cells": 18,
+  "n_targets": 6,
+  "per_target": [
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Angiopoietin-2"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "FGF2"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 47,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "IFN-gamma"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "IL-17A"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "PDGF-BB"
+    },
+    {
+      "nav_cells": 0,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Influenza H3N2 HA"
+    }
+  ]
+}

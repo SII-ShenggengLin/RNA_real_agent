@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fig. 5 composite — assemble the eight finished panels (a–h) into one figure.
+"""Fig. 5 composite — assemble the seven finished panels (a–g) into one figure.
 
 Panel composition follows the Nature conventions surveyed in
 `relevant_references/` (DeepRare main Figs. 2–4, Nature 651, 2026): bold
@@ -9,19 +9,19 @@ to bottom), rows top-aligned so the letters sit on one line per row.
 Every panel carries the reset programme's single 6-pt text style, so
 every panel is placed at scale 1.0 — no row is fit-scaled.
 
-Layout (2026-09-08): all eight panels are 89 mm single-column renders on
-the 183 mm Nature double-column content width (the fig3/fig4 composite
-width). Row 1 pairs the two near-matched mRNA-campaign panels a (52 mm)
-and b (56 mm) on the half-width column grid (the fig2/fig3 convention).
-Row 2 places the tall delivery mosaic c (106 mm) on the left against a
-right-column stack of d over e (35 + 58 mm — the fig4 stack convention
-mirrored, so the short panels fill the row beside c instead of leaving a
-blank band; reading order c → d → e is preserved). Row 3 closes with the
-aptamer-campaign panels as the fig4 stack: f over h in the left column
-(40 + 52.5 mm) against the decisive mosaic g (71.2 mm) on the right
-(reading order f → g → h). The only residual blank is the bottom-right
-corner under g, the conventional ragged bottom edge of a Nature
-composite — no interior blank bands.
+Layout (2026-09-12 pooled revision): all seven panels are 89 mm
+single-column renders on the 183 mm Nature double-column content width
+(the fig3/fig4 composite width). Row 1 pairs the two near-matched
+mRNA-campaign panels a (52 mm) and b (56 mm) on the half-width column
+grid (the fig2/fig3 convention). Row 2 places the tall pooled delivery
+mosaic c (127.8 mm) on the left against a right-column stack of d over e
+(35 + 62 mm — the fig4 stack convention mirrored, so the short panels
+fill the row beside c instead of leaving a blank band; reading order
+c → d → e is preserved). Row 3 closes with the aptamer-campaign pair on
+the column grid: the decisive grouped bars f (40 mm) beside the pooled
+26-target delivery mosaic g (132.2 mm). The former production Pareto
+panel h was retired when the deployment cohort merged into b/c/e/g (the
+user-directed 2026-09-12 revision).
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
 placed just above-left of each panel corner (Nature style — no period, no
@@ -57,7 +57,6 @@ PANELS: dict[str, str] = {
     "e": "fig5e_campaign_arc_lollipop.pdf",
     "f": "fig5f_decisive_grouped_bars.pdf",
     "g": "fig5g_decisive_mosaic.pdf",
-    "h": "fig5h_production_navigation_pareto.pdf",
 }
 
 # Row plan in strict reading order. "grid" centres each panel in its
@@ -70,7 +69,7 @@ PANELS: dict[str, str] = {
 ROWS: list[tuple[str, object]] = [
     ("grid", ["a", "b"]),
     ("stack_right", ("c", ["d", "e"])),
-    ("stack", (["f", "h"], "g")),
+    ("grid", ["f", "g"]),
 ]
 
 # Grid constants (PDF points) — identical to the fig2/fig3/fig4 composites.

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Deterministic raster QA for the Exp 29/30 figure PNGs (the house
+"""Deterministic raster QA for the Exp 29/30/40 figure PNGs (the house
 convention): exact 1200-dpi canvas pixels for the declared mm size, zero
 ink on the outer border, and every opaque pixel either pure black text or
 a palette-rev-7 colour (anti-aliased blends against white allowed within
 3 % per channel of a palette entry).
+
+2026-09-12 pooled revision: fig5h retired (the deployment cohort merged
+into fig5b/c/e/g); fig5b/c/d added (the pooled 25-target mRNA panels).
 
 Usage: python experiments/plots/qa_exp29_30_figs.py
 """
@@ -22,10 +25,12 @@ OUT = Path(__file__).resolve().parents[2] / "experiments" / "plots" / "output"
 DPI = 1200
 
 FIGS = [
+    ("fig5b_gennav_mcnemar.png", 89.0),
+    ("fig5c_delivery_mosaic.png", 89.0),
+    ("fig5d_secondary_endpoint.png", 89.0),
     ("fig5e_campaign_arc_lollipop.png", 89.0),
     ("fig5f_decisive_grouped_bars.png", 89.0),
     ("fig5g_decisive_mosaic.png", 89.0),
-    ("fig5h_production_navigation_pareto.png", 89.0),
 ]
 
 PALETTE_RGB = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in PALETTE]

@@ -1,18 +1,21 @@
-"""Fig 5g — Aptamer decisive-campaign delivery map: the 12 × 3 pair-outcome
-mosaic (Experiment 29, segment 3).
+"""Fig 5g — Aptamer delivery map: the 26 × 3 pair-outcome mosaic pooled over
+every dual-arm target (Experiment 29 decisive + confirmation segments +
+Experiment 40 deployment completion).
 
 One tile per (target, profile) cell, coloured by the paired delivery outcome
 of the two arms — navigation-only pass (sage), both arms pass (grey blue),
 static-grid-only pass (terracotta), neither passes (dark warm grey).  A
 right-hand marker column carries the target-level navigation end-to-end
 glyph (filled = navigation delivered a passing candidate in all three
-length profiles).  Rows follow the registered panel-D order (most
-delivery-scarce under the segment-2 static arm first — the pre-registered
-selection rule); the three profile columns are headed Compact / Standard /
-Extended (the aptamer length profiles 25–34 / 40–55 / 61–80 nt); a one-line
-context strip above the panel states the tile semantics; the key below
-carries the per-class cell counts and a second row explaining the
-end-to-end glyph.
+length profiles).  Rows follow the segment order — the 12 decisive-panel
+targets (most delivery-scarce under the segment-2 static arm — the
+pre-registered selection rule), the 8 confirmation complement, then the 6
+deployment targets (Exp-30 form-entry campaigns, static grid completed by
+Exp 40), with labelled dividers between cohorts; the three profile columns
+are headed Compact / Standard / Extended (the aptamer length profiles
+25–34 / 40–55 / 61–80 nt); a one-line context strip above the panel states
+the tile semantics; the key below carries the per-class cell counts and a
+second row explaining the end-to-end glyph.
 
 2026-09-08 figure-repair pass (user direction):
 - row labels (target names) restored — the marker-column axes previously
@@ -31,6 +34,12 @@ end-to-end glyph.
   palette warm grey;
 - canvas 89 × 80 → 89 × 71.2 mm (12 rows at the fig5c 4.35-mm row pitch).
 
+2026-09-12 pooled re-render (user-directed merge): 12 → 26 rows (the seg4
+confirmation complement + the six Exp-30 deployment targets appended below
+labelled cohort dividers; the deployment navigation cells are the frozen
+form-session records, the static grid is Exp 40's completion); canvas
+89 × 71.2 → 89 × 132.2 mm (26 rows at the unchanged 4.35-mm row pitch).
+
 Style (the fig5c carpet house style): no in-figure title (the panel letter
 is added at assembly); every text element one 6-pt pure-black style;
 colours exclusively from palette rev 7; absolute-mm geometry, single
@@ -40,7 +49,8 @@ equality, row-label/mosaic clearance, exact canvas pixels, raster palette
 purity (greys + palette↔white/black blends only), white outer border.
 
 Data  : experiments/results/exp29_aptamer_campaign_arc/
-        {panels.json, seg3_decisive/runs.jsonl}
+        {panels.json, seg3_decisive/runs.jsonl, seg4_confirmation/runs.jsonl}
+        + experiments/results/exp40_static_completion/aptamer/runs.jsonl
 Usage : python experiments/plots/fig5g_decisive_mosaic.py
 Output : experiments/plots/output/fig5g_decisive_mosaic.{pdf,png}
 """
@@ -64,13 +74,16 @@ from palette import PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BASE = PROJECT_ROOT / "experiments" / "results" / "exp29_aptamer_campaign_arc"
-RUNS = BASE / "seg3_decisive" / "runs.jsonl"
+RUNS_SEG3 = BASE / "seg3_decisive" / "runs.jsonl"
+RUNS_SEG4 = BASE / "seg4_confirmation" / "runs.jsonl"
+RUNS_E40 = (PROJECT_ROOT / "experiments" / "results"
+            / "exp40_static_completion" / "aptamer" / "runs.jsonl")
 PANELS = BASE / "panels.json"
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 71.2
+W_MM, H_MM = 89.0, 132.2
 
 C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both arms pass
 C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only pass
@@ -115,20 +128,44 @@ GAP_MID_MM = 3.5      # mosaic → marker column
 MARK_W_MM = 4.5
 # absolute-mm vertical layout
 MOSAIC_BOT_MM = 12.5
-MOSAIC_H_MM = 52.2    # 12 rows × 4.35 mm (the fig5c row pitch)
+MOSAIC_H_MM = 113.1   # 26 rows × 4.35 mm (the fig5c row pitch)
 LEG1_Y_MM = 8.6       # key row 1 (tile outcomes) baseline
 LEG2_Y_MM = 4.8       # key row 2 (end-to-end glyph) baseline
 
-CONTEXT = ("One tile per target × length-profile cell — "
-           "colour marks the delivering arm(s)")
+CONTEXT = "Tile colour marks the delivering arm(s); dividers separate the campaign cohorts"
+
+
+def nav_cells(rec: dict) -> dict:
+    if "nav_frozen" in rec:
+        return dict(rec["nav_frozen"]["cells_pass"])
+    return dict(rec["arms"]["C"]["cells_pass"])
+
+
+def static_cells(rec: dict) -> dict:
+    if "static" in rec:
+        return dict(rec["static"]["cells_pass"])
+    return dict(rec["arms"]["A"]["cells_pass"])
+
+
+def nav_e2e(rec: dict) -> bool:
+    if "nav_frozen" in rec:
+        return bool(rec["nav_frozen"]["e2e"])
+    return bool(rec["arms"]["C"]["e2e"])
 
 
 def main() -> int:
-    records = [json.loads(ln) for ln in RUNS.read_text(encoding="utf-8")
-               .splitlines() if ln.strip()]
-    records = {r["target_id"]: r for r in records if r.get("success")}
+    records: dict[str, dict] = {}
+    for path in (RUNS_SEG3, RUNS_SEG4, RUNS_E40):
+        for ln in path.read_text(encoding="utf-8").splitlines():
+            if ln.strip():
+                rec = json.loads(ln)
+                if rec.get("success") and rec["target_id"] not in records:
+                    records[rec["target_id"]] = rec
     panels = json.loads(PANELS.read_text(encoding="utf-8"))
-    targets = [t for t in panels["panel_D_decisive"] if t in records]
+    deployment = sorted(t for t in records if "nav_frozen" in records[t])
+    targets = ([t for t in panels["panel_D_decisive"] if t in records]
+               + [t for t in panels["panel_C_confirmation"] if t in records]
+               + [t for t in deployment if t in records])
 
     n = len(targets)
     # +1e-9 in: defeat float truncation so the saved canvas is exactly
@@ -169,8 +206,8 @@ def main() -> int:
     counts = {"both": 0, "nav": 0, "rule": 0, "none": 0}
     for row, target in enumerate(targets):
         rec = records[target]
-        cc = rec["arms"]["C"]["cells_pass"]
-        ca = rec["arms"]["A"]["cells_pass"]
+        cc = nav_cells(rec)
+        ca = static_cells(rec)
         for col, profile in enumerate(PROFILES):
             c_pass, a_pass = cc.get(profile, False), ca.get(profile, False)
             if c_pass and a_pass:
@@ -195,7 +232,7 @@ def main() -> int:
     axg.invert_yaxis()
     n_e2e = 0
     for row, target in enumerate(targets):
-        e2e_c = records[target]["arms"]["C"]["e2e"]
+        e2e_c = nav_e2e(records[target])
         n_e2e += e2e_c
         axg.add_patch(Rectangle((0.12, row + 0.28), 0.76, 0.44,
                                 facecolor=(C_NAV if e2e_c else "white"),
@@ -205,6 +242,15 @@ def main() -> int:
     axg.set_yticks([])
     for s in axg.spines.values():
         s.set_visible(False)
+
+    # cohort dividers (the inter-row gaps): seg3|seg4 at 12, seg4|deployment
+    # at 20 — spanning mosaic + marker column
+    for y_row in (12, 20):
+        if y_row < n:
+            ax.plot([-0.02, 3.02], [y_row, y_row],
+                    color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
+            axg.plot([-0.06, 1.06], [y_row, y_row],
+                     color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
 
     # ── headers: "End-to-end" as a fourth column header on the same
     #    baseline as the three profile headers (measured, not a floating

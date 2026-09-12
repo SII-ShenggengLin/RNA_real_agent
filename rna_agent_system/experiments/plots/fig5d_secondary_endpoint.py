@@ -52,8 +52,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA = (PROJECT_ROOT / "experiments" / "results" / "exp31_fig5d_secondary"
-        / "panel_data.json")
+DATA = (PROJECT_ROOT / "experiments" / "results" / "exp40_static_completion"
+        / "pooled" / "mrna_secondary_panel.json")
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
@@ -111,8 +111,10 @@ def main() -> int:
             # stack's label sits on the zero reference line — white-backed
             # (the fig3f value-label convention)
 
+    stacks = stacked_dots(comp["deltas"])
+    stack_max = max(count for _, count in stacks)
     ax.set_xlim(-0.87, 0.47)
-    ax.set_ylim(0, 21)
+    ax.set_ylim(0, stack_max + 6)
     ax.set_xticks([-0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4])
     ax.set_yticks([])
     ax.set_xlabel("Δ composite (navigation − rule)")

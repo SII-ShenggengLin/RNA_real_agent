@@ -1,15 +1,17 @@
 """Fig 5b — GenNav mRNA primary endpoint: paired JCD outcomes with the exact
-McNemar discordance test annotated (Experiment 28, paper registry E6).
+McNemar discordance test annotated (Experiment 28 registered 20-target cohort
++ Experiment 40 deployment completion — the pooled 25-target analysis).
 
-Single-panel paired dumbbells: one row per target (20), JCD pass count 0–3
-on the y axis against the two arms on the x axis (Rule-based pool A |
-GenNav navigation C).  Each target's A→C trajectory is drawn as a line
-between its two arm dots; colour encodes the direction of the pair-level
-discordance aggregated over the target's three profiles (C-favouring sage /
-A-favouring terracotta / concordant grey blue; colour semantics defined in
-the Fig. 5b caption — no in-figure key, the fig5b/5d house convention).
-The exact two-sided McNemar result (b:c, P, n) is annotated as one line
-above the axes.
+Single-panel paired dumbbells: one row per target (25 = the 20 registered
+Exp-28 targets + the five Exp-30 deployment targets whose static arm Exp 40
+completed), JCD pass count 0–3 on the y axis against the two arms on the x
+axis (Rule-based pool A | GenNav navigation C).  Each target's A→C
+trajectory is drawn as a line between its two arm dots; colour encodes the
+direction of the pair-level discordance aggregated over the target's three
+profiles (C-favouring sage / A-favouring terracotta / concordant grey blue;
+colour semantics defined in the Fig. 5b caption — no in-figure key, the
+fig5b/5d house convention).  The exact two-sided McNemar result (b:c, P, n)
+is annotated as one line above the axes — the pooled 75-pair statistic.
 
 2026-09-08 figure-repair pass (user direction): the sign-flip permutation-
 null histogram inset and the right-hand paired-cell text column were
@@ -21,13 +23,19 @@ match the registered per-cell counts 18/6/17/19).  All text one 6-pt
 pure-black style; the stat line sits in a reserved strip above the axes
 with programmatic in-canvas / no-collision assertions.
 
+2026-09-12 pooled re-render (user-directed merge): records = Exp-28 frozen
+20 + Exp-40 deployment 5; the annotated test is the pooled verdict
+(n = 75).
+
 Style (the fig3/fig4/fig5a house style): no in-figure title — the panel
 letter is added at assembly; colours exclusively from palette rev 7;
 absolute-mm geometry, single column; 1200-dpi PNG + vector PDF
 (fonttype 42).
 
-Data  : experiments/results/exp28_gennav_mrna_endpoint_v2/full/
-        {runs.jsonl, verdict.json}
+Data  : experiments/results/exp28_gennav_mrna_endpoint_v2/full/runs.jsonl
+        + experiments/results/exp40_static_completion/mrna/runs.jsonl
+        + experiments/results/exp40_static_completion/pooled/
+          mrna_pooled_verdict.json
 Usage : python experiments/plots/fig5b_gennav_mcnemar.py
 Output : experiments/plots/output/fig5b_gennav_mcnemar.{pdf,png}
 """
@@ -49,10 +57,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-RUNS = (PROJECT_ROOT / "experiments" / "results"
-        / "exp28_gennav_mrna_endpoint_v2" / "full" / "runs.jsonl")
-VERDICT = (PROJECT_ROOT / "experiments" / "results"
-           / "exp28_gennav_mrna_endpoint_v2" / "full" / "verdict.json")
+RUNS_E28 = (PROJECT_ROOT / "experiments" / "results"
+            / "exp28_gennav_mrna_endpoint_v2" / "full" / "runs.jsonl")
+RUNS_E40 = (PROJECT_ROOT / "experiments" / "results"
+            / "exp40_static_completion" / "mrna" / "runs.jsonl")
+POOLED = (PROJECT_ROOT / "experiments" / "results"
+          / "exp40_static_completion" / "pooled" / "mrna_pooled_verdict.json")
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
@@ -83,10 +93,13 @@ H_PX = round(H_MM / 25.4 * DPI)
 
 
 def main() -> int:
-    records = [json.loads(ln) for ln in RUNS.read_text(encoding="utf-8").splitlines()
-               if ln.strip()]
+    records = []
+    for path in (RUNS_E28, RUNS_E40):
+        records += [json.loads(ln) for ln
+                    in path.read_text(encoding="utf-8").splitlines()
+                    if ln.strip()]
     records = [r for r in records if r.get("success")]
-    verdict = json.loads(VERDICT.read_text(encoding="utf-8"))
+    verdict = json.loads(POOLED.read_text(encoding="utf-8"))
 
     rows = []
     for rec in records:

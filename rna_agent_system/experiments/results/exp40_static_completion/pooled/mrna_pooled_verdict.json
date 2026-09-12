@@ -1,0 +1,273 @@
+{
+  "a_e2e_gene": 1,
+  "budget_matching": {
+    "nav_cap": 35,
+    "nav_raw_spent_max": 35,
+    "nav_raw_spent_mean": 23.08,
+    "rule_raw_spend": 35,
+    "violations": 0
+  },
+  "c_e2e_gene": 0.48,
+  "cohorts": {
+    "deployment_5": {
+      "a_e2e_gene": 1,
+      "budget_matching": {
+        "nav_cap": 35,
+        "nav_raw_spent_max": 28,
+        "nav_raw_spent_mean": 17.2,
+        "rule_raw_spend": 35,
+        "violations": 0
+      },
+      "c_e2e_gene": 0.6,
+      "cohort": "exp30 deployment targets, static-arm completion (navigation cells from the frozen form-session traces)",
+      "constraint_rate_C_ge_0.9": true,
+      "endpoint1_jcd_mcnemar": false,
+      "endpoint2_composite_wilcoxon": false,
+      "endpoint2_not_passed_disclosed": false,
+      "go_no_go": "NO-GO",
+      "mcnemar_C_vs_A": {
+        "b": 3,
+        "c": 0,
+        "p": 0.25
+      },
+      "n_pairs": 15,
+      "n_targets": 5,
+      "permutation_null": {
+        "draws": 10000,
+        "n_discordant": 3,
+        "null_b_histogram": {
+          "0": 1249,
+          "1": 3782,
+          "2": 3771,
+          "3": 1198
+        },
+        "null_b_mean": 1.4918,
+        "observed_b": 3,
+        "seed": 0
+      },
+      "quality_bundle": false,
+      "wilcoxon_C_vs_A_p": 0.9375
+    },
+    "registered_20": {
+      "mcnemar": "17:6, p=0.0347 (frozen)",
+      "source": "exp28_gennav_mrna_endpoint_v2/full/verdict.json (frozen)"
+    }
+  },
+  "constraint_rate_C_ge_0.9": true,
+  "deployment_nav_source": "the five deployment navigation cells are the frozen Exp-30 user-form session traces (production mrna_cds_design navigation=True, 35-raw cap), composed and evaluated here under the identical full-length matrix/utility stack",
+  "endpoint1_jcd_mcnemar": false,
+  "endpoint2_composite_wilcoxon": false,
+  "endpoint2_not_passed_disclosed": false,
+  "gene_e2e_targets": [
+    "Albumin",
+    "EPO",
+    "Growth_hormone",
+    "Influenza_HA_H1N1",
+    "Insulin",
+    "Luciferase",
+    "OTC",
+    "Ovalbumin",
+    "Transferrin",
+    "PTH",
+    "CSF3",
+    "THPO"
+  ],
+  "go_no_go": "NO-GO",
+  "jcd_target_counts": [
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 2,
+      "rule_jcd": 0,
+      "target_id": "A1AT"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "Albumin"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 2,
+      "rule_jcd": 0,
+      "target_id": "Beta_galactosidase"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "EPO"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 0,
+      "rule_jcd": 3,
+      "target_id": "GFP"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "Growth_hormone"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 1,
+      "rule_jcd": 0,
+      "target_id": "HER2"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 1,
+      "rule_jcd": 0,
+      "target_id": "HIV-1_Env_gp120"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 2,
+      "rule_jcd": 0,
+      "target_id": "HPV16_L1"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 1,
+      "rule_jcd": 0,
+      "target_id": "IFN_alpha_2a"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 2,
+      "rule_jcd": 3,
+      "target_id": "IL-2"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 3,
+      "rule_jcd": 0,
+      "target_id": "Influenza_HA_H1N1"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 2,
+      "rule_jcd": 0,
+      "target_id": "Insulin"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "Luciferase"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "OTC"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 1,
+      "rule_jcd": 3,
+      "target_id": "Ovalbumin"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 1,
+      "rule_jcd": 0,
+      "target_id": "PDGFB"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 0,
+      "rule_jcd": 0,
+      "target_id": "RSV_F_protein"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 0,
+      "rule_jcd": 0,
+      "target_id": "SARS-CoV-2_Spike_WT"
+    },
+    {
+      "cohort": "registered_20",
+      "nav_jcd": 2,
+      "rule_jcd": 0,
+      "target_id": "Transferrin"
+    },
+    {
+      "cohort": "deployment_5",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "PTH"
+    },
+    {
+      "cohort": "deployment_5",
+      "nav_jcd": 1,
+      "rule_jcd": 0,
+      "target_id": "LEP"
+    },
+    {
+      "cohort": "deployment_5",
+      "nav_jcd": 3,
+      "rule_jcd": 3,
+      "target_id": "CSF3"
+    },
+    {
+      "cohort": "deployment_5",
+      "nav_jcd": 3,
+      "rule_jcd": 2,
+      "target_id": "THPO"
+    },
+    {
+      "cohort": "deployment_5",
+      "nav_jcd": 1,
+      "rule_jcd": 0,
+      "target_id": "PLAT"
+    }
+  ],
+  "mcnemar_C_vs_A": {
+    "b": 20,
+    "c": 6,
+    "p": 0.009355306625366211
+  },
+  "n_pairs": 75,
+  "n_targets": 25,
+  "permutation_null": {
+    "draws": 10000,
+    "n_discordant": 26,
+    "null_b_histogram": {
+      "0": 0,
+      "1": 0,
+      "10": 785,
+      "11": 1144,
+      "12": 1469,
+      "13": 1429,
+      "14": 1511,
+      "15": 1158,
+      "16": 823,
+      "17": 449,
+      "18": 242,
+      "19": 110,
+      "2": 0,
+      "20": 26,
+      "21": 9,
+      "22": 4,
+      "23": 0,
+      "24": 0,
+      "25": 0,
+      "26": 0,
+      "3": 0,
+      "4": 2,
+      "5": 12,
+      "6": 36,
+      "7": 96,
+      "8": 223,
+      "9": 472
+    },
+    "null_b_mean": 13.0195,
+    "observed_b": 20,
+    "seed": 0
+  },
+  "quality_bundle": false,
+  "wilcoxon_C_vs_A_p": 0.7313675521173677
+}

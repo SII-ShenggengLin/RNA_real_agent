@@ -1,0 +1,36 @@
+{
+  "a_e2e_gene": 1,
+  "budget_matching": {
+    "nav_cap": 35,
+    "nav_raw_spent_max": 11,
+    "nav_raw_spent_mean": 11,
+    "rule_raw_spend": 35,
+    "violations": 0
+  },
+  "c_e2e_gene": 1,
+  "cohort": "exp30 deployment targets, static-arm completion (navigation cells from the frozen form-session traces)",
+  "constraint_rate_C_ge_0.9": true,
+  "endpoint1_jcd_mcnemar": false,
+  "endpoint2_composite_wilcoxon": false,
+  "endpoint2_not_passed_disclosed": false,
+  "go_no_go": "NO-GO",
+  "mcnemar_C_vs_A": {
+    "b": 0,
+    "c": 0,
+    "p": 1.0
+  },
+  "n_pairs": 3,
+  "n_targets": 1,
+  "permutation_null": {
+    "draws": 10000,
+    "n_discordant": 0,
+    "null_b_histogram": {
+      "0": 10000
+    },
+    "null_b_mean": 0,
+    "observed_b": 0,
+    "seed": 0
+  },
+  "quality_bundle": false,
+  "wilcoxon_C_vs_A_p": 1.0
+}

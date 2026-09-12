@@ -1,0 +1,298 @@
+{
+  "budget": {
+    "nav_spend_mean": 45.88461538461539,
+    "nav_violations": 0,
+    "static_raw_spend": 48,
+    "static_violations": 0
+  },
+  "cohort": "frozen seg3_decisive (12) + seg4_confirmation (8) + exp40 deployment completion (6) \u2014 matrix v3, cap 48, static grid vs production navigation",
+  "cohort_splits": {
+    "deployment_6": {
+      "delivered_nav": 8,
+      "delivered_static": 2,
+      "e2e_nav": 1,
+      "e2e_static": 0,
+      "mcnemar": {
+        "b": 7,
+        "c": 1,
+        "p": 0.0703125
+      }
+    },
+    "seg3_decisive": {
+      "delivered_nav": 24,
+      "delivered_static": 17,
+      "e2e_nav": 4,
+      "e2e_static": 0,
+      "mcnemar": {
+        "b": 10,
+        "c": 3,
+        "p": 0.09228515625
+      }
+    },
+    "seg4_confirmation": {
+      "delivered_nav": 16,
+      "delivered_static": 23,
+      "e2e_nav": 2,
+      "e2e_static": 7,
+      "mcnemar": {
+        "b": 1,
+        "c": 8,
+        "p": 0.0390625
+      }
+    }
+  },
+  "cohorts": {
+    "deployment": 6,
+    "seg3_decisive": 12,
+    "seg4_confirmation": 8
+  },
+  "delivered_nav": 48,
+  "delivered_static": 42,
+  "e2e_nav": 7,
+  "e2e_static": 7,
+  "mcnemar_nav_vs_static": {
+    "b": 18,
+    "c": 12,
+    "p": 0.361594608053565
+  },
+  "n_cells": 78,
+  "n_targets": 26,
+  "nav_vintage_disclosure": "deployment navigation cells are the frozen Exp-30 runs: FGF2, Angiopoietin-2 and IFN-gamma on the pre-2026-09-05 shipped mode (e14_production_v1), IL-17A, PDGF-BB and swine H3 HA on the current one (e14_production_v4); the static grid is vintage-free",
+  "per_target": [
+    {
+      "nav_cells": 0,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Ferritin"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 1,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "BSA"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 1,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Lysozyme"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 48,
+      "static_cells": 1,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "RNase_A"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 1,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "SARS-CoV-2_Nucleocapsid"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 30,
+      "static_cells": 1,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "VEGF"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Concanavalin_A"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "MBP"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Myoglobin"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Pepsin"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Streptavidin"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 36,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "TNF_alpha"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 36,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Trypsin"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "Carbonic_anhydrase_II"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 36,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "Chymotrypsinogen"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "Cytochrome_c"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "GFP"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "Papain"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "Subtilisin"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 3,
+      "static_e2e": true,
+      "static_spend": 48,
+      "target_id": "Thrombin"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Angiopoietin-2"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "FGF2"
+    },
+    {
+      "nav_cells": 3,
+      "nav_e2e": true,
+      "nav_spend": 47,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "IFN-gamma"
+    },
+    {
+      "nav_cells": 1,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 2,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "IL-17A"
+    },
+    {
+      "nav_cells": 2,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "PDGF-BB"
+    },
+    {
+      "nav_cells": 0,
+      "nav_e2e": false,
+      "nav_spend": 48,
+      "static_cells": 0,
+      "static_e2e": false,
+      "static_spend": 48,
+      "target_id": "Influenza H3N2 HA"
+    }
+  ],
+  "register_note": "pooled summary per DECISIONS (i): the registered 20-pool endpoint verdicts (seg3/seg4) remain the inferential backbone; this pooled statistic does not re-open the aptamer primary endpoint"
+}

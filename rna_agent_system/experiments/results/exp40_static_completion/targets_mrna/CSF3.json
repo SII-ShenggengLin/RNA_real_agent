@@ -1,0 +1,11 @@
+{
+  "target_id": "CSF3",
+  "target_name": "G-CSF",
+  "target_type": "therapeutic",
+  "source_database": "UniProt",
+  "accession": "P09905",
+  "species_for_codon_optimization": "Homo sapiens",
+  "protein_sequence": "VHLTGEEKSGLTALWAKVNVEEIGGEALGRLLVVYPWTQRFFEHFGDLSTADAVMKNPKVKKHGQKVLASFGEGLKHLDNLKGTFATLSELHCDKLHVDPENFRLLGNVLVVVLARHFGKEFTPELQTAYQKVVAGVANALAHKYH",
+  "protein_length_aa": 146,
+  "provenance": "Exp-30 curated deployment target (USER_CONFIRMED 2026-09-03T16:43:04); Exp-40 static-arm completion"
+}

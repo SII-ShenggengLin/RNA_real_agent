@@ -75,7 +75,7 @@ in the 2026-09-07 Exp-24 campaign lane). Frozen record:
 
 ### S2.2 RNA aptamer design
 
-The effectiveness evidence is the main text's Fig. 5e–h (the Exp-29
+The effectiveness evidence is the main text's Fig. 5e–g (the Exp-29/40
 campaign arc and its expanded 39-target budget sweep) and Table 1 case
 study B (Exp 37: the anti-VEGF aptamer navigation session, 23.4 min,
 self-audit narrative). One governance property bears repeating here: the
