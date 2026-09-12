@@ -2,9 +2,10 @@
 
 Where it sits: the Layer-2 generation step (mRNA CDS and aptamer workflows).
 Input: design profile (objective band · constraints · budget). Mechanism:
-probe a generation-parameter lattice (CDS: LinearDesign λ, 35 gears; aptamer:
-length 25–80 nt) feasibility-first -> allocate the raw-call budget across
-bands -> deliver a per-band quota with a diversity floor, or declare degrade.
+probe the generator's discrete settings (CDS: LinearDesign λ, 35 values;
+aptamer: length 25–80 nt) feasibility-first -> allocate the quota of
+generation calls across profiles -> deliver five candidates per profile with
+a diversity floor, or report infeasibility.
 """
 import style as S
 
@@ -14,7 +15,7 @@ LANES = [("stability", "λ ≤ 2", 0, 12), ("balanced", "2 < λ < 8", 13, 20),
          ("expression", "λ ≥ 8", 21, 34)]
 DELIVERED = {0: [1, 3, 5, 7, 9], 1: [14, 15, 17, 18, 19],
              2: [22, 25, 28, 31, 33]}
-N_GEARS = 35
+N_SETTINGS = 35
 X0, X1 = 56.0, 140.0
 
 
@@ -39,21 +40,21 @@ def build(B):
     B.txt(19, 26.0, "stability · balanced", size=5.0)
     B.txt(19, 23.4, "or expression", size=5.0)
     B.txt(19, 19.8, "constraints", size=5.0)
-    B.txt(19, 16.2, "budget · 35 calls", size=5.0)
+    B.txt(19, 16.2, "quota · 35 calls", size=5.0)
 
-    # ---- mechanism: feasibility map over the parameter lattice --------------
+    # ---- mechanism: feasibility map over the discrete settings ----------------
     B.card(40, 17, 106, 18.5, face=S.C_KHAKI, alpha=0.08, edge=False,
            radius=1.4)
 
     def gx(i):
-        return X0 + (X1 - X0) * i / (N_GEARS - 1)
+        return X0 + (X1 - X0) * i / (N_SETTINGS - 1)
 
     lane_y = [31.5, 27.7, 23.9]
     for li, (name, lam, a, b) in enumerate(LANES):
         y = lane_y[li]
         B.txt(54.0, y + 0.9, name, size=5.0, weight="bold", ha="right")
         B.txt(54.0, y - 1.5, lam, size=5.0, ha="right")
-        for gi in range(N_GEARS):
+        for gi in range(N_SETTINGS):
             feasible = a <= gi <= b
             if feasible:
                 B.dot(gx(gi), y, 0.42, face=S.C_SAGE)
@@ -67,12 +68,12 @@ def build(B):
     B.line(X1, 21.2, X1, 20.7, color=S.C_DARK, lw=0.5)
     B.txt(X0, 19.9, "λ = 0", size=5.0)
     B.txt(X1, 19.9, "λ = 50", size=5.0)
-    B.txt(98, 18.3, "generation-parameter lattice — CDS: LinearDesign λ "
-          "(35 gears) · aptamer: length 25–80 nt", size=5.0)
+    B.txt(98, 18.3, "generator settings — CDS: LinearDesign λ "
+          "(35 values) · aptamer: length 25–80 nt", size=5.0)
 
     # ---- probe -> allocate -> deliver ----------------------------------------
     chips = ((44, 26, "probe", "feasibility-first"),
-             (76, 30, "allocate", "35 raw calls"),
+             (76, 30, "allocate", "quota of calls"),
              (112, 30, "deliver", "5 per band · D1 ≥ 0.03"))
     for xc, wch, title, sub in chips:
         B.card(xc, 10, wch, 5.2, face=S.C_GREY_BLUE, alpha=0.18)
@@ -84,7 +85,7 @@ def build(B):
 
     # degrade path
     B.card(70, 3.2, 48, 4.4, face=S.C_DARK, alpha=0.10, lw=0.5, radius=0.6)
-    B.txt(94, 5.4, "no feasible gear → declared degrade", size=5.0)
+    B.txt(94, 5.4, "no feasible setting → declared infeasible", size=5.0)
     B.flow(91, 9.7, 91, 7.9, kind="advisory", lw=0.8, ms=6)
 
     # ---- input/output arrows + output card -------------------------------------
@@ -95,7 +96,7 @@ def build(B):
     B.txt(165, 26.0, "constraints", size=5.0)
     B.txt(165, 22.4, "quota per band", size=5.0)
     B.txt(165, 19.8, "diversity floor", size=5.0)
-    B.txt(165, 16.2, "or declared degrade", size=5.0)
+    B.txt(165, 16.2, "or declared infeasible", size=5.0)
     B.flow(142.3, 12.6, 151.7, 12.6, kind="data", lw=1.0)
 
 
