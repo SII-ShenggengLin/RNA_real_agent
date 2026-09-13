@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextvars
 import copy
 import logging
+import os
 import queue
 import threading
 from typing import Any, Iterator, Optional
@@ -87,7 +88,16 @@ class AgentRunner:
 
         self.calibrated_runtime = runtime_from_env()
         self.quality_agent = QualityAgent()
-        self.synthesis_agent = SynthesisAgent()
+        # RNADA_SYNTHESIS_LLM (default "on") mirrors the RNADA_CAPGATE /
+        # RNADA_QUALITY_REVIEW env-knob convention: batch drivers / ops can
+        # force the deterministic multi-node report (no synthesis LLM call,
+        # no ClaimGate pass) for A/B instrumentation. The interactive default
+        # is unchanged (LLM synthesis on).
+        synthesis_llm_enabled = (
+            os.environ.get("RNADA_SYNTHESIS_LLM", "on").strip().lower()
+            not in {"off", "0", "false", "no"}
+        )
+        self.synthesis_agent = SynthesisAgent(enable_llm=synthesis_llm_enabled)
         self.specialist_registry = self._build_specialist_registry()
         self.pipeline_agent = PipelineAgent(
             specialist_registry=self.specialist_registry,

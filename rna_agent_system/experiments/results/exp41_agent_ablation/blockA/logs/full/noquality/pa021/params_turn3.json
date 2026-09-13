@@ -1,0 +1,9 @@
+{
+  "rna_sequence": "GCAGAUCUGAGCCUGGGAGCUCUCUGGC",
+  "smiles": "OC[C@H]1O[C@H]([C@@H]([C@@H]1O[C@H]1O[C@@H](CN)[C@H]([C@@H]([C@H]1N)O)O)O)O[C@@H]1[C@@H](O)[C@H](N)C[C@@H]([C@H]1O[C@H]1O[C@H](CO)[C@H]([C@@H]([C@H]1N)O)O)N",
+  "secondary_structure": "(((((...((((....))))...)))))",
+  "scoring_tools": [
+    "rnasmol",
+    "gernabind"
+  ]
+}

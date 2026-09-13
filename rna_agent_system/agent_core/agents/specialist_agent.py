@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import logging
+import os
 from typing import Any
 
 from agent_core.agents.base import AgentResult, BaseAgent
@@ -48,6 +49,14 @@ class SpecialistAgent(BaseAgent):
 
         retry_count = 0
         max_retries = self.quality_profile.max_retries
+        # RNADA_SPECIALIST_MAX_RETRIES (default unset) mirrors the
+        # RNADA_CAPGATE / RNADA_QUALITY_REVIEW env-knob convention: batch
+        # drivers / ops can disable the retry loop for A/B instrumentation
+        # without touching code. The interactive default is unchanged (the
+        # profile's own value).
+        env_retries = os.environ.get("RNADA_SPECIALIST_MAX_RETRIES")
+        if env_retries is not None and env_retries.strip() != "":
+            max_retries = int(env_retries)
 
         auto_retry = state.get("_quality_auto_retry", False)
 

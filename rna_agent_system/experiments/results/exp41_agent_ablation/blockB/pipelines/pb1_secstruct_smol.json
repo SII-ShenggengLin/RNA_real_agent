@@ -1,0 +1,37 @@
+{
+  "plan_id": "pb1_secstruct_smol",
+  "nodes": [
+    {
+      "node_id": "design",
+      "workflow": "rna_secondary_structure_design",
+      "static_params": {
+        "target_structure": "..((((...))))..",
+        "temp_c": 37.0,
+        "repeats": 10,
+        "num_invocations": 3
+      },
+      "output_alias": "design"
+    },
+    {
+      "node_id": "smol",
+      "workflow": "rna_small_molecule_interaction",
+      "static_params": {
+        "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+        "scoring_tools": [
+          "rnasmol",
+          "gernabind"
+        ]
+      },
+      "input_bindings": {
+        "rna_sequence": "$design.best_candidate.sequence"
+      },
+      "output_alias": "smol"
+    }
+  ],
+  "edges": [
+    {
+      "source": "design",
+      "target": "smol"
+    }
+  ]
+}

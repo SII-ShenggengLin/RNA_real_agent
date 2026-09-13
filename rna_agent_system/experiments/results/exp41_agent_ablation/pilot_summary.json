@@ -1,0 +1,136 @@
+{
+  "blockA": {
+    "pilot": true,
+    "n_sessions_expected": 2,
+    "arms": {
+      "full": {
+        "n_sessions": 2,
+        "n_session_workflow_success": 2,
+        "n_turns": 6,
+        "n_turn_workflow_success": 6,
+        "total_retry_count": 0,
+        "sessions_with_retries": [],
+        "total_successful_review_calls": 6,
+        "total_failed_review_calls": 0,
+        "workflow_failed_sessions": [],
+        "outcome_tuples": {
+          "014": [
+            true,
+            true,
+            true
+          ],
+          "012": [
+            true,
+            true,
+            true
+          ]
+        },
+        "checks": {
+          "reviewed_turns_have_review": true,
+          "exempt_turns_zero_reviews": true
+        }
+      },
+      "noquality": {
+        "n_sessions": 2,
+        "n_session_workflow_success": 2,
+        "n_turns": 6,
+        "n_turn_workflow_success": 6,
+        "total_retry_count": 0,
+        "sessions_with_retries": [],
+        "total_successful_review_calls": 0,
+        "total_failed_review_calls": 0,
+        "workflow_failed_sessions": [],
+        "outcome_tuples": {
+          "014": [
+            true,
+            true,
+            true
+          ],
+          "012": [
+            true,
+            true,
+            true
+          ]
+        },
+        "checks": {
+          "zero_review_calls": true,
+          "zero_retries": true
+        }
+      },
+      "noretry": {
+        "n_sessions": 2,
+        "n_session_workflow_success": 2,
+        "n_turns": 6,
+        "n_turn_workflow_success": 6,
+        "total_retry_count": 0,
+        "sessions_with_retries": [],
+        "total_successful_review_calls": 3,
+        "total_failed_review_calls": 0,
+        "workflow_failed_sessions": [],
+        "outcome_tuples": {
+          "014": [
+            true,
+            true,
+            true
+          ],
+          "012": [
+            true,
+            true,
+            true
+          ]
+        },
+        "checks": {
+          "zero_retries": true,
+          "exactly_one_review_per_reviewed_turn": true,
+          "exempt_turns_zero_reviews": true
+        }
+      }
+    },
+    "headline": {
+      "n_sessions_per_arm": 2,
+      "workflow_success_counts": {
+        "full": 2,
+        "noquality": 2,
+        "noretry": 2
+      },
+      "paired_outcome_identity": true,
+      "paired_outcome_mismatches": [],
+      "retry_counts": {
+        "full": 0,
+        "noquality": 0,
+        "noretry": 0
+      },
+      "review_call_counts": {
+        "full": 6,
+        "noquality": 0,
+        "noretry": 3
+      }
+    }
+  },
+  "blockB": {
+    "pilot": true,
+    "runs": {
+      "full/pb1_secstruct_smol": {
+        "run_success": true,
+        "plan_success": true,
+        "node_success": {
+          "design": true,
+          "smol": true
+        },
+        "binding_correct": true,
+        "claim_block_present": true,
+        "claim_pass_lines": 2,
+        "claim_rejected_lines": 4,
+        "elapsed_seconds": 128.1
+      }
+    },
+    "headline": {
+      "n_runs": 1,
+      "all_runs_success": true,
+      "full_arm_claim_blocks": [
+        "full/pb1_secstruct_smol"
+      ],
+      "nosynth_claim_blocks": []
+    }
+  }
+}

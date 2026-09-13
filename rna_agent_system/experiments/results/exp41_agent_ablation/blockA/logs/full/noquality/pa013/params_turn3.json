@@ -1,0 +1,6 @@
+{
+  "structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1ehz_clean.pdb",
+  "secondary_structure_filepath": "data/benchmarks/RNA-BioBench-Platform/tasks/07_rna_tertiary_structure/structures/1ehz_contact_map.npy",
+  "design_tools": "all",
+  "n_samples_per_tool": 5
+}

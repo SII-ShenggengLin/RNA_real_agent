@@ -277,3 +277,67 @@ def test_specialist_abort_is_advisory_only() -> None:
     assert result.workflow_result.success is True
     # The advisory abort is still recorded for audit.
     assert result.metadata["quality_report"].action == "abort"
+
+
+def test_specialist_max_retries_env_knob_disables_retry(monkeypatch) -> None:
+    """RNADA_SPECIALIST_MAX_RETRIES=0 must suppress even hard-failure retries.
+
+    Env-knob convention (RNADA_CAPGATE / RNADA_QUALITY_REVIEW): A/B drivers
+    can disable the retry loop without touching code; the default (unset) keeps
+    the profile's own value.
+    """
+    workflow = _HardFailureWorkflow(sequences=["AUG", "AUGG"])
+    profile = QualityProfile(workflow_name="dummy", max_retries=2)
+    agent = SpecialistAgent(workflow, profile)
+
+    class _Agent(QualityAgent):
+        def __init__(self) -> None:
+            super().__init__(llm=MagicMock())
+            self.calls = 0
+
+        def review(self, result, profile, state):
+            self.calls += 1
+            return QualityReport(
+                overall_assessment="hard failure",
+                quality_score=0.0,
+                action="retry_with_adjustments",
+                reasoning="retry",
+                parameter_overrides={"x": 1},
+            )
+
+    monkeypatch.setenv("RNADA_SPECIALIST_MAX_RETRIES", "0")
+    result = agent.run("n1", {"x": 0}, _Agent(), state={"_quality_auto_retry": False})
+    # Only the final review ran; the workflow was never re-executed.
+    assert result.metadata["retry_count"] == 0
+    assert len(workflow.run_calls) == 1
+
+
+def test_specialist_max_retries_env_knob_default_unchanged(monkeypatch) -> None:
+    """Unset / empty knob keeps the profile's max_retries (interactive default)."""
+    workflow = _HardFailureWorkflow(sequences=["AUG", "AUGG"])
+    profile = QualityProfile(workflow_name="dummy", max_retries=2)
+    agent = SpecialistAgent(workflow, profile)
+
+    class _Agent(QualityAgent):
+        def __init__(self) -> None:
+            super().__init__(llm=MagicMock())
+            self.calls = 0
+
+        def review(self, result, profile, state):
+            self.calls += 1
+            if self.calls == 1:
+                return QualityReport(
+                    overall_assessment="hard failure",
+                    quality_score=0.0,
+                    action="retry_with_adjustments",
+                    reasoning="retry",
+                    parameter_overrides={"x": 1},
+                )
+            return QualityReport(
+                overall_assessment="ok", quality_score=1.0, action="pass", reasoning="fine"
+            )
+
+    monkeypatch.delenv("RNADA_SPECIALIST_MAX_RETRIES", raising=False)
+    result = agent.run("n1", {"x": 0}, _Agent(), state={"_quality_auto_retry": False})
+    assert result.metadata["retry_count"] == 1
+    assert len(workflow.run_calls) == 2

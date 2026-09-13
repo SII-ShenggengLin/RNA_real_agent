@@ -218,3 +218,20 @@ def test_load_pipeline_plan(tmp_path):
     assert plan.plan_id == "test_plan"
     assert len(plan.nodes) == 1
     assert plan.nodes[0].node_id == "n1"
+
+
+def test_synthesis_llm_env_knob(runner: AgentRunner):
+    """RNADA_SYNTHESIS_LLM=off forces the deterministic multi-node report.
+
+    Env-knob convention (RNADA_CAPGATE / RNADA_QUALITY_REVIEW): the default
+    ("on") keeps LLM synthesis + the ClaimGate pass.
+    """
+    import os
+
+    assert runner.synthesis_agent.enable_llm is True
+    os.environ["RNADA_SYNTHESIS_LLM"] = "off"
+    try:
+        disabled = AgentRunner(executor=ToolExecutor(build_default_tool_registry()))
+        assert disabled.synthesis_agent.enable_llm is False
+    finally:
+        del os.environ["RNADA_SYNTHESIS_LLM"]

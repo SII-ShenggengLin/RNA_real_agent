@@ -1,0 +1,5 @@
+{
+  "sequence_filepath": "data/benchmarks/RNA-BioBench-ProcessAware/fixtures/emcv_5utr.fa",
+  "iresfinder_mode": 0,
+  "probability_threshold": 0.5
+}

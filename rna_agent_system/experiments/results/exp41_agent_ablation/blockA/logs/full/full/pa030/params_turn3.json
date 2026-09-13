@@ -1,0 +1,7 @@
+{
+  "target_mrna_filepath": "data/benchmarks/external_anchors/vaccine_mrna/bnt162b2_full.fa",
+  "aso_length": 25,
+  "window_step": 3,
+  "top_n_windows": 20,
+  "binding_evaluation_tool": "rnacofold"
+}

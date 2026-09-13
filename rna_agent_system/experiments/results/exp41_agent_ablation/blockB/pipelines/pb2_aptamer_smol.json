@@ -1,0 +1,42 @@
+{
+  "plan_id": "pb2_aptamer_smol",
+  "nodes": [
+    {
+      "node_id": "design",
+      "workflow": "rna_aptamer_design",
+      "static_params": {
+        "protein_structure_path": "/inspire/hdd/global_user/linshenggeng-240107100015/RNA_real_agent/rna_agent_system/data/benchmarks/RNA-BioBench-Aptamer/structures/1vpf.pdb",
+        "chain_id": "A",
+        "aptamer_length": 30,
+        "n_odesign_samples": 5,
+        "reference_point": {
+          "egarps_component": 0.5,
+          "rhofold_component": 0.5,
+          "iptm_component": 0.5
+        }
+      },
+      "output_alias": "design"
+    },
+    {
+      "node_id": "smol",
+      "workflow": "rna_small_molecule_interaction",
+      "static_params": {
+        "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+        "scoring_tools": [
+          "rnasmol",
+          "gernabind"
+        ]
+      },
+      "input_bindings": {
+        "rna_sequence": "$design.best_candidate.sequence"
+      },
+      "output_alias": "smol"
+    }
+  ],
+  "edges": [
+    {
+      "source": "design",
+      "target": "smol"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "protein_sequence": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",
+  "design_tool": "all",
+  "lambda_value": 2.0,
+  "cai_species": "Mus musculus",
+  "utr_mode": "short"
+}
