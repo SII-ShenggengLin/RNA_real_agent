@@ -7,8 +7,10 @@ bubble AREA encodes the measured successful LLM calls consumed by that unit.
 The failure-injected arm's errored attempts are annotated, not bubbled —
 they consume no model output. The reset re-runs of the navigation campaigns
 (Exp 27/28/29, deterministic zero-LLM) and the production-entry navigation
-and case-study runs (Exp 30/37, quality review on) joined the strip on
-2026-09-09, retiring the earlier exclusion note.
+runs (Exp 30, quality review on) joined the strip on 2026-09-09, retiring
+the earlier exclusion note; the Exp-37 case-studies row was removed on
+2026-09-13 with the retired case-studies section (user-directed batch 6 —
+the paper reports the campaigns it presents; the records remain on disk).
 
 Bubble style borrows the BioMedAgent Fig. 3e bubble-strip convention.
 Encodings: bubble area = LLM calls per unit (sqrt radius scale); colour =
@@ -75,7 +77,6 @@ ROWS = {
     "exp29_aptamer_arc": ("GenNav aptamer arc (Exp 29)", "campaigns", PALETTE_BY_NAME["pale_dusty_rose"]),
     "exp29_expanded_sweep": ("Aptamer budget sweep (Exp 29)", "campaigns", PALETTE_BY_NAME["sand"]),
     "exp30_production_navigation": ("Production navigation (Exp 30)", "sessions", PALETTE_BY_NAME["grey_blue"]),
-    "exp37_case_studies": ("Case studies (Exp 37)", "cases", PALETTE_BY_NAME["slate_blue"]),
 }
 ROW_ORDER = list(ROWS)
 # Size-key colour sampler: five of the row colours, shown for every size

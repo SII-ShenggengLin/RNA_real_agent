@@ -1,5 +1,5 @@
 {
-  "registered": "2026-09-01, Exp 25 (Fig 4h): per-campaign LLM usage — measured counts only; 2026-09-09: navigation campaigns added after their reset re-runs (Exp 27/28/29 zero-LLM; Exp 30/37 measured from session workspaces)",
+  "registered": "2026-09-01, Exp 25 (Fig 4h): per-campaign LLM usage — measured counts only; 2026-09-09: navigation campaigns added after their reset re-runs (Exp 27/28/29 zero-LLM; Exp 30/37 measured from session workspaces); 2026-09-13: Exp-37 row removed with the retired case-studies section (records remain on disk)",
   "campaigns": [
     {
       "campaign": "exp5_ungated_control",
@@ -904,18 +904,6 @@
       "total_llm_calls": 22,
       "mean_llm_calls_per_task": 2.0,
       "note": "production navigation on new targets through the user form entry (quality review on): advisory review calls per session"
-    },
-    {
-      "campaign": "exp37_case_studies",
-      "n_tasks": 3,
-      "per_task_llm_calls": [
-        4,
-        2,
-        2
-      ],
-      "total_llm_calls": 8,
-      "mean_llm_calls_per_task": 2.667,
-      "note": "Table-1 end-to-end case studies on the platform defaults (quality review on): advisory review calls per case"
     }
   ]
 }

@@ -57,28 +57,23 @@ screening gate (values above).
 
 ### S2.1 Full-length mRNA design
 
-The end-to-end validity evidence for this workflow is the main text's
-Table 1 case study A (Exp 37, 2026-09-07, on the two-step full-length
-redesign of DECISIONS (bb)): the full-length Spike task completed in
-6.8 h (24,320 s, no time cap) through the platform-default flow, delivering
-108 candidates (3 navigation-selected CDSs × a 6×6 UTR shortlist). The
-best-ranked construct's CDS reached CAI 0.959 against the human table,
-exceeding the BNT162b2 benchmark CDS anchor (0.952) scored through the same
-production tool, and its GEMORNA-generated UTR pair outscored the pooled
-clinical benchmark UTR pairs on the certified MRL oracle — the benchmark
-pairs competed in the same pool and lost fairly. The navigation budget was
-respected (35/35 raw calls); the single zero-delivery boundary (the
-stability profile) is disclosed in the case record. Benchmark-wide, all 22
-full-length tasks succeed (210/210 completion, Fig. 2a; re-measured 22/22
-in the 2026-09-07 Exp-24 campaign lane). Frozen record:
-`experiments/results/exp37_table1_case_studies/caseA/record.json`.
+The evidence is benchmark-wide completion plus the pre-registered
+navigation campaign: all 22 full-length tasks succeed end-to-end
+(210/210 completion, Fig. 2a; re-measured 22/22 in the 2026-09-07 Exp-24
+campaign lane). The governed two-step protocol itself (GenNav-λ CDS
+navigation, the benchmark-anchored UTR pool under the
+literature-threshold admission rules, ASF reference-point ranking) is
+specified in Methods, and its constraint-delivery behaviour is
+characterized at scale by the mRNA navigation campaign (Fig. 5a–d; 25
+targets pooled, budget-matched dual arms). No single-run case study is
+reported; practical end-to-end validation of designed constructs is
+deferred to the wet-lab programme.
 
 ### S2.2 RNA aptamer design
 
 The effectiveness evidence is the main text's Fig. 5e–g (the Exp-29/40
-campaign arc and its expanded 39-target budget sweep) and Table 1 case
-study B (Exp 37: the anti-VEGF aptamer navigation session, 23.4 min,
-self-audit narrative). One governance property bears repeating here: the
+campaign arc and its expanded 39-target budget sweep). One governance
+property bears repeating here: the
 structure-based oracles this workflow would need for affinity validation —
 EGARPS native probability, ProteinX ipTM, RhoFold mean pLDDT — were
 profiled on assertion-curated anchor sets and showed no reliable screening,
@@ -86,9 +81,8 @@ ranking or docking power in any measured cell (main text Fig. 3a–c and the
 affinity-calibration register, Exp 10–13). The workflow's reports are
 therefore capability-map-driven by design: ranking and claims abstain from
 the decertified oracles rather than dressing their outputs as affinity
-evidence (Table 1 case B is exactly this behaviour on a real session).
-Benchmark-wide, all 18 aptamer tasks succeed (Fig. 2a; 18/18 in the Exp-24
-campaign lane).
+evidence. Benchmark-wide, all 18 aptamer tasks succeed (Fig. 2a; 18/18 in
+the Exp-24 campaign lane).
 
 ### S2.3 RNA tertiary structure design (Exp 38)
 
@@ -150,8 +144,9 @@ anchors through the production tool path
 `summary.json`; 222/222 scored, zero failures; `--verify` regenerates every
 arm sequence from its anchor/seed and rebuilds the summary
 byte-identically). Arms: the BNT162b2 and mRNA-1273 vaccine CDSs (n = 2;
-longest-ORF extraction from the putative assembled contigs as registered in
-Exp 37), the 20 wild-type RefSeq CDS anchors of the FullLength-mRNA
+longest-ORF extraction from the putative assembled contigs — the longest
+in-frame AUG→stop open reading frame), the 20 wild-type RefSeq CDS anchors
+of the FullLength-mRNA
 benchmark (n = 20), and 10 seeded synonymous resamples of each WT (n = 200;
 the identical generator and seeds as the Fig. 2b,c null arm). CAI species:
 Homo sapiens for all arms.
@@ -176,9 +171,7 @@ Homo sapiens for all arms.
   not separate WT from random (−0.0508 vs −0.0473, P = 0.295), consistent
   with Fig. 2c, where MFE/nt separates the designed arm from both nulls but
   not WT from random. The vaccine CDSs lead on both components (CAI 0.952 /
-  0.979; MFE/nt −0.085 / −0.113 vs random P = 3.9 × 10⁻⁴, δ = −0.99). The
-  BNT162b2 CDS CAI through this path (0.9515) reproduces the Exp-37 Table-1
-  anchor exactly.
+  0.979; MFE/nt −0.085 / −0.113 vs random P = 3.9 × 10⁻⁴, δ = −0.99).
 
 Benchmark-wide, all 13 scoring tasks succeed (Fig. 2a; 13/13 in the Exp-24
 lane).
@@ -218,7 +211,6 @@ campaign lane).
 | IRES literature panel (modes 0/2) | `experiments/results/exp5_ires_panel/` | `experiments/exp5_ires_literature_panel.py` |
 | Tertiary-structure validity pool (Exp 38) | `experiments/results/exp38_tertiary_validity_pool/` | `experiments/exp38_tertiary_validity_pool.py` |
 | Scoring anchor direction (Exp 39) | `experiments/results/exp39_scoring_anchor_direction/` | `experiments/exp39_scoring_anchor_direction.py` |
-| Table-1 case studies A/B | `experiments/results/exp37_table1_case_studies/` | `experiments/exp37_table1_case_studies.py` |
 | Aptamer campaign arc + expanded sweep | `experiments/results/exp29_aptamer_campaign_arc/` | `experiments/exp29_aptamer_campaign_arc.py` |
 | Benchmark completion (210/210) | `experiments/results/exp24_production_campaign/lane_*.jsonl` | Exp-24 production campaign |
 

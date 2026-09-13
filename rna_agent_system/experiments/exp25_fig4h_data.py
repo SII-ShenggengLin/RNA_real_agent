@@ -24,8 +24,10 @@ measured from frozen campaign records — never assumed:
   note retired): Exp 27/28 (mRNA endpoint) and Exp 29 (aptamer arc +
   expanded budget sweep) are deterministic in both arms — ``llm_calls`` = 0
   read from each segment's verdict file; Exp 30 (production navigation
-  through the form entry, quality review on) and Exp 37 (Table-1 case
-  studies) are MEASURED from their session workspaces like Exp 24.
+  through the form entry, quality review on) is MEASURED from its session
+  workspaces like Exp 24. 2026-09-13: the Exp-37 case-studies row removed
+  from the assembly (the case-studies section and Table 1 retired from the
+  paper, user-directed batch 6; the records remain on disk).
 
 Output: experiments/results/exp25_quality_review_advisory/fig4h_llm_usage.json
 Usage : PYTHONPATH=. python experiments/exp25_fig4h_data.py
@@ -211,20 +213,13 @@ def main() -> int:
         "production navigation on new targets through the user form entry (quality review on): "
         "advisory review calls per session",
     ))
-    e37 = RESULTS / "exp37_table1_case_studies"
-    e37_sids = [json.loads((e37 / c / "record.json").read_text(encoding="utf-8"))["session_id"]
-                for c in ("caseA", "caseB", "caseC")]
-    campaigns.append(campaign(
-        "exp37_case_studies",
-        _measured_sessions(e37_sids),
-        "Table-1 end-to-end case studies on the platform defaults (quality review on): "
-        "advisory review calls per case",
-    ))
 
     out = {
         "registered": "2026-09-01, Exp 25 (Fig 4h): per-campaign LLM usage — measured counts only; "
                       "2026-09-09: navigation campaigns added after their reset re-runs "
-                      "(Exp 27/28/29 zero-LLM; Exp 30/37 measured from session workspaces)",
+                      "(Exp 27/28/29 zero-LLM; Exp 30/37 measured from session workspaces); "
+                      "2026-09-13: Exp-37 row removed with the retired case-studies section "
+                      "(records remain on disk)",
         "campaigns": campaigns,
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
