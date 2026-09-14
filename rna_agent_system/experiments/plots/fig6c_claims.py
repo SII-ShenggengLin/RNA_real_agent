@@ -1,20 +1,52 @@
 """Fig 6c — Claim adjudication of the baseline conditions: false-positive
-rate (solid, Wilson 95% CI whiskers) and unverifiable-claim share (light
-companion), against the ungated-control anchor (the section-2.3 measured
-54.5%, dashed reference line).
+rate (solid bars, Wilson 95% CI whiskers) and unverifiable-claim share
+(light companion bars), the value printed at every bar end.
 
-Five conditions on the x axis (bare LLM zero-/few-shot; ReAct matched /
+Five conditions on the y axis (bare LLM zero-/few-shot; ReAct matched /
 3x / 10x); the platform condition publishes zero claims by construction
-(ClaimGate is pipeline-synthesis-only) and is annotated as such.  Every
-number is asserted against the frozen comparison JSON and the frozen
-ungated-control summary.
+(ClaimGate is pipeline-synthesis-only) — carried by the Fig. 6 caption,
+not annotated in-panel.  The section-2.3 ungated-control rate (54.5%)
+is the reference class for these rates and is likewise carried by the
+caption and the section text.  Every number shown is asserted against
+the frozen comparison JSON.
 
 Style: the fig6 house conventions (no in-figure title, single 6-pt
 pure-black text, palette rev 7, absolute-mm geometry, 1200-dpi PNG + PDF,
 text/collision guards, raster QA with palette purity).
 
+2026-09-14 repair pass (user direction, the fig6a batch): condition labels
+spelt out (Bare LLM zero-/few-shot, ReAct agent matched/3x/10x); bare
+few-shot colour khaki -> grey blue (sage is fig6b's delivered-class
+colour), keeping the fig-6-wide condition-colour identity with fig6a/6d.
+
+2026-09-14 second repair pass (user direction): the two in-axes
+annotations ("RNADesignAgent: 0 claims", "ungated control 54.5%") and
+the dashed anchor line removed (the zero-claims fact and the 54.5%
+reference rate live in the Fig. 6 caption and the section text);
+per-bar value labels added; y axis titled "Fraction of claims" (both
+quantities are fractions of the condition's claims); all text stays
+6-pt pure black.  Key: each quantity's name followed by its five
+condition swatches in the condition order (solid group verbatim, light
+group the 55%-white tints), swatches tightly pitched and centred on the
+text midline.
+
+2026-09-14 layout-repair pass (user direction — the Fig-6 composite
+re-arranged to a full-height left column a beside the b / c+d stack, so
+c and d each get a half-block ~43-mm column): vertical grouped bars
+re-laid as horizontal grouped bars — five spelt-out condition columns
+plus per-bar value labels cannot keep the uniform 6-pt text on a 43-mm
+x axis (the measured label block alone would overflow the plot), while
+horizontal lanes give every label its own row; each condition carries a
+light bar (unverifiable share, value at its end) above a solid bar (FP
+rate, Wilson CI whisker, value at the whisker end); the axis title
+"Fraction of claims" moves to the x axis; the key keeps both quantity
+rows with all 5x2 condition swatches, wrapped to one centred row per
+quantity (the single-row key of the 89-mm canvas no longer fits a 43-mm
+column).  Canvas 89 x 50 -> 43.12 x 55 mm (the half-block width of the
+new composite grid).  Guards extended: value labels additionally
+asserted clear of every bar.
+
 Data  : experiments/results/exp42_43_comparison/comparison.json
-        experiments/results/exp5_claim_overreach/runs_summary.json
 Usage : python experiments/plots/fig6c_claims.py
 Output : experiments/plots/output/fig6c_claims.{pdf,png}
 """
@@ -32,6 +64,7 @@ import matplotlib.image as mpimg  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
+from matplotlib.transforms import Bbox  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
@@ -40,21 +73,18 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 COMPARISON = (
     PROJECT_ROOT / "experiments" / "results" / "exp42_43_comparison" / "comparison.json"
 )
-UNGATED = (
-    PROJECT_ROOT / "experiments" / "results" / "exp5_claim_overreach" / "runs_summary.json"
-)
 OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 50.0
+W_MM, H_MM = 43.12, 55.0
 
 CONDS = [
-    ("bare_zeroshot", "Bare\nzero-shot", PALETTE_BY_NAME["sand"]),
-    ("bare_fewshot", "Bare\nfew-shot", PALETTE_BY_NAME["khaki"]),
-    ("react_matched", "ReAct\nmatched", PALETTE_BY_NAME["pale_dusty_rose"]),
-    ("react_3x", "ReAct\n3\u00d7", PALETTE_BY_NAME["dusty_mauve_pink"]),
-    ("react_10x", "ReAct\n10\u00d7", PALETTE_BY_NAME["terracotta"]),
+    ("bare_zeroshot", "Bare LLM zero-shot", PALETTE_BY_NAME["sand"]),
+    ("bare_fewshot", "Bare LLM few-shot", PALETTE_BY_NAME["grey_blue"]),
+    ("react_matched", "ReAct agent matched", PALETTE_BY_NAME["pale_dusty_rose"]),
+    ("react_3x", "ReAct agent 3\u00d7", PALETTE_BY_NAME["dusty_mauve_pink"]),
+    ("react_10x", "ReAct agent 10\u00d7", PALETTE_BY_NAME["terracotta"]),
 ]
 
 plt.rcParams.update({
@@ -74,9 +104,23 @@ DPI = 1200
 W_PX = round(W_MM / 25.4 * DPI)
 H_PX = round(H_MM / 25.4 * DPI)
 
-AX_LEFT_MM, AX_W_MM = 13.0, 67.0
-AX_BOT_MM, AX_H_MM = 15.0, 26.5
-LEG_Y_MM = 5.2
+# absolute-mm layout
+AX_BOT_MM = 15.6         # axes bottom, from canvas bottom (x title + key below)
+AX_TOP_GAP_MM = 1.2
+MARGIN_L_MM = 1.0
+MARGIN_R_MM = 1.3
+GAP_LABEL_MM = 1.4       # condition-label block -> bars
+BAR_H_MM = 2.4
+PAIR_GAP_MM = 0.3        # light bar -> solid bar within a pair
+GROUP_PITCH_MM = 7.7     # pair top -> next pair top
+TOP_INSET_MM = 1.2       # plot top -> first pair top
+VALUE_PAD_MM = 0.4       # bar/CI end -> value label
+CAP_HALF_MM = 0.55       # CI whisker cap half-height
+KEY_ROW1_Y_MM = 6.2      # FP key-row centre, from canvas bottom
+KEY_ROW2_Y_MM = 3.2      # unverifiable key-row centre
+SW_MM = 1.3              # key swatch edge
+LAB_GAP_MM = 1.2         # quantity label -> its swatch group
+SW_PITCH_MM = 2.0        # swatch-to-swatch spacing within a group
 
 
 def blend_to_white(hex_color: str, frac_white: float):
@@ -100,9 +144,6 @@ def on_segment_rgb_tuple(uni, p_rgb, q_rgb, tol: float = 8.0) -> np.ndarray:
 def main() -> int:
     comp = json.loads(COMPARISON.read_text(encoding="utf-8"))
     claims = comp["claims"]
-    ung = json.loads(UNGATED.read_text(encoding="utf-8"))
-    anchor = ung["overall"]["fp_rate"]
-    assert abs(anchor - 30 / 55) < 1e-9  # the registered ungated control
 
     for key, _, _ in CONDS:
         c = claims[key]
@@ -110,40 +151,66 @@ def main() -> int:
     assert abs(claims["react_10x"]["fp_rate"] - 0.5109) < 1e-9
     assert abs(claims["bare_fewshot"]["fp_rate"] - 0.1136) < 1e-9
 
+    plot_h_mm = H_MM - AX_BOT_MM - AX_TOP_GAP_MM
     fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
-    ax = fig.add_axes([AX_LEFT_MM / W_MM, AX_BOT_MM / H_MM,
-                       AX_W_MM / W_MM, AX_H_MM / H_MM])
-    ax.set_xlim(-0.5, len(CONDS) - 0.5)
-    ax.set_ylim(0, 1.0)
-    ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_yticklabels(["0", "0.25", "0.50", "0.75", "1"])
-    ax.set_xticks(range(len(CONDS)))
-    ax.set_xticklabels([lab for _, lab, _ in CONDS])
+    fig.set_dpi(DPI)  # the guards below measure in final-raster pixels
+    ax = fig.add_axes([0.5, AX_BOT_MM / H_MM, 0.4, plot_h_mm / H_MM])
+    ax.set_xlim(0.0, 1.0)
+    ax.set_ylim(0.0, plot_h_mm)  # 1 y unit = 1 mm of plot height
+    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
+    ax.set_xticklabels(["0", "0.25", "0.50", "0.75", "1"])
+    pair_h_mm = 2 * BAR_H_MM + PAIR_GAP_MM
+    pair_centres = [plot_h_mm - TOP_INSET_MM - g * GROUP_PITCH_MM - pair_h_mm / 2
+                    for g in range(len(CONDS))]
+    ax.set_yticks(pair_centres)
+    ax.set_yticklabels([lab for _, lab, _ in CONDS])
+    ax.set_xlabel("Fraction of claims", labelpad=1.8)
     ax.tick_params(length=2, pad=1.8)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
+    for s in ("top", "right", "left"):
+        ax.spines[s].set_visible(False)
 
-    bw = 0.34
-    for i, (key, _, color) in enumerate(CONDS):
+    # measured label block (the fig6a/6b pattern): the bar span runs from
+    # the labels' right edge to the right margin
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    label_w_mm = max(
+        t.get_window_extent(renderer).width for t in ax.get_yticklabels()
+    ) / fig.bbox.width * W_MM
+    bar_left_mm = MARGIN_L_MM + label_w_mm + GAP_LABEL_MM
+    bar_w_mm = W_MM - MARGIN_R_MM - bar_left_mm
+    ax.set_position([bar_left_mm / W_MM, AX_BOT_MM / H_MM,
+                     bar_w_mm / W_MM, plot_h_mm / H_MM])
+
+    bar_rects = []  # data-coord (x0, y0, w, h) for the text-bar guard
+    value_texts = []
+    for g, (key, _, color) in enumerate(CONDS):
         c = claims[key]
-        # light companion: unverifiable share
-        ax.add_patch(Rectangle((i - bw - 0.02, 0), bw, c["unverifiable_share"],
+        pair_top = plot_h_mm - TOP_INSET_MM - g * GROUP_PITCH_MM
+        # light bar (unverifiable share) on top, solid bar (FP rate) below
+        y_light = pair_top - BAR_H_MM
+        y_solid = pair_top - BAR_H_MM - PAIR_GAP_MM - BAR_H_MM
+        ax.add_patch(Rectangle((0.0, y_light), c["unverifiable_share"], BAR_H_MM,
                                facecolor=blend_to_white(color, 0.55),
                                edgecolor="none"))
-        # solid: FP rate with Wilson CI whiskers
-        ax.add_patch(Rectangle((i + 0.02, 0), bw, c["fp_rate"],
+        ax.add_patch(Rectangle((0.0, y_solid), c["fp_rate"], BAR_H_MM,
                                facecolor=color, edgecolor="none"))
+        bar_rects.append((0.0, y_light, c["unverifiable_share"], BAR_H_MM))
+        bar_rects.append((0.0, y_solid, c["fp_rate"], BAR_H_MM))
+        # Wilson CI whisker on the solid bar
         lo, hi = c["fp_rate_ci"]
-        ax.plot([i + 0.02 + bw / 2, i + 0.02 + bw / 2], [lo, hi],
-                color=INK, lw=0.6, zorder=4)
-        for yv in (lo, hi):
-            ax.plot([i + 0.02 + bw / 2 - 0.05, i + 0.02 + bw / 2 + 0.05],
-                    [yv, yv], color=INK, lw=0.6, zorder=4)
-
-    # ungated-control anchor (the section-2.3 measured rate)
-    ax.plot([-0.5, len(CONDS) - 0.5], [anchor, anchor],
-            color=PALETTE_BY_NAME["dark_warm_grey"], lw=0.7,
-            linestyle=(0, (3, 2)), zorder=3)
+        yc_solid = y_solid + BAR_H_MM / 2
+        ax.plot([lo, hi], [yc_solid, yc_solid], color=INK, lw=0.6, zorder=4)
+        for xv in (lo, hi):
+            ax.plot([xv, xv], [yc_solid - CAP_HALF_MM, yc_solid + CAP_HALF_MM],
+                    color=INK, lw=0.6, zorder=4)
+        # per-bar value labels at the bar / whisker end (0-1 fraction scale)
+        value_texts.append(ax.text(
+            c["unverifiable_share"] + VALUE_PAD_MM / bar_w_mm,
+            y_light + BAR_H_MM / 2, f"{c['unverifiable_share']:.2f}",
+            ha="left", va="center", fontsize=FONT, color=INK))
+        value_texts.append(ax.text(
+            hi + VALUE_PAD_MM / bar_w_mm, yc_solid, f"{c['fp_rate']:.2f}",
+            ha="left", va="center", fontsize=FONT, color=INK))
 
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
@@ -154,47 +221,43 @@ def main() -> int:
         t.remove()
         return w
 
-    # anchor label, right-aligned above the dashed line (in-axes coords)
-    ax.text(len(CONDS) - 0.5, anchor + 0.035, "ungated control 54.5%",
-            ha="right", va="bottom", fontsize=FONT, color=INK)
-
-    # platform zero-claims note, left-aligned inside the axes headroom
-    ax.text(-0.42, 0.93, "platform: 0 claims", ha="left", va="top",
-            fontsize=FONT, color=INK)
-
-    # key: one centred row (solid / light swatches)
-    SW = 1.3 / W_MM
-    GAP_IN, GAP_OUT = 0.6 / W_MM, 1.5 / W_MM
-    items = [
-        (PALETTE_BY_NAME["terracotta"], "solid: false-positive rate (95% CI)"),
-        (blend_to_white(PALETTE_BY_NAME["terracotta"], 0.55),
-         "light: unverifiable share"),
-        (PALETTE_BY_NAME["dark_warm_grey"], "dashed: ungated-control anchor"),
+    # key: one centred row per quantity — the quantity's name followed by
+    # its five condition swatches in the panel order (solid group =
+    # condition colours verbatim, light group = their 55%-white companion
+    # tints); swatches centred on the text midline
+    SW = SW_MM / W_MM
+    LAB_GAP = LAB_GAP_MM / W_MM
+    SW_PITCH = SW_PITCH_MM / W_MM
+    key_groups = [
+        ("False-positive rate (95% CI)", [c for _, _, c in CONDS]),
+        ("Unverifiable share of claims",
+         [blend_to_white(c, 0.55) for _, _, c in CONDS]),
     ]
+    group_w = (len(CONDS) - 1) * SW_PITCH + SW
     key_texts = []
-    for row_i, idxs in enumerate((range(0, 2), range(2, 3))):
-        sub = [items[i] for i in idxs]
-        widths = [SW + GAP_IN + text_w(lab) + GAP_OUT for _, lab in sub]
-        total_w = sum(widths) - GAP_OUT
-        assert total_w < 0.94, f"key row overflows canvas: {total_w:.3f}"
+    key_swatches = []  # (x, y, w, h) figure fractions
+    for row, (lab, colors) in enumerate(key_groups):
+        total_w = text_w(lab) + LAB_GAP + group_w
+        assert total_w < 0.96, f"key row overflows canvas: {total_w:.3f}"
         x = 0.5 - total_w / 2
-        y = (LEG_Y_MM + (1 - row_i) * 2.7) / H_MM
-        for (color, lab), w in zip(sub, widths):
+        y = (KEY_ROW1_Y_MM if row == 0 else KEY_ROW2_Y_MM) / H_MM
+        key_texts.append(fig.text(x, y, lab, fontsize=FONT, color=INK,
+                                  ha="left", va="center"))
+        x += text_w(lab) + LAB_GAP
+        for k, color in enumerate(colors):
+            key_swatches.append((x + k * SW_PITCH, y - (SW_MM / 2) / H_MM,
+                                 SW, SW_MM / H_MM))
             fig.patches.append(Rectangle(
-                (x, y - 0.65 / H_MM), SW, 1.3 / H_MM,
+                (x + k * SW_PITCH, y - (SW_MM / 2) / H_MM), SW, SW_MM / H_MM,
                 transform=fig.transFigure,
                 facecolor=(tuple(np.clip(color, 0, 1)) if isinstance(color, tuple) else color),
                 edgecolor="none"))
-            x += SW + GAP_IN
-            key_texts.append(fig.text(x, y, lab, fontsize=FONT, color=INK,
-                                      va="baseline"))
-            x += text_w(lab) + GAP_OUT
 
     # guards
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    texts = (list(ax.get_xticklabels()) + list(ax.get_yticklabels()) + key_texts
-             + [t for t in ax.texts])
+    texts = (list(ax.get_xticklabels()) + list(ax.get_yticklabels())
+             + [ax.xaxis.label] + key_texts + value_texts)
     boxes = []
     for t in texts:
         bb = t.get_window_extent(renderer)
@@ -206,6 +269,25 @@ def main() -> int:
         for j in range(i + 1, len(boxes)):
             assert not boxes[i].overlaps(boxes[j]), \
                 f"text collision: {texts[i].get_text()!r} x {texts[j].get_text()!r}"
+    ylabel_boxes = [t.get_window_extent(renderer) for t in ax.get_yticklabels()]
+    assert max(b.x1 for b in ylabel_boxes) < ax.bbox.x0, \
+        "condition labels cross into the bars"
+    # value labels clear every bar (and the CI whisker caps they sit beside)
+    for t, bb in zip(value_texts, [t.get_window_extent(renderer)
+                                   for t in value_texts]):
+        for bx0, by0, bw, bh in bar_rects:
+            p0 = ax.transData.transform((bx0, by0))
+            p1 = ax.transData.transform((bx0 + bw, by0 + bh))
+            bar_bb = Bbox([p0, p1])
+            assert not bb.overlaps(bar_bb), \
+                f"value label crosses a bar: {t.get_text()!r}"
+    # key swatches clear every text element
+    for sx, sy, swf, shf in key_swatches:
+        sb = Bbox([fig.transFigure.transform((sx, sy)),
+                   fig.transFigure.transform((sx + swf, sy + shf))])
+        for t, bb in zip(texts, boxes):
+            assert not sb.overlaps(bb), \
+                f"key swatch touches text: {t.get_text()!r}"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
@@ -233,16 +315,12 @@ def main() -> int:
 
     for _, _, hexc in CONDS:
         ok |= on_segment(hexc, "#FFFFFF") | on_segment(hexc, "#000000")
-        # the dashed anchor line crosses the bars: its antialiasing blends
-        # dark warm grey with each condition colour
-        ok |= on_segment_rgb_tuple(uni, hexc, PALETTE_BY_NAME["dark_warm_grey"])
         light = tuple(int(v * 255) for v in blend_to_white(hexc, 0.55))
         ok |= on_segment_rgb_tuple(uni, light, (0, 0, 0))
         ok |= on_segment_rgb_tuple(uni, light, (255, 255, 255))
-    ok |= on_segment(PALETTE_BY_NAME["dark_warm_grey"], "#FFFFFF")
     assert ok.all(), f"off-palette colours: {uni[~ok][:8].tolist()}"
-    print(f"wrote fig6c_claims (5 conditions; anchor {anchor:.3f}; raster QA "
-          f"green -> {W_PX}x{H_PX} px @ {DPI} dpi)")
+    print(f"wrote fig6c_claims (5 conditions x 2 quantities, horizontal "
+          f"grouped bars; raster QA green -> {W_PX}x{H_PX} px @ {DPI} dpi)")
     return 0
 
 

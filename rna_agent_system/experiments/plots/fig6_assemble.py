@@ -3,13 +3,15 @@
 
 Panel composition follows the Nature conventions surveyed in
 `relevant_references/` (bold lowercase panel letters at the top-left corner,
-strict reading order, rows top-aligned).  Every panel is an 89-mm
-single-column render at scale 1.0 (uniform text scale).
+strict reading order, rows top-aligned).  Every panel is rendered at scale
+1.0 (uniform 6-pt text across the figure).
 
-Layout: row 1 pairs the tall delivery mosaic a (92 mm) with the failure-
-mode decomposition b (50 mm) on the half-width column grid (the fig2/fig3
-convention); row 2 pairs the claim adjudication c (50 mm) with the
-cost-delivery frontier d (50 mm).
+Layout (2026-09-14 user-directed re-arrangement, the compact form): the
+tall delivery mosaic a (89 x 109 mm) fills the full-height left column;
+the right block (90.1 mm) stacks the failure-mode decomposition b
+(89 x 50.5 mm) on top and pairs the claim adjudication c with the
+cost-delivery frontier d (43.1 x 55 mm each) side by side below it, the
+c/d row bottom-aligned with a.
 
 Letters: Helvetica-Bold 8 pt, ink black, drawn by this assembler.
 
@@ -39,14 +41,8 @@ PANELS: dict[str, str] = {
     "d": "fig6d_cost_delivery.pdf",
 }
 
-ROWS: list[tuple[str, object]] = [
-    ("grid", ["a", "b"]),
-    ("grid", ["c", "d"]),
-]
-
 CONTENT_W = 183.0 / 25.4 * 72   # Nature double column (the fig3-5 width)
 COL_GAP = 11.0
-ROW_GAP = 16.0
 MARGIN_L = 14.0
 MARGIN_R = 6.0
 MARGIN_T = 12.0
@@ -67,28 +63,29 @@ def main() -> None:
         sizes[letter] = (r.width, r.height)
 
     content_w = CONTENT_W
-    col_w = (content_w - COL_GAP) / 2.0
+    a_w, a_h = sizes["a"]
+    b_w, b_h = sizes["b"]
+    c_w, c_h = sizes["c"]
+    d_w, d_h = sizes["d"]
 
-    placed: list[tuple[str, float, float, float, float]] = []
-    y = MARGIN_T
-    for mode, spec in ROWS:
-        row_placed: list[tuple[str, float, float, float, float]] = []
-        assert mode == "grid"
-        for col_idx, letter in enumerate(spec):  # type: ignore[union-attr]
-            w, h = sizes[letter]
-            if w > col_w + 0.5:
-                raise ValueError(
-                    f"panel {letter} width {w:.1f} breaks the grid "
-                    f"(limit {col_w:.1f})"
-                )
-            x0 = MARGIN_L + col_idx * (col_w + COL_GAP) + (col_w - w) / 2.0
-            row_placed.append((letter, x0, y, w, h))
-        row_h = max(p[4] for p in row_placed)
-        placed.extend(row_placed)
-        y += row_h + ROW_GAP
+    x0_right = MARGIN_L + a_w + COL_GAP
+    w_right = content_w - a_w - COL_GAP
+    assert b_w <= w_right + 0.5, f"panel b {b_w:.1f} exceeds the right block {w_right:.1f}"
+    assert c_w + COL_GAP + d_w <= w_right + 0.5, \
+        f"panels c+d {c_w + COL_GAP + d_w:.1f} exceed the right block {w_right:.1f}"
+    assert abs(c_h - d_h) < 0.5, f"panels c/d heights differ: {c_h:.1f} vs {d_h:.1f}"
+    row2_y = MARGIN_T + a_h - c_h  # the c/d row bottom-aligned with a
+    assert row2_y >= MARGIN_T + b_h + 8.0, "no real gap between b and the c/d row"
+
+    placed = [
+        ("a", MARGIN_L, MARGIN_T, a_w, a_h),
+        ("b", x0_right + (w_right - b_w) / 2.0, MARGIN_T, b_w, b_h),
+        ("c", x0_right, row2_y, c_w, c_h),
+        ("d", x0_right + c_w + COL_GAP, row2_y, d_w, d_h),
+    ]
 
     page_w = MARGIN_L + content_w + MARGIN_R
-    page_h = y - ROW_GAP + MARGIN_B
+    page_h = MARGIN_T + a_h + MARGIN_B
 
     out = fitz.open()
     page = out.new_page(width=page_w, height=page_h)

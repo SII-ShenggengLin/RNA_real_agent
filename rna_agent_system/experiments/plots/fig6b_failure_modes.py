@@ -2,11 +2,34 @@
 (the E21/E22 three-arm comparison).
 
 One horizontal stacked bar per condition (n = 96 turns each), segmented by
-the deterministic failure mode: delivered (sage green), budget-exhausted
-without an answer (dark warm grey — the mechanical per-action LLM tax),
-answered below the platform's frozen quality parity (mauve grey), answered
-structurally invalid (warm grey).  Segment counts printed in-canvas where
-the segment is wide enough; the platform bar is uniformly delivered.
+the deterministic failure mode: delivered (sage green, the figure-wide
+delivered-class colour), budget-exhausted without an answer (warm grey —
+the mechanical per-action LLM tax), answered below the platform's frozen
+quality parity (pale mauve grey), answered structurally invalid (solid
+mauve grey): one hue family per failure kind with lightness encoding
+severity (the fig3e family-x-lightness convention).  Segment counts printed
+in-canvas where the segment is wide enough; the platform bar is uniformly
+delivered.
+
+2026-09-14 figure-repair pass (user direction):
+- class colours rebuilt (delivered sage unchanged; dark warm grey ->
+  warm grey; the two answered-but-failed classes -> a pale->solid
+  mauve-grey ramp): black in-segment numerals on the old dark warm grey
+  were unreadable (the 86-turn block), and the three flat greys read as an
+  undifferentiated wash; every fill stays palette rev 7 derived (the pale
+  mauve is mauve grey blended 40% toward white, the fig6a tile-blend
+  technique) and disjoint from fig6a's six condition colours;
+- the ragged two-row centred key replaced by a 2 x 2 column-aligned key
+  centred under the axes, reading order following the stacking order,
+  labels in the caption's plain wording (per-class turn totals kept);
+- x axis gained its title ("Turns per condition (n = 96)"); y tick labels
+  spell the fig6a condition names in full ("ReAct agent matched" etc.);
+- the fixed 34-mm label block replaced by a measured block (the fig6a
+  pattern): 1.5-mm side margins, the bar span widened 46 -> ~64 mm (the
+  old layout left broad blank bands on both sides); canvas 89 x 50 ->
+  89 x 50.5 mm;
+- no in-panel title (Nature convention: the panel letter is added at
+  assembly); every text element one 6-pt pure-black style.
 
 Reads the frozen comparison JSON and asserts every segment count.
 
@@ -32,6 +55,7 @@ import matplotlib.image as mpimg  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
+from matplotlib.transforms import Bbox  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import PALETTE_BY_NAME  # noqa: E402
@@ -44,24 +68,31 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 50.0
+W_MM, H_MM = 89.0, 50.5
 
 ROWS = [
-    ("platform", "Platform"),
+    ("platform", "RNADesignAgent"),
     ("bare_zeroshot", "Bare LLM zero-shot"),
     ("bare_fewshot", "Bare LLM few-shot"),
-    ("react_matched", "ReAct matched"),
-    ("react_3x", "ReAct 3\u00d7"),
-    ("react_10x", "ReAct 10\u00d7"),
+    ("react_matched", "ReAct agent matched"),
+    ("react_3x", "ReAct agent 3\u00d7"),
+    ("react_10x", "ReAct agent 10\u00d7"),
 ]
+
+
+def blend_to_white(hex_color: str, frac_white: float) -> str:
+    p = [int(hex_color[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(c + (255 - c) * frac_white):02X}" for c in p)
+
+
+MAUVE = PALETTE_BY_NAME["mauve_grey"]
 SEGMENTS = [
     ("delivered", "delivered", PALETTE_BY_NAME["sage_green"]),
     ("budget_exhausted_no_answer", "budget exhausted",
-     PALETTE_BY_NAME["dark_warm_grey"]),
-    ("answered_below_platform_quality_parity", "below platform parity",
-     PALETTE_BY_NAME["mauve_grey"]),
-    ("answered_structurally_invalid", "structurally invalid",
      PALETTE_BY_NAME["warm_grey"]),
+    ("answered_below_platform_quality_parity", "below platform quality",
+     blend_to_white(MAUVE, 0.4)),
+    ("answered_structurally_invalid", "structurally invalid", MAUVE),
 ]
 N_TURNS = 96
 
@@ -82,11 +113,15 @@ DPI = 1200
 W_PX = round(W_MM / 25.4 * DPI)
 H_PX = round(H_MM / 25.4 * DPI)
 
-BAR_LEFT_MM = 34.0    # y-label block -> bars
-BAR_W_MM = 46.0
-BAR_TOP_MM = 36.0
+MARGIN_MM = 1.5          # outer side margin
+GAP_LABEL_MM = 1.4       # y-label block -> bars (covers tick + tick pad)
 BAR_PITCH_MM = 5.6
-LEG_Y_MM = 6.5
+AX_BOT_MM = 14.9         # axes bottom, from canvas bottom
+LEG_ROW2_Y_MM = 4.0      # lower key-row centre, from canvas bottom
+LEG_ROW_PITCH_MM = 3.0
+LEG_COL_GAP_MM = 2.0
+SW_MM = 1.3              # key swatch edge
+GAP_IN_MM = 0.6          # swatch -> its label
 
 
 def main() -> int:
@@ -109,8 +144,8 @@ def main() -> int:
     assert matrix["react_10x"]["answered_below_platform_quality_parity"] == 16
 
     fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
-    ax = fig.add_axes([BAR_LEFT_MM / W_MM, (H_MM - BAR_TOP_MM) / H_MM,
-                       BAR_W_MM / W_MM, (len(ROWS) * BAR_PITCH_MM) / H_MM])
+    ax = fig.add_axes([0.3, AX_BOT_MM / H_MM, 0.6,
+                       (len(ROWS) * BAR_PITCH_MM) / H_MM])
     ax.set_xlim(0, N_TURNS)
     ax.set_ylim(0, len(ROWS))
     ax.invert_yaxis()
@@ -133,6 +168,20 @@ def main() -> int:
                             va="center", fontsize=FONT, color=INK)
             x += v
 
+    ax.set_xlabel("Turns per condition (n = 96)", fontsize=FONT, labelpad=2.2)
+
+    # measured label block (the fig6a pattern): the bar span runs from the
+    # labels' right edge to the right margin — no blank side bands
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    label_w_mm = max(
+        t.get_window_extent(renderer).width for t in ax.get_yticklabels()
+    ) / fig.bbox.width * W_MM
+    bar_left_mm = MARGIN_MM + label_w_mm + GAP_LABEL_MM
+    bar_w_mm = W_MM - MARGIN_MM - bar_left_mm
+    ax.set_position([bar_left_mm / W_MM, AX_BOT_MM / H_MM,
+                     bar_w_mm / W_MM, (len(ROWS) * BAR_PITCH_MM) / H_MM])
+
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
 
@@ -142,32 +191,42 @@ def main() -> int:
         t.remove()
         return w
 
-    # key: two centred rows (2 + 2 class swatches with counts)
-    SW = 1.3 / W_MM
-    GAP_IN, GAP_OUT = 0.6 / W_MM, 1.5 / W_MM
+    # key: a 2 x 2 column-aligned grid centred under the axes; reading
+    # order follows the stacking order
     totals = {k: sum(matrix[key].get(k, 0) for key, _ in ROWS) for k, _, _ in SEGMENTS}
     items = [(color, f"{lab} ({totals[seg]})") for seg, lab, color in SEGMENTS]
+    grid = [(items[0], items[1]), (items[2], items[3])]
+    sw = SW_MM / W_MM
+    gap_in = GAP_IN_MM / W_MM
+    col_gap = LEG_COL_GAP_MM / W_MM
+    col_w = [sw + gap_in + max(text_w(grid[r][c][1]) for r in range(2))
+             for c in range(2)]
+    block_w = col_w[0] + col_gap + col_w[1]
+    axes_cx = (bar_left_mm + bar_w_mm / 2) / W_MM
+    x0 = axes_cx - block_w / 2
+    assert x0 >= MARGIN_MM / W_MM and x0 + block_w <= 1 - MARGIN_MM / W_MM, \
+        f"key block breaks the side margins: {x0 * W_MM:.1f} .. " \
+        f"{(x0 + block_w) * W_MM:.1f} mm"
     key_texts = []
-    for row_i, idxs in enumerate((range(0, 2), range(2, 4))):
-        sub = [items[i] for i in idxs]
-        widths = [SW + GAP_IN + text_w(lab) + GAP_OUT for _, lab in sub]
-        total_w = sum(widths) - GAP_OUT
-        assert total_w < 0.94, f"key row overflows canvas: {total_w:.3f}"
-        x = 0.5 - total_w / 2
-        y = (LEG_Y_MM + (1 - row_i) * 2.6) / H_MM
-        for (color, lab), w in zip(sub, widths):
+    key_swatches = []  # (x, y, w, h) figure fractions
+    for r in range(2):
+        y = (LEG_ROW2_Y_MM + (1 - r) * LEG_ROW_PITCH_MM) / H_MM
+        x = x0
+        for c in range(2):
+            color, lab = grid[r][c]
+            key_swatches.append((x, y - (SW_MM / 2) / H_MM, sw, SW_MM / H_MM))
             fig.patches.append(Rectangle(
-                (x, y - 0.65 / H_MM), SW, 1.3 / H_MM,
+                (x, y - (SW_MM / 2) / H_MM), sw, SW_MM / H_MM,
                 transform=fig.transFigure, facecolor=color, edgecolor="none"))
-            x += SW + GAP_IN
-            key_texts.append(fig.text(x, y, lab, fontsize=FONT, color=INK,
-                                      va="baseline"))
-            x += text_w(lab) + GAP_OUT
+            key_texts.append(fig.text(x + sw + gap_in, y, lab, fontsize=FONT,
+                                      color=INK, va="center"))
+            x += col_w[c] + col_gap
 
     # guards
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    texts = list(ax.get_xticklabels()) + list(ax.get_yticklabels()) + key_texts
+    texts = (list(ax.get_xticklabels()) + list(ax.get_yticklabels())
+             + [ax.xaxis.get_label()] + key_texts)
     boxes = []
     for t in texts:
         bb = t.get_window_extent(renderer)
@@ -179,6 +238,16 @@ def main() -> int:
         for j in range(i + 1, len(boxes)):
             assert not boxes[i].overlaps(boxes[j]), \
                 f"text collision: {texts[i].get_text()!r} x {texts[j].get_text()!r}"
+    ylabel_boxes = [t.get_window_extent(renderer) for t in ax.get_yticklabels()]
+    assert max(b.x1 for b in ylabel_boxes) < ax.bbox.x0, \
+        "row labels cross into the bars"
+    # key swatches clear every text element
+    for sx, sy, swf, shf in key_swatches:
+        sb = Bbox([fig.transFigure.transform((sx, sy)),
+                   fig.transFigure.transform((sx + swf, sy + shf))])
+        for t, bb in zip(texts, boxes):
+            assert not sb.overlaps(bb), \
+                f"key swatch touches text: {t.get_text()!r}"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
@@ -201,7 +270,8 @@ def main() -> int:
         t = np.clip(((uni - p) @ d) / (d @ d), 0.0, 1.0)
         return np.linalg.norm(uni - (p + t[:, None] * d), axis=1) <= tol
 
-    for _, _, hexc in SEGMENTS:
+    for hexc in (PALETTE_BY_NAME["sage_green"], PALETTE_BY_NAME["warm_grey"],
+                 MAUVE):
         ok |= on_segment(hexc, "#FFFFFF") | on_segment(hexc, "#000000")
     assert ok.all(), f"off-palette colours: {uni[~ok][:8].tolist()}"
     print(f"wrote fig6b_failure_modes (6 conditions x 96 turns; raster QA "
