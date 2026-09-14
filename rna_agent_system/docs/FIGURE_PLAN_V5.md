@@ -341,3 +341,19 @@ claim-gate suppression as its own dark-warm-grey tile (the fig4b
 convention); fig4h gained the six navigation-campaign rows (Exp 27/28/29
 zero-LLM; Exp 30 = 22 calls/11 sessions; the Exp-37 row removed 2026-09-13 with the retired case-studies section) with
 Exp 18/Exp 24 re-measured (80/40, 483/241).
+
+## Fig 6 | The platform against language-model baselines (4 panels; 2026-09-14)
+
+> New figure (the slot freed when the pre-registration negative-boundary
+> figure was removed 2026-09-06). Source: the E21/E22 external-baseline
+> campaign — Exp 42 (bare LLM) + Exp 43 (same-tool ReAct, three budget
+> tiers) vs the frozen Exp-41 platform condition, unified n = 96 turns.
+
+| panel | content | geometry | source |
+|---|---|---|---|
+| a | Per-turn delivered validity mosaic, 11 workflows × 6 conditions (platform / bare zs / bare fs / ReAct matched / 3× / 10×); tile fill = condition colour blended by delivered fraction, counts in tiles, design/prediction divider | 89 × 92 mm | `exp42_43_comparison/comparison.json` (`fig6a_baseline_delivery_mosaic.py`) |
+| b | Non-delivery decomposition, one 96-turn stacked bar per condition: delivered (sage) / budget-exhausted (dark warm grey) / below platform parity (mauve grey) / structurally invalid (warm grey), counts in segments | 89 × 50 mm | same (`fig6b_failure_modes.py`) |
+| c | Claim adjudication: FP rate solid bars + Wilson 95% CI whiskers, unverifiable share light companions, ungated-control anchor dashed 54.5%; platform = 0 claims annotated | 89 × 50 mm | same + `exp5_claim_overreach/runs_summary.json` (`fig6c_claims.py`) |
+| d | Cost–delivery frontier: total LLM calls vs delivered turns (of 96), ReAct tiers joined, platform square top-left (146 calls, 96/96) | 89 × 50 mm | same (`fig6d_cost_delivery.py`) |
+
+Composite: `fig6_assemble.py` → rows grid[a,b]/grid[c,d] → `fig6_composite.{pdf,png}` 190.1 × 154.7 mm. Condition colours (figure-wide): platform slate blue, bare zs/fs sand/khaki, ReAct matched/3×/10× pale dusty rose/dusty mauve pink/terracotta — all palette rev 7. Every panel carries the house guards (text-in-canvas, pairwise non-collision, exact canvas px, white border, raster palette purity); 6a's purity check anchors every actually-drawn tile blend (ink text antialiases on anchor↔black segments), 6d allows tol 12 for the gradient-line-under-marker-ring triple blends.

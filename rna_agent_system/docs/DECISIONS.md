@@ -448,7 +448,7 @@ register (exp27→28 pattern). Tests: 686 passed, 1 skipped.
 | 14 | E15 confirmatory replication: advantage regime-specific to delivery-scarce panels (b=14/c=6/P=0.1153); pooled E14+E15 28:9 (P=0.0026) — E14 the positive, E15 the boundary | `e15_verdict_s2.json` |
 | 32 | **Exp 37 / Table-1 case-studies section REMOVED from the paper (2026-09-13, user-directed batch 6)**: §2.7 + Table 1 retired — three single-run form-entry cases carry no inferential weight alongside the pre-registered campaigns, the anti-VEGF aptamer case is self-audit-only (family predictors chance-level, Exp 10/13 — re-running cannot strengthen it, do NOT attempt), and practical end-to-end validation is deferred to the planned wet-lab section; every in-paper trace scrubbed (Introduction sentence, Overview pointer, Methods/Discussion LLM accounting 30→22, data availability, Fig-4j legend + bar — assembly edited to 13 campaigns, panel re-rendered, composite 190.1 × 554.6 mm; Supplementary S2.1 re-routed to the Exp-24 lane + Fig. 5, S2.2/S2.4 de-Table-1'd); frozen records stay on disk as internal register, not cited by the paper | `exp37_table1_case_studies/` (on disk only) |
 | 33 | **Exp 41 per-agent ablation + Discussion rewrite (2026-09-13, user-directed revision batch 7)**: the Discussion rewritten per the user's annotated outline — strategy-to-failure-mode mapping with gating numbers in ¶1; the limitations paragraph replaced by the user's two-item version (the five-item list retired by explicit user decision); and the multi-agent-discipline sentence re-grounded in a **new dedicated ablation experiment** (user chose adding the experiment over citing existing per-mechanism evidence alone): Block A 31 sessions × 3 arms — **31/31 per arm, paired identity 0 mismatches, review calls 146/0/72, retries 2-0-0 (both rescued)**; Block B 2 two-node pipelines × 3 arms — **6/6, scheduler transparent, synthesis report the only claim-bearing artefact (12 claims, 5 ClaimGate-rejected on never-profiled dependencies)**. Registered boundary decisions: (i) **the cross-campaign-memory example is dropped from the Discussion** — its measurement (E4) is a pre-reset internal register whose frozen files no longer exist on disk and the paper never presented it; the coordination-loop falsification (Exp 16 / Fig. 3f) carries the removed-mechanism point in-paper; (ii) **cross-arm record copying is not a legitimate ablation instrument** — paired fresh runs are what make outcome identity a measurement rather than a code-derived assertion (stochastic generators' realizations cannot be assumed identical); the sanctioned speedup is the registered ODesign resident fleet (byte-identical, proxy on 8012, zero swap casualties); (iii) two new env knobs added under the RNADA_CAPGATE convention for the registered arms (`RNADA_SPECIALIST_MAX_RETRIES`, `RNADA_SYNTHESIS_LLM`; interactive defaults unchanged, unit-tested) | `exp41_agent_ablation/`; `experiments/exp41_agent_ablation.py` |
-| 34 | **Batch 10 Methods restructure + deposit scope reduction (2026-09-14, user-directed)**: (i) the 25/26-target question resolved as **documentation, not re-runs** — the deployment cohorts were already measured under the identical budget-matched protocols and pooled (Part-2 #31), so the benchmark suites stay 20-target registered assets and the Benchmarks subsection + Data availability now carry the deployment-cohort, 39-target-pool (20+19) and derived-audit-set registrations; (ii) Methods subsection placement per user direction — "Experimental protocol" and "Production campaign" deleted from the paper, the claim-overreach/gating, constraint-navigation and per-agent-ablation protocols moved to Supplementary Methods (deployment narrative merged into one pooled paragraph), the two-step full-length protocol paragraph moved to Supplementary Methods, the standalone LLM-usage subsection retired (folded into Multi-agent); (iii) "arm(s)" → "condition(s)" sweep over all reader-facing text (77 sites; no figure panel draws the word; header edit-log keeps as-written); (iv) the public Zenodo package re-scoped to benchmarks + anchors + SelfModel + model-usage register — **campaigns/ and supplementary/ withdrawn from the public deposit** (frozen records remain the repo's internal evidence, `experiments/results/`), and four public assets added: `random_synonymous_controls.fa` (exp2 generator verbatim, draws 0–9 = the registered seeds; 200/200 length+GC + 8/8 sampled CAI verified against frozen records), `deployment_cohorts/`, `claim_audit_tasks/` (e5 45-task + legacy reference + e18 20-task); v2 archive `RNADesignAgent_paper_data_v2.tar.gz` (9,601,979 B, sha256 `040d3edb…dc37e6f`) staged — **replacing the v1 file in draft 22736194 needs the user's token**; (v) Code availability carries a repository-URL placeholder pending the user's GitHub link. Zero experiments, zero number changes | `zenodo_deposit_2026-09-13/build_package_v2.py`; `upload_status.md` |
+| 34 | **Batch 10 Methods restructure + deposit scope reduction (2026-09-14, user-directed)**: (i) the 25/26-target question resolved as **documentation, not re-runs** — the deployment cohorts were already measured under the identical budget-matched protocols and pooled (Part-2 #31), so the benchmark suites stay 20-target registered assets and the Benchmarks subsection + Data availability now carry the deployment-cohort, 39-target-pool (20+19) and derived-audit-set registrations; (ii) Methods subsection placement per user direction — "Experimental protocol" and "Production campaign" deleted from the paper, the claim-overreach/gating, constraint-navigation and per-agent-ablation protocols moved to Supplementary Methods (deployment narrative merged into one pooled paragraph), the two-step full-length protocol paragraph moved to Supplementary Methods, the standalone LLM-usage subsection retired (folded into Multi-agent); (iii) "arm(s)" → "condition(s)" sweep over all reader-facing text (77 sites; no figure panel draws the word; header edit-log keeps as-written); (iv) the public Zenodo package re-scoped to benchmarks + anchors + SelfModel + model-usage register — **campaigns/ and supplementary/ withdrawn from the public deposit** (frozen records remain the repo's internal evidence, `experiments/results/`), and four public assets added: `random_synonymous_controls.fa` (exp2 generator verbatim, draws 0–9 = the registered seeds; 200/200 length+GC + 8/8 sampled CAI verified against frozen records), `deployment_cohorts/`, `claim_audit_tasks/` (e5 45-task + legacy reference + e18 20-task); v2 archive `RNADesignAgent_paper_data_v2.tar.gz` (9,601,979 B, sha256 `040d3edb…dc37e6f`) staged — **replacing the v1 file in draft 22736194 needs the user's token**; (v) Code availability carries a repository-URL placeholder pending the user's GitHub link. **2026-09-14 later amendment (user direction)**: the public package extended to v3 — `baseline_evidence/` (the three frozen baseline-campaign record directories, byte-identical minus regenerable adjudication scratch) added to the v2 scope, 476 files / 9,777,836 B / sha256 519e01bd…c95210, verification green; draft 22736194 replaced same day — v2 deleted by file id, v3 direct-PUT (HTTP 201, no relay needed), remote md5 ce12667dd…4bd24 verified by read-back, metadata description updated to the v3 scope; the still-valid v2-session token was reused (revocation had been pending) and the token-bearing local relay branch deleted. Zero experiments, zero number changes | `zenodo_deposit_2026-09-13/build_package_v2.py`; `upload_status.md` |
 
 ---
 
@@ -498,6 +498,19 @@ tool-free floor per workflow — task success, output validity, and the rate of
 unverifiable claims. Pilot n = 6 tasks spanning 6 workflows; a zero-everywhere
 pilot is a valid recorded floor, not a failed run.
 
+**2026-09-14 execution registration (user-approved, before any run)**:
+driver `experiments/exp42_bare_llm_baseline.py`; task set = the current
+31-session PA suite (`pa_benchmarks.json`, PA_006–PA_036, all 11 workflows,
+all turns per session delivered sequentially — identical inputs to the frozen
+Exp-41/Exp-24 platform arm); the 2026-06-25 26-task
+`task_set_for_llm_comparison.json` is **retired from use** (BMC-era, six-LLM
+backend matrix cancelled by item (d)). Platform-arm results are **reused
+frozen** (Exp 41 Block A records + workflow_results for per-turn success, LLM
+usage, candidate pools; Exp 24 for audit/runtime) — zero platform re-runs.
+Symmetric validity: the registered per-workflow validity checks are applied
+identically to the frozen platform candidates and both baseline arms
+(apples-to-apples validity rates).
+
 ### E22 — ReAct arm (same 41 tools, generic agent loop) vs the platform
 
 Literature category (b) — the 2025-standard "same tools, plain scaffold"
@@ -515,6 +528,98 @@ the platform arm wins through deterministic workflows + CapGate governance,
 not LLM cleverness. Pilot n = 6 tasks; full matrix (all 31 PA benchmarks or a
 fresh-data equivalent) only if the pilot effect is in the expected direction
 on ≥ 4/6 tasks.
+
+**2026-09-14 execution registration (user-approved, before any run)**:
+driver `experiments/exp43_react_baseline.py`; task set = the same 31-session
+PA suite as E21 (the registered "all 31 PA benchmarks" option). **Budget-tier
+amendment (user direction 2026-09-14)**: the pre-registered matched budget
+(= the platform arm's per-session LLM-call count and evaluated-candidate
+count, extracted from the frozen Exp-41 records) remains the **primary
+tier**; two disclosed generous tiers (3× and 10×) are added as **secondary,
+disclosed** arms in the Exp-29 budget-sweep precedent (cost-performance
+regime characterization, not an escape from the iron rule (f)). Tier base =
+`max(platform_llm_calls, 2 × n_turns)` — floored at two calls per turn (the
+minimum for a tool-using loop to act and answer once per turn) because the
+eight deterministic-workflow sessions (sequence scoring / small molecule /
+ASO screening) carry a platform LLM budget of exactly zero (no quality
+review on those workflows — the platform performs them LLM-free; at the
+matched tier an LLM-driven scaffold is degenerate by construction, recorded
+as the measured floor, and the generous tiers quantify the cost of
+restoring function). Candidate budget at every tier = the platform
+evaluated-candidate count (unchanged). **Scaffolding amendment (same date,
+before the full matrix, pilot-validated)**: the ReAct arm additionally
+receives ONE environment I/O primitive — ``write_workspace_file`` (utility
+class: write text under workspace/; no oracle semantics, no claim path,
+every call audited through the same ToolExecutor) — because the 41
+production tools take ``filepath`` inputs that the platform's own workflows
+materialize internally; without the same capability no generic tool-using
+baseline can operate at all (the pre-amendment pilot measured the model
+hallucinating nonexistent input paths). Disclosed as an environment
+primitive, not a 42nd scientific tool. Adjudication
+matrix (CapGate-admissible truth bases only): structural validity =
+per-workflow recomputation (length/alphabet/translation-identity/complement-
+arity/PAM adjacency/window-substring/fold-back vs target dot-bracket/
+PDB-parse + TM-alignment); metric claims = exact recomputation (GC/U,
+CAI via the species table, folding energy, siRNA duplex thermodynamics,
+ASO accessibility); ranking/screening claims = recomputed only when the
+declared basis is a recomputable metric over the arm's own delivered
+candidates; affinity/binding/MRL/IRES-probability value claims carry no
+admissible truth basis (family oracles chance-level or enforce-gated per
+items (e)/(l)) and are adjudicated **unverifiable** symmetrically for every
+arm — with the single exception of the IRES literature-anchor sequences,
+whose ground-truth labels are literature facts (EMCV-class positives).
+
+**EXECUTED 2026-09-14 — headline results (E21 = Exp 42, E22 = Exp 43)**:
+task set = the 31-session PA suite, all turns, identical briefs to the frozen
+platform arm (Exp 41 Block A reused as the platform condition — zero
+platform re-runs); symmetric validity = the same harness rules applied to
+all three arms. **Unified n = 96** (2026-09-14 presentation correction,
+registered before re-analysis): the four successful platform IRES turns
+whose workflow returned "no IRES candidate regions found" are recovered as
+delivered via the symmetric negative-answer rule (a complete negative answer
+counts as a delivered turn for ANY arm — the platform's frozen records carry
+exactly this form); no arm's raw runs changed.
+**Delivery (per-turn, n = 96)**: platform 96/96; bare LLM 71/96 zero-shot,
+69/96 few-shot; ReAct 7/96 matched / 44/96 at 3x / 71/96 at 10x — every
+paired exact McNemar platform-vs-baseline p < 1e-6 with baseline-only-
+discordant = 0 on all five comparisons (platform-only 25/27/89/52/25).
+**Non-delivery decomposition** (why a turn fails): the bare LLM's failures
+split between below-platform-quality parity (14) and structurally invalid
+answers (11) — genuine capability failures; ReAct's matched/3x failures are
+almost entirely budget-exhaustion-without-answer (86/89 and 42/52 of 96) —
+the mechanical cost of the per-action LLM tax; at 10x ReAct's remaining 25
+failures are 9 budget-exhausted + 16 below-parity (quality, not budget).
+**Bare-LLM vs ReAct-10x is a discordance-exact tie: 12:12, McNemar p = 1.0**
+— each arm wins the workflows the other loses: ReAct wins where computation
+is indispensable (tertiary 4/6 vs 0/6, sgrna 3/13 vs 0/13, CDS 6/6 vs 5/6,
+full-length 9/9 vs 5/9), the bare LLM wins small-composition tasks the loop
+over-spends on (ASO 9/9 vs 3/9 — the model burns its step budget on
+accessibility scans without submitting; secondary structure 5/6 vs 2/6 —
+15-23-nt targets are solved by direct reasoning while the ReAct submissions
+land 1-4 base pairs off the platform's exact-recovery parity because the
+loop does not verify-fold before submitting). Design-only subaggregate
+(prediction-type turns excluded, n = 72): platform 72/72, bare 47, ReAct-10x
+47. The matched tier's floor is structural: 137/288 ReAct turns exhaust the
+platform-matched budget without submitting (the 8 deterministic-workflow
+sessions carry a platform LLM budget of exactly zero).
+**Bare-LLM floor profile**: tertiary 0/6 (echo guard + TM parity), sgrna
+0/13 (the workflow artifact is the 64-nt crRNA — Hamming-to-seed parity),
+CDS/full-length ~50%, short-composition workflows near-full; claims 989
+total, FP 30.0% (CI 27.0-33.3) zero-shot / 11.4% few-shot (few-shot examples
+anchor the recomputable arithmetic), unverifiable share 14.5%. **ReAct
+claims**: FP 51.9% overall (CI 46.8-57.0; 51.1% at 10x) — the ungated-
+control class (~54.5%, Exp 5) generalizes to the generic scaffold, as
+pre-registered; unverifiable share 32.7%. **Cost**: platform 146 LLM calls
+for the whole suite; ReAct 756 LLM + 659 tool calls at 10x (5.2x the
+platform's LLM budget to reach the bare LLM's delivery rate). Platform
+publishes 0 claims by construction (ClaimGate pipeline-synthesis only; Exp
+41 Block B carries the gated claim path). Drivers
+`experiments/exp42_bare_llm_baseline.py`, `exp43_react_baseline.py`;
+shared harness `experiments/e21_e22_baseline_harness.py`; comparison
+`experiments/exp42_43_comparison.py` (`--verify` byte-identical); records
+`experiments/results/exp42_bare_llm_baseline/`,
+`exp43_react_baseline/`, `exp42_43_comparison/`. Pilots gated as
+registered (E21 formality 40/40 well-formed; E22 >= 4/6 direction on 6/6).
 
 Both arms reuse existing evaluation infrastructure and introduce no new oracle
 and no new claim path — item (e) applies to baselines too: no baseline result

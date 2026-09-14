@@ -1,0 +1,153 @@
+{
+  "n_turn_records": 288,
+  "delivery_by_workflow_tier": {
+    "rna_tertiary_structure_design|10x": {
+      "turns": 6,
+      "delivered": 4
+    },
+    "rna_secondary_structure_design|10x": {
+      "turns": 6,
+      "delivered": 2
+    },
+    "mrna_cds_design|10x": {
+      "turns": 6,
+      "delivered": 6
+    },
+    "sirna_design|10x": {
+      "turns": 10,
+      "delivered": 9
+    },
+    "full_length_mrna_design|10x": {
+      "turns": 9,
+      "delivered": 9
+    },
+    "rna_aptamer_design|10x": {
+      "turns": 13,
+      "delivered": 11
+    },
+    "rna_small_molecule_interaction|matched": {
+      "turns": 9,
+      "delivered": 0
+    },
+    "aso_target_screening|matched": {
+      "turns": 9,
+      "delivered": 0
+    },
+    "ires_prediction|matched": {
+      "turns": 9,
+      "delivered": 3
+    },
+    "rna_small_molecule_interaction|3x": {
+      "turns": 9,
+      "delivered": 9
+    },
+    "ires_prediction|3x": {
+      "turns": 9,
+      "delivered": 9
+    },
+    "rna_small_molecule_interaction|10x": {
+      "turns": 9,
+      "delivered": 9
+    },
+    "ires_prediction|10x": {
+      "turns": 9,
+      "delivered": 9
+    },
+    "rna_aptamer_design|matched": {
+      "turns": 13,
+      "delivered": 0
+    },
+    "sirna_design|matched": {
+      "turns": 10,
+      "delivered": 4
+    },
+    "rna_secondary_structure_design|matched": {
+      "turns": 6,
+      "delivered": 0
+    },
+    "sgrna_design|matched": {
+      "turns": 13,
+      "delivered": 0
+    },
+    "rna_secondary_structure_design|3x": {
+      "turns": 6,
+      "delivered": 0
+    },
+    "mrna_cds_design|matched": {
+      "turns": 6,
+      "delivered": 0
+    },
+    "rna_aptamer_design|3x": {
+      "turns": 13,
+      "delivered": 2
+    },
+    "rna_tertiary_structure_design|matched": {
+      "turns": 6,
+      "delivered": 0
+    },
+    "sirna_design|3x": {
+      "turns": 10,
+      "delivered": 6
+    },
+    "mrna_cds_design|3x": {
+      "turns": 6,
+      "delivered": 4
+    },
+    "sgrna_design|3x": {
+      "turns": 13,
+      "delivered": 4
+    },
+    "rna_tertiary_structure_design|3x": {
+      "turns": 6,
+      "delivered": 3
+    },
+    "aso_target_screening|3x": {
+      "turns": 9,
+      "delivered": 1
+    },
+    "sgrna_design|10x": {
+      "turns": 13,
+      "delivered": 3
+    },
+    "mrna_sequence_scoring|matched": {
+      "turns": 6,
+      "delivered": 0
+    },
+    "mrna_sequence_scoring|3x": {
+      "turns": 6,
+      "delivered": 4
+    },
+    "full_length_mrna_design|matched": {
+      "turns": 9,
+      "delivered": 0
+    },
+    "mrna_sequence_scoring|10x": {
+      "turns": 6,
+      "delivered": 6
+    },
+    "full_length_mrna_design|3x": {
+      "turns": 9,
+      "delivered": 2
+    },
+    "aso_target_screening|10x": {
+      "turns": 9,
+      "delivered": 3
+    }
+  },
+  "budget_exhausted_turns": 137,
+  "tool_calls_total": 1185,
+  "llm_calls_total": 1365,
+  "claims": {
+    "n": 551,
+    "tp": 176,
+    "fp": 190,
+    "unverifiable": 180,
+    "fp_rate": 0.5191,
+    "fp_rate_ci": [
+      0.468,
+      0.5698
+    ],
+    "unverifiable_share": 0.3267
+  },
+  "wall_seconds_total": 43328.3
+}

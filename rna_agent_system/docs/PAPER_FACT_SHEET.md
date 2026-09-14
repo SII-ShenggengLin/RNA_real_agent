@@ -634,3 +634,39 @@ against `exp2_cds_nulls/fig2_cds_nulls.jsonl`), `benchmarks/deployment_cohorts/`
 | Exp 38（三级结构有效性汇总，零新计算） | 20/20 任务、73 候选；pooled rubric 28/73=38.4%（pLDDT 31/73；RMSD 门 1/14，池最小 2.49 Å）；12/20 任务有 ≥1 达标；1F7U 14/14、1EHZ 4/5、1Y26 2/2、1MME 0/18 | `experiments/results/exp38_tertiary_validity_pool/{records.jsonl,summary.json}`（`--verify` 一致） |
 | Exp 39（序列评分锚点方向） | 222/222；WT>自身随机中位 15/20（sign P=0.041，Wilcoxon P=0.0083，δ 中位 1.0）；pooled WT vs 随机 P=6.2e-03 δ=0.37；疫苗 vs 随机 P=9.9e-05 δ=1.0；CAI 项承载分离（0.725 vs 0.680，P=1.5e-07），MFE/nt 不分离（P=0.295） | `experiments/results/exp39_scoring_anchor_direction/{records.jsonl,summary.json}`（`--verify` 一致） |
 | Fig 2 八面板化 | 原 e（IRES）→ Suppl. Fig. S1；f→e、g→f、h→g、i→h；组合图重装配 8 面板 a–h，qa_fig2_figs 11/11 GREEN | `experiments/plots/{fig2e_sirna_offtarget,fig2f_rnasmol_boundary,fig2g_audit_trail,fig2h_runtime_ecdf,figS1_ires_panel}.py`、`fig2_assemble.py`、`qa_fig2_figs.py` |
+
+## Exp 42 / Exp 43 — E21/E22 external-baseline arms（2026-09-14，三臂对比）
+
+> Task set = the current 31-session PA suite (`pa_benchmarks.json`, all 11 workflows, all turns);
+> identical turn briefs to the frozen platform arm (Exp 41 Block A — zero platform re-runs);
+> symmetric validity = the same harness rules over all three arms (`experiments/e21_e22_baseline_harness.py`;
+> platform re-adjudicated 92/92 delivered; the 4 IRES turns without candidate payloads are excluded
+> from pairing, n = 92 common turns).
+
+| 数字 | 值 | 文件·字段 |
+|---|---|---|
+| 平台逐轮交付 | **96/96**（统一 n=96：4 个成功但阈值阴性的 IRES 轮按对称阴性应答规则记 delivered，任何臂均可用该形式作答） | `exp42_43_comparison/comparison.json` `overall_delivery.platform` |
+| 裸 LLM 逐轮交付 | 71/96 zero-shot、69/96 few-shot（192 轮 0 API/parse 错误） | 同上 `overall_delivery.bare_*`；`exp42_bare_llm_baseline/summary.json` |
+| ReAct 逐轮交付（预算梯度） | 7/96 matched、44/96 3x、71/96 10x | 同上 `overall_delivery.react_*`；`exp43_react_baseline/summary.json` |
+| 配对 McNemar（平台 vs 各基线） | 5 组全部 baseline-only 不一致 = 0、p < 1e-6（platform-only 25/27/89/52/25，n = 96）；**裸-vs-ReAct10x 不一致恰 12:12、p = 1.0**（各赢各的 workflow） | `comparison.json` `paired_vs_platform` |
+| 配平层结构性地板 | 137/288 ReAct 轮预算耗尽未提交；8 个确定性 workflow 会话平台 LLM 预算恰为 0 | `exp43_react_baseline/summary.json` `budget_exhausted_turns`；`platform_budgets()` |
+| 裸 LLM 工作流地板 | 三级 0/6（回显守卫+TM parity）、sgrna 0/13（64-nt crRNA Hamming parity）、CDS 5/6、全长 5/9、二级 5-6/6、短序列组合类近满 | `exp42_bare_llm_baseline/summary.json` `delivery_by_workflow_regime` |
+| 裸 LLM 声称 | 989 条：FP 30.0%（CI 27.0–33.3）zero-shot / 11.4% few-shot、不可验证 14.5% | `exp42_bare_llm_baseline/summary.json` `claims` |
+| ReAct 声称 | 551 条：FP 51.9%（CI 46.8–57.0；10x 层 51.1%）≈ 未门控对照类 54.5%（Exp 5）——预注册预期成立；不可验证 32.7% | `exp43_react_baseline/summary.json` `claims` |
+| 平台声称 | 0 条（单工作流会话；ClaimGate 仅 pipeline 综合路径——Exp 41 Block B：12 条 5 驳） | `comparison.json` `claims.platform` |
+| 成本 | 平台 146 LLM 调用全套件；ReAct 10x = 756 LLM + 659 工具调用（5.2×）达到裸 LLM 同等交付率 | `comparison.json` `efficiency` |
+
+| 失败模式分解 | 裸 zs：parity 14 + 结构无效 11；ReAct matched/3x：预算耗尽 86/42；ReAct 10x：parity 16 + 预算 9 | `comparison.json` `failure_modes` |
+| 设计类子聚合（n=72，预测类轮除外） | 平台 72/72、裸 zs 47、ReAct 10x 47 | `comparison.json` `design_only_delivery` |
+| 判分核验 | `--verify` 字节级一致重算通过 | `exp42_43_comparison/`（驱动 stdout） |
+| 预算层定义 | matched = 平台逐会话 LLM 调用数；3x/10x = max(平台调用, 2/轮)×3/×10；候选预算恒为平台评估数 866 | `e21_e22_baseline_harness.py` `tier_caps`/`platform_budgets`；DECISIONS Part 4 注册修正 |
+| 环境原语 | `write_workspace_file`（utility、限 workspace/、审计内）——41 工具均需 filepath 输入而平台 workflow 内部落盘 | DECISIONS Part 4 scaffolding amendment；`exp43_react_baseline.py` |
+
+关键修正记录（pilot 期、全量跑前）：输入回显守卫（裸 LLM 以目标 PDB 路径充当"设计产物"）、
+siRNA 互补性改 parity 门槛（multifapredsi 共识设计非逐字互补）、ASO 反义窗口（revcomp 子串）、
+sgrna 产物语义（64-nt crRNA、Hamming-to-seed parity）、二级/三级以平台冻结最优为 parity 门槛
+（structure_distance / alignment_tm_score）——平台自身 92/92 通过同规判分（对称性验证）。
+
+| Fig 6 图件 | 四面板 a–d + 组合 190.1×154.7 mm；`fig6a_baseline_delivery_mosaic.py`/`fig6b_failure_modes.py`/`fig6c_claims.py`/`fig6d_cost_delivery.py`/`fig6_assemble.py`，全管线重跑可复现、栅格 QA 绿、逐面板数值断言=冻结 JSON | `experiments/plots/output/fig6*.{pdf,png}`；`docs/FIGURE_PLAN_V5.md` Fig 6 表 |
+
+论文整合（2026-09-14 第二批）：新 §2.6 "The platform outperforms language-model baselines across the eleven workflows"（四段：协议/交付+失败模式/声称/成本收束，condition 措辞、零内部编号）；Fig 6 图例；Methods Benchmarks 指针句 + Statistics 扩展（逐轮 exact McNemar + Wilson CI）；尾部图清单 4→5；Supplementary Methods 新节 "External-baseline comparison"；头注登记。基线记录已随 **v3 包公开**（用户指示）：`zenodo_deposit_2026-09-13/build_package_v3.py` → `RNADesignAgent_paper_data_v3.tar.gz` 9,777,836 B（sha256 `519e01bd…c95210`，476 文件 = v2 467 + baseline_evidence 8 文件 + README）；战役记录与仓库逐字节一致（scratch/ 可再生中间体排除、已披露）；包内 comparison.json 数字复验一致；密钥扫描干净。**草稿 22736194 已替换为 v3（同日完成）**：v2 按 file-id 删除（204）、v3 直传（HTTP 201，本次无需中转）、远端 md5 `ce12667dd4cdebedbed959066374bd24` 与本地逐字节一致、元数据描述已升 v3 并读回核验；复用 v2 会话未撤销的 token，携 token 的本地中转分支已删（卫生）。剩余用户动作：补作者 → 发布 → 复核 DOI → **撤销 token**。

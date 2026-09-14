@@ -1,0 +1,503 @@
+{
+  "delivery_by_workflow": {
+    "sirna_design": {
+      "platform": {
+        "delivered": 10,
+        "turns": 10
+      },
+      "bare_zeroshot": {
+        "delivered": 10,
+        "turns": 10
+      },
+      "bare_fewshot": {
+        "delivered": 10,
+        "turns": 10
+      },
+      "react_matched": {
+        "delivered": 4,
+        "turns": 10
+      },
+      "react_3x": {
+        "delivered": 6,
+        "turns": 10
+      },
+      "react_10x": {
+        "delivered": 9,
+        "turns": 10
+      }
+    },
+    "sgrna_design": {
+      "platform": {
+        "delivered": 13,
+        "turns": 13
+      },
+      "bare_zeroshot": {
+        "delivered": 0,
+        "turns": 13
+      },
+      "bare_fewshot": {
+        "delivered": 0,
+        "turns": 13
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 13
+      },
+      "react_3x": {
+        "delivered": 4,
+        "turns": 13
+      },
+      "react_10x": {
+        "delivered": 3,
+        "turns": 13
+      }
+    },
+    "rna_aptamer_design": {
+      "platform": {
+        "delivered": 13,
+        "turns": 13
+      },
+      "bare_zeroshot": {
+        "delivered": 13,
+        "turns": 13
+      },
+      "bare_fewshot": {
+        "delivered": 13,
+        "turns": 13
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 13
+      },
+      "react_3x": {
+        "delivered": 2,
+        "turns": 13
+      },
+      "react_10x": {
+        "delivered": 11,
+        "turns": 13
+      }
+    },
+    "rna_small_molecule_interaction": {
+      "platform": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_zeroshot": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_fewshot": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 9
+      },
+      "react_3x": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "react_10x": {
+        "delivered": 9,
+        "turns": 9
+      }
+    },
+    "aso_target_screening": {
+      "platform": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_zeroshot": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_fewshot": {
+        "delivered": 7,
+        "turns": 9
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 9
+      },
+      "react_3x": {
+        "delivered": 1,
+        "turns": 9
+      },
+      "react_10x": {
+        "delivered": 3,
+        "turns": 9
+      }
+    },
+    "ires_prediction": {
+      "platform": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_zeroshot": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_fewshot": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "react_matched": {
+        "delivered": 3,
+        "turns": 9
+      },
+      "react_3x": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "react_10x": {
+        "delivered": 9,
+        "turns": 9
+      }
+    },
+    "rna_tertiary_structure_design": {
+      "platform": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "bare_zeroshot": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "bare_fewshot": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "react_3x": {
+        "delivered": 3,
+        "turns": 6
+      },
+      "react_10x": {
+        "delivered": 4,
+        "turns": 6
+      }
+    },
+    "mrna_sequence_scoring": {
+      "platform": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "bare_zeroshot": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "bare_fewshot": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "react_3x": {
+        "delivered": 4,
+        "turns": 6
+      },
+      "react_10x": {
+        "delivered": 6,
+        "turns": 6
+      }
+    },
+    "mrna_cds_design": {
+      "platform": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "bare_zeroshot": {
+        "delivered": 5,
+        "turns": 6
+      },
+      "bare_fewshot": {
+        "delivered": 4,
+        "turns": 6
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "react_3x": {
+        "delivered": 4,
+        "turns": 6
+      },
+      "react_10x": {
+        "delivered": 6,
+        "turns": 6
+      }
+    },
+    "rna_secondary_structure_design": {
+      "platform": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "bare_zeroshot": {
+        "delivered": 5,
+        "turns": 6
+      },
+      "bare_fewshot": {
+        "delivered": 6,
+        "turns": 6
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "react_3x": {
+        "delivered": 0,
+        "turns": 6
+      },
+      "react_10x": {
+        "delivered": 2,
+        "turns": 6
+      }
+    },
+    "full_length_mrna_design": {
+      "platform": {
+        "delivered": 9,
+        "turns": 9
+      },
+      "bare_zeroshot": {
+        "delivered": 5,
+        "turns": 9
+      },
+      "bare_fewshot": {
+        "delivered": 5,
+        "turns": 9
+      },
+      "react_matched": {
+        "delivered": 0,
+        "turns": 9
+      },
+      "react_3x": {
+        "delivered": 2,
+        "turns": 9
+      },
+      "react_10x": {
+        "delivered": 9,
+        "turns": 9
+      }
+    }
+  },
+  "overall_delivery": {
+    "platform": {
+      "delivered": 96,
+      "turns": 96
+    },
+    "bare_zeroshot": {
+      "delivered": 71,
+      "turns": 96
+    },
+    "bare_fewshot": {
+      "delivered": 69,
+      "turns": 96
+    },
+    "react_matched": {
+      "delivered": 7,
+      "turns": 96
+    },
+    "react_3x": {
+      "delivered": 44,
+      "turns": 96
+    },
+    "react_10x": {
+      "delivered": 71,
+      "turns": 96
+    }
+  },
+  "design_only_delivery": {
+    "platform": {
+      "delivered": 72,
+      "turns": 72
+    },
+    "bare_zeroshot": {
+      "delivered": 47,
+      "turns": 72
+    },
+    "bare_fewshot": {
+      "delivered": 45,
+      "turns": 72
+    },
+    "react_matched": {
+      "delivered": 4,
+      "turns": 72
+    },
+    "react_3x": {
+      "delivered": 22,
+      "turns": 72
+    },
+    "react_10x": {
+      "delivered": 47,
+      "turns": 72
+    }
+  },
+  "failure_modes": {
+    "bare_zeroshot": {
+      "answered_structurally_invalid": 11,
+      "delivered": 71,
+      "answered_below_platform_quality_parity": 14
+    },
+    "bare_fewshot": {
+      "answered_structurally_invalid": 14,
+      "delivered": 69,
+      "answered_below_platform_quality_parity": 13
+    },
+    "react_matched": {
+      "budget_exhausted_no_answer": 86,
+      "delivered": 7,
+      "answered_below_platform_quality_parity": 3
+    },
+    "react_3x": {
+      "delivered": 44,
+      "budget_exhausted_no_answer": 42,
+      "answered_below_platform_quality_parity": 10
+    },
+    "react_10x": {
+      "delivered": 71,
+      "answered_below_platform_quality_parity": 16,
+      "budget_exhausted_no_answer": 9
+    }
+  },
+  "paired_vs_platform": {
+    "bare_zeroshot": {
+      "n_common_turns": 96,
+      "platform_only_delivered": 25,
+      "baseline_only_delivered": 0,
+      "mcnemar_p": 0.0
+    },
+    "bare_fewshot": {
+      "n_common_turns": 96,
+      "platform_only_delivered": 27,
+      "baseline_only_delivered": 0,
+      "mcnemar_p": 0.0
+    },
+    "react_matched": {
+      "n_common_turns": 96,
+      "platform_only_delivered": 89,
+      "baseline_only_delivered": 0,
+      "mcnemar_p": 0.0
+    },
+    "react_3x": {
+      "n_common_turns": 96,
+      "platform_only_delivered": 52,
+      "baseline_only_delivered": 0,
+      "mcnemar_p": 0.0
+    },
+    "react_10x": {
+      "n_common_turns": 96,
+      "platform_only_delivered": 25,
+      "baseline_only_delivered": 0,
+      "mcnemar_p": 0.0
+    },
+    "react_10x_vs_bare_zeroshot": {
+      "n_common_turns": 96,
+      "bare_only_delivered": 12,
+      "react_only_delivered": 12,
+      "mcnemar_p": 1.0
+    }
+  },
+  "claims": {
+    "platform": {
+      "note": "single-workflow PA sessions publish 0 claims by construction (ClaimGate is pipeline-synthesis-only; see Exp-41 Block B)",
+      "n_claims": 0
+    },
+    "bare_zeroshot": {
+      "n_claims": 500,
+      "tp": 214,
+      "fp": 200,
+      "unverifiable": 71,
+      "fp_rate": 0.4831,
+      "fp_rate_ci": [
+        0.4353,
+        0.5312
+      ],
+      "unverifiable_share": 0.142
+    },
+    "bare_fewshot": {
+      "n_claims": 489,
+      "tp": 359,
+      "fp": 46,
+      "unverifiable": 72,
+      "fp_rate": 0.1136,
+      "fp_rate_ci": [
+        0.0862,
+        0.1482
+      ],
+      "unverifiable_share": 0.1472
+    },
+    "react_matched": {
+      "n_claims": 41,
+      "tp": 21,
+      "fp": 4,
+      "unverifiable": 15,
+      "fp_rate": 0.16,
+      "fp_rate_ci": [
+        0.064,
+        0.3465
+      ],
+      "unverifiable_share": 0.3659
+    },
+    "react_3x": {
+      "n_claims": 177,
+      "tp": 43,
+      "fp": 69,
+      "unverifiable": 65,
+      "fp_rate": 0.6161,
+      "fp_rate_ci": [
+        0.5236,
+        0.7009
+      ],
+      "unverifiable_share": 0.3672
+    },
+    "react_10x": {
+      "n_claims": 333,
+      "tp": 112,
+      "fp": 117,
+      "unverifiable": 100,
+      "fp_rate": 0.5109,
+      "fp_rate_ci": [
+        0.4465,
+        0.5749
+      ],
+      "unverifiable_share": 0.3003
+    }
+  },
+  "efficiency": {
+    "platform": {
+      "llm_calls_total": 146,
+      "note": "frozen Exp-41 Block A; wall-time under the disclosed concurrent-load convention"
+    },
+    "bare_llm": {
+      "llm_calls_total": 192,
+      "wall_seconds_total": 28608.5
+    },
+    "react": {
+      "matched": {
+        "llm_calls_total": 143,
+        "tool_calls_total": 128,
+        "wall_seconds_total": 4419.3
+      },
+      "3x": {
+        "llm_calls_total": 466,
+        "tool_calls_total": 398,
+        "wall_seconds_total": 15337.3
+      },
+      "10x": {
+        "llm_calls_total": 756,
+        "tool_calls_total": 659,
+        "wall_seconds_total": 23571.7
+      }
+    }
+  },
+  "n_exp42_rows": 192,
+  "n_exp43_rows": 288,
+  "n_platform_turns": 96
+}

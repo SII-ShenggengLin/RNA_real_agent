@@ -1,0 +1,135 @@
+{
+  "n_turn_records": 192,
+  "n_api_errors": 0,
+  "n_parse_errors": 0,
+  "delivery_by_workflow_regime": {
+    "rna_tertiary_structure_design": {
+      "fewshot": {
+        "turns": 6,
+        "delivered": 0
+      },
+      "zeroshot": {
+        "turns": 6,
+        "delivered": 0
+      }
+    },
+    "rna_aptamer_design": {
+      "zeroshot": {
+        "turns": 13,
+        "delivered": 13
+      },
+      "fewshot": {
+        "turns": 13,
+        "delivered": 13
+      }
+    },
+    "rna_secondary_structure_design": {
+      "fewshot": {
+        "turns": 6,
+        "delivered": 6
+      },
+      "zeroshot": {
+        "turns": 6,
+        "delivered": 5
+      }
+    },
+    "mrna_cds_design": {
+      "zeroshot": {
+        "turns": 6,
+        "delivered": 5
+      },
+      "fewshot": {
+        "turns": 6,
+        "delivered": 4
+      }
+    },
+    "sirna_design": {
+      "fewshot": {
+        "turns": 10,
+        "delivered": 10
+      },
+      "zeroshot": {
+        "turns": 10,
+        "delivered": 10
+      }
+    },
+    "full_length_mrna_design": {
+      "zeroshot": {
+        "turns": 9,
+        "delivered": 5
+      },
+      "fewshot": {
+        "turns": 9,
+        "delivered": 5
+      }
+    },
+    "rna_small_molecule_interaction": {
+      "fewshot": {
+        "turns": 9,
+        "delivered": 9
+      },
+      "zeroshot": {
+        "turns": 9,
+        "delivered": 9
+      }
+    },
+    "ires_prediction": {
+      "zeroshot": {
+        "turns": 9,
+        "delivered": 9
+      },
+      "fewshot": {
+        "turns": 9,
+        "delivered": 9
+      }
+    },
+    "aso_target_screening": {
+      "zeroshot": {
+        "turns": 9,
+        "delivered": 9
+      },
+      "fewshot": {
+        "turns": 9,
+        "delivered": 7
+      }
+    },
+    "sgrna_design": {
+      "fewshot": {
+        "turns": 13,
+        "delivered": 0
+      },
+      "zeroshot": {
+        "turns": 13,
+        "delivered": 0
+      }
+    },
+    "mrna_sequence_scoring": {
+      "fewshot": {
+        "turns": 6,
+        "delivered": 6
+      },
+      "zeroshot": {
+        "turns": 6,
+        "delivered": 6
+      }
+    }
+  },
+  "overall_delivery": {
+    "zeroshot": 71,
+    "fewshot": 69
+  },
+  "claims": {
+    "n": 989,
+    "tp": 573,
+    "fp": 246,
+    "unverifiable": 143,
+    "borderline": 27,
+    "fp_rate": 0.3004,
+    "fp_rate_ci": [
+      0.27,
+      0.3326
+    ],
+    "unverifiable_share": 0.1446
+  },
+  "wall_seconds_total": 28608.5
+}
