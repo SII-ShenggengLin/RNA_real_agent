@@ -3,12 +3,21 @@
   "metadata": {
     "title": "Research data supporting \"A multi-agent system for RNA design with capability-gated prediction and constraint-navigated generation\"",
     "upload_type": "dataset",
-    "description": "<p>Benchmark, anchor-set and campaign evidence for the RNADesignAgent manuscript: the RNADesign-210 benchmark suite plus four further benchmark suites with assertion-curated external anchor sets; frozen per-campaign evidence records (verdict files, dual-arm run records, adjudication materials with sealed blinding maps, audit-trail slices, navigation traces, budget-matching ledgers, reproducibility caches); the packaged capability SelfModel with its generator; the per-experiment model-usage register; and the supplementary information documents. A per-file SHA-256 manifest and a number-to-source-file mapping (PAPER_FACT_SHEET.md) allow every quantitative statement in the manuscript to be re-derived from this deposit.</p>",
+    "description": "<p>Benchmark and anchor assets for the RNADesignAgent manuscript: the RNADesign-210 benchmark suite plus four further registered benchmark suites (the 31-session process-aware regression suite, the 20-target full-length mRNA suite with its five-target deployment cohort register, the 20-target aptamer suite with its six-target deployment cohort, and the 39-target expanded aptamer pool); the two derived claim-audit task sets (45 aptamer tasks, 20 full-length mRNA tasks); the assertion-curated external anchor sets used for capability profiling and biological-validity controls (wild-type CDS collection with 200 seeded random synonymous controls, aptamer binder/negative panels with measured affinities, measured-MRL 5'UTR anchor families, IRES literature panel, small-molecule binder/non-binder pairs, vaccine-mRNA assemblies, mRNA-stability panel); the packaged capability SelfModel with its generator; and the per-experiment model-usage register. A per-file SHA-256 manifest is included. Frozen per-campaign evidence records remain in the project repository (code availability statement).</p>",
     "creators": [
-      {"name": "TODO_AUTHOR_1"}
+      {
+        "name": "TODO_AUTHOR_1"
+      }
     ],
     "license": "cc-by-4.0",
-    "keywords": ["RNA design", "multi-agent system", "language-model agents", "capability profiling", "benchmark", "bioinformatics"],
+    "keywords": [
+      "RNA design",
+      "multi-agent system",
+      "language-model agents",
+      "capability profiling",
+      "benchmark",
+      "bioinformatics"
+    ],
     "communities": []
   }
 }
