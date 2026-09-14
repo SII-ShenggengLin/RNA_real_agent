@@ -14,6 +14,16 @@
 > All result files live in `rna_agent_system/experiments/results/` (gitignored but on disk).
 > Compiled 2026-08-10.
 
+> **Deposit-scope note (2026-09-14, batch 10)**: the public Zenodo package was re-scoped
+to benchmarks + anchors + SelfModel + model-usage register (`RNADesignAgent_paper_data_v2.tar.gz`;
+campaigns/ and supplementary/ withdrawn per user direction). This fact sheet remains the
+internal number-to-file map over `experiments/results/` — the frozen records stay on disk
+and byte-identical; only their public-deposit copies were withdrawn. New public assets
+exported this batch: `benchmarks/external_anchors/wt_cds/random_synonymous_controls.fa`
+(the 200 exp2 null controls, draws 0-9; verified 200/200 length+GC and 8/8 sampled CAI
+against `exp2_cds_nulls/fig2_cds_nulls.jsonl`), `benchmarks/deployment_cohorts/` and
+`benchmarks/claim_audit_tasks/` (e5 45-task, e5 legacy reference, e18 20-task).
+
 > **Panel-lettering note (2026-08-25)**: section headings and data keys below use
 > the **legacy (paper-v2-era) figure letters** — these strings match the keys inside
 > `fig2_summary.json` and the on-disk data files and are kept verbatim. The current

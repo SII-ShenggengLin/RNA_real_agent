@@ -1,7 +1,7 @@
 # RNADesignAgent — Experiment Manual
 
 > **Scope**: benchmark/anchor assets, the pilot-first protocol (still in force), and the data-availability register for both experiment campaigns.
-> **Last updated**: 2026-08-28 (experiment-programme reset; Exps 1–13 executed)
+> **Last updated**: 2026-09-14 (paper revision batch 10 — Methods restructure; deposit re-scope. Experiments 1–41 executed; no new experiment this batch)
 
 ---
 
