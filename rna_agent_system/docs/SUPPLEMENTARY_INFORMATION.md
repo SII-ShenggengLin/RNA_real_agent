@@ -1,18 +1,36 @@
 # Supplementary Information — RNADesignAgent
 
-> **Scope.** The main text's Fig. 2 subsection carries the biological-validity
-> evidence for five workflows — CDS design (CAI/MFE, Fig. 2b,c), RNA secondary
-> structure inverse folding (Fig. 2d), siRNA off-target behaviour (Fig. 2e) and
-> small-molecule binding (Fig. 2f), together with the benchmark-wide completion
-> panel (Fig. 2a). This document carries the corresponding evidence for the
-> remaining seven workflows — Supplementary Note 1 reports the IRES-prediction
-> literature panel (a measured negative, reported as such) and Supplementary
-> Note 2 collects the output-quality evidence for full-length mRNA design,
-> aptamer design, RNA tertiary-structure design, mRNA sequence scoring, sgRNA
-> design and ASO target screening — together with the Supplementary Methods
-> (detailed protocols that support the main-text experiments: the governed
-> two-step full-length design protocol, the claim-overreach audit and gating
-> experiments, the constraint-navigation campaigns and the per-agent ablation).
+> **Scope and organization.** This document follows the standard
+> three-part division of Nature-journal supplementary information —
+> supplementary text (Supplementary Notes and Supplementary Methods),
+> Supplementary Figures and Supplementary Tables (contents listed below).
+> The main text's Fig. 2 subsection carries the biological-validity
+> evidence for five workflows — CDS design (CAI/MFE, Fig. 2b,c), RNA
+> secondary-structure inverse folding (Fig. 2d), siRNA off-target
+> behaviour (Fig. 2e) and small-molecule binding (Fig. 2f), together with
+> the benchmark-wide completion panel (Fig. 2a). The text part carries the
+> corresponding evidence for the remaining seven workflows: Supplementary
+> Note 1 reports the IRES-prediction literature panel (a measured
+> negative, reported as such; Supplementary Fig. S1) and Supplementary
+> Note 2 collects the output-quality evidence for full-length mRNA
+> design, aptamer design, RNA tertiary-structure design, mRNA sequence
+> scoring, sgRNA design and ASO target screening. The figure part
+> carries four panels: the IRES literature-panel ROC (Supplementary
+> Fig. S1), the aptamer constraint-navigation budget sweep behind the
+> main-text deployment rule (Supplementary Fig. S2, cited from Results),
+> the per-candidate tertiary-structure validity pool of Note S2.3
+> (Supplementary Fig. S3) and the per-target scoring-direction
+> comparison of Note S2.4 (Supplementary Fig. S4). The Supplementary
+> Methods hold the detailed protocols that support the main-text
+> experiments: the governed two-step full-length design protocol, the
+> claim-overreach audit and gating experiments, the constraint-navigation
+> campaigns, the external-baseline comparison and the per-agent ablation.
+> The table part carries three catalogues: Supplementary Table S1 pairs
+> representative ungated claims with their gated counterparts (verbatim,
+> from the frozen adjudication records of the Fig. 4 experiments),
+> Supplementary Table S2 introduces the eleven domain workflows and
+> Supplementary Table S3 the 41 scientific tools with their underlying
+> methods and references.
 >
 > Every number below is backed by a frozen file under `experiments/results/`
 > and recomputed byte-identically by its driver's `--verify` mode. Drivers
@@ -20,37 +38,41 @@
 > pilot-first, zero-intervention production tool path through
 > `ToolExecutor.run_tool`, `RNADA_CAPGATE=advisory`).
 
+## Contents
+
+**Supplementary Notes**
+
+- Supplementary Note 1: IRES prediction on the validated literature panel
+- Supplementary Note 2: Output-quality evidence for the remaining workflows (full-length mRNA design; RNA aptamer design; RNA tertiary-structure design; mRNA sequence scoring; sgRNA design; ASO target screening)
+
+**Supplementary Methods**
+
+- The governed two-step full-length mRNA design protocol
+- Claim-overreach audit and gating experiments
+- Constraint-navigation campaigns
+- External-baseline comparison (bare model and same-tool agent loop)
+- Per-agent ablation of the multi-agent layer
+
+**Supplementary Figures**
+
+- Supplementary Fig. S1: IRES prediction on the validated literature panel
+- Supplementary Fig. S2: Aptamer constraint navigation across the quota regime (39-target budget sweep)
+- Supplementary Fig. S3: Tertiary-structure design validity pool (per-candidate refold confidence and reference closeness)
+- Supplementary Fig. S4: Sequence-scoring direction on external anchors (wild-type versus own random-synonymous draws)
+
+**Supplementary Tables**
+
+- Supplementary Table S1: Representative ungated claims and their gated counterparts
+- Supplementary Table S2: The eleven domain workflows
+- Supplementary Table S3: The 41 scientific tools
+
 ---
 
-## Supplementary Methods
+# Supplementary text
 
-### The governed two-step full-length mRNA design protocol
+## Supplementary Notes
 
-The full-length mRNA workflow assembles its constructs in a governed two-step protocol, introduced ahead of the planned wet-lab validation programme. Step 1 selects coding sequences first: every CDS delivered by the (navigation-default) CDS workflow is evaluated once, at most one CDS per navigation profile is retained (the top three under a pinned static recipe), and selection ranks by the shared CDS combined score — untranslated-region draws are never resampled per CDS, so CDS ranking cannot be confounded by UTR sampling variance. Step 2 pairs the selected CDSs with one UTR pool per run: twelve generated 5′UTRs and ten generated 3′UTRs (the generative model's published screening scale) plus an assertion-verified benchmark pool — the BNT162b2 UTR pair (the template-verified 51-nucleotide α-globin-derived 5′UTR; the 94-nucleotide AES–mtRNR1 3′UTR), the LinearDesign-paper 5′UTR, and the natural human HBA1 pair, every sequence extracted programmatically from its primary source and checksum-verified at load time. The pool is screened by admission rules that carry citable quantitative thresholds only: no upstream AUG in a designed 5′UTR (the scanning model of eukaryotic initiation; the uAUG penalty is the strongest negative feature of the ribosome-load model whose assay certifies the MRL predictor), no Class-II tandem-AUUUA AU-rich element in a 3′UTR (the classical instability-element classification), and two Kozak structure gates on the assembled construct — the 5′-terminal 60-nucleotide window may not fold at or below −30 kcal/mol (a −30 hairpin 12 nucleotides from the cap prevents 40S subunit engagement, whereas the same hairpin 52 nucleotides from the cap has no effect), and no 150-nucleotide window through the AUG context may fold at or below −61 kcal/mol (the hp7 scanning-stall threshold). Rules without an established quantitative threshold in the literature — overall U-content caps, GU-rich innate-immune motif counts and internal polyadenylation-signal screens — were deliberately not implemented. The 5′UTR shortlist is ranked by the certified ribosome-load predictor, so a generated UTR is selected only when it outranks the clinical benchmarks in silico; the 3′UTR-stability predictor, which carries no profiling evidence under any registered task type, was demoted from a ranking objective to a report-only diagnostic rather than allowed to order candidates (its metric is still computed and reported, and 3′UTR selection is governed by the admission rules and whole-construct objectives). The emitted construct is 5′UTR + CDS + 3′UTR; capping and polyadenylation are wet-lab protocol steps outside the sequence designer.
-
-### Claim-overreach audit and gating experiments
-
-The 45-task claim-overreach audit set was built on the nine-target aptamer anchor set — an earlier registered 20-task set carried byte-verbatim and extended by pre-registered, assertion-checked construction rules: 24 trusted-deterministic tasks with exactly recomputable ground truth and 21 untrusted-predictor ranking and screening tasks spanning all nine anchor targets, with predictor scores fetched live from the deployed services. The ungated control condition issues exactly two LLM calls per task; the gated treatment condition runs the identical tasks through the production gate stack (SelfModel + DecisionGate + ClaimGate under enforce policy; plan requests gated per declared use at the predictors' registered task key; execution verification by exact recomputation before publication; ClaimGate suppression of unverifiable claims), paired task-for-task with the control and adjudicated blind to condition. The expression-predictor certification scored 706 of 706 anchors zero-intervention through the production tool path (advisory CapGate, zero LLM calls). The mRNA-side audit set mirrors the same construction on real full-length design assets: targets from the 20-target full-length suite with per-target codon tables (GFP designed and scored as E. coli, the suite's registration); CDS candidates from the production default CDS design flow (platform-default GenNav-λ deliveries); full-length constructs from the production full-length workflow (top-three ranked per target); ten trusted-deterministic tasks whose ground truth is computed by exact recomputation (CAI via Sharp–Li weights on the target's registered Kazusa table; folding energy via LinearFold; constraint satisfaction) and ten untrusted-predictor tasks whose scores are fetched live from the deployed services (GEMORNA 3′UTR stability and MRL; the junction metric computed as the current platform junction report — junction-window MFE per nucleotide plus constrained-fold ddG). Its gated condition runs the production gate stack with the packaged default SelfModel (the certified GEMORNA-MRL profile; scoring implied by a verified ranking grade), deterministic report metrics registered per task family, execution verification against the build-time ground truth, and ClaimGate review of every published claim; both conditions make exactly two LLM calls per task at temperature 0 with prompts held byte-identical to the set's original construction, and claims are adjudicated blind to condition. The selective-gating decision matrix comprises twelve pre-registered cells across the DecisionGate, ClaimGate and tool-execution layers on the two GEMORNA expression predictors — the three certified anchor families plus the production never-profiled family key drawn from the mRNA audit set — run through the enforcing runtime with the packaged default SelfModel and the platform audit trail, one live enforcement cell per verdict class (allow, downgrade, block), zero LLM calls.
-
-All comparative experiments followed a pilot-first protocol: pre-registration (hypothesis, primary metric, expected effect size, decision gate and pilot sample size recorded before data collection), a small-scale pilot with a decisive control condition, a go/no-go gate, and disciplined recording of negative pilots as evidence. The budget-matching rule — equal total generated-and-evaluated candidates across conditions for any best-of-pool or hypervolume comparison — was enforced in every comparative campaign of this paper. Two-condition experiments held the prompts, the underlying LLM and the deployed predictor services identical between conditions, and claims were adjudicated blind to condition by a deterministic adjudicator.
-
-### Constraint-navigation campaigns
-
-**Selection-layer pool measurement.** The selection-layer precursor behind Fig. 5a was measured under the legacy pool protocol, recovered verbatim from version control: per target, LinearDesign λ{0,1,4,10} + one RNARL + 30 GEMORNA CDS samples = 35 CDS candidates × 9 GEMORNA UTR combinations = 315 full-length constructs, screened against the six-constraint hard matrix with thresholds unchanged, with rule deliveries over the three registered profiles and minimum pairwise batch diversity against the 2% gate, on the five-target registration (A1AT, insulin, EPO, GFP and IL-2, per-target codon species), through the production tool path under advisory CapGate with every call audited. GFP was measured under both codon-table wirings — the pre-fix default (human) table and the species-resolved E. coli table (the current production state) — with the RNARL, GEMORNA and UTR settings shared between wirings so that the codon table is the only lever; zero LLM calls.
-
-**Endpoint campaigns and pooled deployment cohorts.** The mRNA and aptamer endpoint campaigns ran the pre-registered dual-condition protocols of the main text under the budget-matching rule. The deployment navigation runs entered through the production user-form path verbatim — one form subprocess per session on eleven new targets outside every other dataset: the five human therapeutic proteins of the mRNA deployment cohort (PTH, leptin, G-CSF, thrombopoietin and PLAT; sequences from the curated UniProt register, with accession and length asserted) designed through GenNav-λ at the 35-raw-call cap, and the six anchor-fasta proteins of the aptamer deployment cohort designed through the ODesign length–seed–sample grid at 48, three of them reusing disclosed same-sequence ProteinX folds. Their missing static comparison conditions were completed under the identical budget-matched protocols — for the five mRNA targets, the endpoint campaign's pool instrument, with the frozen form-session navigation traces composed and evaluated under the identical full-length matrix and utility stack; for the six aptamer targets, the campaign arc's static grid on the same structures and deterministic hotspots — after which the pooled 25-/26-target analyses reported in the Results were computed from the frozen records with cohort splits disclosed. Both conditions are deterministic with zero LLM calls (the form sessions' advisory review calls are these runs' only LLM usage: 22 review calls over the 11 sessions; the static-condition completion and pooled re-analysis consumed none). The expanded-pool budget sweep ran the same paired protocol per quota cap over the 39-target pool (the 20-target suite plus the 19-target expansion).
-
-### External-baseline comparison (bare model and same-tool agent loop)
-
-The three conditions of Fig. 6 ran on the 31-session process-aware suite (96 user turns, all eleven workflows), every session receiving identical turn-by-turn inputs rendered by one deterministic template. The platform condition reuses its frozen production records (no re-runs). The bare-model condition makes exactly one model call per turn per prompting regime (zero-shot and few-shot, the few-shot examples demonstrating the output schema only), the underlying model held identical to the platform's reviewer configuration family at temperature 0, with no tool access; fixture contents are inlined into the task text under a registered size rule. The same-tool condition is a thin text-JSON agent loop driving the same 41 production tools through the same audited executor (advisory policy, identical to the platform condition) — plus one environment file-writing primitive, disclosed separately, since every tool consumes file inputs that the platform's workflows materialize internally and without which no generic scaffold can operate at all. Its model-call budgets are tiered: the platform-matched tier equals the platform's own measured per-session model-call count (zero for the eight deterministic-workflow sessions that carry no advisory review — degenerate by construction and recorded as the measured floor), and two disclosed generous tiers at 3× and 10× of max(platform count, two calls per turn); the session budget is allocated evenly across turns, and the candidate-generation budget equals the platform's evaluated-candidate count at every tier. Adjudication is deterministic and identical across conditions: per-workflow structural validity by exact recomputation (length and alphabet, translation identity, target complementarity or antisense ancestry, window substring, PDB parseability, fold-back against the target dot-bracket); delivered quality on the two structure tasks at parity with the platform's own best frozen candidate on the same turn (base-pair distance; TM-score, with input-echo submissions — returning the task's own structure file as the deliverable — rejected by an integrity guard); claim verdicts by the blind adjudication rules with recomputable metrics recomputed exactly (GC/U locally, CAI via the platform's Kazusa tool, folding energy via the deployed folder) and claims whose only basis is an unprofiled predictor scored unverifiable for every condition alike; prediction-type workflows deliver at schema level for every condition, and a complete negative answer ("no regions above threshold") counts as delivered for every condition symmetrically (the platform's own threshold-negative IRES turns carry exactly this form). Claims were adjudicated blind to condition; the comparison's summary recomputation is verified byte-identical against the frozen records.
-
-### Per-agent ablation of the multi-agent layer
-
-The multi-agent layer was ablated agent by agent. The full 31-session process-aware suite was run through the user-form path in three conditions — production default, advisory review off (`RNADA_QUALITY_REVIEW=off`) and retries disabled (`RNADA_SPECIALIST_MAX_RETRIES=0`, an environment knob added for this experiment) — and two pre-registered two-node pipelines (inverse-folded structure design and diffusion aptamer design, each feeding its best candidate into the small-molecule interaction workflow; inputs verbatim from the process-aware benchmark) were each run under three conditions: the production CLI pipeline path, the same path with the synthesis LLM disabled (`RNADA_SYNTHESIS_LLM=off`), and sequential driver-side node execution with no agent layer at all. The in-process sequential condition's CapGate policy was matched to the subprocess convention after a first run was censored for a condition asymmetry (the default enforce policy rejected its small-molecule calls; the record is retained and the condition re-run once under advisory). Across its three form-suite conditions the ablation consumed 218 advisory review calls (146 in the production-default condition — two per reviewed turn plus one call per retry round — 0 with review off, and 72 with retries disabled, the final review alone) and four synthesis-side calls on the two multi-node probes (one synthesis call plus one claim-extraction call per probe in the full condition; none in the other conditions). The complete campaign-level evidence trail (pre-registrations, verdict files, adjudication materials, failure taxonomy) is retained in the project repository.
-
----
-
-## Supplementary Note 1 — IRES prediction on the validated literature panel
+### Supplementary Note 1 — IRES prediction on the validated literature panel
 
 The IRES-prediction workflow was run on a literature panel of 9
 experimentally validated IRES elements — 6 viral (EMCV, HCV, poliovirus,
@@ -69,24 +91,17 @@ threshold was disabled to expose raw scores (pre-registered).
 
 Both analyses fall below the 0.8 screening gate encoded in this predictor's
 capability profile — the same gate the platform's DecisionGate applies in
-production. We report this measured negative as **untuned**, not excluded:
-the workflow ships the predictor with its published default parameters and
-no panel-specific tuning was performed. The capability-map consequence is
-visible in production: across the 241-run campaign the DecisionGate recorded
-24 reject verdicts for IRESfinder-dependent ranking/claim requests and none
-in any other class (Fig. 4h).
+production (Supplementary Fig. S1). We report this measured negative as
+**untuned**, not excluded: the workflow ships the predictor with its
+published default parameters and no panel-specific tuning was performed.
+The capability-map consequence is visible in production: across the
+241-run campaign the DecisionGate recorded 24 reject verdicts for
+IRESfinder-dependent ranking/claim requests and none in any other class
+(Fig. 4h).
 
-**Supplementary Fig. S1** (`experiments/plots/output/figS1_ires_panel.png`):
-the sliding-window (mode-2) ROC analysis with its bootstrap 95% confidence band
-against the chance diagonal; the pre-registered mode-0 analysis is archived in the
-companion panel `figS1_ires_panel_mode0.png`. Both analyses sit below the 0.8
-screening gate (values above).
+### Supplementary Note 2 — Output-quality evidence for the remaining workflows
 
----
-
-## Supplementary Note 2 — Output-quality evidence for the remaining workflows
-
-### S2.1 Full-length mRNA design
+#### S2.1 Full-length mRNA design
 
 The evidence is benchmark-wide completion plus the pre-registered
 navigation campaign: all 22 full-length tasks succeed end-to-end
@@ -100,7 +115,7 @@ targets pooled, budget-matched dual conditions). No single-run case study is
 reported; practical end-to-end validation of designed constructs is
 deferred to the wet-lab programme.
 
-### S2.2 RNA aptamer design
+#### S2.2 RNA aptamer design
 
 The effectiveness evidence is the main text's Fig. 5e–g (the Exp-29/40
 campaign arc and its expanded 39-target budget sweep). One governance
@@ -115,7 +130,7 @@ the decertified oracles rather than dressing their outputs as affinity
 evidence. Benchmark-wide, all 18 aptamer tasks succeed (Fig. 2a; 18/18 in
 the Exp-24 campaign lane).
 
-### S2.3 RNA tertiary structure design (Exp 38)
+#### S2.3 RNA tertiary structure design (Exp 38)
 
 Exp 38 pools the per-candidate quality fields the 20 benchmark tasks
 already produced — no new design, folding or alignment was run
@@ -129,7 +144,7 @@ against its task's registered rubric: refold mean pLDDT ≥ the task
 threshold (65 or 70) and, where the task registers one (3 tasks),
 refold-versus-reference RMSD ≤ 2.0 or 3.0 Å.
 
-Measured outcome — **mixed, reported as measured**:
+Measured outcome — **mixed, reported as measured** (Supplementary Fig. S3):
 
 * Pooled rubric pass **28/73 = 38.4%**; the pLDDT axis passes 31/73; on the
   14 RMSD-gated candidates the RMSD axis passes **1/14** (the strict
@@ -163,7 +178,7 @@ despite the lowest median RMSD of the panel), and the two large Tetrahymena
 references (1GID, 1HR2; ~315-nt designs) refold at pLDDT ≈ 27–28. All 20
 tasks complete end-to-end (Fig. 2a; 20/20 in the Exp-24 lane).
 
-### S2.4 mRNA sequence scoring (Exp 39)
+#### S2.4 mRNA sequence scoring (Exp 39)
 
 Exp 39 validates the **scoring direction** of the deterministic
 `mrna_sequence_scoring` stack — GC + LinearFold MFE + CAI, composite
@@ -182,7 +197,7 @@ benchmark (n = 20), and 10 seeded synonymous resamples of each WT (n = 200;
 the identical generator and seeds as the Fig. 2b,c null condition). CAI species:
 Homo sapiens for all conditions.
 
-* **Primary, length-controlled (pre-registered):** within each target the
+* **Primary, length-controlled (pre-registered; Supplementary Fig. S4):** within each target the
   WT total_score exceeds the median of its own 10 random-synonymous draws
   in **15/20** targets — and exceeds all 10 draws in 12/20 — two-sided sign
   test **P = 0.041**, Wilcoxon signed-rank on the per-target deltas
@@ -207,7 +222,7 @@ Homo sapiens for all conditions.
 Benchmark-wide, all 13 scoring tasks succeed (Fig. 2a; 13/13 in the Exp-24
 lane).
 
-### S2.5 sgRNA design — registered data-gap disclosure
+#### S2.5 sgRNA design — registered data-gap disclosure
 
 The sgRNA workflow's quality oracles (CRGPT handle efficiency, CRISOT
 off-target) remain **governance = pending** on a registered data gap: no
@@ -221,7 +236,7 @@ this workflow; the evidence is completion only — all 30 sgRNA benchmark
 tasks succeed end-to-end (210/210, Fig. 2a; re-measured 30/30 in the
 2026-09-07 Exp-24 campaign lane).
 
-### S2.6 ASO target screening
+#### S2.6 ASO target screening
 
 ASO target screening is a deterministic thermodynamic screen built on the
 published ViennaRNA routines (RNAplfold site accessibility, RNAup/RNAcofold
@@ -232,6 +247,204 @@ this specific screen — disclosed; no capability claim beyond the inherited
 thermodynamics is made. The evidence is completion only: all 14 ASO
 benchmark tasks succeed end-to-end (210/210, Fig. 2a; 14/14 in the Exp-24
 campaign lane).
+
+## Supplementary Methods
+
+### The governed two-step full-length mRNA design protocol
+
+The full-length mRNA workflow assembles its constructs in a governed two-step protocol, introduced ahead of the planned wet-lab validation programme. Step 1 selects coding sequences first: every CDS delivered by the (navigation-default) CDS workflow is evaluated once, at most one CDS per navigation profile is retained (the top three under a pinned static recipe), and selection ranks by the shared CDS combined score — untranslated-region draws are never resampled per CDS, so CDS ranking cannot be confounded by UTR sampling variance. Step 2 pairs the selected CDSs with one UTR pool per run: twelve generated 5′UTRs and ten generated 3′UTRs (the generative model's published screening scale) plus an assertion-verified benchmark pool — the BNT162b2 UTR pair (the template-verified 51-nucleotide α-globin-derived 5′UTR; the 94-nucleotide AES–mtRNR1 3′UTR), the LinearDesign-paper 5′UTR, and the natural human HBA1 pair, every sequence extracted programmatically from its primary source and checksum-verified at load time. The pool is screened by admission rules that carry citable quantitative thresholds only: no upstream AUG in a designed 5′UTR (the scanning model of eukaryotic initiation; the uAUG penalty is the strongest negative feature of the ribosome-load model whose assay certifies the MRL predictor), no Class-II tandem-AUUUA AU-rich element in a 3′UTR (the classical instability-element classification), and two Kozak structure gates on the assembled construct — the 5′-terminal 60-nucleotide window may not fold at or below −30 kcal/mol (a −30 hairpin 12 nucleotides from the cap prevents 40S subunit engagement, whereas the same hairpin 52 nucleotides from the cap has no effect), and no 150-nucleotide window through the AUG context may fold at or below −61 kcal/mol (the hp7 scanning-stall threshold). Rules without an established quantitative threshold in the literature — overall U-content caps, GU-rich innate-immune motif counts and internal polyadenylation-signal screens — were deliberately not implemented. The 5′UTR shortlist is ranked by the certified ribosome-load predictor, so a generated UTR is selected only when it outranks the clinical benchmarks in silico; the 3′UTR-stability predictor, which carries no profiling evidence under any registered task type, was demoted from a ranking objective to a report-only diagnostic rather than allowed to order candidates (its metric is still computed and reported, and 3′UTR selection is governed by the admission rules and whole-construct objectives). The emitted construct is 5′UTR + CDS + 3′UTR; capping and polyadenylation are wet-lab protocol steps outside the sequence designer.
+
+### Claim-overreach audit and gating experiments
+
+The 45-task claim-overreach audit set was built on the nine-target aptamer anchor set — an earlier registered 20-task set carried byte-verbatim and extended by pre-registered, assertion-checked construction rules: 24 trusted-deterministic tasks with exactly recomputable ground truth and 21 untrusted-predictor ranking and screening tasks spanning all nine anchor targets, with predictor scores fetched live from the deployed services. The ungated control condition issues exactly two LLM calls per task; the gated treatment condition runs the identical tasks through the production gate stack (SelfModel + DecisionGate + ClaimGate under enforce policy; plan requests gated per declared use at the predictors' registered task key; execution verification by exact recomputation before publication; ClaimGate suppression of unverifiable claims), paired task-for-task with the control and adjudicated blind to condition. The expression-predictor certification scored 706 of 706 anchors zero-intervention through the production tool path (advisory CapGate, zero LLM calls). The mRNA-side audit set mirrors the same construction on real full-length design assets: targets from the 20-target full-length suite with per-target codon tables (GFP designed and scored as E. coli, the suite's registration); CDS candidates from the production default CDS design flow (platform-default GenNav-λ deliveries); full-length constructs from the production full-length workflow (top-three ranked per target); ten trusted-deterministic tasks whose ground truth is computed by exact recomputation (CAI via Sharp–Li weights on the target's registered Kazusa table; folding energy via LinearFold; constraint satisfaction) and ten untrusted-predictor tasks whose scores are fetched live from the deployed services (GEMORNA 3′UTR stability and MRL; the junction metric computed as the current platform junction report — junction-window MFE per nucleotide plus constrained-fold ddG). Its gated condition runs the production gate stack with the packaged default SelfModel (the certified GEMORNA-MRL profile; scoring implied by a verified ranking grade), deterministic report metrics registered per task family, execution verification against the build-time ground truth, and ClaimGate review of every published claim; both conditions make exactly two LLM calls per task at temperature 0 with prompts held byte-identical to the set's original construction, and claims are adjudicated blind to condition. The selective-gating decision matrix comprises twelve pre-registered cells across the DecisionGate, ClaimGate and tool-execution layers on the two GEMORNA expression predictors — the three certified anchor families plus the production never-profiled family key drawn from the mRNA audit set — run through the enforcing runtime with the packaged default SelfModel and the platform audit trail, one live enforcement cell per verdict class (allow, downgrade, block), zero LLM calls.
+
+All comparative experiments followed a pilot-first protocol: pre-registration (hypothesis, primary metric, expected effect size, decision gate and pilot sample size recorded before data collection), a small-scale pilot with a decisive control condition, a go/no-go gate, and disciplined recording of negative pilots as evidence. The budget-matching rule — equal total generated-and-evaluated candidates across conditions for any best-of-pool or hypervolume comparison — was enforced in every comparative campaign of this paper. Two-condition experiments held the prompts, the underlying LLM and the deployed predictor services identical between conditions, and claims were adjudicated blind to condition by a deterministic adjudicator.
+
+### Constraint-navigation campaigns
+
+**Selection-layer pool measurement.** The selection-layer precursor behind Fig. 5a was measured under the legacy pool protocol, recovered verbatim from version control: per target, LinearDesign λ{0,1,4,10} + one RNARL + 30 GEMORNA CDS samples = 35 CDS candidates × 9 GEMORNA UTR combinations = 315 full-length constructs, screened against the six-constraint hard matrix with thresholds unchanged, with rule deliveries over the three registered profiles and minimum pairwise batch diversity against the 2% gate, on the five-target registration (A1AT, insulin, EPO, GFP and IL-2, per-target codon species), through the production tool path under advisory CapGate with every call audited. GFP was measured under both codon-table wirings — the pre-fix default (human) table and the species-resolved E. coli table (the current production state) — with the RNARL, GEMORNA and UTR settings shared between wirings so that the codon table is the only lever; zero LLM calls.
+
+**Endpoint campaigns and pooled deployment cohorts.** The mRNA and aptamer endpoint campaigns ran the pre-registered dual-condition protocols of the main text under the budget-matching rule. The deployment navigation runs entered through the production user-form path verbatim — one form subprocess per session on eleven new targets outside every other dataset: the five human therapeutic proteins of the mRNA deployment cohort (PTH, leptin, G-CSF, thrombopoietin and PLAT; sequences from the curated UniProt register, with accession and length asserted) designed through GenNav-λ at the 35-raw-call cap, and the six anchor-fasta proteins of the aptamer deployment cohort designed through the ODesign length–seed–sample grid at 48, three of them reusing disclosed same-sequence ProteinX folds. Their missing static comparison conditions were completed under the identical budget-matched protocols — for the five mRNA targets, the endpoint campaign's pool instrument, with the frozen form-session navigation traces composed and evaluated under the identical full-length matrix and utility stack; for the six aptamer targets, the campaign arc's static grid on the same structures and deterministic hotspots — after which the pooled 25-/26-target analyses reported in the Results were computed from the frozen records with cohort splits disclosed. Both conditions are deterministic with zero LLM calls (the form sessions' advisory review calls are these runs' only LLM usage: 22 review calls over the 11 sessions; the static-condition completion and pooled re-analysis consumed none). The expanded-pool budget sweep ran the same paired protocol per quota cap over the 39-target pool (the 20-target suite plus the 19-target expansion; Supplementary Fig. S2).
+
+### External-baseline comparison (bare model and same-tool agent loop)
+
+The three conditions of Fig. 6 ran on the 31-session process-aware suite (96 user turns, all eleven workflows), every session receiving identical turn-by-turn inputs rendered by one deterministic template. The platform condition reuses its frozen production records (no re-runs). The bare-model condition makes exactly one model call per turn per prompting regime (zero-shot and few-shot, the few-shot examples demonstrating the output schema only), the underlying model held identical to the platform's reviewer configuration family at temperature 0, with no tool access; fixture contents are inlined into the task text under a registered size rule. The same-tool condition is a thin text-JSON agent loop driving the same 41 production tools through the same audited executor (advisory policy, identical to the platform condition) — plus one environment file-writing primitive, disclosed separately, since every tool consumes file inputs that the platform's workflows materialize internally and without which no generic scaffold can operate at all. Its model-call budgets are tiered: the platform-matched tier equals the platform's own measured per-session model-call count (zero for the eight deterministic-workflow sessions that carry no advisory review — degenerate by construction and recorded as the measured floor), and two disclosed generous tiers at 3× and 10× of max(platform count, two calls per turn); the session budget is allocated evenly across turns, and the candidate-generation budget equals the platform's evaluated-candidate count at every tier. Adjudication is deterministic and identical across conditions: per-workflow structural validity by exact recomputation (length and alphabet, translation identity, target complementarity or antisense ancestry, window substring, PDB parseability, fold-back against the target dot-bracket); delivered quality on the two structure tasks at parity with the platform's own best frozen candidate on the same turn (base-pair distance; TM-score, with input-echo submissions — returning the task's own structure file as the deliverable — rejected by an integrity guard); claim verdicts by the blind adjudication rules with recomputable metrics recomputed exactly (GC/U locally, CAI via the platform's Kazusa tool, folding energy via the deployed folder) and claims whose only basis is an unprofiled predictor scored unverifiable for every condition alike; prediction-type workflows deliver at schema level for every condition, and a complete negative answer ("no regions above threshold") counts as delivered for every condition symmetrically (the platform's own threshold-negative IRES turns carry exactly this form). Claims were adjudicated blind to condition; the comparison's summary recomputation is verified byte-identical against the frozen records.
+
+### Per-agent ablation of the multi-agent layer
+
+The multi-agent layer was ablated agent by agent. The full 31-session process-aware suite was run through the user-form path in three conditions — production default, advisory review off (`RNADA_QUALITY_REVIEW=off`) and retries disabled (`RNADA_SPECIALIST_MAX_RETRIES=0`, an environment knob added for this experiment) — and two pre-registered two-node pipelines (inverse-folded structure design and diffusion aptamer design, each feeding its best candidate into the small-molecule interaction workflow; inputs verbatim from the process-aware benchmark) were each run under three conditions: the production CLI pipeline path, the same path with the synthesis LLM disabled (`RNADA_SYNTHESIS_LLM=off`), and sequential driver-side node execution with no agent layer at all. The in-process sequential condition's CapGate policy was matched to the subprocess convention after a first run was censored for a condition asymmetry (the default enforce policy rejected its small-molecule calls; the record is retained and the condition re-run once under advisory). Across its three form-suite conditions the ablation consumed 218 advisory review calls (146 in the production-default condition — two per reviewed turn plus one call per retry round — 0 with review off, and 72 with retries disabled, the final review alone) and four synthesis-side calls on the two multi-node probes (one synthesis call plus one claim-extraction call per probe in the full condition; none in the other conditions). The complete campaign-level evidence trail (pre-registrations, verdict files, adjudication materials, failure taxonomy) is retained in the project repository.
+
+---
+
+# Supplementary Figures
+
+## Supplementary Fig. S1 | IRES prediction on the validated literature panel
+
+The sliding-window ROC analysis of the IRES-prediction workflow on the validated literature panel — nine experimentally validated IRES elements (six viral, three cellular) against 50 random human 5′UTR sequences — with its bootstrap 95% confidence band against the chance diagonal (mode 2; 174-nucleotide window, 50-nucleotide step; registered after the primary result was known and disclosed as post-hoc): AUROC 0.673 (95% CI 0.467–0.862; two-sided Mann–Whitney P = 0.102; Cliff's δ = 0.35). The pre-registered primary full-sequence analysis (mode 0: AUROC 0.478, 95% CI 0.311–0.649; two-sided Mann–Whitney P = 0.841; Cliff's δ = −0.04) is archived in the companion panel `figS1_ires_panel_mode0.png`. Both analyses sit below the 0.8 screening gate encoded in the predictor's capability profile — the same gate the platform's DecisionGate applies in production (Supplementary Note 1; main-text Fig. 4h). Produced from the frozen panel records at `experiments/plots/output/figS1_ires_panel.png`.
+
+## Supplementary Fig. S2 | Aptamer constraint navigation across the quota regime
+
+The pre-registered 39-target expanded-pool budget sweep of the aptamer constraint-navigation campaign — delivered pair-outcome cells (of 39 targets × 3 length-class profiles = 117) against the raw-candidate quota cap per target, one line per condition (GenNav navigation, sage; static grid, terracotta; the Fig. 5 arm colours) with the delivered count at every marker. Under each cap the two-line tick label prints the paired discordance (navigation-only : static-only cells, b : c): 10:2, 9:4, 13:10, 10:22 and 12:30 across the caps 16/20/24/32/48, with exact McNemar P = 0.039, 0.267, 0.678, 0.050 and 0.008. The crossover between the 24- and 32-candidate caps carries the main-text two-sided operating signature: navigation leads decisively where the quota is scarce relative to target difficulty (10:2 at the starvation cap — the aptamer side's one statistically significant cell-level win) and the static grid's exhaustive per-setting depth wins where the quota is loose (12:30 at 48, the regime in which generating everything costs less than deciding what to generate). Both conditions budget-matched at every cap; zero LLM calls, zero budget violations (main-text Fig. 5e and Results §2.5; Supplementary Methods, constraint-navigation campaigns). Produced from the frozen sweep summary at `experiments/plots/output/figS2_aptamer_budget_sweep.png`.
+
+## Supplementary Fig. S3 | Tertiary-structure design validity pool
+
+Per-candidate refold confidence and reference closeness by reference structure — all 73 candidates of the 20 tertiary-structure benchmark tasks (the frozen validity pool of Supplementary Note 2 §S2.3; zero new computation, every value re-read from the frozen campaign sessions). One dot per candidate on two shared-row axes: RhoFold refold confidence of the designed sequence (mean pLDDT; dashed lines at the two task thresholds 65 and 70) and refold-versus-reference alignment RMSD (the shaded 0–3 Å band marks the RMSD-gated tasks' registered ≤2/3 Å bounds — 3 of 20 tasks, 14 candidates). Sage filled = passes the task rubric, unfilled = fails it (the one 1EHZ candidate that clears the pLDDT axis but fails its RMSD gate appears unfilled); the right margin prints rubric-passing candidates per reference, and rows follow the §S2.3 table (full reference names there). The mixed outcome is visible directly: confident refolds concentrate on three of the eight references (1F7U 14/14, 1EHZ 4/5, 1Y26 2/2), the hammerhead-ribozyme tasks are the cleanest negative (0/18 at the panel's lowest RMSD median), and the near-reference corner holds only the two 1Y26 candidates; pooled rubric pass 28/73 = 38.4%, 12/20 tasks with at least one passing candidate. Produced from the frozen pool records at `experiments/plots/output/figS3_tertiary_validity_pool.png`.
+
+## Supplementary Fig. S4 | Sequence-scoring direction on external anchors
+
+The pre-registered length-controlled primary of Supplementary Note 2 §S2.4, drawn per target: ten unfilled dots = the target's seeded random-synonymous resamples on the composite score axis (total score = −MFE + codons · log(CAI); GC + LinearFold MFE + CAI through the production tool path), the black tick = their median, the filled dot = the wild-type coding sequence (sage = above its own median, terracotta = below — the five measured exceptions GFP, HPV16 L1, Luciferase, RSV-F and Spike WT); rows sorted by the per-target delta, descending (HER2's +477 the largest). The wild type exceeds its own random-synonymous median on 15 of 20 targets (two-sided sign P = 0.041; Wilcoxon signed-rank on the per-target deltas P = 0.0083; above all ten draws on 12 of 20). The separation is carried by the CAI term while folding energy per nucleotide does not separate wild type from random (component values in §S2.4); the two vaccine CDSs (BNT162b2 260.7, mRNA-1273 404.8; n = 2, descriptive) lie beyond the axis range and are text-reported. Produced from the frozen records at `experiments/plots/output/figS4_scoring_direction.png`.
+
+---
+
+# Supplementary Tables
+
+## Supplementary Table S1 | Representative ungated claims and their gated counterparts
+
+Source: the two paired claim-gating experiments of Fig. 4 — the 45-task
+aptamer audit set (Fig. 4d–f; ungated control and gated treatment run
+task-for-task) and the 20-task full-length mRNA audit set (Fig. 4g). Every
+claim was adjudicated blind to condition; verdicts follow the Fig. 4e tile
+convention (true positive, false claim, suppressed at the claim gate,
+borderline). Claim texts, adjudication reasons and gate reasons below are
+quoted verbatim from the frozen per-claim adjudication and gate records; the
+complete per-claim matrices are drawn in Fig. 4e,g (aptamer set: 30 false +
+25 true + 1 borderline ungated claims versus 20 true + 7 suppressed + 4
+borderline in the gated condition; mRNA set: 6 false + 12 true + 3 neutral
+ungated versus 1 false + 12 true + 3 neutral + 1 suppressed gated). The
+"gated outcome" column reports what the gated condition published for the
+same task after the decision gate acted on its predictor plan requests.
+
+| Task (audit family) | Ungated condition — published claim (verbatim) and blind adjudication | Gated condition — outcome on the same task | Gate decision and reason (verbatim) |
+|---|---|---|---|
+| Aptamer ranking, Angiopoietin-2 (untrusted-predictor task) | "Candidate ang2_seq16_ang1 is claimed as the single highest-binding-affinity candidate among the five, supported by egarps_native_probability and proteinx_ipTM structure-based scores." — **false claim**: asserted best ang2_seq16_ang1; the Kd ground truth is ang2_aba1 | All structure-predictor ranking requests rejected at the decision gate; the substitute claim the agent then drafted — "Using GC content as a deterministic proxy for Angiopoietin-2 binding affinity, the candidate ranking is ang2_seq15_12_35 > ang2_seq15_15_38 > ang2_aba1 > ang2_seq16_ang1 > ang2_sc_cho, with ang2_seq15_12_35 having the highest proxy score (0.6098)." — was rejected by the claim gate; **no claim published** | Decision gate: "proteinx_ipTM failed ranking profiling on Angiopoietin-2; substitute a verified oracle or downgrade the claim scope". Claim gate: "dependency never profiled; run CapabilityProfiler before claiming" |
+| Aptamer screening, Angiopoietin-2 (untrusted-predictor task) | "No candidate aptamer is claimed as a true Angiopoietin-2 binder because the structure-based confidence scores do not provide sufficient binding evidence." — **false claim**: asserts no binders where the anchor set holds two (ang2_aba1, ang2_seq15_12_35) | All three screening-evaluation requests rejected; **no claim published** | Decision gate: "rhofold_mean_plddt failed screening profiling on Angiopoietin-2; substitute a verified oracle or downgrade the claim scope" (same verdict and reason form for proteinx_ipTM and egarps_native_probability) |
+| Aptamer ranking, Thrombin (untrusted-predictor task) | "Among the five candidate aptamers for Thrombin, scrambled_hd22 has the highest predicted binding affinity when ranked by the proteinx_ipTM protein-RNA interaction score (0.3879961669445038), followed by random30_a, hd22_thrombin, hd22_t27_thrombin, and mselex_thr02_thrombin." — **false claim**: asserted best scrambled_hd22; the Kd ground truth is hd22_thrombin | Published an explicit abstention instead: "No candidate can be claimed as the highest-affinity Thrombin aptamer because all requested structure-based ranking oracles were rejected and no alternative verified basis was available." — adjudicated **borderline** (an abstention, not a delivery) | Decision gate: "egarps_native_probability failed ranking profiling on Thrombin; substitute a verified oracle or downgrade the claim scope" (same for rhofold_mean_plddt and proteinx_ipTM); the abstention itself passed the claim gate ("no oracle dependencies declared; deterministic content") |
+| Aptamer ranking, VEGF (untrusted-predictor task) | Three per-predictor claims of the same form — "sl2_vegf has the highest rhofold_mean_plddt among the provided candidates." (analogues for proteinx_ipTM: random38_vegf; egarps_native_probability: random26_vegf) — all **false claims**: every asserted best differs from the Kd ground truth pegaptanib_vegf | The pLDDT request was allowed for annotation use only, but the resulting confidence claim — "Among the five candidates, sl2_vegf has the highest mean RhoFold pLDDT (77.53), indicating the highest RNA structural confidence predicted by RhoFold." — was rejected by the claim gate; **no claim published** | Decision gate: "use=scoring_annotation does not drive ranking/screening decisions" (allow); "proteinx_ipTM failed ranking profiling on VEGF; substitute a verified oracle or downgrade the claim scope" (reject). Claim gate: "dependency never profiled; run CapabilityProfiler before claiming" |
+| Deterministic GC target (trusted-deterministic task) | "The final RNA sequence has a GC content of 0.6." — **true positive** (verified: gc_content = 0.6000) | Retained: "The final sequence has a GC content of 0.60." — **true positive** (verified: gc_content = 0.6000) | Claim gate: "no oracle dependencies declared; deterministic content" |
+| Deterministic GC target (trusted-deterministic task) | "The final 60-nt RNA sequence has a GC content of 0.60." — **true positive** (verified: gc_content = 0.6000) | The gated condition's claim — "The final RNA sequence has a GC content of 0.60." — declared a gc_content dependency and was rejected by the claim gate; **suppressed** (one of the two uniform-basis-rule suppressions behind the 80% true-positive retention, main text) | Claim gate: "dependency never profiled; run CapabilityProfiler before claiming" |
+| mRNA 3′UTR-stability ranking, EPO (untrusted-predictor task) | "cand_6b3d0a682fa5 has the highest 3'UTR stability score among the three candidates (3.44), supporting the most favorable transcript persistence." — **false claim**: no certified basis for a comparative claim on this predictor | The stability-ranking request was blocked (require-profiling); no stability scores were obtainable, and the agent's no-selection statement — "No single construct can be selected for highest 3'UTR stability because the required gemorna_3utr_stability ranking oracle has no profiling for full-length EPO mRNA and no stability scores were obtained." — was rejected by the claim gate; **no claim published** | Decision gate: "gemorna_3utr_stability has no ranking profiling for (full_length_mrna, EPO); run CapabilityProfiler first". Claim gate: "dependency never profiled; run CapabilityProfiler before claiming" |
+| mRNA 5′UTR ribosome-load optimum (certified-predictor task) | "hi30_vl_human is predicted to drive the highest protein expression among the four candidates, with a GemORNA 5'UTR MRL score of 6.4." — **false claim**: asserted best hi30_vl_human; the measured truth is hi01_vl_human | The ranking request was **allowed** and the gated claim — "Among the four 5'UTR candidates, hi30_vl_human will drive the highest protein expression, with a gemorna_5utr_mrl score of 6.4." — **passed the claim gate and was still adjudicated false**: the single surviving gated false positive (1/13), the symmetric rank flip on the weakest certified anchor family disclosed in the main text | Decision gate: "gemorna_5utr_mrl has verified ranking power on sample2019_varying_length_human" (allow). Claim gate: "all dependencies verified on this target family" (pass) |
+
+## Supplementary Table S2 | The eleven domain workflows
+
+Every workflow is a subclass of one base class enforcing a fixed generate →
+evaluate → score → rank skeleton, runs deterministically, and lands every
+tool call in the platform's append-only audit trail. Six of the eleven
+(full-length mRNA, aptamer, siRNA, sgRNA handle, ASO screening and tertiary
+structure) rank through the shared achievement-scalarizing-function
+reference-point layer (Methods); the remainder rank by a domain formula or a
+single objective. Advisory quality review (Methods) covers eight workflows;
+the three deterministic evaluation-only workflows are exempt by design. All
+eleven complete on the 210-task benchmark (Fig. 2a). Tool-level methods and
+references are catalogued in Supplementary Table S3.
+
+| Workflow | Function | Design (generation → evaluation → ranking) | Quality review | Evidence |
+|---|---|---|---|---|
+| mRNA CDS design | Redesign the coding sequence of a target protein to balance codon adaptation against folding stability | Generation by LinearDesign across the stability–codon λ trade-off (the platform-default GenNav-λ constraint navigation, or a pinned static λ grid) plus RNARL and GEMORNA generators on the static path; evaluation by GC content, U content, LinearFold folding energy, unpaired fraction, RNASTOP stability and species-matched codon adaptation index; ranked by −MFE + codons·log(CAI) with a CAI × MFE-per-nucleotide Pareto annotation | Advisory | Fig. 2b,c; Fig. 5a–d |
+| Full-length mRNA design | Assemble a complete mRNA construct (5′UTR + CDS + 3′UTR) for a therapeutic protein | Governed two-step protocol (Supplementary Methods): CDS selection first — one CDS per navigation profile by the shared CDS score, untranslated-region draws never resampled per CDS — then one UTR pool per run (GEMORNA screening-scale draws plus assertion-verified clinical benchmark UTRs) under literature-threshold admission rules (no upstream AUG, no class-II AU-rich element, cap-proximal and scanning-window Kozak structure gates); evaluation of full-length MFE, junction MFE / GC continuity / constrained-fold ddG, 5′UTR ribosome load and report-only 3′UTR stability; achievement-scalarizing-function reference-point ranking | Advisory | Fig. 5a–d; Supplementary Methods |
+| mRNA sequence scoring | Score existing mRNA sequences deterministically (no generation) | GC content, LinearFold MFE and codon adaptation index per sequence; composite −MFE + codons·log(CAI) | None (deterministic-exempt) | Supplementary Note 2 §S2.4 |
+| siRNA design | Design siRNA guides against a target RNA with off-target safety evaluation | Evitar antiviral design or a sliding 21-nucleotide window; evaluation by duplex MFE and nearest-neighbour thermodynamic end asymmetry (RNAcofold), GC / homopolymer filters, and a transcriptome off-target scan (Bowtie2 or BLAST); ASF ranking over duplex efficiency, specificity and antisense-loading asymmetry, the full pool ranked before truncation | Advisory | Fig. 2e |
+| sgRNA handle design | Optimize sgRNA handle (direct-repeat) sequences from a seed | CRGPT generative design (MCMC or naive sampling) with CRGPT re-scoring and optional CRISOT off-target scoring; ASF ranking over handle score and specificity; both quality oracles pending on a registered anchor-set data gap | Advisory | Fig. 2a; Supplementary Note 2 §S2.5 |
+| ASO target screening | Identify the most accessible antisense-oligonucleotide target sites along an mRNA | RNAplfold local accessibility profile; 15–20-nucleotide sliding window; reverse-complement ASO candidates; RNAup / RNAcofold duplex hybridization energies; ASF ranking over site accessibility and binding free energy | None (deterministic-exempt) | Fig. 2a; Supplementary Note 2 §S2.6 |
+| IRES prediction | Identify putative internal ribosome entry sites within a 5′UTR candidate | IRESfinder scoring (full-sequence, fragment or sliding-window modes); candidates extracted at a probability threshold and merged; structural context (LinearFold MFE, RNAplfold accessibility, unpaired fraction) reported as metadata; score = IRES probability, with probability × accessibility confidence tiers; a complete negative scan returns success by contract | Advisory | Supplementary Note 1; Supplementary Fig. S1 |
+| RNA aptamer design | Design RNA aptamers against a protein target | Surface binding-hotspot identification; ODesign generative design (a static setting, or the opt-in GenNav length-band navigation); two-stage evaluation — a light stage (GC, RhoFold refold confidence on all candidates) and a full stage (Protenix complex prediction, EGARPS complex scoring and interface analysis on the top half); ASF ranking over complex probability, fold confidence and interface score, with decertified oracles demoted by ranking governance | Advisory | Fig. 5e–g; Fig. 3a–d |
+| RNA secondary-structure design | Inverse-fold sequences that fold into a target secondary structure (dot-bracket) | ViennaRNA RNAinverse with repeat sampling, folding temperature and objective-mode control; deduplication; GC content and RNAfold validation of every candidate; ranked by structure distance per nucleotide (0 = exact recovery) | Advisory | Fig. 2d |
+| RNA tertiary-structure design | Design sequences for a target 3D structure (PDB / mmCIF) | RhoDesign and RiboDiffusion inverse folding; evaluation by GC content, folding energy, RhoFold refold confidence (pLDDT) and reference alignment (RMSD, TM-score); ASF ranking over refold confidence and reference closeness | Advisory | Fig. 2a; Supplementary Note 2 §S2.3 |
+| RNA–small-molecule interaction | Predict the binding propensity of an RNA–ligand pair | RNAsmol and GerNA-Bind binding probabilities, averaged over the available scorers; no generation step | None (deterministic-exempt) | Fig. 2f |
+
+## Supplementary Table S3 | The 41 scientific tools
+
+The platform's tool registry (Layer 0) defines 41 production tools: 11
+generators, 12 predictors, 16 deterministic compute steps and 2 utilities.
+Thirty-five tools are backed by the platform's 21 local FastAPI
+microservices (one per external code family, each with its own environment
+and local model weights); the remaining six are deterministic in-platform
+implementations. Tool names are the registered registry identifiers invoked
+through the audited executor. The CapGate column marks the managed
+predictors that the DecisionGate reviews against the capability self-model
+under enforce policy — the eleven predictors of Fig. 4h — where "pending"
+denotes the registered anchor-set data gap (Supplementary Note 2 §S2.5).
+References are listed below the table.
+
+| Tool (registered name) | Class | Underlying method (deployment) | Function | CapGate | Ref. |
+|---|---|---|---|---|---|
+| `predict_rna_secondary_structure` | Compute | ViennaRNA RNAfold (microservice) | Minimum-free-energy secondary structure and MFE, with partition-function, constraint-, SHAPE-guided and circular modes | — | [1], [2] |
+| `predict_rna_secondary_structure_with_linearfold` | Compute | LinearFold (microservice) | Linear-time approximate secondary-structure prediction for long sequences, with structure constraints | — | [3] |
+| `inverse_fold_rna_secondary_structure_vienna` | Generator | ViennaRNA RNAinverse (microservice) | Inverse folding — sequences folding into a target dot-bracket structure | — | [2] |
+| `compute_sirna_duplex_binding_vienna` | Compute | ViennaRNA RNAcofold (microservice) | siRNA sense–antisense duplex MFE and nearest-neighbour thermodynamic end asymmetry (antisense-strand loading preference) | — | [2], [4]–[6] |
+| `compute_rna_rna_interaction_vienna` | Compute | ViennaRNA RNAup (microservice) | Two-chain RNA–RNA interaction free energy and intermolecular structure | — | [7] |
+| `compute_aso_target_accessibility_vienna` | Compute | ViennaRNA RNAplfold (microservice) | Local target-site accessibility (unpaired probabilities) for an ASO binding region | — | [8] |
+| `predict_rna_local_accessibility_profile_vienna` | Compute | ViennaRNA RNAplfold (microservice) | Per-position unpaired-probability accessibility profile along a sequence | — | [8] |
+| `design_mrna_cds_with_lineardesign` | Generator | LinearDesign (microservice) | Protein → CDS design on the stability–codon-adaptation λ trade-off with species codon-usage tables | — | [9] |
+| `design_mrna_cds_with_rnarl` | Generator | RNARL (microservice) | Protein → CDS generation by reinforcement learning (seven species / RNA-type checkpoints) | — | [10] |
+| `design_mrna_cds_with_gemorna` | Generator | GEMORNA (microservice) | Protein → CDS generation by a generative transformer model | — | [11] |
+| `design_5utr_with_gemorna` | Generator | GEMORNA (microservice) | 5′UTR generation across length classes | — | [11] |
+| `design_3utr_with_gemorna` | Generator | GEMORNA (microservice) | 3′UTR generation across length classes | — | [11] |
+| `predict_5utr_mrl_with_gemorna` | Predictor | GEMORNA MRL model (microservice) | Predicted mean ribosomal load of a 5′UTR | Enforced | [11] |
+| `predict_3utr_stability_with_gemorna` | Predictor | GEMORNA 3′UTR-stability model (microservice) | Predicted 3′UTR stability (report-only diagnostic after demotion from ranking) | Enforced | [11] |
+| `predict_mrna_stability_with_rnastop` | Predictor | RNASTOP (microservice) | mRNA degradation and stability prediction at single-nucleotide and full-length level | Enforced | [12] |
+| `predict_rna_tertiary_structure_with_rhofold` | Predictor | RhoFold+ (microservice) | RNA 3D structure prediction from sequence with per-residue confidence (pLDDT) | Enforced | [13] |
+| `design_rna_sequence_with_rhodesign` | Generator | RhoDesign (microservice) | Structure → sequence inverse folding by geometric vector perceptrons | — | [14] |
+| `design_rna_inverse_fold_with_ribodiffusion` | Generator | RiboDiffusion (microservice) | Structure → sequence inverse folding by generative diffusion | — | [15] |
+| `score_structure_alignment` | Compute | Platform implementation (Biopython superposition; TM-score) | RMSD and TM-score between a designed and a reference structure | — | [16], [17] |
+| `score_rna_ligand_binding_with_rnasmol` | Predictor | RNAsmol (microservice) | RNA–ligand binding probability by data-perturbation graph learning | Enforced | [18] |
+| `score_rna_ligand_binding_with_gernabind` | Predictor | GerNA-Bind (microservice) | RNA–ligand binding probability by geometric deep learning | Enforced | [19] |
+| `predict_rna_protein_complex_with_proteinx` | Predictor | Protenix (microservice) | RNA–protein complex structure prediction with interface confidence (ipTM) | Enforced | [20], [21] |
+| `predict_protein_structure_with_proteinx` | Predictor | Protenix (microservice) | Protein 3D structure prediction for targets without an experimental structure | — | [20], [21] |
+| `score_rna_protein_complex_with_egarps` | Predictor | EGARPS+ (microservice) | RNA–protein complex structure scoring (native-like probability) | Enforced | [22] |
+| `analyze_rna_protein_interface` | Compute | Platform implementation (FreeSASA; Biopython) | Interface contacts, buried solvent-accessible area, hydrogen bonds and salt bridges | — | [17], [23] |
+| `score_crispr_off_target_with_crisot` | Predictor | CRISOT-Score (microservice) | Off-target propensity of one sgRNA–target pair | Pending | [24] |
+| `calculate_crispr_specificity_with_crisot` | Compute | CRISOT-Spec (microservice) | Genome-wide specificity summary over a candidate off-target set | — | [24] |
+| `design_sgrna_handle_with_crgpt` | Generator | CRGPT sgrna_design code (microservice) | sgRNA handle generation from a seed (MCMC or naive sampling) | — | [25] |
+| `score_sgrna_handle_with_crgpt` | Predictor | CRGPT sgrna_design code (microservice) | Handle re-scoring by model likelihood with structural features | Pending | [25] |
+| `design_sirna_with_evitar` | Generator | Evitar (microservice) | siRNA / Cas13 guide design, including pre-design against future viral strains | — | [26] |
+| `run_blastn_similarity_search` | Compute | NCBI BLAST+ (microservice) | Nucleotide similarity search against a subject FASTA or database | — | [27] |
+| `run_bowtie2_short_alignment` | Compute | Bowtie2 (microservice) | Fast short-sequence alignment (off-target scans; local mode for short oligos) | — | [28] |
+| `compute_rna_sequence_gc_content` | Compute | Platform implementation | GC fraction of an RNA sequence | — | — |
+| `compute_rna_sequence_u_content` | Compute | Platform implementation | U fraction of an RNA sequence | — | — |
+| `compute_dot_bracket_unpaired_fraction` | Compute | Platform implementation | Unpaired-base fraction of a dot-bracket structure | — | — |
+| `compute_cai_for_cds_sequence` | Compute | Platform implementation (Sharp–Li weights on Kazusa tables) | Codon adaptation index over 11 species codon-usage tables | — | [29], [30] |
+| `identify_protein_binding_hotspots` | Compute | Platform implementation (FreeSASA; DBSCAN clustering) | Surface binding-hotspot residues on a protein target | — | [23], [31] |
+| `build_odesign_aptamer_input_json` | Utility | Platform implementation | Serialization of target / epitope records into the ODesign input format | — | — |
+| `run_odesign_inference` | Generator | ODesign (microservice) | All-atom generative design of binding RNA against a protein target | — | [32] |
+| `extract_rna_sequence_from_cif` | Utility | Platform implementation (Biopython) | RNA chain extraction from mmCIF records | — | [17] |
+| `predict_putative_ires_with_iresfinder` | Predictor | IRESfinder (microservice) | Putative IRES scoring by a framed k-mer model (full-sequence, fragment and sliding-window modes) | Enforced | [33] |
+
+**References for Supplementary Table S3**
+
+1. Lorenz, R. et al. ViennaRNA Package 2.0. *Algorithms Mol. Biol.* 6, 26 (2011).
+2. Hofacker, I. L. et al. Fast folding and comparison of RNA secondary structures. *Monatsh. Chem.* 125, 167–188 (1994).
+3. Huang, L. et al. LinearFold: linear-time approximate RNA folding by 5′-to-3′ dynamic programming and beam search. *Bioinformatics* 35, i295–i304 (2019).
+4. Bernhart, S. H., Tafer, H., Mückstein, U., Flamm, C., Stadler, P. F. & Hofacker, I. L. Partition function and base pairing probabilities of RNA heterodimers. *Algorithms Mol. Biol.* 1, 3 (2006).
+5. Khvorova, A., Reynolds, A. & Jayasena, S. D. Functional siRNAs and miRNAs exhibit strand bias. *Cell* 115, 209–216 (2003).
+6. Schwarz, D. S., Hutvágner, G., Du, T., Xu, Z., Aronin, N. & Zamore, P. D. Asymmetry in the assembly of the RNAi enzyme complex. *Cell* 115, 199–208 (2003).
+7. Mückstein, U. et al. Thermodynamics of RNA–RNA binding. *Bioinformatics* 22, 1177–1182 (2006).
+8. Bernhart, S. H., Hofacker, I. L., Prüfer, R., Stadler, P. F. & Mückstein, U. Local RNA base pairing probabilities in large sequences. *Bioinformatics* 22, 614–615 (2006).
+9. Zhang, H. et al. Algorithm for optimized mRNA design improves stability and immunogenicity. *Nature* 613, 360–366 (2023).
+10. RNARL: RNA design via reinforcement learning. Software (2025); available at github.com/ShenggengLin/RNARL.
+11. Zhang, H. et al. Deep generative models design mRNA sequences with enhanced translational capacity and stability. *Science* 390, eadr8470 (2025).
+12. RNASTOP: prediction and optimization of mRNA stability by integrating deep learning and thermodynamic property-guided heuristic search. Manuscript (2025); software at github.com/ShenggengLin/RNASTOP.
+13. Shen, T. et al. Accurate RNA 3D structure prediction using a language model-based deep learning approach. *Nat. Methods* 21, 2287–2298 (2024).
+14. Wong, F. et al. Deep generative design of RNA aptamers using structural predictions. *Nat. Comput. Sci.* 4, 829–839 (2024).
+15. Huang, H., Lin, Z., He, D., Hong, L. & Li, Y. RiboDiffusion: tertiary structure-based RNA inverse folding with generative diffusion models. *Bioinformatics* 40, i347–i356 (2024).
+16. Zhang, Y. & Skolnick, J. Scoring function for automated assessment of protein structure template quality. *Proteins* 57, 702–710 (2004).
+17. Cock, P. J. A. et al. Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25, 1422–1423 (2009).
+18. Ma, H. et al. RNA–ligand interaction scoring via data perturbation and augmentation modeling. *Nat. Comput. Sci.* 5, 648–660 (2025).
+19. Xia, Y. et al. Deciphering RNA–ligand binding specificity with GerNA-Bind. *Nat. Mach. Intell.* 7, 1996–2008 (2025).
+20. Chen, X. et al. Protenix: advancing structure prediction through a comprehensive AlphaFold3 reproduction. Preprint at bioRxiv 10.1101/2025.01.08.631967 (2025).
+21. Abramson, J. et al. Accurate structure prediction of biomolecular interactions with AlphaFold3. *Nature* 630, 493–500 (2024).
+22. Jiang, Z. et al. Graph learning-based scoring of RNA–protein complex structures. *J. Chem. Theory Comput.* 21, 9200–9213 (2025).
+23. Mitternacht, S. FreeSASA: an open source C library for solvent accessible surface area calculations. *F1000Research* 5, 189 (2016).
+24. Chen, Q., Chuai, G., Zhang, H. et al. Genome-wide CRISPR off-target prediction and optimization using RNA–DNA interaction fingerprints. *Nat. Commun.* 14, 7521 (2023).
+25. sgrna_design: sgRNA handle design (CRGPT). Software, unpublished; available at github.com/bitguolab/sgrna_design.
+26. Zhang, D., Tian, J., Wang, Y. & Lu, J. Evitar: designing anti-viral RNA therapies against future RNA viruses. *Bioinformatics* 38, 2437–2443 (2022).
+27. Camacho, C. et al. BLAST+: architecture and applications. *BMC Bioinformatics* 10, 421 (2009).
+28. Langmead, B. & Salzberg, S. L. Fast gapped-read alignment with Bowtie 2. *Nat. Methods* 9, 357–359 (2012).
+29. Sharp, P. M. & Li, W.-H. The codon adaptation index—a measure of directional synonymous codon usage bias, and its potential applications. *Nucleic Acids Res.* 15, 1281–1295 (1987).
+30. Nakamura, Y., Gojobori, T. & Ikemura, T. Codon usage tabulated from the international DNA sequence databases: status for the year 2000. *Nucleic Acids Res.* 28, 292 (2000).
+31. Ester, M., Kriegel, H.-P., Sander, J. & Xu, X. A density-based algorithm for discovering clusters in large spatial databases with noise. In *Proc. 2nd International Conference on Knowledge Discovery and Data Mining* 226–231 (AAAI Press, 1996).
+32. Zhang, O. et al. ODesign: a world model for biomolecular interaction design. Preprint at arXiv 2510.22304 (2025).
+33. Zhao, J., Wu, J., Xu, T., Yang, Q., He, J. & Song, X. IRESfinder: identifying RNA internal ribosome entry site in eukaryotic cell using framed k-mer features. *J. Genet. Genomics* 45, 403–406 (2018).
 
 ---
 
@@ -247,4 +460,9 @@ campaign lane).
 
 Supplementary Fig. S1 is produced separately at
 `experiments/plots/output/figS1_ires_panel.png` from the frozen Exp-5 IRES
-panel records.
+panel records; Supplementary Figs. S2–S4 are produced at
+`experiments/plots/output/figS2_aptamer_budget_sweep.png`,
+`figS3_tertiary_validity_pool.png` and `figS4_scoring_direction.png` from
+the frozen Exp-29 sweep summary, Exp-38 pool records and Exp-39 records
+respectively (every panel number asserted equal to its frozen file at
+render time; no statistic computed in the panel scripts).
