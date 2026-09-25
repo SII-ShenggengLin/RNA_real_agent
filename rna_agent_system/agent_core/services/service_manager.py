@@ -169,10 +169,12 @@ CAPABILITY_SERVICE_MAP: dict[str, ToolServiceSpec] = {
         "design_rna_sequence_with_rhodesign", "127.0.0.1", 8006, "/health",
         "microservices/rhodesign_service/start.sh",
     ),
-    # RNAsmol service (port 8007)
+    # RNAsmol service (port 8007; GPU env — the CPU env `rnasmol_service_env`
+    # was retired from the reference machine on 2026-09-25, CPU hosts rebuild
+    # it from environment.yml and point this back at start.sh)
     "score_rna_ligand_binding_with_rnasmol": ToolServiceSpec(
         "score_rna_ligand_binding_with_rnasmol", "127.0.0.1", 8007, "/health",
-        "microservices/rnasmol_service/start.sh",
+        "microservices/rnasmol_service/start_gpu.sh",
     ),
     # RNARL service (port 8008)
     "design_mrna_cds_with_rnarl": ToolServiceSpec(

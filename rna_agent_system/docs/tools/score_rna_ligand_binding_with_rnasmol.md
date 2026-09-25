@@ -1,10 +1,10 @@
 # RNAsmol RNA-Ligand Binding Scoring
 
 > **Version**: v0.3.0  
-> **Last updated**: 2026-08-11  
+> **Last updated**: 2026-09-25  
 > **Upstream**: [hongli-ma/RNAsmol](https://github.com/hongli-ma/RNAsmol)  
 > **Microservice**: `microservices/rnasmol_service/` (Port 8007)  
-> **Conda Env**: `rnasmol_service_env` (CPU, activated by `microservices/rnasmol_service/start.sh`); `rnasmol_service_gpu_env` for GPU (`start_gpu.sh`).
+> **Conda Env**: `rnasmol_service_gpu_env` (GPU, activated by `microservices/rnasmol_service/start_gpu.sh` — the platform auto-start default since 2026-09-25); CPU variant `rnasmol_service_env` via `start.sh` (`environment.yml`), retired from the reference machine.
 
 ---
 

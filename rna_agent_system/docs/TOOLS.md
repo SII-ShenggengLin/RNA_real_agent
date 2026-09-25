@@ -30,7 +30,7 @@
 | 8004 | `microservices/gemorna_service/` | GEMORNA | CDS + UTR design | ✅ Linux GPU |
 | 8005 | `microservices/rhofold_service/` | RhoFold | Tertiary structure prediction | ✅ Linux GPU |
 | 8006 | `microservices/rhodesign_service/` | RhoDesign | Structure → sequence design | ✅ Linux GPU |
-| 8007 | `microservices/rnasmol_service/` | RNAsmol | RNA–ligand scoring | ✅ Linux (CPU default; GPU via `start_gpu.sh`) |
+| 8007 | `microservices/rnasmol_service/` | RNAsmol | RNA–ligand scoring | ✅ Linux GPU (CPU fallback via `start.sh`) |
 | 8008 | `microservices/rnarl_service/` | RNARL | CDS design (7 species) | ✅ Linux GPU |
 | 8009 | `microservices/rnastop_service/` | RNASTOP | mRNA stability | ✅ Linux GPU |
 | 8010 | `microservices/gernabind_service/` | GerNA-Bind | RNA–ligand scoring + binding-site | ✅ Linux GPU |
@@ -211,11 +211,14 @@
 **Agent tool**: `score_rna_ligand_binding_with_rnasmol(filepath, smiles, ...)`
 
 **Notes**
-- `start.sh` pins `RNASMOL_DEVICE=cpu`: the bundled `rnasmol_service_env` ships
-  PyTorch 1.7.1 (max sm_75), which cannot run kernels on RTX 4090 (sm_89) and
-  otherwise stalls the first request for minutes on PTX JIT. CPU inference is
-  milliseconds-fast for this model. For real GPU inference use `start_gpu.sh`
-  (`rnasmol_service_gpu_env`, torch 2.1) with `RNASMOL_DEVICE=cuda:0`.
+- Since 2026-09-25 the platform auto-start (`agent_core/services/service_manager.py`)
+  launches `start_gpu.sh` (`rnasmol_service_gpu_env`, torch 2.1,
+  `RNASMOL_DEVICE=cuda:0`) — the CPU `rnasmol_service_env` was retired from the
+  reference machine. `start.sh` remains the CPU fallback for CPU-only hosts:
+  it pins `RNASMOL_DEVICE=cpu` because its bundled env ships PyTorch 1.7.1
+  (max sm_75), which cannot run kernels on RTX 4090 (sm_89) and otherwise
+  stalls the first request for minutes on PTX JIT; CPU inference is
+  milliseconds-fast for this model.
 - The default checkpoint is preloaded at service startup, so a passed health
   check means scoring is immediately ready.
 - 2026-08-11 preprocessing-fidelity fix: the
