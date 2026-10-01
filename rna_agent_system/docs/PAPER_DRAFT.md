@@ -175,7 +175,7 @@ All data supporting the findings of this study have been deposited in the Zenodo
 
 ## Code availability
 
-The complete RNADesignAgent system (agent core, multi-agent execution layer, workflows, microservices, CLI, CapGate, GenNav, experiment drivers and regression benchmarks) is maintained in the project repository with interface-locked contracts and is available at https://github.com/SII-ShenggengLin/RNA_real_agent. External research codes are vendored as submodules with local patches recorded, including the junction-patched LinearDesign, the LinearDesign memory guard, the upstream-faithful RNAsmol preprocessing port and pinned-fork deployment patches to RhoDesign (reproducible seeding) and RhoFold (local-checkpoint-first inference), enumerated with pinned commit hashes in the deployment guide.
+The complete RNADesignAgent system (agent core, multi-agent layer, workflows, microservices, CLI, CapGate, GenNav, experiment drivers and regression benchmarks) is available at https://github.com/SII-ShenggengLin/RNA_real_agent. External research codes are included as pinned submodules, with any local modifications recorded in the deployment guide.
 
 ---
 
