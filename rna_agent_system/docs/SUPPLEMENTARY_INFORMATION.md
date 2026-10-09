@@ -224,7 +224,7 @@ Each row summarizes one task of the paired gating experiments of Fig. 4d–g, wi
 | Deterministic GC target (deterministic task) | Claimed a GC content of 0.60, **true positive**, verified | Retained the same claim, **true positive**, verified | Deterministic content, no predictor dependencies |
 | Deterministic GC target (deterministic task) | Claimed a GC content of 0.60, **true positive**, verified | **Suppressed** for declaring an unprofiled dependency | Dependency never profiled |
 | mRNA 3′UTR-stability ranking, EPO (untrusted-predictor task) | Claimed the highest-stability candidate, a **false positive** with no certified basis | Ranking blocked, the no-selection statement rejected, no claim published | No ranking profiling for this target family |
-| mRNA 5′UTR ribosome-load optimum (certified-predictor task) | Claimed the highest-expression 5′UTR, a **false positive** | Passed both gates and stayed **false**, the single surviving gated false positive | Verified ranking power on the certified library |
+| mRNA 5′UTR ribosome-load optimum (certified-predictor task) | Claimed the highest-expression 5′UTR, a **false positive** | Passed both gates and stayed false, the single surviving **false positive** | Verified ranking power on the certified library |
 
 ### Supplementary Table S4. Results by reference for tertiary-structure inverse folding
 
