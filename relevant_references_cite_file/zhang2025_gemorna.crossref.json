@@ -1,0 +1,695 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T22:08:13Z",
+  "timestamp": 1791497293496,
+  "version": "4.3.4"
+ },
+ "reference-count": 56,
+ "publisher": "American Association for the Advancement of Science (AAAS)",
+ "issue": "6773",
+ "content-domain": {
+  "domain": [
+   "www.science.org"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Science"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2025,
+    11,
+    6
+   ]
+  ]
+ },
+ "abstract": "<jats:p>Despite the success of messenger RNA (mRNA) COVID-19 vaccines, extending this modality to more diseases necessitates substantial enhancements. We present GEMORNA, a generative RNA model that uses transformer architectures tailored for mRNA coding sequences (CDSs) and untranslated regions (UTRs) to design mRNAs with enhanced expression and stability. GEMORNA-designed full-length mRNAs exhibited up to a 41-fold increase in firefly luciferase expression compared with an optimized benchmark in vitro. GEMORNA-generated therapeutic mRNAs achieved up to a 15-fold enhancement in human erythropoietin (EPO) expression and substantially elicited antibody titers of COVID vaccine in mice. Additionally, GEMORNA’s versatility extends to circular RNA, substantially enhancing circular EPO expression and boosting antitumor cytotoxicity in chimeric antigen receptor T cells. These advancements highlight the vast potential of deep generative artificial intelligence for mRNA therapeutics.</jats:p>",
+ "DOI": "10.1126/science.adr8470",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2025,
+    8,
+    28
+   ]
+  ],
+  "date-time": "2025-08-28T17:59:08Z",
+  "timestamp": 1756403948000
+ },
+ "update-policy": "https://doi.org/10.34133/aaas_crossmark",
+ "source": "Crossref",
+ "is-referenced-by-count": 78,
+ "title": [
+  "Deep generative models design mRNA sequences with enhanced translational capacity and stability"
+ ],
+ "prefix": "10.1126",
+ "volume": "390",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0001-5877-2167",
+   "authenticated-orcid": true,
+   "given": "He",
+   "family": "Zhang",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Cambridge, MA, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Hailong",
+   "family": "Liu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yushan",
+   "family": "Xu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Harvard T.H. Chan School of Public Health, Harvard University, Cambridge, MA, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Haoran",
+   "family": "Huang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yiming",
+   "family": "Liu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jia",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yan",
+   "family": "Qin",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Haiyan",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lili",
+   "family": "Ma",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Zhiyuan",
+   "family": "Xun",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Xuzhuang",
+   "family": "Hou",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Beijing, China."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-3918-8923",
+   "authenticated-orcid": true,
+   "given": "Timothy K.",
+   "family": "Lu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Biological Engineering, Massachusetts Institute of Technology, Cambridge, MA, USA."
+    },
+    {
+     "name": "Research Laboratory of Electronics, Massachusetts Institute of Technology, Cambridge, MA, USA."
+    },
+    {
+     "name": "Synthetic Biology Center, Massachusetts Institute of Technology, Cambridge, MA, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-5253-3365",
+   "authenticated-orcid": true,
+   "given": "Jicong",
+   "family": "Cao",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Raina Biosciences, Cambridge, MA, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "221",
+ "reference": [
+  {
+   "key": "e_1_3_2_2_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41392-023-01579-1"
+  },
+  {
+   "key": "e_1_3_2_3_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41573-021-00283-5"
+  },
+  {
+   "key": "e_1_3_2_4_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nrd.2017.243"
+  },
+  {
+   "key": "e_1_3_2_5_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41392-022-01007-w"
+  },
+  {
+   "key": "e_1_3_2_6_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41587-022-01491-z"
+  },
+  {
+   "key": "e_1_3_2_7_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41573-023-00827-x"
+  },
+  {
+   "key": "e_1_3_2_8_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.tibtech.2004.04.006"
+  },
+  {
+   "key": "e_1_3_2_9_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/15.3.1281"
+  },
+  {
+   "key": "e_1_3_2_10_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s13073-021-00935-6"
+  },
+  {
+   "key": "e_1_3_2_11_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41598-020-74091-z"
+  },
+  {
+   "key": "e_1_3_2_12_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s12859-023-05246-8"
+  },
+  {
+   "key": "e_1_3_2_13_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/bib/bbad467"
+  },
+  {
+   "key": "e_1_3_2_14_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-023-06127-z"
+  },
+  {
+   "key": "e_1_3_2_15_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/mt.2008.200"
+  },
+  {
+   "key": "e_1_3_2_16_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-022-28776-w"
+  },
+  {
+   "key": "e_1_3_2_17_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1002/adma.202004452"
+  },
+  {
+   "key": "e_1_3_2_18_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkw1190"
+  },
+  {
+   "key": "e_1_3_2_19_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41587-019-0164-5"
+  },
+  {
+   "key": "e_1_3_2_20_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-021-24436-7"
+  },
+  {
+   "key": "e_1_3_2_21_2",
+   "unstructured": "A. T. Horhota B. Goodman R. A. Wesselhoeft J. Yang Circular RNA compositions and methods. U.S. patent US11679120B2."
+  },
+  {
+   "key": "e_1_3_2_22_2",
+   "first-page": "3104",
+   "volume-title": "Proceedings of the 2014 Advances in neural information processing systems",
+   "author": "Sutskever I.",
+   "year": "2014",
+   "unstructured": "I. Sutskever, O. Vinyals, Q. V. Le, “ Sequence to sequence learning with neural networks” in Proceedings of the 2014 Advances in neural information processing systems (MIT Press, 2014), pp. 3104–3112."
+  },
+  {
+   "key": "e_1_3_2_23_2",
+   "unstructured": "A. Vaswani N. Shazeer N. Parmar J. Uszkoreit L. Jones A. N. Gomez Ł. Kaiser I. Polosukhin “Attention is all you need” in Proceedings of the 2017 Advances in Neural Information Processing Systems (Curran Associates 2017) pp. 6000–6010."
+  },
+  {
+   "key": "e_1_3_2_24_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.celrep.2024.114098"
+  },
+  {
+   "key": "e_1_3_2_25_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.vaccine.2023.07.024"
+  },
+  {
+   "key": "e_1_3_2_26_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.omtn.2018.06.010"
+  },
+  {
+   "key": "e_1_3_2_27_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.7554/eLife.49708"
+  },
+  {
+   "key": "e_1_3_2_28_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.7554/eLife.45396"
+  },
+  {
+   "key": "e_1_3_2_29_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.jmb.2019.04.021"
+  },
+  {
+   "key": "e_1_3_2_30_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.cell.2016.05.070"
+  },
+  {
+   "key": "e_1_3_2_31_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.celrep.2022.111300"
+  },
+  {
+   "key": "e_1_3_2_32_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-023-06800-3"
+  },
+  {
+   "key": "e_1_3_2_33_2",
+   "doi-asserted-by": "crossref",
+   "unstructured": "S. Bachas G. Rakocevic D. Spencer A. V. Sastry R. Haile J. M. Sutton G. Kasun A. Stachyra J. M. Gutierrez E. Yassine B. Medjo V. Blay C. Kohnert J. T. Stanton A. Brown N. Tijanic C. McCloskey R. Viazzo R. Consbruck H. Carter S. Levine S. Abdulhaqq J. Shaul A. B. Ventura R. S. Olson E. Yapici J. Meier S. McClain M. Weinstock G. Hannum A. Schwartz M. Gander R. Spreafico Antibody optimization enabled by artificial intelligence predictions of binding affinity and naturalness. bioRxiv 2022.08.16.504181 [Preprint] (2022); https://doi.org/10.1101/2022.08.16.504181.",
+   "DOI": "10.1101/2022.08.16.504181"
+  },
+  {
+   "key": "e_1_3_2_34_2",
+   "doi-asserted-by": "crossref",
+   "unstructured": "D. A. Constant J. M. Gutierrez A. V. Sastry R. Viazzo N. R. Smith J. Hossain D. A. Spencer H. Carter A. B. Ventura M. T. M. Louie C. Kohnert R. Consbruck J. Bennett K. A. Crawford J. M. Sutton A. Morrison A. K. Steiger K. A. Jackson J. T. Stanton S. Abdulhaqq G. Hannum J. Meier M. Weinstock M. Gander Deep learning-based codon optimization with large-scale synonymous variant datasets enables generalized tunable protein expression. bioRxiv 2023.02.11.528149 [Preprint] (2023); https://doi.org/10.1101/2023.02.11.528149.",
+   "DOI": "10.1101/2023.02.11.528149"
+  },
+  {
+   "key": "e_1_3_2_35_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1073/pnas.1908052116"
+  },
+  {
+   "key": "e_1_3_2_36_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.ymthe.2018.12.011"
+  },
+  {
+   "key": "e_1_3_2_37_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1073/pnas.1222534110"
+  },
+  {
+   "key": "e_1_3_2_38_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41598-019-42509-y"
+  },
+  {
+   "key": "e_1_3_2_39_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.molcel.2017.11.014"
+  },
+  {
+   "key": "e_1_3_2_40_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41587-022-01393-0"
+  },
+  {
+   "key": "e_1_3_2_41_2",
+   "unstructured": "Y. Liu J. Gao X. Zhang X. Fang Joint design of 5′ untranslated region and coding sequence of mRNA. arXiv:2410.20781 [q-bio.BM] (2024)."
+  },
+  {
+   "key": "e_1_3_2_42_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1101/gad.1968910"
+  },
+  {
+   "key": "e_1_3_2_43_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.tcb.2015.10.012"
+  },
+  {
+   "key": "e_1_3_2_44_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-018-05096-6"
+  },
+  {
+   "key": "e_1_3_2_45_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/cgt.2014.78"
+  },
+  {
+   "key": "e_1_3_2_46_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/scitranslmed.ado2084"
+  },
+  {
+   "key": "e_1_3_2_47_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.immuni.2005.06.008"
+  },
+  {
+   "key": "e_1_3_2_48_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nargab/lqac012"
+  },
+  {
+   "key": "e_1_3_2_49_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s42256-024-00823-9"
+  },
+  {
+   "key": "e_1_3_2_50_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s42256-024-00836-4"
+  },
+  {
+   "key": "e_1_3_2_51_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkab1049"
+  },
+  {
+   "key": "e_1_3_2_52_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkv1189"
+  },
+  {
+   "key": "e_1_3_2_53_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkac1016"
+  },
+  {
+   "key": "e_1_3_2_54_2",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Y. Kim Convolutional neural networks for sentence classification. arXiv:1408.5882 [cs.CL] (2014). 10.3115/v1/D14-1181",
+   "DOI": "10.3115/v1/D14-1181"
+  },
+  {
+   "key": "e_1_3_2_55_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41591-020-0995-0"
+  },
+  {
+   "key": "e_1_3_2_56_2",
+   "doi-asserted-by": "crossref",
+   "unstructured": "H. Zhang H. Liu Y. Xu H. Huang Y. Liu J. Wang Y. Qin H. Wang L. Ma Z. Xun X. Hou T. K. Lu J. Cao Deep generative models design mRNA sequences with enhanced translational capacity and stability. Zenodo (2025); https://doi.org/10.5281/zenodo.16395768.",
+   "DOI": "10.1126/science.adr8470"
+  },
+  {
+   "key": "e_1_3_2_57_2",
+   "unstructured": "A. Radford K. Narasimhan T. Salimans I. Sutskever Improving language understanding by generative pre-training (2018); https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf."
+  }
+ ],
+ "container-title": [
+  "Science"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.science.org/doi/pdf/10.1126/science.adr8470",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    11,
+    6
+   ]
+  ],
+  "date-time": "2025-11-06T19:03:52Z",
+  "timestamp": 1762455832000
+ },
+ "score": 58.469643,
+ "resource": {
+  "primary": {
+   "URL": "https://www.science.org/doi/10.1126/science.adr8470"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2025,
+    11,
+    6
+   ]
+  ]
+ },
+ "references-count": 56,
+ "journal-issue": {
+  "issue": "6773",
+  "published-print": {
+   "date-parts": [
+    [
+     2025,
+     11,
+     6
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1126/science.adr8470"
+ ],
+ "URL": "https://doi.org/10.1126/science.adr8470",
+ "relation": {
+  "has-preprint": [
+   {
+    "id-type": "doi",
+    "id": "10.1101/2024.06.20.599727",
+    "asserted-by": "object"
+   }
+  ]
+ },
+ "ISSN": [
+  "0036-8075",
+  "1095-9203"
+ ],
+ "issn-type": [
+  {
+   "value": "0036-8075",
+   "type": "print"
+  },
+  {
+   "value": "1095-9203",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2025,
+    11,
+    6
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "2024-07-18",
+   "order": 0,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  },
+  {
+   "value": "2025-03-04",
+   "order": 1,
+   "name": "revised",
+   "label": "Revised",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  },
+  {
+   "value": "2025-08-06",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  },
+  {
+   "value": "2025-11-06",
+   "order": 3,
+   "name": "published",
+   "label": "Published",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  }
+ ],
+ "article-number": "eadr8470"
+}

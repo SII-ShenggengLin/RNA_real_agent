@@ -1,14 +1,22 @@
 """Fig 5d — the Exp-28 mRNA secondary endpoint, disclosed (Experiment 31,
 §2.5; figure-only — data frozen by Exp 28).
 
-Single-view Δ-composite stacked dots (the fig2d/2f stacking convention):
-one dot per paired profile cell (n = 60 = 20 targets × 3 profiles),
-stacked above its Δ = composite(navigation) − composite(rule); colour
+Single-view Δ-batch-quality stacked dots (the fig2d/2f stacking
+convention): one dot per paired profile pair (n = 75 = 25 targets × 3
+profiles, the Exp-28 + Exp-40 pooled records), stacked above its
+Δ = batch_quality(navigation) − batch_quality(static condition); colour
 marks the sign of Δ — sage navigation-favouring, terracotta
-rule-favouring, grey blue tied (the Fig-5b direction semantics, defined
+static-favouring, grey blue tied (the Fig-5b direction semantics, defined
 in the Fig. 5d caption — no in-figure key).  The paired Wilcoxon result
 and the sign counts are annotated as one line in a reserved strip above
 the axes; the zero reference line is drawn at Δ = 0.
+
+2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch): the
+x-axis label aligned to the polished legend's term and the paper-wide
+condition name — "Δ composite (navigation − rule)" → "Δ batch quality
+(navigation − static condition)" (the Fig. 5d legend's "Batch quality of
+the delivered pairs"; "rule" retired); no number, colour or geometry
+changed.
 
 2026-09-08 figure-repair pass (user direction): the criteria bullet bars
 (gene-e2e conjunct 0.45 = 9/20 against the registered ≥ 0.8 legacy-era
@@ -25,9 +33,15 @@ misplaced in-figure titles went with them; the two gate dashes (0.8 and
 panel entirely, and the solid mean tick is dropped.  All text one 6-pt
 pure-black style.
 
+2026-10-06 follow-up (user-directed): the panel narrowed 89 → 45 mm to
+share the d|e|f group row (the fig4 "group" convention — no uniform
+column width) with the campaign panels; same day, the panel grew 35 →
+54 mm to match panel e's height, so the d|e|f row renders at one panel
+height; text unchanged at 6 pt, zero number changes.
+
 Style (the fig3/fig4/fig5a/5b house style): no in-figure title — the
 panel letter is added at assembly; colours exclusively from palette
-rev 7; absolute-mm geometry, single column; 1200-dpi PNG + vector PDF
+rev 7; absolute-mm geometry; 1200-dpi PNG + vector PDF
 (fonttype 42).
 
 Data  : experiments/results/exp31_fig5d_secondary/panel_data.json
@@ -58,7 +72,7 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 35.0
+W_MM, H_MM = 45.0, 54.0
 
 C_NAV = PALETTE_BY_NAME["sage_green"]      # navigation-favouring cells (Δ > 0)
 C_RULE = PALETTE_BY_NAME["terracotta"]     # rule-favouring cells (Δ < 0)
@@ -97,7 +111,7 @@ def main() -> int:
     comp = d["composite_delta"]
 
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI))
-    ax = fig.add_axes([0.05, 0.26, 0.90, 0.55])
+    ax = fig.add_axes([2.25 / W_MM, 9.1 / H_MM, 40.5 / W_MM, 40.0 / H_MM])
 
     ax.axvline(0, color=INK, lw=0.5, zorder=1)
     for value, count in stacked_dots(comp["deltas"]):
@@ -117,7 +131,7 @@ def main() -> int:
     ax.set_ylim(0, stack_max + 6)
     ax.set_xticks([-0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4])
     ax.set_yticks([])
-    ax.set_xlabel("Δ composite (navigation − rule)")
+    ax.set_xlabel("Δ batch quality (navigation − static condition)")
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.tick_params(length=1.6, width=0.5, pad=1.6)
 

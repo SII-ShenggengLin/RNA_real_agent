@@ -1,0 +1,902 @@
+{
+ "institution": [
+  {
+   "name": "bioRxiv"
+  }
+ ],
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T18:54:43Z",
+  "timestamp": 1791485683706,
+  "version": "4.3.4"
+ },
+ "posted": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    2
+   ]
+  ]
+ },
+ "group-title": "Bioinformatics",
+ "reference-count": 43,
+ "publisher": "openRxiv",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      6,
+      2
+     ]
+    ],
+    "date-time": "2025-06-02T00:00:00Z",
+    "timestamp": 1748822400000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "http://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "funder": [
+  {
+   "award": [
+    "Nos. OAC-1835598 (CINES)"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "Nos. OAC-1835598 (CINES)"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "https://ror.org/021nxhr62",
+     "id-type": "ROR",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "award": [
+    "CCF-1918940 (Expeditions)"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "CCF-1918940 (Expeditions)"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "https://ror.org/021nxhr62",
+     "id-type": "ROR",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "award": [
+    "DMS-2327709 (IHBEM)"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "DMS-2327709 (IHBEM)"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "https://ror.org/021nxhr62",
+     "id-type": "ROR",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "award": [
+    "IIS-2403318 (III)"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "IIS-2403318 (III)"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "https://ror.org/021nxhr62",
+     "id-type": "ROR",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "name": "Stanford Data Applications Initiative"
+  },
+  {
+   "DOI": "10.13039/100014373",
+   "name": "Wu Tsai Neurosciences Institute",
+   "doi-asserted-by": "crossref",
+   "id": [
+    {
+     "id": "10.13039/100014373",
+     "id-type": "DOI",
+     "asserted-by": "crossref"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100020670",
+   "name": "Stanford Institute for Human-Centered AI",
+   "doi-asserted-by": "crossref",
+   "id": [
+    {
+     "id": "10.13039/100020670",
+     "id-type": "DOI",
+     "asserted-by": "crossref"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100014989",
+   "name": "Chan Zuckerberg Initiative",
+   "doi-asserted-by": "crossref",
+   "id": [
+    {
+     "id": "10.13039/100014989",
+     "id-type": "DOI",
+     "asserted-by": "crossref"
+    }
+   ]
+  },
+  {
+   "name": "Amazon"
+  },
+  {
+   "name": "Genentech"
+  },
+  {
+   "name": "GSK"
+  },
+  {
+   "name": "Hitachi"
+  },
+  {
+   "name": "SAP"
+  },
+  {
+   "name": "UCB"
+  },
+  {
+   "name": "Stanford Bio-X fellowship"
+  },
+  {
+   "DOI": "10.13039/100000065",
+   "name": "National Institute of Neurological Disorders and Stroke",
+   "doi-asserted-by": "crossref",
+   "award": [
+    "U01NS134358"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "U01NS134358"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000065",
+     "id-type": "DOI",
+     "asserted-by": "crossref"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "accepted": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    2
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>\n                  Biomedical research underpins progress in our understanding of human health and disease, drug discovery, and clinical care. However, with the growth of complex lab experiments, large datasets, many analytical tools, and expansive literature, biomedical research is increasingly constrained by repetitive and fragmented workflows that slow discovery and limit innovation, underscoring the need for a fundamentally new way to scale scientific expertise. Here, we introduce Biomni, a general-purpose biomedical AI agent designed to autonomously execute a wide spectrum of research tasks across diverse biomedical subfields. To systematically map the biomedical action space, Biomni first employs an action discovery agent to create the first unified agentic environment – mining essential tools, databases, and protocols from tens of thousands of publications across 25 biomedical domains. Built on this foundation, Biomni features a generalist agentic architecture that integrates large language model (LLM) reasoning with retrieval-augmented planning and code-based execution, enabling it to dynamically compose and carry out complex biomedical workflows – entirely without relying on predefined templates or rigid task flows. Systematic benchmarking demonstrates that Biomni achieves strong generalization across heterogeneous biomedical tasks – including causal gene prioritization, drug repurposing, rare disease diagnosis, micro-biome analysis, and molecular cloning – without any task-specific prompt tuning. Real-world case studies further showcase Biomni’s ability to interpret complex, multi-modal biomedical datasets and autonomously generate experimentally testable protocols. Biomni envisions a future where virtual AI biologists operate alongside and augment human scientists to dramatically enhance research productivity, clinical insight, and healthcare. Biomni is ready to use at\n                  <jats:ext-link xmlns:xlink=\"http://www.w3.org/1999/xlink\" ext-link-type=\"uri\" xlink:href=\"https://biomni.stanford.edu\">https://biomni.stanford.edu</jats:ext-link>\n                  , and we invite scientists to explore its capabilities, stress-test its limits, and co-create the next era of biomedical discoveries.\n                </jats:p>",
+ "DOI": "10.1101/2025.05.30.656746",
+ "type": "posted-content",
+ "created": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    3
+   ]
+  ],
+  "date-time": "2025-06-03T02:10:22Z",
+  "timestamp": 1748916622000
+ },
+ "source": "Crossref",
+ "is-referenced-by-count": 152,
+ "title": [
+  "Biomni: A General-Purpose Biomedical AI Agent"
+ ],
+ "prefix": "10.64898",
+ "author": [
+  {
+   "given": "Kexin",
+   "family": "Huang",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Serena",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Hanchen",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    },
+    {
+     "name": "Research and Early Development, Genentech, South San Francisco, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yuanhao",
+   "family": "Qu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Pathology, Stanford University School of Medicine, Stanford, CA, USA"
+    },
+    {
+     "name": "Cancer Biology Program, Stanford University School of Medicine, Stanford, CA, USA"
+    },
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yingzhou",
+   "family": "Lu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yusuf",
+   "family": "Roohani",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    },
+    {
+     "name": "Arc Institute, Palo Alto, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ryan",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lin",
+   "family": "Qiu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Paul G. Allen School of Computer Science and Engineering, University of Washington, WA, US"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Gavin",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Junze",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Pathology, Stanford University School of Medicine, Stanford, CA, USA"
+    },
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Di",
+   "family": "Yin",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Pathology, Stanford University School of Medicine, Stanford, CA, USA"
+    },
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Shruti",
+   "family": "Marwaha",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Medicine, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jennefer N.",
+   "family": "Carter",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Medicine, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Xin",
+   "family": "Zhou",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Matthew",
+   "family": "Wheeler",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Medicine, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jonathan A.",
+   "family": "Bernstein",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Pediatrics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Mengdi",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Electrical and Computer Engineering, Princeton University, Princeton, NJ, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Peng",
+   "family": "He",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Pathology, University of California San Francisco, San Francisco, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jingtian",
+   "family": "Zhou",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Arc Institute, Palo Alto, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Michael",
+   "family": "Snyder",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Le",
+   "family": "Cong",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Pathology, Stanford University School of Medicine, Stanford, CA, USA"
+    },
+    {
+     "name": "Department of Genetics, Stanford University School of Medicine, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Aviv",
+   "family": "Regev",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research and Early Development, Genentech, South San Francisco, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jure",
+   "family": "Leskovec",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science, Stanford University School of Engineering, Stanford, CA, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "54368",
+ "reference": [
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.1231143"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/S41586-021-03819-2"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.3",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1056/NEJ-Moa2212948"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.4",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/J.CELL.2022.11.001"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.5",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-020-2314-9"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.6",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nprot.2009.203"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.7",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gibney, E. & Van Noorden, R . Scientists losing data at a rapid rate. Nature 10 (2013).",
+   "DOI": "10.1038/nature.2013.14416"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.8",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-023-06221-2"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.9",
+   "unstructured": "Ridnik, T. , Kredo, D. & Friedman, I . Code generation with alphacodium: From prompt engineering to flow engineering. arXiv preprint arXiv:2401.08500 (2024)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.10",
+   "unstructured": "Cui, J. , Li, Z. , Yan, Y. , Chen, B. & Yuan, L . Chatlaw: Open-source legal large language model with integrated external knowledge bases. CoRR (2023)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.11",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1021/acs.chemrev.4c00055"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.12",
+   "unstructured": "Peng, C. et al. A study of generative large language model for medical research and healthcare. NPJ digital medicine 6, 210 (2023)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.13",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Qu, Y. et al. Crispr-gpt: An llm agent for automated design of gene-editing experiments. bioRxiv 2024–04 (2024).",
+   "DOI": "10.1101/2024.04.25.591003"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.14",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Swanson, K. , Wu, W. , Bulaong, N. L. , Pak, J. E. & Zou, J . The virtual lab: Ai agents design new sars-cov-2 nanobodies with experimental validation. bioRxiv 2024–11 (2024).",
+   "DOI": "10.1101/2024.11.11.623004"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.15",
+   "unstructured": "Roohani, Y. , et al. Biodiscoveryagent: An ai agent for designing genetic perturbation experiments. International Conference on Learning Representations (2025)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.16",
+   "unstructured": "Wang, E. , et al. Txgemma: Efficient and agentic llms for therapeutics. arXiv preprint arXiv:2504.06196 (2025)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.17",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Xiao, Y. et al. Cellagent: An llm-driven multi-agent framework for automated single-cell data analysis. BioRxiv 2024–05 (2024).",
+   "DOI": "10.1101/2024.05.13.593861"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.18",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Youngblut, N. D. et al. scbasecamp: an ai agent-curated, uniformly processed, and continually expanding single cell data repository. bioRxiv 2025–02 (2025).",
+   "DOI": "10.1101/2025.02.27.640494"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.19",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Hu, M. et al. Evaluation of large language models for discovery of gene set function. Nature methods 1–10 (2024).",
+   "DOI": "10.1038/s41592-024-02525-x"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.20",
+   "first-page": "24824",
+   "article-title": "Chain-of-thought prompting elicits reasoning in large language models",
+   "volume": "35",
+   "year": "2022",
+   "journal-title": "Advances in neural information processing systems"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.21",
+   "unstructured": "Yao, S. , et al. React: Synergizing reasoning and acting in language models. In International Conference on Learning Representations (ICLR) (2023)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.22",
+   "unstructured": "Guo, D. , et al. Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning. arXiv preprint arXiv:2501.12948 (2025)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.23",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Phan, L. , et al. Humanity’s last exam. arXiv preprint arXiv:2501.14249 (2025).",
+   "DOI": "10.21203/rs.3.rs-6615297/v1"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.24",
+   "unstructured": "Laurent, J. M. , et al. Lab-bench: Measuring capabilities of language models for biology research. arXiv preprint arXiv:2407.10362 (2024)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.25",
+   "unstructured": "Narayanan, S. et al. Aviary: training language agents on challenging scientific tasks. arXiv preprint arXiv:2412.21154 (2024)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.26",
+   "unstructured": "Ghareeb, A. E. , et al. Robin: A multi-agent system for automating scientific discovery. arXiv preprint arXiv:2505.13400 (2025)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.27",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-024-08189-z"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.28",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gordon, J. A. et al. Pbx1 represses osteoblastogenesis by blocking hoxa10-mediated recruitment of chromatin remodeling factors. Molecular and cellular biology (2010).",
+   "DOI": "10.1128/MCB.00889-09"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.29",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00223-024-01265-6"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.30",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41598-024-69912-4"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.31",
+   "unstructured": "Wang, X. , et al. Executable code actions elicit better llm agents. In Forty-first International Conference on Machine Learning (2024)."
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.32",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/NAR/GKAA840"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.33",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Shringarpure, S. S. et al. Large language models identify causal genes in complex trait gwas. medRxiv 2024–05 (2024).",
+   "DOI": "10.1101/2024.05.30.24308179"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.34",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.abj4008"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.35",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Zhang, H. , Kang, Z. , Zhang, Y. , Yang, R. & Ning, K . Towards a generative paradigm for large-scale microbiome analysis by generative language model. bioRxiv 2025–01 (2025).",
+   "DOI": "10.1101/2025.01.15.633278"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.36",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nature07540"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.37",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pcbi.1004977"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.38",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gomez-Alvarez, V. & Revetta, R. P . Monitoring of nitrification in chloraminated drinking water distribution systems with microbiome bioindicators using supervised machine learning. Frontiers in Microbiology 11, 571009 (2020).",
+   "DOI": "10.3389/fmicb.2020.571009"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.39",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nature06244"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.40",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41591-024-03233-x"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.41",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Alsentzer, E. et al. Few shot learning for phenotype-driven diagnosis of patients with rare genetic diseases. medRxiv 2022–12 (2022).",
+   "DOI": "10.1101/2022.12.07.22283238"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.42",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Metwally, A. A. et al. Prediction of metabolic subphenotypes of type 2 diabetes via continuous glucose monitoring and machine learning. Nature Biomedical Engineering 1–18 (2024).",
+   "DOI": "10.1038/s41551-024-01311-6"
+  },
+  {
+   "key": "2026041200393684000_2025.05.30.656746v1.43",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1161/circ.150.suppl_1.4143199"
+  }
+ ],
+ "link": [
+  {
+   "URL": "https://syndication.highwire.org/content/doi/10.1101/2025.05.30.656746",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2026,
+    4,
+    12
+   ]
+  ],
+  "date-time": "2026-04-12T07:39:50Z",
+  "timestamp": 1775979590000
+ },
+ "score": 29.137482,
+ "resource": {
+  "primary": {
+   "URL": "http://biorxiv.org/lookup/doi/10.1101/2025.05.30.656746"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    2
+   ]
+  ]
+ },
+ "references-count": 43,
+ "URL": "https://doi.org/10.1101/2025.05.30.656746",
+ "published": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    2
+   ]
+  ]
+ },
+ "subtype": "preprint"
+}

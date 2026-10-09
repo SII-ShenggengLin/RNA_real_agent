@@ -2,17 +2,18 @@
 
 One tile per query condition: the two production gate layers reviewed the
 GEMORNA 5'UTR MRL oracle and the 3'UTR stability oracle across certified /
-never-profiled target families, and every verdict lands in exactly one
-column. DecisionGate (pre-action, ranking-objective requests): allow on all
-three Exp-14-certified families, downgrade (conservative transfer,
-confidence 1.0 -> 0.5) on the never-profiled family, require_profiling for
-the unprofiled 3'UTR oracle. ClaimGate (pre-publication, absolute-scope
-claims): pass / downgrade to within-target relative / reject. In-tile
-numbers are the SelfModel confidences (ClaimGate is rule-based and yields
-none, so its tiles stay blank); the right-hand single-line annotations carry
-the enforcement consequence (E1 executed with the predicted MRL reproducing
-the Exp-14 cache bit-exactly, E2 executed, E3 blocked as GatedActionError
-before any service call); column headers carry the per-column cell counts.
+unprofiled target families, and every verdict lands in exactly one column.
+DecisionGate (pre-action, ranking-objective requests): allow on all three
+certified families, downgrade (conservative transfer, confidence 1.0 -> 0.5)
+on the unprofiled family, require_profiling for the unprofiled 3'UTR oracle.
+ClaimGate (pre-publication, absolute-scope claims): pass / downgrade to
+same-target relative scope / reject. In-tile numbers are the capability-map
+confidences (ClaimGate is rule-based and yields none, so its tiles stay
+blank); the right-hand single-line annotations carry the enforcement
+consequence (E1 executed with the predicted MRL reproducing the
+certification cache bit-exactly, E2 executed, E3 blocked as
+GatedActionError before any service call); column headers carry the
+per-column cell counts.
 
 Colours (palette rev 7): sage = allow/pass, mauve grey = downgrade, sand =
 require-profiling, terracotta = reject (the fig2g gate-verdict convention);
@@ -78,22 +79,23 @@ COL_OF_VERDICT = {
 }
 ORACLE_ROTATED = {"mrl": "5′UTR MRL", "utr3": "3′UTR"}
 
-# cell, block, oracle, row label (family names follow the fig4g short-name
-# convention); the one-line annotation is built from the frozen cells below
+# cell, block, oracle, row label (the library names follow the Fig. 4a
+# panel; unprofiled is the polished-text term); the one-line annotation is
+# built from the frozen cells below
 ROWS = [
-    ("D1", "decision", "mrl", "certified · EGFP random-50"),
-    ("D2", "decision", "mrl", "certified · var-len random"),
-    ("D3", "decision", "mrl", "certified · var-len human"),
-    ("D4", "decision", "mrl", "never-profiled family"),
+    ("D1", "decision", "mrl", "certified · random 50-nt"),
+    ("D2", "decision", "mrl", "certified · varying-length random"),
+    ("D3", "decision", "mrl", "certified · varying-length human"),
+    ("D4", "decision", "mrl", "unprofiled family"),
     ("D5", "decision", "utr3", "certified family"),
-    ("D6", "decision", "utr3", "never-profiled family"),
+    ("D6", "decision", "utr3", "unprofiled family"),
     ("C1", "claim", "mrl", "5′UTR claim · certified"),
-    ("C2", "claim", "mrl", "5′UTR claim · never-profiled"),
-    ("C3", "claim", "utr3", "3′UTR claim · never-profiled"),
+    ("C2", "claim", "mrl", "5′UTR claim · unprofiled"),
+    ("C3", "claim", "utr3", "3′UTR claim · unprofiled"),
 ]
 
 KEY_ITEMS = [  # verdict legend, one centred row under the panel
-    (VERDICT_COLOR["allow"], "allow / pass"),
+    (VERDICT_COLOR["allow"], "allow · pass"),
     (VERDICT_COLOR["downgrade"], "downgrade"),
     (VERDICT_COLOR["require_profiling"], "require-profiling"),
     (VERDICT_COLOR["reject"], "reject"),
@@ -130,9 +132,9 @@ plt.rcParams.update({
 
 def annotation(cid: str, cells: dict) -> str:
     """One-line right-hand annotation; numbers come from the frozen cells."""
-    if cid == "D1":  # E1: allow executed, MRL bit-identical to the Exp-14 cache
-        return f"executed · MRL {cells['E1']['detail']['predicted_mrl']:g} = Exp-14"
-    if cid == "D4":  # E2: downgrade executed on the never-profiled family
+    if cid == "D1":  # E1: allow executed, MRL bit-identical to the certification cache
+        return f"executed · MRL {cells['E1']['detail']['predicted_mrl']:g} (as profiled)"
+    if cid == "D4":  # E2: downgrade executed on the unprofiled family
         return f"executed · MRL {cells['E2']['detail']['predicted_mrl']:g}"
     return {
         "D2": "not blocked",
@@ -140,7 +142,7 @@ def annotation(cid: str, cells: dict) -> str:
         "D5": "blocked pre-call",  # E3: GatedActionError before any service call
         "D6": "blocked pre-call",
         "C1": "absolute scope stands",
-        "C2": "scope → within-target relative",
+        "C2": "same-target relative scope",
         "C3": "no publishable basis",
     }[cid]
 
@@ -243,8 +245,8 @@ def main() -> int:
                      ha="center", va="center", rotation=90)
             i = j + 1
 
-    # rows: label, verdict tile (with SelfModel confidence where the gate
-    # reports one), one-line annotation
+    # rows: label, verdict tile (with capability-map confidence where the
+    # gate reports one), one-line annotation
     tiles = []        # verdict-tile bounds (x0, y0, x1, y1), mm
     conf_texts = []   # in-tile confidence labels (allowed inside a tile)
     for cid, _block, _oracle, label in ROWS:

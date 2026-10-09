@@ -1,0 +1,1389 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    14
+   ]
+  ],
+  "date-time": "2026-09-14T08:11:30Z",
+  "timestamp": 1789373490485,
+  "version": "build-2803163510"
+ },
+ "reference-count": 107,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "1",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2015,
+      11,
+      27
+     ]
+    ],
+    "date-time": "2015-11-27T00:00:00Z",
+    "timestamp": 1448582400000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Genome Biol"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2015,
+    12
+   ]
+  ]
+ },
+ "DOI": "10.1186/s13059-015-0823-x",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    23
+   ]
+  ],
+  "date-time": "2015-11-23T14:21:42Z",
+  "timestamp": 1448288502000
+ },
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 91,
+ "title": [
+  "Resources for the design of CRISPR gene editing experiments"
+ ],
+ "prefix": "10.1186",
+ "volume": "16",
+ "author": [
+  {
+   "given": "Daniel B.",
+   "family": "Graham",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David E.",
+   "family": "Root",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    27
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "issue": "6096",
+   "key": "823_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "816",
+   "DOI": "10.1126/science.1225829",
+   "volume": "337",
+   "author": "M Jinek",
+   "year": "2012",
+   "unstructured": "Jinek M, Chylinski K, Fonfara I, Hauer M, Doudna JA, Charpentier E. A programmable dual-RNA-guided DNA endonuclease in adaptive bacterial immunity. Science. 2012;337(6096):816–21. doi:\n                    10.1126/science.1225829\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "6121",
+   "key": "823_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "823",
+   "DOI": "10.1126/science.1232033",
+   "volume": "339",
+   "author": "P Mali",
+   "year": "2013",
+   "unstructured": "Mali P, Yang L, Esvelt KM, Aach J, Guell M, DiCarlo JE, et al. RNA-guided human genome engineering via Cas9. Science. 2013;339(6121):823–6. doi:\n                    10.1126/science.1232033\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "6121",
+   "key": "823_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "819",
+   "DOI": "10.1126/science.1231143",
+   "volume": "339",
+   "author": "L Cong",
+   "year": "2013",
+   "unstructured": "Cong L, Ran FA, Cox D, Lin S, Barretto R, Habib N, et al. Multiplex genome engineering using CRISPR/Cas systems. Science. 2013;339(6121):819–23. doi:\n                    10.1126/science.1231143\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "key": "823_CR4",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.7554/eLife.00471",
+   "volume": "2",
+   "author": "M Jinek",
+   "year": "2013",
+   "unstructured": "Jinek M, East A, Cheng A, Lin S, Ma E, Doudna J. RNA-programmed genome editing in human cells. eLife. 2013;2, e00471. doi:\n                    10.7554/eLife.00471\n                    \n                  .",
+   "journal-title": "eLife"
+  },
+  {
+   "issue": "6213",
+   "key": "823_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "1258096",
+   "DOI": "10.1126/science.1258096",
+   "volume": "346",
+   "author": "JA Doudna",
+   "year": "2014",
+   "unstructured": "Doudna JA, Charpentier E. Genome editing. The new frontier of genome engineering with CRISPR-Cas9. Science. 2014;346(6213):1258096. doi:\n                    10.1126/science.1258096\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "1262",
+   "DOI": "10.1016/j.cell.2014.05.010",
+   "volume": "157",
+   "author": "PD Hsu",
+   "year": "2014",
+   "unstructured": "Hsu PD, Lander ES, Zhang F. Development and applications of CRISPR-Cas9 for genome engineering. Cell. 2014;157(6):1262–78. doi:\n                    10.1016/j.cell.2014.05.010\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "347",
+   "DOI": "10.1038/nbt.2842",
+   "volume": "32",
+   "author": "JD Sander",
+   "year": "2014",
+   "unstructured": "Sander JD, Joung JK. CRISPR-Cas systems for editing, regulating and targeting genomes. Nat Biotechnol. 2014;32(4):347–55. doi:\n                    10.1038/nbt.2842\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "568",
+   "DOI": "10.1016/j.molcel.2015.02.032",
+   "volume": "58",
+   "author": "SH Sternberg",
+   "year": "2015",
+   "unstructured": "Sternberg SH, Doudna JA. Expanding the biologist's toolkit with CRISPR-Cas9. Mol Cell. 2015;58(4):568–74. doi:\n                    10.1016/j.molcel.2015.02.032\n                    \n                  .",
+   "journal-title": "Mol Cell"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "233",
+   "DOI": "10.1016/j.stem.2015.06.001",
+   "volume": "17",
+   "author": "Y Chen",
+   "year": "2015",
+   "unstructured": "Chen Y, Cao J, Xiong M, Petersen AJ, Dong Y, Tao Y, et al. Engineering human stem cell lines with inducible gene knockout using CRISPR/Cas9. Cell Stem Cell. 2015;17(2):233–44. doi:\n                    10.1016/j.stem.2015.06.001\n                    \n                  .",
+   "journal-title": "Cell Stem Cell"
+  },
+  {
+   "issue": "6166",
+   "key": "823_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "84",
+   "DOI": "10.1126/science.1247005",
+   "volume": "343",
+   "author": "O Shalem",
+   "year": "2014",
+   "unstructured": "Shalem O, Sanjana NE, Hartenian E, Shi X, Scott DA, Mikkelsen TS, et al. Genome-scale CRISPR-Cas9 knockout screening in human cells. Science. 2014;343(6166):84–7. doi:\n                    10.1126/science.1247005\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "6166",
+   "key": "823_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "80",
+   "DOI": "10.1126/science.1246981",
+   "volume": "343",
+   "author": "T Wang",
+   "year": "2014",
+   "unstructured": "Wang T, Wei JJ, Sabatini DM, Lander ES. Genetic screens in human cells using the CRISPR-Cas9 system. Science. 2014;343(6166):80–4. doi:\n                    10.1126/science.1246981\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "635",
+   "DOI": "10.1016/j.cell.2014.09.039",
+   "volume": "159",
+   "author": "ME Tanenbaum",
+   "year": "2014",
+   "unstructured": "Tanenbaum ME, Gilbert LA, Qi LS, Weissman JS, Vale RD. A protein-tagging system for signal amplification in gene expression and fluorescence imaging. Cell. 2014;159(3):635–46. doi:\n                    10.1016/j.cell.2014.09.039\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "7536",
+   "key": "823_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "583",
+   "DOI": "10.1038/nature14136",
+   "volume": "517",
+   "author": "S Konermann",
+   "year": "2015",
+   "unstructured": "Konermann S, Brigham MD, Trevino AE, Joung J, Abudayyeh OO, Barcena C, et al. Genome-scale transcriptional activation by an engineered CRISPR-Cas9 complex. Nature. 2015;517(7536):583–8. doi:\n                    10.1038/nature14136\n                    \n                  .",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "910",
+   "DOI": "10.1016/j.cell.2013.04.025",
+   "volume": "153",
+   "author": "H Wang",
+   "year": "2013",
+   "unstructured": "Wang H, Yang H, Shivalila CS, Dawlaty MM, Cheng AW, Zhang F, et al. One-step generation of mice carrying mutations in multiple genes by CRISPR/Cas-mediated genome engineering. Cell. 2013;153(4):910–8. doi:\n                    10.1016/j.cell.2013.04.025\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "1370",
+   "DOI": "10.1016/j.cell.2013.08.022",
+   "volume": "154",
+   "author": "H Yang",
+   "year": "2013",
+   "unstructured": "Yang H, Wang H, Shivalila CS, Cheng AW, Shi L, Jaenisch R. One-step generation of mice carrying reporter and conditional alleles by CRISPR/Cas-mediated genome engineering. Cell. 2013;154(6):1370–9. doi:\n                    10.1016/j.cell.2013.08.022\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "5",
+   "key": "823_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "299",
+   "DOI": "10.1038/nrg3899",
+   "volume": "16",
+   "author": "O Shalem",
+   "year": "2015",
+   "unstructured": "Shalem O, Sanjana NE, Zhang F. High-throughput functional genomics using CRISPR-Cas9. Nat Rev Genet. 2015;16(5):299–311. doi:\n                    10.1038/nrg3899\n                    \n                  .",
+   "journal-title": "Nat Rev Genet"
+  },
+  {
+   "issue": "5",
+   "key": "823_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "538",
+   "DOI": "10.1038/nbt.3190",
+   "volume": "33",
+   "author": "T Maruyama",
+   "year": "2015",
+   "unstructured": "Maruyama T, Dougan SK, Truttmann MC, Bilate AM, Ingram JR, Ploegh HL. Increasing the efficiency of precise genome editing with CRISPR-Cas9 by inhibition of nonhomologous end joining. Nat Biotechnol. 2015;33(5):538–42. doi:\n                    10.1038/nbt.3190\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "5",
+   "key": "823_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "543",
+   "DOI": "10.1038/nbt.3198",
+   "volume": "33",
+   "author": "VT Chu",
+   "year": "2015",
+   "unstructured": "Chu VT, Weber T, Wefers B, Wurst W, Sander S, Rajewsky K, et al. Increasing the efficiency of homology-directed repair for CRISPR-Cas9-induced precise gene editing in mammalian cells. Nat Biotechnol. 2015;33(5):543–8. doi:\n                    10.1038/nbt.3198\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "key": "823_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "113",
+   "DOI": "10.1146/annurev-genet-051710-150955",
+   "volume": "44",
+   "author": "WD Heyer",
+   "year": "2010",
+   "unstructured": "Heyer WD, Ehmsen KT, Liu J. Regulation of homologous recombination in eukaryotes. Annu Rev Genet. 2010;44:113–39. doi:\n                    10.1146/annurev-genet-051710-150955\n                    \n                  .",
+   "journal-title": "Annu Rev Genet"
+  },
+  {
+   "key": "823_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "181",
+   "DOI": "10.1146/annurev.biochem.052308.093131",
+   "volume": "79",
+   "author": "MR Lieber",
+   "year": "2010",
+   "unstructured": "Lieber MR. The mechanism of double-strand DNA break repair by the nonhomologous DNA end-joining pathway. Annu Rev Biochem. 2010;79:181–211. doi:\n                    10.1146/annurev.biochem.052308.093131\n                    \n                  .",
+   "journal-title": "Annu Rev Biochem"
+  },
+  {
+   "key": "823_CR21",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.7554/eLife.04766",
+   "volume": "3",
+   "author": "S Lin",
+   "year": "2014",
+   "unstructured": "Lin S, Staahl BT, Alla RK, Doudna JA. Enhanced homology-directed human genome engineering by controlled timing of CRISPR/Cas9 delivery. eLife. 2014;3, e04766. doi:\n                    10.7554/eLife.04766\n                    \n                  .",
+   "journal-title": "eLife"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "647",
+   "DOI": "10.1016/j.cell.2014.09.029",
+   "volume": "159",
+   "author": "LA Gilbert",
+   "year": "2014",
+   "unstructured": "Gilbert LA, Horlbeck MA, Adamson B, Villalta JE, Chen Y, Whitehead EH, et al. Genome-scale CRISPR-mediated control of gene repression and activation. Cell. 2014;159(3):647–61. doi:\n                    10.1016/j.cell.2014.09.029\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "442",
+   "DOI": "10.1016/j.cell.2013.06.044",
+   "volume": "154",
+   "author": "LA Gilbert",
+   "year": "2013",
+   "unstructured": "Gilbert LA, Larson MH, Morsut L, Liu Z, Brar GA, Torres SE, et al. CRISPR-mediated modular RNA-guided regulation of transcription in eukaryotes. Cell. 2013;154(2):442–51. doi:\n                    10.1016/j.cell.2013.06.044\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "5",
+   "key": "823_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "1173",
+   "DOI": "10.1016/j.cell.2013.02.022",
+   "volume": "152",
+   "author": "LS Qi",
+   "year": "2013",
+   "unstructured": "Qi LS, Larson MH, Gilbert LA, Doudna JA, Weissman JS, Arkin AP, et al. Repurposing CRISPR as an RNA-guided platform for sequence-specific control of gene expression. Cell. 2013;152(5):1173–83. doi:\n                    10.1016/j.cell.2013.02.022\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "11",
+   "key": "823_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "2180",
+   "DOI": "10.1038/nprot.2013.132",
+   "volume": "8",
+   "author": "MH Larson",
+   "year": "2013",
+   "unstructured": "Larson MH, Gilbert LA, Wang X, Lim WA, Weissman JS, Qi LS. CRISPR interference (CRISPRi) for sequence-specific control of gene expression. Nat Protocols. 2013;8(11):2180–96. doi:\n                    10.1038/nprot.2013.132\n                    \n                  .",
+   "journal-title": "Nat Protocols"
+  },
+  {
+   "issue": "10",
+   "key": "823_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "1163",
+   "DOI": "10.1038/cr.2013.122",
+   "volume": "23",
+   "author": "AW Cheng",
+   "year": "2013",
+   "unstructured": "Cheng AW, Wang H, Yang H, Shi L, Katz Y, Theunissen TW, et al. Multiplexed activation of endogenous genes by CRISPR-on, an RNA-guided transcriptional activator system. Cell Res. 2013;23(10):1163–71. doi:\n                    10.1038/cr.2013.122\n                    \n                  .",
+   "journal-title": "Cell Res"
+  },
+  {
+   "issue": "1",
+   "key": "823_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "219",
+   "DOI": "10.1242/dev.103341",
+   "volume": "141",
+   "author": "NA Kearns",
+   "year": "2014",
+   "unstructured": "Kearns NA, Genga RM, Enuameh MS, Garber M, Wolfe SA, Maehr R. Cas9 effector-mediated regulation of transcription and differentiation in human pluripotent stem cells. Development. 2014;141(1):219–23. doi:\n                    10.1242/dev.103341\n                    \n                  .",
+   "journal-title": "Development"
+  },
+  {
+   "issue": "1–2",
+   "key": "823_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "339",
+   "DOI": "10.1016/j.cell.2014.11.052",
+   "volume": "160",
+   "author": "JG Zalatan",
+   "year": "2015",
+   "unstructured": "Zalatan JG, Lee ME, Almeida R, Gilbert LA, Whitehead EH, La Russa M, et al. Engineering complex synthetic transcriptional programs with CRISPR RNA scaffolds. Cell. 2015;160(1–2):339–50. doi:\n                    10.1016/j.cell.2014.11.052\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "1",
+   "key": "823_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "73",
+   "DOI": "10.1038/nbt.3081",
+   "volume": "33",
+   "author": "JA Zuris",
+   "year": "2015",
+   "unstructured": "Zuris JA, Thompson DB, Shu Y, Guilinger JP, Bessen JL, Hu JH, et al. Cationic lipid-mediated delivery of proteins enables efficient protein-based genome editing in vitro and in vivo. Nat Biotechnol. 2015;33(1):73–80. doi:\n                    10.1038/nbt.3081\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "key": "823_CR30",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Hendel A, Bak RO, Clark JT, Kennedy AB, Ryan DE, Roy S, et al. Chemically modified guide RNAs enhance CRISPR-Cas genome editing in human primary cells. Nat Biotechnol. 2015. doi:\n                    10.1038/nbt.3290",
+   "DOI": "10.1038/nbt.3290"
+  },
+  {
+   "key": "823_CR31",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Schumann K, Lin S, Boyer E, Simeonov DR, Subramaniam M, Gate RE, et al. Generation of knock-in primary human T cells using Cas9 ribonucleoproteins. Proc Natl Acad Sci U S A 2015. doi:\n                    10.1073/pnas.1512503112\n                    \n                  .",
+   "DOI": "10.1073/pnas.1512503112"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "452",
+   "DOI": "10.1089/hum.2015.069",
+   "volume": "26",
+   "author": "L Li",
+   "year": "2015",
+   "unstructured": "Li L, He ZY, Wei XW, Gao GP, Wei YQ. Challenges in CRISPR/CAS9 delivery: potential roles of nonviral vectors. Hum Gene Ther. 2015;26(7):452–62. doi:\n                    10.1089/hum.2015.069\n                    \n                  .",
+   "journal-title": "Hum Gene Ther"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "409",
+   "DOI": "10.1089/hum.2015.29002.fzh",
+   "volume": "26",
+   "author": "F Zhang",
+   "year": "2015",
+   "unstructured": "Zhang F. CRISPR-Cas9: Prospects and challenges. Hum Gene Ther. 2015;26(7):409–10. doi:\n                    10.1089/hum.2015.29002.fzh\n                    \n                  .",
+   "journal-title": "Hum Gene Ther"
+  },
+  {
+   "issue": "13",
+   "key": "823_CR34",
+   "doi-asserted-by": "publisher",
+   "first-page": "6450",
+   "DOI": "10.1093/nar/gkv601",
+   "volume": "43",
+   "author": "DJ Truong",
+   "year": "2015",
+   "unstructured": "Truong DJ, Kuhner K, Kuhn R, Werfel S, Engelhardt S, Wurst W, et al. Development of an intein-mediated split-Cas9 system for gene therapy. Nucleic Acids Res. 2015;43(13):6450–8. doi:\n                    10.1093/nar/gkv601\n                    \n                  .",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "440",
+   "DOI": "10.1016/j.cell.2014.09.014",
+   "volume": "159",
+   "author": "RJ Platt",
+   "year": "2014",
+   "unstructured": "Platt RJ, Chen S, Zhou Y, Yim MJ, Swiech L, Kempton HR, et al. CRISPR-Cas9 knockin mice for genome editing and cancer modeling. Cell. 2014;159(2):440–55. doi:\n                    10.1016/j.cell.2014.09.014\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "14",
+   "key": "823_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "1576",
+   "DOI": "10.1101/gad.264861.115",
+   "volume": "29",
+   "author": "SH Chiou",
+   "year": "2015",
+   "unstructured": "Chiou SH, Winters IP, Wang J, Naranjo S, Dudgeon C, Tamburini FB, et al. Pancreatic cancer modeling using retrograde viral vector delivery and in vivo CRISPR/Cas9-mediated somatic genome editing. Genes Dev. 2015;29(14):1576–85. doi:\n                    10.1101/gad.264861.115\n                    \n                  .",
+   "journal-title": "Genes Dev"
+  },
+  {
+   "issue": "12",
+   "key": "823_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "1262",
+   "DOI": "10.1038/nbt.3026",
+   "volume": "32",
+   "author": "JG Doench",
+   "year": "2014",
+   "unstructured": "Doench JG, Hartenian E, Graham DB, Tothova Z, Hegde M, Smith I, et al. Rational design of highly active sgRNAs for CRISPR-Cas9-mediated gene inactivation. Nat Biotechnol. 2014;32(12):1262–7. doi:\n                    10.1038/nbt.3026\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "8",
+   "key": "823_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "783",
+   "DOI": "10.1038/nmeth.3047",
+   "volume": "11",
+   "author": "NE Sanjana",
+   "year": "2014",
+   "unstructured": "Sanjana NE, Shalem O, Zhang F. Improved vectors and genome-wide libraries for CRISPR screening. Nat Methods. 2014;11(8):783–4. doi:\n                    10.1038/nmeth.3047\n                    \n                  .",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "key": "823_CR39",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Kleinstiver BP, Prew MS, Tsai SQ, Topkar VV, Nguyen NT, Zheng Z, et al. Engineered CRISPR-Cas9 nucleases with altered PAM specificities. Nature. 2015. doi:\n                    10.1038/nature14592\n                    \n                  .",
+   "DOI": "10.1038/nature14592"
+  },
+  {
+   "issue": "7546",
+   "key": "823_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "186",
+   "DOI": "10.1038/nature14299",
+   "volume": "520",
+   "author": "FA Ran",
+   "year": "2015",
+   "unstructured": "Ran FA, Cong L, Yan WX, Scott DA, Gootenberg JS, Kriz AJ, et al. In vivo genome editing using Staphylococcus aureus Cas9. Nature. 2015;520(7546):186–91. doi:\n                    10.1038/nature14299\n                    \n                  .",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "22",
+   "key": "823_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "13778",
+   "DOI": "10.1093/nar/gku1102",
+   "volume": "42",
+   "author": "BX Fu",
+   "year": "2014",
+   "unstructured": "Fu BX, Hansen LL, Artiles KL, Nonet ML, Fire AZ. Landscape of target:guide homology effects on Cas9-mediated cleavage. Nucleic Acids Res. 2014;42(22):13778–87. doi:\n                    10.1093/nar/gku1102\n                    \n                  .",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "661",
+   "DOI": "10.1038/nbt.3235",
+   "volume": "33",
+   "author": "J Shi",
+   "year": "2015",
+   "unstructured": "Shi J, Wang E, Milazzo JP, Wang Z, Kinney JB, Vakoc CR. Discovery of cancer drug targets by CRISPR-Cas9 screening of protein domains. Nat Biotechnol. 2015;33(6):661–7. doi:\n                    10.1038/nbt.3235\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "key": "823_CR43",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Liu H, Wei Z, Dominguez A, Li Y, Wang X, Qi LS. CRISPR-ERA: a comprehensive design tool for CRISPR-mediated gene editing, repression and activation. Bioinformatics. 2015. doi:\n                    10.1093/bioinformatics/btv423\n                    \n                  .",
+   "DOI": "10.1093/bioinformatics/btv423"
+  },
+  {
+   "key": "823_CR44",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Xiao A, Cheng Z, Kong L, Zhu Z, Lin S, Gao G, et al. CasOT: a genome-wide Cas9/gRNA off-target searching tool. Bioinformatics. 2014. doi:\n                    10.1093/bioinformatics/btt764\n                    \n                  .",
+   "DOI": "10.1093/bioinformatics/btt764"
+  },
+  {
+   "key": "823_CR45",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Xie S, Shen B, Zhang C, Huang X, Zhang Y. sgRNAcas9: a software package for designing CRISPR sgRNA and evaluating potential off-target cleavage sites. PLoS One. 2014;9(6):e100448. doi:\n                    10.1371/journal.pone.0100448\n                    \n                  .",
+   "DOI": "10.1371/journal.pone.0100448"
+  },
+  {
+   "key": "823_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "742482",
+   "DOI": "10.1155/2014/742482",
+   "volume": "2014",
+   "author": "SK Upadhyay",
+   "year": "2014",
+   "unstructured": "Upadhyay SK, Sharma S. SSFinder: high throughput CRISPR-Cas target sites prediction tool. BioMed Res Int. 2014;2014:742482. doi:\n                    10.1155/2014/742482\n                    \n                  .",
+   "journal-title": "BioMed Res Int"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "122",
+   "DOI": "10.1038/nmeth.2812",
+   "volume": "11",
+   "author": "F Heigwer",
+   "year": "2014",
+   "unstructured": "Heigwer F, Kerr G, Boutros M. E-CRISP: fast CRISPR target site identification. Nat Methods. 2014;11(2):122–3. doi:\n                    10.1038/nmeth.2812\n                    \n                  .",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "issue": "9",
+   "key": "823_CR48",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0108424",
+   "volume": "9",
+   "author": "LJ Zhu",
+   "year": "2014",
+   "unstructured": "Zhu LJ, Holmes BR, Aronin N, Brodsky MH. CRISPRseek: a bioconductor package to identify target-specific guide RNAs for CRISPR-Cas9 genome-editing systems. PLoS One. 2014;9(9), e108424. doi:\n                    10.1371/journal.pone.0108424\n                    \n                  .",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "823_CR49",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Montague TG, Cruz JM, Gagnon JA, Church GM, Valen E. CHOPCHOP: a CRISPR/Cas9 and TALEN web tool for genome editing. Nucleic Acids Res. 2014;42(Web Server issue):W401–7. doi:\n                    10.1093/nar/gku410\n                    \n                  .",
+   "DOI": "10.1093/nar/gku410"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR50",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0119372",
+   "volume": "10",
+   "author": "SV Prykhozhij",
+   "year": "2015",
+   "unstructured": "Prykhozhij SV, Rajan V, Gaston D, Berman JN. CRISPR multitargeter: a web tool to find common and unique CRISPR single guide RNA targets in a set of similar sequences. PLoS One. 2015;10(3), e0119372. doi:\n                    10.1371/journal.pone.0119372\n                    \n                  .",
+   "journal-title": "PLoS One"
+  },
+  {
+   "issue": "8",
+   "key": "823_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "805",
+   "DOI": "10.1038/nbt.3291",
+   "volume": "33",
+   "author": "CR MacPherson",
+   "year": "2015",
+   "unstructured": "MacPherson CR, Scherf A. Flexible guide-RNA design for CRISPR applications using Protospacer Workbench. Nat Biotechnol. 2015;33(8):805–6. doi:\n                    10.1038/nbt.3291\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "237",
+   "DOI": "10.1038/nmeth.3284",
+   "volume": "12",
+   "author": "D Kim",
+   "year": "2015",
+   "unstructured": "Kim D, Bae S, Park J, Kim E, Kim S, Yu HR, et al. Digenome-seq: genome-wide profiling of CRISPR-Cas9 off-target effects in human cells. Nat Methods. 2015;12(3):237–43. 1 p following 43. doi:\n                    10.1038/nmeth.3284\n                    \n                  .",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "key": "823_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "5507",
+   "DOI": "10.1038/ncomms6507",
+   "volume": "5",
+   "author": "L Yang",
+   "year": "2014",
+   "unstructured": "Yang L, Grishin D, Wang G, Aach J, Zhang CZ, Chari R, et al. Targeted and genome-wide sequencing reveal single nucleotide variations impacting specificity of Cas9 in human stem cells. Nat Commun. 2014;5:5507. doi:\n                    10.1038/ncomms6507\n                    \n                  .",
+   "journal-title": "Nat Commun"
+  },
+  {
+   "key": "823_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "56",
+   "DOI": "10.1016/j.jbiotec.2015.06.427",
+   "volume": "211",
+   "author": "EM Anderson",
+   "year": "2015",
+   "unstructured": "Anderson EM, Haupt A, Schiel JA, Chou E, Machado HB, Strezoska Z, et al. Systematic analysis of CRISPR-Cas9 mismatch tolerance reveals low levels of off-target activity. J Biotechnol. 2015;211:56–65. doi:\n                    10.1016/j.jbiotec.2015.06.427\n                    \n                  .",
+   "journal-title": "J Biotechnol"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "670",
+   "DOI": "10.1038/nbt.2889",
+   "volume": "32",
+   "author": "X Wu",
+   "year": "2014",
+   "unstructured": "Wu X, Scott DA, Kriz AJ, Chiu AC, Hsu PD, Dadon DB, et al. Genome-wide binding of the CRISPR endonuclease Cas9 in mammalian cells. Nat Biotechnol. 2014;32(7):670–6. doi:\n                    10.1038/nbt.2889\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR56",
+   "doi-asserted-by": "publisher",
+   "first-page": "677",
+   "DOI": "10.1038/nbt.2916",
+   "volume": "32",
+   "author": "C Kuscu",
+   "year": "2014",
+   "unstructured": "Kuscu C, Arslan S, Singh R, Thorpe J, Adli M. Genome-wide analysis reveals characteristics of off-target sites bound by the Cas9 endonuclease. Nat Biotechnol. 2014;32(7):677–83. doi:\n                    10.1038/nbt.2916\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "3389",
+   "DOI": "10.1093/nar/gkv137",
+   "volume": "43",
+   "author": "H O'Geen",
+   "year": "2015",
+   "unstructured": "O'Geen H, Henry IM, Bhakta MS, Meckler JF, Segal DJ. A genome-wide analysis of Cas9 binding specificity using ChIP-seq and targeted sequence capture. Nucleic Acids Res. 2015;43(6):3389–404. doi:\n                    10.1093/nar/gkv137\n                    \n                  .",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "823_CR58",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Singh R, Kuscu C, Quinlan A, Qi Y, Adli M. Cas9-chromatin binding information enables more accurate CRISPR off-target prediction. Nucleic Acids Res. 2015. doi:\n                    10.1093/nar/gkv575\n                    \n                  .",
+   "DOI": "10.1093/nar/gkv575"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR59",
+   "doi-asserted-by": "publisher",
+   "first-page": "187",
+   "DOI": "10.1038/nbt.3117",
+   "volume": "33",
+   "author": "SQ Tsai",
+   "year": "2015",
+   "unstructured": "Tsai SQ, Zheng Z, Nguyen NT, Liebers M, Topkar VV, Thapar V, et al. GUIDE-seq enables genome-wide profiling of off-target cleavage by CRISPR-Cas nucleases. Nat Biotechnol. 2015;33(2):187–97. doi:\n                    10.1038/nbt.3117\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR60",
+   "doi-asserted-by": "publisher",
+   "first-page": "179",
+   "DOI": "10.1038/nbt.3101",
+   "volume": "33",
+   "author": "RL Frock",
+   "year": "2015",
+   "unstructured": "Frock RL, Hu J, Meyers RM, Ho YJ, Kii E, Alt FW. Genome-wide detection of DNA double-stranded breaks induced by engineered nucleases. Nat Biotechnol. 2015;33(2):179–86. doi:\n                    10.1038/nbt.3101\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "key": "823_CR61",
+   "doi-asserted-by": "publisher",
+   "first-page": "12327",
+   "DOI": "10.1038/srep12327",
+   "volume": "5",
+   "author": "M Paulis",
+   "year": "2015",
+   "unstructured": "Paulis M, Castelli A, Lizier M, Susani L, Lucchini F, Villa A, et al. A pre-screening FISH-based method to detect CRISPR/Cas9 off-targets in mouse embryonic stem cells. Sci Rep. 2015;5:12327. doi:\n                    10.1038/srep12327\n                    \n                  .",
+   "journal-title": "Sci Rep"
+  },
+  {
+   "key": "823_CR62",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Chari R, Mali P, Moosburner M, Church GM. Unraveling CRISPR-Cas9 genome engineering parameters via a library-on-library approach. Nat Methods. 2015. doi:\n                    10.1038/nmeth.3473",
+   "DOI": "10.1038/nmeth.3473"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR63",
+   "doi-asserted-by": "publisher",
+   "first-page": "479",
+   "DOI": "10.1038/nmeth.3408",
+   "volume": "12",
+   "author": "V Iyer",
+   "year": "2015",
+   "unstructured": "Iyer V, Shen B, Zhang W, Hodgkins A, Keane T, Huang X, et al. Off-target mutations are rare in Cas9-modified mice. Nat Methods. 2015;12(6):479. doi:\n                    10.1038/nmeth.3408\n                    \n                  .",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR64",
+   "doi-asserted-by": "publisher",
+   "first-page": "475",
+   "DOI": "10.14348/molcells.2015.0103",
+   "volume": "38",
+   "author": "T Koo",
+   "year": "2015",
+   "unstructured": "Koo T, Lee J, Kim JS. Measuring and reducing off-target activities of programmable nucleases including CRISPR-Cas9. Mol Cells. 2015;38(6):475–81. doi:\n                    10.14348/molcells.2015.0103\n                    \n                  .",
+   "journal-title": "Mol Cells"
+  },
+  {
+   "issue": "9",
+   "key": "823_CR65",
+   "doi-asserted-by": "publisher",
+   "first-page": "827",
+   "DOI": "10.1038/nbt.2647",
+   "volume": "31",
+   "author": "PD Hsu",
+   "year": "2013",
+   "unstructured": "Hsu PD, Scott DA, Weinstein JA, Ran FA, Konermann S, Agarwala V, et al. DNA targeting specificity of RNA-guided Cas9 nucleases. Nat Biotechnol. 2013;31(9):827–32. doi:\n                    10.1038/nbt.2647\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "key": "823_CR66",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Doench JG FN, Sullender M, Hegde M, Vaimberg EW, Donovan KF, Smith I, Tothova Z, Wilen C, Orchard R, Virgin HW, Listgarten J, Root DE. Optimized sgRNA design to maximize activity and minimize off-target effects for genetic screens with CRISPR-Cas9. Nat Biotechnol. 2015;in press.",
+   "DOI": "10.1038/nbt.3437"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR67",
+   "doi-asserted-by": "publisher",
+   "first-page": "175",
+   "DOI": "10.1038/nbt.3127",
+   "volume": "33",
+   "author": "X Wang",
+   "year": "2015",
+   "unstructured": "Wang X, Wang Y, Wu X, Wang J, Wang Y, Qiu Z, et al. Unbiased detection of off-target cleavage by CRISPR-Cas9 and TALENs using integrase-defective lentiviral vectors. Nat Biotechnol. 2015;33(2):175–8. doi:\n                    10.1038/nbt.3127\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR68",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0124633",
+   "volume": "10",
+   "author": "M Stemmer",
+   "year": "2015",
+   "unstructured": "Stemmer M, Thumberger T, Del Sol KM, Wittbrodt J, Mateo JL. CCTop: an intuitive, flexible and reliable CRISPR/Cas9 target prediction tool. PLoS One. 2015;10(4), e0124633. doi:\n                    10.1371/journal.pone.0124633\n                    \n                  .",
+   "journal-title": "PLoS One"
+  },
+  {
+   "issue": "18",
+   "key": "823_CR69",
+   "doi-asserted-by": "publisher",
+   "first-page": "2673",
+   "DOI": "10.1093/bioinformatics/btu354",
+   "volume": "30",
+   "author": "A O'Brien",
+   "year": "2014",
+   "unstructured": "O'Brien A, Bailey TL. GT-Scan: identifying unique genomic targets. Bioinformatics. 2014;30(18):2673–5. doi:\n                    10.1093/bioinformatics/btu354\n                    \n                  .",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "issue": "22",
+   "key": "823_CR70",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku936",
+   "volume": "42",
+   "author": "EK Brinkman",
+   "year": "2014",
+   "unstructured": "Brinkman EK, Chen T, Amendola M, van Steensel B. Easy quantitative assessment of genome editing by sequence trace decomposition. Nucleic Acids Res. 2014;42(22), e168. doi:\n                    10.1093/nar/gku936\n                    \n                  .",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR71",
+   "doi-asserted-by": "publisher",
+   "first-page": "1380",
+   "DOI": "10.1016/j.cell.2013.08.021",
+   "volume": "154",
+   "author": "FA Ran",
+   "year": "2013",
+   "unstructured": "Ran FA, Hsu PD, Lin CY, Gootenberg JS, Konermann S, Trevino AE, et al. Double nicking by RNA-guided CRISPR Cas9 for enhanced genome editing specificity. Cell. 2013;154(6):1380–9. doi:\n                    10.1016/j.cell.2013.08.021\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR72",
+   "doi-asserted-by": "publisher",
+   "first-page": "569",
+   "DOI": "10.1038/nbt.2908",
+   "volume": "32",
+   "author": "SQ Tsai",
+   "year": "2014",
+   "unstructured": "Tsai SQ, Wyvekens N, Khayter C, Foden JA, Thapar V, Reyon D, et al. Dimeric CRISPR RNA-guided FokI nucleases for highly specific genome editing. Nat Biotechnol. 2014;32(6):569–76. doi:\n                    10.1038/nbt.2908\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR73",
+   "doi-asserted-by": "publisher",
+   "first-page": "59",
+   "DOI": "10.1007/s40484-014-0030-x",
+   "volume": "2",
+   "author": "X Wu",
+   "year": "2014",
+   "unstructured": "Wu X, Kriz AJ, Sharp PA. Target specificity of the CRISPR-Cas9 system. Quant Biol. 2014;2(2):59–70. doi:\n                    10.1007/s40484-014-0030-x\n                    \n                  .",
+   "journal-title": "Quant Biol"
+  },
+  {
+   "key": "823_CR74",
+   "doi-asserted-by": "publisher",
+   "first-page": "7838",
+   "DOI": "10.1038/ncomms8838",
+   "volume": "6",
+   "author": "DB Graham",
+   "year": "2015",
+   "unstructured": "Graham DB, Becker CE, Doan A, Goel G, Villablanca EJ, Knights D, et al. Functional genomics identifies negative regulatory nodes controlling phagocyte oxidative burst. Nat Commun. 2015;6:7838. doi:\n                    10.1038/ncomms8838\n                    \n                  .",
+   "journal-title": "Nat Commun"
+  },
+  {
+   "issue": "5",
+   "key": "823_CR75",
+   "doi-asserted-by": "publisher",
+   "first-page": "510",
+   "DOI": "10.1016/j.chom.2013.10.011",
+   "volume": "14",
+   "author": "S Sanyal",
+   "year": "2013",
+   "unstructured": "Sanyal S, Ashour J, Maruyama T, Altenburg AF, Cragnolini JJ, Bilate A, et al. Type I interferon imposes a TSG101/ISG15 checkpoint at the Golgi for glycoprotein trafficking during influenza virus infection. Cell Host Microbe. 2013;14(5):510–21. doi:\n                    10.1016/j.chom.2013.10.011\n                    \n                  .",
+   "journal-title": "Cell Host Microbe"
+  },
+  {
+   "key": "823_CR76",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Parnas O, Jovanovic M, Eisenhaure TM, Herbst RH, Dixit A, Ye CJ, et al. A genome-wide CRISPR screen in primary immune cells to dissect regulatory networks. Cell. 2015. doi:\n                    10.1016/j.cell.2015.06.059\n                    \n                  .",
+   "DOI": "10.1016/j.cell.2015.06.059"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR77",
+   "doi-asserted-by": "publisher",
+   "first-page": "267",
+   "DOI": "10.1038/nbt.2800",
+   "volume": "32",
+   "author": "H Koike-Yusa",
+   "year": "2014",
+   "unstructured": "Koike-Yusa H, Li Y, Tan EP, Velasco-Herrera Mdel C, Yusa K. Genome-wide recessive genetic screening in mammalian cells with a lentiviral CRISPR-guide RNA library. Nat Biotechnol. 2014;32(3):267–73. doi:\n                    10.1038/nbt.2800\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "7501",
+   "key": "823_CR78",
+   "doi-asserted-by": "publisher",
+   "first-page": "487",
+   "DOI": "10.1038/nature13166",
+   "volume": "509",
+   "author": "Y Zhou",
+   "year": "2014",
+   "unstructured": "Zhou Y, Zhu S, Cai C, Yuan P, Li C, Huang Y, et al. High-throughput screening of a CRISPR/Cas9 library for functional genomics in human cells. Nature. 2014;509(7501):487–91. doi:\n                    10.1038/nature13166\n                    \n                  .",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR79",
+   "doi-asserted-by": "publisher",
+   "first-page": "540",
+   "DOI": "10.1016/j.cell.2015.07.016",
+   "volume": "162",
+   "author": "K Birsoy",
+   "year": "2015",
+   "unstructured": "Birsoy K, Wang T, Chen WW, Freinkman E, Abu-Remaileh M, Sabatini DM. An essential role of the mitochondrial electron transport chain in cell proliferation is to enable aspartate synthesis. Cell. 2015;162(3):540–51. doi:\n                    10.1016/j.cell.2015.07.016\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR80",
+   "doi-asserted-by": "publisher",
+   "first-page": "673",
+   "DOI": "10.1016/j.celrep.2015.06.049",
+   "volume": "12",
+   "author": "H Ma",
+   "year": "2015",
+   "unstructured": "Ma H, Dang Y, Wu Y, Jia G, Anaya E, Zhang J, et al. A CRISPR-based screen identifies genes essential for West-Nile-virus-induced cell death. Cell Rep. 2015;12(4):673–83. doi:\n                    10.1016/j.celrep.2015.06.049\n                    \n                  .",
+   "journal-title": "Cell Rep"
+  },
+  {
+   "issue": "1",
+   "key": "823_CR81",
+   "doi-asserted-by": "publisher",
+   "first-page": "53",
+   "DOI": "10.1186/s13073-015-0178-7",
+   "volume": "7",
+   "author": "H Mou",
+   "year": "2015",
+   "unstructured": "Mou H, Kennedy Z, Anderson DG, Yin H, Xue W. Precision cancer mouse models through genome editing with CRISPR-Cas9. Genome Med. 2015;7(1):53. doi:\n                    10.1186/s13073-015-0178-7\n                    \n                  .",
+   "journal-title": "Genome Med"
+  },
+  {
+   "issue": "9",
+   "key": "823_CR82",
+   "doi-asserted-by": "publisher",
+   "first-page": "941",
+   "DOI": "10.1038/nbt.2951",
+   "volume": "32",
+   "author": "D Heckl",
+   "year": "2014",
+   "unstructured": "Heckl D, Kowalczyk MS, Yudovich D, Belizaire R, Puram RV, McConkey ME, et al. Generation of mouse models of myeloid malignancy with combinatorial genetic lesions using CRISPR-Cas9 genome editing. Nat Biotechnol. 2014;32(9):941–6. doi:\n                    10.1038/nbt.2951\n                    \n                  .",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "issue": "7486",
+   "key": "823_CR83",
+   "doi-asserted-by": "publisher",
+   "first-page": "52",
+   "DOI": "10.1038/nature12988",
+   "volume": "506",
+   "author": "P Zhou",
+   "year": "2014",
+   "unstructured": "Zhou P, Shaffer DR, Alvarez Arias DA, Nakazaki Y, Pos W, Torres AJ, et al. In vivo discovery of immunotherapy targets in the tumour microenvironment. Nature. 2014;506(7486):52–7. doi:\n                    10.1038/nature12988\n                    \n                  .",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "1",
+   "key": "823_CR84",
+   "doi-asserted-by": "publisher",
+   "first-page": "268",
+   "DOI": "10.1073/pnas.1417231112",
+   "volume": "112",
+   "author": "R Shema",
+   "year": "2015",
+   "unstructured": "Shema R, Kulicke R, Cowley GS, Stein R, Root DE, Heiman M. Synthetic lethal screening in the mammalian central nervous system identifies Gpx6 as a modulator of Huntington's disease. Proc Natl Acad Sci U S A. 2015;112(1):268–72. doi:\n                    10.1073/pnas.1417231112\n                    \n                  .",
+   "journal-title": "Proc Natl Acad Sci U S A"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR85",
+   "doi-asserted-by": "publisher",
+   "first-page": "1035",
+   "DOI": "10.1534/genetics.115.178335",
+   "volume": "200",
+   "author": "DJ Dickinson",
+   "year": "2015",
+   "unstructured": "Dickinson DJ, Pani AM, Heppert JK, Higgins CD, Goldstein B. Streamlined genome engineering with a self-excising drug selection cassette. Genetics. 2015;200(4):1035–49. doi:\n                    10.1534/genetics.115.178335\n                    \n                  .",
+   "journal-title": "Genetics"
+  },
+  {
+   "issue": "6233",
+   "key": "823_CR86",
+   "doi-asserted-by": "publisher",
+   "first-page": "442",
+   "DOI": "10.1126/science.aaa5945",
+   "volume": "348",
+   "author": "VM Gantz",
+   "year": "2015",
+   "unstructured": "Gantz VM, Bier E. Genome editing. The mutagenic chain reaction: a method for converting heterozygous to homozygous mutations. Science. 2015;348(6233):442–4. doi:\n                    10.1126/science.aaa5945\n                    \n                  .",
+   "journal-title": "Science"
+  },
+  {
+   "key": "823_CR87",
+   "doi-asserted-by": "publisher",
+   "first-page": "5560",
+   "DOI": "10.1038/ncomms6560",
+   "volume": "5",
+   "author": "S Nakade",
+   "year": "2014",
+   "unstructured": "Nakade S, Tsubota T, Sakane Y, Kume S, Sakamoto N, Obara M, et al. Microhomology-mediated end-joining-dependent integration of donor DNA in cells and animals using TALENs and CRISPR/Cas9. Nat Commun. 2014;5:5560. doi:\n                    10.1038/ncomms6560\n                    \n                  .",
+   "journal-title": "Nat Commun"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR88",
+   "doi-asserted-by": "publisher",
+   "first-page": "705",
+   "DOI": "10.1038/nmeth.3015",
+   "volume": "11",
+   "author": "S Bae",
+   "year": "2014",
+   "unstructured": "Bae S, Kweon J, Kim HS, Kim JS. Microhomology-based choice of Cas9 nuclease target sites. Nat Methods. 2014;11(7):705–6. doi:\n                    10.1038/nmeth.3015\n                    \n                  .",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "issue": "3",
+   "key": "823_CR89",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1246",
+   "volume": "43",
+   "author": "SM Byrne",
+   "year": "2015",
+   "unstructured": "Byrne SM, Ortiz L, Mali P, Aach J, Church GM. Multi-kilobase homozygous targeted gene replacement in human induced pluripotent stem cells. Nucleic Acids Res. 2015;43(3), e21. doi:\n                    10.1093/nar/gku1246\n                    \n                  .",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR90",
+   "doi-asserted-by": "publisher",
+   "first-page": "142",
+   "DOI": "10.1016/j.stem.2015.01.003",
+   "volume": "16",
+   "author": "C Yu",
+   "year": "2015",
+   "unstructured": "Yu C, Liu Y, Ma T, Liu K, Xu S, Zhang Y, et al. Small molecules enhance CRISPR genome editing in pluripotent stem cells. Cell Stem Cell. 2015;16(2):142–7. doi:\n                    10.1016/j.stem.2015.01.003\n                    \n                  .",
+   "journal-title": "Cell Stem Cell"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR91",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0129308",
+   "volume": "10",
+   "author": "P Bialk",
+   "year": "2015",
+   "unstructured": "Bialk P, Rivera-Torres N, Strouse B, Kmiec EB. Regulation of gene editing activity directed by single-stranded oligonucleotides and CRISPR/Cas9 systems. PLoS One. 2015;10(6), e0129308. doi:\n                    10.1371/journal.pone.0129308\n                    \n                  .",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "823_CR92",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Katic I, Xu L, Ciosk R. CRISPR/Cas9 genome editing in Caenorhabditis elegans: evaluation of templates for homology-mediated repair and knock-ins by homology-independent DNA repair. G3. 2015;5(8):1649–56. doi:\n                    10.1534/g3.115.019273\n                    \n                  .",
+   "DOI": "10.1534/g3.115.019273"
+  },
+  {
+   "issue": "1",
+   "key": "823_CR93",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0116484",
+   "volume": "10",
+   "author": "BA Parikh",
+   "year": "2015",
+   "unstructured": "Parikh BA, Beckman DL, Patel SJ, White JM, Yokoyama WM. Detailed phenotypic and molecular analyses of genetically modified mice generated by CRISPR-Cas9-mediated editing. PLoS One. 2015;10(1), e0116484. doi:\n                    10.1371/journal.pone.0116484\n                    \n                  .",
+   "journal-title": "PLoS One"
+  },
+  {
+   "issue": "4",
+   "key": "823_CR94",
+   "doi-asserted-by": "publisher",
+   "first-page": "914",
+   "DOI": "10.1016/j.cell.2013.07.018",
+   "volume": "154",
+   "author": "W Akhtar",
+   "year": "2013",
+   "unstructured": "Akhtar W, de Jong J, Pindyurin AV, Pagie L, Meuleman W, de Ridder J, et al. Chromatin position effects assayed by thousands of reporters integrated in parallel. Cell. 2013;154(4):914–27. doi:\n                    10.1016/j.cell.2013.07.018\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "2",
+   "key": "823_CR95",
+   "doi-asserted-by": "publisher",
+   "first-page": "221",
+   "DOI": "10.1016/j.stem.2015.06.005",
+   "volume": "17",
+   "author": "C Zhong",
+   "year": "2015",
+   "unstructured": "Zhong C, Yin Q, Xie Z, Bai M, Dong R, Tang W, et al. CRISPR-Cas9-mediated genetic screening in mice with haploid embryonic stem cells carrying a guide RNA library. Cell Stem Cell. 2015;17(2):221–32. doi:\n                    10.1016/j.stem.2015.06.005\n                    \n                  .",
+   "journal-title": "Cell Stem Cell"
+  },
+  {
+   "key": "823_CR96",
+   "doi-asserted-by": "publisher",
+   "first-page": "11406",
+   "DOI": "10.1038/srep11406",
+   "volume": "5",
+   "author": "G Takahashi",
+   "year": "2015",
+   "unstructured": "Takahashi G, Gurumurthy CB, Wada K, Miura H, Sato M, Ohtsuka M. GONAD: Genome-editing via Oviductal Nucleic Acids Delivery system: a novel microinjection independent genome engineering method in mice. Sci Rep. 2015;5:11406. doi:\n                    10.1038/srep11406\n                    \n                  .",
+   "journal-title": "Sci Rep"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR97",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0129457",
+   "volume": "10",
+   "author": "D Oliver",
+   "year": "2015",
+   "unstructured": "Oliver D, Yuan S, McSwiggin H, Yan W. Pervasive genotypic mosaicism in founder mice derived from genome editing through pronuclear injection. PLoS One. 2015;10(6), e0129457. doi:\n                    10.1371/journal.pone.0129457\n                    \n                  .",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "823_CR98",
+   "doi-asserted-by": "publisher",
+   "first-page": "12281",
+   "DOI": "10.1038/srep12281",
+   "volume": "5",
+   "author": "R Ono",
+   "year": "2015",
+   "unstructured": "Ono R, Ishii M, Fujihara Y, Kitazawa M, Usami T, Kaneko-Ishino T, et al. Double strand break repair by capture of retrotransposon sequences and reverse-transcribed spliced mRNA sequences in mouse zygotes. Sci Rep. 2015;5:12281. doi:\n                    10.1038/srep12281\n                    \n                  .",
+   "journal-title": "Sci Rep"
+  },
+  {
+   "issue": "6",
+   "key": "823_CR99",
+   "doi-asserted-by": "publisher",
+   "first-page": "1246",
+   "DOI": "10.1016/j.cell.2015.02.038",
+   "volume": "160",
+   "author": "S Chen",
+   "year": "2015",
+   "unstructured": "Chen S, Sanjana NE, Zheng K, Shalem O, Lee K, Shi X, et al. Genome-wide CRISPR screen in a mouse model of tumor growth and metastasis. Cell. 2015;160(6):1246–60. doi:\n                    10.1016/j.cell.2015.02.038\n                    \n                  .",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "823_CR100",
+   "doi-asserted-by": "publisher",
+   "first-page": "349",
+   "DOI": "10.1007/978-1-4939-2687-9_23",
+   "volume": "1311",
+   "author": "JS Hawkins",
+   "year": "2015",
+   "unstructured": "Hawkins JS, Wong S, Peters JM, Almeida R, Qi LS. Targeted transcriptional repression in bacteria using CRISPR interference (CRISPRi). Methods Mol Biol. 2015;1311:349–62. doi:\n                    10.1007/978-1-4939-2687-9_23\n                    \n                  .",
+   "journal-title": "Methods Mol Biol"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR101",
+   "doi-asserted-by": "publisher",
+   "first-page": "664",
+   "DOI": "10.1038/nmeth.3433",
+   "volume": "12",
+   "author": "DM Shechner",
+   "year": "2015",
+   "unstructured": "Shechner DM, Hacisuleyman E, Younger ST, Rinn JL. Multiplexable, locus-specific targeting of long RNAs with CRISPR-Display. Nat Methods. 2015;12(7):664–70. doi:\n                    10.1038/nmeth.3433\n                    \n                  .",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "key": "823_CR102",
+   "doi-asserted-by": "publisher",
+   "first-page": "270805",
+   "DOI": "10.1155/2013/270805",
+   "volume": "2013",
+   "author": "M Ma",
+   "year": "2013",
+   "unstructured": "Ma M, Ye AY, Zheng W, Kong L. A guide RNA sequence design platform for the CRISPR/Cas9 system for model organism genomes. BioMed Res Int. 2013;2013:270805. doi:\n                    10.1155/2013/270805\n                    \n                  .",
+   "journal-title": "BioMed Res Int"
+  },
+  {
+   "issue": "10",
+   "key": "823_CR103",
+   "doi-asserted-by": "publisher",
+   "first-page": "1473",
+   "DOI": "10.1093/bioinformatics/btu048",
+   "volume": "30",
+   "author": "S Bae",
+   "year": "2014",
+   "unstructured": "Bae S, Park J, Kim JS. Cas-OFFinder: a fast and versatile algorithm that searches for potential off-target sites of Cas9 RNA-guided endonucleases. Bioinformatics. 2014;30(10):1473–5. doi:\n                    10.1093/bioinformatics/btu048\n                    \n                  .",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "823_CR104",
+   "doi-asserted-by": "publisher",
+   "first-page": "218",
+   "DOI": "10.1186/s13059-015-0784-0",
+   "volume": "16",
+   "author": "NL Wong",
+   "year": "2015",
+   "unstructured": "Wong NL, Liu W, Wang X. WU-CRISPR: characteristics of functional guide RNAs for the CRISPR/Cas9 system. Genome Biol. 2015;16:218.",
+   "journal-title": "Genome Biol"
+  },
+  {
+   "key": "823_CR105",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Sander JD, Maeder ML, Reyon D, Voytas DF, Joung JK, Dobbs D. ZiFiT (Zinc Finger Targeter): an updated zinc finger engineering tool. Nucleic Acids Res. 2010;38(Web Server issue):W462–8. doi:\n                    10.1093/nar/gkq319\n                    \n                  .",
+   "DOI": "10.1093/nar/gkq319"
+  },
+  {
+   "key": "823_CR106",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Sander JD, Zaback P, Joung JK, Voytas DF, Dobbs D. Zinc Finger Targeter (ZiFiT): an engineered zinc finger/target site design tool. Nucleic Acids Res. 2007;35(Web Server issue):W599–605. doi:\n                    10.1093/nar/gkm349\n                    \n                  .",
+   "DOI": "10.1093/nar/gkm349"
+  },
+  {
+   "issue": "7",
+   "key": "823_CR107",
+   "doi-asserted-by": "publisher",
+   "first-page": "1120",
+   "DOI": "10.1093/bioinformatics/btu743",
+   "volume": "31",
+   "author": "Y Naito",
+   "year": "2015",
+   "unstructured": "Naito Y, Hino K, Bono H, Ui-Tei K. CRISPRdirect: software for designing CRISPR/Cas guide RNA with reduced off-target sites. Bioinformatics. 2015;31(7):1120–3. doi:\n                    10.1093/bioinformatics/btu743\n                    \n                  .",
+   "journal-title": "Bioinformatics"
+  }
+ ],
+ "container-title": [
+  "Genome Biology"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1186/s13059-015-0823-x.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/article/10.1186/s13059-015-0823-x/fulltext.html",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1186/s13059-015-0823-x",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  },
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1186/s13059-015-0823-x.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2019,
+    10,
+    15
+   ]
+  ],
+  "date-time": "2019-10-15T18:42:12Z",
+  "timestamp": 1571164932000
+ },
+ "score": 35.6699,
+ "resource": {
+  "primary": {
+   "URL": "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0823-x"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    27
+   ]
+  ]
+ },
+ "references-count": 107,
+ "journal-issue": {
+  "issue": "1",
+  "published-print": {
+   "date-parts": [
+    [
+     2015,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "823"
+ ],
+ "URL": "https://doi.org/10.1186/s13059-015-0823-x",
+ "ISSN": [
+  "1474-760X"
+ ],
+ "issn-type": [
+  {
+   "value": "1474-760X",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    27
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "27 November 2015",
+   "order": 1,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  }
+ ],
+ "article-number": "260"
+}

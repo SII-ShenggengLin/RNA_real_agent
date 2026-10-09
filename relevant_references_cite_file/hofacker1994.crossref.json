@@ -1,0 +1,599 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    6
+   ]
+  ],
+  "date-time": "2026-10-06T05:12:23Z",
+  "timestamp": 1791263543585,
+  "version": "4.1.0"
+ },
+ "reference-count": 37,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "2",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      1994,
+      2,
+      1
+     ]
+    ],
+    "date-time": "1994-02-01T00:00:00Z",
+    "timestamp": 760060800000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Monatsh Chem"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    1994,
+    2
+   ]
+  ]
+ },
+ "DOI": "10.1007/bf00818163",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2004,
+    12,
+    11
+   ]
+  ],
+  "date-time": "2004-12-11T20:43:02Z",
+  "timestamp": 1102797782000
+ },
+ "page": "167-188",
+ "source": "Crossref",
+ "is-referenced-by-count": 1843,
+ "title": [
+  "Fast folding and comparison of RNA secondary structures",
+  "Schnelle Faltung und Vergleich von Sekund�rstrukturen von RNA"
+ ],
+ "prefix": "10.1007",
+ "volume": "125",
+ "author": [
+  {
+   "given": "I. L.",
+   "family": "Hofacker",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "W.",
+   "family": "Fontana",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "P. F.",
+   "family": "Stadler",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "L. S.",
+   "family": "Bonhoeffer",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "M.",
+   "family": "Tacker",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "P.",
+   "family": "Schuster",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "reference": [
+  {
+   "key": "CR1",
+   "doi-asserted-by": "crossref",
+   "first-page": "599",
+   "DOI": "10.1146/annurev.bi.55.070186.003123",
+   "volume": "55",
+   "author": "T. R. Cech",
+   "year": "1986",
+   "unstructured": "Cech T. R., Bass B. L. (1986) Annu. Rev. Biochem.55: 599?629",
+   "journal-title": "Annu. Rev. Biochem."
+  },
+  {
+   "key": "CR2",
+   "doi-asserted-by": "crossref",
+   "first-page": "641",
+   "DOI": "10.1146/annurev.bi.61.070192.003233",
+   "volume": "61",
+   "author": "R. H. Symons",
+   "year": "1992",
+   "unstructured": "Symons R. H. (1992) Small catalytic RNAs. Annu. Rev. Biochem.61: 641?671",
+   "journal-title": "Small catalytic RNAs. Annu. Rev. Biochem."
+  },
+  {
+   "key": "CR3",
+   "doi-asserted-by": "crossref",
+   "first-page": "635",
+   "DOI": "10.1126/science.1496376",
+   "volume": "257",
+   "author": "A. A. Beaudry",
+   "year": "1992",
+   "unstructured": "Beaudry A. A., Joyce G. F. (1992) Science257: 635?641",
+   "journal-title": "Science"
+  },
+  {
+   "key": "CR4",
+   "doi-asserted-by": "crossref",
+   "first-page": "818",
+   "DOI": "10.1038/346818a0",
+   "volume": "346",
+   "author": "A. D. Ellington",
+   "year": "1990",
+   "unstructured": "Ellington A. D., Szostak J. W. (1990) Nature346: 818?822",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "CR5",
+   "first-page": "795",
+   "volume": "122",
+   "author": "W. Fontana",
+   "year": "1991",
+   "unstructured": "Fontana W., Griesmacher T., Schnabl W., Stadler P. F., Schuster P. (1991) Mh. Chem.122: 795?819",
+   "journal-title": "Mh. Chem."
+  },
+  {
+   "key": "CR6",
+   "doi-asserted-by": "crossref",
+   "first-page": "2083",
+   "DOI": "10.1103/PhysRevE.47.2083",
+   "volume": "47",
+   "author": "W. Fontana",
+   "year": "1993",
+   "unstructured": "Fontana W., Stadler P. F., Bornberg-Bauer E., Griesmacher T., Hofacker I. L., Tacker M., Tarazona P., Weinberger E. D., Schuster P. (1993a) Phys. Rev. E47: 2083?2099",
+   "journal-title": "Phys. Rev. E"
+  },
+  {
+   "key": "CR7",
+   "doi-asserted-by": "crossref",
+   "first-page": "1389",
+   "DOI": "10.1002/bip.360330909",
+   "volume": "33",
+   "author": "W. Fontana",
+   "year": "1993",
+   "unstructured": "Fontana W., Konings D. A. M., Stadler P. F., Schuster, P. (1993b) Biopolymers33: 1389?1404",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "CR8",
+   "doi-asserted-by": "crossref",
+   "first-page": "5913",
+   "DOI": "10.1073/pnas.85.16.5913",
+   "volume": "85",
+   "author": "M. Eigen",
+   "year": "1988",
+   "unstructured": "Eigen M., Winkler-Oswatitsch R., Dress A. (1988) Proc. Natl. Acad. Sci. USA85: 5913?5917",
+   "journal-title": "Proc. Natl. Acad. Sci."
+  },
+  {
+   "key": "CR9",
+   "doi-asserted-by": "crossref",
+   "first-page": "47",
+   "DOI": "10.1016/0001-8708(92)90061-O",
+   "volume": "92",
+   "author": "H.-J. Bandelt",
+   "year": "1992",
+   "unstructured": "Bandelt H.-J., Dress A. W. M. (1992) Adv. Math.92: 47?105",
+   "journal-title": "Adv. Math."
+  },
+  {
+   "key": "CR10",
+   "doi-asserted-by": "crossref",
+   "first-page": "133",
+   "DOI": "10.1093/nar/9.1.133",
+   "volume": "9",
+   "author": "M. Zuker",
+   "year": "1981",
+   "unstructured": "Zuker M., Stiegler P. (1981) Nucleic Acids Res.9: 133?148",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "CR11",
+   "doi-asserted-by": "crossref",
+   "first-page": "591",
+   "DOI": "10.1007/BF02459506",
+   "volume": "46",
+   "author": "M. Zuker",
+   "year": "1984",
+   "unstructured": "Zuker M., Sankoff D. (1984) Bull. Math. Biol.46: 591?621",
+   "journal-title": "Bull. Math. Biol."
+  },
+  {
+   "key": "CR12",
+   "doi-asserted-by": "crossref",
+   "first-page": "1105",
+   "DOI": "10.1002/bip.360290621",
+   "volume": "29",
+   "author": "J. S. McCaskill",
+   "year": "1990",
+   "unstructured": "McCaskill J. S. (1990) Biopolymers29: 1105?1119",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "CR13",
+   "first-page": "167",
+   "volume-title": "Advances in Mathematics Suppl. Studies. Vol. 1",
+   "author": "M. S. Waterman",
+   "year": "1978",
+   "unstructured": "Waterman M. S. (1978) Advances in Mathematics Suppl. Studies. Vol. 1. New York: Academic Press, pp. 167?212"
+  },
+  {
+   "key": "CR14",
+   "doi-asserted-by": "crossref",
+   "first-page": "257",
+   "DOI": "10.1016/0025-5564(78)90099-8",
+   "volume": "42",
+   "author": "M. S. Waterman",
+   "year": "1978",
+   "unstructured": "Waterman M. S., Smith T. F. (1978) Math. Biosc.42: 257?266",
+   "journal-title": "Math. Biosc."
+  },
+  {
+   "key": "CR15",
+   "doi-asserted-by": "crossref",
+   "first-page": "6309",
+   "DOI": "10.1073/pnas.77.11.6309",
+   "volume": "77",
+   "author": "R. Nussinov",
+   "year": "1980",
+   "unstructured": "Nussinov R., Jocobson A. B. (1980) Proc. Natl. Acad. Sci. USA77: 6309?6313",
+   "journal-title": "Proc. Natl. Acad. Sci."
+  },
+  {
+   "key": "CR16",
+   "doi-asserted-by": "crossref",
+   "first-page": "68",
+   "DOI": "10.1137/0135006",
+   "volume": "35",
+   "author": "R. Nussinov",
+   "year": "1978",
+   "unstructured": "Nussinov R., Pieczenik G., Griggs J. R., Kleitman D. J. (1978) SIAM J. Appl. Math.35: 68?82",
+   "journal-title": "SIAM J. Appl. Math."
+  },
+  {
+   "key": "CR17",
+   "doi-asserted-by": "crossref",
+   "first-page": "323",
+   "DOI": "10.1093/nar/12.1Part1.323",
+   "volume": "12",
+   "author": "H. M. Martinz",
+   "year": "1984",
+   "unstructured": "Martinz H. M. (1984) Nucleic Acids Res.12: 323?334",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "CR18",
+   "unstructured": "Schuster P., Fontana W., Stadler P. F., Hofacker I. L. (1993) Preprint"
+  },
+  {
+   "key": "CR19",
+   "unstructured": "Tacker M., Fontana W., Stadler P. F., Schuster P. (1993) Preprint"
+  },
+  {
+   "key": "CR20",
+   "doi-asserted-by": "crossref",
+   "first-page": "123",
+   "DOI": "10.1016/0301-4622(87)80017-0",
+   "volume": "26",
+   "author": "W. Fontana",
+   "year": "1987",
+   "unstructured": "Fontana W., Schuster P. (1987) Biophys. Chem.26: 123?147",
+   "journal-title": "Biophys. Chem."
+  },
+  {
+   "key": "CR21",
+   "doi-asserted-by": "crossref",
+   "first-page": "3301",
+   "DOI": "10.1103/PhysRevA.40.3301",
+   "volume": "40",
+   "author": "W. Fontana",
+   "year": "1989",
+   "unstructured": "Fontana W., Schnabl W., Schuster P. (1989) Phys. Rev. A40: 3301?3321",
+   "journal-title": "Phys. Rev. A"
+  },
+  {
+   "key": "CR22",
+   "doi-asserted-by": "crossref",
+   "first-page": "9373",
+   "DOI": "10.1073/pnas.83.24.9373",
+   "volume": "83",
+   "author": "S. M. Freier",
+   "year": "1986",
+   "unstructured": "Freier S. M., Kierzek R., Jaeger J. A., Sugimoto N., Caruthers M. H., Neilson T., Turner D. H. (1986) Proc. Natl. Acad. Sci. USA83: 9373?9377",
+   "journal-title": "Proc. Natl. Acad. Sci."
+  },
+  {
+   "key": "CR23",
+   "doi-asserted-by": "crossref",
+   "first-page": "7706",
+   "DOI": "10.1073/pnas.86.20.7706",
+   "volume": "86",
+   "author": "J. A. Jaeger",
+   "year": "1989",
+   "unstructured": "Jaeger J. A., Turner D. H., Zuker M. (1989) Proc. Natl. Acad. Sci. USA86: 7706?7710",
+   "journal-title": "Proc. Natl. Acad. Sci."
+  },
+  {
+   "key": "CR24",
+   "doi-asserted-by": "crossref",
+   "first-page": "48",
+   "DOI": "10.1126/science.2468181",
+   "volume": "244",
+   "author": "M. Zuker",
+   "year": "1989",
+   "unstructured": "Zuker M. (1989) Science244: 48?52",
+   "journal-title": "Science"
+  },
+  {
+   "key": "CR25",
+   "first-page": "387",
+   "volume": "4",
+   "author": "B. Shapiro",
+   "year": "1988",
+   "unstructured": "Shapiro B. (1988) CABIOS4: 387?393",
+   "journal-title": "CABIOS"
+  },
+  {
+   "key": "CR26",
+   "first-page": "309",
+   "volume": "6",
+   "author": "B. Shapiro",
+   "year": "1990",
+   "unstructured": "Shapiro B., Zhang K. (1990) CABIOS6: 309?318",
+   "journal-title": "CABIOS"
+  },
+  {
+   "key": "CR27",
+   "doi-asserted-by": "crossref",
+   "first-page": "422",
+   "DOI": "10.1145/322139.322143",
+   "volume": "26",
+   "author": "K. Tai",
+   "year": "1979",
+   "unstructured": "Tai K. (1979) J. ACM26: 422?433",
+   "journal-title": "J. ACM"
+  },
+  {
+   "key": "CR28",
+   "unstructured": "Sankoff D., Kruskal J. B. (1983) London: Addison Wesley"
+  },
+  {
+   "key": "CR29",
+   "doi-asserted-by": "crossref",
+   "first-page": "67",
+   "DOI": "10.1093/nar/12.1Part1.67",
+   "volume": "12",
+   "author": "P. Hogeweg",
+   "year": "1984",
+   "unstructured": "Hogeweg P., Hesper B. (1984) Nucleic Acids Res.12: 67?74",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "CR30",
+   "unstructured": "Konings D. A. M. (1989) Proefschrift, Rijksuniversiteit te Utrecht"
+  },
+  {
+   "key": "CR31",
+   "doi-asserted-by": "crossref",
+   "first-page": "597",
+   "DOI": "10.1016/0022-2836(89)90468-3",
+   "volume": "207",
+   "author": "D. A. M. Konings",
+   "year": "1989",
+   "unstructured": "Konings D. A. M., Hogeweg P. (1989) J. Mol. Biol.207: 597?614",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "CR32",
+   "doi-asserted-by": "crossref",
+   "first-page": "13",
+   "DOI": "10.1007/BF00205808",
+   "volume": "22",
+   "author": "S. Bonhoeffer",
+   "year": "1993",
+   "unstructured": "Bonhoeffer S., McCaskill J. S., Stadler P. F., Schuster P. (1993) Eur. Biophys. J.22: 13?24",
+   "journal-title": "Eur. Biophys. J."
+  },
+  {
+   "key": "CR33",
+   "doi-asserted-by": "crossref",
+   "first-page": "473",
+   "DOI": "10.1007/BF02459498",
+   "volume": "46",
+   "author": "M. S. Waterman",
+   "year": "1984",
+   "unstructured": "Waterman M. S. (1984) Bull. Math. Biol.46: 473?500",
+   "journal-title": "Bull. Math. Biol."
+  },
+  {
+   "key": "CR34",
+   "doi-asserted-by": "crossref",
+   "first-page": "557",
+   "DOI": "10.1016/0022-2836(91)80072-3",
+   "volume": "221",
+   "author": "A. B. Jacobson",
+   "year": "1991",
+   "unstructured": "Jacobson A. B. (1991) J. Mol. Biol.221: 557?570",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "CR35",
+   "doi-asserted-by": "crossref",
+   "first-page": "967",
+   "DOI": "10.1351/pac198456080967",
+   "volume": "56",
+   "author": "M. Eigen",
+   "year": "1984",
+   "unstructured": "Eigen M., Gardiner W. (1984) Pure Appl. Chem.56: 967?978",
+   "journal-title": "Pure Appl. Chem."
+  },
+  {
+   "key": "CR36",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1016/S0022-5193(05)80753-2",
+   "volume": "157",
+   "author": "S. A. Kauffman",
+   "year": "1992",
+   "unstructured": "Kauffman S. A. (1992) J. Theor. Biol.157: 1?7",
+   "journal-title": "J. Theor. Biol."
+  },
+  {
+   "key": "CR37",
+   "unstructured": "Hofacker I. L., Schuster P., Stadler P. F. (1993) Preprint"
+  }
+ ],
+ "container-title": [
+  "Monatshefte f�r Chemie Chemical Monthly"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1007/BF00818163.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/article/10.1007/BF00818163/fulltext.html",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1007/BF00818163",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2019,
+    4,
+    26
+   ]
+  ],
+  "date-time": "2019-04-26T19:32:42Z",
+  "timestamp": 1556307162000
+ },
+ "score": 60.97254,
+ "resource": {
+  "primary": {
+   "URL": "http://link.springer.com/10.1007/BF00818163"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    1994,
+    2
+   ]
+  ]
+ },
+ "references-count": 37,
+ "journal-issue": {
+  "issue": "2",
+  "published-print": {
+   "date-parts": [
+    [
+     1994,
+     2
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "BF00818163"
+ ],
+ "URL": "https://doi.org/10.1007/bf00818163",
+ "ISSN": [
+  "0026-9247",
+  "1434-4475"
+ ],
+ "issn-type": [
+  {
+   "value": "0026-9247",
+   "type": "print"
+  },
+  {
+   "value": "1434-4475",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    1994,
+    2
+   ]
+  ]
+ }
+}

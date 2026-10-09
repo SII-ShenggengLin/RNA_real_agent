@@ -1,10 +1,10 @@
-"""Fig 4f — decision-layer overreach events of the E3 dual-arm re-run.
+"""Fig 4f — plan-level overreach events of the E3 dual-arm re-run.
 
 Paired bars per oracle x intended use (plan requests of a structural oracle
 as ranking objective / screening evaluation): ungated control arm (Exp 5,
 59 events, terracotta) vs gated treatment arm (Exp 17, 0 events, sage) —
 arm colours as Fig. 4d; a bracket annotation carries the registered delta
-(59 -> 0). Use is carried by the x-axis cells (ranking / screening), oracle
+(59 to 0). Use is carried by the x-axis cells (ranking / screening), oracle
 labels centred on their cell pairs (the fig3e group-label convention). The
 gated arm's 71 blocked plan requests (the mechanism behind the zero) are
 stated in the caption, not drawn.
@@ -68,11 +68,16 @@ USE_LABELS = {"ranking_objective": "Ranking", "screening_evaluation": "Screening
 # Composite-layout variant (the fig3c convention): FIG4F_LAYOUT=tall renders
 # the same frozen data on a taller canvas (axes stretched vertically, same
 # 6-pt text, no data change) so the panel fills the Fig. 4 composite's row-2
-# stack (d over f) flush with panel e's height; the standalone render is the
-# default and is untouched. Output goes to a separate _tall file pair.
+# stack (d over f) flush with panel e's height; 2026-10-07 (user-directed
+# equal-width four-row layout, panels re-ordered e|f / g|h): the tall
+# variant's axes also widen 72.0 → 83.1 mm so the e|f row spans the same
+# content width as the other rows. The standalone render is the default and
+# is untouched. Output goes to a separate _tall file pair.
 LAYOUT = os.environ.get("FIG4F_LAYOUT", "standalone")
 FIG_H_MM = 71.7 if LAYOUT == "tall" else 40.5
 AX_H_MM = 54.7 if LAYOUT == "tall" else 23.5
+FIG_W_MM = 100.1 if LAYOUT == "tall" else 89.0
+AX_W_MM = 83.1 if LAYOUT == "tall" else 72.0
 OUT_STEM = "fig4f_overreach_events_tall" if LAYOUT == "tall" else "fig4f_overreach_events"
 
 plt.rcParams.update({
@@ -100,10 +105,10 @@ def main() -> int:
     gated_total = exp17["arms"]["gated"]["overreach_events"]
     assert gated_total == 0 and sum(ungated) == exp5["overreach_total"]
 
-    fig_w, fig_h = 89 / 25.4, FIG_H_MM / 25.4
+    fig_w, fig_h = FIG_W_MM / 25.4, FIG_H_MM / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([11 / 25.4 / fig_w, 12.5 / 25.4 / fig_h,
-                       72 / 25.4 / fig_w, AX_H_MM / 25.4 / fig_h])
+                       AX_W_MM / 25.4 / fig_w, AX_H_MM / 25.4 / fig_h])
 
     w = 0.34
     y_top = max(ungated) * 1.48
@@ -135,13 +140,13 @@ def main() -> int:
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    # registered delta annotation: bracket spanning the axis, 59 -> 0
+    # registered delta annotation: bracket spanning the axis, 59 to 0
     bx0, bx1 = -0.6, 6.6
     by = max(ungated) * 1.30
     ax.plot([bx0, bx1], [by, by], color=INK, linewidth=0.4)
     for bx in (bx0, bx1):
         ax.plot([bx, bx], [by - 0.35, by], color=INK, linewidth=0.4)
-    ax.text((bx0 + bx1) / 2, by + 0.35, f"{sum(ungated)} → 0",
+    ax.text((bx0 + bx1) / 2, by + 0.35, f"{sum(ungated)} to 0",
             ha="center", va="bottom", fontsize=FONT, color=INK)
 
     # arm key: one centred row directly under the panel, centred on the axes
@@ -154,7 +159,7 @@ def main() -> int:
     label_w = {"ungated": 7.4, "gated": 5.5}
     row_w = (sum(sw_w + gap_k + label_w[a] for a, _ in entries)
              + gap_e * (len(entries) - 1))
-    x = (11 + 72 / 2) - row_w / 2
+    x = (11 + AX_W_MM / 2) - row_w / 2
     for arm, lab in entries:
         fig.patches.append(plt.Rectangle(
             (_fx(x), _fy(3.0 - sw_h / 2)), _fx(sw_w), _fy(sw_h),

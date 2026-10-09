@@ -30,6 +30,24 @@ printed values, and every bubble now renders identically); the dashed 0.8
 gate line on the colour bar removed as well (same follow-up — only the
 solid chance line remains).
 
+Figure revision 2026-10-02 (Fig. 3 text-sync batch, user-adjudicated):
+colour-bar label pluralized to "binders vs negatives" (the Fig. 3d legend's
+"binders from negatives" and the fig2f "vs random molecules" convention).
+No data change.
+2026-10-02 same-day second pass (user-adjudicated, the figure's
+moderate-narrowing pass): the nine column labels rotate 45° (the fig3c
+anchored-label convention) and the canvas narrows 183 → ~145 mm (column
+pitch 16.8 → ~12.6 mm) — measured first: the longest horizontal label
+"Angiopoietin-2" is 15.2 mm against the 16.8-mm pitch (1.6 mm clearance),
+so horizontal labels could not follow any narrowing; rotation makes the
+labels pitch-independent. No data change.
+2026-10-02 same-day third pass (user-directed): the centred 145-mm render
+left ~12-mm flanks on row 1 that the user judged unharmonious — the panel
+is re-widened to the full content width (~170 mm, flush with the b+c row)
+with proportionally taller rows (figsize height 2.30 → 2.60 in) so the
+widened cells stay near-square rather than stretched; the 45° labels stay
+(they are what makes any width free). No data change.
+
 Data  : experiments/results/exp10_structure_oracle_screening/summary.json
         (FIG3_SUMMARY env override — the v3 render points it at
         experiments/results/exp10_structure_oracle_screening_v3/summary.json)
@@ -125,7 +143,7 @@ def main() -> int:
     cells = summary["cells"]
     TARGET_COLS = _derive_targets(cells)
 
-    fig, ax = plt.subplots(figsize=(min(183 / 25.4, 5.12 * len(TARGET_COLS) / 6), 1.95))
+    fig, ax = plt.subplots(figsize=(min(169.2 / 25.4, 5.12 * len(TARGET_COLS) / 6), 2.60))
     norm = TwoSlopeNorm(vmin=VMIN, vcenter=CHANCE, vmax=VMAX)
     s_min, s_max = 30.0, 300.0
 
@@ -158,6 +176,7 @@ def main() -> int:
     ax.set_xticklabels(
         [f"{TARGET_LABELS[t]}\n{counts[t][0]}+ / {counts[t][1]}−" for t in TARGET_COLS],
         fontsize=FONT,
+        rotation=45, ha="right", rotation_mode="anchor",
     )
     ax.set_yticks(range(len(ORACLE_ROWS)))
     ax.set_yticklabels([ORACLE_LABELS[o] for o in ORACLE_ROWS], fontsize=FONT)
@@ -177,7 +196,7 @@ def main() -> int:
     )
     cbar.ax.yaxis.set_ticks_position("right")
     cbar.ax.yaxis.set_label_position("right")
-    cbar.set_label("AUROC (binder vs negative)", fontsize=FONT)
+    cbar.set_label("AUROC (binders vs negatives)", fontsize=FONT)
     cbar.ax.tick_params(labelsize=FONT, length=2, pad=1.5)
     cbar.outline.set_linewidth(0.4)
     cbar.ax.axhline(CHANCE, color=TEXT, linewidth=0.7, linestyle="-")

@@ -2,18 +2,27 @@
 (Experiment 28 registered 20-target cohort + Experiment 40 deployment
 completion — the pooled 25-target analysis).
 
-One tile per (target, profile) cell, coloured by the paired JCD outcome of
-the two arms — navigation-only pass (sage), both arms pass (grey blue),
-rule-only pass (terracotta), neither passes (dark warm grey).  A right-hand
-marker column carries the gene-level navigation end-to-end delivery glyph
-(filled = navigation delivered a passing batch in all three profiles — the
-primary endpoint's c_e2e_gene term).  Rows follow the registered target
-order (alphabetical) with the five deployment targets (Exp-30 form-entry
-campaigns, static arm completed by Exp 40) below a labelled divider; the
-three profile columns are headed Expression / Stability / Balanced; a
-one-line context strip above the panel states the tile semantics; the key
-below carries the per-class cell counts and a second row explaining the
-gene-e2e glyph.
+One tile per (target, profile) pair, coloured by the paired delivery
+outcome of the two conditions — navigation-only (sage), both-pass (grey
+blue), static-only (terracotta), both-fail (dark warm grey; the Fig. 5c
+legend's class names).  A right-hand marker column carries the target-level
+navigation end-to-end delivery glyph (filled = navigation delivered a
+passing batch in all three profiles — the primary endpoint's c_e2e_gene
+term).  Rows follow the registered target order (alphabetical) with the
+five deployment targets (Exp-30 form-entry campaigns, static arm completed
+by Exp 40) below a divider; the three profile columns are headed
+Expression / Stability / Balanced; the key below carries the per-class
+pair counts and a second row explaining the end-to-end glyph.
+
+2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch): the
+one-line context strip deleted (the key's class names now self-decode the
+tile colours — "Tile colour marks the delivering arm(s)" carried the
+retired "arm" wording); the key labels aligned to the legend's class
+names — "navigation only" → "navigation-only", "both arms" → "both-pass",
+"rule only" → "static-only", "neither" → "both-fail"; the fourth column
+header and the key's glyph row decoded "Gene e2e" → "End-to-end" (the
+legend's term, the fig5g convention); no number, colour or geometry
+changed.
 
 2026-09-08 figure-repair pass (user direction):
 - row labels (gene names) restored — the marker-column axes previously
@@ -34,6 +43,14 @@ Exp-30 deployment targets appended below a labelled divider line; their
 navigation cells are the frozen form-session traces evaluated by Exp 40
 under the identical full-length stack); canvas 89 × 106 → 89 × 127.8 mm
 (25 rows at the unchanged 4.35-mm row pitch).
+
+2026-10-02 legend-sync re-render (figure-backlog batch): the deployment
+asterisks removed — the row-label "*"-suffix and the context strip's
+"* marks the five deployment targets" clause lost their legend referent
+when the cohort disclosure retired to the Methods and frozen records (the
+2026-10-02 legend batches); the cohort divider line stays (the rows still
+group registered 20 above, deployment 5 below).  No number, colour or
+geometry changed.
 
 Style (the fig4d/fig4g carpet house style): no in-figure title (the panel
 letter is added at assembly); every text element one 6-pt pure-black
@@ -81,10 +98,10 @@ INK = "#000000"
 FONT = 6
 W_MM, H_MM = 89.0, 127.8
 
-C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both arms pass
-C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only pass
-C_RULE = PALETTE_BY_NAME["terracotta"]      # rule-only pass
-C_NONE = PALETTE_BY_NAME["dark_warm_grey"]  # neither passes
+C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both-pass
+C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only
+C_RULE = PALETTE_BY_NAME["terracotta"]      # static-only
+C_NONE = PALETTE_BY_NAME["dark_warm_grey"]  # both-fail
 C_OPEN = PALETTE_BY_NAME["warm_grey"]       # open e2e-marker outline
 
 plt.rcParams.update({
@@ -115,11 +132,8 @@ MARK_W_MM = 4.5
 MOSAIC_BOT_MM = 12.5
 MOSAIC_H_MM = 108.75
 LEG1_Y_MM = 8.6       # key row 1 (tile outcomes) baseline
-LEG2_Y_MM = 4.8       # key row 2 (gene-e2e glyph) baseline
+LEG2_Y_MM = 4.8       # key row 2 (end-to-end glyph) baseline
 
-CONTEXT = "Tile colour marks the delivering arm(s); * marks the five deployment targets"
-
-DEPLOYMENT_TARGETS = ["CSF3", "LEP", "PLAT", "PTH", "THPO"]
 N_REGISTERED = 20
 
 
@@ -150,8 +164,7 @@ def main() -> int:
     ax.set_xticklabels(PROFILE_LABELS)
     ax.xaxis.set_ticks_position("top")
     ax.set_yticks([i + 0.5 for i in range(n)])
-    ax.set_yticklabels([short_name(t) + ("*" if t in DEPLOYMENT_TARGETS else "")
-                        for t in targets])
+    ax.set_yticklabels([short_name(t) for t in targets])
     ax.tick_params(length=0, pad=1.8)
     for s in ax.spines.values():
         s.set_visible(False)
@@ -220,16 +233,15 @@ def main() -> int:
         axg.plot([-0.06, 1.06], [N_REGISTERED, N_REGISTERED],
                  color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
 
-    # ── headers: "Gene e2e" as a fourth column header on the same baseline
-    #    as the three profile headers (measured, not a floating title) ──
+    # ── headers: "End-to-end" as a fourth column header on the same
+    #    baseline as the three profile headers (measured, not a floating
+    #    title) ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
     hdr_bb = ax.get_xticklabels()[1].get_window_extent(renderer)  # Stability
     e2e_hdr = fig.text(mark_left + 0.5 * MARK_W_MM / W_MM,
-                       hdr_bb.y0 / fig.bbox.height, "Gene e2e",
+                       hdr_bb.y0 / fig.bbox.height, "End-to-end",
                        ha="center", va="bottom", fontsize=FONT, color=INK)
-    ctx = fig.text(0.5, hdr_bb.y1 / fig.bbox.height + 1.4 / H_MM, CONTEXT,
-                   ha="center", va="bottom", fontsize=FONT, color=INK)
 
     # ── key: two centred rows under the mosaic, renderer-measured widths
     #    under a canvas-overflow assert (the fig4g house convention) ──
@@ -243,11 +255,11 @@ def main() -> int:
     MK_W, MK_H = 2.2 / W_MM, 1.0 / H_MM      # e2e-marker swatch
     GAP_IN, GAP_OUT = 0.6 / W_MM, 1.7 / W_MM
 
-    row1 = [("swatch", C_NAV), ("label", f"navigation only ({counts['nav']})"),
-            ("swatch", C_BOTH), ("label", f"both arms ({counts['both']})"),
-            ("swatch", C_RULE), ("label", f"rule only ({counts['rule']})"),
-            ("swatch", C_NONE), ("label", f"neither ({counts['none']})")]
-    row2 = ([("label", "Gene e2e (navigation):"), ("gap", 1.0 / W_MM)]
+    row1 = [("swatch", C_NAV), ("label", f"navigation-only ({counts['nav']})"),
+            ("swatch", C_BOTH), ("label", f"both-pass ({counts['both']})"),
+            ("swatch", C_RULE), ("label", f"static-only ({counts['rule']})"),
+            ("swatch", C_NONE), ("label", f"both-fail ({counts['none']})")]
+    row2 = ([("label", "End-to-end (navigation):"), ("gap", 1.0 / W_MM)]
             + [("mswatch", (C_NAV, INK)),
                ("label", f"all 3 profiles delivered ({n_e2e})"),
                ("mswatch", ("white", C_OPEN)),
@@ -294,7 +306,7 @@ def main() -> int:
     #    mosaic (the fig5b/fig4e house assertions) ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    texts = ([ctx, e2e_hdr] + legend_texts
+    texts = ([e2e_hdr] + legend_texts
              + list(ax.get_xticklabels()) + list(ax.get_yticklabels()))
     boxes = []
     for t in texts:
@@ -307,9 +319,9 @@ def main() -> int:
         for j in range(i + 1, len(boxes)):
             assert not boxes[i].overlaps(boxes[j]), \
                 f"text collision: {texts[i].get_text()!r} x {texts[j].get_text()!r}"
-    assert abs(boxes[1].y0 - ax.get_xticklabels()[1]
+    assert abs(boxes[0].y0 - ax.get_xticklabels()[1]
                .get_window_extent(renderer).y0) <= 2, \
-        "Gene e2e header off the profile-header baseline"
+        "End-to-end header off the profile-header baseline"
     assert max(b.x1 for b in boxes[-n:]) < ax.bbox.x0, \
         "row labels cross into the mosaic"
 

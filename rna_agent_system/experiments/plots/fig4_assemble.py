@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Fig. 4 composite — assemble the ten finished panels (a–j) into one figure.
+"""Fig. 4 composite — assemble the eight finished panels (a–h) into one figure.
+
+2026-10-02 cut to a–h (figure-backlog batch, registered 2026-09-28): the
+governance-ablation paragraph moved from section 2.4 to Supplementary
+Note 3, so the quality-advisory strip (former i) and the LLM-usage strip
+(former j) migrated to Supplementary Figs. S5/S6
+(`figS5_advisory_strip.py`, `figS6_llm_usage_bubble.py`); rows 5–6
+retired with them. No remaining panel changed.
 
 Panel composition follows the Nature conventions surveyed in
 `relevant_references/` (DeepRare main Figs. 2–5, Nature 651, 2026): bold
@@ -10,31 +17,21 @@ Every panel carries the reset programme's single 6-pt text style, so
 panels are placed at scale 1.0 unless a row must shrink to fit (the one
 exception below).
 
-Layout (2026-09-11, second same-day revision — the CapGate subsection merge,
-user-directed: the selective-gating matrix panel moves up next to the
-certification panel it operationalizes, b = selective gating):
-row 1 pairs the subsection's two evidence-semantics panels — a (MRL
+Layout: row 1 pairs the subsection's two evidence-semantics panels — a (MRL
 certification) and b (selective-gating matrix) — one equal-height fit row
-(per-panel scales ≈ 1.15/0.73; the cert forest is drawn up and the matrix
-down to the shared band height, the widest aspect spread of any fit row in
-the figure set, accepted to keep the merged narrative on one band); row 2
-pairs fidelity c with the gating headline d as a second equal-height fit
-row (scales ≈ 0.95/0.84); row 3 pairs the tall claim matrix e with the
-overreach panel f — f is the tall-layout render
-(`FIG4F_LAYOUT=tall python experiments/plots/fig4f_overreach_events.py`,
-same frozen data, axes stretched vertically, no data change — the fig3c
-composite-layout convention) — top-aligned at scale 1.0, the ≈ 39 mm band
-under f the row's accepted underhang (the claim matrix is the tallest
-panel in the figure and no in-order partner matches its 105 mm height;
-the previous composite's stack workaround needed the headline panel,
-which now fills row 2). Row 4 pairs the campaign panels g (mRNA family
-strip) and h (production gate decisions) as one centred group at scale
-1.0 (≈ 16 mm underhang under h, the previous composite's accepted
-group-row underhang). Rows 5–6 close with the two wide strips at native
-scale — the 31-session quality strip i and the LLM-usage strip j — each
-centred on the content width (the fig2 full-span convention; the pair no
-longer shares a fit row because h moved up to row 4, and a shared fit
-band would shrink both to ≈ 0.6×). Content width = 183 mm
+(the 2026-09-11 merged-narrative band); row 2 pairs fidelity c with the
+gating headline d as a second equal-height fit row. 2026-10-02
+(user-directed figure-by-figure pass): the bottom half was re-paired by
+panel kind (e|g verdict panels over f|h gate-activity panels, f after g in
+visual reading order). 2026-10-07 (user-directed): rows 3–4 restored to
+strict citation order — row 3 groups the aptamer verdict bars e with the
+overreach events f, row 4 the mRNA verdict bars g with the production gate
+verdicts h (the tall-layout render, `FIG4F_LAYOUT=tall python
+experiments/plots/fig4f_overreach_events.py`, same frozen data — the fig3c
+composite-layout convention), closing the f-after-g deviation; and all
+four panels re-rendered wider so the two group rows span the same content
+width as the fit rows (e 90.3 + f 88.8 = g 66.3 + h 112.8 = 179.1 mm +
+one COL_GAP ≈ 183 mm). All rows are top-aligned; content width = 183 mm
 (Nature double column, the fig3 composite width); every gutter is one
 COL_GAP.
 
@@ -72,18 +69,17 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 # h/i/j keep their letters. No panel content changed, only letters and
 # file names (the 2026-09-11 first re-lettering had moved a/b in from
 # Fig. 3's 3g/3h and shifted the gating panels +2; frozen data files keep
-# their as-written names).
+# their as-written names). 2026-10-02: i/j left for Supplementary
+# Figs. S5/S6 (see the module docstring); a–h unchanged.
 PANELS: dict[str, str] = {
     "a": "fig4a_mrl_certification.pdf",
     "b": "fig4b_selective_gating.pdf",
     "c": "fig4c_rnasmol_fidelity.pdf",
     "d": "fig4d_claim_gating.pdf",
-    "e": "fig4e_claim_matrix.pdf",
+    "e": "fig4e_claim_verdict_bars.pdf",
     "f": "fig4f_overreach_events_tall.pdf",
-    "g": "fig4g_mrna_family_strip.pdf",
+    "g": "fig4g_mrna_verdict_bars.pdf",
     "h": "fig4h_gate_decisions.pdf",
-    "i": "fig4i_quality_advisory_strip.pdf",
-    "j": "fig4j_llm_usage_bubble.pdf",
 }
 
 # Row plan in strict reading order. "stack" piles the left-column letters
@@ -99,8 +95,6 @@ ROWS: list[tuple[str, object]] = [
     ("fit", ["c", "d"]),
     ("group", ["e", "f"]),
     ("group", ["g", "h"]),
-    ("full", ["i"]),
-    ("full", ["j"]),
 ]
 
 # Grid constants (PDF points) — identical to the fig2/fig3 composites.

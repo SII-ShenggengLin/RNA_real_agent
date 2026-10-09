@@ -1,0 +1,460 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T00:34:40Z",
+  "timestamp": 1791506080159,
+  "version": "4.3.4"
+ },
+ "reference-count": 22,
+ "publisher": "F1000 Research Ltd",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2016,
+      2,
+      18
+     ]
+    ],
+    "date-time": "2016-02-18T00:00:00Z",
+    "timestamp": 1455753600000
+   },
+   "content-version": "unspecified",
+   "delay-in-days": 0,
+   "URL": "http://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "f1000research.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "F1000Res"
+ ],
+ "abstract": "<ns4:p>Calculating solvent accessible surface areas (SASA) is a run-of-the-mill calculation in structural biology. Although there are many programs available for this calculation, there are no free-standing, open-source tools designed for easy tool-chain integration. FreeSASA is an open source C library for SASA calculations that provides both command-line and Python interfaces in addition to its C API. The library implements both Lee and Richards’ and Shrake and Rupley’s approximations, and is highly configurable to allow the user to control molecular parameters, accuracy and output granularity. It only depends on standard C libraries and should therefore be easy to compile and install on any platform. The library is well-documented, stable and efficient. The command-line interface can easily replace closed source legacy programs, with comparable or better accuracy and speed, and with some added functionality.</ns4:p>",
+ "DOI": "10.12688/f1000research.7931.1",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2016,
+    2,
+    18
+   ]
+  ],
+  "date-time": "2016-02-18T06:35:06Z",
+  "timestamp": 1455777306000
+ },
+ "page": "189",
+ "update-policy": "https://doi.org/10.12688/f1000research.crossmark-policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 625,
+ "title": [
+  "FreeSASA: An open source C library for solvent accessible surface area calculations"
+ ],
+ "prefix": "10.12688",
+ "volume": "5",
+ "author": [
+  {
+   "given": "Simon",
+   "family": "Mitternacht",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "2560",
+ "published-online": {
+  "date-parts": [
+   [
+    2016,
+    2,
+    18
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "ref-1",
+   "doi-asserted-by": "publisher",
+   "first-page": "3364-3366",
+   "DOI": "10.1093/nar/gkg601",
+   "article-title": "POPS: A fast algorithm for solvent accessible surface areas at atomic and residue level.",
+   "volume": "31",
+   "author": "L Cavallo",
+   "year": "2003",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "ref-2",
+   "article-title": "The PyMOL molecular graphics system",
+   "author": "W DeLano",
+   "year": "2002"
+  },
+  {
+   "key": "ref-3",
+   "doi-asserted-by": "publisher",
+   "first-page": "4121-4132",
+   "DOI": "10.1021/ct5002818",
+   "article-title": "TRIFORCE: Tessellated Semianalytical Solvent Exposed Surface Areas and Derivatives.",
+   "volume": "10",
+   "author": "N Drechsel",
+   "year": "2014",
+   "journal-title": "J Chem Theory Comput."
+  },
+  {
+   "key": "ref-4",
+   "doi-asserted-by": "publisher",
+   "first-page": "273-284",
+   "DOI": "10.1002/jcc.540160303",
+   "article-title": "The double cubic lattice method: efficient approaches to numerical integration of surface area and volume and to dot surface contouring of molecular assemblies.",
+   "volume": "16",
+   "author": "F Eisenhaber",
+   "year": "1995",
+   "journal-title": "J Comput Chem."
+  },
+  {
+   "key": "ref-5",
+   "article-title": "Protein physics: a course of lectures",
+   "author": "A Finkelstein",
+   "year": "2002"
+  },
+  {
+   "key": "ref-6",
+   "doi-asserted-by": "publisher",
+   "first-page": "319-333",
+   "DOI": "10.1002/(SICI)1096-987X(199802)19:3<319::AID-JCC6>3.0.CO;2-W",
+   "article-title": "Exact and efficient analytical calculation of the accessible surface areas and their gradients for macromolecules.",
+   "volume": "19",
+   "author": "R Fraczkiewicz",
+   "year": "1998",
+   "journal-title": "J Comput Chem."
+  },
+  {
+   "key": "ref-7",
+   "article-title": "NACCESS",
+   "author": "S Hubbard",
+   "year": "1993"
+  },
+  {
+   "key": "ref-8",
+   "doi-asserted-by": "publisher",
+   "first-page": "379-400",
+   "DOI": "10.1016/0022-2836(71)90324-X",
+   "article-title": "The interpretation of protein structures: estimation of static accessibility.",
+   "volume": "55",
+   "author": "B Lee",
+   "year": "1971",
+   "journal-title": "J Mol Biol."
+  },
+  {
+   "key": "ref-9",
+   "doi-asserted-by": "publisher",
+   "first-page": "5806-5812",
+   "DOI": "10.1021/jp8111556",
+   "article-title": "Consistent van der Waals radii for the whole main group.",
+   "volume": "113",
+   "author": "M Mantina",
+   "year": "2009",
+   "journal-title": "J Phys Chem A."
+  },
+  {
+   "key": "ref-10",
+   "article-title": "NSOL: A numerical calculation program of molecular surface area, volume, and solvation energy",
+   "author": "M Masuya",
+   "year": "2003"
+  },
+  {
+   "key": "ref-11",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.5256/f1000research.7931.d112977",
+   "article-title": "Dataset 1 in: FreeSASA: An open source C library for solvent accessible surface area calculations.",
+   "author": "S Mitternacht",
+   "year": "2016a",
+   "journal-title": "F1000Research."
+  },
+  {
+   "key": "ref-12",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.5256/f1000research.7931.d112978",
+   "article-title": "Dataset 2 in: FreeSASA: An open source C library for solvent accessible surface area calculations.",
+   "author": "S Mitternacht",
+   "year": "2016b",
+   "journal-title": "F1000Research."
+  },
+  {
+   "key": "ref-13",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.5281/zenodo.45239",
+   "article-title": "FreeSASA 1.0.1: Solvent Accessible Surface Area Calculations.",
+   "author": "S Mitternacht",
+   "year": "2016c",
+   "journal-title": "Zenodo."
+  },
+  {
+   "key": "ref-14",
+   "doi-asserted-by": "publisher",
+   "first-page": "305-320",
+   "DOI": "10.1002/(SICI)1097-0282(199603)38:3<305::AID-BIP4>3.0.CO;2-Y",
+   "article-title": "Reduced surface: an efficient way to compute molecular surfaces.",
+   "volume": "38",
+   "author": "M Sanner",
+   "year": "1996",
+   "journal-title": "Biopolymers."
+  },
+  {
+   "key": "ref-15",
+   "doi-asserted-by": "publisher",
+   "first-page": "351-371",
+   "DOI": "10.1016/0022-2836(73)90011-9",
+   "article-title": "Environment and exposure to solvent of protein atoms. Lysozyme and insulin.",
+   "volume": "79",
+   "author": "A Shrake",
+   "year": "1973",
+   "journal-title": "J Mol Biol."
+  },
+  {
+   "key": "ref-16",
+   "doi-asserted-by": "publisher",
+   "first-page": "1769-1793",
+   "DOI": "10.1256/qj.05.227",
+   "article-title": "Fibonacci grids: A novel approach to global modelling.",
+   "volume": "132",
+   "author": "R Swinbank",
+   "year": "2006",
+   "journal-title": "Q J R Meteorol Soc."
+  },
+  {
+   "key": "ref-17",
+   "doi-asserted-by": "publisher",
+   "first-page": "D364-D368",
+   "DOI": "10.1093/nar/gku1028",
+   "article-title": "A series of PDB-related databanks for everyday needs.",
+   "volume": "43",
+   "author": "W Touw",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "ref-18",
+   "doi-asserted-by": "publisher",
+   "first-page": "253-266",
+   "DOI": "10.1006/jmbi.1999.2829",
+   "article-title": "The packing density in proteins: standard radii and volumes.",
+   "volume": "290",
+   "author": "J Tsai",
+   "year": "1999",
+   "journal-title": "J Mol Biol."
+  },
+  {
+   "key": "ref-19",
+   "doi-asserted-by": "publisher",
+   "first-page": "1589-1591",
+   "DOI": "10.1093/bioinformatics/btg224",
+   "article-title": "PISCES: a protein sequence culling server.",
+   "volume": "19",
+   "author": "G Wang",
+   "year": "2003",
+   "journal-title": "Bioinformatics."
+  },
+  {
+   "key": "ref-20",
+   "doi-asserted-by": "publisher",
+   "first-page": "217-230",
+   "DOI": "10.1002/(SICI)1096-987X(19990130)20:2<217::AID-JCC4>3.0.CO;2-A",
+   "article-title": "Approximate atomic surfaces from linear combinations of pairwise overlaps (LCPO).",
+   "volume": "20",
+   "author": "J Weiser",
+   "year": "1999",
+   "journal-title": "J Comput Chem."
+  },
+  {
+   "key": "ref-21",
+   "doi-asserted-by": "publisher",
+   "first-page": "1274-1278",
+   "DOI": "10.1093/bioinformatics/btu789",
+   "article-title": "The chemical component dictionary: complete descriptions of constituent molecules in experimentally determined 3D macromolecules in the Protein Data Bank.",
+   "volume": "31",
+   "author": "J Westbrook",
+   "year": "2015",
+   "journal-title": "Bioinformatics."
+  },
+  {
+   "key": "ref-22",
+   "doi-asserted-by": "publisher",
+   "first-page": "e8140",
+   "DOI": "10.1371/journal.pone.0008140",
+   "article-title": "Generating triangulated macromolecular surfaces by Euclidean Distance Transform.",
+   "volume": "4",
+   "author": "D Xu",
+   "year": "2009",
+   "journal-title": "PLoS One."
+  }
+ ],
+ "container-title": [
+  "F1000Research"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://f1000research.com/articles/5-189/v1/xml",
+   "content-type": "application/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://f1000research.com/articles/5-189/v1/pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://f1000research.com/articles/5-189/v1/iparadigms",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2018,
+    12,
+    5
+   ]
+  ],
+  "date-time": "2018-12-05T13:51:24Z",
+  "timestamp": 1544017884000
+ },
+ "score": 91.57251,
+ "resource": {
+  "primary": {
+   "URL": "https://f1000research.com/articles/5-189/v1"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2016,
+    2,
+    18
+   ]
+  ]
+ },
+ "references-count": 22,
+ "URL": "https://doi.org/10.12688/f1000research.7931.1",
+ "relation": {
+  "has-review": [
+   {
+    "id-type": "doi",
+    "id": "10.5256/f1000research.8538.r12528",
+    "asserted-by": "subject"
+   },
+   {
+    "id-type": "doi",
+    "id": "10.5256/f1000research.8538.r12524",
+    "asserted-by": "subject"
+   },
+   {
+    "id-type": "doi",
+    "id": "10.5256/f1000research.8538.r12528",
+    "asserted-by": "object"
+   },
+   {
+    "id-type": "doi",
+    "id": "10.5256/f1000research.8538.r12524",
+    "asserted-by": "object"
+   }
+  ]
+ },
+ "ISSN": [
+  "2046-1402"
+ ],
+ "issn-type": [
+  {
+   "value": "2046-1402",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2016,
+    2,
+    18
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "Indexed",
+   "URL": "https://f1000research.com/articles/5-189/v1#article-reports",
+   "order": 0,
+   "name": "referee-status",
+   "label": "Referee status",
+   "group": {
+    "name": "current-referee-status",
+    "label": "Current Referee Status"
+   }
+  },
+  {
+   "value": "10.5256/f1000research.8538.r12524, Simon J. Hubbard, Faculty of Life Sciences, University of Manchester, Manchester, UK, 26 Feb 2016, version 1, indexed",
+   "URL": "https://f1000research.com/articles/5-189/v1#referee-response-12524",
+   "order": 0,
+   "name": "referee-response-12524",
+   "label": "Referee Report",
+   "group": {
+    "name": "article-reports",
+    "label": "Article Reports"
+   }
+  },
+  {
+   "value": "10.5256/f1000research.8538.r12528, Yaoqi Zhou, Yuedong Yang, Institute of Glycomics, Griffith University, Gold Coast, QLD, Australia, 29 Feb 2016, version 1, indexed",
+   "URL": "https://f1000research.com/articles/5-189/v1#referee-response-12528",
+   "order": 1,
+   "name": "referee-response-12528",
+   "label": "Referee Report",
+   "group": {
+    "name": "article-reports",
+    "label": "Article Reports"
+   }
+  },
+  {
+   "value": "<b>Simon Mitternacht</b>; \n<i>Posted: 29 Feb 2016</i>; Thanks for your comments and suggestions. I interpret most of them as being better solved by improving the functionality and/or documentation of the program itself, rather than revising the paper. For the sake of brevity not all the functionality is described in the paper, but is available in the online documentation.The default behavior is to calculate the SASA of the chains in the complex. The command option '--chain-groups' described in the paper allows the user to look at combinations of chains in isolation. The option '--separate-chains', is not discussed in the paper, but can be used to treats each chain separately (i.e. for a four chain protein '--chain-groups=A+B+C+D' would be equivalent to '--separate-chains'). My intention was to give the user the ability to calculate the total ASA of different combinations of chains, and then do the arithmetic of the changes themselves. I will look into adding command-line options to do this automatically in future versions of the program.&nbsp;The option '--foreach-residue' (not described in the paper) can be used to print the SASA of each residue.&nbsp;It is hard to give a general recommendation here, but I chose to use the same default resolution as NACCESS since this seems to be an accepted standard. If one is looking for changes due to minor conformational changes, a higher resolution might be needed. The average of \n<i>A</i>\n<sub>ref</sub>/\n<i>N</i> in Dataset 2 is 5.6 &Aring;\n<sup>2</sup>, and the average error in Figure 2 for the default resolution is around 0.002 &Aring;\n<sup>2</sup>, i.e. the error in the total SASA (\n<i>A</i>) is on average 0.002/5.6 &lt; 1/1000.&nbsp;As mentioned in the paper, the ProtOr atomic radii are used. I think the easiest way of comparing these with those employed in NACCESS and DSSP is to compare the radii in the configuration-files supplied with the program (in the directory share/).&nbsp;I was not able to get hold of FANTOM or any other analytical program, so I have unfortunately not been able to compare directly. As mentioned I compared with the semi-analytical Triforce, which was significantly slower when run on a single structure due to high initialization cost. I assume Triforce performs better when the same instance of the program is run on many structures, but that is a different use case.&nbsp;The command 'freesasa -h' lists all options. I decided not to provide this list in the paper because it will probably expand as time goes, and then the paper would quickly become outdated.&nbsp;Thank you for these suggestions, I will look into ways of adding more functionality to the Python bindings.",
+   "URL": "https://f1000research.com/articles/5-189/v1#referee-comment-1840",
+   "order": 2,
+   "name": "referee-comment-1840",
+   "label": "Referee Comment",
+   "group": {
+    "name": "article-reports",
+    "label": "Article Reports"
+   }
+  },
+  {
+   "value": "The author(s) declared that no grants were involved in supporting this work",
+   "order": 3,
+   "name": "grant-information",
+   "label": "Grant Information"
+  },
+  {
+   "value": "This is an open access article distributed under the terms of the Creative Commons Attribution Licence, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.Data associated with the article are available under the terms of the Creative Commons Zero \"No rights reserved\" data waiver (CC0 1.0 Public domain dedication).",
+   "order": 0,
+   "name": "copyright-info",
+   "label": "Copyright"
+  }
+ ]
+}

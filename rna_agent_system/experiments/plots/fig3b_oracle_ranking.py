@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Fig. 3b — structure-oracle ranking power (Cleveland dot plot, reset run).
 
-27 cells (3 oracles × 9 aptamer targets): per-cell Spearman ρ of oracle score
-against −log10 of measured Kd on the within-target affinity series, plotted as
+27 cells (3 oracles × 9 aptamer targets): per-cell Spearman ρ of predictor
+score against −log10 of measured Kd on the within-target affinity anchors,
+plotted as
 dots on a correlation axis.  Cells reaching the pre-registered ranking gate
-ρ ≥ 0.6 carry a nominal-pass ring — the only keyed element.  Printed ρ values
+ρ ≥ 0.6 carry a pass ring — the only keyed element, keyed "reaches ρ ≥ 0.6"
+(2026-10-02, user-adjudicated — the polished text's verb; the pre-polish key
+read "nominal pass").  Printed ρ values
 sit in a fixed right-hand column (forest-plot convention) so no value label
 can cross a pass ring.  Every element is the v3 reset re-run: 2026-08-29
 user-directed revisions dropped the retained-evidence open markers and
@@ -22,7 +25,7 @@ row block directly under the x-axis label (fig2i convention).
 
 Colours (palette rev 7): the three oracle identity colours — terracotta
 (EGARPS), slate blue (ProteinX), sage green (RhoFold) — data dots only; the
-nominal-pass rings in the held-out dark warm grey (#7A7672, neutral-dark
+pass rings in the held-out dark warm grey (#7A7672, neutral-dark
 semantic, matching fig3a's pass-ring convention).  All text is ink black
 regardless of element.
 
@@ -140,9 +143,12 @@ def main() -> int:
             })
 
     n_expected = len(ORACLE_ROWS) * len(TARGET_COLS)
-    fig_w, fig_h = 88 / 25.4, 76 / 25.4 * max(1.0, n_expected / 18.0)  # scales with cell count
+    fig_w, fig_h = 74 / 25.4, 76 / 25.4 * max(1.0, n_expected / 18.0)  # scales with cell count
+    # 2026-10-02 same-day second pass (the figure's moderate-narrowing pass):
+    # canvas 88 → 74 mm — the axes lose 15 mm of the x-range's empty flanks
+    # (dots span −0.8..1.0 of the −1.05..1.08 window); no data change
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax = fig.add_axes([0.30, 0.115, 0.595, 0.80])
+    ax = fig.add_axes([0.324, 0.115, 0.527, 0.80])
 
     # y positions.  Vertical budget in row units (1 unit ≈ 64 px at output):
     # 6-pt text needs ≈0.78, a data dot ±0.30, a pass ring ±0.52.  The
@@ -167,7 +173,7 @@ def main() -> int:
         color = ORACLE_COLORS[row["oracle"]]
         ax.scatter(row["rho"], y, s=17, c=color, edgecolors="white",
                    linewidths=0.4, zorder=5)
-        if row["rho"] >= GATE:  # nominal pass ring (fig3a convention)
+        if row["rho"] >= GATE:  # pass ring (fig3a convention)
             ax.scatter(row["rho"], y, s=50, facecolors="none",
                        edgecolors=C_GATE, linewidths=0.9, zorder=6)
         # printed ρ in the fixed right-hand column — never crosses a graphic
@@ -191,7 +197,7 @@ def main() -> int:
     ax.set_xticks([-1.0, -0.5, 0.0, 0.5, 1.0])
     ax.set_xticklabels(["−1", "−0.5", "0", "0.5", "1"], fontsize=FS)
     ax.tick_params(axis="both", labelsize=FS, length=1.5, pad=1)
-    ax.set_xlabel("Spearman ρ (oracle score vs −log$_{10}$ K$_{d}$)",
+    ax.set_xlabel("Spearman ρ (predictor score vs −log$_{10}$ K$_{d}$)",
                   fontsize=FS, labelpad=2)
     for s_name in ("top", "right", "left"):
         ax.spines[s_name].set_visible(False)
@@ -207,7 +213,7 @@ def main() -> int:
     handles = [
         Line2D([0], [0], marker="o", linestyle="none", markersize=7.0,
                markerfacecolor="none", markeredgecolor=C_GATE,
-               markeredgewidth=0.9, label="nominal pass (ρ ≥ 0.6)"),
+               markeredgewidth=0.9, label="reaches ρ ≥ 0.6"),
     ]
     ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.082),
               ncol=1, frameon=False, fontsize=FS, handletextpad=0.5,

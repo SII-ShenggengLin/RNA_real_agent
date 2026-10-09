@@ -1,0 +1,1154 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    17
+   ]
+  ],
+  "date-time": "2026-09-17T23:38:02Z",
+  "timestamp": 1789688282594,
+  "version": "4.0.1"
+ },
+ "reference-count": 73,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "1",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2023,
+      11,
+      18
+     ]
+    ],
+    "date-time": "2023-11-18T00:00:00Z",
+    "timestamp": 1700265600000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2023,
+      11,
+      18
+     ]
+    ],
+    "date-time": "2023-11-18T00:00:00Z",
+    "timestamp": 1700265600000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Commun"
+ ],
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:p>The powerful CRISPR genome editing system is hindered by its off-target effects, and existing computational tools achieved limited performance in genome-wide off-target prediction due to the lack of deep understanding of the CRISPR molecular mechanism. In this study, we propose to incorporate molecular dynamics (MD) simulations in the computational analysis of CRISPR system, and present CRISOT, an integrated tool suite containing four related modules, i.e., CRISOT-FP, CRISOT-Score, CRISOT-Spec, CRISORT-Opti for RNA-DNA molecular interaction fingerprint generation, genome-wide CRISPR off-target prediction, sgRNA specificity evaluation and sgRNA optimization of Cas9 system respectively. Our comprehensive computational and experimental tests reveal that CRISOT outperforms existing tools with extensive in silico validations and proof-of-concept experimental validations. In addition, CRISOT shows potential in accurately predicting off-target effects of the base editors and prime editors, indicating that the derived RNA-DNA molecular interaction fingerprint captures the underlying mechanisms of RNA-DNA interaction among distinct CRISPR systems. Collectively, CRISOT provides an efficient and generalizable framework for genome-wide CRISPR off-target prediction, evaluation and sgRNA optimization for improved targeting specificity in CRISPR genome editing.</jats:p>",
+ "DOI": "10.1038/s41467-023-42695-4",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2023,
+    11,
+    18
+   ]
+  ],
+  "date-time": "2023-11-18T13:02:09Z",
+  "timestamp": 1700312529000
+ },
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 83,
+ "title": [
+  "Genome-wide CRISPR off-target prediction and optimization using RNA-DNA interaction fingerprints"
+ ],
+ "prefix": "10.1038",
+ "volume": "14",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0001-9793-8676",
+   "authenticated-orcid": false,
+   "given": "Qinchang",
+   "family": "Chen",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Guohui",
+   "family": "Chuai",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-4979-9963",
+   "authenticated-orcid": false,
+   "given": "Haihang",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jin",
+   "family": "Tang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Liwen",
+   "family": "Duan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Huan",
+   "family": "Guan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-0900-8749",
+   "authenticated-orcid": false,
+   "given": "Wenhui",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wannian",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jiaying",
+   "family": "Wen",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-8259-0275",
+   "authenticated-orcid": false,
+   "given": "Erwei",
+   "family": "Zuo",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Qing",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-2578-1221",
+   "authenticated-orcid": false,
+   "given": "Qi",
+   "family": "Liu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2023,
+    11,
+    18
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "42695_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "416",
+   "DOI": "10.1038/s41586-020-2246-4",
+   "volume": "582",
+   "author": "JT Cortez",
+   "year": "2020",
+   "unstructured": "Cortez, J. T. et al. CRISPR screen in regulatory T cells reveals modulators of Foxp3. Nature 582, 416–420 (2020).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "42695_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "136",
+   "DOI": "10.1038/s41586-020-2099-x",
+   "volume": "580",
+   "author": "K Han",
+   "year": "2020",
+   "unstructured": "Han, K. et al. CRISPR screens in cancer spheroids identify 3D growth-specific vulnerabilities. Nature 580, 136–141 (2020).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "42695_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "822",
+   "DOI": "10.1038/nbt.2623",
+   "volume": "31",
+   "author": "Y Fu",
+   "year": "2013",
+   "unstructured": "Fu, Y. et al. High-frequency off-target mutagenesis induced by CRISPR-Cas nucleases in human cells. Nat. Biotechnol. 31, 822–826 (2013).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "e264",
+   "DOI": "10.1038/mtna.2015.37",
+   "volume": "4",
+   "author": "XH Zhang",
+   "year": "2015",
+   "unstructured": "Zhang, X. H., Tee, L. Y., Wang, X. G., Huang, Q. S. & Yang, S. H. Off-target effects in CRISPR/Cas9-mediated genome engineering. Mol. Ther. - Nucleic Acids 4, e264 (2015).",
+   "journal-title": "Mol. Ther. - Nucleic Acids"
+  },
+  {
+   "key": "42695_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1186/s13059-018-1534-x",
+   "volume": "19",
+   "author": "F Alkan",
+   "year": "2018",
+   "unstructured": "Alkan, F., Wenzel, A., Anthon, C., Havgaard, J. H. & Gorodkin, J. CRISPR-Cas9 off-targeting assessment with nucleic acid duplex energy parameters. Genome Biol. 19, 1–13 (2018).",
+   "journal-title": "Genome Biol."
+  },
+  {
+   "key": "42695_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "8693",
+   "DOI": "10.1073/pnas.1820523116",
+   "volume": "116",
+   "author": "D Zhang",
+   "year": "2019",
+   "unstructured": "Zhang, D., Hurst, T., Duan, D. & Chen, S. J. Unified energetics analysis unravels SpCas9 cleavage activity for optimal gRNA design. Proc. Natl Acad. Sci. Usa. 116, 8693–8698 (2019).",
+   "journal-title": "Proc. Natl Acad. Sci. Usa."
+  },
+  {
+   "key": "42695_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "827",
+   "DOI": "10.1038/nbt.2647",
+   "volume": "31",
+   "author": "PD Hsu",
+   "year": "2013",
+   "unstructured": "Hsu, P. D. et al. DNA targeting specificity of RNA-guided Cas9 nucleases. Nat. Biotechnol. 31, 827–832 (2013).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "184",
+   "DOI": "10.1038/nbt.3437",
+   "volume": "34",
+   "author": "JG Doench",
+   "year": "2016",
+   "unstructured": "Doench, J. G. et al. Optimized sgRNA design to maximize activity and minimize off-target effects of CRISPR-Cas9. Nat. Biotechnol. 34, 184–191 (2016).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1186/s13059-018-1459-4",
+   "volume": "19",
+   "author": "G Chuai",
+   "year": "2018",
+   "unstructured": "Chuai, G. et al. DeepCRISPR: Optimized CRISPR guide RNA design by deep learning. Genome Biol. 19, 1–18 (2018).",
+   "journal-title": "Genome Biol."
+  },
+  {
+   "key": "42695_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1002/advs.201903562",
+   "volume": "7",
+   "author": "J Lin",
+   "year": "2020",
+   "unstructured": "Lin, J., Zhang, Z., Zhang, S., Chen, J. & Wong, K. C. CRISPR-Net: A Recurrent Convolutional Network Quantifies CRISPR Off-Target Activities with Mismatches and Indels. Adv. Sci. 7, 1–17 (2020).",
+   "journal-title": "Adv. Sci."
+  },
+  {
+   "key": "42695_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "76610",
+   "DOI": "10.1109/ACCESS.2020.2989454",
+   "volume": "8",
+   "author": "Y Zhang",
+   "year": "2020",
+   "unstructured": "Zhang, Y., Long, Y., Yin, R. & Kwoh, C. K. DL-CRISPR: A deep learning method for off-target activity prediction in CRISPR/Cas9 with data augmentation. IEEE Access 8, 76610–76617 (2020).",
+   "journal-title": "IEEE Access"
+  },
+  {
+   "key": "42695_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "867",
+   "DOI": "10.1126/science.aad8282",
+   "volume": "351",
+   "author": "F Jiang",
+   "year": "2016",
+   "unstructured": "Jiang, F. et al. Structures of a CRISPR-Cas9 R-loop complex primed for DNA cleavage. Science 351, 867–871 (2016).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "42695_CR13",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-017-01496-2",
+   "volume": "8",
+   "author": "C Huai",
+   "year": "2017",
+   "unstructured": "Huai, C. et al. Structural insights into DNA cleavage activation of CRISPR-Cas9 system. Nat. Commun. 8, 1375 (2017).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "4067",
+   "DOI": "10.1016/j.cell.2022.09.026",
+   "volume": "185",
+   "author": "M Pacesa",
+   "year": "2022",
+   "unstructured": "Pacesa, M. et al. Structural basis for Cas9 off-target activity. Cell 185, 4067–4081 (2022).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "42695_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "191",
+   "DOI": "10.1038/s41586-022-05114-0",
+   "volume": "609",
+   "author": "M Pacesa",
+   "year": "2022",
+   "unstructured": "Pacesa, M. et al. R-loop formation and conformational activation mechanisms of Cas9. Nature 609, 191–196 (2022).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "42695_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "697",
+   "DOI": "10.1038/nbt825",
+   "volume": "21",
+   "author": "A Vazquez",
+   "year": "2003",
+   "unstructured": "Vazquez, A., Flammini, A., Maritan, A. & Vespignani, A. Global protein function prediction from protein-protein interaction networks. Nat. Biotechnol. 21, 697–700 (2003).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR17",
+   "first-page": "D277",
+   "volume": "48",
+   "author": "JM Sagendorf",
+   "year": "2020",
+   "unstructured": "Sagendorf, J. M., Markarian, N., Berman, H. M. & Rohs, R. DNAproDB: An expanded database and web-based tool for structural analysis of DNA-protein complexes. Nucleic Acids Res. 48, D277–D287 (2020).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "42695_CR18",
+   "first-page": "7018",
+   "volume": "48",
+   "author": "A Srivastava",
+   "year": "2020",
+   "unstructured": "Srivastava, A. et al. Structure-guided DNA–DNA attraction mediated by divalent cations. Nucleic Acids Res. 48, 7018–7026 (2020).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "42695_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "1201",
+   "DOI": "10.1016/j.scib.2022.04.023",
+   "volume": "67",
+   "author": "Q Chen",
+   "year": "2022",
+   "unstructured": "Chen, Q., Chuai, G., Zhang, C., Zhang, Q. & Liu, Q. Toward a molecular mechanism-based prediction of CRISPR-Cas9 targeting effects. Sci. Bull. 67, 1201–1204 (2022).",
+   "journal-title": "Sci. Bull."
+  },
+  {
+   "key": "42695_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "646",
+   "DOI": "10.1038/nsb0902-646",
+   "volume": "9",
+   "author": "M Karplus",
+   "year": "2002",
+   "unstructured": "Karplus, M. & McCammon, J. A. Molecular dynamics simulations of biomolecules. Nat. Struct. Biol. 9, 646–652 (2002).",
+   "journal-title": "Nat. Struct. Biol."
+  },
+  {
+   "key": "42695_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "533",
+   "DOI": "10.1038/s43588-022-00321-1",
+   "volume": "2",
+   "author": "S Shang",
+   "year": "2022",
+   "unstructured": "Shang, S., Cai, X. S. & Qi, L. S. Computation empowers CRISPR discovery and technology. Nat. Comput. Sci. 2, 533–535 (2022).",
+   "journal-title": "Nat. Comput. Sci."
+  },
+  {
+   "key": "42695_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "7260",
+   "DOI": "10.1073/pnas.1707645114",
+   "volume": "114",
+   "author": "G Palermo",
+   "year": "2017",
+   "unstructured": "Palermo, G., Miao, Y., Walker, R. C., Jinek, M. & McCammon, J. A. CRISPR-Cas9 conformational activation as elucidated from enhanced molecular simulations. Proc. Natl Acad. Sci. Usa. 114, 7260–7265 (2017).",
+   "journal-title": "Proc. Natl Acad. Sci. Usa."
+  },
+  {
+   "key": "42695_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "1348",
+   "DOI": "10.1021/jacs.9b10521",
+   "volume": "142",
+   "author": "KW East",
+   "year": "2020",
+   "unstructured": "East, K. W. et al. Allosteric Motions of the CRISPR-Cas9 HNH Nuclease Probed by NMR and Molecular Dynamics. J. Am. Chem. Soc. 142, 1348–1358 (2020).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "42695_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "756",
+   "DOI": "10.1021/acscentsci.6b00218",
+   "volume": "2",
+   "author": "G Palermo",
+   "year": "2016",
+   "unstructured": "Palermo, G., Miao, Y., Walker, R. C., Jinek, M. & McCammon, J. A. Striking plasticity of CRISPR-Cas9 and key role of non-target DNA, as revealed by molecular simulations. ACS Cent. Sci. 2, 756–763 (2016).",
+   "journal-title": "ACS Cent. Sci."
+  },
+  {
+   "key": "42695_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "490",
+   "DOI": "10.1038/nature16526",
+   "volume": "529",
+   "author": "BP Kleinstiver",
+   "year": "2016",
+   "unstructured": "Kleinstiver, B. P. et al. High-fidelity CRISPR-Cas9 nucleases with no detectable genome-wide off-target effects. Nature 529, 490–495 (2016).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "42695_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "84",
+   "DOI": "10.1126/science.aad5227",
+   "volume": "351",
+   "author": "IM Slaymaker",
+   "year": "2016",
+   "unstructured": "Slaymaker, I. M. et al. Rationally engineered Cas9 nucleases with improved specificity. Science 351, 84–88 (2016).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "42695_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "2168",
+   "DOI": "10.1021/acs.jpcb.9b07722",
+   "volume": "124",
+   "author": "A Ray",
+   "year": "2020",
+   "unstructured": "Ray, A. & Di Felice, R. Protein-mutation-induced conformational changes of the DNA and nuclease domain in CRISPR/Cas9 systems by molecular dynamics simulations. J. Phys. Chem. B 124, 2168–2179 (2020).",
+   "journal-title": "J. Phys. Chem. B"
+  },
+  {
+   "key": "42695_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1038/s41467-020-17952-5",
+   "volume": "11",
+   "author": "MA Coelho",
+   "year": "2020",
+   "unstructured": "Coelho, M. A. et al. CRISPR GUARD protects off-target sites from Cas9 nuclease activity using short guide RNAs. Nat. Commun. 11, 1–12 (2020).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "1247997",
+   "DOI": "10.1126/science.1247997",
+   "volume": "343",
+   "author": "M Jinek",
+   "year": "2014",
+   "unstructured": "Jinek, M. et al. Structures of Cas9 endonucleases reveal RNA-mediated conformational activation. Science 343, 1247997 (2014).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "42695_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "679",
+   "DOI": "10.1038/s41594-019-0258-2",
+   "volume": "26",
+   "author": "X Zhu",
+   "year": "2019",
+   "unstructured": "Zhu, X. et al. Cryo-EM structures reveal coordinated domain motions that govern DNA cleavage by Cas9. Nat. Struct. Mol. Biol. 26, 679–685 (2019).",
+   "journal-title": "Nat. Struct. Mol. Biol."
+  },
+  {
+   "key": "42695_CR31",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1126/sciadv.aao0027",
+   "volume": "3",
+   "author": "YS Dagdas",
+   "year": "2017",
+   "unstructured": "Dagdas, Y. S., Chen, J. S., Sternberg, S. H., Doudna, J. A. & Yildiz, A. A conformational checkpoint between DNA binding and cleavage by CRISPR-Cas9. Sci. Adv. 3, 1–9 (2017).",
+   "journal-title": "Sci. Adv."
+  },
+  {
+   "key": "42695_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1371/journal.pcbi.1005807",
+   "volume": "13",
+   "author": "S Abadi",
+   "year": "2017",
+   "unstructured": "Abadi, S., Yan, W. X., Amar, D. & Mayrose, I. A machine learning approach for predicting CRISPR-Cas9 cleavage efficiencies and patterns underlying its mechanism of action. PLoS Comput. Biol. 13, 1–24 (2017).",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "42695_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "785",
+   "DOI": "10.1145/2939672.2939785",
+   "volume": "22",
+   "author": "T Chen",
+   "year": "2016",
+   "unstructured": "Chen, T. & Guestrin, C. XGBoost: a scalable tree boosting system. Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data 22, 785–794 (2016).",
+   "journal-title": "Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data"
+  },
+  {
+   "key": "42695_CR34",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-022-28994-2",
+   "volume": "13",
+   "author": "B Eslami-Mossallam",
+   "year": "2022",
+   "unstructured": "Eslami-Mossallam, B. et al. A kinetic model predicts SpCas9 activity, improves off-target classification, and reveals the physical basis of targeting fidelity. Nat. Commun. 13, 1367 (2022).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR35",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-022-28028-x",
+   "volume": "13",
+   "author": "R Fu",
+   "year": "2022",
+   "unstructured": "Fu, R. et al. Systematic decomposition of sequence determinants governing CRISPR/Cas9 specificity. Nat. Commun. 13, 474 (2022).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "i656",
+   "DOI": "10.1093/bioinformatics/bty554",
+   "volume": "34",
+   "author": "J Lin",
+   "year": "2018",
+   "unstructured": "Lin, J. & Wong, K. C. Off-target predictions in CRISPR-Cas9 gene editing using deep learning. Bioinformatics 34, i656–i663 (2018).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "42695_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "187",
+   "DOI": "10.1038/nbt.3117",
+   "volume": "33",
+   "author": "SQ Tsai",
+   "year": "2015",
+   "unstructured": "Tsai, S. Q. et al. GUIDE-seq enables genome-wide profiling of off-target cleavage by CRISPR-Cas nucleases. Nat. Biotechnol. 33, 187–198 (2015).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "38",
+   "DOI": "10.1038/s41551-017-0178-6",
+   "volume": "2",
+   "author": "J Listgarten",
+   "year": "2018",
+   "unstructured": "Listgarten, J. et al. Prediction of off-target activities for the end-to-end design of CRISPR guide RNAs. Nat. Biomed. Eng. 2, 38–47 (2018).",
+   "journal-title": "Nat. Biomed. Eng."
+  },
+  {
+   "key": "42695_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1038/s41467-022-31543-6",
+   "volume": "13",
+   "author": "X Pan",
+   "year": "2022",
+   "unstructured": "Pan, X. et al. Massively targeted evaluation of therapeutic CRISPR off-targets in cells. Nat. Commun. 13, 1–14 (2022).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "794",
+   "DOI": "10.1016/j.molcel.2020.02.023",
+   "volume": "78",
+   "author": "JL Schmid-Burgk",
+   "year": "2020",
+   "unstructured": "Schmid-Burgk, J. L. et al. Highly parallel profiling of Cas9 variant specificity. Mol. Cell 78, 794–800.e8 (2020).",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "42695_CR41",
+   "first-page": "4768",
+   "volume": "31",
+   "author": "SM Lundberg",
+   "year": "2017",
+   "unstructured": "Lundberg, S. M. & Lee, S.-I. A unified approach to interpreting model predictions. Proc. 31st Int. Conf. Neural Inf. Process. Syst. 31, 4768–4777 (2017).",
+   "journal-title": "Proc. 31st Int. Conf. Neural Inf. Process. Syst."
+  },
+  {
+   "key": "42695_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "587",
+   "DOI": "10.1038/s41589-020-0490-4",
+   "volume": "16",
+   "author": "M Bratovič",
+   "year": "2020",
+   "unstructured": "Bratovič, M. et al. Bridge helix arginines play a critical role in Cas9 sensitivity to mismatches. Nat. Chem. Biol. 16, 587–595 (2020).",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "42695_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "5461",
+   "DOI": "10.1073/pnas.1700557114",
+   "volume": "114",
+   "author": "EA Boyle",
+   "year": "2017",
+   "unstructured": "Boyle, E. A. et al. High-throughput biochemical profiling reveals sequence determinants of dCas9 off-target binding and unbinding. Proc. Natl Acad. Sci. USA. 114, 5461–5466 (2017).",
+   "journal-title": "Proc. Natl Acad. Sci. USA."
+  },
+  {
+   "key": "42695_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1038/s41467-022-30515-0",
+   "volume": "13",
+   "author": "GI Corsi",
+   "year": "2022",
+   "unstructured": "Corsi, G. I. et al. CRISPR/Cas9 gRNA activity depends on free energy changes and on the target PAM context. Nat. Commun. 13, 1–14 (2022).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "1413",
+   "DOI": "10.1016/j.celrep.2018.01.045",
+   "volume": "22",
+   "author": "M Klein",
+   "year": "2018",
+   "unstructured": "Klein, M., Eslami-mossallam, B., Arroyo, D. G. & Depken, M. Hybridization kinetics explains CRISPR-Cas Off- targeting rules. Cell Rep. 22, 1413–1423 (2018).",
+   "journal-title": "Cell Rep."
+  },
+  {
+   "key": "42695_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "919",
+   "DOI": "10.1038/emboj.2011.441",
+   "volume": "31",
+   "author": "Y Li",
+   "year": "2012",
+   "unstructured": "Li, Y., Berke, I. C. & Modis, Y. DNA binding to proteolytically activated TLR9 is sequence-independent and enhanced by DNA curvature. EMBO J. 31, 919–931 (2012).",
+   "journal-title": "EMBO J."
+  },
+  {
+   "key": "42695_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "1262",
+   "DOI": "10.1038/nbt.3026",
+   "volume": "32",
+   "author": "JG Doench",
+   "year": "2014",
+   "unstructured": "Doench, J. G. et al. Rational design of highly active sgRNAs for CRISPR-Cas9-mediated gene inactivation. Nat. Biotechnol. 32, 1262–1267 (2014).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "80",
+   "DOI": "10.1126/science.1246981",
+   "volume": "343",
+   "author": "T Wang",
+   "year": "2014",
+   "unstructured": "Wang, T., Wei, J. J., Sabatini, D. M. & Lander, E. S. Genetic screens in human cells using the CRISPR-Cas9 system. Science 343, 80–84 (2014).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "42695_CR49",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1371/journal.pone.0124633",
+   "volume": "10",
+   "author": "M Stemmer",
+   "year": "2015",
+   "unstructured": "Stemmer, M., Thumberger, T., Del Sol Keyer, M., Wittbrodt, J. & Mateo, J. L. CCTop: An intuitive, flexible and reliable CRISPR/Cas9 target prediction tool. PLoS One 10, 1–11 (2015).",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "42695_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "e118",
+   "DOI": "10.1093/nar/gkv575",
+   "volume": "43",
+   "author": "R Singh",
+   "year": "2015",
+   "unstructured": "Singh, R., Kuscu, C., Quinlan, A., Qi, Y. & Adli, M. Cas9-chromatin binding information enables more accurate CRISPR off-target prediction. Nucleic Acids Res. 43, e118 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "42695_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "805",
+   "DOI": "10.1038/35081088",
+   "volume": "411",
+   "author": "BJ Wainger",
+   "year": "2001",
+   "unstructured": "Wainger, B. J., Degennaro, M., Santoro, B., Siegelbaum, S. A. & Tibbs, G. R. Molecular mechanism of cAMP modulation of HCN pacemaker channels. Nature 411, 805–810 (2001).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "42695_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "4989",
+   "DOI": "10.1523/JNEUROSCI.4390-03.2004",
+   "volume": "24",
+   "author": "JL Goldberg",
+   "year": "2004",
+   "unstructured": "Goldberg, J. L. et al. An oligodendrocyte lineage-specific semaphorin, sema5A, inhibits axon growth by retinal ganglion cells. J. Neurosci. 24, 4989–4999 (2004).",
+   "journal-title": "J. Neurosci."
+  },
+  {
+   "key": "42695_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "429",
+   "DOI": "10.1038/s41586-021-03534-y",
+   "volume": "593",
+   "author": "K Musunuru",
+   "year": "2021",
+   "unstructured": "Musunuru, K. et al. In vivo CRISPR base editing of PCSK9 durably lowers cholesterol in primates. Nature 593, 429–434 (2021).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "42695_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "252",
+   "DOI": "10.1056/NEJMoa2031054",
+   "volume": "384",
+   "author": "H Frangoul",
+   "year": "2021",
+   "unstructured": "Frangoul, H. et al. CRISPR-Cas9 gene editing for sickle cell disease and β-Thalassemia. N. Engl. J. Med. 384, 252–260 (2021).",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "42695_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "10576",
+   "DOI": "10.1093/nar/gkaa764",
+   "volume": "48",
+   "author": "DY Kim",
+   "year": "2020",
+   "unstructured": "Kim, D. Y. et al. Unbiased investigation of specificities of prime editing systems in human cells. Nucleic Acids Res 48, 10576–10589 (2020).",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "42695_CR56",
+   "doi-asserted-by": "publisher",
+   "first-page": "430",
+   "DOI": "10.1038/s41587-019-0050-1",
+   "volume": "37",
+   "author": "D Kim",
+   "year": "2019",
+   "unstructured": "Kim, D., Kim, D. E., Lee, G., Cho, S. I. & Kim, J. S. Genome-wide target specificity of CRISPR RNA-guided adenine base editors. Nat. Biotechnol. 37, 430–435 (2019).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1038/s41467-018-07988-z",
+   "volume": "10",
+   "author": "P Liang",
+   "year": "2019",
+   "unstructured": "Liang, P. et al. Genome-wide profiling of adenine base editor specificity by EndoV-seq. Nat. Commun. 10, 1–9 (2019).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "42695_CR58",
+   "doi-asserted-by": "publisher",
+   "first-page": "475",
+   "DOI": "10.1038/nbt.3852",
+   "volume": "35",
+   "author": "D Kim",
+   "year": "2017",
+   "unstructured": "Kim, D. et al. Genome-wide target specificities of CRISPR RNA-guided programmable deaminases. Nat. Biotechnol. 35, 475–480 (2017).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR59",
+   "doi-asserted-by": "publisher",
+   "first-page": "W340",
+   "DOI": "10.1093/nar/gkaa215",
+   "volume": "48",
+   "author": "R Rabinowitz",
+   "year": "2021",
+   "unstructured": "Rabinowitz, R., Abadi, S., Almog, S. & Offen, D. Prediction of synonymous corrections by the BE-FF computational tool expands the targeting scope of base editing. Nucleic Acids Res. 48, W340–W347 (2021).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "42695_CR60",
+   "doi-asserted-by": "publisher",
+   "first-page": "607",
+   "DOI": "10.1038/nmeth.4278",
+   "volume": "14",
+   "author": "SQ Tsai",
+   "year": "2017",
+   "unstructured": "Tsai, S. Q. et al. CIRCLE-seq: A highly sensitive in vitro screen for genome-wide CRISPR-Cas9 nuclease off-targets. Nat. Methods 14, 607–614 (2017).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "42695_CR61",
+   "doi-asserted-by": "publisher",
+   "first-page": "W26",
+   "DOI": "10.1093/nar/gkz394",
+   "volume": "47",
+   "author": "S Li",
+   "year": "2019",
+   "unstructured": "Li, S., Olson, W. K. & Lu, X. J. Web 3DNA 2.0 for the analysis, visualization, and modeling of 3D nucleic acid structures. Nucleic Acids Res. 47, W26–W34 (2019).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "42695_CR62",
+   "doi-asserted-by": "publisher",
+   "first-page": "55",
+   "DOI": "10.1038/nmeth.3658",
+   "volume": "13",
+   "author": "I Ivani",
+   "year": "2015",
+   "unstructured": "Ivani, I. et al. Parmbsc1: A refined force field for DNA simulations. Nat. Methods 13, 55–58 (2015).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "42695_CR63",
+   "doi-asserted-by": "publisher",
+   "first-page": "E1346",
+   "DOI": "10.1073/pnas.1713027115",
+   "volume": "115",
+   "author": "D Tan",
+   "year": "2018",
+   "unstructured": "Tan, D., Piana, S., Dirks, R. M. & Shaw, D. E. RNA force field with accuracy comparable to state-of-the-art protein force fields. Proc. Natl Acad. Sci. USA. 115, E1346–E1355 (2018).",
+   "journal-title": "Proc. Natl Acad. Sci. USA."
+  },
+  {
+   "key": "42695_CR64",
+   "doi-asserted-by": "publisher",
+   "first-page": "1619",
+   "DOI": "10.1016/j.chempr.2019.04.002",
+   "volume": "5",
+   "author": "M Terrazas",
+   "year": "2019",
+   "unstructured": "Terrazas, M. et al. The origins and the biological consequences of the Pur/Pyr DNA·RNA asymmetry. Chemistry 5, 1619–1631 (2019).",
+   "journal-title": "Chemistry"
+  },
+  {
+   "key": "42695_CR65",
+   "doi-asserted-by": "publisher",
+   "first-page": "19",
+   "DOI": "10.1016/j.softx.2015.06.001",
+   "volume": "1–2",
+   "author": "MJ Abraham",
+   "year": "2015",
+   "unstructured": "Abraham, M. J. et al. Gromacs: High performance molecular simulations through multi-level parallelism from laptops to supercomputers. SoftwareX 1–2, 19–25 (2015).",
+   "journal-title": "SoftwareX"
+  },
+  {
+   "key": "42695_CR66",
+   "doi-asserted-by": "publisher",
+   "first-page": "2583",
+   "DOI": "10.1093/bioinformatics/btv190",
+   "volume": "31",
+   "author": "R Kumar",
+   "year": "2015",
+   "unstructured": "Kumar, R. & Grubmüller, H. Do-x3dna: A tool to analyze structural fluctuations of dsDNA or dsRNA from molecular dynamics simulations. Bioinformatics 31, 2583–2585 (2015).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "42695_CR67",
+   "doi-asserted-by": "publisher",
+   "first-page": "3084",
+   "DOI": "10.1021/ct400341p",
+   "volume": "9",
+   "author": "DR Roe",
+   "year": "2013",
+   "unstructured": "Roe, D. R. & Cheatham, T. E. PTRAJ and CPPTRAJ: Software for processing and analysis of molecular dynamics trajectory data. J. Chem. Theory Comput. 9, 3084–3095 (2013).",
+   "journal-title": "J. Chem. Theory Comput."
+  },
+  {
+   "key": "42695_CR68",
+   "doi-asserted-by": "publisher",
+   "first-page": "1317",
+   "DOI": "10.1038/s41587-020-0555-7",
+   "volume": "38",
+   "author": "CR Lazzarotto",
+   "year": "2020",
+   "unstructured": "Lazzarotto, C. R. et al. CHANGE-seq reveals genetic and epigenetic effects on CRISPR-Cas9 genome-wide activity. Nat. Biotechnol. 38, 1317–1327 (2020).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "42695_CR69",
+   "doi-asserted-by": "publisher",
+   "first-page": "1473",
+   "DOI": "10.1093/bioinformatics/btu048",
+   "volume": "30",
+   "author": "S Bae",
+   "year": "2014",
+   "unstructured": "Bae, S., Park, J. & Kim, J. S. Cas-OFFinder: A fast and versatile algorithm that searches for potential off-target sites of Cas9 RNA-guided endonucleases. Bioinformatics 30, 1473–1475 (2014).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "42695_CR70",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Chen, Q. Supplementary Datasets for ‘Genome-wide CRISPR off- target prediction and optimization using RNA-DNA interaction fingerprints’. Zenodo https://doi.org/10.5281/zenodo.8420032 (2023).",
+   "DOI": "10.5281/zenodo.8420032"
+  },
+  {
+   "key": "42695_CR71",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Parsa, A. B., Movahedi, A., Taghipour, H., Derrible, S. & Mohammadian, A. (Kouros). Toward safer highways, application of XGBoost and SHAP for real-time accident detection and feature analysis. Acid. Anal. Prev. 136, 105405 (2020).",
+   "DOI": "10.1016/j.aap.2019.105405"
+  },
+  {
+   "key": "42695_CR72",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s13059-016-1012-2",
+   "volume": "17",
+   "author": "M Haeussler",
+   "year": "2016",
+   "unstructured": "Haeussler, M. et al. Evaluation of off-target and on-target scoring algorithms and integration into the guide RNA selection tool CRISPOR. Genome Biol. 17, 148 (2016).",
+   "journal-title": "Genome Biol."
+  },
+  {
+   "key": "42695_CR73",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Chen, Q. CRISOT suite for genome-wide CRISPR off-target prediction and optimization. Zenodo https://doi.org/10.5281/zenodo.8422214 (2023).",
+   "DOI": "10.5281/zenodo.8422214"
+  }
+ ],
+ "container-title": [
+  "Nature Communications"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.nature.com/articles/s41467-023-42695-4.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s41467-023-42695-4",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s41467-023-42695-4.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    11,
+    19
+   ]
+  ],
+  "date-time": "2023-11-19T01:04:35Z",
+  "timestamp": 1700355875000
+ },
+ "score": 75.71077,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/s41467-023-42695-4"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2023,
+    11,
+    18
+   ]
+  ]
+ },
+ "references-count": 73,
+ "journal-issue": {
+  "issue": "1",
+  "published-online": {
+   "date-parts": [
+    [
+     2023,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "42695"
+ ],
+ "URL": "https://doi.org/10.1038/s41467-023-42695-4",
+ "ISSN": [
+  "2041-1723"
+ ],
+ "issn-type": [
+  {
+   "value": "2041-1723",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2023,
+    11,
+    18
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "3 April 2023",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "19 October 2023",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "18 November 2023",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "Q.C.C., G.H.C., Q.Z., and Q.L. have filed a patent application (PCT/EP2022/087932, public) on the CRISOT suite, the patent applicants are F. Hoffmann-La Roche AG (for all designated States except USA), Hoffmann-La Roche Inc. (for USA only) and Tongji University (all designated States). Q.Z. was formerly employed by Roche. The remaining authors declare no competing interests.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  }
+ ],
+ "article-number": "7521"
+}

@@ -1,10 +1,11 @@
-"""Assemble Fig 1 composite (183 × 197 mm) from the vector panel PDFs.
+"""Assemble Fig 1 composite (183 × 191.5 mm) from the vector panel PDFs.
 
 Panel grid (mm, origin bottom-left), 3 mm gaps, 1 mm margins:
-    a  181 × 50  at (1, 146)   platform overview
-    b  181 × 44  at (1, 99)    Layer-4 multi-agent execution
-    c  181 × 50  at (1, 46)    CapGate evidence gating
-    d  181 × 42  at (1, 1)     GenNav constraint navigation
+    a  181 × 44  at (1, 146.5)  system overview (2026-10-02: badge band
+                                  removed, canvas 50 → 44)
+    b  181 × 44  at (1, 99.5)   Layer-4 multi-agent execution
+    c  181 × 50  at (1, 46.5)   CapGate evidence gating
+    d  181 × 42  at (1, 1)      GenNav constraint navigation
 Panel letters a–d drawn at assembly (8 pt Helvetica-Bold ink, Nature style).
 """
 import fitz  # PyMuPDF
@@ -13,9 +14,9 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 PANELS = os.path.join(HERE, "panels")
 
-PAGE_W, PAGE_H = 183.0, 200.0
+PAGE_W, PAGE_H = 183.0, 194.0
 LAYOUT = {  # letter -> (x, y, w, h) mm
-    "a": (1, 146.5, 181, 50),
+    "a": (1, 146.5, 181, 44),
     "b": (1, 99.5, 181, 44),
     "c": (1, 46.5, 181, 50),
     "d": (1, 1, 181, 42),

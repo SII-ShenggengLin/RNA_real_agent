@@ -4,14 +4,26 @@ McNemar discordance test annotated (Experiment 28 registered 20-target cohort
 
 Single-panel paired dumbbells: one row per target (25 = the 20 registered
 Exp-28 targets + the five Exp-30 deployment targets whose static arm Exp 40
-completed), JCD pass count 0–3 on the y axis against the two arms on the x
-axis (Rule-based pool A | GenNav navigation C).  Each target's A→C
-trajectory is drawn as a line between its two arm dots; colour encodes the
-direction of the pair-level discordance aggregated over the target's three
-profiles (C-favouring sage / A-favouring terracotta / concordant grey blue;
-colour semantics defined in the Fig. 5b caption — no in-figure key, the
-fig5b/5d house convention).  The exact two-sided McNemar result (b:c, P, n)
-is annotated as one line above the axes — the pooled 75-pair statistic.
+completed), passing profiles per target 0–3 on the y axis against the two
+conditions on the x axis (Static condition | Navigation).  Each
+target's trajectory is drawn as a line between its two condition dots;
+colour encodes the direction of the pair-level discordance aggregated over
+the target's three profiles (navigation-favouring sage / static-favouring
+terracotta / concordant grey blue; colour semantics defined in the Fig. 5b
+caption — no in-figure key, the fig5b/5d house convention).  The exact
+two-sided McNemar result (discordance counts, P, n) is annotated as one
+line above the axes — the pooled 75-pair statistic.
+
+2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch): the
+x tick labels aligned to the polished §2.5/legend condition names —
+"Rule-based pool" → "Static condition" and "GenNav navigation" →
+"Navigation"; no number, colour or geometry changed.
+
+2026-10-02 legend-sync re-render (figure-backlog batch): the y-axis label
+"JCD pass count (of 3 profiles)" decoded to "Passing profiles per target
+(of 3)" and the annotation's "McNemar b:c =" decoded to "McNemar
+discordance" — the JCD and b:c notations are retired paper-wide (the
+2026-10-02 legend batches); no number, colour or geometry changed.
 
 2026-09-08 figure-repair pass (user direction): the sign-flip permutation-
 null histogram inset and the right-hand paired-cell text column were
@@ -134,9 +146,9 @@ def main() -> int:
     ax.set_xlim(-0.42, 1.42)
     ax.set_ylim(-0.42, 3.42)
     ax.set_xticks([0.0, 1.0])
-    ax.set_xticklabels(["Rule-based pool", "GenNav navigation"])
+    ax.set_xticklabels(["Static condition", "Navigation"])
     ax.set_yticks([0, 1, 2, 3])
-    ax.set_ylabel("JCD pass count (of 3 profiles)", labelpad=2.0)
+    ax.set_ylabel("Passing profiles per target (of 3)", labelpad=2.0)
     ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(length=1.6, width=0.5, pad=1.6)
 
@@ -151,7 +163,7 @@ def main() -> int:
 
     # ── exact McNemar result: one line in the reserved strip above the axes ──
     stat = ax.text(0.5, 1.05,
-                   f"McNemar b:c = {b}:{c_},  P = {p:.3f},  n = {n}",
+                   f"McNemar discordance {b}:{c_},  P = {p:.3f},  n = {n}",
                    transform=ax.transAxes, ha="center", va="bottom",
                    fontsize=FONT, color=INK)
 

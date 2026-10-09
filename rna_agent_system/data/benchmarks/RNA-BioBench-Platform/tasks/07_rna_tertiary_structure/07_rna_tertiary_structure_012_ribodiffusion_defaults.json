@@ -26,6 +26,6 @@
   "evaluation_rubric": {
     "mean_plddt_threshold": 65.0
   },
-  "source": "SAM-I riboswitch",
+  "source": "TPP riboswitch (eukaryotic)",
   "paper_reference": "3D2V"
 }

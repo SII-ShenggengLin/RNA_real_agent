@@ -1,15 +1,38 @@
 """Fig 6a — External-baseline delivery map: the 11-workflow x 6-condition
 per-turn delivered-validity mosaic (the E21/E22 three-arm comparison).
 
-One tile per (workflow, condition) cell; the tile fill is the condition's
-palette colour blended toward white by the undelivered fraction of that
-cell's turns (a mild gamma on the white fraction keeps mid-range cells
-chromatic; endpoints unchanged — solid at full delivery, white with a
-condition-coloured outline at zero delivery), and the delivered/turns count
-is printed in the tile in ink.  Rows follow the canonical workflow order
-(palette.WORKFLOW_ORDER, grouped design workflows top, prediction-type
-workflows bottom with a divider); columns are RNADesignAgent / Bare LLM
-(zero-shot, few-shot) / ReAct agent (matched, 3x, 10x).
+One tile per (workflow, condition) cell; the tile fill encodes the
+delivered fraction of that cell's turns as a single-hue sage intensity
+ramp (a mild gamma on the white fraction keeps mid-range cells
+chromatic; endpoints unchanged — solid sage at full delivery, white
+with a dark-warm-grey outline at zero delivery), and the
+delivered/turns count is printed in the tile in ink.  Rows follow the
+canonical workflow order (palette.WORKFLOW_ORDER, grouped design
+workflows top, prediction-type workflows bottom with a divider);
+columns are RNADesignAgent / Bare model (zero-shot, few-shot) / ReAct
+loop (matched, 3x, 10x).
+
+2026-10-06 figure-adjustment pass (user direction, post-polish Fig. 6
+batch):
+- semantic recolour to the figs-2-5 house semantics: the per-condition
+  hues (slate blue / sand / grey blue / pale dusty rose / dusty mauve
+  pink / terracotta) retired in favour of a single-hue sage-green ramp
+  by delivered fraction (sage = the delivered/system class of fig4a's
+  gated arm, fig5c/5d's navigation and this figure's own 6b delivered
+  segment; the fig5c carpet convention of colour = outcome class),
+  zero-delivery tiles now white with a dark-warm-grey outline (fig5c's
+  both-fail colour, the palette's reserved failed/neutral-dark); the
+  condition identity is carried by the direct column labels, so no
+  per-column hue is needed;
+- group headers aligned with the polished Fig. 6 legend and section
+  2.6 wording: "Bare LLM" -> "Bare model" (legend: "the bare model"),
+  "ReAct agent" -> "ReAct loop" (legend: "the same-tool loop"; section
+  text: "a generic ReAct-style tool-using loop");
+- canvas 89 x 109 -> 79 x 109 mm (user direction: a narrower so b and
+  c/d can widen; mosaic 67 -> 57 mm at 9.5 mm per column — the floor
+  set by the "RNADesignAgent"/"Bare model" group-header clearance and
+  the 19.8-mm row-label block; the composite's right block grows to
+  100.1 mm).
 
 2026-09-14 figure-repair pass (user direction):
 - all text one 6-pt pure-black style (no greyed or tinted labels);
@@ -25,14 +48,9 @@ workflows bottom with a divider); columns are RNADesignAgent / Bare LLM
 - the colour-swatch key removed as redundant — every column is now
   directly labelled (direct labelling beats a legend under Nature
   conventions; this also retires the ragged two-row key);
-- condition colour for the bare few-shot column khaki -> grey blue:
-  khaki and sand were near-indistinguishable once blended toward white
-  (sage green, the first fig5g-flavoured candidate, is fig6b's
-  delivered-class colour and would clash within the figure).
-  Propagated to fig6c/fig6d to preserve the fig-6-wide condition-colour
-  identity;
 - canvas 89 x 92 -> 89 x 73.7 mm (the retired key and note freed the
-  bottom band).
+  bottom band; later stretched to 109 mm tall, then narrowed to 79 mm
+  in the 2026-10-06 pass above).
 
 2026-09-14 layout-repair pass (user direction — the Fig-6 composite
 re-arranged to a full-height left column a beside the b / c+d stack):
@@ -43,12 +61,14 @@ Data assertions: every cell equals the frozen comparison JSON
 (exp42_43_comparison/comparison.json, delivery_by_workflow) verbatim.
 
 Style (the fig5c/fig5g carpet house style): every text element one 6-pt
-pure-black style; colours exclusively from palette rev 7 (condition
-colours; tile fills are palette<->white blends, covered by the raster
-palette-purity check); absolute-mm geometry, single column; 1200-dpi PNG +
-vector PDF (fonttype 42).  Programmatic guards: every text in-canvas,
-pairwise text non-collision, row-label/mosaic clearance, header/mosaic
-clearance, exact canvas pixels, raster palette purity, white outer border.
+pure-black style; colours exclusively from palette rev 7 (the sage ramp
+base; tile fills are sage<->white blends and the zero-delivery outline
+is dark warm grey, covered by the raster palette-purity check);
+absolute-mm geometry, single column; 1200-dpi PNG + vector PDF
+(fonttype 42).  Programmatic guards: every text in-canvas, pairwise
+text non-collision, row-label/mosaic clearance, header/mosaic
+clearance, exact canvas pixels, raster palette purity, white outer
+border.
 
 Data  : experiments/results/exp42_43_comparison/comparison.json
 Usage : python experiments/plots/fig6a_baseline_delivery_mosaic.py
@@ -70,7 +90,12 @@ import numpy as np  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from palette import PALETTE_BY_NAME, WORKFLOW_LABELS, WORKFLOW_ORDER  # noqa: E402
+from palette import (  # noqa: E402
+    NEUTRAL_DARK,
+    PALETTE_BY_NAME,
+    WORKFLOW_LABELS,
+    WORKFLOW_ORDER,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 COMPARISON = (
@@ -80,22 +105,26 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 109.0
+W_MM, H_MM = 79.0, 109.0
 
+# single-hue sage ramp (the figs-2-5 house semantic: sage = the
+# delivered/system class); zero-delivery tiles are white with a
+# dark-warm-grey outline (fig5c's both-fail colour)
+BASE = PALETTE_BY_NAME["sage_green"]
 CONDITIONS = [
-    ("platform", PALETTE_BY_NAME["slate_blue"]),
-    ("bare_zeroshot", PALETTE_BY_NAME["sand"]),
-    ("bare_fewshot", PALETTE_BY_NAME["grey_blue"]),
-    ("react_matched", PALETTE_BY_NAME["pale_dusty_rose"]),
-    ("react_3x", PALETTE_BY_NAME["dusty_mauve_pink"]),
-    ("react_10x", PALETTE_BY_NAME["terracotta"]),
+    ("platform", BASE),
+    ("bare_zeroshot", BASE),
+    ("bare_fewshot", BASE),
+    ("react_matched", BASE),
+    ("react_3x", BASE),
+    ("react_10x", BASE),
 ]
 # two-row grouped headers: (group label, group centre in data units,
 # first/last column the group's spanning rule covers)
 GROUPS = [
     ("RNADesignAgent", 0.5, 0, 0),
-    ("Bare LLM", 2.0, 1, 2),
-    ("ReAct agent", 4.5, 3, 5),
+    ("Bare model", 2.0, 1, 2),
+    ("ReAct loop", 4.5, 3, 5),
 ]
 SUBS = ["", "zero-shot", "few-shot", "matched", "3×", "10×"]
 
@@ -130,7 +159,7 @@ H_PX = round(H_MM / 25.4 * DPI)
 
 # absolute-mm layout
 GAP_LABEL_MM = 1.4        # row-label block -> mosaic
-MOSAIC_W_MM = 67.0        # 6 columns x 11.17 mm
+MOSAIC_W_MM = 57.0        # 6 columns x 9.5 mm
 ROW_PITCH_MM = 8.81
 MOSAIC_TOP_MM = 9.6       # canvas top -> mosaic top (two header rows above)
 GROUP_Y_MM = 4.2          # group-header baseline, from canvas top
@@ -199,7 +228,7 @@ def main() -> int:
             ax.add_patch(Rectangle((col + 0.07, row + 0.16), 0.86, 0.68,
                                    facecolor=cell_fill(color, frac)
                                    if frac > 0 else "white",
-                                   edgecolor=color if frac == 0 else "none",
+                                   edgecolor=NEUTRAL_DARK if frac == 0 else "none",
                                    linewidth=0.5))
             ax.text(col + 0.5, row + 0.5, f"{cell['delivered']}/{cell['turns']}",
                     ha="center", va="center", fontsize=FONT, color=INK)
@@ -282,10 +311,10 @@ def main() -> int:
         t = np.clip(((uni - p) @ d) / denom, 0.0, 1.0)
         return np.linalg.norm(uni - (p + t[:, None] * d), axis=1) <= tol
 
-    # anchors: every tile fill actually drawn (condition colour blended by
-    # the cell's delivered fraction) -- in-tile ink text antialiases on the
-    # anchor<->black segment; the plain condition colours anchor the
-    # zero-delivery tile outlines
+    # anchors: every tile fill actually drawn (sage blended by the
+    # cell's delivered fraction) -- in-tile ink text antialiases on the
+    # anchor<->black segment; the dark-warm-grey zero-delivery outlines
+    # antialias on the dark-warm-grey<->white segment
     anchors = [tuple(int(v * 255) for v in blend_to_white(hexc, 0.0))
                for _, hexc in CONDITIONS]
     for wf in ROWS:
@@ -296,9 +325,10 @@ def main() -> int:
                                      cell_fill(hexc, cell["delivered"] / cell["turns"])))
     for a in anchors:
         ok |= on_segment_rgb(a, (0, 0, 0)) | on_segment_rgb(a, (255, 255, 255))
-    ok |= on_segment_rgb(
-        [int(PALETTE_BY_NAME["warm_grey"][i:i + 2], 16) for i in (1, 3, 5)],
-        (255, 255, 255))
+    for hexc in (PALETTE_BY_NAME["warm_grey"], NEUTRAL_DARK):
+        ok |= on_segment_rgb(
+            [int(hexc[i:i + 2], 16) for i in (1, 3, 5)],
+            (255, 255, 255))
     assert ok.all(), f"off-palette colours: {uni[~ok][:8].tolist()}"
     print(f"wrote fig6a_baseline_delivery_mosaic ({n} workflows x "
           f"{len(CONDITIONS)} conditions; raster QA green -> "

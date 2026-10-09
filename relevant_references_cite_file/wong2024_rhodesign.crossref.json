@@ -1,0 +1,1213 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    1
+   ]
+  ],
+  "date-time": "2026-10-01T02:44:12Z",
+  "timestamp": 1790822652100,
+  "version": "4.1.0"
+ },
+ "reference-count": 61,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "11",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2024,
+      11,
+      6
+     ]
+    ],
+    "date-time": "2024-11-06T00:00:00Z",
+    "timestamp": 1730851200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2024,
+      11,
+      6
+     ]
+    ],
+    "date-time": "2024-11-06T00:00:00Z",
+    "timestamp": 1730851200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/100000774",
+   "name": "United States Department of Defense | Defense Threat Reduction Agency",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "HDTRA12210032"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "HDTRA12210032"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000774",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000181",
+   "name": "United States Department of Defense | United States Air Force | AFMC | Air Force Office of Scientific Research",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "FA9550-22-1-0316"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "FA9550-22-1-0316"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000181",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100013114",
+   "name": "Broad Institute",
+   "doi-asserted-by": "publisher",
+   "id": [
+    {
+     "id": "10.13039/100013114",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000060",
+   "name": "U.S. Department of Health & Human Services | NIH | National Institute of Allergy and Infectious Diseases",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "K25AI168451"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "K25AI168451"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000060",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100001711",
+   "name": "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "SNSF_ 203071"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "SNSF_ 203071"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001711",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000001",
+   "name": "National Science Foundation",
+   "doi-asserted-by": "publisher",
+   "id": [
+    {
+     "id": "10.13039/100000001",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100007567",
+   "name": "City University of Hong Kong",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "24204023"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "24204023"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100007567",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "name": "Innovation and Technology Commission of the Hong Kong Special Administrative Region, China (GHP/065/21SZ) National Key R&D Program of China"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Comput Sci"
+ ],
+ "DOI": "10.1038/s43588-024-00720-6",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2024,
+    11,
+    6
+   ]
+  ],
+  "date-time": "2024-11-06T06:03:04Z",
+  "timestamp": 1730872984000
+ },
+ "page": "829-839",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 88,
+ "title": [
+  "Deep generative design of RNA aptamers using structural predictions"
+ ],
+ "prefix": "10.1038",
+ "volume": "4",
+ "author": [
+  {
+   "given": "Felix",
+   "family": "Wong",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0009-0004-4400-1133",
+   "authenticated-orcid": false,
+   "given": "Dongchen",
+   "family": "He",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-7936-4442",
+   "authenticated-orcid": false,
+   "given": "Aarti",
+   "family": "Krishnan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Liang",
+   "family": "Hong",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-7375-5445",
+   "authenticated-orcid": false,
+   "given": "Alexander Z.",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jiuming",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Zhihang",
+   "family": "Hu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Satotaka",
+   "family": "Omori",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Alicia",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-6840-8198",
+   "authenticated-orcid": false,
+   "given": "Jiahua",
+   "family": "Rao",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0009-0000-5116-2833",
+   "authenticated-orcid": false,
+   "given": "Qinze",
+   "family": "Yu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wengong",
+   "family": "Jin",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tianqing",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Katherine",
+   "family": "Ilia",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jack X.",
+   "family": "Chen",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-9747-4285",
+   "authenticated-orcid": false,
+   "given": "Shuangjia",
+   "family": "Zheng",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Irwin",
+   "family": "King",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-3664-6722",
+   "authenticated-orcid": false,
+   "given": "Yu",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-5560-8246",
+   "authenticated-orcid": false,
+   "given": "James J.",
+   "family": "Collins",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2024,
+    11,
+    6
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "720_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "487",
+   "DOI": "10.1016/0092-8674(81)90390-1",
+   "volume": "27",
+   "author": "TR Cech",
+   "year": "1981",
+   "unstructured": "Cech, T. R., Zaug, A. J. & Grabowski, P. J. In vitro splicing of the ribosomal RNA precursor of Tetrahymena: involvement of a guanosine nucleotide in the excision of the intervening sequence. Cell 27, 487–496 (1981).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "720_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "849",
+   "DOI": "10.1016/0092-8674(83)90117-4",
+   "volume": "35",
+   "author": "C Guerrier-Takada",
+   "year": "1983",
+   "unstructured": "Guerrier-Takada, C., Gardiner, K., Marsh, T., Pace, N. & Altman, S. The RNA moiety of ribonuclease P is the catalytic subunit of the enzyme. Cell 35, 849–857 (1983).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "720_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "96",
+   "DOI": "10.1038/s41580-020-00315-9",
+   "volume": "22",
+   "author": "L Statello",
+   "year": "2021",
+   "unstructured": "Statello, L., Guo, C.-J., Chen, L.-L. & Huarte, M. Gene regulation by long non-coding RNAs and its biological functions. Nat. Rev. Mol. Cell Biol. 22, 96–118 (2021).",
+   "journal-title": "Nat. Rev. Mol. Cell Biol."
+  },
+  {
+   "key": "720_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "151",
+   "DOI": "10.1677/JME-07-0160",
+   "volume": "40",
+   "author": "ME Dinger",
+   "year": "2008",
+   "unstructured": "Dinger, M. E., Mercer, T. R. & Mattick, J. S. RNAs as extracellular signaling molecules. J. Mol. Endocrinol. 40, 151–159 (2008).",
+   "journal-title": "J. Mol. Endocrinol."
+  },
+  {
+   "key": "720_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "537",
+   "DOI": "10.1038/nrd3141",
+   "volume": "9",
+   "author": "AD Keefe",
+   "year": "2010",
+   "unstructured": "Keefe, A. D., Pai, S. & Ellington, A. Aptamers as therapeutics. Nat. Rev. Drug. Discov. 9, 537–550 (2010).",
+   "journal-title": "Nat. Rev. Drug. Discov."
+  },
+  {
+   "key": "720_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "6988",
+   "DOI": "10.1073/pnas.89.15.6988",
+   "volume": "89",
+   "author": "C Tuerk",
+   "year": "1992",
+   "unstructured": "Tuerk, C., MacDougal, S. & Gold, L. RNA pseudoknots that inhibit human immunodeficiency virus type 1 reverse transcriptase. Proc. Natl. Acad. Sci. USA 89, 6988–6992 (1992).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "720_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "1255",
+   "DOI": "10.1016/j.cell.2016.04.059",
+   "volume": "165",
+   "author": "K Pardee",
+   "year": "2016",
+   "unstructured": "Pardee, K. et al. Rapid, low-cost detection of Zika virus using programmable biomolecular components. Cell 165, 1255–1266 (2016).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "720_CR8",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-020-18677-1",
+   "volume": "11",
+   "author": "NM Angenent-Mari",
+   "year": "2020",
+   "unstructured": "Angenent-Mari, N. M., Garruss, A. S., Soenksen, L. R., Church, G. & Collins, J. J. A deep learning approach to programmable RNA switches. Nat. Commun. 11, 5057 (2020).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR9",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-020-18676-2",
+   "volume": "11",
+   "author": "JA Valeri",
+   "year": "2020",
+   "unstructured": "Valeri, J. A. et al. Sequence-to-function deep learning frameworks for engineered riboregulators. Nat. Commun. 11, 5058 (2020).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR10",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-018-05864-4",
+   "volume": "9",
+   "author": "MK Takahashi",
+   "year": "2018",
+   "unstructured": "Takahashi, M. K. et al. A low-cost paper-based synthetic biology platform for analyzing gut microbiota and host biomarkers. Nat. Commun. 9, 3347 (2018).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "925",
+   "DOI": "10.1016/j.cell.2014.10.002",
+   "volume": "159",
+   "author": "AA Green",
+   "year": "2014",
+   "unstructured": "Green, A. A., Silver, P. A., Collins, J. J. & Yin, P. Toehold switches: de-novo-designed regulators of gene expression. Cell 159, 925–939 (2014).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "720_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "642",
+   "DOI": "10.1126/science.1207339",
+   "volume": "333",
+   "author": "JS Paige",
+   "year": "2011",
+   "unstructured": "Paige, J. S., Wu, K. Y. & Jaffrey, S. R. RNA mimics of green fluorescent protein. Science 333, 642–646 (2011).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "720_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "483",
+   "DOI": "10.1146/annurev-biophys-070816-034125",
+   "volume": "46",
+   "author": "Z Miao",
+   "year": "2017",
+   "unstructured": "Miao, Z. & Westhof, E. RNA structure: advances and assessment of 3D structure prediction. Annu. Rev. Biophys. 46, 483–503 (2017).",
+   "journal-title": "Annu. Rev. Biophys."
+  },
+  {
+   "key": "720_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "583",
+   "DOI": "10.1038/s41586-021-03819-2",
+   "volume": "596",
+   "author": "J Jumper",
+   "year": "2021",
+   "unstructured": "Jumper, J. et al. Highly accurate protein structure prediction with AlphaFold. Nature 596, 583–589 (2021).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "720_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "871",
+   "DOI": "10.1126/science.abj8754",
+   "volume": "373",
+   "author": "M Baek",
+   "year": "2021",
+   "unstructured": "Baek, M. et al. Accurate prediction of protein structures and interactions using a three-track neural network. Science 373, 871–876 (2021).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "720_CR16",
+   "unstructured": "Shen, T. et al. E2Efold-3D: end-to-end deep learning method for accurate de novo RNA 3D structure prediction. Preprint at https://arxiv.org/abs/2207.01586 (2022)."
+  },
+  {
+   "key": "720_CR17",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-023-42528-4",
+   "volume": "14",
+   "author": "W Wang",
+   "year": "2023",
+   "unstructured": "Wang, W. et al. trRosettaRNA: automated prediction of RNA 3D structure with transformer network. Nat. Commun. 14, 7266 (2023).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1010539",
+   "DOI": "10.1371/journal.pcbi.1010539",
+   "volume": "18",
+   "author": "R Pearce",
+   "year": "2022",
+   "unstructured": "Pearce, R., Li, Y., Omenn, G. S. & Zhang, Y. Fast and accurate ab initio protein structure prediction using deep learning potentials. PLoS Comput. Biol. 18, e1010539 (2022).",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "720_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "493",
+   "DOI": "10.1038/s41586-024-07487-w",
+   "volume": "630",
+   "author": "J Abramson",
+   "year": "2024",
+   "unstructured": "Abramson, J. et al. Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature 630, 493–500 (2024).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "720_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "1747",
+   "DOI": "10.1002/prot.26602",
+   "volume": "91",
+   "author": "R Das",
+   "year": "2023",
+   "unstructured": "Das, R. et al. Assessment of three-dimensional RNA structure prediction in CASP15. Proteins 91, 1747–1770 (2023).",
+   "journal-title": "Proteins"
+  },
+  {
+   "key": "720_CR21",
+   "unstructured": "Runge, F., Stoll, D., Falkner, S. & Hutter, F. Learning to design RNA. In International Conference on Learning Representations 2019 https://openreview.net/pdf?id=ByfyHh05tQ (ICLR, 2019)."
+  },
+  {
+   "key": "720_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "1838",
+   "DOI": "10.1021/acssynbio.9b00142",
+   "volume": "8",
+   "author": "MJ Wu",
+   "year": "2019",
+   "unstructured": "Wu, M. J., Andreasson, J. O. L., Kladwang, W., Greenleaf, W. & Das, R. Automated design of diverse stand-alone riboswitches. ACS Synth. Biol. 8, 1838–1846 (2019).",
+   "journal-title": "ACS Synth. Biol."
+  },
+  {
+   "key": "720_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "235",
+   "DOI": "10.1093/nar/28.1.235",
+   "volume": "28",
+   "author": "HM Berman",
+   "year": "2000",
+   "unstructured": "Berman, H. M. et al. The Protein Data Bank. Nucleic Acids Res. 28, 235–242 (2000).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR24",
+   "unstructured": "Jing, B. et al. Learning from protein structure with geometric vector perceptrons. In International Conference on Learning Representations https://openreview.net/pdf?id=1YLJDvSx6J4 (ICLR, 2021)."
+  },
+  {
+   "key": "720_CR25",
+   "unstructured": "Vaswani, A. et al. Attention is all you need. In Advances in Neural Information Processing Systems 5998–6008 (NIPS, 2017)."
+  },
+  {
+   "key": "720_CR26",
+   "first-page": "8946",
+   "volume": "162",
+   "author": "C Hsu",
+   "year": "2022",
+   "unstructured": "Hsu, C. et al. Learning inverse folding from millions of predicted structures. Proc. Mach. Learn. Res. 162, 8946–8970 (2022).",
+   "journal-title": "Proc. Mach. Learn. Res."
+  },
+  {
+   "key": "720_CR27",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s12859-017-1882-7",
+   "volume": "18",
+   "author": "X Yang",
+   "year": "2017",
+   "unstructured": "Yang, X., Yoshizoe, K., Taneda, A. & Tsuda, K. RNA inverse folding using Monte Carlo tree search. BMC Bioinform. 18, 468 (2017).",
+   "journal-title": "BMC Bioinform."
+  },
+  {
+   "key": "720_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "121",
+   "DOI": "10.1007/978-1-0716-4079-1_8",
+   "volume": "2847",
+   "author": "CK Joshi",
+   "year": "2025",
+   "unstructured": "Joshi, C. K. & Liò, P. gRNAde: a geometric deep learning for 3D RNA inverse design. Methods Mol. Biol. 2847, 121–135 (2025).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "720_CR29",
+   "unstructured": "Tan, C. et al. RDesign: hierarchical data-efficient representation learning for tertiary structure-based RNA design. In The Twelfth International Conference on Learning Representations (ICLR, 2024)."
+  },
+  {
+   "key": "720_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "110779",
+   "DOI": "10.1016/j.asoc.2023.110779",
+   "volume": "147",
+   "author": "Á Rubio-Largo",
+   "year": "2023",
+   "unstructured": "Rubio-Largo, Á., Lozano-García, N., Granado-Criado, J. & Vega-Rodríguez, M. A. Solving the RNA inverse folding problem through target structure decomposition and multiobjective evolutionary computation. Appl. Soft Comput. 147, 110779 (2023).",
+   "journal-title": "Appl. Soft Comput."
+  },
+  {
+   "key": "720_CR31",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-018-02993-8",
+   "volume": "9",
+   "author": "A Autour",
+   "year": "2018",
+   "unstructured": "Autour, A. et al. Fluorogenic RNA Mango aptamers for imaging small non-coding RNAs in mammalian cells. Nat. Commun. 9, 656 (2018).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "433",
+   "DOI": "10.1261/rna.078220.120",
+   "volume": "27",
+   "author": "SCY Jeng",
+   "year": "2021",
+   "unstructured": "Jeng, S. C. Y. et al. Fluorogenic aptamers resolve the flexibility of RNA junctions using orientation-dependent FRET. RNA 27, 433–444 (2021).",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "720_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "378",
+   "DOI": "10.1038/s43588-022-00249-6",
+   "volume": "2",
+   "author": "N Iwano",
+   "year": "2022",
+   "unstructured": "Iwano, N. et al. Generative aptamer discovery using RaptGen. Nat. Comput. Sci. 2, 378–386 (2022).",
+   "journal-title": "Nat. Comput. Sci."
+  },
+  {
+   "key": "720_CR34",
+   "doi-asserted-by": "publisher",
+   "first-page": "2665",
+   "DOI": "10.1093/bioinformatics/btu348",
+   "volume": "30",
+   "author": "P Jiang",
+   "year": "2014",
+   "unstructured": "Jiang, P. et al. MPBind: a meta-motif-based statistical framework and pipeline to predict binding potential of SELEX-derived aptamers. Bioinformatics 30, 2665–2667 (2014).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "720_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "1884",
+   "DOI": "10.1261/rna.056226.116",
+   "volume": "22",
+   "author": "SC Jeng",
+   "year": "2016",
+   "unstructured": "Jeng, S. C., Chan, H. H., Booy, E. P., McKenna, S. A. & Unrau, P. J. Fluorophore ligand binding and complex stabilization of the RNA Mango and RNA Spinach aptamers. RNA 22, 1884–1892 (2016).",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "720_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "807",
+   "DOI": "10.1038/nchembio.2392",
+   "volume": "13",
+   "author": "RJ Trachman III",
+   "year": "2017",
+   "unstructured": "Trachman, R. J. III et al. Structural basis for high-affinity fluorophore binding and activation by RNA Mango. Nat. Chem. Biol. 13, 807–813 (2017).",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "720_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "11878",
+   "DOI": "10.1021/jacs.2c04775",
+   "volume": "144",
+   "author": "LY Liu",
+   "year": "2022",
+   "unstructured": "Liu, L. Y., Ma, T. Z., Zeng, Y. L., Liu, W. & Mao, Z. W. Structural basis of pyridostatin and its derivatives specifically binding to G-quadruplexes. J. Am. Chem. Soc. 144, 11878–11887 (2022).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "720_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "3561",
+   "DOI": "10.1021/ja984153m",
+   "volume": "121",
+   "author": "FX Han",
+   "year": "1999",
+   "unstructured": "Han, F. X., Wheelhouse, R. T. & Hurley, L. H. Interactions of TMPyP4 and TMPyP2 with quadruplex DNA. Structural basis for the differential effects on telomerase inhibition. J. Am. Chem. Soc. 121, 3561–3570 (1999).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "720_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "919",
+   "DOI": "10.1111/cbdd.13015",
+   "volume": "90",
+   "author": "R Rocca",
+   "year": "2017",
+   "unstructured": "Rocca, R. et al. Molecular recognition of a carboxy pyridostatin toward G-quadruplex structures: why does it prefer RNA? Chem. Biol. Drug Des. 90, 919–925 (2017).",
+   "journal-title": "Chem. Biol. Drug Des."
+  },
+  {
+   "key": "720_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "4702",
+   "DOI": "10.1002/anie.201801999",
+   "volume": "57",
+   "author": "XC Chen",
+   "year": "2018",
+   "unstructured": "Chen, X. C. et al. Tracking the dynamic folding and unfolding of RNA G-quadruplexes in live cells. Angew. Chem. Int. Ed. Engl. 57, 4702–4706 (2018).",
+   "journal-title": "Angew. Chem. Int. Ed. Engl."
+  },
+  {
+   "key": "720_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "818",
+   "DOI": "10.1038/346818a0",
+   "volume": "346",
+   "author": "AD Ellington",
+   "year": "1990",
+   "unstructured": "Ellington, A. D. & Szostak, J. W. In vitro selection of RNA molecules that bind specific ligands. Nature 346, 818–822 (1990).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "720_CR42",
+   "first-page": "e142",
+   "volume": "43",
+   "author": "XJ Lu",
+   "year": "2015",
+   "unstructured": "Lu, X. J., Bussemaker, H. J. & Olson, W. K. DSSR: an integrated software tool for dissecting the spatial structure of RNA. Nucleic Acids Res. 43, e142 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "D221",
+   "DOI": "10.1093/nar/gky1034",
+   "volume": "47",
+   "author": "The RNAcentral Consortium.",
+   "year": "2019",
+   "unstructured": "The RNAcentral Consortium. RNAcentral: a hub of information for non-coding RNA sequences. Nucleic Acids Res. 47, D221–D229 (2019).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "2302",
+   "DOI": "10.1093/nar/gki524",
+   "volume": "33",
+   "author": "Y Zhang",
+   "year": "2005",
+   "unstructured": "Zhang, Y. & Skolnick, J. TM-align: a protein structure alignment algorithm based on the TM-score. Nucleic Acids Res. 33, 2302–2309 (2005).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "680",
+   "DOI": "10.1093/bioinformatics/btq003",
+   "volume": "26",
+   "author": "Y Huang",
+   "year": "2010",
+   "unstructured": "Huang, Y., Niu, B., Gao, Y., Fu, L. & Li, W. CD-HIT Suite: a web server for clustering and comparing biological sequences. Bioinformatics 26, 680–682 (2010).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "720_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "1109",
+   "DOI": "10.1038/s41592-022-01585-1",
+   "volume": "19",
+   "author": "C Zhang",
+   "year": "2022",
+   "unstructured": "Zhang, C., Shine, M., Pyle, A. M. & Zhang, Y. US-align: universal structure alignments of proteins, nucleic acids, and macromolecular complexes. Nat. Methods 19, 1109–1115 (2022).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "720_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "320",
+   "DOI": "10.1038/nature19946",
+   "volume": "537",
+   "author": "P-S Huang",
+   "year": "2016",
+   "unstructured": "Huang, P.-S., Boyken, S. E. & Baker, D. The coming of age of de novo protein design. Nature 537, 320–327 (2016).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "720_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "e63",
+   "DOI": "10.1093/nar/gkv1479",
+   "volume": "44",
+   "author": "MJ Boniecki",
+   "year": "2016",
+   "unstructured": "Boniecki, M. J. et al. SimRNA: a coarse-grained method for RNA folding simulations and 3D structure prediction. Nucleic Acids Res. 44, e63 (2016).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR49",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-023-41303-9",
+   "volume": "14",
+   "author": "Y Li",
+   "year": "2023",
+   "unstructured": "Li, Y. et al. Integrating end-to-end learning with deep geometrical potentials for ab initio RNA structure prediction. Nat. Commun. 14, 5745 (2023).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "199",
+   "DOI": "10.1007/978-1-4939-6433-8_13",
+   "volume": "1490",
+   "author": "M Biesiada",
+   "year": "2016",
+   "unstructured": "Biesiada, M. et al. Automated RNA 3D structure prediction with RNAComposer. Methods Mol. Biol. 1490, 199–215 (2016).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "720_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "117",
+   "DOI": "10.1038/s41592-023-02086-5",
+   "volume": "21",
+   "author": "M Baek",
+   "year": "2024",
+   "unstructured": "Baek, M. et al. Accurate prediction of protein–nucleic acid complexes using RoseTTAFoldNA. Nat. Methods 21, 117–121 (2024).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "720_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "6183",
+   "DOI": "10.1021/acs.jcim.3c01153",
+   "volume": "63",
+   "author": "DA Case",
+   "year": "2023",
+   "unstructured": "Case, D. A. et al. AmberTools. J. Chem. Inf. Model. 63, 6183–6191 (2023).",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "720_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "W30",
+   "DOI": "10.1093/nar/gky314",
+   "volume": "46",
+   "author": "T Zok",
+   "year": "2018",
+   "unstructured": "Zok, T. et al. RNApdbee 2.0: multifunctional tool for RNA structure annotation. Nucleic Acids Res. 46, W30–W35 (2018).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "e14",
+   "DOI": "10.1093/nar/gkab1074",
+   "volume": "50",
+   "author": "L Fu",
+   "year": "2022",
+   "unstructured": "Fu, L. et al. UFold: fast and accurate RNA secondary structure prediction with deep learning. Nucleic Acids Res. 50, e14 (2022).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "720_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "26",
+   "DOI": "10.1186/1748-7188-6-26",
+   "volume": "6",
+   "author": "R Lorenz",
+   "year": "2011",
+   "unstructured": "Lorenz, R. et al. ViennaRNA package 2.0. Algorithms Mol. Biol. 6, 26 (2011).",
+   "journal-title": "Algorithms Mol. Biol."
+  },
+  {
+   "key": "720_CR56",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-021-21194-4",
+   "volume": "12",
+   "author": "K Sato",
+   "year": "2021",
+   "unstructured": "Sato, K., Akiyama, M. & Sakakibara, Y. RNA secondary structure prediction using deep learning with thermodynamic integration. Nat. Commun. 12, 941 (2021).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "720_CR57",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Chen, J. et al. Interpretable RNA foundation model from unannotated data for highly accurate RNA structure and function predictions. Preprint at https://arxiv.org/abs/2204.00300 (2022).",
+   "DOI": "10.1101/2022.08.06.503062"
+  },
+  {
+   "key": "720_CR58",
+   "doi-asserted-by": "publisher",
+   "first-page": "e11081",
+   "DOI": "10.15252/msb.202211081",
+   "volume": "18",
+   "author": "F Wong",
+   "year": "2022",
+   "unstructured": "Wong, F. et al. Benchmarking AlphaFold-enabled molecular docking predictions for antibiotic discovery. Mol. Syst. Biol. 18, e11081 (2022).",
+   "journal-title": "Mol. Syst. Biol."
+  },
+  {
+   "key": "720_CR59",
+   "doi-asserted-by": "publisher",
+   "first-page": "472",
+   "DOI": "10.1038/s41589-019-0267-9",
+   "volume": "15",
+   "author": "RJ Trachman III",
+   "year": "2019",
+   "unstructured": "Trachman, R. J. III et al. Structure and functional reselection of the Mango-III fluorogenic RNA aptamer. Nat. Chem. Biol. 15, 472–479 (2019).",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "720_CR60",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Wong, F. et al. Supporting code for: Deep generative design of RNA aptamers using structural predictions. Zenodo https://doi.org/10.5281/zenodo.13892413 (2024).",
+   "DOI": "10.5281/zenodo.13892413"
+  },
+  {
+   "key": "720_CR61",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Trachman, R. J. & Ferre-D'Amare, A. R. Structure of the Mango-III fluorescent aptamer bound to YO3-biotin. Protein Data Bank https://doi.org/10.2210/pdb6UP0/pdb (2019).",
+   "DOI": "10.2210/pdb6UP0/pdb"
+  }
+ ],
+ "container-title": [
+  "Nature Computational Science"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.nature.com/articles/s43588-024-00720-6.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s43588-024-00720-6",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s43588-024-00720-6.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    11,
+    20
+   ]
+  ],
+  "date-time": "2024-11-20T19:05:10Z",
+  "timestamp": 1732129510000
+ },
+ "score": 49.87823,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/s43588-024-00720-6"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2024,
+    11,
+    6
+   ]
+  ]
+ },
+ "references-count": 61,
+ "journal-issue": {
+  "issue": "11",
+  "published-online": {
+   "date-parts": [
+    [
+     2024,
+     11
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "720"
+ ],
+ "URL": "https://doi.org/10.1038/s43588-024-00720-6",
+ "ISSN": [
+  "2662-8457"
+ ],
+ "issn-type": [
+  {
+   "value": "2662-8457",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2024,
+    11,
+    6
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "22 February 2024",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "7 October 2024",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "6 November 2024",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "J.J.C. is the founding scientific advisory board chair of Integrated Biosciences. F.W. is a co-founder of Integrated Biosciences. S.O. has an equity interest in Integrated Biosciences. The other authors declare no competing interests.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  }
+ ]
+}

@@ -4,7 +4,7 @@
 The panel: Kd-vs-score scatter for every anchor-set binder with a measured
 Kd (log Kd vs log native probability; all 62 Kd binders — the x-range
 extends to 1.2e3 nM so the three IFN-gamma family members at Kd 440–914 nM
-are on-panel).  The six-point thrombin series is emphasized (ink-black
+are on-panel).  The six-point thrombin Kd anchors are emphasized (ink-black
 rings) with a ringed-marker legend entry in the empty head band above the
 data (carrying its rho stat); pegaptanib is annotated (the marketed binder
 that scores near 1e-6 — the per-entry inversion that survives scale,
@@ -55,6 +55,11 @@ rendering (it also rhymes with the left panel's dots on the shared axis);
 now the single Kd–score scatter; the class-separation evidence (pooled
 AUROC + three-class medians) is text-reported in the caption and main text,
 and the screening failure is shown systematically in Fig. 3a.
+2026-10-02 revision (Fig. 3 text-sync batch, user-adjudicated): the legend
+entry reworded "thrombin series" to "thrombin Kd anchors" (the anchors
+vocabulary, body §2.3 synced the same day) and wrapped to two lines; the
+canvas narrowed to 57.2 mm so d, e and f share one three-column row (the
+user-directed 2026-10-02 layout; fonts unchanged 6-pt, no data change).
 
 Data  : experiments/results/exp13_affinity_calibration/{records.jsonl,summary.json}
 Usage : python experiments/plots/fig3d_affinity_calibration.py
@@ -119,14 +124,15 @@ def main() -> int:
     other_pts = [r for r in binders_kd if r["id"] not in thr_ids]
     np_all = np.array([r["raw"]["egarps_native_probability"] for r in records])
     ymin = np.floor(np.log10(np_all[np_all > 0].min())) - 0.5
-    ymax = 0.9  # head band above the data (max score 1.0) for the annotations
+    ymax = 1.2  # head band above the data (max score 1.0) for the legend —
+    # 2026-10-02: raised from 0.9 so the single-line legend entry clears the
+    # topmost (score ≈ 1) points at the narrowed 45-mm axes width
 
-    fig_w, fig_h = 3.70, 2.00  # inches (single panel e; 2026-08-31 composite
-    # revision: shrunk from 3.84 x 2.46 so the d|e composite row carries two
-    # matched-height panels — the height mismatch had left a blank band under
-    # e; fonts and axes-fraction layout unchanged, no data change)
+    fig_w, fig_h = 55.8 / 25.4, 44.0 / 25.4  # inches (2026-10-02 second
+    # pass: 57.2 → 55.8 mm, tracking the composite's narrowed three-column
+    # width; fonts unchanged 6-pt, no data change)
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_s = fig.add_axes([0.164, 0.270, 0.820, 0.698])
+    ax_s = fig.add_axes([10.5 / 55.8, 10.0 / 44.0, 43.8 / 55.8, 32.0 / 44.0])
 
     # ── left: Kd–score scatter ──────────────────────────────────────────────
     ax_s.scatter([r["kd_nm"] for r in other_pts],
@@ -161,7 +167,7 @@ def main() -> int:
     thr_handle = Line2D([0], [0], marker="o", linestyle="None",
                         markerfacecolor=C_BINDER, markeredgecolor=EMPH_EDGE,
                         markeredgewidth=0.6, markersize=4,
-                        label=(f"thrombin series ρ = "
+                        label=(f"thrombin Kd anchors ρ = "
                                f"{thr['spearman_rho_vs_neglog_kd']:+.2f} "
                                f"(n = {thr['n_points']})"))
     ax_s.legend(handles=[thr_handle], loc="upper left",

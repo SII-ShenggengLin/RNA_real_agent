@@ -4,7 +4,7 @@
 The positive side of the capability profile: the GEMORNA 5′UTR MRL expression
 oracle on the three measured-MRL anchor families (Sample et al. 2019 MPRA).
 Two side-by-side panels sharing the family rows — left: screening AUROC
-(high vs low MRL tier) against the gate 0.8 line; right: ranking Spearman ρ
+(high vs low MRL) against the gate 0.8 line; right: ranking Spearman ρ
 against measured MRL against the gate 0.6 line. The dot is the point
 estimate, the bar its 95% CI, the value printed above each dot; the
 in-distribution family (random 50-nt, the registered positive control) is
@@ -31,6 +31,11 @@ caption); row labels rewritten as the Sample-2019 5′UTR library names; value
 labels carry a white backing so they no longer cross the gate dashes; layout
 rebalanced (wider inter-panel gap, shorter figure). PNG at 1200 dpi (Nature
 Methods line-art guidance) + vector PDF (fonttype 42).
+
+2026-10-02 text sync (the Fig. 4 figure-by-figure pass): the left x-label's
+second line "(high vs low MRL tier)" lost "tier" — the word is retired
+paper-wide, and the Methods text's "split into high and low" carries the
+split semantics.
 
 Data  : experiments/results/exp14_mrl_oracle_certification/summary.json
 Usage : python experiments/plots/fig4a_mrl_certification.py
@@ -160,7 +165,7 @@ def main() -> int:
     gate_line(ax2, 0.6, "gate 0.6", y_top)
     ax2.set_yticks([])
 
-    for ax, xlabel in ((ax1, "Screening AUROC\n(high vs low MRL tier)"),
+    for ax, xlabel in ((ax1, "Screening AUROC\n(high vs low MRL)"),
                        (ax2, "Ranking Spearman ρ\n(predicted vs measured MRL)")):
         ax.set_xlim(X_MIN, X_MAX)
         ax.set_ylim(-0.5, len(rows) + 0.05)

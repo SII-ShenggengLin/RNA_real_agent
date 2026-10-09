@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Fig. 4h — production gate decisions by oracle (horizontal Cleveland dot
+"""Fig. 4h — production gate verdicts by predictor (horizontal Cleveland dot
 plot; §2.4 实验 5, Exp 24).
 
-One row per oracle (rows ordered by total decision count, descending — the
-Cleveland ordered-dot-plot convention), one marker per gate-decision class
-(reject / require_profiling / downgrade / allow), thin light-grey dumbbell connectors
-spanning each row's markers, and the decision count printed adjacent to every
-marker (CASCADE Fig. 5d/e convention). X axis = decisions issued by the
-production DecisionGate across the 241-run production campaign (Exp 24:
+One row per predictor (rows ordered by total verdict count, descending — the
+Cleveland ordered-dot-plot convention), one marker per verdict class
+(reject / require_profiling / downgrade / allow), thin light-grey dumbbell
+connectors spanning each row's markers, and the verdict count printed
+adjacent to every marker (CASCADE Fig. 5d/e convention). X axis = verdicts
+issued by the production DecisionGate across the 241-run production
+campaign (Exp 24:
 210 RNADesign-210 tasks + 31 PA form sessions, CapGate advisory — verdicts are
 logged identically under advisory and enforce; only enforcement differs).
 Counts come from the frozen audit-slice corpus (SHA-256 manifest, see
@@ -74,7 +75,7 @@ plt.rcParams.update({
 VERDICTS = ("reject", "require_profiling", "downgrade", "allow")
 VERDICT_LABELS = {
     "reject": "reject",
-    "require_profiling": "require profiling",
+    "require_profiling": "require-profiling",
     "downgrade": "downgrade",
     "allow": "allow",
 }
@@ -107,7 +108,7 @@ ORACLE_LABELS = {
     "iresfinder_score": "IRESfinder",
     "rnastop_stability": "RNASTOP stab.",
     "crisot_off_target_score": "CRISOT off-target",
-    "crgpt_handle_score": "CRGPT handle",
+    "crgpt_handle_score": "CRGPT sgRNA handle",
     "junction_metric": "Junction metric",
     "cai_metric": "CAI",
     "mfe_metric": "MFE (LinearFold)",
@@ -135,7 +136,10 @@ def main() -> int:
     )
 
     # ---- geometry (absolute mm) -----------------------------------------
-    fig_w_mm = 88.0                       # single column (fig3b/fig3g convention)
+    fig_w_mm = 112.8                      # 2026-10-07: 88.0 → 112.8, the
+                                          # equal-width four-row composite
+                                          # layout (g|h row spans the full
+                                          # content width)
     left_mm = 25.0                        # concise oracle row labels
     right_mm = 6.0
     row_mm = 5.4
@@ -188,7 +192,7 @@ def main() -> int:
     ax.set_xlim(0, x_max * 1.16)  # headroom for the largest value label
     ax.set_xticks(x_ticks)
     ax.tick_params(axis="both", labelsize=FS, length=1.5, pad=1)
-    ax.set_xlabel("Gate decisions (count)", fontsize=FS, labelpad=2)
+    ax.set_xlabel("Gate verdicts", fontsize=FS, labelpad=2)
     for s_name in ("top", "right"):
         ax.spines[s_name].set_visible(False)
     ax.grid(axis="x", color=NEUTRAL_GRID, linewidth=0.4, alpha=0.6)

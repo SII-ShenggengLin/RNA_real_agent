@@ -1,0 +1,1413 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T00:30:17Z",
+  "timestamp": 1791505817866,
+  "version": "4.3.4"
+ },
+ "reference-count": 107,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "3",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2017,
+      2,
+      27
+     ]
+    ],
+    "date-time": "2017-02-27T00:00:00Z",
+    "timestamp": 1488153600000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2017,
+      2,
+      27
+     ]
+    ],
+    "date-time": "2017-02-27T00:00:00Z",
+    "timestamp": 1488153600000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Biotechnol"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2017,
+    3
+   ]
+  ]
+ },
+ "DOI": "10.1038/nbt.3802",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2017,
+    2,
+    28
+   ]
+  ],
+  "date-time": "2017-02-28T10:14:10Z",
+  "timestamp": 1488276850000
+ },
+ "page": "222-229",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 1100,
+ "title": [
+  "Overcoming cellular barriers for RNA therapeutics"
+ ],
+ "prefix": "10.1038",
+ "volume": "35",
+ "author": [
+  {
+   "given": "Steven F",
+   "family": "Dowdy",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2017,
+    2,
+    27
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "BFnbt3802_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "890",
+   "DOI": "10.1212/WNL.0000000000002445",
+   "volume": "86",
+   "author": "CA Chiriboga",
+   "year": "2016",
+   "unstructured": "Chiriboga, C.A. et al. Results from a phase 1 study of nusinersen (ISIS-SMN(Rx)) in children with spinal muscular atrophy. Neurology 86, 890–897 (2016).",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "BFnbt3802_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "899",
+   "DOI": "10.1177/0883073815627882",
+   "volume": "31",
+   "author": "M Haché",
+   "year": "2016",
+   "unstructured": "Haché, M. et al. Intrathecal injections in children with spinal muscular atrophy: nusinersen clinical trial experience. J. Child Neurol. 31, 899–906 (2016).",
+   "journal-title": "J. Child Neurol."
+  },
+  {
+   "key": "BFnbt3802_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "41",
+   "DOI": "10.1056/NEJMoa1609243",
+   "volume": "376",
+   "author": "K Fitzgerald",
+   "year": "2017",
+   "unstructured": "Fitzgerald, K. et al. A highly durable RNAi therapeutic inhibitor of PCSK9. N. Engl. J. Med. 376, 41–51 (2017).",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "BFnbt3802_CR4",
+   "unstructured": "Rich, A. in Horizons In Biochemistry (eds. Kasha, M. & Pullman, B.) 103–126 (Academic Press, New York, 1962)."
+  },
+  {
+   "key": "BFnbt3802_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "270",
+   "DOI": "10.1007/BF02102359",
+   "volume": "21",
+   "author": "AL Koch",
+   "year": "1984",
+   "unstructured": "Koch, A.L. Primeval cells: possible energy-generating and cell-division mechanisms. J. Mol. Evol. 21, 270–277 (1984-1985).",
+   "journal-title": "J. Mol. Evol."
+  },
+  {
+   "key": "BFnbt3802_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "391",
+   "DOI": "10.1089/ast.2012.0868",
+   "volume": "13",
+   "author": "M Neveu",
+   "year": "2013",
+   "unstructured": "Neveu, M., Kim, H.J. & Benner, S.A. The “strong” RNA world hypothesis: fifty years old. Astrobiology 13, 391–403 (2013).",
+   "journal-title": "Astrobiology"
+  },
+  {
+   "key": "BFnbt3802_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "615",
+   "DOI": "10.1146/annurev-biochem-080411-124036",
+   "volume": "83",
+   "author": "JC Blain",
+   "year": "2014",
+   "unstructured": "Blain, J.C. & Szostak, J.W. Progress toward synthetic cells. Annu. Rev. Biochem. 83, 615–640 (2014).",
+   "journal-title": "Annu. Rev. Biochem."
+  },
+  {
+   "key": "BFnbt3802_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "71",
+   "DOI": "10.1016/j.sbi.2016.06.001",
+   "volume": "39",
+   "author": "K Abe",
+   "year": "2016",
+   "unstructured": "Abe, K. & Fujiyoshi, Y. Cryo-electron microscopy for structure analyses of membrane proteins in the lipid bilayer. Curr. Opin. Struct. Biol. 39, 71–78 (2016).",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "BFnbt3802_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "363",
+   "DOI": "10.1016/j.cytogfr.2007.06.016",
+   "volume": "18",
+   "author": "MP Gantier",
+   "year": "2007",
+   "unstructured": "Gantier, M.P. & Williams, B.R. The response of mammalian cells to double-stranded RNA. Cytokine Growth Factor Rev. 18, 363–371 (2007).",
+   "journal-title": "Cytokine Growth Factor Rev."
+  },
+  {
+   "key": "BFnbt3802_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "201",
+   "DOI": "10.7150/thno.5743",
+   "volume": "3",
+   "author": "F Iversen",
+   "year": "2013",
+   "unstructured": "Iversen, F. et al. Optimized siRNA-PEG conjugates for extended blood circulation and reduced urine excretion in mice. Theranostics 3, 201–209 (2013).",
+   "journal-title": "Theranostics"
+  },
+  {
+   "key": "BFnbt3802_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "101",
+   "DOI": "10.1089/nat.2013.0463",
+   "volume": "24",
+   "author": "RL Juliano",
+   "year": "2014",
+   "unstructured": "Juliano, R.L., Ming, X., Carver, K. & Laing, B. Cellular uptake and intracellular trafficking of oligonucleotides: implications for oligonucleotide pharmacology. Nucleic Acid Ther. 24, 101–113 (2014).",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnbt3802_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "3",
+   "DOI": "10.1016/S0169-409X(00)00129-0",
+   "volume": "46",
+   "author": "CA Lipinski",
+   "year": "2001",
+   "unstructured": "Lipinski, C.A., Lombardo, F., Dominy, B.W. & Feeney, P.J. Experimental and computational approaches to estimate solubility and permeability in drug discovery and development settings. Adv. Drug Deliv. Rev. 46, 3–26 (2001).",
+   "journal-title": "Adv. Drug Deliv. Rev."
+  },
+  {
+   "key": "BFnbt3802_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "857",
+   "DOI": "10.1146/annurev.biochem.78.081307.110540",
+   "volume": "78",
+   "author": "GJ Doherty",
+   "year": "2009",
+   "unstructured": "Doherty, G.J. & McMahon, H.T. Mechanisms of endocytosis. Annu. Rev. Biochem. 78, 857–902 (2009).",
+   "journal-title": "Annu. Rev. Biochem."
+  },
+  {
+   "key": "BFnbt3802_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "6518",
+   "DOI": "10.1093/nar/gkw236",
+   "volume": "44",
+   "author": "RL Juliano",
+   "year": "2016",
+   "unstructured": "Juliano, R.L. The delivery of therapeutic oligonucleotides. Nucleic Acids Res. 44, 6518–6548 (2016).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "285",
+   "DOI": "10.1073/pnas.75.1.285",
+   "volume": "75",
+   "author": "ML Stephenson",
+   "year": "1978",
+   "unstructured": "Stephenson, M.L. & Zamecnik, P.C. Inhibition of Rous sarcoma viral RNA translation by a specific oligodeoxyribonucleotide. Proc. Natl. Acad. Sci. USA 75, 285–288 (1978).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "280",
+   "DOI": "10.1073/pnas.75.1.280",
+   "volume": "75",
+   "author": "P Zamecnik",
+   "year": "1978",
+   "unstructured": "Zamecnik, P. & Stephenson, M. Inhibition of Rous sarcoma virus replication and cell transformation by a specific oligodeoxynucleotide. Proc. Natl. Acad. Sci. USA 75, 280–284 (1978).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "4292",
+   "DOI": "10.1021/ja00970a054",
+   "volume": "88",
+   "author": "F Eckstein",
+   "year": "1966",
+   "unstructured": "Eckstein, F. Nucleoside phosphorothioates. J. Am. Chem. Soc. 88, 4292–4294 (1966).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnbt3802_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "6077",
+   "DOI": "10.1021/ja00332a054",
+   "volume": "106",
+   "author": "WJ Stec",
+   "year": "1984",
+   "unstructured": "Stec, W.J., Zon, G. & Egan, W. Automated solid-phase synthesis, separation, and stereochemistry of phosphorothioate analogs of oligodeoxyribonucleotides. J. Am. Chem. Soc. 106, 6077–6079 (1984).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnbt3802_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "7706",
+   "DOI": "10.1073/pnas.84.21.7706",
+   "volume": "84",
+   "author": "M Matsukura",
+   "year": "1987",
+   "unstructured": "Matsukura, M. et al. Phosphorothioate analogs of oligodeoxynucleotides: inhibitors of replication and cytopathic effects of human immunodeficiency virus. Proc. Natl. Acad. Sci. USA 84, 7706–7710 (1987).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "7079",
+   "DOI": "10.1073/pnas.85.19.7079",
+   "volume": "85",
+   "author": "S Agrawal",
+   "year": "1988",
+   "unstructured": "Agrawal, S. et al. Oligodeoxynucleoside phosphoramidates and phosphorothioates as inhibitors of human immunodeficiency virus. Proc. Natl. Acad. Sci. USA 85, 7079–7083 (1988).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "374",
+   "DOI": "10.1089/nat.2014.0506",
+   "volume": "24",
+   "author": "F Eckstein",
+   "year": "2014",
+   "unstructured": "Eckstein, F. Phosphorothioates, essential components of therapeutic oligonucleotides. Nucleic Acid Ther. 24, 374–387 (2014).",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnbt3802_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "146",
+   "DOI": "10.1016/0014-5793(95)00517-D",
+   "volume": "366",
+   "author": "DA Weidner",
+   "year": "1995",
+   "unstructured": "Weidner, D.A., Valdez, B.C., Henning, D., Greenberg, S. & Busch, H. Phosphorothioate oligonucleotides bind in a non sequence-specific manner to the nucleolar protein C23/nucleolin. FEBS Lett. 366, 146–150 (1995).",
+   "journal-title": "FEBS Lett."
+  },
+  {
+   "key": "BFnbt3802_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "2927",
+   "DOI": "10.1093/nar/gkv143",
+   "volume": "43",
+   "author": "XH Liang",
+   "year": "2015",
+   "unstructured": "Liang, X.H., Sun, H., Shen, W. & Crooke, S.T. Identification and characterization of intracellular proteins that bind oligonucleotides with phosphorothioate linkages. Nucleic Acids Res. 43, 2927–2945 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "7156",
+   "DOI": "10.1021/ja973801j",
+   "volume": "120",
+   "author": "WJ Stec",
+   "year": "1998",
+   "unstructured": "Stec, W.J. et al. Deoxyribonucleoside 3-O-(2-thio- and 2-oxo- “spiro”-4,4-pentamethylene-1,2,3-oxathiaphospholane)s: monomers for stereocontrolled synthesis of oligo(deox- yribonucleoside phosphorothioate)s and chimeric PS/PO oligonucleotides. J. Am. Chem. Soc. 120, 7156–7167 (1998).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnbt3802_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "16031",
+   "DOI": "10.1021/ja805780u",
+   "volume": "130",
+   "author": "N Oka",
+   "year": "2008",
+   "unstructured": "Oka, N., Yamamoto, M., Sato, T. & Wada, T. Solid-phase synthesis of stereoregular oligodeoxyribonucleoside phosphorothioates using bicyclic oxazaphospholidine derivatives as monomer units. J. Am. Chem. Soc. 130, 16031–16037 (2008).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnbt3802_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "13456",
+   "DOI": "10.1093/nar/gku1115",
+   "volume": "42",
+   "author": "WB Wan",
+   "year": "2014",
+   "unstructured": "Wan, W.B. et al. Synthesis, biophysical properties and biological activity of second generation antisense oligonucleotides containing chiral phosphorothioate linkages. Nucleic Acids Res. 42, 13456–13468 (2014).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "875",
+   "DOI": "10.1517/14712598.2013.774366",
+   "volume": "13",
+   "author": "M Dirin",
+   "year": "2013",
+   "unstructured": "Dirin, M. & Winkler, J. Influence of diverse chemical modifications on the ADME characteristics and toxicology of antisense oligonucleotides. Expert Opin. Biol. Ther. 13, 875–888 (2013).",
+   "journal-title": "Expert Opin. Biol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "e3",
+   "DOI": "10.1093/nar/gkp841",
+   "volume": "38",
+   "author": "CA Stein",
+   "year": "2010",
+   "unstructured": "Stein, C.A. et al. Efficient gene silencing by delivery of locked nucleic acid antisense oligonucleotides, unassisted by transfection reagents. Nucleic Acids Res. 38, e3 (2010).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "9350",
+   "DOI": "10.1093/nar/gkv964",
+   "volume": "43",
+   "author": "D Castanotto",
+   "year": "2015",
+   "unstructured": "Castanotto, D. et al. A cytoplasmic pathway for gapmer antisense oligonucleotide-mediated gene silencing in mammalian cells. Nucleic Acids Res. 43, 9350–9361 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "3892",
+   "DOI": "10.1093/nar/gkw144",
+   "volume": "44",
+   "author": "XH Liang",
+   "year": "2016",
+   "unstructured": "Liang, X.H. et al. Hsp90 protein interacts with phosphorothioate oligonucleotides containing hydrophobic 2′-modifications and enhances antisense activity. Nucleic Acids Res. 44, 3892–3907 (2016).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR31",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Crooke, S.T., Wang, S., Vickers, T.A., Shen, W. & Liang, X.-h. Cellular uptake and trafficking of antisense oligonucleotides. Nat. Biotechnol. \n                    http://dx.doi.org/10.1038/nbt3779\n                    \n                   (2017).",
+   "DOI": "10.1038/nbt3779"
+  },
+  {
+   "key": "BFnbt3802_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "R18",
+   "DOI": "10.1093/hmg/ddv476",
+   "volume": "25",
+   "author": "AL Beaudet",
+   "year": "2016",
+   "unstructured": "Beaudet, A.L. & Meng, L. Gene-targeting pharmaceuticals for single-gene disorders. Hum. Mol. Genet. 25, R18–R26 (2016).",
+   "journal-title": "Hum. Mol. Genet."
+  },
+  {
+   "key": "BFnbt3802_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "8796",
+   "DOI": "10.1093/nar/gku531",
+   "volume": "42",
+   "author": "TP Prakash",
+   "year": "2014",
+   "unstructured": "Prakash, T.P. et al. Targeted delivery of antisense oligonucleotides to hepatocytes using triantennary N-acetyl galactosamine improves potency 10-fold in mice. Nucleic Acids Res. 42, 8796–8807 (2014).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR34",
+   "doi-asserted-by": "publisher",
+   "first-page": "e317",
+   "DOI": "10.1038/mtna.2016.26",
+   "volume": "5",
+   "author": "RZ Yu",
+   "year": "2016",
+   "unstructured": "Yu, R.Z. et al. Disposition and pharmacology of a GalNAc3-conjugated ASO targeting human lipoprotein (a) in mice. Mol. Ther. Nucleic Acids 5, e317 (2016).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnbt3802_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "609",
+   "DOI": "10.1021/jm981078h",
+   "volume": "42",
+   "author": "LA Sliedregt",
+   "year": "1999",
+   "unstructured": "Sliedregt, L.A. et al. Design and synthesis of novel amphiphilic dendritic galactosides for selective targeting of liposomes to the hepatic asialoglycoprotein receptor. J. Med. Chem. 42, 609–618 (1999).",
+   "journal-title": "J. Med. Chem."
+  },
+  {
+   "key": "BFnbt3802_CR36",
+   "unstructured": "Cummings, R. & McEver, R. in Essentials of Glycobiology. 2nd edn. (eds. Varki, A. et al.) Chapter 31 (Cold Spring Harbor (NY); Cold Spring Harbor Laboratory Press, 2009)."
+  },
+  {
+   "key": "BFnbt3802_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "2290",
+   "DOI": "10.1172/JCI25424",
+   "volume": "116",
+   "author": "RA Smith",
+   "year": "2006",
+   "unstructured": "Smith, R.A. et al. Antisense oligonucleotide therapy for neurodegenerative disease. J. Clin. Invest. 116, 2290–2296 (2006).",
+   "journal-title": "J. Clin. Invest."
+  },
+  {
+   "key": "BFnbt3802_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "1031",
+   "DOI": "10.1016/j.neuron.2012.05.009",
+   "volume": "74",
+   "author": "HB Kordasiewicz",
+   "year": "2012",
+   "unstructured": "Kordasiewicz, H.B. et al. Sustained therapeutic reversal of Huntington's disease by transient repression of huntingtin synthesis. Neuron 74, 1031–1044 (2012).",
+   "journal-title": "Neuron"
+  },
+  {
+   "key": "BFnbt3802_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "895",
+   "DOI": "10.1016/j.cell.2012.08.002",
+   "volume": "150",
+   "author": "D Yu",
+   "year": "2012",
+   "unstructured": "Yu, D. et al. Single-stranded RNAs use RNAi to potently and allele-selectively inhibit mutant huntingtin expression. Cell 150, 895–908 (2012).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "BFnbt3802_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "459",
+   "DOI": "10.1038/nn.2779",
+   "volume": "14",
+   "author": "M Polymenidou",
+   "year": "2011",
+   "unstructured": "Polymenidou, M. et al. Long pre-mRNA depletion and RNA missplicing contribute to neuronal vulnerability from loss of TDP-43. Nat. Neurosci. 14, 459–468 (2011).",
+   "journal-title": "Nat. Neurosci."
+  },
+  {
+   "key": "BFnbt3802_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "E4530",
+   "DOI": "10.1073/pnas.1318835110",
+   "volume": "110",
+   "author": "C Lagier-Tourenne",
+   "year": "2013",
+   "unstructured": "Lagier-Tourenne, C. et al. Targeted degradation of sense and antisense C9orf72 RNA foci as therapy for ALS and frontotemporal degeneration. Proc. Natl. Acad. Sci. USA 110, E4530–E4539 (2013).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "535",
+   "DOI": "10.1016/j.neuron.2016.04.006",
+   "volume": "90",
+   "author": "J Jiang",
+   "year": "2016",
+   "unstructured": "Jiang, J. et al. Gain of toxicity from ALS/FTD-linked repeat expansions in C9ORF72 is alleviated by antisense oligonucleotides targeting GGGGCC-containing RNAs. Neuron 90, 535–550 (2016).",
+   "journal-title": "Neuron"
+  },
+  {
+   "key": "BFnbt3802_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "1634",
+   "DOI": "10.1101/gad.1941310",
+   "volume": "24",
+   "author": "Y Hua",
+   "year": "2010",
+   "unstructured": "Hua, Y. et al. Antisense correction of SMN2 splicing in the CNS rescues necrosis in a type III SMA mouse model. Genes Dev. 24, 1634–1644 (2010).",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "BFnbt3802_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "72ra18",
+   "DOI": "10.1126/scitranslmed.3001777",
+   "volume": "3",
+   "author": "MA Passini",
+   "year": "2011",
+   "unstructured": "Passini, M.A. et al. Antisense oligonucleotides delivered to the mouse CNS ameliorate symptoms of severe spinal muscular atrophy. Sci. Transl. Med. 3, 72ra18 (2011).",
+   "journal-title": "Sci. Transl. Med."
+  },
+  {
+   "key": "BFnbt3802_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "187",
+   "DOI": "10.1089/oli.1.1997.7.187",
+   "volume": "7",
+   "author": "J Summerton",
+   "year": "1997",
+   "unstructured": "Summerton, J. & Weller, D. Morpholino anti- sense oligomers: design, preparation, and properties. Antisense Nucleic Acid Drug Dev. 7, 187–195 (1997).",
+   "journal-title": "Antisense Nucleic Acid Drug Dev."
+  },
+  {
+   "key": "BFnbt3802_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "1895",
+   "DOI": "10.1021/ja00031a062",
+   "volume": "114",
+   "author": "M Egholm",
+   "year": "1992",
+   "unstructured": "Egholm, M., Buchardt, O., Nielsen, P.E. & Berg, R.H. Peptide nucleic acids (PNA). Oligonucleotide analogues with an achiral backbone. J. Am. Chem. Soc. 114, 1895–1897 (1992).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnbt3802_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "37",
+   "DOI": "10.1089/nat.2013.0454",
+   "volume": "24",
+   "author": "P Järver",
+   "year": "2014",
+   "unstructured": "Järver, P., O'Donovan, L. & Gait, M.J. A chemical view of oligonucleotides for exon skipping and related drug applications. Nucleic Acid Ther. 24, 37–47 (2014).",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnbt3802_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "2296",
+   "DOI": "10.1016/j.bbamem.2010.02.012",
+   "volume": "1798",
+   "author": "HM Moulton",
+   "year": "2010",
+   "unstructured": "Moulton, H.M. & Moulton, J.D. Morpholinos and their peptide conjugates: therapeutic promise and challenge for Duchenne muscular dystrophy. Biochim. Biophys. Acta 1798, 2296–2303 (2010).",
+   "journal-title": "Biochim. Biophys. Acta"
+  },
+  {
+   "key": "BFnbt3802_CR49",
+   "doi-asserted-by": "publisher",
+   "first-page": "175",
+   "DOI": "10.1038/nm1345",
+   "volume": "12",
+   "author": "J Alter",
+   "year": "2006",
+   "unstructured": "Alter, J. et al. Systemic delivery of morpholino oligonucleotide restores dystrophin expression bodywide and improves dystrophic pathology. Nat. Med. 12, 175–177 (2006).",
+   "journal-title": "Nat. Med."
+  },
+  {
+   "key": "BFnbt3802_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "207",
+   "DOI": "10.1002/jgm.838",
+   "volume": "8",
+   "author": "S Fletcher",
+   "year": "2006",
+   "unstructured": "Fletcher, S. et al. Dystrophin expression in the mdx mouse after localised and systemic administration of a morpholino antisense oligonucleotide. J. Gene Med. 8, 207–216 (2006).",
+   "journal-title": "J. Gene Med."
+  },
+  {
+   "key": "BFnbt3802_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "494",
+   "DOI": "10.1038/35078107",
+   "volume": "411",
+   "author": "SM Elbashir",
+   "year": "2001",
+   "unstructured": "Elbashir, S.M. et al. Duplexes of 21-nucleotide RNAs mediate RNA interference in cultured mammalian cells. Nature 411, 494–498 (2001).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "806",
+   "DOI": "10.1038/35888",
+   "volume": "391",
+   "author": "A Fire",
+   "year": "1998",
+   "unstructured": "Fire, A. et al. Potent and specific genetic interference by double-stranded RNA in Caenorhabditis elegans. Nature 391, 806–811 (1998).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "79",
+   "DOI": "10.2174/156802612798919132",
+   "volume": "12",
+   "author": "T Ohrt",
+   "year": "2012",
+   "unstructured": "Ohrt, T., Muetze, J., Svoboda, P. & Schwille, P. Intracellular localization and routing of miRNA and RNAi pathway components. Curr. Top. Med. Chem. 12, 79–88 (2012).",
+   "journal-title": "Curr. Top. Med. Chem."
+  },
+  {
+   "key": "BFnbt3802_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "7505",
+   "DOI": "10.1093/emboj/17.24.7505",
+   "volume": "17",
+   "author": "JM Ryter",
+   "year": "1998",
+   "unstructured": "Ryter, J.M. & Schultz, S.C. Molecular basis of double-stranded RNA-protein interactions: structure of a dsRNA-binding domain complexed with dsRNA. EMBO J. 17, 7505–7513 (1998).",
+   "journal-title": "EMBO J."
+  },
+  {
+   "key": "BFnbt3802_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "754",
+   "DOI": "10.1038/nature08434",
+   "volume": "461",
+   "author": "Y Wang",
+   "year": "2009",
+   "unstructured": "Wang, Y. et al. Nucleation, propagation and cleavage of target RNAs in Ago silencing complexes. Nature 461, 754–761 (2009).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR56",
+   "doi-asserted-by": "publisher",
+   "first-page": "20",
+   "DOI": "10.1038/nsmb.2931",
+   "volume": "22",
+   "author": "JJ Ipsaro",
+   "year": "2015",
+   "unstructured": "Ipsaro, J.J. & Joshua-Tor, L. From guide to target: molecular insights into eukaryotic RNA-interference machinery. Nat. Struct. Mol. Biol. 22, 20–28 (2015).",
+   "journal-title": "Nat. Struct. Mol. Biol."
+  },
+  {
+   "key": "BFnbt3802_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "483",
+   "DOI": "10.1038/mt.2011.263",
+   "volume": "20",
+   "author": "GR Rettig",
+   "year": "2012",
+   "unstructured": "Rettig, G.R. & Behlke, M.A. Progress toward in vivo use of siRNAs-II. Mol. Ther. 20, 483–512 (2012).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR58",
+   "doi-asserted-by": "publisher",
+   "first-page": "89",
+   "DOI": "10.1089/oli.2009.0180",
+   "volume": "19",
+   "author": "M Robbins",
+   "year": "2009",
+   "unstructured": "Robbins, M., Judge, A. & MacLachlan, I. siRNA and innate immunity. Oligonucleotides 19, 89–102 (2009).",
+   "journal-title": "Oligonucleotides"
+  },
+  {
+   "key": "BFnbt3802_CR59",
+   "doi-asserted-by": "publisher",
+   "first-page": "492",
+   "DOI": "10.1038/nm.3847",
+   "volume": "21",
+   "author": "A Sehgal",
+   "year": "2015",
+   "unstructured": "Sehgal, A. et al. An RNAi therapeutic targeting antithrombin to rebalance the coagulation system and promote hemostasis in hemophilia. Nat. Med. 21, 492–497 (2015).",
+   "journal-title": "Nat. Med."
+  },
+  {
+   "key": "BFnbt3802_CR60",
+   "doi-asserted-by": "publisher",
+   "first-page": "1379",
+   "DOI": "10.1038/nbt.1512",
+   "volume": "26",
+   "author": "X Sun",
+   "year": "2008",
+   "unstructured": "Sun, X., Rogoff, H.A. & Li, C.J. Asymmetric RNA duplexes mediate RNA interference in mammalian cells. Nat. Biotechnol. 26, 1379–1382 (2008).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR61",
+   "doi-asserted-by": "publisher",
+   "first-page": "725",
+   "DOI": "10.1038/mt.2008.298",
+   "volume": "17",
+   "author": "CI Chang",
+   "year": "2009",
+   "unstructured": "Chang, C.I. et al. Asymmetric shorter-duplex siRNA structures trigger efficient gene silencing with reduced nonspecific effects. Mol. Ther. 17, 725–732 (2009).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR62",
+   "doi-asserted-by": "publisher",
+   "first-page": "855",
+   "DOI": "10.1089/jop.2013.0148",
+   "volume": "29",
+   "author": "M Byrne",
+   "year": "2013",
+   "unstructured": "Byrne, M. et al. Novel hydrophobically modified asymmetric RNAi compounds (sd-rxRNA) demonstrate robust efficacy in the eye. J. Ocul. Pharmacol. Ther. 29, 855–864 (2013).",
+   "journal-title": "J. Ocul. Pharmacol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR63",
+   "doi-asserted-by": "publisher",
+   "first-page": "1256",
+   "DOI": "10.1038/nbt.3078",
+   "volume": "32",
+   "author": "BR Meade",
+   "year": "2014",
+   "unstructured": "Meade, B.R. et al. Efficient delivery of RNAi prodrugs containing reversible charge-neutralizing phosphotriester backbone modifications. Nat. Biotechnol. 32, 1256–1261 (2014).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR64",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1007/978-1-4939-3112-5_1",
+   "volume": "1364",
+   "author": "AS Hamil",
+   "year": "2016",
+   "unstructured": "Hamil, A.S. & Dowdy, S.F. Synthesis and conjugation of small interfering ribonucleic neutral SiRNNs. Methods Mol. Biol 1364, 1–9 (2016).",
+   "journal-title": "Methods Mol. Biol"
+  },
+  {
+   "key": "BFnbt3802_CR65",
+   "doi-asserted-by": "publisher",
+   "first-page": "111",
+   "DOI": "10.1038/nature04688",
+   "volume": "441",
+   "author": "TS Zimmermann",
+   "year": "2006",
+   "unstructured": "Zimmermann, T.S. et al. RNAi-mediated gene silencing in non-human primates. Nature 441, 111–114 (2006).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR66",
+   "doi-asserted-by": "publisher",
+   "first-page": "561",
+   "DOI": "10.1038/nbt1402",
+   "volume": "26",
+   "author": "A Akinc",
+   "year": "2008",
+   "unstructured": "Akinc, A. et al. A combinatorial library of lipid-like materials for delivery of RNAi therapeutics. Nat. Biotechnol. 26, 561–569 (2008).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR67",
+   "doi-asserted-by": "publisher",
+   "first-page": "172",
+   "DOI": "10.1038/nbt.1602",
+   "volume": "28",
+   "author": "SC Semple",
+   "year": "2010",
+   "unstructured": "Semple, S.C. et al. Rational design of cationic lipids for siRNA delivery. Nat. Biotechnol. 28, 172–176 (2010).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR68",
+   "doi-asserted-by": "publisher",
+   "first-page": "1864",
+   "DOI": "10.1073/pnas.0910603106",
+   "volume": "107",
+   "author": "KT Love",
+   "year": "2010",
+   "unstructured": "Love, K.T. et al. Lipid-like materials for low-dose, in vivo gene silencing. Proc. Natl. Acad. Sci. USA 107, 1864–1869 (2010).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR69",
+   "doi-asserted-by": "publisher",
+   "first-page": "59",
+   "DOI": "10.1038/nrc2966",
+   "volume": "11",
+   "author": "CV Pecot",
+   "year": "2011",
+   "unstructured": "Pecot, C.V., Calin, G.A., Coleman, R.L., Lopez-Berestein, G. & Sood, A.K. RNA interference in the clinic: challenges and future directions. Nat. Rev. Cancer 11, 59–67 (2011).",
+   "journal-title": "Nat. Rev. Cancer"
+  },
+  {
+   "key": "BFnbt3802_CR70",
+   "doi-asserted-by": "publisher",
+   "first-page": "967",
+   "DOI": "10.1038/nmat3765",
+   "volume": "12",
+   "author": "R Kanasty",
+   "year": "2013",
+   "unstructured": "Kanasty, R., Dorkin, J.R., Vegas, A. & Anderson, D. Delivery materials for siRNA therapeutics. Nat. Mater. 12, 967–977 (2013).",
+   "journal-title": "Nat. Mater."
+  },
+  {
+   "key": "BFnbt3802_CR71",
+   "first-page": "6387",
+   "volume": "46",
+   "author": "Y Matsumura",
+   "year": "1986",
+   "unstructured": "Matsumura, Y. & Maeda, H. A new concept for macromolecular therapeutics in cancer chemotherapy: mechanism of tumoritropic accumulation of proteins and the antitumor agent smancs. Cancer Res. 46, 6387–6392 (1986).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnbt3802_CR72",
+   "doi-asserted-by": "publisher",
+   "first-page": "173",
+   "DOI": "10.1111/micc.12228",
+   "volume": "23",
+   "author": "H Maeda",
+   "year": "2016",
+   "unstructured": "Maeda, H., Tsukigawa, K. & Fang, J. A retrospective 30 years after discovery of the enhanced permeability and retention effect of solid tumors: next-generation chemotherapeutics and photodynamic therapy--problems, solutions, and prospects. Microcirculation 23, 173–182 (2016).",
+   "journal-title": "Microcirculation"
+  },
+  {
+   "key": "BFnbt3802_CR73",
+   "doi-asserted-by": "publisher",
+   "first-page": "16958",
+   "DOI": "10.1021/ja505986a",
+   "volume": "136",
+   "author": "JK Nair",
+   "year": "2014",
+   "unstructured": "Nair, J.K. et al. Multivalent N-acetylgalactosamine-conjugated siRNA localizes in hepatocytes and elicits robust RNAi-mediated gene silencing. J. Am. Chem. Soc. 136, 16958–16961 (2014).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnbt3802_CR74",
+   "doi-asserted-by": "publisher",
+   "first-page": "903",
+   "DOI": "10.1002/cbic.201500023",
+   "volume": "16",
+   "author": "KG Rajeev",
+   "year": "2015",
+   "unstructured": "Rajeev, K.G. et al. Hepatocyte-specific delivery of siRNAs conjugated to novel non-nucleosidic trivalent N-acetylgalactosamine elicits robust gene silencing in vivo. ChemBioChem 16, 903–908 (2015).",
+   "journal-title": "ChemBioChem"
+  },
+  {
+   "key": "BFnbt3802_CR75",
+   "doi-asserted-by": "publisher",
+   "first-page": "709",
+   "DOI": "10.1038/nbt1101",
+   "volume": "23",
+   "author": "E Song",
+   "year": "2005",
+   "unstructured": "Song, E. et al. Antibody mediated in vivo delivery of small interfering RNAs via cell-surface receptors. Nat. Biotechnol. 23, 709–717 (2005).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR76",
+   "doi-asserted-by": "publisher",
+   "first-page": "1189",
+   "DOI": "10.1093/nar/gku1362",
+   "volume": "43",
+   "author": "TL Cuellar",
+   "year": "2015",
+   "unstructured": "Cuellar, T.L. et al. Systematic evaluation of antibody-mediated siRNA delivery using an industrial platform of THIOMAB-siRNA conjugates. Nucleic Acids Res. 43, 1189–1203 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR77",
+   "doi-asserted-by": "publisher",
+   "first-page": "1465",
+   "DOI": "10.1126/science.1690918",
+   "volume": "247",
+   "author": "JA Wolff",
+   "year": "1990",
+   "unstructured": "Wolff, J.A. et al. Direct gene transfer into mouse muscle in vivo. Science 247, 1465–1468 (1990).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnbt3802_CR78",
+   "doi-asserted-by": "publisher",
+   "first-page": "1833",
+   "DOI": "10.1038/mt.2008.200",
+   "volume": "16",
+   "author": "K Karikó",
+   "year": "2008",
+   "unstructured": "Karikó, K. et al. Incorporation of pseudouridine into mRNA yields superior nonimmunogenic vector with increased translational capacity and biological stability. Mol. Ther. 16, 1833–1840 (2008).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR79",
+   "doi-asserted-by": "publisher",
+   "first-page": "154",
+   "DOI": "10.1038/nbt.1733",
+   "volume": "29",
+   "author": "MS Kormann",
+   "year": "2011",
+   "unstructured": "Kormann, M.S. et al. Expression of therapeutic proteins after delivery of chemically modified mRNA in mice. Nat. Biotechnol. 29, 154–157 (2011).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR80",
+   "doi-asserted-by": "publisher",
+   "first-page": "246",
+   "DOI": "10.1016/j.stem.2013.06.001",
+   "volume": "13",
+   "author": "N Yoshioka",
+   "year": "2013",
+   "unstructured": "Yoshioka, N. et al. Efficient generation of human iPSCs by a synthetic self-replicative RNA. Cell Stem Cell 13, 246–254 (2013).",
+   "journal-title": "Cell Stem Cell"
+  },
+  {
+   "key": "BFnbt3802_CR81",
+   "doi-asserted-by": "publisher",
+   "first-page": "506",
+   "DOI": "10.1038/mt.2013.26",
+   "volume": "21",
+   "author": "DB Weiner",
+   "year": "2013",
+   "unstructured": "Weiner, D.B. RNA-based vaccination: sending a strong message. Mol. Ther. 21, 506–508 (2013).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR82",
+   "doi-asserted-by": "publisher",
+   "first-page": "367",
+   "DOI": "10.3390/vaccines1030367",
+   "volume": "1",
+   "author": "Y Cu",
+   "year": "2013",
+   "unstructured": "Cu, Y. et al. Enhanced delivery and potency of self-amplifying mRNA vaccines by electroporation in situ. Vaccines (Basel) 1, 367–383 (2013).",
+   "journal-title": "Vaccines (Basel)"
+  },
+  {
+   "key": "BFnbt3802_CR83",
+   "doi-asserted-by": "publisher",
+   "first-page": "2118",
+   "DOI": "10.1038/mt.2014.133",
+   "volume": "22",
+   "author": "LA Brito",
+   "year": "2014",
+   "unstructured": "Brito, L.A. et al. A cationic nanoemulsion for the delivery of next-generation RNA vaccines. Mol. Ther. 22, 2118–2129 (2014).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR84",
+   "doi-asserted-by": "publisher",
+   "first-page": "179",
+   "DOI": "10.1016/bs.adgen.2014.10.005",
+   "volume": "89",
+   "author": "LA Brito",
+   "year": "2015",
+   "unstructured": "Brito, L.A. et al. Self-amplifying mRNA vaccines. Adv. Genet. 89, 179–233 (2015).",
+   "journal-title": "Adv. Genet."
+  },
+  {
+   "key": "BFnbt3802_CR85",
+   "doi-asserted-by": "publisher",
+   "first-page": "816",
+   "DOI": "10.1126/science.1225829",
+   "volume": "337",
+   "author": "M Jinek",
+   "year": "2012",
+   "unstructured": "Jinek, M. et al. A programmable dual-RNA-guided DNA endonuclease in adaptive bacterial immunity. Science 337, 816–821 (2012).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnbt3802_CR86",
+   "doi-asserted-by": "publisher",
+   "first-page": "819",
+   "DOI": "10.1126/science.1231143",
+   "volume": "339",
+   "author": "L Cong",
+   "year": "2013",
+   "unstructured": "Cong, L. et al. Multiplex genome engineering using CRISPR/Cas systems. Science 339, 819–823 (2013).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnbt3802_CR87",
+   "doi-asserted-by": "publisher",
+   "first-page": "823",
+   "DOI": "10.1126/science.1232033",
+   "volume": "339",
+   "author": "P Mali",
+   "year": "2013",
+   "unstructured": "Mali, P. et al. RNA-guided human genome engineering via Cas9. Science 339, 823–826 (2013).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnbt3802_CR88",
+   "doi-asserted-by": "publisher",
+   "first-page": "62",
+   "DOI": "10.1038/nature13011",
+   "volume": "507",
+   "author": "SH Sternberg",
+   "year": "2014",
+   "unstructured": "Sternberg, S.H., Redding, S., Jinek, M., Greene, E.C. & Doudna, J.A. DNA interrogation by the CRISPR RNA-guided endonuclease Cas9. Nature 507, 62–67 (2014).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR89",
+   "doi-asserted-by": "publisher",
+   "first-page": "186",
+   "DOI": "10.1038/nature14299",
+   "volume": "520",
+   "author": "FA Ran",
+   "year": "2015",
+   "unstructured": "Ran, F.A. et al. In vivo genome editing using Staphylococcus aureus Cas9. Nature 520, 186–191 (2015).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR90",
+   "doi-asserted-by": "publisher",
+   "first-page": "279",
+   "DOI": "10.1038/nbt.2808",
+   "volume": "32",
+   "author": "Y Fu",
+   "year": "2014",
+   "unstructured": "Fu, Y., Sander, J.D., Reyon, D., Cascio, V.M. & Joung, J.K. Improving CRISPR-Cas nuclease specificity using truncated guide RNAs. Nat. Biotechnol. 32, 279–284 (2014).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR91",
+   "doi-asserted-by": "publisher",
+   "first-page": "410",
+   "DOI": "10.1038/519410a",
+   "volume": "519",
+   "author": "E Lanphier",
+   "year": "2015",
+   "unstructured": "Lanphier, E., Urnov, F., Haecker, S.E., Werner, M. & Smolenski, J. Don't edit the human germ line. Nature 519, 410–411 (2015).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnbt3802_CR92",
+   "doi-asserted-by": "publisher",
+   "first-page": "36",
+   "DOI": "10.1126/science.aab1028",
+   "volume": "348",
+   "author": "D Baltimore",
+   "year": "2015",
+   "unstructured": "Baltimore, D. et al. Biotechnology. A prudent path forward for genomic engineering and germline gene modification. Science 348, 36–38 (2015).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnbt3802_CR93",
+   "doi-asserted-by": "publisher",
+   "first-page": "1842",
+   "DOI": "10.1038/nprot.2015.117",
+   "volume": "10",
+   "author": "J Liu",
+   "year": "2015",
+   "unstructured": "Liu, J. et al. Efficient delivery of nuclease proteins for genome editing in human stem cells and primary cells. Nat. Protoc. 10, 1842–1859 (2015).",
+   "journal-title": "Nat. Protoc."
+  },
+  {
+   "key": "BFnbt3802_CR94",
+   "doi-asserted-by": "publisher",
+   "first-page": "328",
+   "DOI": "10.1038/nbt.3471",
+   "volume": "34",
+   "author": "H Yin",
+   "year": "2016",
+   "unstructured": "Yin, H. et al. Therapeutic genome editing by combined viral and non-viral delivery of CRISPR system components in vivo. Nat. Biotechnol. 34, 328–333 (2016).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR95",
+   "doi-asserted-by": "publisher",
+   "first-page": "2868",
+   "DOI": "10.1073/pnas.1520244113",
+   "volume": "113",
+   "author": "M Wang",
+   "year": "2016",
+   "unstructured": "Wang, M. et al. Efficient delivery of genome-editing proteins using bioreducible lipid nanoparticles. Proc. Natl. Acad. Sci. USA 113, 2868–2873 (2016).",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "BFnbt3802_CR96",
+   "doi-asserted-by": "publisher",
+   "first-page": "73",
+   "DOI": "10.1038/nbt.3081",
+   "volume": "33",
+   "author": "JA Zuris",
+   "year": "2015",
+   "unstructured": "Zuris, J.A. et al. Cationic lipid-mediated delivery of proteins enables efficient protein-based genome editing in vitro and in vivo. Nat. Biotechnol. 33, 73–80 (2015).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR97",
+   "doi-asserted-by": "publisher",
+   "first-page": "1627",
+   "DOI": "10.1517/17425247.2015.1046431",
+   "volume": "12",
+   "author": "P Lönn",
+   "year": "2015",
+   "unstructured": "Lönn, P. & Dowdy, S.F. Cationic PTD/CPP-mediated macromolecular delivery: charging into the cell. Expert Opin. Drug Deliv. 12, 1627–1636 (2015).",
+   "journal-title": "Expert Opin. Drug Deliv."
+  },
+  {
+   "key": "BFnbt3802_CR98",
+   "doi-asserted-by": "publisher",
+   "first-page": "10009",
+   "DOI": "10.1021/bi00495a001",
+   "volume": "29",
+   "author": "M Spiess",
+   "year": "1990",
+   "unstructured": "Spiess, M. The asialoglycoprotein receptor: a model for endocytic transport receptors. Biochemistry 29, 10009–10018 (1990).",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "BFnbt3802_CR99",
+   "doi-asserted-by": "publisher",
+   "first-page": "870",
+   "DOI": "10.1038/nbt.3298",
+   "volume": "33",
+   "author": "A Wittrup",
+   "year": "2015",
+   "unstructured": "Wittrup, A. et al. Visualizing lipid-formulated siRNA release from endosomes and target gene knockdown. Nat. Biotechnol. 33, 870–876 (2015).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnbt3802_CR100",
+   "doi-asserted-by": "publisher",
+   "first-page": "676",
+   "DOI": "10.1083/jcb.95.2.676",
+   "volume": "95",
+   "author": "FR Maxfield",
+   "year": "1982",
+   "unstructured": "Maxfield, F.R. Weak bases and ionophores rapidly and reversibly raise the pH of endocytic vesicles in cultured mouse fibroblasts. J. Cell Biol. 95, 676–681 (1982).",
+   "journal-title": "J. Cell Biol."
+  },
+  {
+   "key": "BFnbt3802_CR101",
+   "doi-asserted-by": "publisher",
+   "first-page": "1987",
+   "DOI": "10.1093/nar/gkv060",
+   "volume": "43",
+   "author": "B Yang",
+   "year": "2015",
+   "unstructured": "Yang, B. et al. High-throughput screening identifies small molecules that enhance the pharmacological effects of oligonucleotides. Nucleic Acids Res. 43, 1987–1996 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR102",
+   "doi-asserted-by": "publisher",
+   "first-page": "8664",
+   "DOI": "10.1093/nar/gkv942",
+   "volume": "43",
+   "author": "MF Osborn",
+   "year": "2015",
+   "unstructured": "Osborn, M.F. et al. Guanabenz (Wytensin™) selectively enhances uptake and efficacy of hydrophobically modified siRNAs. Nucleic Acids Res. 43, 8664–8672 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnbt3802_CR103",
+   "doi-asserted-by": "publisher",
+   "first-page": "973",
+   "DOI": "10.1038/mt.2013.31",
+   "volume": "21",
+   "author": "CI Wooddell",
+   "year": "2013",
+   "unstructured": "Wooddell, C.I. et al. Hepatocyte-targeted RNAi therapeutics for the treatment of chronic hepatitis B virus infection. Mol. Ther. 21, 973–985 (2013).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnbt3802_CR104",
+   "doi-asserted-by": "publisher",
+   "first-page": "931",
+   "DOI": "10.1016/j.biotechadv.2015.05.005",
+   "volume": "33",
+   "author": "KK Hou",
+   "year": "2015",
+   "unstructured": "Hou, K.K., Pan, H., Schlesinger, P.H. & Wickline, S.A. A role for peptides in overcoming endosomal entrapment in siRNA delivery. A focus on melittin. Biotechnol. Adv. 33, 931–940 (2015).",
+   "journal-title": "Biotechnol. Adv."
+  },
+  {
+   "key": "BFnbt3802_CR105",
+   "unstructured": "Anonymous. Arrowhead pharmaceuticals focuses resources on subcutaneous and extra-hepatic RNAi therapeutics \n                    http://ir.arrowheadpharma.com/releasedetail.cfm?ReleaseID=1001386\n                    \n                   (Arrowhead Pharmaceuticals, 2016)."
+  },
+  {
+   "key": "BFnbt3802_CR106",
+   "doi-asserted-by": "publisher",
+   "first-page": "32301",
+   "DOI": "10.1038/srep32301",
+   "volume": "6",
+   "author": "P Lönn",
+   "year": "2016",
+   "unstructured": "Lönn, P. et al. Enhancing endosomal escape for intracellular delivery of macromolecular biologic therapeutics. Sci. Rep. 6, 32301 (2016).",
+   "journal-title": "Sci. Rep."
+  },
+  {
+   "key": "BFnbt3802_CR107",
+   "doi-asserted-by": "publisher",
+   "first-page": "14084",
+   "DOI": "10.1021/jacs.5b05694",
+   "volume": "137",
+   "author": "M Li",
+   "year": "2015",
+   "unstructured": "Li, M. et al. Discovery and characterization of a peptide that enhances endosomal escape of delivered proteins in vitro and in vivo. J. Am. Chem. Soc. 137, 14084–14093 (2015).",
+   "journal-title": "J. Am. Chem. Soc."
+  }
+ ],
+ "container-title": [
+  "Nature Biotechnology"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.nature.com/articles/nbt.3802.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nbt.3802",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nbt.3802.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    5,
+    18
+   ]
+  ],
+  "date-time": "2023-05-18T14:35:48Z",
+  "timestamp": 1684420548000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/nbt.3802"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2017,
+    2,
+    27
+   ]
+  ]
+ },
+ "references-count": 107,
+ "journal-issue": {
+  "issue": "3",
+  "published-print": {
+   "date-parts": [
+    [
+     2017,
+     3
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "BFnbt3802"
+ ],
+ "URL": "https://doi.org/10.1038/nbt.3802",
+ "relation": {
+  "has-review": [
+   {
+    "id-type": "doi",
+    "id": "10.3410/f.727355326.793530295",
+    "asserted-by": "object"
+   }
+  ]
+ },
+ "ISSN": [
+  "1087-0156",
+  "1546-1696"
+ ],
+ "issn-type": [
+  {
+   "value": "1087-0156",
+   "type": "print"
+  },
+  {
+   "value": "1546-1696",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2017,
+    2,
+    27
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "22 June 2016",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "19 January 2017",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "27 February 2017",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "S.F.D. is a member of the board of directors of Solstice Biologics, and a member of the scientific advisory board of Verndari.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  },
+  {
+   "value": "This content has been made available to all.",
+   "name": "free",
+   "label": "Free to read"
+  }
+ ]
+}

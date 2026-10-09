@@ -1,0 +1,507 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    5
+   ]
+  ],
+  "date-time": "2026-10-05T12:39:34Z",
+  "timestamp": 1791203974629,
+  "version": "4.2.0"
+ },
+ "reference-count": 40,
+ "publisher": "Informa UK Limited",
+ "issue": "6",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      1998,
+      6,
+      1
+     ]
+    ],
+    "date-time": "1998-06-01T00:00:00Z",
+    "timestamp": 896659200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://journals.asm.org/non-commercial-tdm-license"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "journals.asm.org"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Molecular and Cellular Biology"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    1998,
+    6,
+    1
+   ]
+  ]
+ },
+ "DOI": "10.1128/mcb.18.6.3112",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2015,
+    10,
+    10
+   ]
+  ],
+  "date-time": "2015-10-10T00:32:00Z",
+  "timestamp": 1444437120000
+ },
+ "page": "3112-3119",
+ "update-policy": "https://doi.org/10.1128/asmj-crossmark-policy-page",
+ "source": "Crossref",
+ "is-referenced-by-count": 401,
+ "title": [
+  "Translation of Vascular Endothelial Growth Factor mRNA by Internal Ribosome Entry: Implications for Translation under Hypoxia"
+ ],
+ "prefix": "10.1080",
+ "volume": "18",
+ "author": [
+  {
+   "given": "Ilan",
+   "family": "Stein",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "1Department of Molecular Biology, The Hebrew University—Hadassah Medical School, Jerusalem 91120"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ahuva",
+   "family": "Itin",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "1Department of Molecular Biology, The Hebrew University—Hadassah Medical School, Jerusalem 91120"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Paz",
+   "family": "Einat",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "2QBI Enterprises, Nes Ziona 74106, Israel"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Rami",
+   "family": "Skaliter",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "2QBI Enterprises, Nes Ziona 74106, Israel"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Zehava",
+   "family": "Grossman",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "2QBI Enterprises, Nes Ziona 74106, Israel"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Eli",
+   "family": "Keshet",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "1Department of Molecular Biology, The Hebrew University—Hadassah Medical School, Jerusalem 91120"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "301",
+ "published-online": {
+  "date-parts": [
+   [
+    2023,
+    3,
+    28
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "B1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1056/NEJM199412013312203"
+  },
+  {
+   "key": "B2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nm1095-1024"
+  },
+  {
+   "key": "B3",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.161.3839.370"
+  },
+  {
+   "key": "B4",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1074/jbc.272.14.9356"
+  },
+  {
+   "key": "B5",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/0003-2697(76)90527-3"
+  },
+  {
+   "key": "B6",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/380435a0"
+  },
+  {
+   "key": "B7",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1021/bi00591a005"
+  },
+  {
+   "key": "B8",
+   "unstructured": "Ehrenfeld, E. 1996. Initiation of translation by picornavirus RNAs Translational control. In: Hershey, J. W. B., M. B. Mathews, and N. Sonenberg549–573Cold Spring Harbor Laboratory Press, Cold Spring Harbor, N.Y."
+  },
+  {
+   "key": "B9",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/380439a0"
+  },
+  {
+   "key": "B10",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/MCB.16.9.4604"
+  },
+  {
+   "key": "B11",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/BF00968079"
+  },
+  {
+   "key": "B12",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1074/jbc.271.2.623"
+  },
+  {
+   "key": "B13",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1074/jbc.270.34.19761"
+  },
+  {
+   "key": "B14",
+   "unstructured": "Jackson, R. J. 1996. A comparative view of initiation site selection mechanisms Translational control. In: Hershey, J. W. B., M. B. Mathews, and N. Sonenberg71–112Cold Spring Harbor Laboratory Press, Cold Spring Harbor, N.Y."
+  },
+  {
+   "key": "B15",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/jvi.62.8.2636-2643.1988"
+  },
+  {
+   "key": "B16",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/jvi.63.4.1651-1660.1989"
+  },
+  {
+   "key": "B17",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/24.4.596"
+  },
+  {
+   "key": "B18",
+   "doi-asserted-by": "crossref",
+   "first-page": "785",
+   "DOI": "10.1002/(SICI)1097-0215(19960315)65:6<785::AID-IJC14>3.0.CO;2-3",
+   "volume": "65",
+   "author": "Kevil C. G.",
+   "year": "1996",
+   "journal-title": "Int. J. Cancer"
+  },
+  {
+   "key": "B19",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1083/jcb.115.4.887"
+  },
+  {
+   "key": "B20",
+   "first-page": "683",
+   "volume": "15",
+   "author": "Kraggerud S. M.",
+   "year": "1995",
+   "journal-title": "Anticancer Res."
+  },
+  {
+   "key": "B21",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/25.2.362"
+  },
+  {
+   "key": "B22",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1074/jbc.271.41.25492"
+  },
+  {
+   "key": "B23",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1146/annurev.bi.55.070186.005443"
+  },
+  {
+   "key": "B24",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/353090a0"
+  },
+  {
+   "key": "B25",
+   "first-page": "2691",
+   "volume": "7",
+   "author": "Meyuhas O.",
+   "year": "1987",
+   "journal-title": "Mol. Cell. Biol."
+  },
+  {
+   "key": "B26",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1101/gad.6.9.1643"
+  },
+  {
+   "key": "B27",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1111/j.1432-1033.1996.00747.x"
+  },
+  {
+   "key": "B28",
+   "first-page": "638",
+   "volume": "72",
+   "author": "Pe’er J.",
+   "year": "1995",
+   "journal-title": "Lab. Invest."
+  },
+  {
+   "key": "B29",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/334320a0"
+  },
+  {
+   "key": "B30",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/359845a0"
+  },
+  {
+   "key": "B31",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/BF00665960"
+  },
+  {
+   "key": "B32",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/0014-5793(95)00831-S"
+  },
+  {
+   "key": "B33",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/359843a0"
+  },
+  {
+   "key": "B34",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1073/pnas.92.3.768"
+  },
+  {
+   "key": "B35",
+   "unstructured": "Sonenberg, N. 1996. mRNA 5′ cap-binding protein eIF4E and control of cell growth Translational control. In: Hershey, J. W. B., M. B. Mathews, and N. Sonenberg245–269Cold Spring Harbor Laboratory Press, Cold Spring Harbor, N.Y."
+  },
+  {
+   "key": "B36",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/MCB.15.10.5363"
+  },
+  {
+   "key": "B37",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1523/JNEUROSCI.15-07-04738.1995"
+  },
+  {
+   "key": "B38",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/0167-4781(95)00185-9"
+  },
+  {
+   "key": "B39",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/MCB.15.1.35"
+  },
+  {
+   "key": "B40",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/MCB.17.3.1714"
+  }
+ ],
+ "container-title": [
+  "Molecular and Cellular Biology"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://journals.asm.org/doi/pdf/10.1128/MCB.18.6.3112",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.tandfonline.com/doi/pdf/10.1128/MCB.18.6.3112",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    3,
+    28
+   ]
+  ],
+  "date-time": "2023-03-28T15:03:22Z",
+  "timestamp": 1680015802000
+ },
+ "score": 109.32171,
+ "resource": {
+  "primary": {
+   "URL": "https://www.tandfonline.com/doi/full/10.1128/MCB.18.6.3112"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    1998,
+    6,
+    1
+   ]
+  ]
+ },
+ "references-count": 40,
+ "journal-issue": {
+  "issue": "6",
+  "published-print": {
+   "date-parts": [
+    [
+     1998,
+     6,
+     1
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1128/MCB.18.6.3112"
+ ],
+ "URL": "https://doi.org/10.1128/mcb.18.6.3112",
+ "ISSN": [
+  "1098-5549"
+ ],
+ "issn-type": [
+  {
+   "value": "1098-5549",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    1998,
+    6,
+    1
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "1997-12-15",
+   "order": 0,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  },
+  {
+   "value": "1998-02-26",
+   "order": 1,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  },
+  {
+   "value": "1998-06-01",
+   "order": 2,
+   "name": "published",
+   "label": "Published",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  }
+ ]
+}

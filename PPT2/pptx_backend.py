@@ -79,7 +79,11 @@ class PptxBackend:
 
     # -- primitives --------------------------------------------------------
     def card(self, x, y, w, h, *, face, alpha=0.16, edge=None, dashed=False,
-             lw=0.8, radius=0.9):
+             lw=0.8, radius=0.9, fill=None):
+        if edge is False:
+            fill = True if fill is None else fill   # fill-only semantic marks
+        else:
+            fill = False if fill is None else fill  # structural cards: outline
         left = _mm(self.ox + x)
         top = _mm(self.H - (self.oy + y + h))
         sp = self.slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
@@ -88,7 +92,7 @@ class PptxBackend:
             sp.adjustments[0] = max(0.0, min(0.5, radius / min(w, h)))
         except Exception:
             pass
-        if face is None:
+        if not fill:
             sp.fill.background()
         else:
             sp.fill.solid()
@@ -103,6 +107,17 @@ class PptxBackend:
                 _line_xml(sp, dash="dash")
         sp.shadow.inherit = False
         return sp
+
+    def measure(self, s, size=6, weight="normal", style=None):
+        """Estimated width (mm) of a single-line string.
+
+        Calibrated against the matplotlib/Arial renderer on the panel titles
+        (2026-10-07): mixed-case Arial runs ≈ 0.175 mm per char per pt bold
+        (normal ÷ 1.06). Used for title-adjacent annotations; txt() keeps its
+        own padded estimate since box width only needs to be generous.
+        """
+        wch = max(len(l) for l in s.split("\n"))
+        return wch * size * 0.165 * (1.06 if weight == "bold" else 1.0)
 
     def txt(self, x, y, s, *, size=6, weight="normal", color=S.INK,
             ha="center", va="center", style=None, rotation=0):
@@ -140,7 +155,37 @@ class PptxBackend:
 
     def flow(self, x0, y0, x1, y1, *, kind="data", lw=1.0, both=False, ms=7.5,
              rad=0.0):
+        """Same split-draw as style.flow: the patterned shaft stops at the
+        head's base and the head segment is a solid connector, so the dash/dot
+        pattern never runs underneath the arrowhead."""
         color, dash = _FLOW_STYLE[kind]
+        PT = 25.4 / 72.0
+        head = ms * 0.4 * PT
+        sh = 0.6 * PT
+        vx, vy = x1 - x0, y1 - y0
+        L = math.hypot(vx, vy)
+        if rad == 0.0 and L > 2 * (sh + head):
+            ux, uy = vx / L, vy / L
+            tx, ty = x1 - ux * sh, y1 - uy * sh
+            bx, by = tx - ux * head, ty - uy * head
+            sx, sy = x0 + ux * sh, y0 + uy * sh
+            X0, Y0 = self._pt(sx, sy)
+            X1, Y1 = self._pt(bx, by)
+            shaft = self.slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
+                                                    X0, Y0, X1, Y1)
+            shaft.line.color.rgb = _rgb(color)
+            shaft.line.width = Pt(lw)
+            shaft.shadow.inherit = False
+            if dash:
+                _line_xml(shaft, dash=dash)
+            X2, Y2 = self._pt(tx, ty)
+            conn = self.slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
+                                                   X1, Y1, X2, Y2)
+            conn.line.color.rgb = _rgb(color)
+            conn.line.width = Pt(lw)
+            conn.shadow.inherit = False
+            _line_xml(conn, arrow_tail=True)
+            return conn
         X0, Y0 = self._pt(x0, y0)
         X1, Y1 = self._pt(x1, y1)
         conn = self.slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
@@ -151,7 +196,9 @@ class PptxBackend:
         _line_xml(conn, dash=dash, arrow_tail=True, arrow_head=both)
         return conn
 
-    def line(self, x0, y0, x1, y1, *, color=S.C_SLATE, lw=0.5, dash=None):
+    def line(self, x0, y0, x1, y1, *, color=S.C_SLATE, lw=0.5, dash=None,
+             zorder=4):
+        # zorder is implicit in PPTX — shapes stack in insertion order.
         X0, Y0 = self._pt(x0, y0)
         X1, Y1 = self._pt(x1, y1)
         conn = self.slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,

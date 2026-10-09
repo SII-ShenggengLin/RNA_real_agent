@@ -1,0 +1,188 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T03:07:29Z",
+  "timestamp": 1791515249018,
+  "version": "4.3.4"
+ },
+ "reference-count": 0,
+ "publisher": "Cambridge University Press (CUP)",
+ "issue": "2",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      1,
+      1
+     ]
+    ],
+    "date-time": "2025-01-01T00:00:00Z",
+    "timestamp": 1735689600000
+   },
+   "content-version": "unspecified",
+   "delay-in-days": 28339,
+   "URL": "https://www.cambridge.org/core/terms"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Psychometrika"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    1947,
+    6
+   ]
+  ]
+ },
+ "abstract": "<jats:p>Two formulas are presented for judging the significance of the difference between correlated proportions. The chi square equivalent of one of the developed formulas is pointed out.</jats:p>",
+ "DOI": "10.1007/bf02295996",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2006,
+    2,
+    14
+   ]
+  ],
+  "date-time": "2006-02-14T14:50:28Z",
+  "timestamp": 1139928628000
+ },
+ "page": "153-157",
+ "source": "Crossref",
+ "is-referenced-by-count": 3928,
+ "title": [
+  "Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages"
+ ],
+ "prefix": "10.1017",
+ "volume": "12",
+ "author": [
+  {
+   "given": "Quinn",
+   "family": "McNemar",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "56",
+ "published-online": {
+  "date-parts": [
+   [
+    2025,
+    1,
+    1
+   ]
+  ]
+ },
+ "container-title": [
+  "Psychometrika"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1007/BF02295996.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/article/10.1007/BF02295996/fulltext.html",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S0033312300045178",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    4,
+    2
+   ]
+  ],
+  "date-time": "2025-04-02T23:56:39Z",
+  "timestamp": 1743638199000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.cambridge.org/core/product/identifier/S0033312300045178/type/journal_article"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    1947,
+    6
+   ]
+  ]
+ },
+ "references-count": 0,
+ "journal-issue": {
+  "issue": "2",
+  "published-print": {
+   "date-parts": [
+    [
+     1947,
+     6
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S0033312300045178"
+ ],
+ "URL": "https://doi.org/10.1007/bf02295996",
+ "relation": {},
+ "ISSN": [
+  "0033-3123",
+  "1860-0980"
+ ],
+ "issn-type": [
+  {
+   "value": "0033-3123",
+   "type": "print"
+  },
+  {
+   "value": "1860-0980",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    1947,
+    6
+   ]
+  ]
+ }
+}

@@ -1,0 +1,1049 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    6
+   ]
+  ],
+  "date-time": "2026-10-06T18:41:49Z",
+  "timestamp": 1791312109952,
+  "version": "4.3.1"
+ },
+ "reference-count": 66,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "8",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      6,
+      24
+     ]
+    ],
+    "date-time": "2025-06-24T00:00:00Z",
+    "timestamp": 1750723200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      6,
+      24
+     ]
+    ],
+    "date-time": "2025-06-24T00:00:00Z",
+    "timestamp": 1750723200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Comput Sci"
+ ],
+ "DOI": "10.1038/s43588-025-00820-x",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    24
+   ]
+  ],
+  "date-time": "2025-06-24T05:03:23Z",
+  "timestamp": 1750741403000
+ },
+ "page": "648-660",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 17,
+ "title": [
+  "RNA–ligand interaction scoring via data perturbation and augmentation modeling"
+ ],
+ "prefix": "10.1038",
+ "volume": "5",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0003-2051-6576",
+   "authenticated-orcid": false,
+   "given": "Hongli",
+   "family": "Ma",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Letian",
+   "family": "Gao",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yunfan",
+   "family": "Jin",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-9803-0763",
+   "authenticated-orcid": false,
+   "given": "Jianwei",
+   "family": "Ma",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yilan",
+   "family": "Bai",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Xiaofan",
+   "family": "Liu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Pengfei",
+   "family": "Bao",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ke",
+   "family": "Liu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-1080-024X",
+   "authenticated-orcid": false,
+   "given": "Zhenjiang Zech",
+   "family": "Xu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-4751-9400",
+   "authenticated-orcid": false,
+   "given": "Zhi John",
+   "family": "Lu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    24
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "820_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "353",
+   "DOI": "10.1038/s41573-019-0050-3",
+   "volume": "19",
+   "author": "P Schneider",
+   "year": "2020",
+   "unstructured": "Schneider, P. et al. Rethinking drug design in the artificial intelligence era. Nat. Rev. Drug Discov. 19, 353–364 (2020).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "820_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "128",
+   "DOI": "10.1038/s42256-019-0030-7",
+   "volume": "1",
+   "author": "G Schneider",
+   "year": "2019",
+   "unstructured": "Schneider, G. Mind and machine in drug design. Nat. Mach. Intell. 1, 128–130 (2019).",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "820_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "547",
+   "DOI": "10.1038/nrd.2018.93",
+   "volume": "17",
+   "author": "KD Warner",
+   "year": "2018",
+   "unstructured": "Warner, K. D., Hajdin, C. E. & Weeks, K. M. Principles for targeting RNA with drug-like small molecules. Nat. Rev. Drug Discov. 17, 547–558 (2018).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "820_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "736",
+   "DOI": "10.1038/s41573-022-00521-4",
+   "volume": "21",
+   "author": "JL Childs-Disney",
+   "year": "2022",
+   "unstructured": "Childs-Disney, J. L. et al. Targeting RNA structures with small molecules. Nat. Rev. Drug Discov. 21, 736–762 (2022).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "820_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "D1265",
+   "DOI": "10.1093/nar/gkad976",
+   "volume": "52",
+   "author": "C Knox",
+   "year": "2024",
+   "unstructured": "Knox, C. et al. DrugBank 6.0: the DrugBank knowledgebase for 2024. Nucleic Acids Res. 52, D1265–D1275 (2024).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "820_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "870",
+   "DOI": "10.1038/nrmicro1265",
+   "volume": "3",
+   "author": "J Poehlsgaard",
+   "year": "2005",
+   "unstructured": "Poehlsgaard, J. & Douthwaite, S. The bacterial ribosome as a target for antibiotics. Nat. Rev. Microbiol. 3, 870–881 (2005).",
+   "journal-title": "Nat. Rev. Microbiol."
+  },
+  {
+   "key": "820_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "341",
+   "DOI": "10.1128/mr.51.3.341-350.1987",
+   "volume": "51",
+   "author": "BD Davis",
+   "year": "1987",
+   "unstructured": "Davis, B. D. Mechanism of bactericidal action of aminoglycosides. Microbiol Rev. 51, 341–350 (1987).",
+   "journal-title": "Microbiol Rev."
+  },
+  {
+   "key": "820_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "688",
+   "DOI": "10.1016/j.cell.2020.01.021",
+   "volume": "180",
+   "author": "JM Stokes",
+   "year": "2020",
+   "unstructured": "Stokes, J. M. et al. A deep learning approach to antibiotic discovery. Cell 180, 688–702.e13 (2020).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "820_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "6",
+   "DOI": "10.1038/s41587-020-00788-1",
+   "volume": "39",
+   "author": "C Sheridan",
+   "year": "2021",
+   "unstructured": "Sheridan, C. First small-molecule drug targeting RNA gains momentum. Nat. Biotechnol. 39, 6–8 (2021).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "820_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "672",
+   "DOI": "10.1038/nature15542",
+   "volume": "526",
+   "author": "JA Howe",
+   "year": "2015",
+   "unstructured": "Howe, J. A. et al. Selective small-molecule inhibition of an RNA structural element. Nature 526, 672–677 (2015).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "820_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "160",
+   "DOI": "10.1038/s41586-022-04537-z",
+   "volume": "604",
+   "author": "R Aguilar",
+   "year": "2022",
+   "unstructured": "Aguilar, R. et al. Targeting Xist with compounds that disrupt RNA structure and X inactivation. Nature 604, 160–166 (2022).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "820_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "4259",
+   "DOI": "10.1021/acs.jmedchem.3c01354",
+   "volume": "67",
+   "author": "J Kaur",
+   "year": "2024",
+   "unstructured": "Kaur, J. et al. RNA–small-molecule interaction: challenging the “undruggable” tag. J. Med. Chem. 67, 4259–4297 (2024).",
+   "journal-title": "J. Med. Chem."
+  },
+  {
+   "key": "820_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "6501",
+   "DOI": "10.1021/acs.jmedchem.8b00741",
+   "volume": "61",
+   "author": "H Ratni",
+   "year": "2018",
+   "unstructured": "Ratni, H. et al. Discovery of risdiplam, a selective survival of motor neuron-2 (SMN2) gene splicing modifier for the treatment of spinal muscular atrophy (SMA). J. Med. Chem. 61, 6501–6517 (2018).",
+   "journal-title": "J. Med. Chem."
+  },
+  {
+   "key": "820_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "1520",
+   "DOI": "10.1038/s41587-022-01307-0",
+   "volume": "40",
+   "author": "HT Rube",
+   "year": "2022",
+   "unstructured": "Rube, H. T. et al. Prediction of protein–ligand binding affinity from sequencing data with interpretable machine learning. Nat. Biotechnol. 40, 1520–1527 (2022).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "820_CR15",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-023-39856-w",
+   "volume": "14",
+   "author": "L Chen",
+   "year": "2023",
+   "unstructured": "Chen, L. et al. Sequence-based drug design as a concept in computational drug design. Nat. Commun. 14, 4217 (2023).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "820_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "120",
+   "DOI": "10.1038/s41570-023-00569-9",
+   "volume": "8",
+   "author": "S Kovachka",
+   "year": "2024",
+   "unstructured": "Kovachka, S. et al. Small molecule approaches to targeting RNA. Nat. Rev. Chem. 8, 120–135 (2024).",
+   "journal-title": "Nat. Rev. Chem."
+  },
+  {
+   "key": "820_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "291",
+   "DOI": "10.1038/nchembio.1452",
+   "volume": "10",
+   "author": "SP Velagapudi",
+   "year": "2014",
+   "unstructured": "Velagapudi, S. P., Gallo, S. M. & Disney, M. D. Sequence-based design of bioactive small molecules that target precursor microRNAs. Nat. Chem. Biol. 10, 291–297 (2014).",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "820_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "169",
+   "DOI": "10.1038/s41586-023-06091-8",
+   "volume": "618",
+   "author": "Y Tong",
+   "year": "2023",
+   "unstructured": "Tong, Y. et al. Programming inactive RNA-binding small molecules into bioactive degraders. Nature 618, 169–179 (2023).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "820_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "e202211358",
+   "DOI": "10.1002/anie.202211358",
+   "volume": "62",
+   "author": "K Yazdani",
+   "year": "2023",
+   "unstructured": "Yazdani, K. et al. Machine learning informs RNA-binding chemical space. Angew. Chem. Int. Ed. Engl. 62, e202211358 (2023).",
+   "journal-title": "Angew. Chem. Int. Ed. Engl."
+  },
+  {
+   "key": "820_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "1720",
+   "DOI": "10.1021/acschembio.6b00001",
+   "volume": "11",
+   "author": "MD Disney",
+   "year": "2016",
+   "unstructured": "Disney, M. D. et al. Inforna 2.0: a platform for the sequence-based design of small molecules targeting structured RNAs. ACS Chem. Biol. 11, 1720–1728 (2016).",
+   "journal-title": "ACS Chem. Biol."
+  },
+  {
+   "key": "820_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "115",
+   "DOI": "10.1261/rna.078889.121",
+   "volume": "28",
+   "author": "S Sun",
+   "year": "2022",
+   "unstructured": "Sun, S., Yang, J. & Zhang, Z. RNALigands: a database and web server for RNA–ligand interactions. RNA 28, 115–122 (2022).",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "820_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "bbae002",
+   "DOI": "10.1093/bib/bbae002",
+   "volume": "25",
+   "author": "SR Krishnan",
+   "year": "2024",
+   "unstructured": "Krishnan, S. R., Roy, A. & Gromiha, M. M. Reliable method for predicting the binding affinity of RNA–small molecule interactions using machine learning. Brief. Bioinform 25, bbae002 (2024).",
+   "journal-title": "Brief. Bioinform"
+  },
+  {
+   "key": "820_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1003571",
+   "DOI": "10.1371/journal.pcbi.1003571",
+   "volume": "10",
+   "author": "S Ruiz-Carmona",
+   "year": "2014",
+   "unstructured": "Ruiz-Carmona, S. et al. rDock: a fast, versatile and open source program for docking ligands to proteins and nucleic acids. PLoS Comput. Biol. 10, e1003571 (2014).",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "820_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "7173",
+   "DOI": "10.1021/acs.jctc.0c00798",
+   "volume": "16",
+   "author": "LZ Sun",
+   "year": "2020",
+   "unstructured": "Sun, L. Z. et al. RLDOCK: a new method for predicting RNA–ligand interactions. J. Chem. Theory Comput. 16, 7173–7183 (2020).",
+   "journal-title": "J. Chem. Theory Comput."
+  },
+  {
+   "key": "820_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "3891",
+   "DOI": "10.1021/acs.jcim.1c00203",
+   "volume": "61",
+   "author": "J Eberhardt",
+   "year": "2021",
+   "unstructured": "Eberhardt, J. et al. AutoDock Vina 1.2.0: new docking methods, expanded force field, and python bindings. J. Chem. Inf. Model. 61, 3891–3898 (2021).",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "820_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "36",
+   "DOI": "10.1093/bioinformatics/btaa1092",
+   "volume": "37",
+   "author": "H Su",
+   "year": "2021",
+   "unstructured": "Su, H., Peng, Z. & Yang, J. Recognition of small molecule–RNA binding sites using RNA sequence and structure. Bioinformatics 37, 36–42 (2021).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "3131",
+   "DOI": "10.1093/bioinformatics/bty345",
+   "volume": "34",
+   "author": "K Wang",
+   "year": "2018",
+   "unstructured": "Wang, K. et al. RBind: computational network method to predict RNA binding sites. Bioinformatics 34, 3131–3136 (2018).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "bbad482",
+   "DOI": "10.1093/bib/bbad482",
+   "volume": "25",
+   "author": "H Liu",
+   "year": "2023",
+   "unstructured": "Liu, H. et al. RNet: a network strategy to predict RNA binding preferences. Brief. Bioinform 25, bbad482 (2023).",
+   "journal-title": "Brief. Bioinform"
+  },
+  {
+   "key": "820_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "7690",
+   "DOI": "10.1093/nar/gkaa583",
+   "volume": "48",
+   "author": "C Oliver",
+   "year": "2020",
+   "unstructured": "Oliver, C. et al. Augmented base pairing networks encode RNA–small molecule binding preferences. Nucleic Acids Res. 48, 7690–7699 (2020).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "820_CR30",
+   "unstructured": "Deng, Z., R. Gu, & H. Bi, Predicting ligand–RNA binding using E3-equivariant network and pretraining. In Proc. Machine Learning in Structural Biology Workshop https://neurips.cc/media/PosterPDFs/NeurIPS%202022/59062.png?t=1669885458.1570177 (NeurIPS, 2022)."
+  },
+  {
+   "key": "820_CR31",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Carvajal-Patino, J. G. et al. RNAmigos2: accelerated structure-based RNA virtual screening with deep graph learning. Nat. Commun. https://doi.org/10.1038/s41467-025-57852-0 (2025).",
+   "DOI": "10.1038/s41467-025-57852-0"
+  },
+  {
+   "key": "820_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "btae155",
+   "DOI": "10.1093/bioinformatics/btae155",
+   "volume": "40",
+   "author": "S Sun",
+   "year": "2024",
+   "unstructured": "Sun, S. & Gao, L. Contrastive pre-training and 3D convolution neural network for RNA and small molecule binding affinity prediction. Bioinformatics 40, btae155 (2024).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "W509",
+   "DOI": "10.1093/nar/gkad404",
+   "volume": "51",
+   "author": "Y Wang",
+   "year": "2023",
+   "unstructured": "Wang, Y. et al. RNAincoder: a deep learning-based encoder for RNA and RNA-associated interaction. Nucleic Acids Res. 51, W509–W519 (2023).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "820_CR34",
+   "doi-asserted-by": "publisher",
+   "first-page": "235",
+   "DOI": "10.1093/nar/28.1.235",
+   "volume": "28",
+   "author": "HM Berman",
+   "year": "2000",
+   "unstructured": "Berman, H. M. et al. The Protein Data Bank. Nucleic Acids Res. 28, 235–242 (2000).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "820_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "1140",
+   "DOI": "10.1093/bioinformatics/btaa921",
+   "volume": "37",
+   "author": "T Nguyen",
+   "year": "2021",
+   "unstructured": "Nguyen, T. et al. GraphDTA: predicting drug–target binding affinity with graph neural networks. Bioinformatics 37, 1140–1147 (2021).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "126",
+   "DOI": "10.1038/s42256-022-00605-1",
+   "volume": "5",
+   "author": "PZ Bai",
+   "year": "2023",
+   "unstructured": "Bai, P. Z. et al. Interpretable bilinear attention network with domain adaptation improves drug-target prediction. Nat. Mach. Intell. 5, 126–136 (2023).",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "820_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "1427",
+   "DOI": "10.1038/s42256-023-00756-9",
+   "volume": "5",
+   "author": "A Mastropietro",
+   "year": "2023",
+   "unstructured": "Mastropietro, A., Pasculli, G. & Bajorath, J. Learning characteristics of graph neural networks predicting protein–ligand affinities. Nat. Mach. Intell. 5, 1427–1436 (2023).",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "820_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "816",
+   "DOI": "10.1039/D1SC05180F",
+   "volume": "13",
+   "author": "Z Yang",
+   "year": "2022",
+   "unstructured": "Yang, Z. et al. MGraphDTA: deep multiscale graph neural network for explainable drug–target binding affinity prediction. Chem. Sci. 13, 816–833 (2022).",
+   "journal-title": "Chem. Sci."
+  },
+  {
+   "key": "820_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "4153",
+   "DOI": "10.1093/bioinformatics/btac485",
+   "volume": "38",
+   "author": "ZJ Cheng",
+   "year": "2022",
+   "unstructured": "Cheng, Z. J. et al. IIFDTI: predicting drug-target interactions through interactive and independent features based on attention mechanism. Bioinformatics 38, 4153–4161 (2022).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "688",
+   "DOI": "10.1038/s42256-024-00849-z",
+   "volume": "6",
+   "author": "DH Cao",
+   "year": "2024",
+   "unstructured": "Cao, D. H. et al. Generic protein–ligand interaction scoring by integrating physical prior knowledge and data augmentation modelling. Nat. Mach. Intell. 6, 688–700 (2024).",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "820_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "831",
+   "DOI": "10.1038/nbt.3300",
+   "volume": "33",
+   "author": "B Alipanahi",
+   "year": "2015",
+   "unstructured": "Alipanahi, B. et al. Predicting the sequence specificities of DNA- and RNA-binding proteins by deep learning. Nat. Biotechnol. 33, 831–838 (2015).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "820_CR42",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-023-42547-1",
+   "volume": "14",
+   "author": "H Zhu",
+   "year": "2023",
+   "unstructured": "Zhu, H. et al. Dynamic characterization and interpretation for protein–RNA interactions across diverse cellular conditions using HDRNet. Nat. Commun. 14, 6824 (2023).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "820_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "D212",
+   "DOI": "10.1093/nar/gkaa921",
+   "volume": "49",
+   "author": "BA Sweeney",
+   "year": "2021",
+   "unstructured": "Sweeney, B. A. et al. RNAcentral 2021: secondary structure integration, improved sequence search and new member databases. Nucleic Acids Res. 49, D212–D220 (2021).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "820_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "667",
+   "DOI": "10.1038/s41589-022-01233-x",
+   "volume": "19",
+   "author": "A Cherkasov",
+   "year": "2023",
+   "unstructured": "Cherkasov, A. The ‘Big Bang’ of the chemical universe. Nat. Chem. Biol. 19, 667–668 (2023).",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "820_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "712",
+   "DOI": "10.1038/s41589-022-01234-w",
+   "volume": "19",
+   "author": "J Lyu",
+   "year": "2023",
+   "unstructured": "Lyu, J., Irwin, J. J. & Shoichet, B. K. Modeling the expansion of virtual screening libraries. Nat. Chem. Biol. 19, 712–718 (2023).",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "820_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "1837",
+   "DOI": "10.1093/bioinformatics/bty893",
+   "volume": "35",
+   "author": "Z Cao",
+   "year": "2019",
+   "unstructured": "Cao, Z. & Zhang, S. Simple tricks of convolutional neural network architectures improve DNA–protein binding prediction. Bioinformatics 35, 1837–1843 (2019).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "613",
+   "DOI": "10.1038/s41588-022-01048-5",
+   "volume": "54",
+   "author": "BP de Almeida",
+   "year": "2022",
+   "unstructured": "de Almeida, B. P. et al. DeepSTARR predicts enhancer activity from DNA sequence and enables the de novo design of synthetic enhancers. Nat. Genet. 54, 613–624 (2022).",
+   "journal-title": "Nat. Genet."
+  },
+  {
+   "key": "820_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "1088",
+   "DOI": "10.1038/s42256-022-00570-9",
+   "volume": "4",
+   "author": "S Toneyan",
+   "year": "2022",
+   "unstructured": "Toneyan, S., Tang, Z. & Koo, P. K. Evaluating deep learning for predicting epigenomic profiles. Nat. Mach. Intell. 4, 1088–1100 (2022).",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "820_CR49",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1008050",
+   "DOI": "10.1371/journal.pcbi.1008050",
+   "volume": "16",
+   "author": "DR Kelley",
+   "year": "2020",
+   "unstructured": "Kelley, D. R. Cross-species regulatory sequence activity prediction. PLoS Comput. Biol. 16, e1008050 (2020).",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "820_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "btae190",
+   "DOI": "10.1093/bioinformatics/btae190",
+   "volume": "40",
+   "author": "AG Duncan",
+   "year": "2024",
+   "unstructured": "Duncan, A. G., Mitchell, J. A. & Moses, A. M. Improving the performance of supervised deep learning for regulatory genomics using phylogenetic augmentation. Bioinformatics 40, btae190 (2024).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "18",
+   "DOI": "10.1186/s13321-020-00420-z",
+   "volume": "12",
+   "author": "J Hemmerich",
+   "year": "2020",
+   "unstructured": "Hemmerich, J., Asilar, E. & Ecker, G. F. COVER: conformational oversampling as data augmentation for molecules. J. Cheminform 12, 18 (2020).",
+   "journal-title": "J. Cheminform"
+  },
+  {
+   "key": "820_CR52",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-023-40219-8",
+   "volume": "14",
+   "author": "Y Diao",
+   "year": "2023",
+   "unstructured": "Diao, Y. et al. Macrocyclization of linear molecules by deep learning to facilitate macrocyclic drug candidates discovery. Nat. Commun. 14, 4552 (2023).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "820_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "1757",
+   "DOI": "10.1021/ci3001277",
+   "volume": "52",
+   "author": "JJ Irwin",
+   "year": "2012",
+   "unstructured": "Irwin, J. J. et al. ZINC: a free tool to discover chemistry for biology. J. Chem. Inf. Model. 52, 1757–1768 (2012).",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "820_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "2",
+   "DOI": "10.1186/s13321-020-00478-9",
+   "volume": "13",
+   "author": "M Sorokina",
+   "year": "2021",
+   "unstructured": "Sorokina, M. et al. COCONUT online: Collection of Open Natural Products database. J. Cheminform 13, 2 (2021).",
+   "journal-title": "J. Cheminform"
+  },
+  {
+   "key": "820_CR55",
+   "unstructured": "Gilson, M.K.L., Tiqing, BindingDB: Measured Binding Data for Protein–Ligand and Other Molecular Systems (Univ. California San Diego Library Digital Collections, 2023)."
+  },
+  {
+   "key": "820_CR56",
+   "doi-asserted-by": "publisher",
+   "first-page": "13242",
+   "DOI": "10.1002/anie.201808823",
+   "volume": "57",
+   "author": "A Donlic",
+   "year": "2018",
+   "unstructured": "Donlic, A. et al. Discovery of small molecule ligands for MALAT1 by tuning an RNA-binding scaffold. Angew. Chem. Int. Ed. Engl. 57, 13242–13247 (2018).",
+   "journal-title": "Angew. Chem. Int. Ed. Engl."
+  },
+  {
+   "key": "820_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "bbaa070",
+   "DOI": "10.1093/bib/bbaa070",
+   "volume": "22",
+   "author": "C Shen",
+   "year": "2021",
+   "unstructured": "Shen, C. et al. Beware of the generic machine learning-based scoring functions in structure-based virtual screening. Brief. Bioinform 22, bbaa070 (2021).",
+   "journal-title": "Brief. Bioinform"
+  },
+  {
+   "key": "820_CR58",
+   "doi-asserted-by": "publisher",
+   "first-page": "7946",
+   "DOI": "10.1021/acs.jmedchem.2c00487",
+   "volume": "65",
+   "author": "M Volkov",
+   "year": "2022",
+   "unstructured": "Volkov, M. et al. On the frustration to predict binding affinities from protein–ligand structures with deep neural networks. J. Med. Chem. 65, 7946–7958 (2022).",
+   "journal-title": "J. Med. Chem."
+  },
+  {
+   "key": "820_CR59",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1002/minf.202200059",
+   "volume": "41",
+   "author": "L Moller",
+   "year": "2022",
+   "unstructured": "Moller, L. et al. Translating from proteins to ribonucleic acids for ligand-binding site detection. Mol. Inf. 41, e2200059 (2022).",
+   "journal-title": "Mol. Inf."
+  },
+  {
+   "key": "820_CR60",
+   "doi-asserted-by": "publisher",
+   "first-page": "2933",
+   "DOI": "10.1093/bioinformatics/btt509",
+   "volume": "29",
+   "author": "EP Nawrocki",
+   "year": "2013",
+   "unstructured": "Nawrocki, E. P. & Eddy, S. R. Infernal 1.1: 100-fold faster RNA homology searches. Bioinformatics 29, 2933–2935 (2013).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR61",
+   "doi-asserted-by": "publisher",
+   "first-page": "1658",
+   "DOI": "10.1093/bioinformatics/btl158",
+   "volume": "22",
+   "author": "W Li",
+   "year": "2006",
+   "unstructured": "Li, W. & Godzik, A. Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences. Bioinformatics 22, 1658–1659 (2006).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR62",
+   "doi-asserted-by": "publisher",
+   "first-page": "D192",
+   "DOI": "10.1093/nar/gkaa1047",
+   "volume": "49",
+   "author": "I Kalvari",
+   "year": "2021",
+   "unstructured": "Kalvari, I. et al. Rfam 14: expanded coverage of metagenomic, viral and microRNA families. Nucleic Acids Res. 49, D192–D200 (2021).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "820_CR63",
+   "doi-asserted-by": "publisher",
+   "first-page": "1661",
+   "DOI": "10.1093/bioinformatics/bts249",
+   "volume": "28",
+   "author": "A Cereto-Massague",
+   "year": "2012",
+   "unstructured": "Cereto-Massague, A. et al. DecoyFinder: an easy-to-use python GUI application for building target-specific decoy sets. Bioinformatics 28, 1661–1662 (2012).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "820_CR64",
+   "doi-asserted-by": "publisher",
+   "first-page": "2778",
+   "DOI": "10.1021/ci200227u",
+   "volume": "51",
+   "author": "RA Laskowski",
+   "year": "2011",
+   "unstructured": "Laskowski, R. A. & Swindells, M. B. LigPlot+: multiple ligand–protein interaction diagrams for drug discovery. J. Chem. Inf. Model. 51, 2778–2786 (2011).",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "820_CR65",
+   "unstructured": "PyMOL Molecular Graphics System v1.8 (Schrodinger LLC, 2015)."
+  },
+  {
+   "key": "820_CR66",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Ma, H. RNAsmol. Zenodo https://doi.org/10.5281/zenodo.15331739 (2025).",
+   "DOI": "10.5281/zenodo.15331739"
+  }
+ ],
+ "container-title": [
+  "Nature Computational Science"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.nature.com/articles/s43588-025-00820-x.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s43588-025-00820-x",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s43588-025-00820-x.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    9,
+    6
+   ]
+  ],
+  "date-time": "2025-09-06T22:58:08Z",
+  "timestamp": 1757199488000
+ },
+ "score": 64.67766,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/s43588-025-00820-x"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    24
+   ]
+  ]
+ },
+ "references-count": 66,
+ "journal-issue": {
+  "issue": "8",
+  "published-online": {
+   "date-parts": [
+    [
+     2025,
+     8
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "820"
+ ],
+ "URL": "https://doi.org/10.1038/s43588-025-00820-x",
+ "relation": {
+  "has-preprint": [
+   {
+    "id-type": "doi",
+    "id": "10.1101/2024.06.26.600802",
+    "asserted-by": "object"
+   }
+  ]
+ },
+ "ISSN": [
+  "2662-8457"
+ ],
+ "issn-type": [
+  {
+   "value": "2662-8457",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    24
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "30 July 2024",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "21 May 2025",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "24 June 2025",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "The authors declare no competing interests.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  }
+ ]
+}

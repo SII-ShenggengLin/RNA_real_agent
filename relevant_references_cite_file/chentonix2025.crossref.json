@@ -1,0 +1,620 @@
+{
+ "institution": [
+  {
+   "name": "bioRxiv"
+  }
+ ],
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    30
+   ]
+  ],
+  "date-time": "2026-09-30T15:47:35Z",
+  "timestamp": 1790783255772,
+  "version": "4.1.0"
+ },
+ "posted": {
+  "date-parts": [
+   [
+    2025,
+    1,
+    11
+   ]
+  ]
+ },
+ "group-title": "Bioinformatics",
+ "reference-count": 40,
+ "publisher": "openRxiv",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      1,
+      11
+     ]
+    ],
+    "date-time": "2025-01-11T00:00:00Z",
+    "timestamp": 1736553600000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "http://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "accepted": {
+  "date-parts": [
+   [
+    2025,
+    1,
+    11
+   ]
+  ]
+ },
+ "abstract": "<jats:p>In this technical report, we present Protenix, a comprehensive reproduction of AlphaFold3 (AF3), aimed at advancing the field of biomolecular structure prediction. Protenix tackles the challenges of predicting complex interactions involving proteins, ligands, and nucleic acids, while enhancing accessibility and reproducibility. Across diverse benchmarks, including PoseBusters V2, low-homology PDB sets, and CASP15 RNA, Protenix achieves state-of-the-art performance in protein-ligand, protein-protein, and protein-nucleic acid predictions. We also address limitations, such as potential memorization effects, and outline future directions for improvement. By open-sourcing Protenix, we aim to democratize advanced structure prediction tools and accelerate interdisciplinary research in computational biology and drug discovery.</jats:p>",
+ "DOI": "10.1101/2025.01.08.631967",
+ "type": "posted-content",
+ "created": {
+  "date-parts": [
+   [
+    2025,
+    1,
+    11
+   ]
+  ],
+  "date-time": "2025-01-11T05:35:14Z",
+  "timestamp": 1736573714000
+ },
+ "source": "Crossref",
+ "is-referenced-by-count": 128,
+ "title": [
+  "Protenix - Advancing Structure Prediction Through a Comprehensive AlphaFold3 Reproduction"
+ ],
+ "prefix": "10.64898",
+ "author": [
+  {
+   "name": "ByteDance AML AI4Science Team",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-6789-1202",
+   "authenticated-orcid": false,
+   "given": "Xinshi",
+   "family": "Chen",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yuxuan",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Chan",
+   "family": "Lu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wenzhi",
+   "family": "Ma",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jiaqi",
+   "family": "Guan",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0009-0000-9282-7248",
+   "authenticated-orcid": false,
+   "given": "Chengyue",
+   "family": "Gong",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jincai",
+   "family": "Yang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Hanyu",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ke",
+   "family": "Zhang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Shenghao",
+   "family": "Wu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kuangqi",
+   "family": "Zhou",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yanping",
+   "family": "Yang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Zhenyu",
+   "family": "Liu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lan",
+   "family": "Wang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Bo",
+   "family": "Shi",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Shaochen",
+   "family": "Shi",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wenzhi",
+   "family": "Xiao",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Bytedance"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "54368",
+ "reference": [
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-019-1923-7"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/S41586-021-03819-2"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.3",
+   "unstructured": "Richard Evans , et al. “Protein complex prediction with AlphaFold-Multimer”. In: biorxiv (2021), pp. 2021–10."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.4",
+   "unstructured": "Josh Abramson , et al. “Accurate structure prediction of biomolecular interactions with AlphaFold 3”. In: Nature (2024), pp. 1–3."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.5",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.abj8754"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.6",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41596-021-00628-9"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.7",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41592-022-01488-1"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.8",
+   "unstructured": "Ruidong Wu , et al. “High-resolution de novo structure prediction from primary sequence”. In: BioRxiv (2022), pp. 2022–07."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.9",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.ade2574"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.10",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gustaf Ahdritz , et al. “OpenFold: Retraining AlphaFold2 yields new insights into its learning mechanisms and capacity for generalization”. In: Nature Methods (2024), pp. 1–11.",
+   "DOI": "10.1038/s41592-024-02272-z"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.11",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s42256-024-00792-z"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.12",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41467-024-48837-6"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.13",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/sci-ence.adl2528"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.14",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2408.16975"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.15",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1101/2024.10.10.615955"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.16",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41592-023-02086-5"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.17",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/28.1.235"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.18",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1039/D3SC04185A"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.19",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkac1259"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.20",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.5281/zenodo.7555957"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.21",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1101/2024.06.13.598780"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.22",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/bioinformatics/btt473"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.23",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1107/S0907444913007051"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.24",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1002/prot.26574"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.25",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nbt.3988"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.26",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/NAR/GKAC1052"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.27",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/bioinformatics/btu789"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.28",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s13321-023-00786-w"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.29",
+   "first-page": "26565",
+   "article-title": "Elucidating the design space of diffusion-based generative models",
+   "volume": "35",
+   "year": "2022",
+   "journal-title": "Advances in neural information processing systems"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.30",
+   "doi-asserted-by": "crossref",
+   "unstructured": "William Peebles and Saining Xie . “Scalable diffusion models with transformers”. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. 2023, pp. 4195–4205.",
+   "DOI": "10.1109/ICCV51070.2023.00387"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.31",
+   "unstructured": "Patrick Esser et al. “Scaling rectified flow transformers for high-resolution image synthesis”. In: Forty-first International Conference on Machine Learning. 2024."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.32",
+   "unstructured": "Ronny Krashinsky , et al. “Nvidia ampere architecture in-depth”. In: NVIDIA blog: https://devblogs.nvidia.com/nvidia-ampere-architecture-in-depth (2020)."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.33",
+   "unstructured": "Dion Harris . NVIDIA Hopper GPU Architecture Accelerates Dynamic Programming Up to 40x Using New DPX Instructions. 2022."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.34",
+   "unstructured": "Adam Paszke , et al. “Pytorch: An imperative style, high-performance deep learning library”. In: Advances in neural information processing systems 32 (2019)."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.35",
+   "unstructured": "Shenggan Cheng , et al. FastFold: Reducing AlphaFold Training Time from 11 Days to 67 Hours. 2022. arXiv: 2203.00854."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.36",
+   "unstructured": "Jinhui Yuan , et al. “Oneflow: Redesign the distributed deep learning framework from scratch”. In: arXiv preprint arXiv:2110.15032 (2021)."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.37",
+   "unstructured": "DeepSpeed4Science. DS4Sci_EvoformerAttention eliminates memory explosion problems for scaling Evoformer-centric structural biology models. https://www.deepspeed.ai/tutorials/ds4sci_evoformerattention/. Accessed: 2024-11-06. 2024."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.38",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkac1080"
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.39",
+   "unstructured": "Gustaf Ahdritz et al. OpenProteinSet: Training data for structural biology at scale. 2023. arXiv: 2308.05326."
+  },
+  {
+   "key": "2026041021043207000_2025.01.08.631967v1.40",
+   "unstructured": "Richard Evans , et al. “Protein complex prediction with AlphaFold-Multimer”. In: biorxiv (2021), pp. 2021–10."
+  }
+ ],
+ "container-title": [],
+ "original-title": [],
+ "link": [
+  {
+   "URL": "https://syndication.highwire.org/content/doi/10.1101/2025.01.08.631967",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2026,
+    4,
+    11
+   ]
+  ],
+  "date-time": "2026-04-11T04:04:40Z",
+  "timestamp": 1775880280000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "http://biorxiv.org/lookup/doi/10.1101/2025.01.08.631967"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2025,
+    1,
+    11
+   ]
+  ]
+ },
+ "references-count": 40,
+ "URL": "https://doi.org/10.1101/2025.01.08.631967",
+ "relation": {},
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2025,
+    1,
+    11
+   ]
+  ]
+ },
+ "subtype": "preprint"
+}

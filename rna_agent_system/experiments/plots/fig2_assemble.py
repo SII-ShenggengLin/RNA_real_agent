@@ -9,8 +9,8 @@ Every panel carries the reset programme's single 6-pt ink-black text
 style, so all panels share one scale unless a row must shrink to fit.
 
 Layout (2026-09-11, user-directed re-lettering): the former panel e (IRES
-literature-panel ROC) moved out of Fig. 2 to Supplementary Fig. S1
-(`figS1_ires_panel.py`, same frozen data and rendering); the former f–i
+literature-panel ROC) moved out of Fig. 2 to Supplementary Fig. S3
+(`figS3_ires_panel.py`, same frozen data and rendering); the former f–i
 panels are re-lettered e–h. a (tile carpet) spans the full width; b c,
 d e and f g flow two per row at scale 1.0, each centred in its column —
 with only two panels left on the old f g h equal-height "fit" row, that

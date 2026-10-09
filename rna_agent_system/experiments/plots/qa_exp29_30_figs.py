@@ -27,9 +27,9 @@ DPI = 1200
 FIGS = [
     ("fig5b_gennav_mcnemar.png", 89.0),
     ("fig5c_delivery_mosaic.png", 89.0),
-    ("fig5d_secondary_endpoint.png", 89.0),
-    ("fig5e_campaign_arc_lollipop.png", 89.0),
-    ("fig5f_decisive_grouped_bars.png", 89.0),
+    ("fig5d_secondary_endpoint.png", 45.0),
+    ("fig5e_campaign_arc_lollipop.png", 80.5),
+    ("fig5f_decisive_grouped_bars.png", 48.5),
     ("fig5g_decisive_mosaic.png", 89.0),
 ]
 

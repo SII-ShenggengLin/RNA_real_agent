@@ -26,6 +26,6 @@
   "evaluation_rubric": {
     "mean_plddt_threshold": 65.0
   },
-  "source": "Group I intron (Tetrahymena)",
+  "source": "Group I intron P4-P6 domain (Tetrahymena)",
   "paper_reference": "1GID"
 }

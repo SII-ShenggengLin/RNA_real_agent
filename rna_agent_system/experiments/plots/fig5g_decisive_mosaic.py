@@ -1,21 +1,29 @@
 """Fig 5g — Aptamer delivery map: the 26 × 3 pair-outcome mosaic pooled over
-every dual-arm target (Experiment 29 decisive + confirmation segments +
-Experiment 40 deployment completion).
+every dual-arm target (Experiment 29 delivery-scarce + confirmation
+segments + Experiment 40 deployment completion).
 
-One tile per (target, profile) cell, coloured by the paired delivery outcome
-of the two arms — navigation-only pass (sage), both arms pass (grey blue),
-static-grid-only pass (terracotta), neither passes (dark warm grey).  A
-right-hand marker column carries the target-level navigation end-to-end
-glyph (filled = navigation delivered a passing candidate in all three
-length profiles).  Rows follow the segment order — the 12 decisive-panel
-targets (most delivery-scarce under the segment-2 static arm — the
-pre-registered selection rule), the 8 confirmation complement, then the 6
-deployment targets (Exp-30 form-entry campaigns, static grid completed by
-Exp 40), with labelled dividers between cohorts; the three profile columns
-are headed Compact / Standard / Extended (the aptamer length profiles
-25–34 / 40–55 / 61–80 nt); a one-line context strip above the panel states
-the tile semantics; the key below carries the per-class cell counts and a
-second row explaining the end-to-end glyph.
+One tile per (target, profile) pair, coloured by the paired delivery
+outcome of the two conditions — navigation-only (sage), both-pass (grey
+blue), static-only (terracotta), both-fail (dark warm grey; the Fig. 5g
+legend's class names).  A right-hand marker column carries the
+target-level navigation end-to-end glyph (filled = navigation delivered a
+passing candidate in all three length profiles).  Rows follow the segment
+order — the 12 delivery-scarce targets (most delivery-scarce under the
+segment-2 static condition — the pre-registered selection rule), the 8
+confirmation complement, then the 6 deployment targets (Exp-30 form-entry
+campaigns, static condition completed by Exp 40), with dividers between
+cohorts; the three profile columns are headed Compact / Standard /
+Extended (the aptamer length profiles 25–34 / 40–55 / 61–80 nt); the key
+below carries the per-class pair counts and a second row explaining the
+end-to-end glyph.
+
+2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch): the
+one-line context strip deleted (the key's class names self-decode the
+tile colours and the dividers stay unlabelled — the strip carried the
+retired "arm/cohort" wording); the key labels aligned to the legend's
+class names — "navigation only" → "navigation-only", "both arms" →
+"both-pass", "static grid only" → "static-only", "neither" → "both-fail";
+no number, colour or geometry changed.
 
 2026-09-08 figure-repair pass (user direction):
 - row labels (target names) restored — the marker-column axes previously
@@ -85,10 +93,10 @@ INK = "#000000"
 FONT = 6
 W_MM, H_MM = 89.0, 132.2
 
-C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both arms pass
-C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only pass
-C_RULE = PALETTE_BY_NAME["terracotta"]      # static-grid-only pass
-C_NONE = PALETTE_BY_NAME["dark_warm_grey"]  # neither passes
+C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both-pass
+C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only
+C_RULE = PALETTE_BY_NAME["terracotta"]      # static-only
+C_NONE = PALETTE_BY_NAME["dark_warm_grey"]  # both-fail
 C_OPEN = PALETTE_BY_NAME["warm_grey"]       # open e2e-marker outline
 
 PROFILES = ["compact", "standard", "extended"]
@@ -131,8 +139,6 @@ MOSAIC_BOT_MM = 12.5
 MOSAIC_H_MM = 113.1   # 26 rows × 4.35 mm (the fig5c row pitch)
 LEG1_Y_MM = 8.6       # key row 1 (tile outcomes) baseline
 LEG2_Y_MM = 4.8       # key row 2 (end-to-end glyph) baseline
-
-CONTEXT = "Tile colour marks the delivering arm(s); dividers separate the campaign cohorts"
 
 
 def nav_cells(rec: dict) -> dict:
@@ -261,8 +267,6 @@ def main() -> int:
     e2e_hdr = fig.text(mark_left + 0.5 * MARK_W_MM / W_MM,
                        hdr_bb.y0 / fig.bbox.height, "End-to-end",
                        ha="center", va="bottom", fontsize=FONT, color=INK)
-    ctx = fig.text(0.5, hdr_bb.y1 / fig.bbox.height + 1.4 / H_MM, CONTEXT,
-                   ha="center", va="bottom", fontsize=FONT, color=INK)
 
     # ── key: two centred rows under the mosaic, renderer-measured widths
     #    under a canvas-overflow assert (the fig5c/fig4g house convention) ──
@@ -276,10 +280,10 @@ def main() -> int:
     MK_W, MK_H = 2.2 / W_MM, 1.0 / H_MM      # e2e-marker swatch
     GAP_IN, GAP_OUT = 0.6 / W_MM, 1.7 / W_MM
 
-    row1 = [("swatch", C_NAV), ("label", f"navigation only ({counts['nav']})"),
-            ("swatch", C_BOTH), ("label", f"both arms ({counts['both']})"),
-            ("swatch", C_RULE), ("label", f"static grid only ({counts['rule']})"),
-            ("swatch", C_NONE), ("label", f"neither ({counts['none']})")]
+    row1 = [("swatch", C_NAV), ("label", f"navigation-only ({counts['nav']})"),
+            ("swatch", C_BOTH), ("label", f"both-pass ({counts['both']})"),
+            ("swatch", C_RULE), ("label", f"static-only ({counts['rule']})"),
+            ("swatch", C_NONE), ("label", f"both-fail ({counts['none']})")]
     row2 = ([("label", "End-to-end (navigation):"), ("gap", 1.0 / W_MM)]
             + [("mswatch", (C_NAV, INK)),
                ("label", f"all 3 profiles delivered ({n_e2e})"),
@@ -327,7 +331,7 @@ def main() -> int:
     #    mosaic (the fig5c/fig5b/fig4e house assertions) ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    texts = ([ctx, e2e_hdr] + legend_texts
+    texts = ([e2e_hdr] + legend_texts
              + list(ax.get_xticklabels()) + list(ax.get_yticklabels()))
     boxes = []
     for t in texts:
@@ -340,7 +344,7 @@ def main() -> int:
         for j in range(i + 1, len(boxes)):
             assert not boxes[i].overlaps(boxes[j]), \
                 f"text collision: {texts[i].get_text()!r} x {texts[j].get_text()!r}"
-    assert abs(boxes[1].y0 - ax.get_xticklabels()[1]
+    assert abs(boxes[0].y0 - ax.get_xticklabels()[1]
                .get_window_extent(renderer).y0) <= 2, \
         "End-to-end header off the profile-header baseline"
     assert max(b.x1 for b in boxes[-n:]) < ax.bbox.x0, \

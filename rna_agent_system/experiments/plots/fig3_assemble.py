@@ -16,13 +16,20 @@ b is the tall 27-cell ranking dot plot, so panel c is embedded in its
 two-sub-row composite layout (`fig3c_docking_lollipop_composite.pdf`,
 rendered by `FIG3C_LAYOUT=composite python experiments/plots/fig3c_docking_lollipop.py`;
 the 19 lollipops wrap 11 + 8 at the SARS-CoV-2 RBD | PSMA group boundary)
-so the two fill the row edge to edge at uniform text scale; d and e share
-row 3 as **matched-height panels** (d re-rendered smaller, e re-rendered
-larger — 86.7 x 44.1 mm vs 85.5 x 41.4 mm — so the earlier height-mismatch
-blank band under e is gone; no data change); f (confounded improvement,
-re-lettered from h the same day) closes the figure centred on the content
-width at scale 1.0 (the fig2 full-span convention; its text returns to the
-uniform 6-pt size after the former fit-row downscaling).
+so the two fill the row edge to edge at uniform text scale.
+Layout (2026-10-02, user-directed — d, e and f on one row): d, e and f were
+re-rendered to the three-column width (~58 mm; f narrowed from 77 mm, d and
+e from ~86 mm, all at the unchanged 6-pt text size, no data change) and now
+share row 3 in a three-column grid; the former matched-height d|e row and
+the full-width centred f row are retired. Text sync in the same batch:
+3a's colour-bar label pluralized, 3b's x-label oracle → predictor and its
+ring key "nominal pass" → "reaches ρ ≥ 0.6", 3d's legend "thrombin series"
+→ "thrombin Kd anchors" (body §2.3 synced), 3e's x-label "Decision-layer
+overreach events" → "Overreach events" (the fig4f precedent; the Fig. 3e
+caption carries "plan-level") with its key → "ranking use"/"screening use",
+3f's stage labels → "Apparent advantage"/"Budget matching", its gate tag
+→ "pre-registered gate δ ≥ 0.3" (moved below the line), its inset head
+→ "null distribution" and its y-label → "coordination-loop advantage".
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
 placed just above-left of each panel corner (Nature style — no period, no
@@ -73,14 +80,14 @@ PANELS: dict[str, str] = {
 # content width; "flush" places the two panels at the row's left and right
 # edges (row 2: b + the wide two-sub-row c exactly tile the content width
 # with one column gap between them); "grid" centres each panel in its
-# half-width column (the fig2 composite convention); "fit" draws the whole
-# row at one equal height and lets the leftover width become even gutters
-# (the fig2 fgh-row convention).
+# half-width column (the fig2 composite convention); "grid3" centres each
+# panel in its third-width column (row 3: d, e, f — 2026-10-02); "fit" draws
+# the whole row at one equal height and lets the leftover width become even
+# gutters (the fig2 fgh-row convention).
 ROWS: list[tuple[str, list[str]]] = [
     ("full", ["a"]),
     ("flush", ["b", "c"]),
-    ("grid", ["d", "e"]),
-    ("full", ["f"]),
+    ("grid3", ["d", "e", "f"]),
 ]
 
 # Grid constants (PDF points) — identical to the fig2 composite.
@@ -105,8 +112,13 @@ def main() -> None:
         r = doc[0].rect
         sizes[letter] = (r.width, r.height)
 
-    content_w = sizes["a"][0]  # panel a defines the full width
+    content_w = max(sizes["a"][0], sizes["b"][0] + sizes["c"][0] + COL_GAP)
+    # 2026-10-02 second pass: panel a is narrower than the b+c row (its
+    # rotated labels let it shrink to ~145 mm), so the content width is the
+    # widest ROW, no longer panel a alone; row 1's "full" mode then centres
+    # a within it.
     col_w = (content_w - COL_GAP) / 2.0
+    col_w3 = (content_w - 2 * COL_GAP) / 3.0
 
     # Lay out rows top to bottom; each placed panel is
     # (letter, x, y, w, h) — all panels at scale 1.0 (uniform text scale).
@@ -148,6 +160,16 @@ def main() -> None:
                 s = row_h / h
                 row_placed.append((letter, x, y, w * s, h * s))
                 x += w * s + gap
+        elif mode == "grid3":
+            for col_idx, letter in enumerate(letters):
+                w, h = sizes[letter]
+                if w > col_w3 + 0.5:
+                    raise ValueError(
+                        f"panel {letter} width {w:.1f} breaks the 3-column "
+                        f"grid (limit {col_w3:.1f})"
+                    )
+                x0 = MARGIN_L + col_idx * (col_w3 + COL_GAP) + (col_w3 - w) / 2.0
+                row_placed.append((letter, x0, y, w, h))
         else:  # grid
             for col_idx, letter in enumerate(letters):
                 w, h = sizes[letter]

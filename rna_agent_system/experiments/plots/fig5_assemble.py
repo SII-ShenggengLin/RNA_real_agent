@@ -9,19 +9,24 @@ to bottom), rows top-aligned so the letters sit on one line per row.
 Every panel carries the reset programme's single 6-pt text style, so
 every panel is placed at scale 1.0 — no row is fit-scaled.
 
-Layout (2026-09-12 pooled revision): all seven panels are 89 mm
-single-column renders on the 183 mm Nature double-column content width
-(the fig3/fig4 composite width). Row 1 pairs the two near-matched
-mRNA-campaign panels a (52 mm) and b (56 mm) on the half-width column
-grid (the fig2/fig3 convention). Row 2 places the tall pooled delivery
-mosaic c (127.8 mm) on the left against a right-column stack of d over e
-(35 + 62 mm — the fig4 stack convention mirrored, so the short panels
-fill the row beside c instead of leaving a blank band; reading order
-c → d → e is preserved). Row 3 closes with the aptamer-campaign pair on
-the column grid: the decisive grouped bars f (40 mm) beside the pooled
-26-target delivery mosaic g (132.2 mm). The former production Pareto
-panel h was retired when the deployment cohort merged into b/c/e/g (the
-user-directed 2026-09-12 revision).
+Layout (2026-10-06 follow-up revision, user-directed): all panels render
+at 6-pt text and sit at scale 1.0 on the 183 mm Nature double-column
+content width. Row 1 pairs the two near-matched mRNA-campaign panels a
+(52 mm) and b (56 mm) on the half-width column grid. Row 2 pairs the two
+tall delivery mosaics c (127.8 mm) and g (132.2 mm) on the same grid —
+the user-directed c|g pairing, near-matched heights. Row 3 groups the
+three re-narrowed campaign panels d (46 mm), e (79 mm) and f (49 mm)
+left-to-right with one COL_GAP between them, the whole row centred (the
+fig4 "group" convention; e and f shed their above-axes strip texts in the
+same batch and were re-rendered narrower at unchanged 6-pt text). This
+arrangement eliminates the 2026-10-03 layout's blank bands (~20 mm under
+c and the ~47 mm flanks around the full-width g row); its only residue
+is ~4.4 mm under c. Visual reading-order deviation registered (the
+2026-09-11 j-before-i and 2026-10-02 f-after-g precedents): g sits beside
+c in row 2, so the eye meets g before d/e/f — letters stay
+citation-ordered (the legend and §2.5 cite d, e and f before g). The
+former production Pareto panel h was retired when the deployment cohort
+merged into b/c/e/g (the user-directed 2026-09-12 revision).
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
 placed just above-left of each panel corner (Nature style — no period, no
@@ -59,17 +64,16 @@ PANELS: dict[str, str] = {
     "g": "fig5g_decisive_mosaic.pdf",
 }
 
-# Row plan in strict reading order. "grid" centres each panel in its
-# half-width column (the fig2/fig3 composite convention); "stack" piles the
-# left-column letters top-to-bottom beside the single right-column panel
-# (the fig4 convention); "stack_right" is the mirror — the single panel on
-# the left, the letter stack in the right column — so a tall panel can sit
-# beside two short ones without a blank band. Both stack modes join the
-# columns by one COL_GAP and centre the whole block on the content width.
+# Row plan. "grid" centres each panel in its half-width column (the
+# fig2/fig3 composite convention); "group" places the letters left to
+# right with one COL_GAP between them, the whole row centred (the fig4
+# convention). The letters are citation-ordered, not visual-order — g
+# sits beside c in row 2 and the eye meets it before d/e/f (the
+# registered deviation, see the module docstring).
 ROWS: list[tuple[str, object]] = [
     ("grid", ["a", "b"]),
-    ("stack_right", ("c", ["d", "e"])),
-    ("grid", ["f", "g"]),
+    ("grid", ["c", "g"]),
+    ("group", ["d", "e", "f"]),
 ]
 
 # Grid constants (PDF points) — identical to the fig2/fig3/fig4 composites.
@@ -87,6 +91,15 @@ INK = tuple(int(TEXT[i : i + 2], 16) / 255 for i in (1, 3, 5))
 
 
 def main() -> None:
+    # every lettered panel must be placed exactly once (guards the row plan
+    # against dropped panels when letters shift — the fig4 convention)
+    placed_letters: list[str] = []
+    for mode, spec in ROWS:
+        placed_letters.extend(spec)  # type: ignore[arg-type]
+    assert sorted(placed_letters) == sorted(PANELS), (
+        f"row plan places {sorted(placed_letters)} but panels are {sorted(PANELS)}"
+    )
+
     sources: dict[str, fitz.Document] = {}
     sizes: dict[str, tuple[float, float]] = {}
     for letter, name in PANELS.items():
@@ -117,35 +130,15 @@ def main() -> None:
                 x0 = MARGIN_L + col_idx * (col_w + COL_GAP) + (col_w - w) / 2.0
                 row_placed.append((letter, x0, y, w, h))
             row_h = max(p[4] for p in row_placed)
-        elif mode == "stack":
-            col_letters, right = spec  # type: ignore[misc]
-            col1_w = max(sizes[l][0] for l in col_letters)
-            block_w = col1_w + COL_GAP + sizes[right][0]
-            x1 = MARGIN_L + max(0.0, (content_w - block_w) / 2.0)
-            yy = y
-            for letter in col_letters:
+        elif mode == "group":
+            letters = spec  # type: ignore[assignment]
+            total = sum(sizes[l][0] for l in letters) + COL_GAP * (len(letters) - 1)
+            x = MARGIN_L + max(0.0, (content_w - total) / 2.0)
+            for letter in letters:
                 w, h = sizes[letter]
-                row_placed.append((letter, x1 + (col1_w - w) / 2.0, yy, w, h))
-                yy += h + ROW_GAP
-            stack_h = yy - ROW_GAP - y
-            wr, hr = sizes[right]
-            row_placed.append((right, x1 + col1_w + COL_GAP, y, wr, hr))
-            row_h = max(stack_h, hr)
-        elif mode == "stack_right":
-            left, col_letters = spec  # type: ignore[misc]
-            col2_w = max(sizes[l][0] for l in col_letters)
-            block_w = sizes[left][0] + COL_GAP + col2_w
-            x1 = MARGIN_L + max(0.0, (content_w - block_w) / 2.0)
-            wl, hl = sizes[left]
-            row_placed.append((left, x1, y, wl, hl))
-            x2 = x1 + wl + COL_GAP
-            yy = y
-            for letter in col_letters:
-                w, h = sizes[letter]
-                row_placed.append((letter, x2 + (col2_w - w) / 2.0, yy, w, h))
-                yy += h + ROW_GAP
-            stack_h = yy - ROW_GAP - y
-            row_h = max(hl, stack_h)
+                row_placed.append((letter, x, y, w, h))
+                x += w + COL_GAP
+            row_h = max(p[4] for p in row_placed)
         else:
             raise ValueError(f"unknown row mode {mode!r}")
         placed.extend(row_placed)

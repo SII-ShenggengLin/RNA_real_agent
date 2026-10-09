@@ -1,18 +1,36 @@
 #!/usr/bin/env python3
 """Fig. 3f — Confounded improvement: the coordination-loop apparent effect
 dissolves under pre-registered controls (annotated slope + gate +
-permutation-null histogram inset, observed δ marked).
+null-distribution histogram inset, observed δ marked).
 
 Main axes: Cliff's δ trajectory of the EGARPS-component best-of-pool
-coordination benefit across the three pre-registered comparisons — the
-apparent effect (coordination loop vs serial, unequal budget), the
+coordination advantage across the three pre-registered comparisons — the
+apparent advantage (coordination loop vs serial, unequal budget), the
 budget-matched control (vs one-pass 16-candidate serial) and the
 fixed-resampling control (vs forced content-free regeneration) — with the
-pre-registered GO gate δ = 0.3 dashed (the P0/P3 convention) and per-stage
-δ / P printed above each dot. Inset: the sign-flip permutation null (10^4)
+GO gate δ = 0.3 dashed (the P0/P3 convention) and per-stage
+δ / P printed above each dot. Inset: the sign-flip null distribution (10^4)
 of the apparent effect with the observed δ marked (the Robin Extended Data
 Fig. 4c convention) — the effect is real-looking precisely because the
 budget confound is real; the controls, not the loop, carry it.
+
+2026-10-02 revision (Fig. 3 text-sync batch, user-adjudicated): the on-panel
+text synced to the polished body/caption vocabulary — stage labels
+"Apparent effect"/"Budget-matched" → "Apparent advantage"/"Budget matching"
+(the caption's nouns), the gate tag "GO gate" → "pre-registered gate" (the
+Fig. 3c caption's registered term; the tag moved just below the gate line
+on the right, the only clear band at the narrower canvas), the inset head
+"permutation null" → "null distribution", and the y-label's "coordination
+benefit" → "coordination-loop advantage". The canvas narrowed to
+57.2 × 50 mm so d, e and f share one three-column row of the composite
+(the user-directed 2026-10-02 layout; fonts unchanged 6-pt, the inset
+widened to keep its two text blocks separated, no data change).
+2026-10-02 same-day second pass (user-adjudicated): the inset head
+plain-worded to "no real effect (10⁴ sign flips)" (the legend carries
+nothing about the inset, so the panel text decodes itself; "null
+distribution" retired after one render); the canvas narrowed again to
+55.8 mm and the x-limits widened to (−0.45, 2.45) so the apparent-advantage
+label stays inside the left spine (the figure's moderate-narrowing pass).
 
 2026-08-31 user-directed repair: every text element pure black #000000 (the
 fig3e convention — the gate tag had been dark warm grey and the observed-δ
@@ -69,8 +87,8 @@ C_GATE = PALETTE_BY_NAME["dark_warm_grey"]      # #7A7672 — gate line (fig3a/3
 C_REF = NEUTRAL_GRID
 
 STAGES = [
-    ("apparent", "Apparent\neffect", C_APPARENT),
-    ("budget_matched", "Budget-\nmatched", C_BUDGET),
+    ("apparent", "Apparent\nadvantage", C_APPARENT),
+    ("budget_matched", "Budget\nmatching", C_BUDGET),
     ("fixed_resampling", "Fixed\nresampling", C_FIXED),
 ]
 
@@ -107,11 +125,11 @@ def main() -> int:
     vals = [an[k]["delta"] for k, _, _ in STAGES]
     ps = [an[k].get("p_wilcoxon") for k, _, _ in STAGES]
 
-    fig_w, fig_h = 88 / 25.4, 58 / 25.4
+    fig_w, fig_h = 55.8 / 25.4, 50.0 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
 
     # main axes (mm geometry)
-    x0_mm, w_mm, y0_mm, h_mm = 14, 69, 13, 33
+    x0_mm, w_mm, y0_mm, h_mm = 9.5, 43.9, 10, 36
     ax = fig.add_axes([x0_mm / 25.4 / fig_w, y0_mm / 25.4 / fig_h,
                        w_mm / 25.4 / fig_w, h_mm / 25.4 / fig_h])
 
@@ -123,19 +141,23 @@ def main() -> int:
     gate = s.get("gate_delta", 0.3)
     y_lo, y_hi = -0.12, 0.66
     ax.axhline(gate, color=C_GATE, linewidth=0.7, linestyle=(0, (3, 2)), zorder=1)
-    ax.text(0.985, gate + 0.012, f"GO gate δ ≥ {gate:.1f}", fontsize=FONT,
-            ha="right", va="bottom", color=INK, transform=ax.get_yaxis_transform())
+    # the tag sits just below the gate line on the right — at the narrowed
+    # canvas the inset owns the upper left and the right-anchored "gate"
+    # wording no longer fits above the line beside it
+    ax.text(0.985, gate - 0.018, f"gate δ ≥ {gate:.1f}",
+            fontsize=FONT, ha="right", va="top", color=INK,
+            transform=ax.get_yaxis_transform())
     ax.axhline(0, color=C_REF, linewidth=0.5, zorder=1)
 
     for x, (v, p) in enumerate(zip(vals, ps)):
         ax.text(x, v + 0.035, f"δ = {v:+.2f}\n{p_str(p)}",
                 fontsize=FONT, ha="center", va="bottom", color=INK, zorder=5)
 
-    ax.set_xlim(-0.35, 2.45)
+    ax.set_xlim(-0.45, 2.45)
     ax.set_ylim(y_lo, y_hi)
     ax.set_xticks(xs)
     ax.set_xticklabels([lab for _, lab, _ in STAGES])
-    ax.set_ylabel("Cliff's δ, coordination benefit")
+    ax.set_ylabel("Cliff's δ, coordination-loop advantage")
     ax.tick_params(length=1.5, width=0.5, pad=1.5)
     for spine in ("top", "right"):
         ax.spines[spine].set_visible(False)
@@ -150,28 +172,31 @@ def main() -> int:
         x_obs = sum(1 for c in centers if c < obs) - 0.5
 
         # Fixed upper-left rect (axes fraction), audited against the frozen
-        # summary: bottom edge at data y = 0.329 sits ~1.2 mm above the gate
-        # line and ~2.3 mm above the apparent-effect label (tops at 0.275);
-        # right edge at data x = 1.43 clears the right-anchored gate tag;
-        # no stage dot, label, or reference line is covered.
-        axi = ax.inset_axes([0.055, 0.575, 0.58, 0.39], transform=ax.transAxes)
+        # summary: bottom edge at data y = 0.329 sits above the gate line and
+        # the apparent-advantage label; the right edge clears the stage dots;
+        # no stage dot, label, or reference line is covered. 2026-10-02:
+        # widened 0.58 → 0.70 of the narrower axes so the two text blocks
+        # keep their horizontal separation.
+        axi = ax.inset_axes([0.03, 0.575, 0.70, 0.39], transform=ax.transAxes)
 
         axi.bar(range(len(counts)), counts, width=1.0, color=C_LINE,
                 edgecolor="none", zorder=2)
         axi.axvline(x_obs, color=C_APPARENT, linewidth=1.1, zorder=4)
-        # observed-δ label with a white halo, kept clear of the marker line
-        label_right = x_obs > len(counts) * 0.6
-        axi.text(x_obs - 0.8 if label_right else x_obs + 0.8, max(counts) * 0.97,
+        # observed-δ label right of the marker line in an empty headroom band
+        # (the xlim extends 14 bins past the last bar); at the narrowed 2026-10-02
+        # canvas the old left-of-line top placement sat within halo reach of the
+        # null-distribution block
+        axi.text(x_obs + 1.2, max(counts) * 0.97,
                  f"observed\nδ = {obs:+.2f}", fontsize=FONT,
-                 ha="right" if label_right else "left", va="top",
+                 ha="left", va="top",
                  color=INK, zorder=5,
                  bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.0})
         axi.text(0.03, 0.97,
-                 f"permutation null\n($10^4$ sign flips)\n{p_str(null.get('p_perm'))}",
+                 f"no real effect\n($10^4$ sign flips)\n{p_str(null.get('p_perm'))}",
                  transform=axi.transAxes, fontsize=FONT, ha="left", va="top",
                  color=INK, zorder=4,
                  bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.0})
-        axi.set_xlim(-0.8, len(counts) - 0.2)
+        axi.set_xlim(-0.8, len(counts) - 0.2 + 14)
         axi.set_ylim(0, max(counts) * 1.15)
         axi.set_yticks([])
         axi.set_xticks([])

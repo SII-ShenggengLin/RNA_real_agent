@@ -1,0 +1,478 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T02:22:42Z",
+  "timestamp": 1791512562750,
+  "version": "4.3.4"
+ },
+ "reference-count": 26,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "1",
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "BMC Bioinformatics"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2009,
+    12
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>Background</jats:title>\n                    <jats:p>Sequence similarity searching is a very important bioinformatics task. While Basic Local Alignment Search Tool (BLAST) outperforms exact methods through its use of heuristics, the speed of the current BLAST software is suboptimal for very long queries or database sequences. There are also some shortcomings in the user-interface of the current command-line applications.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>We describe features and improvements of rewritten BLAST software and introduce new command-line applications. Long query sequences are broken into chunks for processing, in some cases leading to dramatically shorter run times. For long database sequences, it is possible to retrieve only the relevant parts of the sequence, reducing CPU time and memory usage for searches of short queries against databases of contigs or chromosomes. The program can now retrieve masking information for database sequences from the BLAST databases. A new modular software library can now access subject sequence data from arbitrary data sources. We introduce several new features, including strategy files that allow a user to save and reuse their favorite set of options. The strategy files can be uploaded to and downloaded from the NCBI BLAST web site.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>The new BLAST command-line applications, compared to the current BLAST tools, demonstrate substantial speed improvements for long queries as well as chromosome length database sequences. We have also improved the user interface of the command-line applications.</jats:p>\n                  </jats:sec>",
+ "DOI": "10.1186/1471-2105-10-421",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2009,
+    12,
+    17
+   ]
+  ],
+  "date-time": "2009-12-17T06:15:20Z",
+  "timestamp": 1261030520000
+ },
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 21540,
+ "title": [
+  "BLAST+: architecture and applications"
+ ],
+ "prefix": "10.1186",
+ "volume": "10",
+ "author": [
+  {
+   "given": "Christiam",
+   "family": "Camacho",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "George",
+   "family": "Coulouris",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Vahram",
+   "family": "Avagyan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ning",
+   "family": "Ma",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jason",
+   "family": "Papadopoulos",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kevin",
+   "family": "Bealer",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Thomas L",
+   "family": "Madden",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2009,
+    12,
+    15
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "issue": "3",
+   "key": "3151_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "403",
+   "DOI": "10.1016/S0022-2836(05)80360-2",
+   "volume": "215",
+   "author": "S Altschul",
+   "year": "1990",
+   "unstructured": "Altschul S, Gish W, Miller W, Myers E, Lipman D: Basic local alignment search tool. J Mol Biol 1990, 215(3):403–410.",
+   "journal-title": "J Mol Biol"
+  },
+  {
+   "issue": "17",
+   "key": "3151_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "3389",
+   "DOI": "10.1093/nar/25.17.3389",
+   "volume": "25",
+   "author": "S Altschul",
+   "year": "1997",
+   "unstructured": "Altschul S, Madden T, Schäffer A, Zhang J, Zhang Z, Miller W, Lipman D: Gapped BLAST and PSI-BLAST: a new generation of protein database search programs. Nucleic Acids Res 1997, 25(17):3389–3402. 10.1093/nar/25.17.3389",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "3151_CR3",
+   "unstructured": "NCBI C toolkit[http://www.ncbi.nlm.nih.gov/IEB/ToolBox/SDKDOCS/INDEX.HTML]"
+  },
+  {
+   "issue": "17",
+   "key": "3151_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "3986",
+   "DOI": "10.1093/nar/26.17.3986",
+   "volume": "26",
+   "author": "Z Zhang",
+   "year": "1998",
+   "unstructured": "Zhang Z, Schäffer A, Miller W, Madden T, Lipman D, Koonin E, Altschul S: Protein sequence similarity searches using patterns as seeds. Nucleic Acids Res 1998, 26(17):3986–3990. 10.1093/nar/26.17.3986",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "issue": "12",
+   "key": "3151_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "1000",
+   "DOI": "10.1093/bioinformatics/15.12.1000",
+   "volume": "15",
+   "author": "A Schäffer",
+   "year": "1999",
+   "unstructured": "Schäffer A, Wolf Y, Ponting C, Koonin E, Aravind L, Altschul S: IMPALA: matching a protein sequence against a collection of PSI-BLAST-constructed position-specific score matrices. Bioinformatics 1999, 15(12):1000–1011. 10.1093/bioinformatics/15.12.1000",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "issue": "14",
+   "key": "3151_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "2994",
+   "DOI": "10.1093/nar/29.14.2994",
+   "volume": "29",
+   "author": "A Schäffer",
+   "year": "2001",
+   "unstructured": "Schäffer A, Aravind L, Madden T, Shavirin S, Spouge J, Wolf Y, Koonin E, Altschul S: Improving the accuracy of PSI-BLAST protein database searches with composition-based statistics and other refinements. Nucleic Acids Res 2001, 29(14):2994–3005. 10.1093/nar/29.14.2994",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "3151_CR7",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Zhang Z, Schwartz S, Wagner L, Miller W: A greedy algorithm for aligning DNA sequences. J Comput Biol 7(1–2):203–214. 10.1089/10665270050081478",
+   "DOI": "10.1089/10665270050081478"
+  },
+  {
+   "key": "3151_CR8",
+   "unstructured": "A/G BLAST[http://www.apple.com/downloads/macosx/math_science/agblast.html]"
+  },
+  {
+   "issue": "6915",
+   "key": "3151_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "520",
+   "DOI": "10.1038/nature01262",
+   "volume": "420",
+   "author": "R Waterston",
+   "year": "2002",
+   "unstructured": "Waterston R, Lindblad-Toh K, Birney E, Rogers J, Abril J, Agarwal P, Agarwala R, Ainscough R, Alexandersson M, An P, et al.: Initial sequencing and comparative analysis of the mouse genome. Nature 2002, 420(6915):520–562. 10.1038/nature01262",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "3151_CR10",
+   "unstructured": "RepeatMasker Web site[http://www.repeatmasker.org/]"
+  },
+  {
+   "key": "3151_CR11",
+   "unstructured": "NCBI BLAST web site[http://blast.ncbi.nlm.nih.gov/Blast.cgi]"
+  },
+  {
+   "issue": "Web Server issu",
+   "key": "3151_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "W5",
+   "DOI": "10.1093/nar/gkn201",
+   "volume": "36",
+   "author": "M Johnson",
+   "year": "2008",
+   "unstructured": "Johnson M, Zaretskaya I, Raytselis Y, Merezhuk Y, McGinnis S, Madden T: NCBI BLAST: a better web interface. Nucleic Acids Res 2008, 36(Web Server issue):W5–9. 10.1093/nar/gkn201",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "issue": "4",
+   "key": "3151_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "656",
+   "DOI": "10.1101/gr.229202. Article published online before March 2002",
+   "volume": "12",
+   "author": "W Kent",
+   "year": "2002",
+   "unstructured": "Kent W: BLAT--the BLAST-like alignment tool. Genome Res 2002, 12(4):656–664.",
+   "journal-title": "Genome Res"
+  },
+  {
+   "issue": "4",
+   "key": "3151_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "965",
+   "DOI": "10.1089/cmb.2006.13.965",
+   "volume": "13",
+   "author": "M Cameron",
+   "year": "2006",
+   "unstructured": "Cameron M, Williams H, Cannane A: A deterministic finite automaton for faster protein hit detection in BLAST. J Comput Biol 2006, 13(4):965–978. 10.1089/cmb.2006.13.965",
+   "journal-title": "J Comput Biol"
+  },
+  {
+   "key": "3151_CR15",
+   "unstructured": "NCBI C++ toolkit documentation[http://www.ncbi.nlm.nih.gov/bookshelf/br.fcgi?book=toolkit]"
+  },
+  {
+   "key": "3151_CR16",
+   "unstructured": "Implementing a BlastSeqSrc[http://www.ncbi.nlm.nih.gov/IEB/ToolBox/CPP_DOC/doxyhtml/_impl_blast_seqsrc_howto.html]"
+  },
+  {
+   "key": "3151_CR17",
+   "unstructured": "BLAST+ Command Line Applications User Manual[http://www.ncbi.nlm.nih.gov/bookshelf/br.fcgi?book=helpblast]"
+  },
+  {
+   "key": "3151_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "66",
+   "DOI": "10.1016/S1046-2023(05)80165-3",
+   "volume": "3",
+   "author": "DJ States",
+   "year": "1991",
+   "unstructured": "States DJ, Gish W, Altschul SF: Improved sensitivity of nucleic acid database searches using application-specific scoring matrices. METHODS: A Companion to Methods in Enzymology 1991, 3: 66–70. 10.1016/S1046-2023(05)80165-3",
+   "journal-title": "METHODS: A Companion to Methods in Enzymology"
+  },
+  {
+   "issue": "2",
+   "key": "3151_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "134",
+   "DOI": "10.1093/bioinformatics/bti774",
+   "volume": "22",
+   "author": "A Morgulis",
+   "year": "2006",
+   "unstructured": "Morgulis A, Gertz E, Schäffer A, Agarwala R: WindowMasker: window-based masker for sequenced genomes. Bioinformatics 2006, 22(2):134–141. 10.1093/bioinformatics/bti774",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "3151_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "554",
+   "DOI": "10.1016/S0076-6879(96)66035-2",
+   "volume": "266",
+   "author": "JC Wootton",
+   "year": "1996",
+   "unstructured": "Wootton JC, Federhen S: Analysis of compositionally biased regions in sequence databases. Computer Methods for Macromolecular Sequence Analysis 1996, 266: 554–571. full_text",
+   "journal-title": "Computer Methods for Macromolecular Sequence Analysis"
+  },
+  {
+   "issue": "5",
+   "key": "3151_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "1028",
+   "DOI": "10.1089/cmb.2006.13.1028",
+   "volume": "13",
+   "author": "A Morgulis",
+   "year": "2006",
+   "unstructured": "Morgulis A, Gertz E, Schäffer A, Agarwala R: A fast and symmetric DUST implementation to mask low-complexity DNA sequences. J Comput Biol 2006, 13(5):1028–1040. 10.1089/cmb.2006.13.1028",
+   "journal-title": "J Comput Biol"
+  },
+  {
+   "key": "3151_CR22",
+   "unstructured": "Reference assembly for Human genome build 36.1[http://www.ncbi.nlm.nih.gov/genome/guide/human/release_notes.html#b36]"
+  },
+  {
+   "issue": "16",
+   "key": "3151_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "1757",
+   "DOI": "10.1093/bioinformatics/btn322",
+   "volume": "24",
+   "author": "A Morgulis",
+   "year": "2008",
+   "unstructured": "Morgulis A, Coulouris G, Raytselis Y, Madden T, Agarwala R, Schäffer A: Database indexing for production MegaBLAST searches. Bioinformatics 2008, 24(16):1757–1764. 10.1093/bioinformatics/btn322",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "3151_CR24",
+   "unstructured": "Cachegrind[http://valgrind.org/docs/manual/cg-manual.html]"
+  },
+  {
+   "key": "3151_CR25",
+   "unstructured": "NCBI SRA Software Development Kit[http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=show&f=software&m=software&s=software]"
+  },
+  {
+   "key": "3151_CR26",
+   "unstructured": "PUBLIC DOMAIN NOTICE for NCBI[http://www.ncbi.nlm.nih.gov/bookshelf/br.fcgi?book=toolkit&part=toolkit.fm#A3]"
+  }
+ ],
+ "container-title": [
+  "BMC Bioinformatics"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://link.springer.com/content/pdf/10.1186/1471-2105-10-421.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2021,
+    8,
+    31
+   ]
+  ],
+  "date-time": "2021-08-31T17:40:37Z",
+  "timestamp": 1630431637000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-10-421"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2009,
+    12
+   ]
+  ]
+ },
+ "references-count": 26,
+ "journal-issue": {
+  "issue": "1",
+  "published-print": {
+   "date-parts": [
+    [
+     2009,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "3151"
+ ],
+ "URL": "https://doi.org/10.1186/1471-2105-10-421",
+ "relation": {},
+ "ISSN": [
+  "1471-2105"
+ ],
+ "issn-type": [
+  {
+   "value": "1471-2105",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2009,
+    12
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "28 July 2009",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "15 December 2009",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "15 December 2009",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  }
+ ],
+ "article-number": "421"
+}

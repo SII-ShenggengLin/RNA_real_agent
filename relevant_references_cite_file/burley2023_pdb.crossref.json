@@ -1,0 +1,2540 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    7
+   ]
+  ],
+  "date-time": "2026-10-07T15:49:01Z",
+  "timestamp": 1791388141034,
+  "version": "4.3.3"
+ },
+ "reference-count": 128,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "D1",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2022,
+      11,
+      24
+     ]
+    ],
+    "date-time": "2022-11-24T00:00:00Z",
+    "timestamp": 1669248000000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/100000001",
+   "name": "National Science Foundation",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "DBI-1832184"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "DBI-1832184"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000001",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000015",
+   "name": "U.S. Department of Energy",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "DE-SC0019749"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "DE-SC0019749"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000015",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000054",
+   "name": "National Cancer Institute",
+   "doi-asserted-by": "publisher",
+   "id": [
+    {
+     "id": "10.13039/100000054",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000060",
+   "name": "National Institute of Allergy and Infectious Diseases",
+   "doi-asserted-by": "publisher",
+   "id": [
+    {
+     "id": "10.13039/100000060",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000002",
+   "name": "National Institutes of Health",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "R01GM133198"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "R01GM133198"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000002",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "name": "UK Biotechnology and Biological Research Council",
+   "award": [
+    "DBI-2019297"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "DBI-2019297"
+     ]
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000001",
+   "name": "NSF",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "DBI-1756248"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "DBI-1756248"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000001",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000001",
+   "name": "NSF",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "DBI-2112966"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "DBI-2112966"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000001",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "name": "NIH-NIGMS",
+   "award": [
+    "R01GM083960"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "R01GM083960"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "NIH-NIGMS",
+   "award": [
+    "P41GM109824"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "P41GM109824"
+     ]
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "published-print": {
+  "date-parts": [
+   [
+    2023,
+    1,
+    6
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:p>The Research Collaboratory for Structural Bioinformatics Protein Data Bank (RCSB PDB), founding member of the Worldwide Protein Data Bank (wwPDB), is the US data center for the open-access PDB archive. As wwPDB-designated Archive Keeper, RCSB PDB is also responsible for PDB data security. Annually, RCSB PDB serves &amp;gt;10 000 depositors of three-dimensional (3D) biostructures working on all permanently inhabited continents. RCSB PDB delivers data from its research-focused RCSB.org web portal to many millions of PDB data consumers based in virtually every United Nations-recognized country, territory, etc. This Database Issue contribution describes upgrades to the research-focused RCSB.org web portal that created a one-stop-shop for open access to ∼200 000 experimentally-determined PDB structures of biological macromolecules alongside &amp;gt;1 000 000 incorporated Computed Structure Models (CSMs) predicted using artificial intelligence/machine learning methods. RCSB.org is a ‘living data resource.’ Every PDB structure and CSM is integrated weekly with related functional annotations from external biodata resources, providing up-to-date information for the entire corpus of 3D biostructure data freely available from RCSB.org with no usage limitations. Within RCSB.org, PDB structures and the CSMs are clearly identified as to their provenance and reliability. Both are fully searchable, and can be analyzed and visualized using the full complement of RCSB.org web portal capabilities.</jats:p>",
+ "DOI": "10.1093/nar/gkac1077",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2022,
+    11,
+    2
+   ]
+  ],
+  "date-time": "2022-11-02T17:54:55Z",
+  "timestamp": 1667411695000
+ },
+ "page": "D488-D508",
+ "source": "Crossref",
+ "is-referenced-by-count": 917,
+ "title": [
+  "RCSB Protein Data Bank (RCSB.org): delivery of experimentally-determined PDB structures alongside one million computed structure models of proteins from artificial intelligence/machine learning"
+ ],
+ "prefix": "10.1093",
+ "volume": "51",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0002-2487-9713",
+   "authenticated-orcid": false,
+   "given": "Stephen K",
+   "family": "Burley",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Rutgers Cancer Institute of New Jersey , New Brunswick , NJ  08901, USA"
+    },
+    {
+     "name": "Department of Chemistry and Chemical Biology, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Charmi",
+   "family": "Bhikadiya",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Chunxiao",
+   "family": "Bi",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-3576-0387",
+   "authenticated-orcid": false,
+   "given": "Sebastian",
+   "family": "Bittrich",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Henry",
+   "family": "Chao",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Li",
+   "family": "Chen",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Paul A",
+   "family": "Craig",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "School of Chemistry and Materials Science, Rochester Institute of Technology , Rochester , NY  14623, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-0512-1031",
+   "authenticated-orcid": false,
+   "given": "Gregg V",
+   "family": "Crichlow",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kenneth",
+   "family": "Dalenberg",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-9544-5621",
+   "authenticated-orcid": false,
+   "given": "Jose M",
+   "family": "Duarte",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Shuchismita",
+   "family": "Dutta",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Rutgers Cancer Institute of New Jersey , New Brunswick , NJ  08901, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Maryam",
+   "family": "Fayazi",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-1788-6579",
+   "authenticated-orcid": false,
+   "given": "Zukang",
+   "family": "Feng",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Justin W",
+   "family": "Flatt",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Sai",
+   "family": "Ganesan",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Department of Bioengineering and Therapeutic Sciences, Department of Pharmaceutical Chemistry, Quantitative Biosciences Institute, University of California San Francisco , San Francisco , CA  94158, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Sutapa",
+   "family": "Ghosh",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David S",
+   "family": "Goodsell",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Rutgers Cancer Institute of New Jersey , New Brunswick , NJ  08901, USA"
+    },
+    {
+     "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute , La Jolla , CA  92037, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Rachel Kramer",
+   "family": "Green",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Vladimir",
+   "family": "Guranovic",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jeremy",
+   "family": "Henry",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-6121-9442",
+   "authenticated-orcid": false,
+   "given": "Brian P",
+   "family": "Hudson",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Igor",
+   "family": "Khokhriakov",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Catherine L",
+   "family": "Lawson",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-0574-2041",
+   "authenticated-orcid": false,
+   "given": "Yuhe",
+   "family": "Liang",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Robert",
+   "family": "Lowe",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-7905-6327",
+   "authenticated-orcid": false,
+   "given": "Ezra",
+   "family": "Peisach",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-9544-8390",
+   "authenticated-orcid": false,
+   "given": "Irina",
+   "family": "Persikova",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Dennis W",
+   "family": "Piehl",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yana",
+   "family": "Rose",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Andrej",
+   "family": "Sali",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Department of Bioengineering and Therapeutic Sciences, Department of Pharmaceutical Chemistry, Quantitative Biosciences Institute, University of California San Francisco , San Francisco , CA  94158, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Joan",
+   "family": "Segura",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, San Diego Supercomputer Center, University of California San Diego , La Jolla , CA  92093, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-2694-7003",
+   "authenticated-orcid": false,
+   "given": "Monica",
+   "family": "Sekharan",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-6817-7476",
+   "authenticated-orcid": false,
+   "given": "Chenghua",
+   "family": "Shao",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Brinda",
+   "family": "Vallat",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-3103-7781",
+   "authenticated-orcid": false,
+   "given": "Maria",
+   "family": "Voigt",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ben",
+   "family": "Webb",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Department of Bioengineering and Therapeutic Sciences, Department of Pharmaceutical Chemistry, Quantitative Biosciences Institute, University of California San Francisco , San Francisco , CA  94158, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-6686-5475",
+   "authenticated-orcid": false,
+   "given": "John D",
+   "family": "Westbrook",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Rutgers Cancer Institute of New Jersey , New Brunswick , NJ  08901, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Shamara",
+   "family": "Whetstone",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-8896-6878",
+   "authenticated-orcid": false,
+   "given": "Jasmine Y",
+   "family": "Young",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Arthur",
+   "family": "Zalevsky",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Department of Bioengineering and Therapeutic Sciences, Department of Pharmaceutical Chemistry, Quantitative Biosciences Institute, University of California San Francisco , San Francisco , CA  94158, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-4149-1745",
+   "authenticated-orcid": false,
+   "given": "Christine",
+   "family": "Zardecki",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Research Collaboratory for Structural Bioinformatics Protein Data Bank, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    },
+    {
+     "name": "Institute for Quantitative Biomedicine, Rutgers, The State University of New Jersey , Piscataway , NJ  08854, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "published-online": {
+  "date-parts": [
+   [
+    2022,
+    11,
+    24
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2023010804181937300_B1",
+   "first-page": "223",
+   "article-title": "Crystallography: protein data bank",
+   "volume": "233",
+   "author": "Protein Data Bank",
+   "year": "1971",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B2",
+   "doi-asserted-by": "crossref",
+   "first-page": "100561",
+   "DOI": "10.1016/j.jbc.2021.100561",
+   "article-title": "The PDB and the ribosome",
+   "volume": "296",
+   "author": "Moore",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B3",
+   "doi-asserted-by": "crossref",
+   "first-page": "100554",
+   "DOI": "10.1016/j.jbc.2021.100554",
+   "article-title": "Icosahedral virus structures and the protein data bank",
+   "volume": "296",
+   "author": "Johnson",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B4",
+   "doi-asserted-by": "crossref",
+   "first-page": "100553",
+   "DOI": "10.1016/j.jbc.2021.100553",
+   "article-title": "Beyond the double helix: DNA structural diversity and the PDB",
+   "volume": "296",
+   "author": "Neidle",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B5",
+   "doi-asserted-by": "crossref",
+   "first-page": "100555",
+   "DOI": "10.1016/j.jbc.2021.100555",
+   "article-title": "2021) An RNA-centric historical narrative around the protein data bank",
+   "volume": "296",
+   "author": "Westhof",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B6",
+   "doi-asserted-by": "crossref",
+   "first-page": "100556",
+   "DOI": "10.1016/j.jbc.2021.100556",
+   "article-title": "A perspective on the PDB’s impact on the field of glycobiology",
+   "volume": "296",
+   "author": "Prestegard",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B7",
+   "doi-asserted-by": "crossref",
+   "first-page": "100557",
+   "DOI": "10.1016/j.jbc.2021.100557",
+   "article-title": "Highlighting membrane protein structure and function: a celebration of the protein data bank",
+   "volume": "296",
+   "author": "Li",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B8",
+   "doi-asserted-by": "crossref",
+   "first-page": "100560",
+   "DOI": "10.1016/j.jbc.2021.100560",
+   "article-title": "Evolution of standardization and dissemination of cryo-EM structures and data jointly by the community, PDB, and EMDB",
+   "volume": "296",
+   "author": "Chiu",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B9",
+   "doi-asserted-by": "crossref",
+   "first-page": "100558",
+   "DOI": "10.1016/j.jbc.2021.100558",
+   "article-title": "Recent advances in de novo protein design: principles, methods, and applications",
+   "volume": "296",
+   "author": "Pan",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B10",
+   "doi-asserted-by": "crossref",
+   "first-page": "100562",
+   "DOI": "10.1016/j.jbc.2021.100562",
+   "article-title": "Integrating 3D structural information into systems biology",
+   "volume": "296",
+   "author": "Murray",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B11",
+   "doi-asserted-by": "crossref",
+   "first-page": "100559",
+   "DOI": "10.1016/j.jbc.2021.100559",
+   "article-title": "Impact of structural biologists and the protein data bank on small-molecule drug discovery and development",
+   "volume": "296",
+   "author": "Burley",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B12",
+   "doi-asserted-by": "crossref",
+   "first-page": "100746",
+   "DOI": "10.1016/j.jbc.2021.100746",
+   "article-title": "From structure to the dynamic regulation of a molecular switch: a journey over 3 decades",
+   "volume": "296",
+   "author": "Taylor",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B13",
+   "doi-asserted-by": "crossref",
+   "first-page": "100741",
+   "DOI": "10.1016/j.jbc.2021.100741",
+   "article-title": "How structural biology transformed studies of transcription regulation",
+   "volume": "296",
+   "author": "Wolberger",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B14",
+   "doi-asserted-by": "crossref",
+   "first-page": "100745",
+   "DOI": "10.1016/j.jbc.2021.100745",
+   "article-title": "50 Years of structural immunology",
+   "volume": "296",
+   "author": "Wilson",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B15",
+   "doi-asserted-by": "crossref",
+   "first-page": "100744",
+   "DOI": "10.1016/j.jbc.2021.100744",
+   "article-title": "The PDB and protein homeostasis: from chaperones to degradation and disaggregase machines",
+   "volume": "296",
+   "author": "Saibil",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B16",
+   "doi-asserted-by": "crossref",
+   "first-page": "100747",
+   "DOI": "10.1016/j.jbc.2021.100747",
+   "article-title": "Structural genomics and the protein data bank",
+   "volume": "296",
+   "author": "Michalska",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B17",
+   "doi-asserted-by": "crossref",
+   "first-page": "100743",
+   "DOI": "10.1016/j.jbc.2021.100743",
+   "article-title": "From integrative structural biology to cell biology",
+   "volume": "296",
+   "author": "Sali",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B18",
+   "doi-asserted-by": "crossref",
+   "first-page": "100749",
+   "DOI": "10.1016/j.jbc.2021.100749",
+   "article-title": "Moving beyond static snapshots: protein dynamics and the protein data bank",
+   "volume": "296",
+   "author": "Miller",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B19",
+   "doi-asserted-by": "crossref",
+   "first-page": "100742",
+   "DOI": "10.1016/j.jbc.2021.100742",
+   "article-title": "Seeing the PDB",
+   "volume": "296",
+   "author": "Richardson",
+   "year": "2021",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023010804181937300_B20",
+   "doi-asserted-by": "crossref",
+   "first-page": "433",
+   "DOI": "10.1038/s41592-021-01146-y",
+   "article-title": "A new era of synchrotron-enabled macromolecular crystallography",
+   "volume": "18",
+   "author": "Cohen",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B21",
+   "doi-asserted-by": "crossref",
+   "first-page": "435",
+   "DOI": "10.1038/s41592-021-01140-4",
+   "article-title": "From structure to mechanism: skiing the energy landscape",
+   "volume": "18",
+   "author": "Kern",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B22",
+   "doi-asserted-by": "crossref",
+   "first-page": "437",
+   "DOI": "10.1038/s41592-021-01139-x",
+   "article-title": "Expanding capabilities and infrastructure for cryo-EM",
+   "volume": "18",
+   "author": "Vinothkumar",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B23",
+   "doi-asserted-by": "crossref",
+   "first-page": "439",
+   "DOI": "10.1038/s41592-021-01132-4",
+   "article-title": "RNA structure: a renaissance begins?",
+   "volume": "18",
+   "author": "Das",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B24",
+   "doi-asserted-by": "crossref",
+   "first-page": "440",
+   "DOI": "10.1038/s41592-021-01133-3",
+   "article-title": "Cryo-electron tomography: observing the cell at the atomic level",
+   "volume": "18",
+   "author": "Li",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B25",
+   "doi-asserted-by": "crossref",
+   "first-page": "442",
+   "DOI": "10.1038/s41592-021-01131-5",
+   "article-title": "Molecular visualization of cellular complexity",
+   "volume": "18",
+   "author": "Wozny",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B26",
+   "doi-asserted-by": "crossref",
+   "first-page": "444",
+   "DOI": "10.1038/s41592-021-01144-0",
+   "article-title": "2021) Computational protein modeling and the next viral pandemic",
+   "volume": "18",
+   "author": "Narykov",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B27",
+   "doi-asserted-by": "crossref",
+   "first-page": "446",
+   "DOI": "10.1038/s41592-021-01150-2",
+   "article-title": "Integrating experiments, theory and simulations into whole-cell models",
+   "volume": "18",
+   "author": "Luthey-Schulten",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B28",
+   "doi-asserted-by": "crossref",
+   "first-page": "448",
+   "DOI": "10.1038/s41592-021-01138-y",
+   "article-title": "50 years of PDB: a catalyst in structural biology",
+   "volume": "18",
+   "author": "Bonvin",
+   "year": "2021",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B29",
+   "doi-asserted-by": "crossref",
+   "first-page": "D1",
+   "DOI": "10.1093/nar/gkab1195",
+   "article-title": "The 2022 nucleic acids research database issue and the online molecular biology database collection",
+   "volume": "50",
+   "author": "Rigden",
+   "year": "2022",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B30",
+   "doi-asserted-by": "crossref",
+   "first-page": "1425",
+   "DOI": "10.3390/biom12101425",
+   "article-title": "Protein data bank: a comprehensive review of 3D structure holdings and worldwide utilization by researchers, educators, and students",
+   "volume": "12",
+   "author": "Burley",
+   "year": "2022",
+   "journal-title": "Biomolecules"
+  },
+  {
+   "key": "2023010804181937300_B31",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1007/s12551-022-01013-w",
+   "article-title": "Electron microscopy holdings of the protein data bank: impact of the resolution revolution and implications for the future",
+   "author": "Burley",
+   "year": "2022",
+   "journal-title": "Biophys. Rev."
+  },
+  {
+   "key": "2023010804181937300_B32",
+   "doi-asserted-by": "crossref",
+   "first-page": "252",
+   "DOI": "10.1016/j.str.2021.10.008",
+   "article-title": "RCSB protein data bank resources for Structure-facilitated design of mRNA vaccines for existing and emerging viral pathogens",
+   "volume": "30",
+   "author": "Goodsell",
+   "year": "2022",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B33",
+   "doi-asserted-by": "crossref",
+   "first-page": "837",
+   "DOI": "10.1016/j.drudis.2020.02.002",
+   "article-title": "Impact of protein data bank on Anti-neoplastic approvals",
+   "volume": "25",
+   "author": "Westbrook",
+   "year": "2020",
+   "journal-title": "Drug Discov. Today"
+  },
+  {
+   "key": "2023010804181937300_B34",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.5334/dsj-2020-025",
+   "article-title": "Impact of the protein data bank across scientific disciplines",
+   "volume": "19",
+   "author": "Feng",
+   "year": "2020",
+   "journal-title": "Data Sci. J."
+  },
+  {
+   "key": "2023010804181937300_B35",
+   "doi-asserted-by": "crossref",
+   "first-page": "211",
+   "DOI": "10.1016/j.str.2018.11.007",
+   "article-title": "How structural biologists and the protein data bank contributed to recent FDA new drug approvals",
+   "volume": "27",
+   "author": "Westbrook",
+   "year": "2019",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B36",
+   "doi-asserted-by": "crossref",
+   "first-page": "180212",
+   "DOI": "10.1038/sdata.2018.212",
+   "article-title": "Analysis of impact metrics for the protein data bank",
+   "volume": "5",
+   "author": "Markosian",
+   "year": "2018",
+   "journal-title": "Sci. Data"
+  },
+  {
+   "key": "2023010804181937300_B37",
+   "doi-asserted-by": "crossref",
+   "first-page": "223",
+   "DOI": "10.1126/science.181.4096.223",
+   "article-title": "Principles that govern the folding of protein chains",
+   "volume": "181",
+   "author": "Anfinsen",
+   "year": "1973",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2023010804181937300_B38",
+   "doi-asserted-by": "crossref",
+   "first-page": "93",
+   "DOI": "10.1126/science.1065659",
+   "article-title": "Protein structure prediction and structural genomics",
+   "volume": "294",
+   "author": "Baker",
+   "year": "2001",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2023010804181937300_B39",
+   "doi-asserted-by": "crossref",
+   "first-page": "1647",
+   "DOI": "10.1002/prot.26247",
+   "article-title": "Target highlights in CASP14: analysis of models by structure providers",
+   "volume": "89",
+   "author": "Alexander",
+   "year": "2021",
+   "journal-title": "Proteins Struct. Funct. Genet."
+  },
+  {
+   "key": "2023010804181937300_B40",
+   "doi-asserted-by": "crossref",
+   "first-page": "387",
+   "DOI": "10.1002/prot.25431",
+   "article-title": "Continuous automated model evaluation (CAMEO) complementing the critical assessment of structure prediction in CASP12",
+   "volume": "86",
+   "author": "Haas",
+   "year": "2018",
+   "journal-title": "Proteins Struct. Funct. Genet."
+  },
+  {
+   "key": "2023010804181937300_B41",
+   "doi-asserted-by": "crossref",
+   "first-page": "583",
+   "DOI": "10.1038/s41586-021-03819-2",
+   "article-title": "Highly accurate protein structure prediction with alphafold",
+   "volume": "596",
+   "author": "Jumper",
+   "year": "2021",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B42",
+   "doi-asserted-by": "crossref",
+   "first-page": "871",
+   "DOI": "10.1126/science.abj8754",
+   "article-title": "Accurate prediction of protein structures and interactions using a three-track neural network",
+   "volume": "373",
+   "author": "Baek",
+   "year": "2021",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2023010804181937300_B43",
+   "doi-asserted-by": "crossref",
+   "first-page": "D480",
+   "DOI": "10.1093/nar/gkaa1100",
+   "article-title": "UniProt: the universal protein knowledgebase in 2021",
+   "volume": "49",
+   "author": "UniProt Consortium",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B44",
+   "doi-asserted-by": "crossref",
+   "first-page": "D439",
+   "DOI": "10.1093/nar/gkab1061",
+   "article-title": "AlphaFold protein structure database: massively expanding the structural coverage of protein-sequence space with high-accuracy models",
+   "volume": "50",
+   "author": "Varadi",
+   "year": "2022",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B45",
+   "doi-asserted-by": "crossref",
+   "first-page": "706",
+   "DOI": "10.1038/s41586-019-1923-7",
+   "article-title": "Improved protein structure prediction using potentials from deep learning",
+   "volume": "577",
+   "author": "Senior",
+   "year": "2020",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B46",
+   "doi-asserted-by": "crossref",
+   "first-page": "235",
+   "DOI": "10.1093/nar/28.1.235",
+   "article-title": "The protein data bank",
+   "volume": "28",
+   "author": "Berman",
+   "year": "2000",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B47",
+   "doi-asserted-by": "crossref",
+   "first-page": "D437",
+   "DOI": "10.1093/nar/gkaa1038",
+   "article-title": "RCSB protein data bank: powerful new tools for exploring 3D structures of biological macromolecules for basic and applied research and education in fundamental biology, biomedicine, biotechnology, bioengineering, and energy sciences",
+   "volume": "49",
+   "author": "Burley",
+   "year": "2021",
+   "journal-title": "Nucleic Acid Res."
+  },
+  {
+   "key": "2023010804181937300_B48",
+   "doi-asserted-by": "crossref",
+   "first-page": "187",
+   "DOI": "10.1002/pro.4213",
+   "article-title": "RCSB protein data bank: celebrating 50 years of the PDB with new tools for understanding and visualizing biological macromolecules in 3D",
+   "volume": "31",
+   "author": "Burley",
+   "year": "2022",
+   "journal-title": "Protein Sci."
+  },
+  {
+   "key": "2023010804181937300_B49",
+   "doi-asserted-by": "crossref",
+   "first-page": "52",
+   "DOI": "10.1002/pro.3730",
+   "article-title": "RCSB protein data bank: enabling biomedical research and drug discovery",
+   "volume": "29",
+   "author": "Goodsell",
+   "year": "2020",
+   "journal-title": "Protein Sci."
+  },
+  {
+   "key": "2023010804181937300_B50",
+   "doi-asserted-by": "crossref",
+   "first-page": "980",
+   "DOI": "10.1038/nsb1203-980",
+   "article-title": "Announcing the worldwide protein data bank",
+   "volume": "10",
+   "author": "Berman",
+   "year": "2003",
+   "journal-title": "Nat. Struct. Biol."
+  },
+  {
+   "key": "2023010804181937300_B51",
+   "doi-asserted-by": "crossref",
+   "first-page": "D520",
+   "DOI": "10.1093/nar/gky949",
+   "article-title": "Protein data bank: the single global archive for 3D macromolecular structure data",
+   "volume": "47",
+   "author": "wwPDB consortium",
+   "year": "2019",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B52",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1038/sdata.2016.18",
+   "article-title": "The FAIR guiding principles for scientific data management and stewardship",
+   "volume": "3",
+   "author": "Wilkinson",
+   "year": "2016",
+   "journal-title": "Sci. Data"
+  },
+  {
+   "key": "2023010804181937300_B53",
+   "doi-asserted-by": "crossref",
+   "first-page": "311",
+   "DOI": "10.1007/s12599-017-0487-z",
+   "article-title": "Responsible data science",
+   "volume": "59",
+   "author": "van der Aalst",
+   "year": "2017",
+   "journal-title": "Business Inform. Syst. Eng."
+  },
+  {
+   "key": "2023010804181937300_B54",
+   "first-page": "D335",
+   "article-title": "PDBe: improved findability of macromolecular structure data in the PDB",
+   "volume": "48",
+   "author": "Armstrong",
+   "year": "2020",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B55",
+   "doi-asserted-by": "crossref",
+   "first-page": "173",
+   "DOI": "10.1002/pro.4211",
+   "article-title": "Protein data bank japan: celebrating our 20th anniversary during a global pandemic as the asian hub of three dimensional macromolecular structural data",
+   "volume": "31",
+   "author": "Bekker",
+   "year": "2022",
+   "journal-title": "Protein Sci."
+  },
+  {
+   "key": "2023010804181937300_B56",
+   "doi-asserted-by": "crossref",
+   "first-page": "589",
+   "DOI": "10.1016/S0968-0004(02)02176-X",
+   "article-title": "New electron microscopy database and deposition system",
+   "volume": "27",
+   "author": "Tagari",
+   "year": "2002",
+   "journal-title": "Trends Biochem. Sci"
+  },
+  {
+   "key": "2023010804181937300_B57",
+   "doi-asserted-by": "crossref",
+   "first-page": "D396",
+   "DOI": "10.1093/nar/gkv1126",
+   "article-title": "EMDataBank unified data resource for 3DEM",
+   "volume": "44",
+   "author": "Lawson",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B58",
+   "doi-asserted-by": "crossref",
+   "first-page": "D402",
+   "DOI": "10.1093/nar/gkm957",
+   "article-title": "BioMagResBank",
+   "volume": "36",
+   "author": "Ulrich",
+   "year": "2008",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B59",
+   "doi-asserted-by": "crossref",
+   "first-page": "187",
+   "DOI": "10.1007/978-1-0716-0270-6_14",
+   "article-title": "BioMagResBank (BMRB) as a resource for structural biology",
+   "volume": "2112",
+   "author": "Romero",
+   "year": "2020",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "2023010804181937300_B60",
+   "doi-asserted-by": "crossref",
+   "first-page": "166704",
+   "DOI": "10.1016/j.jmb.2020.11.003",
+   "article-title": "RCSB protein data bank: architectural advances towards integrated searching and efficient access to macromolecular structure data from the PDB archive",
+   "volume": "443",
+   "author": "Rose",
+   "year": "2021",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023010804181937300_B61",
+   "doi-asserted-by": "crossref",
+   "first-page": "310",
+   "DOI": "10.1038/s41586-022-04558-8",
+   "article-title": "A joint NCBI and EMBL-EBI transcript set for clinical genomics and research",
+   "volume": "604",
+   "author": "Morales",
+   "year": "2022",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B62",
+   "doi-asserted-by": "crossref",
+   "first-page": "eabm4805",
+   "DOI": "10.1126/science.abm4805",
+   "article-title": "Computed structures of core eukaryotic protein complexes",
+   "volume": "374",
+   "author": "Humphreys",
+   "year": "2021",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2023010804181937300_B63",
+   "doi-asserted-by": "crossref",
+   "first-page": "3304",
+   "DOI": "10.1093/bioinformatics/btac317",
+   "article-title": "RCSB protein data bank 1D3D module: displaying positional features on macromolecular assemblies",
+   "volume": "38",
+   "author": "Segura",
+   "year": "2022",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2023010804181937300_B64",
+   "doi-asserted-by": "crossref",
+   "first-page": "515",
+   "DOI": "10.1016/j.str.2021.04.010",
+   "article-title": "Open-access data: a cornerstone for artificial intelligence approaches to protein structure prediction",
+   "volume": "29",
+   "author": "Burley",
+   "year": "2021",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B65",
+   "doi-asserted-by": "crossref",
+   "first-page": "1385",
+   "DOI": "10.1016/j.str.2022.08.004",
+   "article-title": "Assessing PDB macromolecular crystal structure confidence at the individual amino acid residue level",
+   "volume": "30",
+   "author": "Shao",
+   "year": "2022",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B66",
+   "first-page": "295",
+   "volume-title": "International Tables for Crystallography G. Definition and Exchange of Crystallographic Data",
+   "author": "Fitzgerald",
+   "year": "2005"
+  },
+  {
+   "key": "2023010804181937300_B67",
+   "doi-asserted-by": "crossref",
+   "first-page": "167599",
+   "DOI": "10.1016/j.jmb.2022.167599",
+   "article-title": "PDBx/mmCIF ecosystem: foundational semantic tools for structural biology",
+   "volume": "434",
+   "author": "Westbrook",
+   "year": "2022",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023010804181937300_B68",
+   "first-page": "195",
+   "volume-title": "International Tables for Crystallography",
+   "author": "Westbrook",
+   "year": "2005"
+  },
+  {
+   "key": "2023010804181937300_B69",
+   "doi-asserted-by": "crossref",
+   "first-page": "655",
+   "DOI": "10.1107/S010876739101067X",
+   "article-title": "The crystallographic information file (CIF): a new standard archive file for crystallography",
+   "volume": "47",
+   "author": "Hall",
+   "year": "1991",
+   "journal-title": "Acta Crystallogr. A Found. Crystallogr."
+  },
+  {
+   "key": "2023010804181937300_B70",
+   "doi-asserted-by": "crossref",
+   "first-page": "D336",
+   "DOI": "10.1093/nar/gkt1144",
+   "article-title": "ModBase, a database of annotated comparative protein structure models and associated resources",
+   "volume": "42",
+   "author": "Pieper",
+   "year": "2014",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B71",
+   "first-page": "473",
+   "volume-title": "International Tables for Crystallography",
+   "author": "Westbrook",
+   "year": "2005"
+  },
+  {
+   "key": "2023010804181937300_B72",
+   "doi-asserted-by": "crossref",
+   "first-page": "171",
+   "DOI": "10.1107/S2052520616003954",
+   "article-title": "The cambridge structural database",
+   "volume": "72",
+   "author": "Groom",
+   "year": "2016",
+   "journal-title": "Acta Crystallogr B Struct Sci Cryst Eng Mater"
+  },
+  {
+   "key": "2023010804181937300_B73",
+   "doi-asserted-by": "crossref",
+   "first-page": "D1214",
+   "DOI": "10.1093/nar/gkv1031",
+   "article-title": "ChEBI in 2016: improved services and an expanding collection of metabolites",
+   "volume": "44",
+   "author": "Hastings",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B74",
+   "doi-asserted-by": "crossref",
+   "first-page": "D1388",
+   "DOI": "10.1093/nar/gkaa971",
+   "article-title": "PubChem in 2021: new data content and improved web interfaces",
+   "volume": "49",
+   "author": "Kim",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B75",
+   "doi-asserted-by": "crossref",
+   "first-page": "D465",
+   "DOI": "10.1093/nar/gku1088",
+   "article-title": "Recent improvements to binding MOAD: a resource for protein-ligand binding affinities and structures",
+   "volume": "43",
+   "author": "Ahmed",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B76",
+   "doi-asserted-by": "crossref",
+   "first-page": "D1045",
+   "DOI": "10.1093/nar/gkv1072",
+   "article-title": "BindingDB in 2015: a public database for medicinal chemistry, computational chemistry and systems pharmacology",
+   "volume": "44",
+   "author": "Gilson",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B77",
+   "doi-asserted-by": "crossref",
+   "first-page": "D593",
+   "DOI": "10.1093/nar/gkn582",
+   "article-title": "ExplorEnz: the primary source of the IUBMB enzyme list",
+   "volume": "37",
+   "author": "McDonald",
+   "year": "2009",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B78",
+   "doi-asserted-by": "crossref",
+   "first-page": "1760",
+   "DOI": "10.1101/gr.135350.111",
+   "article-title": "GENCODE: the reference human genome annotation for the ENCODE project",
+   "volume": "22",
+   "author": "Harrow",
+   "year": "2012",
+   "journal-title": "Genome Res."
+  },
+  {
+   "key": "2023010804181937300_B79",
+   "doi-asserted-by": "crossref",
+   "first-page": "D325",
+   "DOI": "10.1093/nar/gkaa1113",
+   "article-title": "The gene ontology resource: enriching a GOld mine",
+   "volume": "49",
+   "author": "Gene Ontology Consortium",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B80",
+   "doi-asserted-by": "crossref",
+   "first-page": "1318",
+   "DOI": "10.1126/science.aaz1776",
+   "article-title": "The GTEx consortium atlas of genetic regulatory effects across human tissues",
+   "volume": "369",
+   "author": "GTEx Consortium",
+   "year": "2020",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2023010804181937300_B81",
+   "doi-asserted-by": "crossref",
+   "first-page": "D413",
+   "DOI": "10.1093/nar/gku1056",
+   "article-title": "IMGT(R), the international immunogenetics information system(R) 25 years on",
+   "volume": "43",
+   "author": "Lefranc",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B82",
+   "doi-asserted-by": "crossref",
+   "first-page": "D405",
+   "DOI": "10.1093/nar/gku938",
+   "article-title": "The immune epitope database (IEDB) 3.0",
+   "volume": "43",
+   "author": "Vita",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B83",
+   "doi-asserted-by": "crossref",
+   "first-page": "D344",
+   "DOI": "10.1093/nar/gkaa977",
+   "article-title": "The interpro protein families and domains database: 20 years on",
+   "volume": "49",
+   "author": "Blum",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B84",
+   "doi-asserted-by": "crossref",
+   "first-page": "D390",
+   "DOI": "10.1093/nar/gky1047",
+   "article-title": "The MemProtMD database: a resource for membrane-embedded protein structures and their lipid interactions",
+   "volume": "47",
+   "author": "Newport",
+   "year": "2019",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B85",
+   "doi-asserted-by": "crossref",
+   "first-page": "D20",
+   "DOI": "10.1093/nar/gkab1112",
+   "article-title": "Database resources of the national center for biotechnology information",
+   "volume": "50",
+   "author": "Sayers",
+   "year": "2022",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B86",
+   "doi-asserted-by": "crossref",
+   "first-page": "623",
+   "DOI": "10.1093/bioinformatics/btk023",
+   "article-title": "OPM: orientations of proteins in membranes database",
+   "volume": "22",
+   "author": "Lomize",
+   "year": "2006",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2023010804181937300_B87",
+   "doi-asserted-by": "crossref",
+   "first-page": "895",
+   "DOI": "10.1021/acs.jcim.8b00545",
+   "article-title": "Comparative assessment of scoring functions: the CASF-2016 update",
+   "volume": "59",
+   "author": "Su",
+   "year": "2019",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "2023010804181937300_B88",
+   "doi-asserted-by": "crossref",
+   "first-page": "2964",
+   "DOI": "10.1093/bioinformatics/bth340",
+   "article-title": "Transmembrane proteins in the protein data bank: identification and classification",
+   "volume": "20",
+   "author": "Tusnady",
+   "year": "2004",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2023010804181937300_B89",
+   "doi-asserted-by": "crossref",
+   "first-page": "D279",
+   "DOI": "10.1093/nar/gkv1344",
+   "article-title": "The pfam protein families database: towards a more sustainable future",
+   "volume": "44",
+   "author": "Finn",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B90",
+   "doi-asserted-by": "crossref",
+   "first-page": "D1140",
+   "DOI": "10.1093/nar/gkt1043",
+   "article-title": "SAbDab: the structural antibody database",
+   "volume": "42",
+   "author": "Dunbar",
+   "year": "2014",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B91",
+   "doi-asserted-by": "crossref",
+   "first-page": "D945",
+   "DOI": "10.1093/nar/gkw1074",
+   "article-title": "The ChEMBL database in 2017",
+   "volume": "45",
+   "author": "Gaulton",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B92",
+   "doi-asserted-by": "crossref",
+   "first-page": "D1074",
+   "DOI": "10.1093/nar/gkx1037",
+   "article-title": "DrugBank 5.0: a major update to the drugbank database for 2018",
+   "volume": "46",
+   "author": "Wishart",
+   "year": "2018",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B93",
+   "doi-asserted-by": "crossref",
+   "first-page": "D995",
+   "DOI": "10.1093/nar/gkw1072",
+   "article-title": "Pharos: collating protein information to shed light on the druggable genome",
+   "volume": "45",
+   "author": "Nguyen",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B94",
+   "doi-asserted-by": "crossref",
+   "first-page": "D383",
+   "DOI": "10.1093/nar/gkz827",
+   "article-title": "Thera-SAbDab: the therapeutic structural antibody database",
+   "volume": "48",
+   "author": "Raybould",
+   "year": "2020",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B95",
+   "doi-asserted-by": "crossref",
+   "first-page": "1527",
+   "DOI": "10.1002/pmic.200300777",
+   "article-title": "The RESID database of protein modifications as a resource and annotation tool",
+   "volume": "4",
+   "author": "Garavelli",
+   "year": "2004",
+   "journal-title": "Proteomics"
+  },
+  {
+   "key": "2023010804181937300_B96",
+   "doi-asserted-by": "crossref",
+   "first-page": "D482",
+   "DOI": "10.1093/nar/gky1114",
+   "article-title": "SIFTS: updated structure integration with function, taxonomy and sequences resource allows 40-fold increase in coverage of structure-based annotations for proteins",
+   "volume": "47",
+   "author": "Dana",
+   "year": "2019",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B97",
+   "doi-asserted-by": "crossref",
+   "first-page": "649",
+   "DOI": "10.1038/s41592-020-0879-8",
+   "article-title": "The glycosmos portal: a unified and comprehensive web resource for the glycosciences",
+   "volume": "17",
+   "author": "Yamada",
+   "year": "2020",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2023010804181937300_B98",
+   "doi-asserted-by": "crossref",
+   "first-page": "72",
+   "DOI": "10.1093/glycob/cwz080",
+   "article-title": "GlyGen: computational and informatics resources for glycoscience",
+   "volume": "30",
+   "author": "York",
+   "year": "2020",
+   "journal-title": "Glycobiology"
+  },
+  {
+   "key": "2023010804181937300_B99",
+   "doi-asserted-by": "crossref",
+   "first-page": "915",
+   "DOI": "10.1093/glycob/cwx066",
+   "article-title": "GlyTouCan: an accessible glycan structure repository",
+   "volume": "27",
+   "author": "Tiemeyer",
+   "year": "2017",
+   "journal-title": "Glycobiology"
+  },
+  {
+   "key": "2023010804181937300_B100",
+   "doi-asserted-by": "crossref",
+   "first-page": "751",
+   "DOI": "10.1016/S0006-3495(92)81649-1",
+   "article-title": "The nucleic acid database. A comprehensive relational database of three-dimensional structures of nucleic acids",
+   "volume": "63",
+   "author": "Berman",
+   "year": "1992",
+   "journal-title": "Biophys. J."
+  },
+  {
+   "key": "2023010804181937300_B101",
+   "doi-asserted-by": "crossref",
+   "first-page": "D423",
+   "DOI": "10.1093/nar/gkv1316",
+   "article-title": "PDBFlex: exploring flexibility in protein structures",
+   "volume": "44",
+   "author": "Hrabe",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B102",
+   "doi-asserted-by": "crossref",
+   "first-page": "D266",
+   "DOI": "10.1093/nar/gkaa1079",
+   "article-title": "CATH: increased structural coverage of functional space",
+   "volume": "49",
+   "author": "Sillitoe",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B103",
+   "doi-asserted-by": "crossref",
+   "first-page": "1238",
+   "DOI": "10.1002/prot.24818",
+   "article-title": "Manual classification strategies in the ECOD database",
+   "volume": "83",
+   "author": "Cheng",
+   "year": "2015",
+   "journal-title": "Proteins Struct. Funct. Genet."
+  },
+  {
+   "key": "2023010804181937300_B104",
+   "doi-asserted-by": "crossref",
+   "first-page": "D376",
+   "DOI": "10.1093/nar/gkz1064",
+   "article-title": "The SCOP database in 2020: expanded classification of representative family and superfamily domains of known protein structures",
+   "volume": "48",
+   "author": "Andreeva",
+   "year": "2020",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B105",
+   "doi-asserted-by": "crossref",
+   "first-page": "D475",
+   "DOI": "10.1093/nar/gky1134",
+   "article-title": "SCOPe: classification of large macromolecular structures in the structural classification of proteins-extended database",
+   "volume": "47",
+   "author": "Chandonia",
+   "year": "2019",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B106",
+   "doi-asserted-by": "crossref",
+   "first-page": "662",
+   "DOI": "10.1002/prot.20408",
+   "article-title": "RECOORD: a recalculated coordinate database of 500+ proteins from the PDB using restraints from the biomagresbank",
+   "volume": "59",
+   "author": "Nederveen",
+   "year": "2005",
+   "journal-title": "Proteins Struct. Funct. Genet."
+  },
+  {
+   "key": "2023010804181937300_B107",
+   "doi-asserted-by": "crossref",
+   "first-page": "e01456",
+   "DOI": "10.7554/eLife.01456",
+   "article-title": "Collaboration gets the most out of software",
+   "volume": "2",
+   "author": "Morin",
+   "year": "2013",
+   "journal-title": "Elife"
+  },
+  {
+   "key": "2023010804181937300_B108",
+   "doi-asserted-by": "crossref",
+   "first-page": "1026",
+   "DOI": "10.1038/nbt.3988",
+   "article-title": "MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets",
+   "volume": "35",
+   "author": "Steinegger",
+   "year": "2017",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "2023010804181937300_B109",
+   "doi-asserted-by": "crossref",
+   "first-page": "129",
+   "DOI": "10.1002/pro.4200",
+   "article-title": "PDB-101: educational resources supporting molecular explorations through biology and medicine",
+   "volume": "31",
+   "author": "Zardecki",
+   "year": "2022",
+   "journal-title": "Protein Sci."
+  },
+  {
+   "key": "2023010804181937300_B110",
+   "doi-asserted-by": "crossref",
+   "first-page": "W431",
+   "DOI": "10.1093/nar/gkab314",
+   "article-title": "Mol* viewer: modern web app for 3D visualization and analysis of large biomolecular structures",
+   "volume": "49",
+   "author": "Sehnal",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B111",
+   "doi-asserted-by": "crossref",
+   "first-page": "536",
+   "DOI": "10.1016/j.str.2017.01.004",
+   "article-title": "OneDep: unified wwPDB system for deposition, biocuration, and validation of macromolecular structures in the PDB archive",
+   "volume": "25",
+   "author": "Young",
+   "year": "2017",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B112",
+   "doi-asserted-by": "crossref",
+   "first-page": "1916",
+   "DOI": "10.1016/j.str.2017.10.009",
+   "article-title": "Validation of structures in the protein data bank",
+   "volume": "25",
+   "author": "Gore",
+   "year": "2017",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B113",
+   "doi-asserted-by": "crossref",
+   "first-page": "393",
+   "DOI": "10.1016/j.str.2021.02.004",
+   "article-title": "Enhanced validation of small-molecule ligands and carbohydrates in the protein databank",
+   "volume": "29",
+   "author": "Feng",
+   "year": "2021",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "2023010804181937300_B114",
+   "doi-asserted-by": "crossref",
+   "first-page": "bay002",
+   "DOI": "10.1093/database/bay002",
+   "article-title": "Worldwide protein data bank biocuration supporting open access to high-quality 3D structural biology data",
+   "volume": "2018",
+   "author": "Young",
+   "year": "2018",
+   "journal-title": "Database"
+  },
+  {
+   "key": "2023010804181937300_B115",
+   "doi-asserted-by": "crossref",
+   "first-page": "1167",
+   "DOI": "10.1107/S2059798320014515",
+   "article-title": "High-performance macromolecular data delivery and visualization for the web",
+   "volume": "76",
+   "author": "Sehnal",
+   "year": "2020",
+   "journal-title": "Acta Crystallogr. D, Struct. Biol."
+  },
+  {
+   "key": "2023010804181937300_B116",
+   "doi-asserted-by": "crossref",
+   "first-page": "127",
+   "DOI": "10.1107/S0907444902018012",
+   "article-title": "Structure of a yeast hypothetical protein selected by a structural genomics approach",
+   "volume": "59",
+   "author": "Eswaramoorthy",
+   "year": "2003",
+   "journal-title": "Acta Crystallogr. D"
+  },
+  {
+   "key": "2023010804181937300_B117",
+   "doi-asserted-by": "crossref",
+   "first-page": "e1007970",
+   "DOI": "10.1371/journal.pcbi.1007970",
+   "article-title": "Real time structural search of the protein data bank",
+   "volume": "16",
+   "author": "Guzenko",
+   "year": "2020",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "2023010804181937300_B118",
+   "doi-asserted-by": "crossref",
+   "first-page": "e4482",
+   "DOI": "10.1002/pro.4482",
+   "article-title": "RCSB protein data bank: tools for visualizing and understanding biological macromolecules in 3D",
+   "volume": "31",
+   "author": "Burley",
+   "year": "2022",
+   "journal-title": "Protein Sci."
+  },
+  {
+   "key": "2023010804181937300_B119",
+   "doi-asserted-by": "crossref",
+   "first-page": "590",
+   "DOI": "10.1038/s41586-021-03828-1",
+   "article-title": "Highly accurate protein structure prediction for the human proteome",
+   "volume": "596",
+   "author": "Tunyasuvunakool",
+   "year": "2021",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B120",
+   "doi-asserted-by": "crossref",
+   "first-page": "2722",
+   "DOI": "10.1093/bioinformatics/btt473",
+   "article-title": "lDDT: a local superposition-free score for comparing protein structures and models using distance difference tests",
+   "volume": "29",
+   "author": "Mariani",
+   "year": "2013",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2023010804181937300_B121",
+   "doi-asserted-by": "crossref",
+   "first-page": "690",
+   "DOI": "10.1016/j.jmb.2006.05.036",
+   "article-title": "1.25 A resolution crystal structures of human haemoglobin in the oxy, deoxy and carbonmonoxy forms",
+   "volume": "360",
+   "author": "Park",
+   "year": "2006",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023010804181937300_B122",
+   "doi-asserted-by": "crossref",
+   "first-page": "e1008502",
+   "DOI": "10.1371/journal.pcbi.1008502",
+   "article-title": "Real-time structural motif searching in proteins using an inverted index strategy",
+   "volume": "16",
+   "author": "Bittrich",
+   "year": "2020",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "2023010804181937300_B123",
+   "doi-asserted-by": "crossref",
+   "first-page": "D483",
+   "DOI": "10.1093/nar/gks1258",
+   "article-title": "SIFTS: structure integration with function, taxonomy and sequences resource",
+   "volume": "41",
+   "author": "Velankar",
+   "year": "2013",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B124",
+   "doi-asserted-by": "crossref",
+   "first-page": "e1003926",
+   "DOI": "10.1371/journal.pcbi.1003926",
+   "article-title": "ECOD: an evolutionary classification of protein domains",
+   "volume": "10",
+   "author": "Cheng",
+   "year": "2014",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "2023010804181937300_B125",
+   "doi-asserted-by": "crossref",
+   "first-page": "D310",
+   "DOI": "10.1093/nar/gkt1242",
+   "article-title": "SCOP2 prototype: a new approach to protein structure mining",
+   "volume": "42",
+   "author": "Andreeva",
+   "year": "2014",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023010804181937300_B126",
+   "doi-asserted-by": "crossref",
+   "first-page": "234",
+   "DOI": "10.1038/d41586-022-02351-1",
+   "article-title": "US government reveals big changes to open-access policy",
+   "volume": "609",
+   "author": "Tollefson",
+   "year": "2022",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B127",
+   "doi-asserted-by": "crossref",
+   "first-page": "179",
+   "DOI": "10.1038/543179a",
+   "article-title": "Data management: a global coalition to sustain core data",
+   "volume": "543",
+   "author": "Anderson",
+   "year": "2017",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023010804181937300_B128",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1101/110825",
+   "article-title": "Towards coordinated international support of core data resources for the life sciences",
+   "author": "Anderson",
+   "year": "2017"
+  }
+ ],
+ "container-title": [
+  "Nucleic Acids Research"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://academic.oup.com/nar/article-pdf/51/D1/D488/48440533/gkac1077.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "https://academic.oup.com/nar/article-pdf/51/D1/D488/48440533/gkac1077.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    11,
+    29
+   ]
+  ],
+  "date-time": "2023-11-29T18:56:01Z",
+  "timestamp": 1701284161000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/nar/article/51/D1/D488/6845439"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2022,
+    11,
+    24
+   ]
+  ]
+ },
+ "references-count": 128,
+ "journal-issue": {
+  "issue": "D1",
+  "published-online": {
+   "date-parts": [
+    [
+     2022,
+     11,
+     24
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     6
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1093/nar/gkac1077",
+ "relation": {},
+ "ISSN": [
+  "0305-1048",
+  "1362-4962"
+ ],
+ "issn-type": [
+  {
+   "value": "0305-1048",
+   "type": "print"
+  },
+  {
+   "value": "1362-4962",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published-other": {
+  "date-parts": [
+   [
+    2023,
+    1,
+    6
+   ]
+  ]
+ },
+ "published": {
+  "date-parts": [
+   [
+    2022,
+    11,
+    24
+   ]
+  ]
+ }
+}

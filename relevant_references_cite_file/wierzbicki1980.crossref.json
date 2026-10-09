@@ -1,0 +1,354 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    7
+   ]
+  ],
+  "date-time": "2026-10-07T17:15:25Z",
+  "timestamp": 1791393325580,
+  "version": "4.3.3"
+ },
+ "publisher-location": "Berlin, Heidelberg",
+ "reference-count": 28,
+ "publisher": "Springer Berlin Heidelberg",
+ "isbn-type": [
+  {
+   "value": "9783540099635",
+   "type": "print"
+  },
+  {
+   "value": "9783642487828",
+   "type": "electronic"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "published-print": {
+  "date-parts": [
+   [
+    1980
+   ]
+  ]
+ },
+ "DOI": "10.1007/978-3-642-48782-8_32",
+ "type": "book-chapter",
+ "created": {
+  "date-parts": [
+   [
+    2012,
+    4,
+    18
+   ]
+  ],
+  "date-time": "2012-04-18T19:33:56Z",
+  "timestamp": 1334777636000
+ },
+ "page": "468-486",
+ "source": "Crossref",
+ "is-referenced-by-count": 553,
+ "title": [
+  "The Use of Reference Objectives in Multiobjective Optimization"
+ ],
+ "prefix": "10.1007",
+ "author": [
+  {
+   "given": "Andrzej P.",
+   "family": "Wierzbicki",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "reference": [
+  {
+   "key": "32_CR1",
+   "doi-asserted-by": "crossref",
+   "first-page": "93",
+   "DOI": "10.1057/jors.1979.22",
+   "volume": "30",
+   "author": "RL Ackoff",
+   "year": "1979",
+   "unstructured": "Ackoff, R.L., The Future of Operation Research is Past, Operational Research Society, Vol.30, 93–104. 1979.",
+   "journal-title": "Operational Research Society"
+  },
+  {
+   "key": "32_CR2",
+   "volume-title": "Conflicting Objectives in Decisions",
+   "author": "DE Bell",
+   "year": "1977",
+   "unstructured": "Bell, D.E., R.L. Keeney, and H. Raiffa, Conflicting Objectives in Decisions, Wiley/IIASA international Series on Applied Systems Analysis, New York, 1977."
+  },
+  {
+   "key": "32_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "208",
+   "DOI": "10.1029/WR011i002p00208",
+   "volume": "11",
+   "author": "JL Cohn",
+   "year": "1975",
+   "unstructured": "Cohn, J.L. and D.H. Mards, A Review and Evaluation of Multiobjective Programming Techniques, Water Resources Research, Vol. 11, 208–220, April 1975.",
+   "journal-title": "Water Resources Research"
+  },
+  {
+   "key": "32_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "103",
+   "DOI": "10.1016/0022-247X(67)90025-X",
+   "volume": "19",
+   "author": "NO Cunha Da",
+   "year": "1967",
+   "unstructured": "Da Cunha, N.O. and E. Polak, Constrained Minimisation under Vector-Valued Criteria in Finite Dimensional Space, Journal of Mathematical Analysis and Applications, Vol. 19, 103–124, 1967.",
+   "journal-title": "Journal of Mathematical Analysis and Applications"
+  },
+  {
+   "key": "32_CR5",
+   "volume-title": "Theory of Value",
+   "author": "G Debreu",
+   "year": "1959",
+   "unstructured": "Debreu, G., Theory of Value, Wiley, New York, 1959."
+  },
+  {
+   "issue": "1",
+   "key": "32_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "62",
+   "DOI": "10.1287/mnsc.19.1.62",
+   "volume": "19",
+   "author": "JS Dyer",
+   "year": "1972",
+   "unstructured": "Dyer, J.S., Interactive Goal Programming, Management Science, Vol. 19(1), 62–70, March 1972.",
+   "journal-title": "Management Science"
+  },
+  {
+   "key": "32_CR7",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.21236/AD0708563",
+   "volume-title": "Utility Theory for Decision Making",
+   "author": "PC Fishburn",
+   "year": "1970",
+   "unstructured": "Fishburn, P.C., Utility Theory for Decision Making, Wiley, New York, 1970."
+  },
+  {
+   "key": "32_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "816",
+   "DOI": "10.1016/0022-247X(68)90201-1",
+   "volume": "22",
+   "author": "AM Geoffrion",
+   "year": "1968",
+   "unstructured": "Geoffrion, A.M., Proper Efficiency and the Theory of Vector Maximization, Journal of Mathematical Analysis and Applications, Vol. 22, 816–630, 1968.",
+   "journal-title": "Journal of Mathematical Analysis and Applications"
+  },
+  {
+   "key": "32_CR9",
+   "volume-title": "Multiobjective Optimization in Water Resources Systems: The Surrogate Worth Trade-off. Method",
+   "author": "YY Haimes",
+   "year": "1975",
+   "unstructured": "Haimes, Y.Y., W.A. Hall, and H.T. Freedman, Multiobjective Optimization in Water Resources Systems: The Surrogate Worth Trade-off. Method, Elsevier, New York, 1975."
+  },
+  {
+   "issue": "2",
+   "key": "32_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "179",
+   "DOI": "10.1007/BF00926600",
+   "volume": "6",
+   "author": "YC Ho",
+   "year": "1970",
+   "unstructured": "Ho, Y.C., Differential Games, Dynamic Optimization and Generalised Control Theory, JOTA, Vol. 6(2), 179–209, 1970.",
+   "journal-title": "JOTA"
+  },
+  {
+   "key": "32_CR11",
+   "volume-title": "Mathematical Optimization and Economic Theory",
+   "author": "MD Intriligator",
+   "year": "1971",
+   "unstructured": "Intriligator, M.D., Mathematical Optimization and Economic Theory, Prentice-Hall, Englewood Cliffs, N.J., 1971."
+  },
+  {
+   "key": "32_CR12",
+   "volume-title": "Decisions with Multiple Objectives: Preferences and Value Trade-offs",
+   "author": "RL Keeney",
+   "year": "1976",
+   "unstructured": "Keeney, R.L. and H. Raiffa, Decisions with Multiple Objectives: Preferences and Value Trade-offs, Wiley, New York, 1976."
+  },
+  {
+   "key": "32_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "193",
+   "DOI": "10.1016/0305-0483(73)90023-6",
+   "volume": "1",
+   "author": "JHS Kornbluth",
+   "year": "1973",
+   "unstructured": "Kornbluth, J.H.S., A Survey of Goal Programming, Omega, Vol. 1, 193–205, 1973.",
+   "journal-title": "Omega"
+  },
+  {
+   "key": "32_CR14",
+   "unstructured": "Kallio, M. and A. Lewandowski, Reference point optimization for compromise finding in the development of the Finnish forestry industrial sector, IIASA WP, 1979, in preparation."
+  },
+  {
+   "key": "32_CR15",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Leitmann, G. and W. Schmitendorf, Some Sufficient Conditions for Pareto-Optimal Control, Journal of Dynamical Systems, Measurement and Control, Vol. 95(3), 1973.",
+   "DOI": "10.1115/1.3426735"
+  },
+  {
+   "key": "32_CR16",
+   "first-page": "238",
+   "volume": "225",
+   "author": "JJ Moreau",
+   "year": "1962",
+   "unstructured": "Moreau, J.J., Décomposition orthogonale d’un espace hilbertien selon deux cones mutuellement polaires, C. R. Ac. Sci., Vol. 225, 238–240, Paris, 1962.",
+   "journal-title": "C. R. Ac. Sci."
+  },
+  {
+   "key": "32_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "155",
+   "DOI": "10.2307/1907266",
+   "volume": "18",
+   "author": "JF Nash",
+   "year": "1950",
+   "unstructured": "Nash, J.F., The Bargaining Problem, Economitrica, Vol. 18, 155–162, 1950.",
+   "journal-title": "Economitrica"
+  },
+  {
+   "key": "32_CR18",
+   "volume-title": "Cours d’’Economie Politique",
+   "author": "V Pareto",
+   "year": "1896",
+   "unstructured": "Pareto, V., Cours d’’Economie Politique, Rouge, Lausanne, 1896."
+  },
+  {
+   "key": "32_CR19",
+   "unstructured": "Peschel, M. and C. Riedel, Polyoptimization — a Decision Making Aid for Technical Engineering Compromise Solutions, (in German) VEB Verlag Technik, Berlin, 1975."
+  },
+  {
+   "key": "32_CR20",
+   "unstructured": "Sakluvadze, M.E., Optimization of Vector Functionals. Part I: Programming of Optimal Trajectories, Avtomatika i Telemek-hanika, No. 8, 5–15. Part III: The Analytic Construction of Optimal Controls, Ibidem, No. 9, 5–15 (in Russian), 1971."
+  },
+  {
+   "key": "32_CR21",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Sakluvadze, M.E., On the Existence of Solutions in Problems of Optimization Under Vector-Valued Criteria, Journal of Optimization Theory and Applications, Vol. 13(2), 1974.",
+   "DOI": "10.1007/BF00935540"
+  },
+  {
+   "key": "32_CR22",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Wierzbicki, A.P., Penalty Methods in Solving Optimization Problems with Vector Performance Criteria, Proceedings of Vi-th IEAC World Congress, Cambridge/Boston, 1975.",
+   "DOI": "10.1016/S1474-6670(17)67776-0"
+  },
+  {
+   "issue": "1",
+   "key": "32_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "55",
+   "DOI": "10.1080/02331937708842405",
+   "volume": "8",
+   "author": "AP Wierzbicki",
+   "year": "1977",
+   "unstructured": "Wierzbicki, A.P., Basic Properties of Scalarizing Functionals for Multiobjective Optimization, Mathematische Operations, Forschung und Statistik, Ser. Optimization, Vol. 8(1), 55–60, 1977.",
+   "journal-title": "Mathematische Operations, Forschung und Statistik, Ser. Optimization"
+  },
+  {
+   "key": "32_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "25",
+   "DOI": "10.1137/0315003",
+   "volume": "15",
+   "author": "AP Wierzbicki",
+   "year": "1977",
+   "unstructured": "Wierzbicki, A.P. and St. Kurcyusz, Projection on a Cone, Penalty Functionals and Duality Theory for Problems with Inequality Constraints in Hilbert Space, SIAM Journal Control and Optimization, Vol. 15, 25–26, 1977.",
+   "journal-title": "SIAM Journal Control and Optimization"
+  },
+  {
+   "key": "32_CR25",
+   "unstructured": "Wierzbicki, A.P., On the Use of Penalty Functions in Multiobjective Optimization, Proceedings of the International Symposium on Operations Research, Mannheim, 1978."
+  },
+  {
+   "key": "32_CR26",
+   "unstructured": "Wierzbicki, A.P., The Use of Reference Objectives in Multiobjective Optimization—Theoretical Implications and Practical Experience. IIASA WP-79-66, 1979."
+  },
+  {
+   "key": "32_CR27",
+   "unstructured": "Wierzbicki, A.P., A Methodological Guide to Multiobjective Optimization. Proceedings of the 9-th IFIP Conference on Optimization Techniques, Warsaw, 1979."
+  },
+  {
+   "key": "32_CR28",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Yu, P.L. and G. Leitmann, Compromise Solutions, Domination Structures and Sakluvadze’s Solution, Journal of Optimization Theory and Applications, Vol. 13, 362–378.",
+   "DOI": "10.1007/BF00934871"
+  }
+ ],
+ "container-title": [
+  "Lecture Notes in Economics and Mathematical Systems",
+  "Multiple Criteria Decision Making Theory and Application"
+ ],
+ "link": [
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1007/978-3-642-48782-8_32.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2021,
+    5,
+    4
+   ]
+  ],
+  "date-time": "2021-05-04T11:03:00Z",
+  "timestamp": 1620126180000
+ },
+ "score": 41.337227,
+ "resource": {
+  "primary": {
+   "URL": "http://link.springer.com/10.1007/978-3-642-48782-8_32"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    1980
+   ]
+  ]
+ },
+ "ISBN": [
+  "9783540099635",
+  "9783642487828"
+ ],
+ "references-count": 28,
+ "URL": "https://doi.org/10.1007/978-3-642-48782-8_32",
+ "ISSN": [
+  "0075-8442"
+ ],
+ "issn-type": [
+  {
+   "value": "0075-8442",
+   "type": "print"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    1980
+   ]
+  ]
+ }
+}

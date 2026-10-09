@@ -1,10 +1,10 @@
 """Fig 3e — claim overreach of the ungated agent (bar panel).
 
-Horizontal bars — decision-layer overreach events of the ungated control
+Horizontal bars — plan-level overreach events of the ungated control
 arm (Experiment 5) by oracle and intended use (plan requests of a
-structural oracle as ranking objective / screening evaluation); oracle
+structural oracle in ranking / screening use); oracle
 colours as in Figs 3b–3e (EGARPS terracotta, ProteinX slate blue, RhoFold
-sage green); solid = ranking objective, 55% alpha = screening evaluation.
+sage green); solid = ranking use, 55% alpha = screening use.
 
 The per-claim adjudication waffle was dropped on user direction
 (2026-08-30, second revision): the class selectivity it encoded — 23/23
@@ -16,11 +16,20 @@ Style (2026-08-30 user-directed revisions, Nature conventions): no
 in-figure titles or summary statistics — the panel letter is added at
 figure assembly and the headline numbers live in the Fig. 3e caption; the
 legend is a single-row six-swatch style key centred on the axes directly
-under the panel — the three oracle colours solid (ranking objective) then
-light (screening evaluation), one swatch per bar style; oracle
+under the panel — the three oracle colours solid (ranking use) then
+light (screening use), one swatch per bar style; oracle
 labels are centred on their bar pairs; every text element one 6-pt
 pure-black style; colours only from palette rev 7; 1200-dpi PNG (Nature
 Methods line-art guidance) + vector PDF (fonttype 42).
+
+2026-10-02 revision (Fig. 3 text-sync batch, user-adjudicated): the x-axis
+label "Decision-layer overreach events" retired to bare "Overreach events"
+(the fig4f precedent — the qualifier lives in the Fig. 3e caption's
+"plan-level events"; "decision-layer" collides with the L0–L6 layer names)
+and the key labels synced to the caption's "ranking and screening use";
+the canvas narrowed to 57.2 mm so d, e and f share one three-column row
+(the user-directed 2026-10-02 layout; fonts unchanged 6-pt, no data
+change).
 
 Data: experiments/results/exp5_claim_overreach/runs.jsonl (+
 _summary.json). Output: experiments/plots/output/fig3e_claim_overreach.
@@ -60,8 +69,8 @@ ORACLE_LABELS = {
 }
 ORACLE_ORDER = ["rhofold_mean_plddt", "proteinx_ipTM", "egarps_native_probability"]
 USE_ALPHA = {"ranking_objective": 1.0, "screening_evaluation": 0.55}
-USE_LABELS = {"ranking_objective": "ranking objective",
-              "screening_evaluation": "screening evaluation"}
+USE_LABELS = {"ranking_objective": "ranking use",
+              "screening_evaluation": "screening use"}
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -116,7 +125,7 @@ def draw_bars(ax, runs_rows: list[dict]) -> None:
     ax.set_xlim(0, 13)
     ax.set_xticks(range(0, 13, 2))
     ax.set_ylim(-6.8, 0.7)
-    ax.set_xlabel("Decision-layer overreach events", fontsize=FONT, labelpad=2)
+    ax.set_xlabel("Overreach events", fontsize=FONT, labelpad=2)
     for spine in ("top", "right", "left"):
         ax.spines[spine].set_visible(False)
     ax.spines["bottom"].set_color(INK)
@@ -126,15 +135,14 @@ def main() -> int:
     results_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else RESULTS
     summary, runs_rows = load_data(results_dir)
 
-    # absolute-mm geometry (the fig3f convention); 2026-08-31 composite
-    # revision: enlarged from 89 x 34 mm (axes 71 x 21) so the d|e composite
-    # row carries two matched-height panels — the height mismatch had left a
-    # blank band under e; fonts, bar geometry and the style-key row unchanged,
-    # no data change
-    fig_w, fig_h = 94 / 25.4, 44.6 / 25.4
+    # absolute-mm geometry (the fig3f convention); 2026-10-02 second pass:
+    # 57.2 → 54.2 mm, tracking the composite's narrowed three-column width;
+    # fonts, bar geometry and the style-key row unchanged in kind, no data
+    # change
+    fig_w, fig_h = 54.2 / 25.4, 36.5 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_b = fig.add_axes([15 / 25.4 / fig_w, 11 / 25.4 / fig_h,
-                         75 / 25.4 / fig_w, 31 / 25.4 / fig_h])
+    ax_b = fig.add_axes([10 / 25.4 / fig_w, 11 / 25.4 / fig_h,
+                         40.2 / 25.4 / fig_w, 24 / 25.4 / fig_h])
 
     draw_bars(ax_b, runs_rows)
 
@@ -143,11 +151,13 @@ def main() -> int:
     # (ranking objective) then light (screening evaluation)
     def _fx(v: float) -> float: return v / 25.4 / fig_w   # mm → figure frac
     def _fy(v: float) -> float: return v / 25.4 / fig_h
-    sw_w, sw_h, pitch, gap, group_gap = 2.4, 1.6, 3.0, 1.6, 3.5
+    sw_w, sw_h, pitch, gap, group_gap = 2.4, 1.6, 3.0, 1.4, 3.0
     trio_w = sw_w + 2 * pitch
-    label_w = {"ranking_objective": 19.0, "screening_evaluation": 23.0}
+    label_w = {"ranking_objective": 10.5, "screening_evaluation": 13.0}
     row_w = 2 * (trio_w + gap) + group_gap + sum(label_w.values())
-    x0 = (15 + 75 / 2) - row_w / 2                        # row centred on the axes
+    x0 = (10 + 40.2 / 2) - row_w / 2                      # row centred on the axes
+    assert x0 >= 0.5 and x0 + row_w <= 54.2 - 0.5, (
+        f"style key overflows the canvas: {x0:.2f} .. {x0 + row_w:.2f} mm")
     x = x0
     for use in ("ranking_objective", "screening_evaluation"):
         for i, oracle in enumerate(ORACLE_ORDER):

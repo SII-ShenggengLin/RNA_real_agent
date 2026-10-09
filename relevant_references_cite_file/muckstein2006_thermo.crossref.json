@@ -1,0 +1,762 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    1
+   ]
+  ],
+  "date-time": "2026-10-01T11:28:42Z",
+  "timestamp": 1790854122528,
+  "version": "4.1.0"
+ },
+ "reference-count": 46,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "10",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "published-print": {
+  "date-parts": [
+   [
+    2006,
+    5,
+    15
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n               <jats:p>Background: Reliable prediction of RNA–RNA binding energies is crucial, e.g. for the understanding on RNAi, microRNA–mRNA binding and antisense interactions. The thermodynamics of such RNA–RNA interactions can be understood as the sum of two energy contributions: (1) the energy necessary to ‘open’ the binding site and (2) the energy gained from hybridization.</jats:p>\n               <jats:p>Methods: We present an extension of the standard partition function approach to RNA secondary structures that computes the probabilities Pu[i, j] that a sequence interval [i, j] is unpaired.</jats:p>\n               <jats:p>Results: Comparison with experimental data shows that Pu[i, j] can be applied as a significant determinant of local target site accessibility for RNA interference (RNAi). Furthermore, these quantities can be used to rigorously determine binding free energies of short oligomers to large mRNA targets. The resource consumption is comparable with a single partition function computation for the large target molecule. We can show that RNAi efficiency correlates well with the binding energies of siRNAs to their respective mRNA target.</jats:p>\n               <jats:p>Availability:  RNAup will be distributed as part of the Vienna RNA Package,</jats:p>\n               <jats:p>Contact:  ivo@tbi.univie.ac.at</jats:p>",
+ "DOI": "10.1093/bioinformatics/btl024",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2006,
+    1,
+    30
+   ]
+  ],
+  "date-time": "2006-01-30T01:22:34Z",
+  "timestamp": 1138584154000
+ },
+ "page": "1177-1182",
+ "source": "Crossref",
+ "is-referenced-by-count": 340,
+ "title": [
+  "Thermodynamics of RNA–RNA binding"
+ ],
+ "prefix": "10.1093",
+ "volume": "22",
+ "author": [
+  {
+   "given": "Ulrike",
+   "family": "Mückstein",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Institute for Theoretical Chemistry, University of Vienna 1   1     Währingerstrasse 17, A-1090 Vienna, Austria"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Hakim",
+   "family": "Tafer",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Institute for Theoretical Chemistry, University of Vienna 1   1     Währingerstrasse 17, A-1090 Vienna, Austria"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jörg",
+   "family": "Hackermüller",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Fraunhofer Institut für Zelltherapie und Immunologie, IZI 2   2     Deutscher Platz 5e, D-04103 Leipzig, Germany"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Stephan H.",
+   "family": "Bernhart",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Institute for Theoretical Chemistry, University of Vienna 1   1     Währingerstrasse 17, A-1090 Vienna, Austria"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Peter F.",
+   "family": "Stadler",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Institute for Theoretical Chemistry, University of Vienna 1   1     Währingerstrasse 17, A-1090 Vienna, Austria"
+    },
+    {
+     "name": "Bioinformatics Group, Department of Computer Science, and Interdisciplinary Center for Bioinformatics, University of Leipzig 3   3     Härtelstrasse 16-18, D-04107 Leipzig, Germany"
+    },
+    {
+     "name": "The Santa Fe Institute 4   4     1399 Hyde Park Rd., Santa Fe, New Mexico"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ivo L.",
+   "family": "Hofacker",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Institute for Theoretical Chemistry, University of Vienna 1   1     Währingerstrasse 17, A-1090 Vienna, Austria"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "published-online": {
+  "date-parts": [
+   [
+    2006,
+    1,
+    29
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2023012408204548400_b1",
+   "doi-asserted-by": "crossref",
+   "first-page": "987",
+   "DOI": "10.1016/j.jmb.2004.10.082",
+   "article-title": "Secondary structure prediction of interacting RNA molecules",
+   "volume": "345",
+   "author": "Andronescu",
+   "year": "2005",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023012408204548400_b2",
+   "doi-asserted-by": "crossref",
+   "first-page": "5904",
+   "DOI": "10.1016/j.febslet.2005.09.040",
+   "article-title": "Prediction and validation of microRNAs and their targets",
+   "volume": "579",
+   "author": "Bentwich",
+   "year": "2005",
+   "journal-title": "FEBS Lett."
+  },
+  {
+   "key": "2023012408204548400_b3",
+   "doi-asserted-by": "crossref",
+   "first-page": "15991",
+   "DOI": "10.1074/jbc.M300714200",
+   "article-title": "The efficacy of small interfering RNAs targeted to the type 1 insulin-like growth factor receptor (IGF1R) is influenced by secondary structure in the IGF1R transcript",
+   "volume": "278",
+   "author": "Bohula",
+   "year": "2003",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2023012408204548400_b4",
+   "doi-asserted-by": "crossref",
+   "first-page": "e85",
+   "DOI": "10.1371/journal.pbio.0030085",
+   "article-title": "Principles of microRNA-target recognition",
+   "volume": "3",
+   "author": "Brennecke",
+   "year": "2005",
+   "journal-title": "PLoS Biol."
+  },
+  {
+   "key": "2023012408204548400_b5",
+   "doi-asserted-by": "crossref",
+   "first-page": "215",
+   "DOI": "10.1529/biophysj.103.020743",
+   "article-title": "Prediction of hybridization and melting for double-stranded nucleic acids",
+   "volume": "87",
+   "author": "Dimitrov",
+   "year": "2004",
+   "journal-title": "Biophys. J."
+  },
+  {
+   "key": "2023012408204548400_b6",
+   "doi-asserted-by": "crossref",
+   "first-page": "7280",
+   "DOI": "10.1093/nar/gkg938",
+   "article-title": "A statistical sampling algorithm for RNA secondary structure prediction",
+   "volume": "31",
+   "author": "Ding",
+   "year": "2003",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b7",
+   "doi-asserted-by": "crossref",
+   "first-page": "W135",
+   "DOI": "10.1093/nar/gkh449",
+   "article-title": "Sfold web server for statistical folding and rational design of nucleic acids",
+   "volume": "32",
+   "author": "Ding",
+   "year": "2004",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b8",
+   "doi-asserted-by": "crossref",
+   "first-page": "1664",
+   "DOI": "10.1002/jcc.10296",
+   "article-title": "A partition function algorithm for nucleic acid secondary structure including pseudoknots",
+   "volume": "24",
+   "author": "Dirks",
+   "year": "2003",
+   "journal-title": "J. Comput. Chem."
+  },
+  {
+   "key": "2023012408204548400_b9",
+   "doi-asserted-by": "crossref",
+   "first-page": "1295",
+   "DOI": "10.1002/jcc.20057",
+   "article-title": "An algorithm for computing nucleic acid base-pairing probabilities including pseudoknots",
+   "volume": "25",
+   "author": "Dirks",
+   "year": "2004",
+   "journal-title": "J. Comput. Chem."
+  },
+  {
+   "key": "2023012408204548400_b10",
+   "doi-asserted-by": "crossref",
+   "first-page": "438",
+   "DOI": "10.1101/gad.1064703",
+   "article-title": "siRNAs can function as miRNAs",
+   "volume": "17",
+   "author": "Doench",
+   "year": "2003",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "2023012408204548400_b11",
+   "doi-asserted-by": "crossref",
+   "first-page": "457",
+   "DOI": "10.1038/nrm1129",
+   "article-title": "Killing the messenger: short RNAs that silence gene expression",
+   "volume": "4",
+   "author": "Dykxhoorn",
+   "year": "2003",
+   "journal-title": "Nat. Rev. Mol. Cell Biol."
+  },
+  {
+   "key": "2023012408204548400_b12",
+   "doi-asserted-by": "crossref",
+   "first-page": "199",
+   "DOI": "10.1016/S1046-2023(02)00023-3",
+   "article-title": "Analysis of gene function in somatic mammalian cells using small interfering RNAs",
+   "volume": "26",
+   "author": "Elbashir",
+   "year": "2002",
+   "journal-title": "Methods"
+  },
+  {
+   "key": "2023012408204548400_b13",
+   "first-page": "315",
+   "article-title": "Computational chemistry with RNA secondary structures",
+   "volume": "53",
+   "author": "Flamm",
+   "year": "2004",
+   "journal-title": "Kemija u industriji"
+  },
+  {
+   "key": "2023012408204548400_b14",
+   "doi-asserted-by": "crossref",
+   "first-page": "4843",
+   "DOI": "10.1093/nar/gkh779",
+   "article-title": "Abstract shapes of RNA",
+   "volume": "32",
+   "author": "Giegerich",
+   "year": "2004",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b15",
+   "doi-asserted-by": "crossref",
+   "first-page": "3",
+   "DOI": "10.1016/j.gene.2004.11.043",
+   "article-title": "The effect of RNA secondary structures on RNA-ligand binding and the modifier RNA mechanism: A quantitative model",
+   "volume": "345",
+   "author": "Hackermüller",
+   "year": "2005",
+   "journal-title": "Gene"
+  },
+  {
+   "key": "2023012408204548400_b16",
+   "doi-asserted-by": "crossref",
+   "first-page": "6636",
+   "DOI": "10.1093/nar/gkh1008",
+   "article-title": "Efficient computation of optimal oligo-RNA binding",
+   "volume": "32",
+   "author": "Hodas",
+   "year": "2004",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b17",
+   "doi-asserted-by": "crossref",
+   "first-page": "167",
+   "DOI": "10.1007/BF00818163",
+   "article-title": "Fast folding and comparison of RNA secondary structures",
+   "volume": "125",
+   "author": "Hofacker",
+   "year": "1994",
+   "journal-title": "Monatsh. Chem."
+  },
+  {
+   "key": "2023012408204548400_b18",
+   "doi-asserted-by": "crossref",
+   "first-page": "3429",
+   "DOI": "10.1093/nar/gkg599",
+   "article-title": "Vienna RNA secondary structure server",
+   "volume": "31",
+   "author": "Hofacker",
+   "year": "2003",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b19",
+   "doi-asserted-by": "crossref",
+   "first-page": "209",
+   "DOI": "10.1016/S0092-8674(03)00801-8",
+   "article-title": "Functional siRNAs and miRNAs exhibit strand bias",
+   "volume": "115",
+   "author": "Khvorova",
+   "year": "2003",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "2023012408204548400_b20",
+   "doi-asserted-by": "crossref",
+   "first-page": "4417",
+   "DOI": "10.1093/nar/gkg649",
+   "article-title": "The activity of siRNA in mammalian cells is related to structural target accessibility: acomparison with antisense oligonucleotides",
+   "volume": "31",
+   "author": "Kretschmer-Kazemi Far",
+   "year": "2003",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b21",
+   "doi-asserted-by": "crossref",
+   "first-page": "1178",
+   "DOI": "10.1261/rna.7650904",
+   "article-title": "Using an RNA secondary structure partition function to determine confidence in base pairspredicted by free energy minimization",
+   "volume": "10",
+   "author": "Mathews",
+   "year": "2004",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "2023012408204548400_b22",
+   "doi-asserted-by": "crossref",
+   "first-page": "911",
+   "DOI": "10.1006/jmbi.1999.2700",
+   "article-title": "Expanded sequence dependence of thermodynamic parameters improves prediction of RNA secondary structure",
+   "volume": "288",
+   "author": "Mathews",
+   "year": "1999",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023012408204548400_b23",
+   "doi-asserted-by": "crossref",
+   "first-page": "1458",
+   "DOI": "10.1017/S1355838299991148",
+   "article-title": "Predicting oligonucleotide affinity to nucleic acid targets",
+   "volume": "5",
+   "author": "Mathews",
+   "year": "1999",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "2023012408204548400_b24",
+   "doi-asserted-by": "crossref",
+   "first-page": "1105",
+   "DOI": "10.1002/bip.360290621",
+   "article-title": "The equilibrium partition function and base pair binding probabilities for RNA secondary structures",
+   "volume": "29",
+   "author": "McCaskill",
+   "year": "1990",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "2023012408204548400_b25",
+   "doi-asserted-by": "crossref",
+   "first-page": "1432",
+   "DOI": "10.1002/cbic.200400219",
+   "article-title": "mRNA openers and closers: A methodology to modulate AU-rich element controlled mRNA stability by a molecular switch in mRNA conformation",
+   "volume": "5",
+   "author": "Meisner",
+   "year": "2004",
+   "journal-title": "Chembiochem."
+  },
+  {
+   "key": "2023012408204548400_b26",
+   "doi-asserted-by": "crossref",
+   "first-page": "343",
+   "DOI": "10.1038/nature02873",
+   "article-title": "Mechanisms of gene silencing by double-stranded RNA",
+   "volume": "431",
+   "author": "Meister",
+   "year": "2004",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023012408204548400_b27",
+   "doi-asserted-by": "crossref",
+   "first-page": "355",
+   "DOI": "10.1038/nrg1323",
+   "article-title": "Improving the efficiency of RNA interference in mammals",
+   "volume": "5",
+   "author": "Mittal",
+   "year": "2004",
+   "journal-title": "Nat. Rev. Genet."
+  },
+  {
+   "key": "2023012408204548400_b28",
+   "doi-asserted-by": "crossref",
+   "first-page": "68",
+   "DOI": "10.1137/0135006",
+   "article-title": "Algorithms for Loop Matching",
+   "volume": "35",
+   "author": "Nussinov",
+   "year": "1978",
+   "journal-title": "SIAM J. Appl. Math."
+  },
+  {
+   "key": "2023012408204548400_b29",
+   "doi-asserted-by": "crossref",
+   "first-page": "871",
+   "DOI": "10.1016/j.jmb.2005.03.012",
+   "article-title": "Local RNA target structure influences siRNA efficacy: A systematic global analysis",
+   "volume": "348",
+   "author": "Overhoff",
+   "year": "2005",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023012408204548400_b30",
+   "doi-asserted-by": "crossref",
+   "first-page": "663",
+   "DOI": "10.1038/nature03462",
+   "article-title": "Structural insights into mRNA recognition from a PIWI domain-siRNA guide complex",
+   "volume": "434",
+   "author": "Parker",
+   "year": "2005",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2023012408204548400_b31",
+   "doi-asserted-by": "crossref",
+   "first-page": "1507",
+   "DOI": "10.1261/rna.5248604",
+   "article-title": "Fast and effective prediction of microRNA/target duplexes",
+   "volume": "10",
+   "author": "Rehmsmeier",
+   "year": "2004",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "2023012408204548400_b32",
+   "doi-asserted-by": "crossref",
+   "first-page": "326",
+   "DOI": "10.1038/nbt936",
+   "article-title": "Rational siRNA design for RNA interference",
+   "volume": "22",
+   "author": "Reynolds",
+   "year": "2004",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "2023012408204548400_b33",
+   "doi-asserted-by": "crossref",
+   "first-page": "4006",
+   "DOI": "10.1073/pnas.0500775102",
+   "article-title": "Incorporating structure to predict microRNA targets",
+   "volume": "102",
+   "author": "Robins",
+   "year": "2005",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "2023012408204548400_b34",
+   "doi-asserted-by": "crossref",
+   "first-page": "883",
+   "DOI": "10.1016/j.jmb.2005.03.011",
+   "article-title": "Local RNA Target structure influences siRNA efficacy: Systematic analysis of intentionally designed binding regions",
+   "volume": "348",
+   "author": "Schubert",
+   "year": "2005",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023012408204548400_b35",
+   "doi-asserted-by": "crossref",
+   "first-page": "99",
+   "DOI": "10.1016/S0092-8674(03)00759-1",
+   "article-title": "Asymmetry in the assembly of the RNAi enzyme complex",
+   "volume": "115",
+   "author": "Schwarz",
+   "year": "2003",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "2023012408204548400_b36",
+   "doi-asserted-by": "crossref",
+   "first-page": "e60",
+   "DOI": "10.1371/journal.pbio.0000060",
+   "article-title": "Identification of Drosophila microRNA targets",
+   "volume": "1",
+   "author": "Stark",
+   "year": "2003",
+   "journal-title": "PLoS Biol."
+  },
+  {
+   "key": "2023012408204548400_b37",
+   "doi-asserted-by": "crossref",
+   "first-page": "115",
+   "DOI": "10.1007/s002490050023",
+   "article-title": "Algorithm independent properties of RNA structure prediction",
+   "volume": "25",
+   "author": "Tacker",
+   "year": "1996",
+   "journal-title": "Eur. Biophy. J."
+  },
+  {
+   "key": "2023012408204548400_b38",
+   "doi-asserted-by": "crossref",
+   "first-page": "167",
+   "DOI": "10.1146/annurev.bb.17.060188.001123",
+   "article-title": "RNA structure prediction",
+   "volume": "17",
+   "author": "Turner",
+   "year": "1988",
+   "journal-title": "Annu. Rev. Biophys. Biophys. Chem."
+  },
+  {
+   "key": "2023012408204548400_b39",
+   "doi-asserted-by": "crossref",
+   "first-page": "5126",
+   "DOI": "10.1093/nar/gkh841",
+   "article-title": "Determination of thermodynamic parameters for HIV DIS type loop–loop kissing complexes",
+   "volume": "32",
+   "author": "Weixlbaumer",
+   "year": "2004",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b40",
+   "doi-asserted-by": "crossref",
+   "first-page": "145",
+   "DOI": "10.1002/(SICI)1097-0282(199902)49:2<145::AID-BIP4>3.0.CO;2-G",
+   "article-title": "Complete suboptimal folding of RNA and the stability of secondary structures",
+   "volume": "49",
+   "author": "Wuchty",
+   "year": "1999",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "2023012408204548400_b41",
+   "doi-asserted-by": "crossref",
+   "first-page": "691",
+   "DOI": "10.1093/nar/gkh221",
+   "article-title": "Effects on RNAi of the tight structure, sequence and position of the targeted region",
+   "volume": "32",
+   "author": "Yoshinari",
+   "year": "2004",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b42",
+   "doi-asserted-by": "crossref",
+   "first-page": "9779",
+   "DOI": "10.1073/pnas.1630797100",
+   "article-title": "MicroRNAs and small interfering RNAs can inhibit mRNA expression by similar mechanisms",
+   "volume": "100",
+   "author": "Zeng",
+   "year": "2003",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "2023012408204548400_b43",
+   "doi-asserted-by": "crossref",
+   "first-page": "48",
+   "DOI": "10.1126/science.2468181",
+   "article-title": "On finding all suboptimal foldings of an RNA molecule",
+   "volume": "7",
+   "author": "Zuker",
+   "year": "1989",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2023012408204548400_b44",
+   "doi-asserted-by": "crossref",
+   "first-page": "303",
+   "DOI": "10.1016/S0959-440X(00)00088-9",
+   "article-title": "Calculating nucleic acid secondary structure",
+   "volume": "10",
+   "author": "Zuker",
+   "year": "2000",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "2023012408204548400_b45",
+   "doi-asserted-by": "crossref",
+   "first-page": "3406",
+   "DOI": "10.1093/nar/gkg595",
+   "article-title": "Mfold web server for nucleic acid folding and hybridization prediction",
+   "volume": "31",
+   "author": "Zuker",
+   "year": "2003",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408204548400_b46",
+   "doi-asserted-by": "crossref",
+   "first-page": "133",
+   "DOI": "10.1093/nar/9.1.133",
+   "article-title": "Optimal computer folding of large RNA sequences using thermodynamics and auxiliary information",
+   "volume": "9",
+   "author": "Zuker",
+   "year": "1981",
+   "journal-title": "Nucleic Acids Res."
+  }
+ ],
+ "container-title": [
+  "Bioinformatics"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://academic.oup.com/bioinformatics/article-pdf/22/10/1177/48838547/bioinformatics_22_10_1177.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "https://academic.oup.com/bioinformatics/article-pdf/22/10/1177/48838547/bioinformatics_22_10_1177.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    1,
+    24
+   ]
+  ],
+  "date-time": "2023-01-24T08:23:34Z",
+  "timestamp": 1674548614000
+ },
+ "score": 44.520725,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/bioinformatics/article/22/10/1177/236620"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2006,
+    1,
+    29
+   ]
+  ]
+ },
+ "references-count": 46,
+ "journal-issue": {
+  "issue": "10",
+  "published-print": {
+   "date-parts": [
+    [
+     2006,
+     5,
+     15
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1093/bioinformatics/btl024",
+ "ISSN": [
+  "1367-4811",
+  "1367-4803"
+ ],
+ "issn-type": [
+  {
+   "value": "1367-4811",
+   "type": "electronic"
+  },
+  {
+   "value": "1367-4803",
+   "type": "print"
+  }
+ ],
+ "published-other": {
+  "date-parts": [
+   [
+    2006,
+    5,
+    15
+   ]
+  ]
+ },
+ "published": {
+  "date-parts": [
+   [
+    2006,
+    1,
+    29
+   ]
+  ]
+ }
+}

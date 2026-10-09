@@ -1,0 +1,353 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T02:26:49Z",
+  "timestamp": 1791512809230,
+  "version": "4.3.4"
+ },
+ "reference-count": 14,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "4",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2012,
+      3,
+      4
+     ]
+    ],
+    "date-time": "2012-03-04T00:00:00Z",
+    "timestamp": 1330819200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Methods"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2012,
+    4
+   ]
+  ]
+ },
+ "DOI": "10.1038/nmeth.1923",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2012,
+    3,
+    5
+   ]
+  ],
+  "date-time": "2012-03-05T09:52:11Z",
+  "timestamp": 1330941131000
+ },
+ "page": "357-359",
+ "source": "Crossref",
+ "is-referenced-by-count": 55871,
+ "title": [
+  "Fast gapped-read alignment with Bowtie 2"
+ ],
+ "prefix": "10.1038",
+ "volume": "9",
+ "author": [
+  {
+   "given": "Ben",
+   "family": "Langmead",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Steven L",
+   "family": "Salzberg",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2012,
+    3,
+    4
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "BFnmeth1923_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "1297",
+   "DOI": "10.1101/gr.107524.110",
+   "volume": "20",
+   "author": "A McKenna",
+   "year": "2010",
+   "unstructured": "McKenna, A. et al. Genome Res. 20, 1297–1303 (2010).",
+   "journal-title": "Genome Res."
+  },
+  {
+   "key": "BFnmeth1923_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "511",
+   "DOI": "10.1038/nbt.1621",
+   "volume": "28",
+   "author": "C Trapnell",
+   "year": "2010",
+   "unstructured": "Trapnell, C. et al. Nat. Biotechnol. 28, 511–515 (2010).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnmeth1923_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "R83",
+   "DOI": "10.1186/gb-2010-11-8-r83",
+   "volume": "11",
+   "author": "B Langmead",
+   "year": "2010",
+   "unstructured": "Langmead, B., Hansen, K.D. & Leek, J.T. Genome Biol. 11, R83 (2010).",
+   "journal-title": "Genome Biol."
+  },
+  {
+   "key": "BFnmeth1923_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "473",
+   "DOI": "10.1093/bib/bbq015",
+   "volume": "11",
+   "author": "H Li",
+   "year": "2010",
+   "unstructured": "Li, H. & Homer, N. Brief. Bioinform. 11, 473–483 (2010).",
+   "journal-title": "Brief. Bioinform."
+  },
+  {
+   "key": "BFnmeth1923_CR5",
+   "unstructured": "Ferragina, P. & Manzini, G. Proc. 41st Annual Symposium on Foundations of Computer Science 390–398 (IEEE Comput. Soc.; 2000)."
+  },
+  {
+   "key": "BFnmeth1923_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "R25",
+   "DOI": "10.1186/gb-2009-10-3-r25",
+   "volume": "10",
+   "author": "B Langmead",
+   "year": "2009",
+   "unstructured": "Langmead, B., Trapnell, C., Pop, M. & Salzberg, S.L. Genome Biol. 10, R25 (2009).",
+   "journal-title": "Genome Biol."
+  },
+  {
+   "key": "BFnmeth1923_CR7",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Lam, T. et al. IEEE International Conference on Bioinformatics and Biomedicine 31–36 (2009).",
+   "DOI": "10.1109/BIBM.2009.42"
+  },
+  {
+   "key": "BFnmeth1923_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "1754",
+   "DOI": "10.1093/bioinformatics/btp324",
+   "volume": "25",
+   "author": "H Li",
+   "year": "2009",
+   "unstructured": "Li, H. & Durbin, R. Bioinformatics 25, 1754–1760 (2009).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "BFnmeth1923_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "589",
+   "DOI": "10.1093/bioinformatics/btp698",
+   "volume": "26",
+   "author": "H Li",
+   "year": "2010",
+   "unstructured": "Li, H. & Durbin, R. Bioinformatics 26, 589–595 (2010).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "BFnmeth1923_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "1966",
+   "DOI": "10.1093/bioinformatics/btp336",
+   "volume": "25",
+   "author": "R Li",
+   "year": "2009",
+   "unstructured": "Li, R. et al. Bioinformatics 25, 1966–1967 (2009).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "BFnmeth1923_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "1498",
+   "DOI": "10.1101/gr.123638.111",
+   "volume": "21",
+   "author": "SS Ajay",
+   "year": "2010",
+   "unstructured": "Ajay, S.S., Parker, S.C., Ozel Abaan, H., Fuentes Fajardo, K.V. & Margulies, E.H. Genome Res. 21, 1498–1505 (2010).",
+   "journal-title": "Genome Res."
+  },
+  {
+   "key": "BFnmeth1923_CR12",
+   "doi-asserted-by": "crossref",
+   "unstructured": "1000 Genomes Project Consortium. Nature 467, 1061–1073 (2010).",
+   "DOI": "10.1038/nature09534"
+  },
+  {
+   "key": "BFnmeth1923_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "348",
+   "DOI": "10.1038/nature10242",
+   "volume": "475",
+   "author": "JM Rothberg",
+   "year": "2011",
+   "unstructured": "Rothberg, J.M. et al. Nature 475, 348–352 (2011).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnmeth1923_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "2078",
+   "DOI": "10.1093/bioinformatics/btp352",
+   "volume": "25",
+   "author": "H Li",
+   "year": "2009",
+   "unstructured": "Li, H. et al. Bioinformatics 25, 2078–2079 (2009).",
+   "journal-title": "Bioinformatics"
+  }
+ ],
+ "container-title": [
+  "Nature Methods"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.nature.com/articles/nmeth.1923.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nmeth.1923",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nmeth.1923.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    3,
+    22
+   ]
+  ],
+  "date-time": "2025-03-22T06:40:23Z",
+  "timestamp": 1742625623000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/nmeth.1923"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2012,
+    3,
+    4
+   ]
+  ]
+ },
+ "references-count": 14,
+ "journal-issue": {
+  "issue": "4",
+  "published-print": {
+   "date-parts": [
+    [
+     2012,
+     4
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "BFnmeth1923"
+ ],
+ "URL": "https://doi.org/10.1038/nmeth.1923",
+ "relation": {
+  "documents": [
+   {
+    "id-type": "doi",
+    "id": "10.1575/1912/bco-dmo.719970.1",
+    "asserted-by": "object"
+   },
+   {
+    "id-type": "doi",
+    "id": "10.1575/1912/bco-dmo.762497.1",
+    "asserted-by": "object"
+   }
+  ]
+ },
+ "ISSN": [
+  "1548-7091",
+  "1548-7105"
+ ],
+ "issn-type": [
+  {
+   "value": "1548-7091",
+   "type": "print"
+  },
+  {
+   "value": "1548-7105",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2012,
+    3,
+    4
+   ]
+  ]
+ }
+}

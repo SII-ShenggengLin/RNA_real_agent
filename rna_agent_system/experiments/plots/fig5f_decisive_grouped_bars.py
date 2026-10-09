@@ -1,15 +1,33 @@
-"""Fig 5f — Aptamer decisive campaign: delivered cells, end-to-end targets
-and discordance (Experiment 29, segment 3; the pre-registered primary
-endpoint panel).
+"""Fig 5f — Aptamer delivery-scarce campaign: delivered pairs, end-to-end
+targets and discordance (Experiment 29, the 12 delivery-scarce targets;
+the pre-registered primary endpoint panel).
 
 Single-panel grouped bars: three metric groups on the x axis — delivered
-profile cells (of 36), targets with end-to-end delivery (of 12) and
-discordant cells — each pairing the navigation arm (sage) against the
-static-grid arm (terracotta) with the counts printed above the bars.  The
-exact two-sided McNemar result and the pre-registered verdict are
-annotated as one line in the reserved strip above the axes (the fig5b
-convention); the two-arm key sits as one column at the axes' upper right
-(user direction, 2026-09-08).
+pairs (of 36), end-to-end targets (of 12) and discordant pairs — each
+pairing the navigation condition (sage) against the static condition
+(terracotta) with the counts printed above the bars.  The two-condition
+key sits as one column at the axes' upper right (user direction,
+2026-09-08).
+
+2026-10-06 follow-up (user-directed): (i) the stat line above the axes
+deleted — the McNemar result (10:3, P = 0.092, n = 36) is carried
+verbatim by §2.5 and the Fig. 5e legend, and the pre-registered no-go
+verdict by the body's "not statistically significant" (the label retires
+to the frozen verdict record); (ii) the panel narrowed 89 → 48.5 mm and
+shortened 40 → 36 mm (the strip's reservation released) to share the
+d|e|f group row, with the middle group label re-wrapped "End-to-end
+targets (of 12)" over three lines and the first "Delivered pairs (of 36)"
+over two; same day, the panel grew 36 → 54 mm to match panel e's height,
+so the d|e|f row renders at one panel height; text unchanged at 6 pt,
+zero number changes.
+
+2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch):
+"cells" → "pairs" in the group labels (the §2.5/legend term); the stat
+line's "McNemar b:c =" decoded to "McNemar discordance" (the fig5b
+convention) and its "NO-GO" set as "no-go" (the paper-wide term), the
+em-dash separator retired to a comma; the key's "static grid" → "static
+condition" (the body/legend condition name, the figS2 key precedent); no
+number, colour or geometry changed.
 
 2026-09-08 figure-repair pass (user direction): the bottom pair-outcome
 stacked strip was removed — its four counts (14 both / 10 navigation-only
@@ -54,10 +72,10 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 40.0
+W_MM, H_MM = 48.5, 54.0
 
-C_NAV = PALETTE_BY_NAME["sage_green"]     # navigation arm
-C_RULE = PALETTE_BY_NAME["terracotta"]    # static-grid arm
+C_NAV = PALETTE_BY_NAME["sage_green"]     # navigation condition
+C_RULE = PALETTE_BY_NAME["terracotta"]    # static condition
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -96,12 +114,15 @@ def main() -> int:
     p = verdict["mcnemar"]["p_exact"]
     go = (verdict.get("go_rule") or {}).get("verdict", "—")
 
-    fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI))
-    ax = fig.add_axes([8.6 / W_MM, 10.0 / H_MM, 78.0 / W_MM, 24.0 / H_MM])
+    # +1e-9 in: defeat float truncation so the saved canvas is exactly
+    # W_PX × H_PX (matplotlib takes int(figsize × dpi); the fig5c
+    # convention)
+    fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
+    ax = fig.add_axes([8.0 / W_MM, 10.6 / H_MM, 39.3 / W_MM, 41.0 / H_MM])
     groups = [
-        (f"Delivered cells\n(of {n_cells})", del_c, del_a),
-        (f"End-to-end targets\n(of {n_targets})", e2e_c, e2e_a),
-        ("Discordant\ncells", b, c_),
+        (f"Delivered\npairs (of {n_cells})", del_c, del_a),
+        (f"End-to-end\ntargets\n(of {n_targets})", e2e_c, e2e_a),
+        ("Discordant\npairs", b, c_),
     ]
     ymax = max(del_c, del_a, e2e_c, e2e_a, b, c_, 1)
     count_labels = []
@@ -123,16 +144,8 @@ def main() -> int:
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    # ── exact McNemar result + pre-registered verdict: one line in the
-    #    reserved strip above the axes (the fig5b convention) ──
-    stat = ax.text(0.5, 1.055,
-                   f"McNemar b:c = {b}:{c_},  {fmt_p(p)},  n = {n_cells}"
-                   f"  —  {go} (pre-registered)",
-                   transform=ax.transAxes, ha="center", va="bottom",
-                   fontsize=FONT, color=INK)
-
-    # ── key: the two arm swatches as one column at the axes' upper right
-    #    (user direction, 2026-09-08), renderer-measured widths ──
+    # ── key: the two condition swatches as one column at the axes' upper
+    #    right (user direction, 2026-09-08), renderer-measured widths ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
 
@@ -142,13 +155,13 @@ def main() -> int:
         t.remove()
         return w
 
-    key_items = [(C_NAV, "navigation"), (C_RULE, "static grid")]
+    key_items = [(C_NAV, "navigation"), (C_RULE, "static condition")]
     swatch_w = 1.25 / W_MM
     swatch_h = 0.95 / H_MM
     gap_in = 0.006
     block_w = swatch_w + gap_in + max(text_w(s) for _, s in key_items)
-    ax_r = (8.6 + 78.0) / W_MM          # axes right edge, fig fraction
-    ax_t = (10.0 + 24.0) / H_MM         # axes top edge, fig fraction
+    ax_r = (8.0 + 39.3) / W_MM         # axes right edge, fig fraction
+    ax_t = (10.6 + 41.0) / H_MM        # axes top edge, fig fraction
     x_sw = ax_r - 1.0 / W_MM - block_w  # block sits 1 mm inside the axes
     x_tx = x_sw + swatch_w + gap_in
     key_texts, swatches = [], []
@@ -164,12 +177,11 @@ def main() -> int:
                                   color=INK, va="baseline"))
 
     # ── programmatic guards: every text and swatch in-canvas, pairwise
-    #    non-colliding, the stat line clear of the axes (hence of every
-    #    datum), and the bar counts below the axes top ──
+    #    non-colliding, and the bar counts below the axes top ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
     items = [(t.get_text(), t.get_window_extent(renderer))
-             for t in ([stat, ax.yaxis.label] + count_labels + key_texts
+             for t in ([ax.yaxis.label] + count_labels + key_texts
                        + list(ax.get_xticklabels())
                        + list(ax.get_yticklabels()))]
     items += [("swatch", sax.bbox) for sax in swatches]
@@ -181,7 +193,6 @@ def main() -> int:
         for j in range(i + 1, len(items)):
             assert not items[i][1].overlaps(items[j][1]), \
                 f"collision: {items[i][0]!r} x {items[j][0]!r}"
-    assert items[0][1].y0 > ax.bbox.y1, "stat line dips into the axes"
     for t in count_labels:
         assert t.get_window_extent(renderer).y1 <= ax.bbox.y1 + 1.0, \
             f"bar count {t.get_text()!r} crosses the axes top"

@@ -2,18 +2,21 @@
 """Fig. 2d — Secondary-structure inverse folding: per-benchmark recovery distance.
 
 Single panel, stacked dot plot (Wilkinson): one dot per benchmark, stacked
-above its best-candidate structure distance to the target, with the stack
-count printed on top — the column at distance 0 is the exact recoveries
-(the secondary-structure workflow's grey green), the short columns are the
-misses (held-out dark warm grey — the palette's neutral-dark semantic).
+above its best-candidate base-pair distance to the target structure, with
+the stack count printed on top — the column at distance 0 is the exact
+recoveries (the secondary-structure workflow's grey green), the short
+columns are the misses (held-out dark warm grey — the palette's
+neutral-dark semantic).
 
-Figure revision 2026-08-27 (user-directed, second revision): replaced the
-cumulative step curve with a stacked dot plot — the cumulative "≤ d"
-encoding was not intuitive; the stacked columns read as a histogram while
-keeping one dot per benchmark. (First revision same day merged the former
-strip + step sub-panels into one and removed the in-figure title —
-Nature style, the headline lives in the caption, panels carry letters
-only; every text element shares one font size and colour.)
+Figure revision 2026-10-02 (user-adjudicated, text-consistency pass): the
+panel now plots the whole-base-pair distance (1/1/2/3) so the axis reads
+exactly as the manuscript's "one to three base pairs"; the dot-bracket
+Hamming distances (2/2/4/6) stay in the frozen records. Both fields are
+frozen in exp4's records.jsonl — a rendering-metric switch, zero data
+change. (Earlier revision 2026-08-27 replaced the cumulative step curve
+with this stacked-dot encoding and removed the in-figure title — Nature
+style, the headline lives in the caption, panels carry letters only;
+every text element shares one font size and colour.)
 
 Data  : experiments/results/exp4_inverse_folding/records.jsonl
         (+ summary.json for the annotated counts)
@@ -91,7 +94,7 @@ def main() -> int:
         return 1
     n_total = len(records)
     dists = np.array(
-        [r["best_structure_distance"] for r in records], dtype=float
+        [r["best_base_pair_distance"] for r in records], dtype=float
     )
     n_exact = int(np.sum(dists == 0))
     by_dist = Counter(int(d) for d in dists)
@@ -133,7 +136,7 @@ def main() -> int:
     ax.set_ylim(0, n_total + 2.2)
     ax.set_xticks(ticks)
     ax.set_yticks(list(range(0, n_total + 1, 5)))
-    ax.set_xlabel("structure distance to target (dot-bracket mismatches)",
+    ax.set_xlabel("base-pair distance to the target structure",
                   fontsize=FONT, labelpad=2)
     ax.set_ylabel("number of benchmarks", fontsize=FONT, labelpad=2)
     ax.tick_params(axis="both", labelsize=FONT, length=1.5, pad=1)

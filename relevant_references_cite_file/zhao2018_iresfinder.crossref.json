@@ -1,0 +1,538 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    23
+   ]
+  ],
+  "date-time": "2026-09-23T10:43:50Z",
+  "timestamp": 1790160230348,
+  "version": "4.1.0"
+ },
+ "reference-count": 20,
+ "publisher": "Elsevier BV",
+ "issue": "7",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2018,
+      7,
+      1
+     ]
+    ],
+    "date-time": "2018-07-01T00:00:00Z",
+    "timestamp": 1530403200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2018,
+      7,
+      1
+     ]
+    ],
+    "date-time": "2018-07-01T00:00:00Z",
+    "timestamp": 1530403200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/legal/tdmrep-license"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/501100001809",
+   "name": "National Natural Science Foundation of China",
+   "doi-asserted-by": "crossref",
+   "award": [
+    "61571223"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "61571223"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001809",
+     "id-type": "DOI",
+     "asserted-by": "crossref"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100001809",
+   "name": "National Natural Science Foundation of China",
+   "doi-asserted-by": "crossref",
+   "award": [
+    "61171191"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "61171191"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001809",
+     "id-type": "DOI",
+     "asserted-by": "crossref"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "elsevier.com",
+   "sciencedirect.com"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Journal of Genetics and Genomics"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2018,
+    7
+   ]
+  ]
+ },
+ "DOI": "10.1016/j.jgg.2018.07.006",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2018,
+    7,
+    20
+   ]
+  ],
+  "date-time": "2018-07-20T04:23:02Z",
+  "timestamp": 1532060582000
+ },
+ "page": "403-406",
+ "update-policy": "https://doi.org/10.1016/elsevier_cm_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 130,
+ "title": [
+  "IRESfinder: Identifying RNA internal ribosome entry site in eukaryotic cell using framed k-mer features"
+ ],
+ "prefix": "10.1016",
+ "volume": "45",
+ "author": [
+  {
+   "given": "Jian",
+   "family": "Zhao",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jing",
+   "family": "Wu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tianyi",
+   "family": "Xu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Qichang",
+   "family": "Yang",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Junhao",
+   "family": "He",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-7445-4302",
+   "authenticated-orcid": false,
+   "given": "Xiaofeng",
+   "family": "Song",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "78",
+ "reference": [
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib1",
+   "doi-asserted-by": "crossref",
+   "first-page": "4664",
+   "DOI": "10.1093/nar/gkm483",
+   "article-title": "A search for structurally similar cellular internal ribosome entry sites",
+   "volume": "35",
+   "author": "Baird",
+   "year": "2007",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib2",
+   "doi-asserted-by": "crossref",
+   "first-page": "756",
+   "DOI": "10.1101/gad.455708",
+   "article-title": "A natural antisense transcript regulates Zeb2/Sip1 gene expression during Snail1-induced epithelial–mesenchymal transition",
+   "volume": "22",
+   "author": "Beltran",
+   "year": "2008",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib3",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1101/cshperspect.a011528",
+   "article-title": "Principles of translational control: an overview",
+   "volume": "4",
+   "author": "Hershey",
+   "year": "2012",
+   "journal-title": "Cold Spring Harbor Perspect. Biol."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib4",
+   "doi-asserted-by": "crossref",
+   "first-page": "e79288",
+   "DOI": "10.1371/journal.pone.0079288",
+   "article-title": "Viral IRES prediction system-a web server for prediction of the IRES secondary structure in silico",
+   "volume": "8",
+   "author": "Hong",
+   "year": "2013",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib5",
+   "article-title": "Long non-coding RNA UCA1 promotes breast tumor growth by suppression of p27 (Kip1)",
+   "volume": "5",
+   "author": "Huang",
+   "year": "2015",
+   "journal-title": "Cell Death Dis."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib6",
+   "doi-asserted-by": "crossref",
+   "first-page": "2843",
+   "DOI": "10.1016/j.bbamcr.2014.08.009",
+   "article-title": "Nucleolin enhances internal ribosomal entry site (IRES)-mediated translation of Sp1 in tumorigenesis",
+   "volume": "1843",
+   "author": "Hung",
+   "year": "2014",
+   "journal-title": "Biochim. Biophys. Acta"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib7",
+   "doi-asserted-by": "crossref",
+   "first-page": "23274",
+   "DOI": "10.1074/jbc.M801185200",
+   "article-title": "Heterogeneous nuclear ribonucleoprotein A1 regulates cyclin D1 and c-myc internal ribosome entry site function through Akt signaling",
+   "volume": "283",
+   "author": "Jo",
+   "year": "2008",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib8",
+   "doi-asserted-by": "crossref",
+   "first-page": "27436",
+   "DOI": "10.1038/srep27436",
+   "article-title": "IRESPred: web server for prediction of cellular and viral internal ribosome entry site (IRES)",
+   "volume": "6",
+   "author": "Kolekar",
+   "year": "2016",
+   "journal-title": "Sci. Rep."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib9",
+   "doi-asserted-by": "crossref",
+   "first-page": "229",
+   "DOI": "10.4161/cc.10.2.14472",
+   "article-title": "Cellular IRES-mediated translation: the war of ITAFs in pathophysiological states",
+   "volume": "10",
+   "author": "Komar",
+   "year": "2011",
+   "journal-title": "Cell Cycle"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib10",
+   "doi-asserted-by": "crossref",
+   "first-page": "22",
+   "DOI": "10.1016/j.molcel.2017.02.017",
+   "article-title": "Circ-ZNF609 is a circular RNA that can be translated and functions in myogenesis",
+   "volume": "66",
+   "author": "Legnini",
+   "year": "2017",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib11",
+   "doi-asserted-by": "crossref",
+   "first-page": "320",
+   "DOI": "10.1038/334320a0",
+   "article-title": "Internal initiation of translation of eukaryotic mRNA directed by a sequence derived from poliovirus RNA",
+   "volume": "334",
+   "author": "Pelletier",
+   "year": "1988",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib12",
+   "doi-asserted-by": "crossref",
+   "first-page": "131",
+   "DOI": "10.1002/wrna.1202",
+   "article-title": "IRES mediated translational regulation of p53 isoforms",
+   "volume": "5",
+   "author": "Sharathchandra",
+   "year": "2014",
+   "journal-title": "Wiley Interdiscip. Rev. RNA"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib13",
+   "doi-asserted-by": "crossref",
+   "first-page": "585",
+   "DOI": "10.1038/sj.cdd.4401642",
+   "article-title": "Internal ribosome entry segment-mediated translation during apoptosis: the role of IRES-trans-acting factors",
+   "volume": "12",
+   "author": "Spriggs",
+   "year": "2005",
+   "journal-title": "Cell Death Differ."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib14",
+   "doi-asserted-by": "crossref",
+   "first-page": "1431",
+   "DOI": "10.1007/s00018-016-2409-5",
+   "article-title": "A researcher's guide to the galaxy of IRESs",
+   "volume": "74",
+   "author": "Terenin",
+   "year": "2017",
+   "journal-title": "Cell. Mol. Life Sci."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib15",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1126/science.aad4939",
+   "article-title": "Systematic discovery of cap-independent translation sequences in human and viral genomes",
+   "volume": "351",
+   "author": "Weingarten-Gabbay",
+   "year": "2016",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib16",
+   "doi-asserted-by": "crossref",
+   "first-page": "160",
+   "DOI": "10.1186/1471-2105-10-160",
+   "article-title": "IRSS: a web-based tool for automatic layout and analysis of IRES secondary structure prediction and searching system in silico",
+   "volume": "10",
+   "author": "Wu",
+   "year": "2009",
+   "journal-title": "BMC Bioinf."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib17",
+   "doi-asserted-by": "crossref",
+   "first-page": "e4136",
+   "DOI": "10.1371/journal.pone.0004136",
+   "article-title": "Strong eukaryotic IRESs have weak secondary structure",
+   "volume": "4",
+   "author": "Xia",
+   "year": "2009",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib18",
+   "doi-asserted-by": "crossref",
+   "first-page": "626",
+   "DOI": "10.1038/cr.2017.31",
+   "article-title": "Extensive translation of circular RNAs driven by N6-methyladenosine",
+   "volume": "27",
+   "author": "Yang",
+   "year": "2017",
+   "journal-title": "Cell Res."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib19",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1093/jnci/djx166",
+   "article-title": "Novel role of FBXW7 circular RNA in repressing glioma tumorigenesis",
+   "volume": "110",
+   "author": "Yang",
+   "year": "2018",
+   "journal-title": "J. Natl. Cancer Inst."
+  },
+  {
+   "key": "10.1016/j.jgg.2018.07.006_bib20",
+   "doi-asserted-by": "crossref",
+   "first-page": "1805",
+   "DOI": "10.1038/s41388-017-0019-9",
+   "article-title": "A novel protein encoded by the circular form of the SHPRH gene suppresses glioma tumorigenesis",
+   "volume": "37",
+   "author": "Zhang",
+   "year": "2018",
+   "journal-title": "Oncogene"
+  }
+ ],
+ "container-title": [
+  "Journal of Genetics and Genomics"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S1673852718301279?httpAccept=text/xml",
+   "content-type": "text/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S1673852718301279?httpAccept=text/plain",
+   "content-type": "text/plain",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    10,
+    28
+   ]
+  ],
+  "date-time": "2025-10-28T11:30:31Z",
+  "timestamp": 1761651031000
+ },
+ "score": 106.920845,
+ "resource": {
+  "primary": {
+   "URL": "https://linkinghub.elsevier.com/retrieve/pii/S1673852718301279"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2018,
+    7
+   ]
+  ]
+ },
+ "references-count": 20,
+ "journal-issue": {
+  "issue": "7",
+  "published-print": {
+   "date-parts": [
+    [
+     2018,
+     7
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S1673852718301279"
+ ],
+ "URL": "https://doi.org/10.1016/j.jgg.2018.07.006",
+ "ISSN": [
+  "1673-8527"
+ ],
+ "issn-type": [
+  {
+   "value": "1673-8527",
+   "type": "print"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2018,
+    7
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "Elsevier",
+   "name": "publisher",
+   "label": "This article is maintained by"
+  },
+  {
+   "value": "IRESfinder: Identifying RNA internal ribosome entry site in eukaryotic cell using framed k-mer features",
+   "name": "articletitle",
+   "label": "Article Title"
+  },
+  {
+   "value": "Journal of Genetics and Genomics",
+   "name": "journaltitle",
+   "label": "Journal Title"
+  },
+  {
+   "value": "https://doi.org/10.1016/j.jgg.2018.07.006",
+   "name": "articlelink",
+   "label": "CrossRef DOI link to publisher maintained version"
+  },
+  {
+   "value": "simple-article",
+   "name": "content_type",
+   "label": "Content Type"
+  },
+  {
+   "value": "© 2018 Institute of Genetics and Developmental Biology, Chinese Academy of Sciences, and Genetics Society of China. Published by Elsevier Limited and Science Press. All rights reserved.",
+   "name": "copyright",
+   "label": "Copyright"
+  }
+ ]
+}

@@ -1,0 +1,2197 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T12:45:22Z",
+  "timestamp": 1791463522228,
+  "version": "4.3.4"
+ },
+ "reference-count": 183,
+ "publisher": "Elsevier BV",
+ "issue": "4",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2018,
+      4,
+      1
+     ]
+    ],
+    "date-time": "2018-04-01T00:00:00Z",
+    "timestamp": 1522540800000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2018,
+      4,
+      1
+     ]
+    ],
+    "date-time": "2018-04-01T00:00:00Z",
+    "timestamp": 1522540800000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/legal/tdmrep-license"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2019,
+      4,
+      3
+     ]
+    ],
+    "date-time": "2019-04-03T00:00:00Z",
+    "timestamp": 1554249600000
+   },
+   "content-version": "vor",
+   "delay-in-days": 367,
+   "URL": "http://www.elsevier.com/open-access/userlicense/1.0/"
+  }
+ ],
+ "funder": [
+  {
+   "name": "Ionis Pharmaceuticals, Inc"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "cell.com",
+   "elsevier.com",
+   "sciencedirect.com"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Cell Metabolism"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2018,
+    4
+   ]
+  ]
+ },
+ "DOI": "10.1016/j.cmet.2018.03.004",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2018,
+    4,
+    3
+   ]
+  ],
+  "date-time": "2018-04-03T11:39:21Z",
+  "timestamp": 1522755561000
+ },
+ "page": "714-739",
+ "update-policy": "https://doi.org/10.1016/elsevier_cm_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 805,
+ "title": [
+  "RNA-Targeted Therapeutics"
+ ],
+ "prefix": "10.1016",
+ "volume": "27",
+ "author": [
+  {
+   "given": "Stanley T.",
+   "family": "Crooke",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Joseph L.",
+   "family": "Witztum",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "C. Frank",
+   "family": "Bennett",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Brenda F.",
+   "family": "Baker",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "78",
+ "reference": [
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib1",
+   "doi-asserted-by": "crossref",
+   "first-page": "148",
+   "DOI": "10.1080/13506129.2016.1191458",
+   "article-title": "Suppressing transthyretin production in mice, monkeys and humans using 2nd-Generation antisense oligonucleotides",
+   "volume": "23",
+   "author": "Ackermann",
+   "year": "2016",
+   "journal-title": "Amyloid"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib2",
+   "doi-asserted-by": "crossref",
+   "first-page": "675",
+   "DOI": "10.1212/WNL.0000000000001870",
+   "article-title": "Rapid progression of familial amyloidotic polyneuropathy: a multinational natural history study",
+   "volume": "85",
+   "author": "Adams",
+   "year": "2015",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib3",
+   "series-title": "Methods and Compositions for Treating a SerpinC1-Associated Disorder. WO 2015/175510",
+   "author": "Akinc",
+   "year": "2015"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib4",
+   "doi-asserted-by": "crossref",
+   "first-page": "3062",
+   "DOI": "10.1200/jco.2012.30.15_suppl.3062",
+   "article-title": "Open-label extension study of the RNAi therapeutic ALN-VSP02 in cancer patients responding to therapy",
+   "volume": "30",
+   "author": "Alsina",
+   "year": "2012",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib5",
+   "doi-asserted-by": "crossref",
+   "first-page": "630",
+   "DOI": "10.1042/bst0240630",
+   "article-title": "Second-generation antisense oligonucleotides: structure-activity relationships and the design of improved signal-transduction inhibitors",
+   "volume": "24",
+   "author": "Altmann",
+   "year": "1996",
+   "journal-title": "Biochem. Soc. Trans."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib6",
+   "first-page": "4575",
+   "article-title": "A phase I open label, dose escalation trial of QPI-1007 delivered by a single intravitreal (IVT) injection to subjects with low visual acuity and acute non-arteritic anterior ischemic optic neuropathy (NAION)",
+   "volume": "54",
+   "author": "Antoszyk",
+   "year": "2013",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib7",
+   "doi-asserted-by": "crossref",
+   "first-page": "6447",
+   "DOI": "10.1167/iovs.16-20303",
+   "article-title": "Safety and efficacy clinical trials for syl1001, a novel short interfering rna for the treatment of dry eye disease",
+   "volume": "57",
+   "author": "Benitez-Del-Castillo",
+   "year": "2016",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib8",
+   "doi-asserted-by": "crossref",
+   "first-page": "259",
+   "DOI": "10.1146/annurev.pharmtox.010909.105654",
+   "article-title": "RNA targeting therapeutics: molecular mechanisms of antisense oligonucleotides as a therapeutic platform",
+   "volume": "50",
+   "author": "Bennett",
+   "year": "2010",
+   "journal-title": "Annu. Rev. Pharmacol. Toxicol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib9",
+   "doi-asserted-by": "crossref",
+   "first-page": "81",
+   "DOI": "10.1146/annurev-pharmtox-010716-104846",
+   "article-title": "Pharmacology of antisense drugs",
+   "volume": "57",
+   "author": "Bennett",
+   "year": "2017",
+   "journal-title": "Annu. Rev. Pharmacol. Toxicol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib10",
+   "series-title": "Methods of Treating Transthyretin (ttr) Mediated Amyloidosis. WO/2016/033326",
+   "author": "Bettencourt",
+   "year": "2016"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib11",
+   "first-page": "S282",
+   "article-title": "ISIS-GCCRRX, a novel glucocorticoid (GC) receptor antisense drug reduces cholesterol and triglycerides and attenuates dexamethasone induced hepatic insulin resistance without systemic GC antagonism in normal subjects",
+   "volume": "56",
+   "author": "Bhanot",
+   "year": "2013",
+   "journal-title": "Diabetologia"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib12",
+   "doi-asserted-by": "crossref",
+   "first-page": "2579",
+   "DOI": "10.1038/bjc.2013.619",
+   "article-title": "First-in-human Phase I study of EZN-4176, a locked nucleic acid antisense oligonucleotide to exon 4 of the androgen receptor mRNA in patients with castration-resistant prostate cancer",
+   "volume": "109",
+   "author": "Bianchini",
+   "year": "2013",
+   "journal-title": "Br. J. Cancer"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib13",
+   "doi-asserted-by": "crossref",
+   "first-page": "232",
+   "DOI": "10.1056/NEJMoa1405760",
+   "article-title": "Factor XI antisense oligonucleotide for prevention of venous thrombosis",
+   "volume": "372",
+   "author": "Büller",
+   "year": "2015",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib14",
+   "doi-asserted-by": "crossref",
+   "first-page": "109",
+   "DOI": "10.3109/13506129.2016.1160882",
+   "article-title": "Preclinical evaluation of RNAi as a treatment for transthyretin-mediated amyloidosis",
+   "volume": "23",
+   "author": "Butler",
+   "year": "2016",
+   "journal-title": "Amyloid"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib15",
+   "doi-asserted-by": "crossref",
+   "first-page": "77",
+   "DOI": "10.1016/j.cell.2014.03.008",
+   "article-title": "The noncoding RNA revolution-trashing old rules to forge new ones",
+   "volume": "157",
+   "author": "Cech",
+   "year": "2014",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib16",
+   "doi-asserted-by": "crossref",
+   "first-page": "3025",
+   "DOI": "10.1200/jco.2011.29.15_suppl.3025",
+   "article-title": "Phase I dose-escalation study of ALN-VSP02, a novel RNAi therapeutic for solid tumors with liver involvement",
+   "volume": "29",
+   "author": "Cervantes",
+   "year": "2011",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib17",
+   "series-title": "Toxicology Data Network",
+   "article-title": "Patisiran",
+   "year": "2017"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib18",
+   "series-title": "Toxicology Data Network",
+   "article-title": "Revusiran",
+   "year": "2017"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib19",
+   "doi-asserted-by": "crossref",
+   "first-page": "1116",
+   "DOI": "10.1093/annonc/mdw068",
+   "article-title": "A phase I dose-escalation study of apatorsen (OGX-427), an antisense inhibitor targeting heat shock protein 27 (Hsp27), in patients with castration-resistant prostate cancer and other advanced cancers",
+   "volume": "27",
+   "author": "Chi",
+   "year": "2016",
+   "journal-title": "Ann. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib20",
+   "doi-asserted-by": "crossref",
+   "first-page": "890",
+   "DOI": "10.1212/WNL.0000000000002445",
+   "article-title": "Results from a phase 1 study of nusinersen (ISIS-SMN(Rx)) in children with spinal muscular atrophy",
+   "volume": "86",
+   "author": "Chiriboga",
+   "year": "2016",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib21",
+   "doi-asserted-by": "crossref",
+   "first-page": "S145",
+   "DOI": "10.1016/S0959-8049(16)33031-3",
+   "article-title": "A phase I dose escalation, safety and pharmacokinetic (PK) study of AZD5312 (IONIS-ARRx), a first-in-class Generation 2.5 antisense oligonucleotide targeting the androgen receptor (AR)",
+   "volume": "69",
+   "author": "Chowdhury",
+   "year": "2016",
+   "journal-title": "Eur. J. Cancer"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib22",
+   "doi-asserted-by": "crossref",
+   "first-page": "595",
+   "DOI": "10.1016/S0140-6736(11)60756-3",
+   "article-title": "Exon skipping and dystrophin restoration in patients with Duchenne muscular dystrophy after systemic phosphorodiamidate morpholino oligomer treatment: an open-label, phase 2, dose-escalation study",
+   "volume": "378",
+   "author": "Cirak",
+   "year": "2011",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib23",
+   "doi-asserted-by": "crossref",
+   "first-page": "819",
+   "DOI": "10.1056/NEJMoa1208760",
+   "article-title": "Safety and efficacy of RNAi therapy for transthyretin amyloidosis",
+   "volume": "369",
+   "author": "Coelho",
+   "year": "2013",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib24",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "author": "Crooke",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib25",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "3",
+   "article-title": "Mechanisms of antisense drug action, an introduction",
+   "author": "Crooke",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib26",
+   "doi-asserted-by": "crossref",
+   "first-page": "1771",
+   "DOI": "10.1038/mt.2016.136",
+   "article-title": "Integrated safety assessment of 2′-O-Methoxyethyl Chimeric Antisense Oligonucleotides in nonhuman primates and healthy human volunteers",
+   "volume": "24",
+   "author": "Crooke",
+   "year": "2016",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib27",
+   "doi-asserted-by": "crossref",
+   "first-page": "121",
+   "DOI": "10.1089/nat.2016.0650",
+   "article-title": "The Effects of 2′-O-methoxyethyl containing antisense oligonucleotides on platelets in human clinical trials",
+   "volume": "27",
+   "author": "Crooke",
+   "year": "2017",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib28",
+   "doi-asserted-by": "crossref",
+   "first-page": "230",
+   "DOI": "10.1038/nbt.3779",
+   "article-title": "Cellular uptake and trafficking of antisense oligonucleotides",
+   "volume": "35",
+   "author": "Crooke",
+   "year": "2017",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib29",
+   "doi-asserted-by": "crossref",
+   "first-page": "10",
+   "DOI": "10.1089/nat.2017.0693",
+   "article-title": "The effects of 2′-O-Methoxyethyl oligonucleotides on renal function in humans",
+   "volume": "28",
+   "author": "Crooke",
+   "year": "2018",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib30",
+   "doi-asserted-by": "crossref",
+   "first-page": "1467",
+   "DOI": "10.1016/j.ymthe.2017.03.013",
+   "article-title": "Lipid nanoparticle systems for enabling gene therapies",
+   "volume": "25",
+   "author": "Cullis",
+   "year": "2017",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib31",
+   "doi-asserted-by": "crossref",
+   "first-page": "126",
+   "DOI": "10.1016/j.jconrel.2015.02.022",
+   "article-title": "Asialoglycoprotein receptor mediated hepatocyte targeting - strategies and applications",
+   "volume": "203",
+   "author": "D’Souza",
+   "year": "2015",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib32",
+   "series-title": "Neuromuscular Disorders of Infancy, Childhood, and Adolescence: A Clinician’s Approach",
+   "first-page": "117",
+   "article-title": "Spinal muscular atrophies",
+   "author": "Darras",
+   "year": "2014"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib33",
+   "doi-asserted-by": "crossref",
+   "first-page": "208",
+   "DOI": "10.1016/j.tig.2017.01.003",
+   "article-title": "Biogenesis and function of ago-associated RNAs",
+   "volume": "33",
+   "author": "Daugaard",
+   "year": "2017",
+   "journal-title": "Trends Genet."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib34",
+   "doi-asserted-by": "crossref",
+   "first-page": "754",
+   "DOI": "10.1016/j.nmd.2016.10.002",
+   "article-title": "Developmental milestones in type I spinal muscular atrophy",
+   "volume": "26",
+   "author": "De Sanctis",
+   "year": "2016",
+   "journal-title": "Neuromuscul. Disord."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib35",
+   "doi-asserted-by": "crossref",
+   "unstructured": "De Vivo, D.C., Bertini, E., Hwu, W.-H., Foster, R., Bhan, I., Gheuens, S., Farwell, W., and Reyna, S.P. (2018). Nusinersen in infants who initiate treatment in a presymptomatic stage of SMA: interim efficacy and safety results from the phase 2 NURTURE Study. In MDA Clinical Conference (March 2014, Arlington, VA: The Muscular Dystrophy Association).",
+   "DOI": "10.1212/WNL.92.15_supplement.S25.001"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib36",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1212/WNL.88.16_supplement.S46.003",
+   "article-title": "Interim efficacy and safety results from the phase 2 NURTURE study evaluating nusinersen in presymptomatic infants with spinal muscular atrophy",
+   "volume": "88",
+   "author": "De Vivo",
+   "year": "2017",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib37",
+   "doi-asserted-by": "crossref",
+   "first-page": "836",
+   "DOI": "10.1016/j.ekir.2017.03.016",
+   "article-title": "Safety and tolerability study of an intravenously administered small interfering ribonucleic acid (siRNA) post on-pump cardiothoracic surgery in patients at risk of acute kidney injury",
+   "volume": "2",
+   "author": "Demirjian",
+   "year": "2017",
+   "journal-title": "Kidney Int Rep"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib38",
+   "doi-asserted-by": "crossref",
+   "first-page": "2547",
+   "DOI": "10.1200/JCO.2016.34.15_suppl.2547",
+   "article-title": "A phase I/II study of TKM-080301, a PLK1-targeted RNAi in patients with adrenocortical cancer (ACC)",
+   "volume": "34",
+   "author": "Demuere",
+   "year": "2016",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib39",
+   "doi-asserted-by": "crossref",
+   "first-page": "1408",
+   "DOI": "10.2337/dc16-0126",
+   "article-title": "Antisense-mediated lowering of plasma apolipoprotein C-III by volanesorsen improves dyslipidemia and insulin sensitivity in type 2 diabetes",
+   "volume": "39",
+   "author": "Digenio",
+   "year": "2016",
+   "journal-title": "Diabetes Care"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib40",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.2337/dc17-2132",
+   "article-title": "Antisense inhibition of protein tyrosine phosphatase 1B With IONIS-PTP-1BRx improves insulin sensitivity and reduces weight in overweight patients with type 2 diabetes",
+   "author": "Digenio",
+   "year": "2018",
+   "journal-title": "Diabetes Care"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib41",
+   "doi-asserted-by": "crossref",
+   "first-page": "222",
+   "DOI": "10.1038/nbt.3802",
+   "article-title": "Overcoming cellular barriers for RNA therapeutics",
+   "volume": "35",
+   "author": "Dowdy",
+   "year": "2017",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib42",
+   "doi-asserted-by": "crossref",
+   "first-page": "1011",
+   "DOI": "10.1016/j.jacl.2016.04.013",
+   "article-title": "Long-term mipomersen treatment is associated with a reduction in cardiovascular events in patients with familial hypercholesterolemia",
+   "volume": "10",
+   "author": "Duell",
+   "year": "2016",
+   "journal-title": "J. Clin. Lipidol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib43",
+   "doi-asserted-by": "crossref",
+   "first-page": "117",
+   "DOI": "10.1089/oli.1.2000.10.117",
+   "article-title": "Phosphorothioate oligodeoxynucleotides: what is their origin and what is unique about them?",
+   "volume": "10",
+   "author": "Eckstein",
+   "year": "2000",
+   "journal-title": "Antisense Nucleic Acid Drug Dev."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib44",
+   "doi-asserted-by": "crossref",
+   "first-page": "3017",
+   "DOI": "10.1016/S0140-6736(16)31408-8",
+   "article-title": "Treatment of infantile-onset spinal muscular atrophy with nusinersen: a phase 2, open-label, dose-escalation study",
+   "volume": "388",
+   "author": "Finkel",
+   "year": "2016",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib45",
+   "doi-asserted-by": "crossref",
+   "first-page": "1723",
+   "DOI": "10.1056/NEJMoa1702752",
+   "article-title": "Nusinersen versus sham control in infantile-onset spinal muscular atrophy",
+   "volume": "377",
+   "author": "Finkel",
+   "year": "2017",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib46",
+   "doi-asserted-by": "crossref",
+   "first-page": "806",
+   "DOI": "10.1038/35888",
+   "article-title": "Potent and specific genetic interference by double-stranded RNA in Caenorhabditis elegans",
+   "volume": "391",
+   "author": "Fire",
+   "year": "1998",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib47",
+   "doi-asserted-by": "crossref",
+   "first-page": "60",
+   "DOI": "10.1016/S0140-6736(13)61914-5",
+   "article-title": "Effect of an RNA interference drug on the synthesis of proprotein convertase subtilisin/kexin type 9 (PCSK9) and the concentration of serum LDL cholesterol in healthy volunteers: a randomised, single-blind, placebo-controlled, phase 1 trial",
+   "volume": "383",
+   "author": "Fitzgerald",
+   "year": "2014",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib48",
+   "doi-asserted-by": "crossref",
+   "first-page": "41",
+   "DOI": "10.1056/NEJMoa1609243",
+   "article-title": "A highly durable RNAi therapeutic inhibitor of PCSK9",
+   "volume": "376",
+   "author": "Fitzgerald",
+   "year": "2017",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib49",
+   "doi-asserted-by": "crossref",
+   "first-page": "S265",
+   "DOI": "10.1016/S0168-8278(17)30843-7",
+   "article-title": "A phase 1 study to evaluate safety and tolerability of escalating single doses of the hepatitis B virus RNA interference drug ARC-521 in a healthy volunteer population",
+   "volume": "66",
+   "author": "Gane",
+   "year": "2017",
+   "journal-title": "J. Hepatol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib50",
+   "doi-asserted-by": "crossref",
+   "first-page": "2200",
+   "DOI": "10.1056/NEJMoa1400284",
+   "article-title": "Targeting APOC3 in the familial chylomicronemia syndrome",
+   "volume": "371",
+   "author": "Gaudet",
+   "year": "2014",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib51",
+   "doi-asserted-by": "crossref",
+   "first-page": "438",
+   "DOI": "10.1056/NEJMoa1400283",
+   "article-title": "Antisense inhibition of apolipoprotein C-III in patients with hypertriglyceridemia",
+   "volume": "373",
+   "author": "Gaudet",
+   "year": "2015",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib52",
+   "doi-asserted-by": "crossref",
+   "first-page": "814",
+   "DOI": "10.1016/j.jacl.2017.04.071",
+   "article-title": "The APPROACH study: a randomized, double-blind, placebo-controlled, phase 3 study of volanesorsen administered subcutaneously to patients with familial chylomicronemia syndrome (FCS)",
+   "volume": "11",
+   "author": "Gaudet",
+   "year": "2017",
+   "journal-title": "J. Clin. Lipidol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib53",
+   "doi-asserted-by": "crossref",
+   "first-page": "381",
+   "DOI": "10.1517/17425250902877680",
+   "article-title": "Antisense oligonucleotide pharmacokinetics and metabolism",
+   "volume": "5",
+   "author": "Geary",
+   "year": "2009",
+   "journal-title": "Expert Opin. Drug Metab. Toxicol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib54",
+   "doi-asserted-by": "crossref",
+   "first-page": "890",
+   "DOI": "10.1016/S0022-3565(24)38831-7",
+   "article-title": "Pharmacokinetic properties of 2′-O-(2-methoxyethyl)-modified oligonucleotide analogs in rats",
+   "volume": "296",
+   "author": "Geary",
+   "year": "2001",
+   "journal-title": "J. Pharmacol. Exp. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib55",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "305",
+   "article-title": "Pharmacokinetic/pharmacodynamic properties of phosphorothioate 2′-O-(2-methoxyethyl)-modified antisense oligonucleotides in animals and man",
+   "author": "Geary",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib56",
+   "doi-asserted-by": "crossref",
+   "first-page": "284",
+   "DOI": "10.1016/j.bcp.2009.04.013",
+   "article-title": "Effect of dose and plasma concentration on liver uptake and pharmacologic activity of a 2′-methoxyethyl modified chimeric antisense oligonucleotide targeting PTEN",
+   "volume": "78",
+   "author": "Geary",
+   "year": "2009",
+   "journal-title": "Biochem. Pharmacol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib57",
+   "doi-asserted-by": "crossref",
+   "first-page": "46",
+   "DOI": "10.1016/j.addr.2015.01.008",
+   "article-title": "Pharmacokinetics, biodistribution and cell uptake of antisense oligonucleotides",
+   "volume": "87",
+   "author": "Geary",
+   "year": "2015",
+   "journal-title": "Adv. Drug Deliv. Rev."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib58",
+   "doi-asserted-by": "crossref",
+   "first-page": "A971",
+   "DOI": "10.1016/S0735-1097(15)60971-8",
+   "article-title": "A phase 2, multi-center, open-label trial to evaluate the safety, pharmacokinetics, pharmacodynamics and exploratory clinical activity of ALN-TTRSC, an RNAi therapeutic for the treatment of patients with transthyretin cardiac amyloidosis",
+   "volume": "65",
+   "author": "Gillmore",
+   "year": "2015",
+   "journal-title": "J. Am. Coll. Cardiol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib59",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gillmore, J.D., Falk, R.H., Maurer, M.S., Hanna, M., Fine, N., Powell, C., Karsten, V., Vest, J., Gollob, J., and Hawkins, P.N. (2016). Phase 2 open-label extension study of revusiran, an investigational RNAi therapeutic for the treatment of patients with transthyretin amyloidosis with cardiomyopathy: Updated interim results. In International Symposium of Amyloidosis 2016 Abstract Book, p. PA84.",
+   "DOI": "10.1186/1750-1172-10-S1-O21"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib60",
+   "doi-asserted-by": "crossref",
+   "first-page": "1499",
+   "DOI": "10.1177/0883073811420294",
+   "article-title": "Validation of the expanded hammersmith functional motor scale in spinal muscular atrophy type II and III",
+   "volume": "26",
+   "author": "Glanzman",
+   "year": "2011",
+   "journal-title": "J. Child Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib61",
+   "doi-asserted-by": "crossref",
+   "first-page": "e0161955",
+   "DOI": "10.1371/journal.pone.0161955",
+   "article-title": "Long-term efficacy, safety, and pharmacokinetics of drisapersen in Duchenne muscular dystrophy: results from an open-label extension study",
+   "volume": "11",
+   "author": "Goemans",
+   "year": "2016",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib62",
+   "doi-asserted-by": "crossref",
+   "first-page": "24560",
+   "DOI": "10.18632/oncotarget.4183",
+   "article-title": "RNAi therapy targeting KRAS in combination with chemotherapy for locally advanced pancreatic cancer patients",
+   "volume": "6",
+   "author": "Golan",
+   "year": "2015",
+   "journal-title": "Oncotarget"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib63",
+   "first-page": "564",
+   "article-title": "Phase 2 of bamosiran (SYL040012), a novel RNAi based compound for the treatment of increased intraocular pressure associated to glaucoma",
+   "volume": "55",
+   "author": "Gonzalez",
+   "year": "2014",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib64",
+   "doi-asserted-by": "crossref",
+   "first-page": "222",
+   "DOI": "10.1056/NEJMoa1701329",
+   "article-title": "Cardiovascular and metabolic effects of ANGPTL3 antisense oligonucleotides",
+   "volume": "377",
+   "author": "Graham",
+   "year": "2017",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib65",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "585",
+   "article-title": "The development of antisense oligonucleotides as antivirals",
+   "author": "Grillone",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib66",
+   "doi-asserted-by": "crossref",
+   "first-page": "950",
+   "DOI": "10.1126/science.286.5441.950",
+   "article-title": "A species of small antisense RNA in posttranscriptional gene silencing in plants",
+   "volume": "286",
+   "author": "Hamilton",
+   "year": "1999",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib67",
+   "doi-asserted-by": "crossref",
+   "first-page": "7581",
+   "DOI": "10.1093/nar/gkx507",
+   "article-title": "5′-Vinylphosphonate improves tissue accumulation and efficacy of conjugated siRNAs in vivo",
+   "volume": "45",
+   "author": "Haraszti",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib68",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "217",
+   "article-title": "Routes and formulations for delivery of antisense oligonucleotides",
+   "author": "Hardee",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib69",
+   "first-page": "409",
+   "article-title": "Toxicological and pharmacokinetic properties of chemically modified antisense oligonucleotide inhibitors of PKC-alpha and C-raf kinase",
+   "volume": "12",
+   "author": "Henry",
+   "year": "1997",
+   "journal-title": "Anticancer Drug Des."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib70",
+   "doi-asserted-by": "crossref",
+   "first-page": "95",
+   "DOI": "10.1177/019262339902700117",
+   "article-title": "Correlation of toxicity and pharmacokinetic properties of a phosphorothioate oligonucleotide designed to inhibit ICAM-1",
+   "volume": "27",
+   "author": "Henry",
+   "year": "1999",
+   "journal-title": "Toxicol. Pathol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib71",
+   "doi-asserted-by": "crossref",
+   "first-page": "2413",
+   "DOI": "10.1182/blood.V126.23.2413.2413",
+   "article-title": "A subcutaneously administered investigational RNAi therapeutic (ALN-CC5) targeting complement C5 for treatment of PNH and complement-mediated diseases: interim Phase 1 study results",
+   "volume": "126",
+   "author": "Hill",
+   "year": "2015",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib72",
+   "doi-asserted-by": "crossref",
+   "first-page": "3891",
+   "DOI": "10.1182/blood.V128.22.3891.3891",
+   "article-title": "A subcutaneously administered investigational RNAi Therapeutic (ALN-CC5) targeting complement C5 for treatment of PNH and complement-mediated diseases: preliminary phase 1/2 study results in patients with PNH",
+   "volume": "128",
+   "author": "Hill",
+   "year": "2016",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib73",
+   "doi-asserted-by": "crossref",
+   "first-page": "314ra185",
+   "DOI": "10.1126/scitranslmed.aac5272",
+   "article-title": "AZD9150, a next-generation antisense oligonucleotide inhibitor of STAT3 with early evidence of clinical activity in lymphoma and lung cancer",
+   "volume": "7",
+   "author": "Hong",
+   "year": "2015",
+   "journal-title": "Sci. Transl. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib74",
+   "doi-asserted-by": "crossref",
+   "first-page": "569",
+   "DOI": "10.1517/14740338.2013.793670",
+   "article-title": "Efficacy and safety of mipomersen sodium (Kynamro)",
+   "volume": "12",
+   "author": "Hovingh",
+   "year": "2013",
+   "journal-title": "Expert Opin. Drug Saf."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib75",
+   "first-page": "1763",
+   "article-title": "A phase 1/2 trial of ALN-GO1, an investigational RNAi therapeutic for primary hyperoxaluria type 1 (PH1)",
+   "volume": "31",
+   "author": "Hulton",
+   "year": "2016",
+   "journal-title": "Pediatr. Nephrol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib76",
+   "doi-asserted-by": "crossref",
+   "first-page": "22",
+   "DOI": "10.1038/nrm2321",
+   "article-title": "Argonaute proteins: key players in RNA silencing",
+   "volume": "9",
+   "author": "Hutvagner",
+   "year": "2008",
+   "journal-title": "Nat. Rev. Mol. Cell Biol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib77",
+   "doi-asserted-by": "crossref",
+   "first-page": "1685",
+   "DOI": "10.1056/NEJMoa1209026",
+   "article-title": "Treatment of HCV infection by targeting microRNA",
+   "volume": "368",
+   "author": "Janssen",
+   "year": "2013",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib78",
+   "doi-asserted-by": "crossref",
+   "first-page": "35",
+   "DOI": "10.1016/j.addr.2015.04.005",
+   "article-title": "Cellular uptake and intracellular trafficking of oligonucleotides",
+   "volume": "87",
+   "author": "Juliano",
+   "year": "2015",
+   "journal-title": "Adv. Drug Deliv. Rev."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib79",
+   "doi-asserted-by": "crossref",
+   "first-page": "2357",
+   "DOI": "10.1001/jama.2016.16437",
+   "article-title": "Approving a problematic muscular dystrophy drug: implications for FDA policy",
+   "volume": "316",
+   "author": "Kesselheim",
+   "year": "2016",
+   "journal-title": "JAMA"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib80",
+   "doi-asserted-by": "crossref",
+   "first-page": "4795",
+   "DOI": "10.1093/nar/gkr089",
+   "article-title": "Mechanisms of single-stranded phosphorothioate modified antisense oligonucleotide accumulation in hepatocytes",
+   "volume": "39",
+   "author": "Koller",
+   "year": "2011",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib81",
+   "first-page": "909A",
+   "article-title": "Safety, pharmacokinetics, and biologic activity of ND-L02-s0201, a novel targeted lipid-nanoparticle to deliver HSP47 siRNA for the treatment of patients with advanced liver fibrosis: interim results from clinical phase 1b/2 studies",
+   "volume": "62",
+   "author": "Lawitz",
+   "year": "2015",
+   "journal-title": "Hepatology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib82",
+   "doi-asserted-by": "crossref",
+   "first-page": "442",
+   "DOI": "10.1038/mt.2009.273",
+   "article-title": "First-in-human mutation-targeted siRNA phase Ib trial of an inherited skin disorder",
+   "volume": "18",
+   "author": "Leachman",
+   "year": "2010",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib83",
+   "doi-asserted-by": "crossref",
+   "first-page": "155",
+   "DOI": "10.1016/0092-8674(95)90460-3",
+   "article-title": "Identification and characterization of a spinal muscular atrophy-determining gene",
+   "volume": "80",
+   "author": "Lefebvre",
+   "year": "1995",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib84",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "183",
+   "article-title": "Basic principles of the pharmacokinetics of antisense oligonucleotide drugs",
+   "author": "Levin",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib85",
+   "doi-asserted-by": "crossref",
+   "first-page": "455",
+   "DOI": "10.1016/j.bbagrm.2013.01.011",
+   "article-title": "Transfection of siRNAs can alter miRNA levels and trigger non-specific protein degradation in mammalian cells",
+   "volume": "1829",
+   "author": "Liang",
+   "year": "2013",
+   "journal-title": "Biochim. Biophys. Acta"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib86",
+   "doi-asserted-by": "crossref",
+   "first-page": "875",
+   "DOI": "10.1038/nbt.3589",
+   "article-title": "Translation efficiency of mRNAs is increased by antisense oligonucleotides targeting upstream open reading frames",
+   "volume": "34",
+   "author": "Liang",
+   "year": "2016",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib87",
+   "doi-asserted-by": "crossref",
+   "first-page": "2075",
+   "DOI": "10.1016/j.ymthe.2017.06.002",
+   "article-title": "RNase H1-dependent antisense oligonucleotides are robustly active in directing RNA cleavage in both the cytoplasm and the nucleus",
+   "volume": "25",
+   "author": "Liang",
+   "year": "2017",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib88",
+   "doi-asserted-by": "crossref",
+   "first-page": "9528",
+   "DOI": "10.1093/nar/gkx632",
+   "article-title": "Antisense oligonucleotides targeting translation inhibitory elements in 5′ UTRs can selectively increase protein levels",
+   "volume": "45",
+   "author": "Liang",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib89",
+   "doi-asserted-by": "crossref",
+   "first-page": "AB273",
+   "DOI": "10.1016/j.jaad.2015.02.1092",
+   "article-title": "Update on phase 2 clinical trial results of RXI-109 treatment to reduce the formation of hypertrophic dermal scars",
+   "volume": "72",
+   "author": "Libertine",
+   "year": "2015",
+   "journal-title": "J. Am. Acad. Dermatol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib90",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "47",
+   "article-title": "The RNase H mechanism",
+   "author": "Lima",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib91",
+   "doi-asserted-by": "crossref",
+   "first-page": "883",
+   "DOI": "10.1016/j.cell.2012.08.014",
+   "article-title": "Single-stranded siRNAs activate RNAi in animals",
+   "volume": "150",
+   "author": "Lima",
+   "year": "2012",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib92",
+   "doi-asserted-by": "crossref",
+   "first-page": "e101752",
+   "DOI": "10.1371/journal.pone.0101752",
+   "article-title": "Defining the factors that contribute to on-target specificity of antisense oligonucleotides",
+   "volume": "9",
+   "author": "Lima",
+   "year": "2014",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib93",
+   "doi-asserted-by": "crossref",
+   "first-page": "1780",
+   "DOI": "10.1212/WNL.0000000000000926",
+   "article-title": "CD49d antisense drug ATL1102 reduces disease activity in patients with relapsing-remitting MS",
+   "volume": "83",
+   "author": "Limmroth",
+   "year": "2014",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib94",
+   "doi-asserted-by": "crossref",
+   "first-page": "1437",
+   "DOI": "10.1126/science.1102513",
+   "article-title": "Argonaute2 is the catalytic engine of mammalian RNAi",
+   "volume": "305",
+   "author": "Liu",
+   "year": "2004",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib95",
+   "doi-asserted-by": "crossref",
+   "first-page": "2120",
+   "DOI": "10.1016/S0140-6736(08)60921-6",
+   "article-title": "Spinal muscular atrophy",
+   "volume": "371",
+   "author": "Lunn",
+   "year": "2008",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib96",
+   "doi-asserted-by": "crossref",
+   "first-page": "167",
+   "DOI": "10.1038/nrd.2016.117",
+   "article-title": "Non-coding RNAs as drug targets",
+   "volume": "16",
+   "author": "Matsui",
+   "year": "2017",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib97",
+   "first-page": "1952",
+   "article-title": "Systemic pharmacodynamic efficacy of a complement factor B antisense oligonucleotide in preclinical and phase 1 clinical studies",
+   "volume": "58",
+   "author": "McCaleb",
+   "year": "2017",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib98",
+   "doi-asserted-by": "crossref",
+   "first-page": "447",
+   "DOI": "10.1038/nrg3462",
+   "article-title": "Argonaute proteins: functional insights and emerging roles",
+   "volume": "14",
+   "author": "Meister",
+   "year": "2013",
+   "journal-title": "Nat. Rev. Genet."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib99",
+   "doi-asserted-by": "crossref",
+   "first-page": "185",
+   "DOI": "10.1016/j.molcel.2004.07.007",
+   "article-title": "Human Argonaute2 mediates RNA cleavage targeted by miRNAs and siRNAs",
+   "volume": "15",
+   "author": "Meister",
+   "year": "2004",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib100",
+   "doi-asserted-by": "crossref",
+   "first-page": "164",
+   "DOI": "10.1002/ana.24843",
+   "article-title": "Reply",
+   "volume": "81",
+   "author": "Mendell",
+   "year": "2017",
+   "journal-title": "Ann. Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib101",
+   "doi-asserted-by": "crossref",
+   "first-page": "637",
+   "DOI": "10.1002/ana.23982",
+   "article-title": "Eteplirsen for the treatment of Duchenne muscular dystrophy",
+   "volume": "74",
+   "author": "Mendell",
+   "year": "2013",
+   "journal-title": "Ann. Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib102",
+   "doi-asserted-by": "crossref",
+   "first-page": "257",
+   "DOI": "10.1002/ana.24555",
+   "article-title": "Longitudinal effect of eteplirsen versus historical control on ambulation in Duchenne muscular dystrophy",
+   "volume": "79",
+   "author": "Mendell",
+   "year": "2016",
+   "journal-title": "Ann. Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib103",
+   "doi-asserted-by": "crossref",
+   "first-page": "625",
+   "DOI": "10.1056/NEJMoa1710504",
+   "article-title": "Nusinersen versus sham control in later-onset spinal muscular atrophy",
+   "volume": "378",
+   "author": "Mercuri",
+   "year": "2018",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib104",
+   "doi-asserted-by": "crossref",
+   "first-page": "P3.166",
+   "DOI": "10.1212/WNL.86.16_supplement.P3.166",
+   "article-title": "ISIS-DMPKRx in healthy volunteers: a placebo-controlled, randomized, single ascending-dose phase 1 Study",
+   "volume": "86",
+   "author": "Mignon",
+   "year": "2016",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib105",
+   "doi-asserted-by": "crossref",
+   "first-page": "435",
+   "DOI": "10.1016/S1474-4422(13)70061-9",
+   "article-title": "An antisense oligonucleotide against SOD1 delivered intrathecally for patients with SOD1 familial amyotrophic lateral sclerosis: a phase 1, randomised, first-in-man study",
+   "volume": "12",
+   "author": "Miller",
+   "year": "2013",
+   "journal-title": "Lancet Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib106",
+   "doi-asserted-by": "crossref",
+   "first-page": "281",
+   "DOI": "10.1111/j.1365-2036.2004.01863.x",
+   "article-title": "An enema formulation of alicaforsen, an antisense inhibitor of intercellular adhesion molecule-1, in the treatment of chronic, unremitting pouchitis",
+   "volume": "19",
+   "author": "Miner",
+   "year": "2004",
+   "journal-title": "Aliment. Pharmacol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib107",
+   "doi-asserted-by": "crossref",
+   "first-page": "1104",
+   "DOI": "10.1056/NEJMoa1407250",
+   "article-title": "Mongersen, an oral SMAD7 antisense oligonucleotide, and Crohn’s disease",
+   "volume": "372",
+   "author": "Monteleone",
+   "year": "2015",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib108",
+   "doi-asserted-by": "crossref",
+   "first-page": "226",
+   "DOI": "10.1038/mt.2013.217",
+   "article-title": "Phase I clinical trial of SYL040012, a small interfering RNA targeting β-adrenergic receptor 2, for lowering intraocular pressure",
+   "volume": "22",
+   "author": "Moreno-Montañés",
+   "year": "2014",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "issue": "Suppl1A",
+   "key": "10.1016/j.cmet.2018.03.004_bib109",
+   "first-page": "LB28",
+   "article-title": "ISIS-GCGRRx, an antisense glucagon receptor antagonist, caused rapid, robust, and sustained improvements in glycemic control without changes in BW, BP, lipids, or hypoglycemia in T2DM patients on stable metformin therapy",
+   "volume": "63",
+   "author": "Morgan",
+   "year": "2014",
+   "journal-title": "Diabetes"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib110",
+   "doi-asserted-by": "crossref",
+   "first-page": "e139",
+   "DOI": "10.1038/mtna.2013.66",
+   "article-title": "Influence of polyethylene glycol lipid desorption rates on pharmacokinetics and pharmacodynamics of siRNA lipid nanoparticles",
+   "volume": "2",
+   "author": "Mui",
+   "year": "2013",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib111",
+   "doi-asserted-by": "crossref",
+   "first-page": "16958",
+   "DOI": "10.1021/ja505986a",
+   "article-title": "Multivalent N-acetylgalactosamine-conjugated siRNA localizes in hepatocytes and elicits robust RNAi-mediated gene silencing",
+   "volume": "136",
+   "author": "Nair",
+   "year": "2014",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib112",
+   "doi-asserted-by": "crossref",
+   "first-page": "10969",
+   "DOI": "10.1093/nar/gkx818",
+   "article-title": "Impact of enhanced metabolic stability on pharmacokinetics and pharmacodynamics of GalNAc-siRNA conjugates",
+   "volume": "45",
+   "author": "Nair",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib113",
+   "doi-asserted-by": "crossref",
+   "first-page": "7666",
+   "DOI": "10.1167/iovs.12-9961",
+   "article-title": "Dose-ranging evaluation of intravitreal siRNA PF-04523655 for diabetic macular edema (the DEGAS study)",
+   "volume": "53",
+   "author": "Nguyen",
+   "year": "2012",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib114",
+   "doi-asserted-by": "crossref",
+   "first-page": "693",
+   "DOI": "10.1016/j.nmd.2007.05.009",
+   "article-title": "An expanded version of the Hammersmith Functional Motor Scale for SMA II and III patients",
+   "volume": "17",
+   "author": "O’Hagen",
+   "year": "2007",
+   "journal-title": "Neuromuscul. Disord."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib115",
+   "doi-asserted-by": "crossref",
+   "first-page": "8735",
+   "DOI": "10.1016/S0040-4039(97)10322-7",
+   "article-title": "Synthesis of 2′-O,4′-C-methyleneuridine and -cytidine. Novel bicyclic nucleosides having a fixed C3′-endo sugar puckering",
+   "volume": "38",
+   "author": "Obika",
+   "year": "1997",
+   "journal-title": "Tetrahedron Lett."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib116",
+   "doi-asserted-by": "crossref",
+   "first-page": "1397",
+   "DOI": "10.1182/blood.V128.22.1397.1397",
+   "article-title": "Fitusiran, an investigational RNAi therapeutic targeting antithrombin for the treatment of hemophilia: updated results from phase 1 and phase 2 extension studies in patients with inhibitors",
+   "volume": "128",
+   "author": "Pasi",
+   "year": "2016",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib117",
+   "first-page": "25",
+   "article-title": "Fitusiran, an investigational RNAi therapeutic targeting antithrombin for the treatment of hemophilia: interim results from a phase 2 extension study in patients with Hemophilia A or B with and without inhibitors",
+   "volume": "1",
+   "author": "Pasi",
+   "year": "2017",
+   "journal-title": "RPTH"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib118",
+   "doi-asserted-by": "crossref",
+   "first-page": "153",
+   "DOI": "10.1097/00007890-201407151-00467",
+   "article-title": "Treatment with QPI-1002, a short interfering (SI) RNA for the prophylaxis of delayed graft function",
+   "volume": "98",
+   "author": "Peddi",
+   "year": "2014",
+   "journal-title": "Transplantation"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib119",
+   "doi-asserted-by": "crossref",
+   "first-page": "8796",
+   "DOI": "10.1093/nar/gku531",
+   "article-title": "Targeted delivery of antisense oligonucleotides to hepatocytes using triantennary N-acetyl galactosamine improves potency 10-fold in mice",
+   "volume": "42",
+   "author": "Prakash",
+   "year": "2014",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib120",
+   "doi-asserted-by": "crossref",
+   "first-page": "2817",
+   "DOI": "10.1016/j.bmcl.2016.04.063",
+   "article-title": "Synergistic effect of phosphorothioate, 5′-vinylphosphonate and GalNAc modifications for enhancing activity of synthetic siRNA",
+   "volume": "26",
+   "author": "Prakash",
+   "year": "2016",
+   "journal-title": "Bioorg. Med. Chem. Lett."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib121",
+   "doi-asserted-by": "crossref",
+   "first-page": "2718",
+   "DOI": "10.1021/acs.jmedchem.5b01948",
+   "article-title": "Comprehensive structure-activity relationship of triantennary n-acetylgalactosamine conjugated antisense oligonucleotides for targeted delivery to hepatocytes",
+   "volume": "59",
+   "author": "Prakash",
+   "year": "2016",
+   "journal-title": "J. Med. Chem."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib122",
+   "doi-asserted-by": "crossref",
+   "first-page": "6994",
+   "DOI": "10.1093/nar/gkx381",
+   "article-title": "Identification of metabolically stable 5′-phosphate analogs that support single-stranded siRNA activity",
+   "volume": "45",
+   "author": "Prakash",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib123",
+   "doi-asserted-by": "crossref",
+   "first-page": "275",
+   "DOI": "10.1002/hon.2438_149",
+   "article-title": "Ph 1 trial evaluating MRG-106, a microrna-155 inhibitor, administered by intratumoral, subcutaneous, or intravenous delivery in cutaneous T-cell lymphoma (CTCL) patients",
+   "volume": "35",
+   "author": "Querfeld",
+   "year": "2017",
+   "journal-title": "Hematol. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib124",
+   "doi-asserted-by": "crossref",
+   "first-page": "998",
+   "DOI": "10.1016/S0140-6736(10)60284-X",
+   "article-title": "Mipomersen, an apolipoprotein B synthesis inhibitor, for lowering of LDL cholesterol concentrations in patients with homozygous familial hypercholesterolaemia: a randomised, double-blind, placebo-controlled trial",
+   "volume": "375",
+   "author": "Raal",
+   "year": "2010",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib125",
+   "doi-asserted-by": "crossref",
+   "first-page": "860",
+   "DOI": "10.1016/j.jacl.2016.02.018",
+   "article-title": "Pediatric experience with mipomersen as adjunctive therapy for homozygous familial hypercholesterolemia",
+   "volume": "10",
+   "author": "Raal",
+   "year": "2016",
+   "journal-title": "J. Clin. Lipidol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib126",
+   "doi-asserted-by": "crossref",
+   "first-page": "2572",
+   "DOI": "10.1182/blood.V128.22.2572.2572",
+   "article-title": "Fitusiran, an investigational RNAi therapeutic targeting antithrombin for the treatment of hemophilia: updated results from a phase 1 and phase 1/2 extension study in patients without inhibitors",
+   "volume": "128",
+   "author": "Ragni",
+   "year": "2016",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib127",
+   "series-title": "Methods for Treating or Preventing Transthyretin (TTR) Associated Diseases. WO/2015/042564",
+   "author": "Rajeev",
+   "year": "2015"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib128",
+   "doi-asserted-by": "crossref",
+   "first-page": "1430",
+   "DOI": "10.1056/NEJMoa1615758",
+   "article-title": "Inclisiran in patients at high cardiovascular risk with elevated LDL cholesterol",
+   "volume": "376",
+   "author": "Ray",
+   "year": "2017",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib129",
+   "doi-asserted-by": "crossref",
+   "first-page": "46",
+   "DOI": "10.1124/jpet.113.212407",
+   "article-title": "Pharmacology of a central nervous system delivered 2′-O-methoxyethyl-modified survival of motor neuron splicing oligonucleotide in mice and nonhuman primates",
+   "volume": "350",
+   "author": "Rigo",
+   "year": "2014",
+   "journal-title": "J. Pharmacol. Exp. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib130",
+   "doi-asserted-by": "crossref",
+   "first-page": "89",
+   "DOI": "10.1089/oli.2009.0180",
+   "article-title": "siRNA and innate immunity",
+   "volume": "19",
+   "author": "Robbins",
+   "year": "2009",
+   "journal-title": "Oligonucleotides"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib131",
+   "doi-asserted-by": "crossref",
+   "first-page": "5765",
+   "DOI": "10.1158/1078-0432.CCR-11-0859",
+   "article-title": "Randomized phase II trial of Custirsen (OGX-011) in combination with docetaxel or mitoxantrone as second-line therapy in patients with metastatic castrate-resistant prostate cancer progressing after first-line docetaxel: CUOG trial P-06c",
+   "volume": "17",
+   "author": "Saad",
+   "year": "2011",
+   "journal-title": "Clin. Cancer Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib132",
+   "doi-asserted-by": "crossref",
+   "first-page": "653",
+   "DOI": "10.1038/nbt.2614",
+   "article-title": "Efficiency of siRNA delivery by lipid nanoparticles is limited by endocytic recycling",
+   "volume": "31",
+   "author": "Sahay",
+   "year": "2013",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib133",
+   "doi-asserted-by": "crossref",
+   "first-page": "84",
+   "DOI": "10.1016/j.cell.2015.06.029",
+   "article-title": "Single-molecule imaging reveals that argonaute reshapes the binding properties of its nucleic acid guides",
+   "volume": "162",
+   "author": "Salomon",
+   "year": "2015",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib134",
+   "doi-asserted-by": "crossref",
+   "first-page": "e14541",
+   "DOI": "10.1200/JCO.2016.34.15_suppl.e14541",
+   "article-title": "Adoptive cellular immunotherapy with APN401, autologous Cbl-b-silenced peripheral blood mononuclear cells, in patients with solid tumors",
+   "volume": "34",
+   "author": "Salzberg",
+   "year": "2016",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib135",
+   "doi-asserted-by": "crossref",
+   "first-page": "689",
+   "DOI": "10.1161/ATVBAHA.114.304549",
+   "article-title": "Mipomersen, an antisense oligonucleotide to apolipoprotein B-100, reduces lipoprotein(a) in various populations with hypercholesterolemia: results of 4 phase III trials",
+   "volume": "35",
+   "author": "Santos",
+   "year": "2015",
+   "journal-title": "Arterioscler. Thromb. Vasc. Biol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib136",
+   "doi-asserted-by": "crossref",
+   "DOI": "10.1212/WNL.88.16_supplement.P3.184",
+   "article-title": "Nusinersen in symptomatic children with later-onset Spinal Muscular Atrophy (SMA): design of the phase 3 CHERISH study",
+   "volume": "88",
+   "author": "Schneider",
+   "year": "2017",
+   "journal-title": "Neurology"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib137",
+   "doi-asserted-by": "crossref",
+   "first-page": "4141",
+   "DOI": "10.1200/JCO.2013.55.0376",
+   "article-title": "First-in-human phase I study of the liposomal RNA interference therapeutic Atu027 in patients with advanced solid tumors",
+   "volume": "32",
+   "author": "Schultheis",
+   "year": "2014",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib138",
+   "doi-asserted-by": "crossref",
+   "first-page": "1334",
+   "DOI": "10.1124/jpet.102.036749",
+   "article-title": "Phase I trial of ISIS 104838, a 2′-methoxyethyl modified antisense oligonucleotide targeting tumor necrosis factor-alpha",
+   "volume": "303",
+   "author": "Sewell",
+   "year": "2002",
+   "journal-title": "J. Pharmacol. Exp. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib139",
+   "doi-asserted-by": "crossref",
+   "first-page": "e319",
+   "DOI": "10.1038/mtna.2016.31",
+   "article-title": "Elucidation of the biotransformation pathways of a Galnac3-conjugated antisense Oligonucleotide in rats and monkeys",
+   "volume": "5",
+   "author": "Shemesh",
+   "year": "2016",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib140",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "75",
+   "article-title": "Small RNA silencing Pathways",
+   "author": "Sigova",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib141",
+   "doi-asserted-by": "crossref",
+   "first-page": "258",
+   "DOI": "10.1089/nat.2014.0489",
+   "article-title": "Toxicological and pharmacokinetic properties of QPI-1007, a chemically modified synthetic siRNA targeting caspase 2 mRNA, following intravitreal injection",
+   "volume": "24",
+   "author": "Solano",
+   "year": "2014",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib142",
+   "doi-asserted-by": "crossref",
+   "first-page": "173",
+   "DOI": "10.1038/nature03121",
+   "article-title": "Therapeutic silencing of an endogenous gene by systemic administration of modified siRNAs",
+   "volume": "432",
+   "author": "Soutschek",
+   "year": "2004",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib143",
+   "doi-asserted-by": "crossref",
+   "first-page": "e3",
+   "DOI": "10.1093/nar/gkp841",
+   "article-title": "Efficient gene silencing by delivery of locked nucleic acid antisense oligonucleotides, unassisted by transfection reagents",
+   "volume": "38",
+   "author": "Stein",
+   "year": "2010",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib144",
+   "doi-asserted-by": "crossref",
+   "first-page": "285",
+   "DOI": "10.1073/pnas.75.1.285",
+   "article-title": "Inhibition of Rous sarcoma viral RNA translation by a specific oligodeoxyribonucleotide",
+   "volume": "75",
+   "author": "Stephenson",
+   "year": "1978",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib145",
+   "doi-asserted-by": "crossref",
+   "first-page": "S688",
+   "DOI": "10.1016/S0168-8278(17)31850-0",
+   "article-title": "A phase 2a study evaluating the multi-dose activity of ARB-1467 in HBeAg-Positive and -negative virally suppressed subjects with hepatitis B",
+   "volume": "66",
+   "author": "Sterinu-Cercel",
+   "year": "2017",
+   "journal-title": "J. Hepatol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib146",
+   "doi-asserted-by": "crossref",
+   "first-page": "76",
+   "DOI": "10.5414/CPP50076",
+   "article-title": "Phase I clinical development of Atu027, a siRNA formulation targeting PKN3 in patients with advanced solid tumors",
+   "volume": "50",
+   "author": "Strumberg",
+   "year": "2012",
+   "journal-title": "Int. J. Clin. Pharmacol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib147",
+   "doi-asserted-by": "crossref",
+   "first-page": "109",
+   "DOI": "10.1186/s13023-015-0326-6",
+   "article-title": "Efficacy and safety of patisiran for familial amyloidotic polyneuropathy: a phase II multi-dose study",
+   "volume": "10",
+   "author": "Suhr",
+   "year": "2015",
+   "journal-title": "Orphanet J. Rare Dis."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib148",
+   "unstructured": "Suhr, O.B., Coelho, T., Conceicao, I., Waddington Cruz, M., Schmidt, H., Buades, J., Campistol, J., Pouget, J., Berk, J., Polydefkis, M., et al. (2016). Phase 2 open-label extension study of patisiran, an investigational RNAi therapeutic for the treatment of hereditary ATTR amyloidosis with polyneuropathy. In International Symposium of Amyloidosis 2016 Abstract Book, p. PA80."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib149",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "143",
+   "article-title": "The medicinal chemistry of oligonucleotides",
+   "author": "Swayze",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib150",
+   "doi-asserted-by": "crossref",
+   "first-page": "687",
+   "DOI": "10.1093/nar/gkl1071",
+   "article-title": "Antisense oligonucleotides containing locked nucleic acid improve potency but cause significant hepatotoxicity in animals",
+   "volume": "35",
+   "author": "Swayze",
+   "year": "2007",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib151",
+   "doi-asserted-by": "crossref",
+   "first-page": "225",
+   "DOI": "10.1002/jps.21084",
+   "article-title": "Oral delivery of antisense oligonucleotides in man",
+   "volume": "97",
+   "author": "Tillman",
+   "year": "2008",
+   "journal-title": "J. Pharm. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib152",
+   "first-page": "2530",
+   "article-title": "A randomized phase II and pharmacokinetic study of the antisense oligonucleotides ISIS 3521 and ISIS 5132 in patients with hormone-refractory prostate cancer",
+   "volume": "8",
+   "author": "Tolcher",
+   "year": "2002",
+   "journal-title": "Clin. Cancer Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib153",
+   "doi-asserted-by": "crossref",
+   "first-page": "e100",
+   "DOI": "10.1016/j.atherosclerosis.2017.06.325",
+   "article-title": "Natural history and gene expression signature of platelet count in lipoprotein lipase deficiency",
+   "volume": "263",
+   "author": "Tremblay",
+   "year": "2017",
+   "journal-title": "Atherosclerosis"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib154",
+   "doi-asserted-by": "crossref",
+   "first-page": "175",
+   "DOI": "10.1186/2051-1426-3-S2-P175",
+   "article-title": "Phase I clinical trial of adoptive cellular immunotherapy with APN401 in patients with solid tumors",
+   "volume": "3",
+   "author": "Triozzi",
+   "year": "2015",
+   "journal-title": "J. Immunother. Cancer"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib155",
+   "doi-asserted-by": "crossref",
+   "first-page": "1472",
+   "DOI": "10.1016/S0140-6736(15)61252-1",
+   "article-title": "Antisense therapy targeting apolipoprotein(a): a randomised, double-blind, placebo-controlled phase 1 study",
+   "volume": "386",
+   "author": "Tsimikas",
+   "year": "2015",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib156",
+   "doi-asserted-by": "crossref",
+   "first-page": "S92",
+   "DOI": "10.1016/S0168-8278(17)30447-6",
+   "article-title": "Hepatic targeted RNA interference provides deep and prolonged knockdown of alpha-1 antitrypsin levels in ZZ patients",
+   "volume": "66",
+   "author": "Turner",
+   "year": "2017",
+   "journal-title": "J. Hepatol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib157",
+   "doi-asserted-by": "crossref",
+   "first-page": "162",
+   "DOI": "10.1002/ana.24842",
+   "article-title": "Regarding “Eteplirsen for the treatment of Duchenne muscular dystrophy”",
+   "volume": "81",
+   "author": "Unger",
+   "year": "2017",
+   "journal-title": "Ann. Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib158",
+   "doi-asserted-by": "crossref",
+   "first-page": "53",
+   "DOI": "10.1016/j.antiviral.2014.08.015",
+   "article-title": "Long-term safety and efficacy of microRNA-targeted therapy in chronic hepatitis C patients",
+   "volume": "111",
+   "author": "van der Ree",
+   "year": "2014",
+   "journal-title": "Antiviral Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib159",
+   "doi-asserted-by": "crossref",
+   "first-page": "280",
+   "DOI": "10.1124/jpet.116.233809",
+   "article-title": "Renal effects of antisense-mediated inhibition of SGLT2",
+   "volume": "359",
+   "author": "van Meer",
+   "year": "2016",
+   "journal-title": "J. Pharmacol. Exp. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib160",
+   "doi-asserted-by": "crossref",
+   "first-page": "e108625",
+   "DOI": "10.1371/journal.pone.0108625",
+   "article-title": "Antisense oligonucleotides capable of promoting specific target mRNA reduction via competing RNase H1-dependent and independent mechanisms",
+   "volume": "9",
+   "author": "Vickers",
+   "year": "2014",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib161",
+   "doi-asserted-by": "crossref",
+   "first-page": "8955",
+   "DOI": "10.1093/nar/gkv920",
+   "article-title": "The rates of the major steps in the molecular mechanism of RNase H1-dependent antisense oligonucleotide induced degradation of RNA",
+   "volume": "43",
+   "author": "Vickers",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib162",
+   "doi-asserted-by": "crossref",
+   "first-page": "2239",
+   "DOI": "10.1016/S0140-6736(16)31009-1",
+   "article-title": "Antisense oligonucleotides targeting apolipoprotein(a) in people with raised lipoprotein(a): two randomised, double-blind, placebo-controlled, dose-ranging trials",
+   "volume": "388",
+   "author": "Viney",
+   "year": "2016",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib163",
+   "doi-asserted-by": "crossref",
+   "first-page": "467",
+   "DOI": "10.1016/S0002-9394(02)01327-2",
+   "article-title": "A randomized controlled clinical trial of intravitreous fomivirsen for treatment of newly diagnosed peripheral cytomegalovirus retinitis in patients with AIDS",
+   "volume": "133",
+   "year": "2002",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib164",
+   "doi-asserted-by": "crossref",
+   "first-page": "475",
+   "DOI": "10.1016/S0002-9394(02)01326-0",
+   "article-title": "Randomized dose-comparison studies of intravitreous fomivirsen for treatment of cytomegalovirus retinitis that has reactivated or is persistently active despite other therapies in patients with AIDS",
+   "volume": "133",
+   "year": "2002",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib165",
+   "doi-asserted-by": "crossref",
+   "first-page": "484",
+   "DOI": "10.1016/S0002-9394(02)01332-6",
+   "article-title": "Safety of intravitreous fomivirsen for treatment of cytomegalovirus retinitis in patients with AIDS",
+   "volume": "133",
+   "year": "2002",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib166",
+   "doi-asserted-by": "crossref",
+   "first-page": "987",
+   "DOI": "10.1016/S1474-4422(14)70195-4",
+   "article-title": "Safety and efficacy of drisapersen for the treatment of Duchenne muscular dystrophy (DEMAND II): an exploratory, randomised, placebo-controlled phase 2 study",
+   "volume": "13",
+   "author": "Voit",
+   "year": "2014",
+   "journal-title": "Lancet Neurol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib167",
+   "first-page": "5577",
+   "article-title": "Main results of the First-In Human single ascending dose phase I study of ISTH0036, an antisense oligonucleotide selectively targeting transforming growth factor beta 2 (TGF-β2) in glaucoma filtration surgery",
+   "volume": "58",
+   "author": "Voykov",
+   "year": "2017",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib168",
+   "unstructured": "Wang, A.K., Coelho, T., Waddington Cruz, M., Polydefkis, M.J., Dyck, P.J., Scheinberg, M., Plante-Bordeneuve, V., Berk, J., Barroso, F., Adams, D., et al. (2017a). Safety and Efficacy of Inotersen in Patients with Hereditary Transthyretin Amyloidosis with Polyneuropathy (NEURO-TTR). In 142nd Annual Meeting of the American Neurological Association (Oct 15-17, San Diego, CA), p. S318WIP."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib169",
+   "doi-asserted-by": "crossref",
+   "first-page": "5309",
+   "DOI": "10.1093/nar/gkx231",
+   "article-title": "Intra-endosomal trafficking mediated by lysobisphosphatidic acid contributes to intracellular release of phosphorothioate-modified antisense oligonucleotides",
+   "volume": "45",
+   "author": "Wang",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib170",
+   "series-title": "Antisense Drug Technology: Principles, Strategies, and Applications",
+   "first-page": "117",
+   "article-title": "Basic principles of antisense drug discovery",
+   "author": "Watt",
+   "year": "2008"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib171",
+   "doi-asserted-by": "crossref",
+   "first-page": "301",
+   "DOI": "10.1021/ar980051p",
+   "article-title": "Synthesis of 3′-C- and 4′-C-branched oligodeoxynucleotides and the development of locked nucleic acid (LNA)",
+   "volume": "32",
+   "author": "Wengel",
+   "year": "1999",
+   "journal-title": "Acc. Chem. Res."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib172",
+   "doi-asserted-by": "crossref",
+   "first-page": "673",
+   "DOI": "10.4161/rna.28985",
+   "article-title": "Versatile microRNA biogenesis in animals and their viruses",
+   "volume": "11",
+   "author": "Xie",
+   "year": "2014",
+   "journal-title": "RNA Biol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib173",
+   "doi-asserted-by": "crossref",
+   "first-page": "e23",
+   "DOI": "10.1016/j.jconrel.2015.05.035",
+   "article-title": "Targeting glucose uptake of glioma cells by siRNA delivery with polymer nanoparticle",
+   "volume": "213",
+   "author": "Xu",
+   "year": "2015",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib174",
+   "doi-asserted-by": "crossref",
+   "first-page": "125",
+   "DOI": "10.1016/j.molcel.2015.05.015",
+   "article-title": "Single-molecule analysis of the target cleavage reaction by the Drosophila RNAi enzyme complex",
+   "volume": "59",
+   "author": "Yao",
+   "year": "2015",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib175",
+   "doi-asserted-by": "crossref",
+   "first-page": "910",
+   "DOI": "10.1016/j.bcp.2008.11.005",
+   "article-title": "Cross-species comparison of in vivo PK/PD relationships for second-generation antisense oligonucleotides targeting apolipoprotein B-100",
+   "volume": "77",
+   "author": "Yu",
+   "year": "2009",
+   "journal-title": "Biochem. Pharmacol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib176",
+   "doi-asserted-by": "crossref",
+   "first-page": "895",
+   "DOI": "10.1016/j.cell.2012.08.002",
+   "article-title": "Single-stranded RNAs use RNAi to potently and allele-selectively inhibit mutant huntingtin expression",
+   "volume": "150",
+   "author": "Yu",
+   "year": "2012",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib177",
+   "doi-asserted-by": "crossref",
+   "first-page": "169",
+   "DOI": "10.1517/17425255.2013.737320",
+   "article-title": "Clinical pharmacokinetics of second generation antisense oligonucleotides",
+   "volume": "9",
+   "author": "Yu",
+   "year": "2013",
+   "journal-title": "Expert Opin. Drug Metab. Toxicol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib178",
+   "doi-asserted-by": "crossref",
+   "first-page": "S27",
+   "DOI": "10.1016/S0168-8278(17)30316-1",
+   "article-title": "Prolonged RNA interference therapy with ARC-520 Injection in treatment naïve, HBeAg positive and negative patients with chronic HBV results in significant reductions of HBs antigen",
+   "volume": "66",
+   "author": "Yuen",
+   "year": "2017",
+   "journal-title": "J. Hepatol."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib179",
+   "doi-asserted-by": "crossref",
+   "first-page": "S66",
+   "DOI": "10.1016/j.cardfail.2013.06.214",
+   "article-title": "Phase I first-in-humans trial of ALN-TTRsc, a novel RNA interference therapeutic for the treatment of familial amyloidotic cardiomyopathy (FAC)",
+   "volume": "19",
+   "author": "Zimmermann",
+   "year": "2013",
+   "journal-title": "J. Card. Fail."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib180",
+   "doi-asserted-by": "crossref",
+   "first-page": "71",
+   "DOI": "10.1016/j.ymthe.2016.10.019",
+   "article-title": "Clinical proof of concept for a novel hepatocyte-targeting GalNAc-siRNA conjugate",
+   "volume": "25",
+   "author": "Zimmermann",
+   "year": "2017",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib181",
+   "first-page": "539",
+   "article-title": "Phosphorothioate oligonucleotides: chemistry, purification, analysis, scale-up and future directions",
+   "volume": "6",
+   "author": "Zon",
+   "year": "1991",
+   "journal-title": "Anticancer Drug Des."
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib182",
+   "doi-asserted-by": "crossref",
+   "first-page": "20723",
+   "DOI": "10.1073/pnas.1314307110",
+   "article-title": "Mutant KRAS is a druggable target for pancreatic cancer",
+   "volume": "110",
+   "author": "Zorde Khvalevsky",
+   "year": "2013",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.cmet.2018.03.004_bib183",
+   "doi-asserted-by": "crossref",
+   "first-page": "11449",
+   "DOI": "10.1073/pnas.1411393111",
+   "article-title": "Correlating animal and human phase Ia/Ib clinical data with CALAA-01, a targeted, polymer-based nanoparticle containing siRNA",
+   "volume": "111",
+   "author": "Zuckerman",
+   "year": "2014",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  }
+ ],
+ "updated-by": [
+  {
+   "DOI": "10.1016/j.cmet.2019.01.001",
+   "type": "erratum",
+   "label": "Erratum",
+   "source": "publisher",
+   "updated": {
+    "date-parts": [
+     [
+      2019,
+      2,
+      5
+     ]
+    ],
+    "date-time": "2019-02-05T00:00:00Z",
+    "timestamp": 1549324800000
+   }
+  }
+ ],
+ "container-title": [
+  "Cell Metabolism"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S1550413118301827?httpAccept=text/xml",
+   "content-type": "text/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S1550413118301827?httpAccept=text/plain",
+   "content-type": "text/plain",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    10,
+    27
+   ]
+  ],
+  "date-time": "2025-10-27T07:29:15Z",
+  "timestamp": 1761550155000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://linkinghub.elsevier.com/retrieve/pii/S1550413118301827"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2018,
+    4
+   ]
+  ]
+ },
+ "references-count": 183,
+ "journal-issue": {
+  "issue": "4",
+  "published-print": {
+   "date-parts": [
+    [
+     2018,
+     4
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S1550413118301827"
+ ],
+ "URL": "https://doi.org/10.1016/j.cmet.2018.03.004",
+ "relation": {},
+ "ISSN": [
+  "1550-4131"
+ ],
+ "issn-type": [
+  {
+   "value": "1550-4131",
+   "type": "print"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2018,
+    4
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "Elsevier",
+   "name": "publisher",
+   "label": "This article is maintained by"
+  },
+  {
+   "value": "RNA-Targeted Therapeutics",
+   "name": "articletitle",
+   "label": "Article Title"
+  },
+  {
+   "value": "Cell Metabolism",
+   "name": "journaltitle",
+   "label": "Journal Title"
+  },
+  {
+   "value": "https://doi.org/10.1016/j.cmet.2018.03.004",
+   "name": "articlelink",
+   "label": "CrossRef DOI link to publisher maintained version"
+  },
+  {
+   "value": "article",
+   "name": "content_type",
+   "label": "Content Type"
+  },
+  {
+   "value": "© 2018 Elsevier Inc.",
+   "name": "copyright",
+   "label": "Copyright"
+  }
+ ]
+}

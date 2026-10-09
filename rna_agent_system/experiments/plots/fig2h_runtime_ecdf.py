@@ -156,7 +156,7 @@ def main() -> int:
     ax.set_yticklabels(["0", "0.25", "0.50", "0.75", "1"])
     ax.tick_params(axis="both", labelsize=FONT, length=1.5, pad=1)
     ax.tick_params(axis="x", which="minor", length=1, width=0.3, color=NEUTRAL_GRID)
-    ax.set_xlabel("End-to-end runtime per run (min, log scale)",
+    ax.set_xlabel("End-to-end runtime per run (log scale)",
                   fontsize=FONT, labelpad=2)
     ax.set_ylabel("Fraction of runs completed", fontsize=FONT, labelpad=2)
     for s_name in ("top", "right"):
@@ -169,7 +169,7 @@ def main() -> int:
     for wf in wfs:
         vals = by_wf[wf]
         handles.append(Line2D([0], [0], color=WORKFLOW_COLORS[wf], linewidth=1.6))
-        labels.append(f"{WORKFLOW_LABELS[wf]} · {fmt_min(median(vals))} (n={len(vals)})")
+        labels.append(f"{WORKFLOW_LABELS[wf]} · {fmt_min(median(vals))} (n = {len(vals)})")
     leg = fig.legend(handles, labels, ncol=4, loc="lower center",
                      bbox_to_anchor=(0.5, 0.0), frameon=False, fontsize=FONT,
                      handlelength=1.4, handletextpad=0.45, columnspacing=0.9,

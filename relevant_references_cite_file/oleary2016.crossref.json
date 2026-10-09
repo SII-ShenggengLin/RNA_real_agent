@@ -1,0 +1,1165 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T15:27:01Z",
+  "timestamp": 1791473221398,
+  "version": "4.3.4"
+ },
+ "reference-count": 65,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "D1",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nucleic Acids Res"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2016,
+    1,
+    4
+   ]
+  ]
+ },
+ "DOI": "10.1093/nar/gkv1189",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    9
+   ]
+  ],
+  "date-time": "2015-11-09T21:03:39Z",
+  "timestamp": 1447103019000
+ },
+ "page": "D733-D745",
+ "source": "Crossref",
+ "is-referenced-by-count": 6289,
+ "title": [
+  "Reference sequence (RefSeq) database at NCBI: current status, taxonomic expansion, and functional annotation"
+ ],
+ "prefix": "10.1093",
+ "volume": "44",
+ "author": [
+  {
+   "given": "Nuala A.",
+   "family": "O'Leary",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Mathew W.",
+   "family": "Wright",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "J. Rodney",
+   "family": "Brister",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Stacy",
+   "family": "Ciufo",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Diana",
+   "family": "Haddad",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Rich",
+   "family": "McVeigh",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Bhanu",
+   "family": "Rajput",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Barbara",
+   "family": "Robbertse",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Brian",
+   "family": "Smith-White",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Danso",
+   "family": "Ako-Adjei",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Alexander",
+   "family": "Astashyn",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Azat",
+   "family": "Badretdin",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yiming",
+   "family": "Bao",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Olga",
+   "family": "Blinkova",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Vyacheslav",
+   "family": "Brover",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Vyacheslav",
+   "family": "Chetvernin",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jinna",
+   "family": "Choi",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Eric",
+   "family": "Cox",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Olga",
+   "family": "Ermolaeva",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Catherine M.",
+   "family": "Farrell",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tamara",
+   "family": "Goldfarb",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tripti",
+   "family": "Gupta",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Daniel",
+   "family": "Haft",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Eneida",
+   "family": "Hatcher",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wratko",
+   "family": "Hlavina",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Vinita S.",
+   "family": "Joardar",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Vamsi K.",
+   "family": "Kodali",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wenjun",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Donna",
+   "family": "Maglott",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Patrick",
+   "family": "Masterson",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kelly M.",
+   "family": "McGarvey",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Michael R.",
+   "family": "Murphy",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kathleen",
+   "family": "O'Neill",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Shashikant",
+   "family": "Pujar",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Sanjida H.",
+   "family": "Rangwala",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Daniel",
+   "family": "Rausch",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lillian D.",
+   "family": "Riddick",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Conrad",
+   "family": "Schoch",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Andrei",
+   "family": "Shkeda",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Susan S.",
+   "family": "Storz",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Hanzhen",
+   "family": "Sun",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Francoise",
+   "family": "Thibaud-Nissen",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Igor",
+   "family": "Tolstoy",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Raymond E.",
+   "family": "Tully",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Anjana R.",
+   "family": "Vatsan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Craig",
+   "family": "Wallin",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David",
+   "family": "Webb",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wendy",
+   "family": "Wu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Melissa J.",
+   "family": "Landrum",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Avi",
+   "family": "Kimchi",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tatiana",
+   "family": "Tatusova",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Michael",
+   "family": "DiCuccio",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Paul",
+   "family": "Kitts",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Terence D.",
+   "family": "Murphy",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kim D.",
+   "family": "Pruitt",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "published-online": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    8
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2016021418573504000_44.D1.D733.1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.aab2374"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1071"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.3",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1002/dvg.22868"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.4",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku989"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.5",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkt1181"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.6",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00335-015-9585-8"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.7",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/gm145"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.8",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Schoch C.L. Robbertse B. Robert V. Vu D. Cardinali G. Irinyi L. Meyer W. Nilsson R.H. Hughes K. Miller A.N. . Finding needles in haystacks: linking scientific names, reference specimens and molecular data for Fungi. Database 2014:1-21.",
+   "DOI": "10.1093/database/bau061"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.9",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.1251385"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.10",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.1253451"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.11",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkt1059"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.12",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkl842"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.13",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.1234907"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.14",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.cmet.2014.03.023"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.15",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.tig.2014.02.005"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.16",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1074/mcp.M113.035600"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.17",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nbt1010-1045"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.18",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gks1284"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.19",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1101/gr.132563.111"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.20",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/bioinformatics/btr209"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.21",
+   "doi-asserted-by": "crossref",
+   "first-page": "i351",
+   "DOI": "10.1093/bioinformatics/bti1018",
+   "article-title": "De novo identification of repeat families in large genomes",
+   "volume": "21 Suppl 1",
+   "author": "Price",
+   "year": "2005",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.22",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nmeth0306-211"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.23",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nrg3722"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.24",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s40266-013-0099-3"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.25",
+   "doi-asserted-by": "crossref",
+   "first-page": "5611",
+   "DOI": "10.3892/mmr.2015.4161",
+   "article-title": "Long non-coding RNA HOTAIR:a novel oncogene (review)",
+   "volume": "12",
+   "author": "Yu",
+   "year": "2015",
+   "journal-title": "Mol. Med. Rep."
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.26",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1056/NEJMe020106"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.27",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/35057062"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.28",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/35001608"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.29",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/S0888-7543(02)96850-3"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.30",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pone.0063745"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.31",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1371/journal.pgen.1003529"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.32",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkv713"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.33",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.11646/zootaxa.3703.1.1"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.34",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.1076181"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.35",
+   "doi-asserted-by": "crossref",
+   "first-page": "230",
+   "DOI": "10.3389/fgene.2014.00230",
+   "article-title": "Schistosomes and snails: a molecular encounter",
+   "volume": "5",
+   "author": "Knight",
+   "year": "2014",
+   "journal-title": "Front. Genet."
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.36",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nature05260"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.37",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/science.1102210"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.38",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/nature11413"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.39",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/jhered/est050"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.40",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/jhered/est084"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.41",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1073/pnas.1117018109"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.42",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.simyco.2014.09.001"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.43",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.fm.2014.12.014"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.44",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1127"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.45",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1264/jsme2.ME14121"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.46",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s12898-015-0036-x"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.47",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/mmy/myv008"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.48",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1073/pnas.1117018109"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.49",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/29.12.2607"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.50",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Borodovsky M. Lomsadze A. Gene identification in prokaryotic genomes, phages, metagenomes, and EST sequences with GeneMarkS suite. Curr. Protoc. Microbiol. 2014;32. Unit 1E 7.",
+   "DOI": "10.1002/9780471729259.mc01e07s32"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.51",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1062"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.52",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1207"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.53",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00705-015-2425-z"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.54",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.3390/v4081318"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.55",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00705-014-2197-x"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.56",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00705-014-2276-z"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.57",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00705-015-2418-y"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.58",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkt1268"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.59",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/JVI.00354-11"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.60",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/s00705-011-1006-z"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.61",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.3390/v2102258"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.62",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1016/j.virol.2012.09.027"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.63",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.3390/v6093663"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.64",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1126"
+  },
+  {
+   "key": "2016021418573504000_44.D1.D733.65",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gku1063"
+  }
+ ],
+ "container-title": [
+  "Nucleic Acids Research"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://academic.oup.com/nar/article-pdf/44/D1/D733/9482930/gkv1189.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2019,
+    9,
+    1
+   ]
+  ],
+  "date-time": "2019-09-01T07:05:15Z",
+  "timestamp": 1567321515000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkv1189"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    8
+   ]
+  ]
+ },
+ "references-count": 65,
+ "journal-issue": {
+  "issue": "D1",
+  "published-online": {
+   "date-parts": [
+    [
+     2016,
+     1,
+     3
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2016,
+     1,
+     4
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1093/nar/gkv1189"
+ ],
+ "URL": "https://doi.org/10.1093/nar/gkv1189",
+ "relation": {},
+ "ISSN": [
+  "0305-1048",
+  "1362-4962"
+ ],
+ "issn-type": [
+  {
+   "value": "0305-1048",
+   "type": "print"
+  },
+  {
+   "value": "1362-4962",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2015,
+    11,
+    8
+   ]
+  ]
+ }
+}

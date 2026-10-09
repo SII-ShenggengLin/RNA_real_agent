@@ -1,0 +1,2664 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T12:22:16Z",
+  "timestamp": 1791548536200,
+  "version": "4.3.4"
+ },
+ "reference-count": 222,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "4",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2018,
+      1,
+      12
+     ]
+    ],
+    "date-time": "2018-01-12T00:00:00Z",
+    "timestamp": 1515715200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.springer.com/tdm"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2018,
+      1,
+      12
+     ]
+    ],
+    "date-time": "2018-01-12T00:00:00Z",
+    "timestamp": 1515715200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://www.springer.com/tdm"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Rev Drug Discov"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2018,
+    4
+   ]
+  ]
+ },
+ "DOI": "10.1038/nrd.2017.243",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2018,
+    1,
+    12
+   ]
+  ],
+  "date-time": "2018-01-12T00:26:17Z",
+  "timestamp": 1515716777000
+ },
+ "page": "261-279",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 4446,
+ "title": [
+  "mRNA vaccines — a new era in vaccinology"
+ ],
+ "prefix": "10.1038",
+ "volume": "17",
+ "author": [
+  {
+   "given": "Norbert",
+   "family": "Pardi",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Michael J.",
+   "family": "Hogan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Frederick W.",
+   "family": "Porter",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Drew",
+   "family": "Weissman",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2018,
+    1,
+    12
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "BFnrd2017243_CR1",
+   "unstructured": "World Health Organization. Immunization coverage. World Health Organization http://www.who.int/mediacentre/factsheets/fs378/en (2017)."
+  },
+  {
+   "key": "BFnrd2017243_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "1035",
+   "DOI": "10.1016/j.ncl.2016.05.004",
+   "volume": "34",
+   "author": "DS Younger",
+   "year": "2016",
+   "unstructured": "Younger, D. S., Younger, A. P. & Guttmacher, S. Childhood vaccination: implications for global and domestic public health. Neurol. Clin. 34, 1035–1047 (2016).",
+   "journal-title": "Neurol. Clin."
+  },
+  {
+   "key": "BFnrd2017243_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "1709",
+   "DOI": "10.1128/CVI.00290-09",
+   "volume": "16",
+   "author": "SA Plotkin",
+   "year": "2009",
+   "unstructured": "Plotkin, S. A. Vaccines: the fourth century. Clin. Vaccine Immunol. 16, 1709–1719 (2009).",
+   "journal-title": "Clin. Vaccine Immunol."
+  },
+  {
+   "issue": "Suppl. 1",
+   "key": "BFnrd2017243_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "S2",
+   "DOI": "10.1016/S0163-4453(17)30184-6",
+   "volume": "74",
+   "author": "CMC Rodrigues",
+   "year": "2017",
+   "unstructured": "Rodrigues, C. M. C., Pinto, M. V., Sadarangani, M. & Plotkin, S. A. Whither vaccines? J. Infect. 74 (Suppl. 1), S2–S9 (2017).",
+   "journal-title": "J. Infect."
+  },
+  {
+   "key": "BFnrd2017243_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "1465",
+   "DOI": "10.1126/science.1690918",
+   "volume": "247",
+   "author": "JA Wolff",
+   "year": "1990",
+   "unstructured": "Wolff, J. A. et al. Direct gene transfer into mouse muscle in vivo. Science 247, 1465–1468 (1990). This study demonstrates protein production from RNA administered in vivo.",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "996",
+   "DOI": "10.1126/science.1546298",
+   "volume": "255",
+   "author": "GF Jirikowski",
+   "year": "1992",
+   "unstructured": "Jirikowski, G. F., Sanna, P. P., Maciejewski-Lenoir, D. & Bloom, F. E. Reversal of diabetes insipidus in Brattleboro rats: intrahypothalamic injection of vasopressin mRNA. Science 255, 996–998 (1992).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "2837",
+   "DOI": "10.1080/21645515.2017.1330236",
+   "volume": "13",
+   "author": "JJ Suschak",
+   "year": "2017",
+   "unstructured": "Suschak, J. J., Williams, J. A. & Schmaljohn, C. S. Advancements in DNA vaccine vectors, non-mechanical delivery methods, and molecular adjuvants to increase immunogenicity. Hum. Vaccin. Immunother. 13, 2837–2848 (2017).",
+   "journal-title": "Hum. Vaccin. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "E7",
+   "DOI": "10.3390/pharmaceutics8010007",
+   "volume": "8",
+   "author": "S Tandrup Schmidt",
+   "year": "2016",
+   "unstructured": "Tandrup Schmidt, S., Foged, C., Korsholm, K. S., Rades, T. & Christensen, D. Liposome-based adjuvants for subunit vaccines: formulation strategies for subunit antigens and immunostimulators. Pharmaceutics 8, E7 (2016).",
+   "journal-title": "Pharmaceutics"
+  },
+  {
+   "key": "BFnrd2017243_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "1833",
+   "DOI": "10.1038/mt.2008.200",
+   "volume": "16",
+   "author": "K Kariko",
+   "year": "2008",
+   "unstructured": "Kariko, K. et al. Incorporation of pseudouridine into mRNA yields superior nonimmunogenic vector with increased translational capacity and biological stability. Mol. Ther. 16, 1833–1840 (2008).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "227",
+   "DOI": "10.1016/j.jconrel.2015.12.032",
+   "volume": "240",
+   "author": "KJ Kauffman",
+   "year": "2016",
+   "unstructured": "Kauffman, K. J., Webber, M. J. & Anderson, D. G. Materials for non-viral intracellular delivery of messenger RNA therapeutics. J. Control. Release 240, 227–234 (2016).",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "BFnrd2017243_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "133",
+   "DOI": "10.1038/gt.2017.5",
+   "volume": "24",
+   "author": "S Guan",
+   "year": "2017",
+   "unstructured": "Guan, S. & Rosenecker, J. Nanotechnologies in delivery of mRNA therapeutics using nonviral vector-based delivery systems. Gene Ther. 24, 133–143 (2017).",
+   "journal-title": "Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "1456",
+   "DOI": "10.1038/mt.2015.103",
+   "volume": "23",
+   "author": "A Thess",
+   "year": "2015",
+   "unstructured": "Thess, A. et al. Sequence-engineered mRNA without chemical nucleoside modifications enables an effective protein therapy in large animals. Mol. Ther. 23, 1456–1464 (2015).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "e142",
+   "DOI": "10.1093/nar/gkr695",
+   "volume": "39",
+   "author": "K Kariko",
+   "year": "2011",
+   "unstructured": "Kariko, K., Muramatsu, H., Ludwig, J. & Weissman, D. Generating the optimal mRNA for therapy: HPLC purification eliminates immune activation and improves translation of nucleoside-modified, protein-encoding mRNA. Nucleic Acids Res. 39, e142 (2011). This study demonstrates the importance of purification of IVT mRNA in achieving potent protein translation and in suppressing inflammatory responses.",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2017243_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "265",
+   "DOI": "10.1586/14760584.2015.973859",
+   "volume": "14",
+   "author": "D Weissman",
+   "year": "2015",
+   "unstructured": "Weissman, D. mRNA transcript therapy. Expert Rev. Vaccines 14, 265–281 (2015).",
+   "journal-title": "Expert Rev. Vaccines"
+  },
+  {
+   "key": "BFnrd2017243_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "759",
+   "DOI": "10.1038/nrd4278",
+   "volume": "13",
+   "author": "U Sahin",
+   "year": "2014",
+   "unstructured": "Sahin, U., Kariko, K. & Tureci, O. mRNA-based therapeutics — developing a new class of drugs. Nat. Rev. Drug Discov. 13, 759–780 (2014). This is a useful Review covering vaccine and non-vaccine forms of mRNA therapeutics.",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "BFnrd2017243_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "29",
+   "DOI": "10.1007/978-1-62703-260-5_2",
+   "volume": "969",
+   "author": "N Pardi",
+   "year": "2013",
+   "unstructured": "Pardi, N., Muramatsu, H., Weissman, D. & Kariko, K. In vitro transcription of long RNA containing modified nucleosides. Methods Mol. Biol. 969, 29–42 (2013).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "1647",
+   "DOI": "10.1093/clinchem/48.10.1647",
+   "volume": "48",
+   "author": "NB Tsui",
+   "year": "2002",
+   "unstructured": "Tsui, N. B., Ng, E. K. & Lo, Y. M. Stability of endogenous and added RNA in blood specimens, serum, and plasma. Clin. Chem. 48, 1647–1653 (2002).",
+   "journal-title": "Clin. Chem."
+  },
+  {
+   "key": "BFnrd2017243_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "1210",
+   "DOI": "10.1038/nbt.2436",
+   "volume": "30",
+   "author": "B Petsch",
+   "year": "2012",
+   "unstructured": "Petsch, B. et al. Protective efficacy of in vitro synthesized, specific mRNA vaccines against influenza A virus infection. Nat. Biotechnol. 30, 1210–1216 (2012). This study demonstrates that directly injected, non-replicating mRNA can induce protective immune responses against an infectious pathogen.",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnrd2017243_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "14604",
+   "DOI": "10.1073/pnas.1209367109",
+   "volume": "109",
+   "author": "AJ Geall",
+   "year": "2012",
+   "unstructured": "Geall, A. J. et al. Nonviral delivery of self-amplifying RNA vaccines. Proc. Natl Acad. Sci. USA 109, 14604–14609 (2012). This important study demonstrates that the duration of in vivo protein production from RNA replicons can be greatly improved by packaging them into lipid nanoparticles.",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2017243_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "248",
+   "DOI": "10.1038/nature21428",
+   "volume": "543",
+   "author": "N Pardi",
+   "year": "2017",
+   "unstructured": "Pardi, N. et al. Zika virus protection by a single low-dose nucleoside-modified mRNA vaccination. Nature 543, 248–251 (2017).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "345",
+   "DOI": "10.1016/j.jconrel.2015.08.007",
+   "volume": "217",
+   "author": "N Pardi",
+   "year": "2015",
+   "unstructured": "Pardi, N. et al. Expression kinetics of nucleoside-modified mRNA delivered in lipid nanoparticles to mice by various routes. J. Control. Release 217, 345–351 (2015).",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "BFnrd2017243_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "1316",
+   "DOI": "10.1016/j.ymthe.2017.03.035",
+   "volume": "25",
+   "author": "K Bahl",
+   "year": "2017",
+   "unstructured": "Bahl, K. et al. Preclinical and clinical demonstration of immunogenicity by mRNA vaccines against H10N8 and H7N9 influenza viruses. Mol. Ther. 25, 1316–1327 (2017). This is a report of a clinical vaccine trial using directly injected, non-replicating, nucleoside-modified mRNA against an infectious pathogen.",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "1149",
+   "DOI": "10.1182/blood.V66.5.1149.1149",
+   "volume": "66",
+   "author": "J Ross",
+   "year": "1985",
+   "unstructured": "Ross, J. & Sullivan, T. D. Half-lives of beta and gamma globin messenger RNAs and of protein synthetic capacity in cultured human reticulocytes. Blood 66, 1149–1154 (1985).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "4009",
+   "DOI": "10.1182/blood-2006-04-015024",
+   "volume": "108",
+   "author": "S Holtkamp",
+   "year": "2006",
+   "unstructured": "Holtkamp, S. et al. Modification of antigen-encoding RNA increases stability, translational efficacy, and T-cell stimulatory capacity of dendritic cells. Blood 108, 4009–4017 (2006).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "2108",
+   "DOI": "10.1101/gad.5.11.2108",
+   "volume": "5",
+   "author": "DR Gallie",
+   "year": "1991",
+   "unstructured": "Gallie, D. R. The cap and poly(A) tail function synergistically to regulate mRNA translational efficiency. Genes Dev. 5, 2108–2116 (1991).",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "BFnrd2017243_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "9322",
+   "DOI": "10.1016/S0021-9258(19)40646-7",
+   "volume": "250",
+   "author": "SA Martin",
+   "year": "1975",
+   "unstructured": "Martin, S. A., Paoletti, E. & Moss, B. Purification of mRNA guanylyltransferase and mRNA (guanine-7-) methyltransferase from vaccinia virions. J. Biol. Chem. 250, 9322–9329 (1975).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd2017243_CR27",
+   "first-page": "1486",
+   "volume": "7",
+   "author": "J Stepinski",
+   "year": "2001",
+   "unstructured": "Stepinski, J., Waddell, C., Stolarski, R., Darzynkiewicz, E. & Rhoads, R. E. Synthesis and properties of mRNAs containing the novel “anti-reverse” cap analogs 7-methyl(3′-O-methyl)GpppG and 7-methyl (3′-deoxy)GpppG. RNA 7, 1486–1495 (2001).",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "BFnrd2017243_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "6077",
+   "DOI": "10.1073/pnas.86.16.6077",
+   "volume": "86",
+   "author": "RW Malone",
+   "year": "1989",
+   "unstructured": "Malone, R. W., Felgner, P. L. & Verma, I. M. Cationic liposome-mediated RNA transfection. Proc. Natl Acad. Sci. USA 86, 6077–6081 (1989).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2017243_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "346",
+   "DOI": "10.1016/j.tibtech.2004.04.006",
+   "volume": "22",
+   "author": "C Gustafsson",
+   "year": "2004",
+   "unstructured": "Gustafsson, C., Govindarajan, S. & Minshull, J. Codon bias and heterologous protein expression. Trends Biotechnol. 22, 346–353 (2004).",
+   "journal-title": "Trends Biotechnol."
+  },
+  {
+   "key": "BFnrd2017243_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "604",
+   "DOI": "10.1016/j.molmed.2014.09.003",
+   "volume": "20",
+   "author": "VP Mauro",
+   "year": "2014",
+   "unstructured": "Mauro, V. P. & Chappell, S. A. A critical analysis of codon optimization in human therapeutics. Trends Mol. Med. 20, 604–613 (2014).",
+   "journal-title": "Trends Mol. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR31",
+   "doi-asserted-by": "publisher",
+   "first-page": "e180",
+   "DOI": "10.1371/journal.pbio.0040180",
+   "volume": "4",
+   "author": "G Kudla",
+   "year": "2006",
+   "unstructured": "Kudla, G., Lipinski, L., Caffin, F., Helwak, A. & Zylicz, M. High guanine and cytosine content increases mRNA levels in mammalian cells. PLoS Biol. 4, e180 (2006).",
+   "journal-title": "PLoS Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "255",
+   "DOI": "10.1126/science.1170160",
+   "volume": "324",
+   "author": "G Kudla",
+   "year": "2009",
+   "unstructured": "Kudla, G., Murray, A. W., Tollervey, D. & Plotkin, J. B. Coding-sequence determinants of gene expression in Escherichia coli. Science 324, 255–258 (2009).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "341",
+   "DOI": "10.1016/j.molcel.2016.01.008",
+   "volume": "61",
+   "author": "F Buhr",
+   "year": "2016",
+   "unstructured": "Buhr, F. et al. Synonymous codons direct cotranslational folding toward different protein conformations. Mol. Cell 61, 341–351 (2016).",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "BFnrd2017243_CR34",
+   "doi-asserted-by": "publisher",
+   "first-page": "744",
+   "DOI": "10.1016/j.molcel.2015.07.018",
+   "volume": "59",
+   "author": "CH Yu",
+   "year": "2015",
+   "unstructured": "Yu, C. H. et al. Codon usage influences the local rate of translation elongation to regulate co-translational protein folding. Mol. Cell 59, 744–754 (2015).",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "BFnrd2017243_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "297",
+   "DOI": "10.1002/iub.1625",
+   "volume": "69",
+   "author": "N Chen",
+   "year": "2017",
+   "unstructured": "Chen, N. et al. RNA sensors of the innate immune system and their detection of pathogens. IUBMB Life 69, 297–304 (2017).",
+   "journal-title": "IUBMB Life"
+  },
+  {
+   "key": "BFnrd2017243_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1097/CJI.0b013e3181f7dbe8",
+   "volume": "34",
+   "author": "M Fotin-Mleczek",
+   "year": "2011",
+   "unstructured": "Fotin-Mleczek, M. et al. Messenger RNA-based vaccines with dual activity induce balanced TLR-7 dependent adaptive immune responses and provide antitumor activity. J. Immunother. 34, 1–15 (2011).",
+   "journal-title": "J. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "4533",
+   "DOI": "10.1182/blood-2009-11-247817",
+   "volume": "115",
+   "author": "L Rettig",
+   "year": "2010",
+   "unstructured": "Rettig, L. et al. Particle size and activation threshold: a new dimension of danger signaling. Blood 115, 4533–4541 (2010).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "1378",
+   "DOI": "10.1096/fasebj.10.12.8903508",
+   "volume": "10",
+   "author": "C de Haro",
+   "year": "1996",
+   "unstructured": "de Haro, C., Mendez, R. & Santoyo, J. The eIF-2α kinases and the control of protein synthesis. FASEB J. 10, 1378–1387 (1996).",
+   "journal-title": "FASEB J."
+  },
+  {
+   "key": "BFnrd2017243_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "508",
+   "DOI": "10.1080/15216540600838232",
+   "volume": "58",
+   "author": "SL Liang",
+   "year": "2006",
+   "unstructured": "Liang, S. L., Quirk, D. & Zhou, A. RNase L: its biological roles and regulation. IUBMB Life 58, 508–514 (2006).",
+   "journal-title": "IUBMB Life"
+  },
+  {
+   "key": "BFnrd2017243_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "737",
+   "DOI": "10.1016/j.immuni.2016.09.011",
+   "volume": "45",
+   "author": "Z Zhang",
+   "year": "2016",
+   "unstructured": "Zhang, Z. et al. Structural analysis reveals that Toll-like receptor 7 is a dual receptor for guanosine and single-stranded RNA. Immunity 45, 737–748 (2016).",
+   "journal-title": "Immunity"
+  },
+  {
+   "key": "BFnrd2017243_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "109",
+   "DOI": "10.1038/nsmb.2943",
+   "volume": "22",
+   "author": "H Tanji",
+   "year": "2015",
+   "unstructured": "Tanji, H. et al. Toll-like receptor 8 senses degradation products of single-stranded RNA. Nat. Struct. Mol. Biol. 22, 109–115 (2015).",
+   "journal-title": "Nat. Struct. Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "113",
+   "DOI": "10.1016/S0140-6736(63)92585-6",
+   "volume": "2",
+   "author": "A Isaacs",
+   "year": "1963",
+   "unstructured": "Isaacs, A., Cox, R. A. & Rotem, Z. Foreign nucleic acids as the stimulus to make interferon. Lancet 2, 113–116 (1963).",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "BFnrd2017243_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "148",
+   "DOI": "10.1016/j.cell.2014.08.028",
+   "volume": "159",
+   "author": "S Schwartz",
+   "year": "2014",
+   "unstructured": "Schwartz, S. et al. Transcriptome-wide mapping reveals widespread dynamic-regulated pseudouridylation of ncRNA and mRNA. Cell 159, 148–162 (2014).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "BFnrd2017243_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "143",
+   "DOI": "10.1038/nature13802",
+   "volume": "515",
+   "author": "TM Carlile",
+   "year": "2014",
+   "unstructured": "Carlile, T. M. et al. Pseudouridine profiling reveals regulated mRNA pseudouridylation in yeast and human cells. Nature 515, 143–146 (2014).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "337",
+   "DOI": "10.1016/j.jconrel.2015.08.051",
+   "volume": "217",
+   "author": "O Andries",
+   "year": "2015",
+   "unstructured": "Andries, O. et al. N1-methylpseudouridine-incorporated mRNA outperforms pseudouridine-incorporated mRNA by providing enhanced protein expression and reduced immunogenicity in mammalian cell lines and mice. J. Control. Release 217, 337–344 (2015).",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "BFnrd2017243_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "5884",
+   "DOI": "10.1093/nar/gkq347",
+   "volume": "38",
+   "author": "BR Anderson",
+   "year": "2010",
+   "unstructured": "Anderson, B. R. et al. Incorporation of pseudouridine into mRNA enhances translation by diminishing PKR activation. Nucleic Acids Res. 38, 5884–5892 (2010).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2017243_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "9329",
+   "DOI": "10.1093/nar/gkr586",
+   "volume": "39",
+   "author": "BR Anderson",
+   "year": "2011",
+   "unstructured": "Anderson, B. R. et al. Nucleoside modifications in RNA limit activation of 2′-5′-oligoadenylate synthetase and increase resistance to cleavage by RNase L. Nucleic Acids Res. 39, 9329–9338 (2011).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2017243_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "165",
+   "DOI": "10.1016/j.immuni.2005.06.008",
+   "volume": "23",
+   "author": "K Kariko",
+   "year": "2005",
+   "unstructured": "Kariko, K., Buckstein, M., Ni, H. & Weissman, D. Suppression of RNA recognition by Toll-like receptors: the impact of nucleoside modification and the evolutionary origin of RNA. Immunity 23, 165–175 (2005). This report demonstrates that nucleoside modification of mRNA decreases inflammatory responses.",
+   "journal-title": "Immunity"
+  },
+  {
+   "key": "BFnrd2017243_CR49",
+   "doi-asserted-by": "publisher",
+   "first-page": "78",
+   "DOI": "10.1016/j.biomaterials.2016.09.006",
+   "volume": "109",
+   "author": "KJ Kauffman",
+   "year": "2016",
+   "unstructured": "Kauffman, K. J. et al. Efficacy and immunogenicity of unmodified and pseudouridine-modified mRNA delivered systemically with lipid nanoparticles in vivo. Biomaterials 109, 78–87 (2016).",
+   "journal-title": "Biomaterials"
+  },
+  {
+   "key": "BFnrd2017243_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "2118",
+   "DOI": "10.1038/mt.2014.133",
+   "volume": "22",
+   "author": "LA Brito",
+   "year": "2014",
+   "unstructured": "Brito, L. A. et al. A cationic nanoemulsion for the delivery of next-generation RNA vaccines. Mol. Ther. 22, 2118–2129 (2014).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "235",
+   "DOI": "10.1586/14760584.2015.957685",
+   "volume": "14",
+   "author": "S Van Lint",
+   "year": "2015",
+   "unstructured": "Van Lint, S. et al. The ReNAissanCe of mRNA-based cancer therapy. Expert Rev. Vaccines 14, 235–251 (2015).",
+   "journal-title": "Expert Rev. Vaccines"
+  },
+  {
+   "key": "BFnrd2017243_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "2263",
+   "DOI": "10.4161/hv.25181",
+   "volume": "9",
+   "author": "KJ Kallen",
+   "year": "2013",
+   "unstructured": "Kallen, K. J. et al. A novel, disruptive vaccination technology: self-adjuvanted RNActive® vaccines. Hum. Vaccin Immunother. 9, 2263–2276 (2013).",
+   "journal-title": "Hum. Vaccin Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "89",
+   "DOI": "10.1007/978-1-4939-6481-9_5",
+   "volume": "1499",
+   "author": "S Rauch",
+   "year": "2017",
+   "unstructured": "Rauch, S., Lutz, J., Kowalczyk, A., Schlake, T. & Heidenreich, R. RNActive® technology: generation and testing of stable and immunogenic mRNA vaccines. Methods Mol. Biol. 1499, 89–107 (2017).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1186/s12967-016-1111-6",
+   "volume": "15",
+   "author": "DK Edwards",
+   "year": "2017",
+   "unstructured": "Edwards, D. K. et al. Adjuvant effects of a sequence-engineered mRNA vaccine: translational profiling demonstrates similar human and murine innate response. J. Transl Med. 15, 1 (2017).",
+   "journal-title": "J. Transl Med."
+  },
+  {
+   "key": "BFnrd2017243_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "3882",
+   "DOI": "10.1016/j.vaccine.2016.05.046",
+   "volume": "34",
+   "author": "A Kowalczyk",
+   "year": "2016",
+   "unstructured": "Kowalczyk, A. et al. Self-adjuvanted mRNA vaccines induce local innate immune responses that lead to a potent and boostable adaptive immunity. Vaccine 34, 3882–3893 (2016).",
+   "journal-title": "Vaccine"
+  },
+  {
+   "key": "BFnrd2017243_CR56",
+   "doi-asserted-by": "publisher",
+   "first-page": "e0004746",
+   "DOI": "10.1371/journal.pntd.0004746",
+   "volume": "10",
+   "author": "M Schnee",
+   "year": "2016",
+   "unstructured": "Schnee, M. et al. An mRNA vaccine encoding rabies virus glycoprotein induces protection against lethal infection in mice and correlates of protection in adult and newborn pigs. PLoS Negl. Trop. Dis. 10, e0004746 (2016).",
+   "journal-title": "PLoS Negl. Trop. Dis."
+  },
+  {
+   "key": "BFnrd2017243_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "1595",
+   "DOI": "10.4049/jimmunol.1601129",
+   "volume": "198",
+   "author": "A Ziegler",
+   "year": "2017",
+   "unstructured": "Ziegler, A. et al. A new RNA-based adjuvant enhances virus-specific vaccine responses by locally triggering TLR- and RLH-dependent effects. J. Immunol. 198, 1595–1605 (2017).",
+   "journal-title": "J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR58",
+   "doi-asserted-by": "publisher",
+   "first-page": "161",
+   "DOI": "10.1586/14760584.2014.957684",
+   "volume": "14",
+   "author": "D Benteyn",
+   "year": "2015",
+   "unstructured": "Benteyn, D., Heirman, C., Bonehill, A., Thielemans, K. & Breckpot, K. mRNA-based dendritic cell vaccines. Expert Rev. Vaccines 14, 161–176 (2015).",
+   "journal-title": "Expert Rev. Vaccines"
+  },
+  {
+   "key": "BFnrd2017243_CR59",
+   "doi-asserted-by": "publisher",
+   "first-page": "396",
+   "DOI": "10.1038/nature18300",
+   "volume": "534",
+   "author": "LM Kranz",
+   "year": "2016",
+   "unstructured": "Kranz, L. M. et al. Systemic RNA delivery to dendritic cells exploits antiviral defence for cancer immunotherapy. Nature 534, 396–401 (2016).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR60",
+   "doi-asserted-by": "crossref",
+   "first-page": "1313",
+   "DOI": "10.4049/jimmunol.161.3.1313",
+   "volume": "161",
+   "author": "M Wykes",
+   "year": "1998",
+   "unstructured": "Wykes, M., Pombo, A., Jenkins, C. & MacPherson, G. G. Dendritic cells interact directly with naive B lymphocytes to transfer antigen and initiate class switching in a primary T-dependent response. J. Immunol. 161, 1313–1319 (1998).",
+   "journal-title": "J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR61",
+   "doi-asserted-by": "publisher",
+   "first-page": "1075",
+   "DOI": "10.1007/s00262-016-1869-7",
+   "volume": "65",
+   "author": "A Selmi",
+   "year": "2016",
+   "unstructured": "Selmi, A. et al. Uptake of synthetic naked RNA by skin-resident dendritic cells via macropinocytosis allows antigen expression and induction of T-cell responses in mice. Cancer Immunol. Immunother. 65, 1075–1083 (2016).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR62",
+   "doi-asserted-by": "publisher",
+   "first-page": "702",
+   "DOI": "10.1038/gt.2011.17",
+   "volume": "18",
+   "author": "M Diken",
+   "year": "2011",
+   "unstructured": "Diken, M. et al. Selective uptake of naked vaccine RNA by dendritic cells is driven by macropinocytosis and abrogated upon DC maturation. Gene Ther. 18, 702–708 (2011).",
+   "journal-title": "Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR63",
+   "doi-asserted-by": "publisher",
+   "first-page": "627",
+   "DOI": "10.4161/rna.8.4.15394",
+   "volume": "8",
+   "author": "C Lorenz",
+   "year": "2011",
+   "unstructured": "Lorenz, C. et al. Protein expression from exogenous mRNA: uptake by receptor-mediated endocytosis and trafficking via the lysosomal pathway. RNA Biol. 8, 627–636 (2011).",
+   "journal-title": "RNA Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR64",
+   "doi-asserted-by": "publisher",
+   "first-page": "437",
+   "DOI": "10.1046/j.1365-201X.2003.01093.x",
+   "volume": "177",
+   "author": "J Gehl",
+   "year": "2003",
+   "unstructured": "Gehl, J. Electroporation: theory and methods, perspectives for drug delivery, gene therapy and research. Acta Physiol. Scand. 177, 437–447 (2003).",
+   "journal-title": "Acta Physiol. Scand."
+  },
+  {
+   "key": "BFnrd2017243_CR65",
+   "doi-asserted-by": "publisher",
+   "first-page": "632",
+   "DOI": "10.1046/j.1523-1747.2000.00929.x",
+   "volume": "114",
+   "author": "RD Granstein",
+   "year": "2000",
+   "unstructured": "Granstein, R. D., Ding, W. & Ozawa, H. Induction of anti-tumor immunity with epidermal cells pulsed with tumor-derived RNA or intradermal administration of RNA. J. Invest. Dermatol. 114, 632–636 (2000).",
+   "journal-title": "J. Invest. Dermatol."
+  },
+  {
+   "key": "BFnrd2017243_CR66",
+   "doi-asserted-by": "publisher",
+   "first-page": "9031",
+   "DOI": "10.1158/0008-5472.CAN-10-0699",
+   "volume": "70",
+   "author": "S Kreiter",
+   "year": "2010",
+   "unstructured": "Kreiter, S. et al. Intranodal vaccination with naked antigen-encoding RNA elicits potent prophylactic and therapeutic antitumoral immunity. Cancer Res. 70, 9031–9040 (2010).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR67",
+   "doi-asserted-by": "publisher",
+   "first-page": "22509",
+   "DOI": "10.1038/srep22509",
+   "volume": "6",
+   "author": "L Bialkowski",
+   "year": "2016",
+   "unstructured": "Bialkowski, L. et al. Intralymphatic mRNA vaccine induces CD8 T-cell responses that inhibit the growth of mucosally located tumours. Sci. Rep. 6, 22509 (2016).",
+   "journal-title": "Sci. Rep."
+  },
+  {
+   "key": "BFnrd2017243_CR68",
+   "doi-asserted-by": "publisher",
+   "first-page": "222",
+   "DOI": "10.1038/nature23003",
+   "volume": "547",
+   "author": "U Sahin",
+   "year": "2017",
+   "unstructured": "Sahin, U. et al. Personalized RNA mutanome vaccines mobilize poly-specific therapeutic immunity against cancer. Nature 547, 222–226 (2017).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR69",
+   "first-page": "262",
+   "volume": "3",
+   "author": "P Qiu",
+   "year": "1996",
+   "unstructured": "Qiu, P., Ziegelhoffer, P., Sun, J. & Yang, N. S. Gene gun delivery of mRNA in situ results in efficient transgene expression and genetic immunization. Gene Ther. 3, 262–268 (1996).",
+   "journal-title": "Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR70",
+   "doi-asserted-by": "publisher",
+   "first-page": "246",
+   "DOI": "10.1007/s00262-005-0042-5",
+   "volume": "55",
+   "author": "J Steitz",
+   "year": "2006",
+   "unstructured": "Steitz, J., Britten, C. M., Wolfel, T. & Tuting, T. Effective induction of anti-melanoma immunity following genetic vaccination with synthetic mRNA coding for the fusion protein EGFP.TRP2. Cancer Immunol. Immunother. 55, 246–253 (2006).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR71",
+   "doi-asserted-by": "publisher",
+   "first-page": "15107",
+   "DOI": "10.1128/JVI.79.24.15107-15113.2005",
+   "volume": "79",
+   "author": "JH Aberle",
+   "year": "2005",
+   "unstructured": "Aberle, J. H., Aberle, S. W., Kofler, R. M. & Mandl, C. W. Humoral and cellular immune response to RNA immunization with flavivirus replicons derived from tick-borne encephalitis virus. J. Virol. 79, 15107–15113 (2005).",
+   "journal-title": "J. Virol."
+  },
+  {
+   "key": "BFnrd2017243_CR72",
+   "doi-asserted-by": "publisher",
+   "first-page": "1951",
+   "DOI": "10.1073/pnas.0307145101",
+   "volume": "101",
+   "author": "RM Kofler",
+   "year": "2004",
+   "unstructured": "Kofler, R. M. et al. Mimicking live flavivirus immunization with a noninfectious RNA vaccine. Proc. Natl Acad. Sci. USA 101, 1951–1956 (2004).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2017243_CR73",
+   "doi-asserted-by": "publisher",
+   "first-page": "1438",
+   "DOI": "10.1038/4031",
+   "volume": "4",
+   "author": "CW Mandl",
+   "year": "1998",
+   "unstructured": "Mandl, C. W. et al. In vitro-synthesized infectious RNA as an attenuated live vaccine in a flavivirus model. Nat. Med. 4, 1438–1440 (1998).",
+   "journal-title": "Nat. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR74",
+   "doi-asserted-by": "publisher",
+   "first-page": "e29732",
+   "DOI": "10.1371/journal.pone.0029732",
+   "volume": "7",
+   "author": "DX Johansson",
+   "year": "2012",
+   "unstructured": "Johansson, D. X., Ljungberg, K., Kakoulidou, M. & Liljestrom, P. Intradermal electroporation of naked replicon RNA elicits strong immune responses. PLoS ONE 7, e29732 (2012).",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "BFnrd2017243_CR75",
+   "first-page": "753",
+   "volume": "2",
+   "author": "JM Piggott",
+   "year": "2009",
+   "unstructured": "Piggott, J. M., Sheahan, B. J., Soden, D. M., O'Sullivan, G. C. & Atkins, G. J. Electroporation of RNA stimulates immunity to an encoded reporter gene in mice. Mol. Med. Rep. 2, 753–756 (2009).",
+   "journal-title": "Mol. Med. Rep."
+  },
+  {
+   "key": "BFnrd2017243_CR76",
+   "doi-asserted-by": "publisher",
+   "first-page": "195",
+   "DOI": "10.1586/14760584.2015.990890",
+   "volume": "14",
+   "author": "KE Broderick",
+   "year": "2015",
+   "unstructured": "Broderick, K. E. & Humeau, L. M. Electroporation-enhanced delivery of nucleic acid vaccines. Expert Rev. Vaccines 14, 195–204 (2015).",
+   "journal-title": "Expert Rev. Vaccines"
+  },
+  {
+   "key": "BFnrd2017243_CR77",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1002/1521-4141(200001)30:1<1::AID-IMMU1>3.0.CO;2-#",
+   "volume": "30",
+   "author": "I Hoerr",
+   "year": "2000",
+   "unstructured": "Hoerr, I., Obst, R., Rammensee, H. G. & Jung, G. In vivo application of RNA leads to induction of specific cytotoxic T lymphocytes and antibodies. Eur. J. Immunol. 30, 1–7 (2000).",
+   "journal-title": "Eur. J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR78",
+   "doi-asserted-by": "publisher",
+   "first-page": "1319",
+   "DOI": "10.4161/rna.22269",
+   "volume": "9",
+   "author": "T Schlake",
+   "year": "2012",
+   "unstructured": "Schlake, T., Thess, A., Fotin-Mleczek, M. & Kallen, K. J. Developing mRNA-vaccine technologies. RNA Biol. 9, 1319–1330 (2012).",
+   "journal-title": "RNA Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR79",
+   "doi-asserted-by": "publisher",
+   "first-page": "319",
+   "DOI": "10.4155/tde-2016-0006",
+   "volume": "7",
+   "author": "AM Reichmuth",
+   "year": "2016",
+   "unstructured": "Reichmuth, A. M., Oberli, M. A., Jeklenec, A., Langer, R. & Blankschtein, D. mRNA vaccine delivery using lipid nanoparticles. Ther. Deliv. 7, 319–334 (2016).",
+   "journal-title": "Ther. Deliv."
+  },
+  {
+   "key": "BFnrd2017243_CR80",
+   "doi-asserted-by": "publisher",
+   "first-page": "221",
+   "DOI": "10.1586/14760584.2015.986104",
+   "volume": "14",
+   "author": "P Midoux",
+   "year": "2015",
+   "unstructured": "Midoux, P. & Pichon, C. Lipid-based mRNA vaccine delivery systems. Expert Rev. Vaccines 14, 221–234 (2015).",
+   "journal-title": "Expert Rev. Vaccines"
+  },
+  {
+   "key": "BFnrd2017243_CR81",
+   "doi-asserted-by": "publisher",
+   "first-page": "967",
+   "DOI": "10.1038/nmat3765",
+   "volume": "12",
+   "author": "R Kanasty",
+   "year": "2013",
+   "unstructured": "Kanasty, R., Dorkin, J. R., Vegas, A. & Anderson, D. Delivery materials for siRNA therapeutics. Nat. Mater. 12, 967–977 (2013).",
+   "journal-title": "Nat. Mater."
+  },
+  {
+   "key": "BFnrd2017243_CR82",
+   "doi-asserted-by": "publisher",
+   "first-page": "1357",
+   "DOI": "10.1038/mt.2010.85",
+   "volume": "18",
+   "author": "A Akinc",
+   "year": "2010",
+   "unstructured": "Akinc, A. et al. Targeted delivery of RNAi therapeutics with endogenous and exogenous ligand-based mechanisms. Mol. Ther. 18, 1357–1364 (2010).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR83",
+   "doi-asserted-by": "crossref",
+   "first-page": "7",
+   "DOI": "10.1186/s40169-016-0087-4",
+   "volume": "5",
+   "author": "MZ Ratajczak",
+   "year": "2016",
+   "unstructured": "Ratajczak, M. Z. & Ratajczak, J. Horizontal transfer of RNA and proteins between cells by extracellular microvesicles: 14 years later. Clin. Transl Med. 5, 7 (2016).",
+   "journal-title": "Clin. Transl Med."
+  },
+  {
+   "key": "BFnrd2017243_CR84",
+   "doi-asserted-by": "publisher",
+   "first-page": "E6639",
+   "DOI": "10.1073/pnas.1606050113",
+   "volume": "113",
+   "author": "HH Tam",
+   "year": "2016",
+   "unstructured": "Tam, H. H. et al. Sustained antigen availability during germinal center initiation enhances antibody responses to vaccination. Proc. Natl Acad. Sci. USA 113, E6639–E6648 (2016).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2017243_CR85",
+   "doi-asserted-by": "publisher",
+   "first-page": "1114",
+   "DOI": "10.1016/j.cell.2017.02.017",
+   "volume": "168",
+   "author": "JM Richner",
+   "year": "2017",
+   "unstructured": "Richner, J. M. et al. Modified mRNA Vaccines protect against Zika virus infection. Cell 168, 1114–1125.e10 (2017).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "BFnrd2017243_CR86",
+   "doi-asserted-by": "publisher",
+   "first-page": "49",
+   "DOI": "10.1111/imr.12512",
+   "volume": "275",
+   "author": "C Havenar-Daughton",
+   "year": "2017",
+   "unstructured": "Havenar-Daughton, C., Lee, J. H. & Crotty, S. Tfh cells and HIV bnAbs, an immunodominance model of the HIV neutralizing antibody generation problem. Immunol. Rev. 275, 49–61 (2017).",
+   "journal-title": "Immunol. Rev."
+  },
+  {
+   "key": "BFnrd2017243_CR87",
+   "doi-asserted-by": "publisher",
+   "first-page": "179",
+   "DOI": "10.1016/bs.adgen.2014.10.005",
+   "volume": "89",
+   "author": "LA Brito",
+   "year": "2015",
+   "unstructured": "Brito, L. A. et al. Self-amplifying mRNA vaccines. Adv. Genet. 89, 179–233 (2015).",
+   "journal-title": "Adv. Genet."
+  },
+  {
+   "key": "BFnrd2017243_CR88",
+   "doi-asserted-by": "publisher",
+   "first-page": "252",
+   "DOI": "10.1038/s41598-017-00193-w",
+   "volume": "7",
+   "author": "JS Chahal",
+   "year": "2017",
+   "unstructured": "Chahal, J. S. et al. An RNA nanoparticle vaccine against Zika virus elicits antibody and CD8+ T cell responses in a mouse model. Sci. Rep. 7, 252 (2017).",
+   "journal-title": "Sci. Rep."
+  },
+  {
+   "key": "BFnrd2017243_CR89",
+   "doi-asserted-by": "publisher",
+   "first-page": "E4133",
+   "DOI": "10.1073/pnas.1600299113",
+   "volume": "113",
+   "author": "JS Chahal",
+   "year": "2016",
+   "unstructured": "Chahal, J. S. et al. Dendrimer-RNA nanoparticles generate protective immunity against lethal Ebola, H1N1 influenza, and Toxoplasma gondii challenges with a single dose. Proc. Natl Acad. Sci. USA 113, E4133–E4142 (2016).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2017243_CR90",
+   "doi-asserted-by": "publisher",
+   "first-page": "18",
+   "DOI": "10.1016/j.coi.2016.05.008",
+   "volume": "41",
+   "author": "JB Ulmer",
+   "year": "2016",
+   "unstructured": "Ulmer, J. B. & Geall, A. J. Recent innovations in mRNA vaccines. Curr. Opin. Immunol. 41, 18–22 (2016).",
+   "journal-title": "Curr. Opin. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR91",
+   "doi-asserted-by": "publisher",
+   "first-page": "1511",
+   "DOI": "10.1016/S0140-6736(17)31665-3",
+   "volume": "390",
+   "author": "M Alberer",
+   "year": "2017",
+   "unstructured": "Alberer, M. et al. Safety and immunogenicity of a mRNA rabies vaccine in healthy adults: an open-label, non-randomised, prospective, first-in-human phase 1 clinical trial. Lancet 390, 1511–1520 (2017). This is a report of a clinical vaccine trial using directly injected, non-replicating, unmodified mRNA against an infectious pathogen.",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "BFnrd2017243_CR92",
+   "doi-asserted-by": "publisher",
+   "first-page": "10394",
+   "DOI": "10.1128/JVI.77.19.10394-10403.2003",
+   "volume": "77",
+   "author": "S Perri",
+   "year": "2003",
+   "unstructured": "Perri, S. et al. An alphavirus replicon particle chimera derived from venezuelan equine encephalitis and sindbis viruses is a potent gene-based vaccine delivery vector. J. Virol. 77, 10394–10403 (2003).",
+   "journal-title": "J. Virol."
+  },
+  {
+   "key": "BFnrd2017243_CR93",
+   "doi-asserted-by": "publisher",
+   "first-page": "1395",
+   "DOI": "10.1086/319857",
+   "volume": "183",
+   "author": "MN Fleeton",
+   "year": "2001",
+   "unstructured": "Fleeton, M. N. et al. Self-replicative RNA vaccines elicit protection against influenza A virus, respiratory syncytial virus, and a tickborne encephalitis virus. J. Infect. Dis. 183, 1395–1398 (2001). This is an early report of the protective efficacy that results from self-amplifying mRNA vaccines against infectious pathogens.",
+   "journal-title": "J. Infect. Dis."
+  },
+  {
+   "key": "BFnrd2017243_CR94",
+   "doi-asserted-by": "publisher",
+   "first-page": "e0161193",
+   "DOI": "10.1371/journal.pone.0161193",
+   "volume": "11",
+   "author": "D Magini",
+   "year": "2016",
+   "unstructured": "Magini, D. et al. Self-amplifying mRNA vaccines expressing multiple conserved influenza antigens confer protection against homologous and heterosubtypic viral challenge. PLoS ONE 11, e0161193 (2016).",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "BFnrd2017243_CR95",
+   "doi-asserted-by": "publisher",
+   "first-page": "e52",
+   "DOI": "10.1038/emi.2013.54",
+   "volume": "2",
+   "author": "A Hekele",
+   "year": "2013",
+   "unstructured": "Hekele, A. et al. Rapidly produced SAM® vaccine against H7N9 influenza is immunogenic in mice. Emerg. Microbes Infect. 2, e52 (2013).",
+   "journal-title": "Emerg. Microbes Infect."
+  },
+  {
+   "key": "BFnrd2017243_CR96",
+   "doi-asserted-by": "publisher",
+   "first-page": "332",
+   "DOI": "10.1128/JVI.01786-15",
+   "volume": "90",
+   "author": "M Brazzoli",
+   "year": "2015",
+   "unstructured": "Brazzoli, M. et al. Induction of broad-based immunity and protective efficacy by self-amplifying mRNA vaccines encoding influenza virus hemagglutinin. J. Virol. 90, 332–344 (2015).",
+   "journal-title": "J. Virol."
+  },
+  {
+   "key": "BFnrd2017243_CR97",
+   "doi-asserted-by": "publisher",
+   "first-page": "947",
+   "DOI": "10.1093/infdis/jiu522",
+   "volume": "211",
+   "author": "WM Bogers",
+   "year": "2015",
+   "unstructured": "Bogers, W. M. et al. Potent immune responses in rhesus macaques induced by nonviral delivery of a self-amplifying RNA vaccine expressing HIV type 1 envelope with a cationic nanoemulsion. J. Infect. Dis. 211, 947–955 (2015).",
+   "journal-title": "J. Infect. Dis."
+  },
+  {
+   "key": "BFnrd2017243_CR98",
+   "doi-asserted-by": "publisher",
+   "first-page": "e173",
+   "DOI": "10.1038/mtna.2014.24",
+   "volume": "3",
+   "author": "KC McCullough",
+   "year": "2014",
+   "unstructured": "McCullough, K. C. et al. Self-replicating replicon-RNA delivery to dendritic cells by chitosan-nanoparticles for translation in vitro and in vivo. Mol. Ther. Nucleic Acids 3, e173 (2014).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2017243_CR99",
+   "doi-asserted-by": "publisher",
+   "first-page": "711",
+   "DOI": "10.1016/j.nano.2015.11.001",
+   "volume": "12",
+   "author": "T Demoulins",
+   "year": "2016",
+   "unstructured": "Demoulins, T. et al. Polyethylenimine-based polyplex delivery of self-replicating RNA vaccines. Nanomedicine 12, 711–722 (2016).",
+   "journal-title": "Nanomedicine"
+  },
+  {
+   "key": "BFnrd2017243_CR100",
+   "doi-asserted-by": "publisher",
+   "first-page": "361",
+   "DOI": "10.1016/j.vaccine.2016.11.040",
+   "volume": "35",
+   "author": "G Maruggi",
+   "year": "2017",
+   "unstructured": "Maruggi, G. et al. Immunogenicity and protective efficacy induced by self-amplifying mRNA vaccines encoding bacterial antigens. Vaccine 35, 361–368 (2017).",
+   "journal-title": "Vaccine"
+  },
+  {
+   "key": "BFnrd2017243_CR101",
+   "doi-asserted-by": "publisher",
+   "first-page": "F1",
+   "DOI": "10.1097/QAD.0b013e32834f33e8",
+   "volume": "26",
+   "author": "E Van Gulck",
+   "year": "2012",
+   "unstructured": "Van Gulck, E. et al. mRNA-based dendritic cell vaccination induces potent antiviral T-cell responses in HIV-1-infected patients. AIDS 26, F1–F12 (2012).",
+   "journal-title": "AIDS"
+  },
+  {
+   "key": "BFnrd2017243_CR102",
+   "doi-asserted-by": "publisher",
+   "first-page": "140",
+   "DOI": "10.1016/j.clim.2009.09.009",
+   "volume": "134",
+   "author": "JP Routy",
+   "year": "2010",
+   "unstructured": "Routy, J. P. et al. Immunologic activity and safety of autologous HIV RNA-electroporated dendritic cells in HIV-1 infected patients receiving antiretroviral therapy. Clin. Immunol. 134, 140–147 (2010).",
+   "journal-title": "Clin. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR103",
+   "doi-asserted-by": "publisher",
+   "first-page": "252",
+   "DOI": "10.1016/j.clim.2011.10.010",
+   "volume": "142",
+   "author": "SD Allard",
+   "year": "2012",
+   "unstructured": "Allard, S. D. et al. A phase I/IIa immunotherapy trial of HIV-1-infected patients with Tat, Rev and Nef expressing dendritic cells followed by treatment interruption. Clin. Immunol. 142, 252–268 (2012).",
+   "journal-title": "Clin. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR104",
+   "doi-asserted-by": "publisher",
+   "first-page": "246",
+   "DOI": "10.1097/QAI.0000000000000852",
+   "volume": "71",
+   "author": "RT Gandhi",
+   "year": "2016",
+   "unstructured": "Gandhi, R. T. et al. Immunization of HIV-1-infected persons with autologous dendritic cells transfected with mRNA encoding HIV-1 Gag and Nef: results of a randomized, placebo-controlled clinical trial. J. Acquir. Immune Def. Syndr. 71, 246–253 (2016).",
+   "journal-title": "J. Acquir. Immune Def. Syndr."
+  },
+  {
+   "key": "BFnrd2017243_CR105",
+   "doi-asserted-by": "publisher",
+   "first-page": "31",
+   "DOI": "10.1097/QAI.0000000000000926",
+   "volume": "72",
+   "author": "JM Jacobson",
+   "year": "2016",
+   "unstructured": "Jacobson, J. M. et al. Dendritic cell immunotherapy for HIV-1 infection using autologous HIV-1 RNA: a randomized, double-blind, placebo-controlled clinical trial. J. Acquir. Immune Def. Syndr. 72, 31–38 (2016).",
+   "journal-title": "J. Acquir. Immune Def. Syndr."
+  },
+  {
+   "key": "BFnrd2017243_CR106",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gay, C. L. et al. Immunogenicity of AGS-004 dendritic cell therapy in patients treated during acute HIV infection. AIDS Res. Hum. Retroviruses 10.1089/aid.2017.0071 (2017).",
+   "DOI": "10.1089/aid.2017.0071"
+  },
+  {
+   "key": "BFnrd2017243_CR107",
+   "doi-asserted-by": "publisher",
+   "first-page": "120",
+   "DOI": "10.1097/TP.0000000000000272",
+   "volume": "99",
+   "author": "AH Van Craenenbroeck",
+   "year": "2015",
+   "unstructured": "Van Craenenbroeck, A. H. et al. Induction of cytomegalovirus-specific T cell responses in healthy volunteers and allogeneic stem cell recipients using vaccination with messenger RNA-transfected dendritic cells. Transplantation 99, 120–127 (2015).",
+   "journal-title": "Transplantation"
+  },
+  {
+   "key": "BFnrd2017243_CR108",
+   "doi-asserted-by": "publisher",
+   "first-page": "1719",
+   "DOI": "10.1002/eji.1830230749",
+   "volume": "23",
+   "author": "F Martinon",
+   "year": "1993",
+   "unstructured": "Martinon, F. et al. Induction of virus-specific cytotoxic T lymphocytes in vivo by liposome-entrapped mRNA. Eur. J. Immunol. 23, 1719–1722 (1993). This early study demonstrates that liposome-encapsulated mRNA encoding a viral antigen induces T cell responses.",
+   "journal-title": "Eur. J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR109",
+   "doi-asserted-by": "publisher",
+   "first-page": "251",
+   "DOI": "10.1038/mt.2012.202",
+   "volume": "21",
+   "author": "C Pollard",
+   "year": "2013",
+   "unstructured": "Pollard, C. et al. Type I IFN counteracts the induction of antigen-specific immune responses by lipid-based delivery of mRNA vaccines. Mol. Ther. 21, 251–259 (2013).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR110",
+   "doi-asserted-by": "publisher",
+   "first-page": "2596",
+   "DOI": "10.3109/10717544.2015.1038856",
+   "volume": "23",
+   "author": "M Zhao",
+   "year": "2016",
+   "unstructured": "Zhao, M., Li, M., Zhang, Z., Gong, T. & Sun, X. Induction of HIV-1 gag specific immune responses by cationic micelles mediated delivery of gag mRNA. Drug Deliv. 23, 2596–2607 (2016).",
+   "journal-title": "Drug Deliv."
+  },
+  {
+   "key": "BFnrd2017243_CR111",
+   "doi-asserted-by": "publisher",
+   "first-page": "9",
+   "DOI": "10.1016/j.jconrel.2016.02.043",
+   "volume": "228",
+   "author": "M Li",
+   "year": "2016",
+   "unstructured": "Li, M. et al. Enhanced intranasal delivery of mRNA vaccine by overcoming the nasal epithelial barrier via intra- and paracellular pathways. J. Control. Release 228, 9–19 (2016).",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "BFnrd2017243_CR112",
+   "doi-asserted-by": "publisher",
+   "first-page": "273",
+   "DOI": "10.1016/j.cell.2017.06.040",
+   "volume": "170",
+   "author": "JM Richner",
+   "year": "2017",
+   "unstructured": "Richner, J. M. et al. Vaccine mediated protection against Zika virus-induced congenital disease. Cell 170, 273–283.e12 (2017).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "BFnrd2017243_CR113",
+   "doi-asserted-by": "publisher",
+   "first-page": "668",
+   "DOI": "10.1086/655830",
+   "volume": "51",
+   "author": "F Roman",
+   "year": "2010",
+   "unstructured": "Roman, F., Vaman, T., Kafeja, F., Hanon, E. & Van Damme, P. AS03(A)-adjuvanted influenza A (H1N1) 2009 vaccine for adults up to 85 years of age. Clin. Infect. Dis. 51, 668–677 (2010).",
+   "journal-title": "Clin. Infect. Dis."
+  },
+  {
+   "key": "BFnrd2017243_CR114",
+   "doi-asserted-by": "publisher",
+   "first-page": "1316",
+   "DOI": "10.4161/hv.24093",
+   "volume": "9",
+   "author": "S Zarei",
+   "year": "2013",
+   "unstructured": "Zarei, S. et al. Immunogenicity and reactogenicity of two diphtheria-tetanus-whole cell pertussis vaccines in Iranian pre-school children, a randomized controlled trial. Hum. Vaccin. Immunother. 9, 1316–1322 (2013).",
+   "journal-title": "Hum. Vaccin. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR115",
+   "doi-asserted-by": "publisher",
+   "first-page": "113",
+   "DOI": "10.21775/cimb.022.113",
+   "volume": "22",
+   "author": "M Diken",
+   "year": "2017",
+   "unstructured": "Diken, M., Kranz, L. M., Kreiter, S. & Sahin, U. mRNA: a versatile molecule for cancer vaccines. Curr. Issues Mol. Biol. 22, 113–128 (2017).",
+   "journal-title": "Curr. Issues Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR116",
+   "doi-asserted-by": "publisher",
+   "first-page": "61",
+   "DOI": "10.1007/978-3-319-42934-2_5",
+   "volume": "209",
+   "author": "K Fiedler",
+   "year": "2016",
+   "unstructured": "Fiedler, K., Lazzaro, S., Lutz, J., Rauch, S. & Heidenreich, R. mRNA cancer vaccines. Recent Results Cancer Res. 209, 61–85 (2016).",
+   "journal-title": "Recent Results Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR117",
+   "first-page": "145",
+   "volume": "405",
+   "author": "C Grunwitz",
+   "year": "2017",
+   "unstructured": "Grunwitz, C. & Kranz, L. M. mRNA cancer vaccines-messages that prevail. Curr. Top. Microbiol. Immunol. 405, 145–164 (2017).",
+   "journal-title": "Curr. Top. Microbiol. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR118",
+   "doi-asserted-by": "publisher",
+   "first-page": "794528",
+   "DOI": "10.1155/2015/794528",
+   "volume": "2015",
+   "author": "MA McNamara",
+   "year": "2015",
+   "unstructured": "McNamara, M. A., Nair, S. K. & Holl, E. K. RNA-Based Vaccines in Cancer Immunotherapy. J. Immunol. Res. 2015, 794528 (2015).",
+   "journal-title": "J. Immunol. Res."
+  },
+  {
+   "key": "BFnrd2017243_CR119",
+   "doi-asserted-by": "publisher",
+   "first-page": "1417",
+   "DOI": "10.1126/science.aad8709",
+   "volume": "352",
+   "author": "BA Sullenger",
+   "year": "2016",
+   "unstructured": "Sullenger, B. A. & Nair, S. From the RNA world to the clinic. Science 352, 1417–1420 (2016).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR120",
+   "doi-asserted-by": "publisher",
+   "first-page": "948501",
+   "DOI": "10.1155/2015/948501",
+   "volume": "2015",
+   "author": "N Vigneron",
+   "year": "2015",
+   "unstructured": "Vigneron, N. Human tumor antigens and cancer immunotherapy. Biomed. Res. Int. 2015, 948501 (2015).",
+   "journal-title": "Biomed. Res. Int."
+  },
+  {
+   "key": "BFnrd2017243_CR121",
+   "doi-asserted-by": "publisher",
+   "first-page": "1885",
+   "DOI": "10.1158/1078-0432.CCR-15-1509",
+   "volume": "22",
+   "author": "O Tureci",
+   "year": "2016",
+   "unstructured": "Tureci, O. et al. Targeting the heterogeneity of cancer with individualized neoepitope vaccines. Clin. Cancer Res. 22, 1885–1896 (2016).",
+   "journal-title": "Clin. Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR122",
+   "doi-asserted-by": "publisher",
+   "first-page": "135",
+   "DOI": "10.1038/nrc3670",
+   "volume": "14",
+   "author": "PG Coulie",
+   "year": "2014",
+   "unstructured": "Coulie, P. G., Van den Eynde, B. J., van der Bruggen, P. & Boon, T. Tumour antigens recognized by T lymphocytes: at the core of cancer immunotherapy. Nat. Rev. Cancer 14, 135–146 (2014).",
+   "journal-title": "Nat. Rev. Cancer"
+  },
+  {
+   "key": "BFnrd2017243_CR123",
+   "first-page": "1397",
+   "volume": "55",
+   "author": "RM Conry",
+   "year": "1995",
+   "unstructured": "Conry, R. M. et al. Characterization of a messenger RNA polynucleotide vaccine vector. Cancer Res. 55, 1397–1400 (1995).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR124",
+   "doi-asserted-by": "publisher",
+   "first-page": "465",
+   "DOI": "10.1084/jem.184.2.465",
+   "volume": "184",
+   "author": "D Boczkowski",
+   "year": "1996",
+   "unstructured": "Boczkowski, D., Nair, S. K., Snyder, D. & Gilboa, E. Dendritic cells pulsed with RNA are potent antigen-presenting cells in vitro and in vivo. J. Exp. Med. 184, 465–472 (1996). This report demonstrates the efficacy of mRNA DC vaccines.",
+   "journal-title": "J. Exp. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR125",
+   "doi-asserted-by": "publisher",
+   "first-page": "989",
+   "DOI": "10.1189/jlb.0810466",
+   "volume": "89",
+   "author": "B De Keersmaecker",
+   "year": "2011",
+   "unstructured": "De Keersmaecker, B. et al. The combination of 4-1BBL and CD40L strongly enhances the capacity of dendritic cells to stimulate HIV-specific T cell responses. J. Leukoc. Biol. 89, 989–999 (2011).",
+   "journal-title": "J. Leukoc. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR126",
+   "doi-asserted-by": "publisher",
+   "first-page": "3206",
+   "DOI": "10.1182/blood-2004-10-3944",
+   "volume": "105",
+   "author": "J Dannull",
+   "year": "2005",
+   "unstructured": "Dannull, J. et al. Enhancing the immunostimulatory function of dendritic cells by transfection with mRNA encoding OX40 ligand. Blood 105, 3206–3213 (2005).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR127",
+   "doi-asserted-by": "publisher",
+   "first-page": "686",
+   "DOI": "10.1002/eji.200636535",
+   "volume": "37",
+   "author": "C Aerts-Toegaert",
+   "year": "2007",
+   "unstructured": "Aerts-Toegaert, C. et al. CD83 expression on dendritic cells and T cells: correlation with effective immune responses. Eur. J. Immunol. 37, 686–695 (2007).",
+   "journal-title": "Eur. J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR128",
+   "doi-asserted-by": "publisher",
+   "first-page": "749",
+   "DOI": "10.1038/sj.cgt.7700842",
+   "volume": "12",
+   "author": "F Grunebach",
+   "year": "2005",
+   "unstructured": "Grunebach, F. et al. Cotransfection of dendritic cells with RNA coding for HER-2/neu and 4-1BBL increases the induction of tumor antigen specific cytotoxic T lymphocytes. Cancer Gene Ther. 12, 749–756 (2005).",
+   "journal-title": "Cancer Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR129",
+   "doi-asserted-by": "publisher",
+   "first-page": "375",
+   "DOI": "10.1016/j.clim.2008.02.001",
+   "volume": "127",
+   "author": "HJ Bontkes",
+   "year": "2008",
+   "unstructured": "Bontkes, H. J., Kramer, D., Ruizendaal, J. J., Meijer, C. J. & Hooijberg, E. Tumor associated antigen and interleukin-12 mRNA transfected dendritic cells enhance effector function of natural killer cells and antigen specific T-cells. Clin. Immunol. 127, 375–384 (2008).",
+   "journal-title": "Clin. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR130",
+   "doi-asserted-by": "publisher",
+   "first-page": "366",
+   "DOI": "10.1038/sj.gt.3302874",
+   "volume": "14",
+   "author": "HJ Bontkes",
+   "year": "2007",
+   "unstructured": "Bontkes, H. J. et al. Dendritic cells transfected with interleukin-12 and tumor-associated antigen messenger RNA induce high avidity cytotoxic T cells. Gene Ther. 14, 366–375 (2007).",
+   "journal-title": "Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR131",
+   "doi-asserted-by": "publisher",
+   "first-page": "467",
+   "DOI": "10.1007/s00262-007-0385-1",
+   "volume": "57",
+   "author": "J Dorrie",
+   "year": "2008",
+   "unstructured": "Dorrie, J. et al. Introduction of functional chimeric E/L-selectin by RNA electroporation to target dendritic cells from blood to lymph nodes. Cancer Immunol. Immunother. 57, 467–477 (2008).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR132",
+   "doi-asserted-by": "publisher",
+   "first-page": "1170",
+   "DOI": "10.1038/mt.2008.77",
+   "volume": "16",
+   "author": "A Bonehill",
+   "year": "2008",
+   "unstructured": "Bonehill, A. et al. Enhancing the T-cell stimulatory capacity of human dendritic cells by co-electroporation with CD40L, CD70 and constitutively active TLR4 encoding mRNA. Mol. Ther. 16, 1170–1180 (2008). This is a description of the TriMix mRNA adjuvant cocktail.",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR133",
+   "doi-asserted-by": "publisher",
+   "first-page": "1661",
+   "DOI": "10.1158/0008-5472.CAN-11-2957",
+   "volume": "72",
+   "author": "S Van Lint",
+   "year": "2012",
+   "unstructured": "Van Lint, S. et al. Preclinical evaluation of TriMix and antigen mRNA-based antitumor therapy. Cancer Res. 72, 1661–1671 (2012).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR134",
+   "doi-asserted-by": "publisher",
+   "first-page": "959",
+   "DOI": "10.1007/s00262-014-1558-3",
+   "volume": "63",
+   "author": "S Van Lint",
+   "year": "2014",
+   "unstructured": "Van Lint, S. et al. Optimized dendritic cell-based immunotherapy for melanoma: the TriMix-formula. Cancer Immunol. Immunother. 63, 959–967 (2014).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR135",
+   "doi-asserted-by": "publisher",
+   "first-page": "1976",
+   "DOI": "10.4049/jimmunol.1201008",
+   "volume": "191",
+   "author": "JJ Pen",
+   "year": "2013",
+   "unstructured": "Pen, J. J. et al. Modulation of regulatory T cell function by monocyte-derived dendritic cells matured through electroporation with mRNA encoding CD40 ligand, constitutively active TLR4, and CD70. J. Immunol. 191, 1976–1983 (2013).",
+   "journal-title": "J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR136",
+   "doi-asserted-by": "publisher",
+   "first-page": "448",
+   "DOI": "10.1097/CJI.0b013e31821dcb31",
+   "volume": "34",
+   "author": "S Wilgenhof",
+   "year": "2011",
+   "unstructured": "Wilgenhof, S. et al. Therapeutic vaccination with an autologous mRNA electroporated dendritic cell vaccine in patients with advanced melanoma. J. Immunother. 34, 448–456 (2011).",
+   "journal-title": "J. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR137",
+   "doi-asserted-by": "publisher",
+   "first-page": "2686",
+   "DOI": "10.1093/annonc/mdt245",
+   "volume": "24",
+   "author": "S Wilgenhof",
+   "year": "2013",
+   "unstructured": "Wilgenhof, S. et al. A phase IB study on intravenous synthetic mRNA electroporated dendritic cell immunotherapy in pretreated advanced melanoma patients. Ann. Oncol. 24, 2686–2693 (2013).",
+   "journal-title": "Ann. Oncol."
+  },
+  {
+   "key": "BFnrd2017243_CR138",
+   "doi-asserted-by": "publisher",
+   "first-page": "366",
+   "DOI": "10.1038/nature14320",
+   "volume": "519",
+   "author": "DA Mitchell",
+   "year": "2015",
+   "unstructured": "Mitchell, D. A. et al. Tetanus toxoid and CCL3 improve dendritic cell vaccines in mice and glioblastoma patients. Nature 519, 366–369 (2015).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR139",
+   "doi-asserted-by": "publisher",
+   "first-page": "1898",
+   "DOI": "10.1158/1078-0432.CCR-16-2057",
+   "volume": "23",
+   "author": "KA Batich",
+   "year": "2017",
+   "unstructured": "Batich, K. A. et al. Long-term survival in glioblastoma with cytomegalovirus pp65-targeted vaccination. Clin. Cancer Res. 23, 1898–1909 (2017).",
+   "journal-title": "Clin. Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR140",
+   "doi-asserted-by": "publisher",
+   "first-page": "1330",
+   "DOI": "10.1200/JCO.2015.63.4121",
+   "volume": "34",
+   "author": "S Wilgenhof",
+   "year": "2016",
+   "unstructured": "Wilgenhof, S. et al. Phase II study of autologous monocyte-derived mRNA electroporated dendritic cells (TriMixDC-MEL) plus ipilimumab in patients with pretreated advanced melanoma. J. Clin. Oncol. 34, 1330–1338 (2016).",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "BFnrd2017243_CR141",
+   "doi-asserted-by": "publisher",
+   "first-page": "2719",
+   "DOI": "10.1089/10430349950016762",
+   "volume": "10",
+   "author": "WZ Zhou",
+   "year": "1999",
+   "unstructured": "Zhou, W. Z. et al. RNA melanoma vaccine: induction of antitumor immunity by human glycoprotein 100 mRNA immunization. Hum. Gene Ther. 10, 2719–2724 (1999).",
+   "journal-title": "Hum. Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR142",
+   "doi-asserted-by": "publisher",
+   "first-page": "163",
+   "DOI": "10.1007/978-1-4939-3625-0_11",
+   "volume": "1428",
+   "author": "S Kreiter",
+   "year": "2016",
+   "unstructured": "Kreiter, S. et al. FLT3 ligand as a molecular adjuvant for naked RNA vaccines. Methods Mol. Biol. 1428, 163–175 (2016).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR143",
+   "doi-asserted-by": "publisher",
+   "first-page": "6132",
+   "DOI": "10.1158/0008-5472.CAN-11-0291",
+   "volume": "71",
+   "author": "S Kreiter",
+   "year": "2011",
+   "unstructured": "Kreiter, S. et al. FLT3 ligand enhances the cancer therapeutic potency of naked RNA vaccines. Cancer Res. 71, 6132–6142 (2011).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR144",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1019197",
+   "DOI": "10.1080/2162402X.2015.1019197",
+   "volume": "4",
+   "author": "KF Bol",
+   "year": "2015",
+   "unstructured": "Bol, K. F. et al. Intranodal vaccination with mRNA-optimized dendritic cells in metastatic melanoma patients. Oncoimmunology 4, e1019197 (2015).",
+   "journal-title": "Oncoimmunology"
+  },
+  {
+   "key": "BFnrd2017243_CR145",
+   "doi-asserted-by": "publisher",
+   "first-page": "5128",
+   "DOI": "10.1038/srep05128",
+   "volume": "4",
+   "author": "KK Phua",
+   "year": "2014",
+   "unstructured": "Phua, K. K., Staats, H. F., Leong, K. W. & Nair, S. K. Intranasal mRNA nanoparticle vaccination induces prophylactic and therapeutic anti-tumor immunity. Sci. Rep. 4, 5128 (2014).",
+   "journal-title": "Sci. Rep."
+  },
+  {
+   "key": "BFnrd2017243_CR146",
+   "doi-asserted-by": "publisher",
+   "first-page": "2807",
+   "DOI": "10.1002/eji.200635910",
+   "volume": "36",
+   "author": "B Scheel",
+   "year": "2006",
+   "unstructured": "Scheel, B. et al. Therapeutic anti-tumor immunity triggered by injections of immunostimulating single-stranded RNA. Eur. J. Immunol. 36, 2807–2816 (2006).",
+   "journal-title": "Eur. J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR147",
+   "doi-asserted-by": "publisher",
+   "first-page": "10100",
+   "DOI": "10.18632/oncotarget.2463",
+   "volume": "5",
+   "author": "K Van der Jeught",
+   "year": "2014",
+   "unstructured": "Van der Jeught, K. et al. Intratumoral administration of mRNA encoding a fusokine consisting of IFN-β and the ectodomain of the TGF-β receptor II potentiates antitumor immunity. Oncotarget 5, 10100–10113 (2014).",
+   "journal-title": "Oncotarget"
+  },
+  {
+   "key": "BFnrd2017243_CR148",
+   "doi-asserted-by": "publisher",
+   "first-page": "146",
+   "DOI": "10.1158/2326-6066.CIR-15-0163",
+   "volume": "4",
+   "author": "S Van Lint",
+   "year": "2016",
+   "unstructured": "Van Lint, S. et al. Intratumoral delivery of TriMix mRNA results in T-cell activation by cross-presenting dendritic cells. Cancer Immunol. Res. 4, 146–156 (2016).",
+   "journal-title": "Cancer Immunol. Res."
+  },
+  {
+   "key": "BFnrd2017243_CR149",
+   "doi-asserted-by": "publisher",
+   "first-page": "534",
+   "DOI": "10.3389/fimmu.2015.00534",
+   "volume": "6",
+   "author": "BE Clausen",
+   "year": "2015",
+   "unstructured": "Clausen, B. E. & Stoitzner, P. Functional specialization of skin dendritic cell subsets in regulating T Cell responses. Front. Immunol. 6, 534 (2015).",
+   "journal-title": "Front. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR150",
+   "doi-asserted-by": "publisher",
+   "first-page": "498",
+   "DOI": "10.1097/CJI.0b013e3181a00068",
+   "volume": "32",
+   "author": "B Weide",
+   "year": "2009",
+   "unstructured": "Weide, B. et al. Direct injection of protamine-protected mRNA: results of a phase 1/2 vaccination trial in metastatic melanoma patients. J. Immunother. 32, 498–507 (2009).",
+   "journal-title": "J. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR151",
+   "doi-asserted-by": "publisher",
+   "first-page": "26",
+   "DOI": "10.1186/s40425-015-0068-y",
+   "volume": "3",
+   "author": "H Kubler",
+   "year": "2015",
+   "unstructured": "Kubler, H. et al. Self-adjuvanted mRNA vaccination in advanced prostate cancer patients: a first-in-man phase I/IIa study. J. Immunother. Cancer 3, 26 (2015).",
+   "journal-title": "J. Immunother. Cancer"
+  },
+  {
+   "key": "BFnrd2017243_CR152",
+   "doi-asserted-by": "publisher",
+   "first-page": "672",
+   "DOI": "10.1007/s00262-005-0064-z",
+   "volume": "55",
+   "author": "PR Hess",
+   "year": "2006",
+   "unstructured": "Hess, P. R., Boczkowski, D., Nair, S. K., Snyder, D. & Gilboa, E. Vaccination with mRNAs encoding tumor-associated antigens and granulocyte-macrophage colony-stimulating factor efficiently primes CTL responses, but is insufficient to overcome tolerance to a model tumor/self antigen. Cancer Immunol. Immunother. 55, 672–683 (2006).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR153",
+   "doi-asserted-by": "publisher",
+   "first-page": "1326",
+   "DOI": "10.1021/acs.nanolett.6b03329",
+   "volume": "17",
+   "author": "MA Oberli",
+   "year": "2017",
+   "unstructured": "Oberli, M. A. et al. Lipid nanoparticle assisted mRNA delivery for potent cancer immunotherapy. Nano Lett. 17, 1326–1335 (2017).",
+   "journal-title": "Nano Lett."
+  },
+  {
+   "key": "BFnrd2017243_CR154",
+   "doi-asserted-by": "publisher",
+   "first-page": "428",
+   "DOI": "10.1002/jgm.2605",
+   "volume": "14",
+   "author": "M Fotin-Mleczek",
+   "year": "2012",
+   "unstructured": "Fotin-Mleczek, M. et al. Highly potent mRNA based cancer vaccines represent an attractive platform for combination therapies supporting an improved therapeutic effect. J. Gene Med. 14, 428–439 (2012).",
+   "journal-title": "J. Gene Med."
+  },
+  {
+   "key": "BFnrd2017243_CR155",
+   "doi-asserted-by": "publisher",
+   "first-page": "180",
+   "DOI": "10.1186/1748-717X-9-180",
+   "volume": "9",
+   "author": "M Fotin-Mleczek",
+   "year": "2014",
+   "unstructured": "Fotin-Mleczek, M. et al. mRNA-based vaccines synergize with radiation therapy to eradicate established tumors. Radiat. Oncol. 9, 180 (2014).",
+   "journal-title": "Radiat. Oncol."
+  },
+  {
+   "key": "BFnrd2017243_CR156",
+   "doi-asserted-by": "publisher",
+   "first-page": "1285",
+   "DOI": "10.1517/14712598.4.8.1285",
+   "volume": "4",
+   "author": "S Pascolo",
+   "year": "2004",
+   "unstructured": "Pascolo, S. Messenger RNA-based vaccines. Expert Opin. Biol. Ther. 4, 1285–1294 (2004).",
+   "journal-title": "Expert Opin. Biol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR157",
+   "doi-asserted-by": "publisher",
+   "first-page": "152",
+   "DOI": "10.1016/j.smim.2013.05.001",
+   "volume": "25",
+   "author": "AJ Geall",
+   "year": "2013",
+   "unstructured": "Geall, A. J., Mandl, C. W. & Ulmer, J. B. RNA: the new revolution in nucleic acid vaccines. Semin. Immunol. 25, 152–159 (2013).",
+   "journal-title": "Semin. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR158",
+   "doi-asserted-by": "publisher",
+   "first-page": "43",
+   "DOI": "10.1007/978-1-62703-260-5_3",
+   "volume": "969",
+   "author": "D Weissman",
+   "year": "2013",
+   "unstructured": "Weissman, D., Pardi, N., Muramatsu, H. & Kariko, K. HPLC purification of in vitro transcribed long RNA. Methods Mol. Biol. 969, 43–54 (2013).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR159",
+   "doi-asserted-by": "publisher",
+   "first-page": "430",
+   "DOI": "10.1016/j.drudis.2015.11.012",
+   "volume": "21",
+   "author": "BK Muralidhara",
+   "year": "2016",
+   "unstructured": "Muralidhara, B. K. et al. Critical considerations for developing nucleic acid macromolecule based drug products. Drug Discov. Today 21, 430–444 (2016).",
+   "journal-title": "Drug Discov. Today"
+  },
+  {
+   "key": "BFnrd2017243_CR160",
+   "doi-asserted-by": "publisher",
+   "first-page": "675",
+   "DOI": "10.2144/000112593",
+   "volume": "43",
+   "author": "KL Jones",
+   "year": "2007",
+   "unstructured": "Jones, K. L., Drane, D. & Gowans, E. J. Long-term storage of DNA-free RNA for use in vaccine studies. Biotechniques 43, 675–681 (2007).",
+   "journal-title": "Biotechniques"
+  },
+  {
+   "key": "BFnrd2017243_CR161",
+   "doi-asserted-by": "publisher",
+   "first-page": "4",
+   "DOI": "10.1186/1479-0556-4-4",
+   "volume": "4",
+   "author": "J Probst",
+   "year": "2006",
+   "unstructured": "Probst, J. et al. Characterization of the ribonuclease activity on the skin surface. Genet. Vaccines Ther. 4, 4 (2006).",
+   "journal-title": "Genet. Vaccines Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR162",
+   "unstructured": "U.S. Food & Drug Administration. Guidance for Industry: Considerations for plasmid DNA vaccines for infectious disease indications. U.S. Food & Drug Administration https://www.fda.gov/downloads/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/Guidances/Vaccines/ucm091968.pdf (2007)."
+  },
+  {
+   "key": "BFnrd2017243_CR163",
+   "unstructured": "U.S. Food & Drug Administration. Guidance for Industry: Guidance for human somatic cell therapy and gene therapy. U.S. Food & Drug Administration https://www.fda.gov/downloads/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/Guidances/CellularandGeneTherapy/ucm081670.pdf (1998)."
+  },
+  {
+   "key": "BFnrd2017243_CR164",
+   "unstructured": "European Medicines Agency. Commission Directive 2009/120/EC. European Commission https://ec.europa.eu/health//sites/health/files/files/eudralex/vol-1/dir_2009_120/dir_2009_120_en.pdf (2009)."
+  },
+  {
+   "key": "BFnrd2017243_CR165",
+   "doi-asserted-by": "publisher",
+   "first-page": "203",
+   "DOI": "10.1007/978-1-4939-6481-9_13",
+   "volume": "1499",
+   "author": "T Hinz",
+   "year": "2017",
+   "unstructured": "Hinz, T. et al. The European regulatory environment of RNA-based vaccines. Methods Mol. Biol. 1499, 203–222 (2017).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "BFnrd2017243_CR166",
+   "doi-asserted-by": "publisher",
+   "first-page": "4012",
+   "DOI": "10.4049/jimmunol.1601877",
+   "volume": "198",
+   "author": "T Pepini",
+   "year": "2017",
+   "unstructured": "Pepini, T. et al. Induction of an IFN-mediated antiviral response by a self-amplifying RNA vaccine: implications for vaccine design. J. Immunol. 198, 4012–4024 (2017).",
+   "journal-title": "J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR167",
+   "doi-asserted-by": "publisher",
+   "first-page": "307",
+   "DOI": "10.1146/annurev.immunol.23.021704.115843",
+   "volume": "23",
+   "author": "AN Theofilopoulos",
+   "year": "2005",
+   "unstructured": "Theofilopoulos, A. N., Baccala, R., Beutler, B. & Kono, D. H. Type I interferons (α/β) in immunity and autoimmunity. Annu. Rev. Immunol. 23, 307–336 (2005).",
+   "journal-title": "Annu. Rev. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR168",
+   "doi-asserted-by": "publisher",
+   "first-page": "135",
+   "DOI": "10.1084/jem.20050500",
+   "volume": "202",
+   "author": "FO Nestle",
+   "year": "2005",
+   "unstructured": "Nestle, F. O. et al. Plasmacytoid predendritic cells initiate psoriasis through interferon-α production. J. Exp. Med. 202, 135–143 (2005).",
+   "journal-title": "J. Exp. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR169",
+   "doi-asserted-by": "publisher",
+   "first-page": "2457",
+   "DOI": "10.1182/blood-2006-08-040691",
+   "volume": "110",
+   "author": "S Fischer",
+   "year": "2007",
+   "unstructured": "Fischer, S. et al. Extracellular RNA mediates endothelial-cell permeability via vascular endothelial growth factor. Blood 110, 2457–2465 (2007).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR170",
+   "doi-asserted-by": "publisher",
+   "first-page": "6388",
+   "DOI": "10.1073/pnas.0608647104",
+   "volume": "104",
+   "author": "C Kannemeier",
+   "year": "2007",
+   "unstructured": "Kannemeier, C. et al. Extracellular RNA constitutes a natural procoagulant cofactor in blood coagulation. Proc. Natl Acad. Sci. USA 104, 6388–6393 (2007).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2017243_CR171",
+   "doi-asserted-by": "publisher",
+   "first-page": "25",
+   "DOI": "10.1016/S0065-2660(05)55002-8",
+   "volume": "55",
+   "author": "MA Liu",
+   "year": "2005",
+   "unstructured": "Liu, M. A. & Ulmer, J. B. Human clinical trials of plasmid DNA vaccines. Adv. Genet. 55, 25–40 (2005).",
+   "journal-title": "Adv. Genet."
+  },
+  {
+   "key": "BFnrd2017243_CR172",
+   "doi-asserted-by": "publisher",
+   "first-page": "193",
+   "DOI": "10.1038/nbt.3812",
+   "volume": "35",
+   "author": "L DeFrancesco",
+   "year": "2017",
+   "unstructured": "DeFrancesco, L. The 'anti-hype' vaccine. Nat. Biotechnol. 35, 193–197 (2017).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnrd2017243_CR173",
+   "doi-asserted-by": "publisher",
+   "first-page": "446",
+   "DOI": "10.1126/science.355.6324.446",
+   "volume": "355",
+   "author": "K Servick",
+   "year": "2017",
+   "unstructured": "Servick, K. On message. Science 355, 446–450 (2017).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR174",
+   "unstructured": "CureVac AG. From science to patients — ideas become treatments at CureVac. CureVac http://www.curevac.com/research-development (2017)."
+  },
+  {
+   "key": "BFnrd2017243_CR175",
+   "unstructured": "Aldevron. Aldevron expands North Dakota biomanufacturing facility. Aldevron http://www.aldevron.com/about-us/news/aldevron-expands-north-dakota-biomanufacturing-facility (2016)."
+  },
+  {
+   "key": "BFnrd2017243_CR176",
+   "doi-asserted-by": "publisher",
+   "first-page": "692",
+   "DOI": "10.1038/nature14426",
+   "volume": "520",
+   "author": "S Kreiter",
+   "year": "2015",
+   "unstructured": "Kreiter, S. et al. Mutant MHC class II epitopes drive therapeutic immune responses to cancer. Nature 520, 692–696 (2015).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR177",
+   "doi-asserted-by": "publisher",
+   "first-page": "217",
+   "DOI": "10.1038/nature22991",
+   "volume": "547",
+   "author": "PA Ott",
+   "year": "2017",
+   "unstructured": "Ott, P. A. et al. An immunogenic personal neoantigen vaccine for patients with melanoma. Nature 547, 217–221 (2017).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2017243_CR178",
+   "doi-asserted-by": "publisher",
+   "first-page": "416",
+   "DOI": "10.1016/0008-8749(74)90261-5",
+   "volume": "13",
+   "author": "EB Jacobson",
+   "year": "1974",
+   "unstructured": "Jacobson, E. B., Caporale, L. H. & Thorbecke, G. J. Effect of thymus cell injections on germinal center formation in lymphoid tissues of nude (thymusless) mice. Cell. Immunol. 13, 416–430 (1974).",
+   "journal-title": "Cell. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR179",
+   "doi-asserted-by": "publisher",
+   "first-page": "830",
+   "DOI": "10.1182/blood.V84.3.830.bloodjournal843830",
+   "volume": "84",
+   "author": "R Forster",
+   "year": "1994",
+   "unstructured": "Forster, R., Emrich, T., Kremmer, E. & Lipp, M. Expression of the G-protein-coupled receptor BLR1 defines mature, recirculating B cells and a subset of T-helper memory cells. Blood 84, 830–840 (1994).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR180",
+   "doi-asserted-by": "publisher",
+   "first-page": "1037",
+   "DOI": "10.1016/S0092-8674(00)81798-5",
+   "volume": "87",
+   "author": "R Forster",
+   "year": "1996",
+   "unstructured": "Forster, R. et al. A putative chemokine receptor, BLR1, directs B cell migration to defined lymphoid organs and specific anatomic compartments of the spleen. Cell 87, 1037–1047 (1996).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "BFnrd2017243_CR181",
+   "doi-asserted-by": "publisher",
+   "first-page": "1545",
+   "DOI": "10.1084/jem.192.11.1545",
+   "volume": "192",
+   "author": "D Breitfeld",
+   "year": "2000",
+   "unstructured": "Breitfeld, D. et al. Follicular B helper T cells express CXC chemokine receptor 5, localize to B cell follicles, and support immunoglobulin production. J. Exp. Med. 192, 1545–1552 (2000).",
+   "journal-title": "J. Exp. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR182",
+   "doi-asserted-by": "publisher",
+   "first-page": "1553",
+   "DOI": "10.1084/jem.192.11.1553",
+   "volume": "192",
+   "author": "P Schaerli",
+   "year": "2000",
+   "unstructured": "Schaerli, P. et al. CXC chemokine receptor 5 expression defines follicular homing T cells with B cell helper function. J. Exp. Med. 192, 1553–1562 (2000).",
+   "journal-title": "J. Exp. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR183",
+   "doi-asserted-by": "publisher",
+   "first-page": "1006",
+   "DOI": "10.1126/science.1175870",
+   "volume": "325",
+   "author": "RJ Johnston",
+   "year": "2009",
+   "unstructured": "Johnston, R. J. et al. Bcl6 and Blimp-1 are reciprocal and antagonistic regulators of T follicular helper cell differentiation. Science 325, 1006–1010 (2009).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR184",
+   "doi-asserted-by": "publisher",
+   "first-page": "1001",
+   "DOI": "10.1126/science.1176676",
+   "volume": "325",
+   "author": "RI Nurieva",
+   "year": "2009",
+   "unstructured": "Nurieva, R. I. et al. Bcl6 mediates the development of T follicular helper cells. Science 325, 1001–1005 (2009).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR185",
+   "doi-asserted-by": "publisher",
+   "first-page": "457",
+   "DOI": "10.1016/j.immuni.2009.07.002",
+   "volume": "31",
+   "author": "D Yu",
+   "year": "2009",
+   "unstructured": "Yu, D. et al. The transcriptional repressor Bcl-6 directs T follicular helper cell lineage commitment. Immunity 31, 457–468 (2009).",
+   "journal-title": "Immunity"
+  },
+  {
+   "key": "BFnrd2017243_CR186",
+   "doi-asserted-by": "publisher",
+   "first-page": "185",
+   "DOI": "10.1038/nri3803",
+   "volume": "15",
+   "author": "S Crotty",
+   "year": "2015",
+   "unstructured": "Crotty, S. A brief history of T cell help to B cells. Nat. Rev. Immunol. 15, 185–189 (2015).",
+   "journal-title": "Nat. Rev. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR187",
+   "doi-asserted-by": "publisher",
+   "first-page": "1199",
+   "DOI": "10.1126/science.1241144",
+   "volume": "341",
+   "author": "F Klein",
+   "year": "2013",
+   "unstructured": "Klein, F. et al. Antibodies in HIV-1 vaccine development and therapy. Science 341, 1199–1204 (2013).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2017243_CR188",
+   "doi-asserted-by": "publisher",
+   "first-page": "308",
+   "DOI": "10.1097/FTD.0000000000000385",
+   "volume": "39",
+   "author": "A Gils",
+   "year": "2017",
+   "unstructured": "Gils, A., Bertolotto, A., Mulleman, D., Bejan-Angoulvant, T. & Declerck, P. J. Biopharmaceuticals: reference products and biosimilars to treat inflammatory diseases. Ther. Drug Monit. 39, 308–315 (2017).",
+   "journal-title": "Ther. Drug Monit."
+  },
+  {
+   "key": "BFnrd2017243_CR189",
+   "doi-asserted-by": "publisher",
+   "first-page": "235",
+   "DOI": "10.2471/BLT.16.178061",
+   "volume": "95",
+   "author": "E Sparrow",
+   "year": "2017",
+   "unstructured": "Sparrow, E., Friede, M., Sheikh, M. & Torvaldsen, S. Therapeutic antibodies for infectious diseases. Bull. World Health Organ. 95, 235–237 (2017).",
+   "journal-title": "Bull. World Health Organ."
+  },
+  {
+   "key": "BFnrd2017243_CR190",
+   "doi-asserted-by": "publisher",
+   "first-page": "859",
+   "DOI": "10.1016/j.ctrv.2015.10.008",
+   "volume": "41",
+   "author": "LM Henricks",
+   "year": "2015",
+   "unstructured": "Henricks, L. M., Schellens, J. H., Huitema, A. D. & Beijnen, J. H. The use of combinations of monoclonal antibodies in clinical oncology. Cancer Treat. Rev. 41, 859–867 (2015).",
+   "journal-title": "Cancer Treat. Rev."
+  },
+  {
+   "key": "BFnrd2017243_CR191",
+   "doi-asserted-by": "publisher",
+   "first-page": "182",
+   "DOI": "10.1016/j.maturitas.2010.02.008",
+   "volume": "66",
+   "author": "EM Lewiecki",
+   "year": "2010",
+   "unstructured": "Lewiecki, E. M. Treatment of osteoporosis with denosumab. Maturitas 66, 182–186 (2010).",
+   "journal-title": "Maturitas"
+  },
+  {
+   "key": "BFnrd2017243_CR192",
+   "doi-asserted-by": "publisher",
+   "first-page": "183",
+   "DOI": "10.1358/dot.2016.52.3.2440527",
+   "volume": "52",
+   "author": "DM Paton",
+   "year": "2016",
+   "unstructured": "Paton, D. M. PCSK9 inhibitors: monoclonal antibodies for the treatment of hypercholesterolemia. Drugs Today 52, 183–192 (2016).",
+   "journal-title": "Drugs Today"
+  },
+  {
+   "key": "BFnrd2017243_CR193",
+   "doi-asserted-by": "publisher",
+   "first-page": "131",
+   "DOI": "10.1186/s12967-017-1234-4",
+   "volume": "15",
+   "author": "K Hollevoet",
+   "year": "2017",
+   "unstructured": "Hollevoet, K. & Declerck, P. J. State of play and clinical prospects of antibody gene transfer. J. Transl Med. 15, 131 (2017).",
+   "journal-title": "J. Transl Med."
+  },
+  {
+   "key": "BFnrd2017243_CR194",
+   "doi-asserted-by": "publisher",
+   "first-page": "16068",
+   "DOI": "10.1038/mtm.2016.68",
+   "volume": "3",
+   "author": "SP Fuchs",
+   "year": "2016",
+   "unstructured": "Fuchs, S. P. & Desrosiers, R. C. Promise and problems associated with the use of recombinant AAV for the delivery of anti-HIV antibodies. Mol. Ther. Methods Clin. Dev. 3, 16068 (2016).",
+   "journal-title": "Mol. Ther. Methods Clin. Dev."
+  },
+  {
+   "key": "BFnrd2017243_CR195",
+   "doi-asserted-by": "publisher",
+   "first-page": "900",
+   "DOI": "10.1038/cgt.2009.39",
+   "volume": "16",
+   "author": "D Boczkowski",
+   "year": "2009",
+   "unstructured": "Boczkowski, D., Lee, J., Pruitt, S. & Nair, S. Dendritic cells engineered to secrete anti-GITR antibodies are effective adjuvants to dendritic cell-based immuno-therapy. Cancer Gene Ther. 16, 900–911 (2009).",
+   "journal-title": "Cancer Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR196",
+   "doi-asserted-by": "publisher",
+   "first-page": "3553",
+   "DOI": "10.1002/eji.201141383",
+   "volume": "41",
+   "author": "SK Pruitt",
+   "year": "2011",
+   "unstructured": "Pruitt, S. K. et al. Enhancement of anti-tumor immunity through local modulation of CTLA-4 and GITR by dendritic cells. Eur. J. Immunol. 41, 3553–3563 (2011).",
+   "journal-title": "Eur. J. Immunol."
+  },
+  {
+   "key": "BFnrd2017243_CR197",
+   "doi-asserted-by": "publisher",
+   "first-page": "14630",
+   "DOI": "10.1038/ncomms14630",
+   "volume": "8",
+   "author": "N Pardi",
+   "year": "2017",
+   "unstructured": "Pardi, N. et al. Administration of nucleoside-modified mRNA encoding broadly neutralizing antibody protects humanized mice from HIV-1 challenge. Nat. Commun. 8, 14630 (2017). This is the first study to demonstrate that directly injected, non-replicating mRNA encoding a monoclonal antibody protects animals against an infectious pathogen.",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "BFnrd2017243_CR198",
+   "doi-asserted-by": "publisher",
+   "first-page": "815",
+   "DOI": "10.1038/nm.4356",
+   "volume": "23",
+   "author": "CR Stadler",
+   "year": "2017",
+   "unstructured": "Stadler, C. R. et al. Elimination of large tumors in mice by mRNA-encoded bispecific antibodies. Nat. Med. 23, 815–817 (2017).",
+   "journal-title": "Nat. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR199",
+   "doi-asserted-by": "publisher",
+   "first-page": "1434",
+   "DOI": "10.15252/emmm.201707678",
+   "volume": "9",
+   "author": "M Thran",
+   "year": "2017",
+   "unstructured": "Thran, M. et al. mRNA mediates passive vaccination against infectious agents, toxins, and tumors. EMBO Mol. Med. 9, 1434–1447 (2017).",
+   "journal-title": "EMBO Mol. Med."
+  },
+  {
+   "key": "BFnrd2017243_CR200",
+   "doi-asserted-by": "publisher",
+   "first-page": "748",
+   "DOI": "10.1186/1471-2407-14-748",
+   "volume": "14",
+   "author": "M Sebastian",
+   "year": "2014",
+   "unstructured": "Sebastian, M. et al. Phase Ib study evaluating a self-adjuvanted mRNA cancer vaccine (RNActive®) combined with local radiation as consolidation and maintenance treatment for patients with stage IV non-small cell lung cancer. BMC Cancer 14, 748 (2014).",
+   "journal-title": "BMC Cancer"
+  },
+  {
+   "key": "BFnrd2017243_CR201",
+   "doi-asserted-by": "publisher",
+   "first-page": "358",
+   "DOI": "10.1038/mt.2012.250",
+   "volume": "21",
+   "author": "Y Wang",
+   "year": "2013",
+   "unstructured": "Wang, Y. et al. Systemic delivery of modified mRNA encoding herpes simplex virus 1 thymidine kinase for targeted cancer gene therapy. Mol. Ther. 21, 358–367 (2013).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR202",
+   "doi-asserted-by": "publisher",
+   "first-page": "445",
+   "DOI": "10.1016/j.nano.2010.12.010",
+   "volume": "7",
+   "author": "F Perche",
+   "year": "2011",
+   "unstructured": "Perche, F. et al. Enhancement of dendritic cells transfection in vivo and of vaccination against B16F10 melanoma with mannosylated histidylated lipopolyplexes loaded with tumor antigen messenger RNA. Nanomedicine 7, 445–453 (2011).",
+   "journal-title": "Nanomedicine"
+  },
+  {
+   "key": "BFnrd2017243_CR203",
+   "doi-asserted-by": "publisher",
+   "first-page": "802",
+   "DOI": "10.1038/sj.cgt.7701072",
+   "volume": "14",
+   "author": "M Mockey",
+   "year": "2007",
+   "unstructured": "Mockey, M. et al. mRNA-based cancer vaccine: prevention of B16 melanoma progression and metastasis by systemic injection of MART1 mRNA histidylated lipopolyplexes. Cancer Gene Ther. 14, 802–814 (2007).",
+   "journal-title": "Cancer Gene Ther."
+  },
+  {
+   "key": "BFnrd2017243_CR204",
+   "doi-asserted-by": "publisher",
+   "first-page": "221",
+   "DOI": "10.1016/j.biomaterials.2015.12.031",
+   "volume": "82",
+   "author": "S Uchida",
+   "year": "2016",
+   "unstructured": "Uchida, S. et al. Systemic delivery of messenger RNA for the treatment of pancreatic cancer using polyplex nanomicelles with a cholesterol moiety. Biomaterials 82, 221–228 (2016).",
+   "journal-title": "Biomaterials"
+  },
+  {
+   "key": "BFnrd2017243_CR205",
+   "doi-asserted-by": "publisher",
+   "first-page": "312",
+   "DOI": "10.1111/imm.12505",
+   "volume": "146",
+   "author": "S Lazzaro",
+   "year": "2015",
+   "unstructured": "Lazzaro, S. et al. CD8 T-cell priming upon mRNA vaccination is restricted to bone-marrow-derived antigen-presenting cells and may involve antigen transfer from myocytes. Immunology 146, 312–326 (2015).",
+   "journal-title": "Immunology"
+  },
+  {
+   "key": "BFnrd2017243_CR206",
+   "doi-asserted-by": "publisher",
+   "first-page": "653",
+   "DOI": "10.1080/14653240902960411",
+   "volume": "11",
+   "author": "A Van Driessche",
+   "year": "2009",
+   "unstructured": "Van Driessche, A. et al. Clinical-grade manufacturing of autologous mature mRNA-electroporated dendritic cells and safety testing in acute myeloid leukemia patients in a phase I dose-escalation clinical trial. Cytotherapy 11, 653–668 (2009).",
+   "journal-title": "Cytotherapy"
+  },
+  {
+   "key": "BFnrd2017243_CR207",
+   "doi-asserted-by": "publisher",
+   "first-page": "13824",
+   "DOI": "10.1073/pnas.1008051107",
+   "volume": "107",
+   "author": "VF Van Tendeloo",
+   "year": "2010",
+   "unstructured": "Van Tendeloo, V. F. et al. Induction of complete and molecular remissions in acute myeloid leukemia by Wilms' tumor 1 antigen-targeted dendritic cell vaccination. Proc. Natl Acad. Sci. USA 107, 13824–13829 (2010).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "issue": "Suppl.",
+   "key": "BFnrd2017243_CR208",
+   "doi-asserted-by": "publisher",
+   "first-page": "7583",
+   "DOI": "10.1200/jco.2014.32.15_suppl.7583",
+   "volume": "32",
+   "author": "ZN Berneman",
+   "year": "2014",
+   "unstructured": "Berneman, Z. N. et al. Dendritic cell vaccination in malignant pleural mesothelioma: a phase I/II study [abstract]. J. Clin. Oncol. 32 (Suppl.), 7583 (2014).",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "BFnrd2017243_CR209",
+   "doi-asserted-by": "publisher",
+   "first-page": "14",
+   "DOI": "10.1186/s40425-015-0055-3",
+   "volume": "3",
+   "author": "A Amin",
+   "year": "2015",
+   "unstructured": "Amin, A. et al. Survival with AGS-003, an autologous dendritic cell-based immunotherapy, in combination with sunitinib in unfavorable risk patients with advanced renal cell carcinoma (RCC): phase 2 study results. J. Immunother. Cancer 3, 14 (2015).",
+   "journal-title": "J. Immunother. Cancer"
+  },
+  {
+   "key": "BFnrd2017243_CR210",
+   "doi-asserted-by": "publisher",
+   "first-page": "3061",
+   "DOI": "10.1002/cncr.30696",
+   "volume": "123",
+   "author": "HJ Khoury",
+   "year": "2017",
+   "unstructured": "Khoury, H. J. et al. Immune responses and long-term disease recurrence status after telomerase-based dendritic cell immunotherapy in patients with acute myeloid leukemia. Cancer 123, 3061–3072 (2017).",
+   "journal-title": "Cancer"
+  },
+  {
+   "issue": "Suppl.",
+   "key": "BFnrd2017243_CR211",
+   "doi-asserted-by": "publisher",
+   "first-page": "2584",
+   "DOI": "10.1200/jco.2011.29.15_suppl.2584",
+   "volume": "29",
+   "author": "M Sebastian",
+   "year": "2011",
+   "unstructured": "Sebastian, M. et al. Messenger RNA vaccination in NSCLC: findings from a phase I/IIa clinical trial [abstract]. J. Clin. Oncol. 29 (Suppl.), 2584 (2011).",
+   "journal-title": "J. Clin. Oncol."
+  },
+  {
+   "key": "BFnrd2017243_CR212",
+   "doi-asserted-by": "publisher",
+   "first-page": "3146",
+   "DOI": "10.4161/hv.29553",
+   "volume": "10",
+   "author": "S Rausch",
+   "year": "2014",
+   "unstructured": "Rausch, S., Schwentner, C., Stenzl, A. & Bedke, J. mRNA vaccine CV9103 and CV9104 for the treatment of prostate cancer. Hum. Vaccin Immunother. 10, 3146–3152 (2014).",
+   "journal-title": "Hum. Vaccin Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR213",
+   "doi-asserted-by": "publisher",
+   "first-page": "3003",
+   "DOI": "10.1182/blood-2011-02-334565",
+   "volume": "118",
+   "author": "DA Mitchell",
+   "year": "2011",
+   "unstructured": "Mitchell, D. A. et al. Monoclonal antibody blockade of IL-2 receptor α during lymphopenia selectively depletes regulatory T cells in mice and humans. Blood 118, 3003–3012 (2011).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2017243_CR214",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1207842",
+   "DOI": "10.1080/2162402X.2016.1207842",
+   "volume": "5",
+   "author": "TH Borch",
+   "year": "2016",
+   "unstructured": "Borch, T. H. et al. mRNA-transfected dendritic cell vaccine in combination with metronomic cyclophosphamide as treatment for patients with advanced malignant melanoma. Oncoimmunology 5, e1207842 (2016).",
+   "journal-title": "Oncoimmunology"
+  },
+  {
+   "key": "BFnrd2017243_CR215",
+   "doi-asserted-by": "publisher",
+   "first-page": "500",
+   "DOI": "10.1016/j.jcyt.2017.01.007",
+   "volume": "19",
+   "author": "P Kongsted",
+   "year": "2017",
+   "unstructured": "Kongsted, P. et al. Dendritic cell vaccination in combination with docetaxel for patients with metastatic castration-resistant prostate cancer: a randomized phase II study. Cytotherapy 19, 500–513 (2017).",
+   "journal-title": "Cytotherapy"
+  },
+  {
+   "key": "BFnrd2017243_CR216",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1232237",
+   "DOI": "10.1080/2162402X.2016.1232237",
+   "volume": "5",
+   "author": "JA Kyte",
+   "year": "2016",
+   "unstructured": "Kyte, J. A. et al. Immune response and long-term clinical outcome in advanced melanoma patients vaccinated with tumor-mRNA-transfected dendritic cells. Oncoimmunology 5, e1232237 (2016).",
+   "journal-title": "Oncoimmunology"
+  },
+  {
+   "key": "BFnrd2017243_CR217",
+   "doi-asserted-by": "publisher",
+   "first-page": "1499",
+   "DOI": "10.1007/s00262-013-1453-3",
+   "volume": "62",
+   "author": "EO Vik-Mo",
+   "year": "2013",
+   "unstructured": "Vik-Mo, E. O. et al. Therapeutic vaccination against autologous cancer stem cells with mRNA-transfected dendritic cells in patients with glioblastoma. Cancer Immunol. Immunother. 62, 1499–1509 (2013).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR218",
+   "first-page": "5091",
+   "volume": "30",
+   "author": "WJ Lesterhuis",
+   "year": "2010",
+   "unstructured": "Lesterhuis, W. J. et al. Immunogenicity of dendritic cells pulsed with CEA peptide or transfected with CEA mRNA for vaccination of colorectal cancer patients. Anticancer Res. 30, 5091–5097 (2010).",
+   "journal-title": "Anticancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR219",
+   "doi-asserted-by": "publisher",
+   "first-page": "5460",
+   "DOI": "10.1158/1078-0432.CCR-11-3368",
+   "volume": "18",
+   "author": "EH Aarntzen",
+   "year": "2012",
+   "unstructured": "Aarntzen, E. H. et al. Vaccination with mRNA-electroporated dendritic cells induces robust tumor antigen-specific CD4+ and CD8+ T cells responses in stage III and IV melanoma patients. Clin. Cancer Res. 18, 5460–5470 (2012).",
+   "journal-title": "Clin. Cancer Res."
+  },
+  {
+   "key": "BFnrd2017243_CR220",
+   "doi-asserted-by": "publisher",
+   "first-page": "939",
+   "DOI": "10.1016/j.ajo.2014.07.014",
+   "volume": "158",
+   "author": "KF Bol",
+   "year": "2014",
+   "unstructured": "Bol, K. F. et al. Long overall survival after dendritic cell vaccination in metastatic uveal melanoma patients. Am. J. Ophthalmol. 158, 939–947 (2014).",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd2017243_CR221",
+   "doi-asserted-by": "publisher",
+   "first-page": "327",
+   "DOI": "10.1007/s00262-016-1796-7",
+   "volume": "65",
+   "author": "KF Bol",
+   "year": "2016",
+   "unstructured": "Bol, K. F. et al. Prophylactic vaccines are potent activators of monocyte-derived dendritic cells and drive effective anti-tumor responses in melanoma patients at the cost of toxicity. Cancer Immunol. Immunother. 65, 327–339 (2016).",
+   "journal-title": "Cancer Immunol. Immunother."
+  },
+  {
+   "key": "BFnrd2017243_CR222",
+   "doi-asserted-by": "publisher",
+   "first-page": "180",
+   "DOI": "10.1097/CJI.0b013e31815ce501",
+   "volume": "31",
+   "author": "B Weide",
+   "year": "2008",
+   "unstructured": "Weide, B. et al. Results of the first phase I/II clinical vaccination trial with direct injection of mRNA. J. Immunother. 31, 180–188 (2008).",
+   "journal-title": "J. Immunother."
+  }
+ ],
+ "container-title": [
+  "Nature Reviews Drug Discovery"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.nature.com/articles/nrd.2017.243.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/nrd.2017.243",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/doifinder/10.1038/nrd.2017.243",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  },
+  {
+   "URL": "https://www.nature.com/articles/nrd.2017.243.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    6,
+    30
+   ]
+  ],
+  "date-time": "2024-06-30T08:55:41Z",
+  "timestamp": 1719737741000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/nrd.2017.243"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2018,
+    1,
+    12
+   ]
+  ]
+ },
+ "references-count": 222,
+ "journal-issue": {
+  "issue": "4",
+  "published-print": {
+   "date-parts": [
+    [
+     2018,
+     4
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "BFnrd2017243"
+ ],
+ "URL": "https://doi.org/10.1038/nrd.2017.243",
+ "relation": {},
+ "ISSN": [
+  "1474-1776",
+  "1474-1784"
+ ],
+ "issn-type": [
+  {
+   "value": "1474-1776",
+   "type": "print"
+  },
+  {
+   "value": "1474-1784",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2018,
+    1,
+    12
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "12 January 2018",
+   "order": 1,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "In accordance with the University of Pennsylvania policies and procedures and our ethical obligations as researchers, we report that Norbert Pardi, Michael J. Hogan and Drew Weissman are named on patents that describe the use of nucleoside-modified mRNA as a platform to deliver therapeutic proteins and vaccines. We have disclosed those interests fully to the University of Pennsylvania, and we have in place an approved plan for managing any potential conflicts arising from licensing of our patents. Frederick Porter reports no competing financial interests.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  },
+  {
+   "value": "This content has been made available to all.",
+   "name": "free",
+   "label": "Free to read"
+  }
+ ]
+}

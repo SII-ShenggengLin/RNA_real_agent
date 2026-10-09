@@ -3,13 +3,33 @@
 
 One horizontal stacked bar per condition (n = 96 turns each), segmented by
 the deterministic failure mode: delivered (sage green, the figure-wide
-delivered-class colour), budget-exhausted without an answer (warm grey —
-the mechanical per-action LLM tax), answered below the platform's frozen
-quality parity (pale mauve grey), answered structurally invalid (solid
+delivered-class colour), out of budget without an answer (warm grey —
+the mechanical per-action LLM tax), answered below the system's frozen
+best (pale mauve grey), answered invalid (solid
 mauve grey): one hue family per failure kind with lightness encoding
 severity (the fig3e family-x-lightness convention).  Segment counts printed
-in-canvas where the segment is wide enough; the platform bar is uniformly
+in-canvas where the segment is wide enough; the system bar is uniformly
 delivered.
+
+2026-10-09 terminology pass (user-directed pending-item batch): the fourth
+key label "structurally invalid" -> "invalid" — the structural->validity
+unification of section 2.6, the Fig. 6 legend (b) and M4 ("validity
+checks"); the frozen JSON class key answered_structurally_invalid stays
+verbatim; no number, colour or geometry changed.
+
+2026-10-06 figure-adjustment pass (user direction, post-polish Fig. 6
+batch):
+- key labels aligned verbatim with the polished Fig. 6 legend (b) and
+  section 2.6: "budget exhausted" -> "out of budget", "below platform
+  quality" -> "below the system's best" ("platform" is a paper-wide
+  retired term; the class totals 358/137/56/25 unchanged);
+- condition labels follow the figure-wide naming alignment: "Bare LLM"
+  -> "Bare model", "ReAct agent" -> "ReAct loop";
+- canvas 89 x 50.5 -> 100.12 x 50.5 mm (user direction: b widened to
+  the composite's full right-block width after a narrowed to 79 mm);
+- class colours unchanged (sage / warm grey / mauve-grey ramp) — under
+  the 2026-10-06 semantic condition colours of panels a/c/d they are
+  again disjoint from every condition colour.
 
 2026-09-14 figure-repair pass (user direction):
 - class colours rebuilt (delivered sage unchanged; dark warm grey ->
@@ -68,15 +88,15 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 50.5
+W_MM, H_MM = 100.12, 50.5
 
 ROWS = [
     ("platform", "RNADesignAgent"),
-    ("bare_zeroshot", "Bare LLM zero-shot"),
-    ("bare_fewshot", "Bare LLM few-shot"),
-    ("react_matched", "ReAct agent matched"),
-    ("react_3x", "ReAct agent 3\u00d7"),
-    ("react_10x", "ReAct agent 10\u00d7"),
+    ("bare_zeroshot", "Bare model zero-shot"),
+    ("bare_fewshot", "Bare model few-shot"),
+    ("react_matched", "ReAct loop matched"),
+    ("react_3x", "ReAct loop 3\u00d7"),
+    ("react_10x", "ReAct loop 10\u00d7"),
 ]
 
 
@@ -88,11 +108,11 @@ def blend_to_white(hex_color: str, frac_white: float) -> str:
 MAUVE = PALETTE_BY_NAME["mauve_grey"]
 SEGMENTS = [
     ("delivered", "delivered", PALETTE_BY_NAME["sage_green"]),
-    ("budget_exhausted_no_answer", "budget exhausted",
+    ("budget_exhausted_no_answer", "out of budget",
      PALETTE_BY_NAME["warm_grey"]),
-    ("answered_below_platform_quality_parity", "below platform quality",
+    ("answered_below_platform_quality_parity", "below the system's best",
      blend_to_white(MAUVE, 0.4)),
-    ("answered_structurally_invalid", "structurally invalid", MAUVE),
+    ("answered_structurally_invalid", "invalid", MAUVE),
 ]
 N_TURNS = 96
 

@@ -26,6 +26,6 @@
   "evaluation_rubric": {
     "mean_plddt_threshold": 65.0
   },
-  "source": "T-box riboswitch",
+  "source": "TPP riboswitch",
   "paper_reference": "2GDI"
 }

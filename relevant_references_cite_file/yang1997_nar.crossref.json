@@ -1,0 +1,132 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    6
+   ]
+  ],
+  "date-time": "2026-10-06T14:04:35Z",
+  "timestamp": 1791295475594,
+  "version": "4.1.0"
+ },
+ "reference-count": 0,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "14",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "published-print": {
+  "date-parts": [
+   [
+    1997,
+    7,
+    15
+   ]
+  ]
+ },
+ "DOI": "10.1093/nar/25.14.2800",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2002,
+    7,
+    26
+   ]
+  ],
+  "date-time": "2002-07-26T18:37:35Z",
+  "timestamp": 1027708655000
+ },
+ "page": "2800-2807",
+ "source": "Crossref",
+ "is-referenced-by-count": 85,
+ "title": [
+  "Location of the internal ribosome entry site in the 5' non-coding region of the immunoglobulin heavy-chain binding protein (BiP) mRNA: evidence for specific RNA-protein interactions"
+ ],
+ "prefix": "10.1093",
+ "volume": "25",
+ "author": [
+  {
+   "given": "Q",
+   "family": "Yang",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "container-title": [
+  "Nucleic Acids Research"
+ ],
+ "original-title": [],
+ "link": [
+  {
+   "URL": "http://academic.oup.com/nar/article-pdf/25/14/2800/4182285/25-14-2800.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2017,
+    8,
+    23
+   ]
+  ],
+  "date-time": "2017-08-23T17:38:13Z",
+  "timestamp": 1503509893000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/25.14.2800"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    1997,
+    7,
+    15
+   ]
+  ]
+ },
+ "references-count": 0,
+ "journal-issue": {
+  "issue": "14"
+ },
+ "URL": "https://doi.org/10.1093/nar/25.14.2800",
+ "relation": {},
+ "ISSN": [
+  "1362-4962"
+ ],
+ "issn-type": [
+  {
+   "value": "1362-4962",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    1997,
+    7,
+    15
+   ]
+  ]
+ }
+}

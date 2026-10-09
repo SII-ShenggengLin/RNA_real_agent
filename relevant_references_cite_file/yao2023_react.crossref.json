@@ -1,0 +1,520 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    18
+   ]
+  ],
+  "date-time": "2026-08-18T01:46:31Z",
+  "timestamp": 1787017591041,
+  "version": "build-2736575974"
+ },
+ "publisher-location": "New York, NY, USA",
+ "reference-count": 47,
+ "publisher": "ACM",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      4,
+      22
+     ]
+    ],
+    "date-time": "2025-04-22T00:00:00Z",
+    "timestamp": 1745280000000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "dl.acm.org"
+  ],
+  "crossmark-restriction": true
+ },
+ "published-print": {
+  "date-parts": [
+   [
+    2025,
+    4,
+    28
+   ]
+  ]
+ },
+ "DOI": "10.1145/3696410.3714720",
+ "type": "proceedings-article",
+ "created": {
+  "date-parts": [
+   [
+    2025,
+    4,
+    22
+   ]
+  ],
+  "date-time": "2025-04-22T18:52:18Z",
+  "timestamp": 1745347938000
+ },
+ "page": "2606-2620",
+ "update-policy": "https://doi.org/10.1145/crossmark-policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 4,
+ "title": [
+  "Synergizing Large Language Models and Knowledge-Based Reasoning for Interpretable Feature Engineering"
+ ],
+ "prefix": "10.1145",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0009-0001-3905-0588",
+   "authenticated-orcid": false,
+   "given": "Mohamed",
+   "family": "Bouadi",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "LIPADE, Université Paris Cité, Paris, France"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0009-0000-7051-5833",
+   "authenticated-orcid": false,
+   "given": "Arta",
+   "family": "Alavi",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "SAP France, Levallois Perret, France"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-5687-8152",
+   "authenticated-orcid": false,
+   "given": "Salima",
+   "family": "Benbernou",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "LIPADE, Université Paris Cité, Paris, France"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-1682-2781",
+   "authenticated-orcid": false,
+   "given": "Mourad",
+   "family": "Ouziri",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "LIPADE, Université Paris Cité, Paris, France"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "320",
+ "published-online": {
+  "date-parts": [
+   [
+    2025,
+    4,
+    22
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "e_1_3_2_1_1_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1137/1.9781611978032.100"
+  },
+  {
+   "key": "e_1_3_2_1_2_1",
+   "volume-title": "KRAFT: Leveraging Knowledge Graphs for Interpretable Feature Generation. In International Conference on Web Information Systems Engineering. Springer, 384--399",
+   "author": "Bouadi Mohamed",
+   "year": "2025",
+   "unstructured": "Mohamed Bouadi, Arta Alavi, Salima Benbernou, and Mourad Ouziri. 2025. KRAFT: Leveraging Knowledge Graphs for Interpretable Feature Generation. In International Conference on Web Information Systems Engineering. Springer, 384--399."
+  },
+  {
+   "key": "e_1_3_2_1_3_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1109/ICDM.2019.00017"
+  },
+  {
+   "key": "e_1_3_2_1_4_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3366423.3380224"
+  },
+  {
+   "key": "e_1_3_2_1_5_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/ARXIV.2309.11495showeprint[arXiv]2309.11495"
+  },
+  {
+   "key": "e_1_3_2_1_6_1",
+   "volume-title": "Smola",
+   "author": "Erickson Nick",
+   "year": "2020",
+   "unstructured": "Nick Erickson, Jonas Mueller, Alexander Shirkov, Hang Zhang, Pedro Larroy, Mu Li, and Alexander J. Smola. 2020. AutoGluon-Tabular: Robust and Accurate AutoML for Structured Data. CoRR, Vol. abs/2003.06505 (2020). showeprint[arXiv]2003.06505 https://arxiv.org/abs/2003.06505"
+  },
+  {
+   "key": "e_1_3_2_1_7_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1007/978--3-030-05318--5_6"
+  },
+  {
+   "key": "e_1_3_2_1_8_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.24963/ijcai.2023/816"
+  },
+  {
+   "key": "e_1_3_2_1_9_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3588917"
+  },
+  {
+   "key": "e_1_3_2_1_10_1",
+   "volume-title": "Advances in Neural Information Processing Systems",
+   "volume": "36",
+   "author": "Hollmann Noah",
+   "year": "2024",
+   "unstructured": "Noah Hollmann, Samuel Müller, and Frank Hutter. 2024. Large language models for automated data science: Introducing caafe for context-aware automated feature engineering. Advances in Neural Information Processing Systems, Vol. 36 (2024)."
+  },
+  {
+   "key": "e_1_3_2_1_11_1",
+   "volume-title": "Joint European Conference on Machine Learning and Knowledge Discovery in Databases. Springer, 111--120",
+   "author": "Horn Franziska",
+   "year": "2019",
+   "unstructured": "Franziska Horn, Robert Pack, and Michael Rieger. 2019. The autofeat python library for automated feature engineering and selection. In Joint European Conference on Machine Learning and Knowledge Discovery in Databases. Springer, 111--120."
+  },
+  {
+   "key": "e_1_3_2_1_12_1",
+   "volume-title": "Automatic Feature Engineering Through Monte Carlo Tree Search. In Joint European Conference on Machine Learning and Knowledge Discovery in Databases. Springer, 581--598",
+   "author": "Huang Yiran",
+   "year": "2022",
+   "unstructured": "Yiran Huang, Yexu Zhou, Michael Hefenbrock, Till Riedel, Likun Fang, and Michael Beigl. 2022. Automatic Feature Engineering Through Monte Carlo Tree Search. In Joint European Conference on Machine Learning and Knowledge Discovery in Databases. Springer, 581--598."
+  },
+  {
+   "key": "e_1_3_2_1_13_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1109/DSAA.2015.7344858"
+  },
+  {
+   "key": "e_1_3_2_1_14_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1109/ICDM.2016.0123"
+  },
+  {
+   "key": "e_1_3_2_1_15_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1609/aaai.v32i1.11678"
+  },
+  {
+   "key": "e_1_3_2_1_16_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1109/ICDE51399.2021.00305"
+  },
+  {
+   "key": "e_1_3_2_1_17_1",
+   "volume-title": "One button machine for automating feature engineering in relational databases. arXiv preprint arXiv:1706.00327",
+   "author": "Lam Hoang Thanh",
+   "year": "2017",
+   "unstructured": "Hoang Thanh Lam, Johann-Michael Thiebaut, Mathieu Sinn, Bei Chen, Tiep Mai, and Oznur Alkan. 2017. One button machine for automating feature engineering in relational databases. arXiv preprint arXiv:1706.00327 (2017)."
+  },
+  {
+   "key": "e_1_3_2_1_18_1",
+   "volume-title": "The Eleventh International Conference on Learning Representations, ICLR 2023",
+   "author": "Li Liyao",
+   "year": "2023",
+   "unstructured": "Liyao Li, Haobo Wang, Liangyu Zha, Qingyi Huang, Sai Wu, Gang Chen, and Junbo Zhao. 2023. Learning a Data-Driven Policy Network for Pre-Training Automated Feature Engineering. In The Eleventh International Conference on Learning Representations, ICLR 2023, Kigali, Rwanda, May 1--5, 2023. OpenReview.net. https://openreview.net/forum?id=688hNNMigVX"
+  },
+  {
+   "key": "e_1_3_2_1_19_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3514221.3517836"
+  },
+  {
+   "key": "e_1_3_2_1_20_1",
+   "volume-title": "The structure and function of explanations. Trends in cognitive sciences",
+   "author": "Lombrozo Tania",
+   "year": "2006",
+   "unstructured": "Tania Lombrozo. 2006. The structure and function of explanations. Trends in cognitive sciences, Vol. 10, 10 (2006), 464--470."
+  },
+  {
+   "key": "e_1_3_2_1_21_1",
+   "volume-title": "A unified approach to interpreting model predictions. Advances in neural information processing systems",
+   "author": "Lundberg Scott M",
+   "year": "2017",
+   "unstructured": "Scott M Lundberg and Su-In Lee. 2017. A unified approach to interpreting model predictions. Advances in neural information processing systems, Vol. 30 (2017)."
+  },
+  {
+   "key": "e_1_3_2_1_22_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.25080/MAJORA-92BF1922-00A"
+  },
+  {
+   "key": "e_1_3_2_1_23_1",
+   "volume-title": "WordNet: An electronic lexical database",
+   "author": "Miller George A",
+   "unstructured": "George A Miller. 1998. WordNet: An electronic lexical database. MIT press."
+  },
+  {
+   "key": "e_1_3_2_1_24_1",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Fatemeh Nargesian Horst Samulowitz Udayan Khurana Elias B Khalil and Deepak S Turaga. 2017. Learning Feature Engineering for Classification. In Ijcai. 2529--2535.",
+   "DOI": "10.24963/ijcai.2017/352"
+  },
+  {
+   "key": "e_1_3_2_1_26_1",
+   "volume-title": "Scikit-learn: Machine learning in Python. the Journal of machine Learning research",
+   "author": "Pedregosa Fabian",
+   "year": "2011",
+   "unstructured": "Fabian Pedregosa, Gaël Varoquaux, Alexandre Gramfort, Vincent Michel, Bertrand Thirion, Olivier Grisel, Mathieu Blondel, Peter Prettenhofer, Ron Weiss, Vincent Dubourg, et al. 2011. Scikit-learn: Machine learning in Python. the Journal of machine Learning research, Vol. 12 (2011), 2825--2830."
+  },
+  {
+   "key": "e_1_3_2_1_27_1",
+   "volume-title": "Large image datasets: A pyrrhic win for computer vision? CoRR",
+   "author": "Prabhu Vinay Uday",
+   "year": "2020",
+   "unstructured": "Vinay Uday Prabhu and Abeba Birhane. 2020. Large image datasets: A pyrrhic win for computer vision? CoRR, Vol. abs/2006.16923 (2020). showeprint[arXiv]2006.16923 https://arxiv.org/abs/2006.16923"
+  },
+  {
+   "key": "e_1_3_2_1_28_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/ARXIV.2309.05922showeprint[arXiv]2309.05922"
+  },
+  {
+   "key": "e_1_3_2_1_29_1",
+   "volume-title": "Anton Pavlovich Tyukov, Timur Alexandrovich Janovsky, Valeriy Anatol'evich Kamaev, et al.",
+   "author": "Shcherbakov Maxim Vladimirovich",
+   "year": "2013",
+   "unstructured": "Maxim Vladimirovich Shcherbakov, Adriaan Brebels, Nataliya Lvovna Shcherbakova, Anton Pavlovich Tyukov, Timur Alexandrovich Janovsky, Valeriy Anatol'evich Kamaev, et al. 2013. A survey of forecast error measures. World applied sciences journal, Vol. 24, 24 (2013), 171--176."
+  },
+  {
+   "key": "e_1_3_2_1_30_1",
+   "first-page": "91",
+   "article-title": "Hermit: A highly-efficient OWL reasoner",
+   "volume": "432",
+   "author": "Shearer Robert DC",
+   "year": "2008",
+   "unstructured": "Robert DC Shearer, Boris Motik, and Ian Horrocks. 2008. Hermit: A highly-efficient OWL reasoner.. In Owled, Vol. 432. 91.",
+   "journal-title": "Owled"
+  },
+  {
+   "key": "e_1_3_2_1_31_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3219819.3219901"
+  },
+  {
+   "key": "e_1_3_2_1_32_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1109/ICDE48307.2020.00146"
+  },
+  {
+   "key": "e_1_3_2_1_33_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3411764.3445526"
+  },
+  {
+   "key": "e_1_3_2_1_34_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3534678.3539278"
+  },
+  {
+   "key": "e_1_3_2_1_35_1",
+   "volume-title": "Self-Consistency Improves Chain of Thought Reasoning in Language Models. In The Eleventh International Conference on Learning Representations, ICLR 2023",
+   "author": "Wang Xuezhi",
+   "year": "2023",
+   "unstructured": "Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc V. Le, Ed H. Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou. 2023a. Self-Consistency Improves Chain of Thought Reasoning in Language Models. In The Eleventh International Conference on Learning Representations, ICLR 2023, Kigali, Rwanda, May 1--5, 2023. OpenReview.net. https://openreview.net/pdf?id=1PL1NIMMrw"
+  },
+  {
+   "key": "e_1_3_2_1_36_1",
+   "volume-title": "Stability of Random Forests and Coverage of Random-Forest Prediction Intervals. In Advances in Neural Information Processing Systems 36: Annual Conference on Neural Information Processing Systems 2023",
+   "author": "Wang Yan",
+   "year": "2023",
+   "unstructured": "Yan Wang, Huaiqing Wu, and Dan Nettleton. 2023b. Stability of Random Forests and Coverage of Random-Forest Prediction Intervals. In Advances in Neural Information Processing Systems 36: Annual Conference on Neural Information Processing Systems 2023, NeurIPS 2023, New Orleans, LA, USA, December 10 - 16, 2023, Alice Oh, Tristan Naumann, Amir Globerson, Kate Saenko, Moritz Hardt, and Sergey Levine (Eds.). http://papers.nips.cc/paper_files/paper/2023/hash/6452474601429509f3035dc81c233226-Abstract-Conference.html"
+  },
+  {
+   "key": "e_1_3_2_1_37_1",
+   "volume-title": "Machine learning",
+   "author": "Watkins Christopher JCH",
+   "year": "1992",
+   "unstructured": "Christopher JCH Watkins and Peter Dayan. 1992. Q-learning. Machine learning, Vol. 8 (1992), 279--292."
+  },
+  {
+   "key": "e_1_3_2_1_38_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1613/JAIR.1.14747"
+  },
+  {
+   "key": "e_1_3_2_1_39_1",
+   "volume-title": "Denny Zhou, et al.",
+   "author": "Wei Jason",
+   "year": "2022",
+   "unstructured": "Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed Chi, Quoc V Le, Denny Zhou, et al. 2022. Chain-of-thought prompting elicits reasoning in large language models. Advances in neural information processing systems, Vol. 35 (2022), 24824--24837."
+  },
+  {
+   "key": "e_1_3_2_1_40_1",
+   "volume-title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models. In Advances in Neural Information Processing Systems 36: Annual Conference on Neural Information Processing Systems 2023",
+   "author": "Yao Shunyu",
+   "year": "2023",
+   "unstructured": "Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Tom Griffiths, Yuan Cao, and Karthik Narasimhan. 2023. Tree of Thoughts: Deliberate Problem Solving with Large Language Models. In Advances in Neural Information Processing Systems 36: Annual Conference on Neural Information Processing Systems 2023, NeurIPS 2023, New Orleans, LA, USA, December 10 - 16, 2023, Alice Oh, Tristan Naumann, Amir Globerson, Kate Saenko, Moritz Hardt, and Sergey Levine (Eds.). http://papers.nips.cc/paper_files/paper/2023/hash/271db9922b8d1f4dd7aaef84ed5ac703-Abstract-Conference.html"
+  },
+  {
+   "key": "e_1_3_2_1_41_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3637528.3672015"
+  },
+  {
+   "key": "e_1_3_2_1_42_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/ARXIV.2308.10792showeprint[arXiv]2308.10792"
+  },
+  {
+   "key": "e_1_3_2_1_43_1",
+   "volume-title": "OpenFE: Automated Feature Generation with Expert-level Performance. In International Conference on Machine Learning, ICML 2023",
+   "volume": "41901",
+   "author": "Zhang Tianping",
+   "year": "2023",
+   "unstructured": "Tianping Zhang, Zheyu Aqa Zhang, Zhiyuan Fan, Haoyan Luo, Fengyuan Liu, Qian Liu, Wei Cao, and Li Jian. 2023c. OpenFE: Automated Feature Generation with Expert-level Performance. In International Conference on Machine Learning, ICML 2023, 23--29 July 2023, Honolulu, Hawaii, USA (Proceedings of Machine Learning Research, Vol. 202), Andreas Krause, Emma Brunskill, Kyunghyun Cho, Barbara Engelhardt, Sivan Sabato, and Jonathan Scarlett (Eds.). PMLR, 41880--41901. https://proceedings.mlr.press/v202/zhang23ay.html"
+  },
+  {
+   "key": "e_1_3_2_1_44_1",
+   "volume-title": "OpenFE: Automated Feature Generation with Expert-level Performance. In International Conference on Machine Learning, ICML 2023",
+   "volume": "41901",
+   "author": "Zhang Tianping",
+   "year": "2023",
+   "unstructured": "Tianping Zhang, Zheyu Aqa Zhang, Zhiyuan Fan, Haoyan Luo, Fengyuan Liu, Qian Liu, Wei Cao, and Li Jian. 2023 d. OpenFE: Automated Feature Generation with Expert-level Performance. In International Conference on Machine Learning, ICML 2023, 23--29 July 2023, Honolulu, Hawaii, USA (Proceedings of Machine Learning Research, Vol. 202), Andreas Krause, Emma Brunskill, Kyunghyun Cho, Barbara Engelhardt, Sivan Sabato, and Jonathan Scarlett (Eds.). PMLR, 41880--41901. https://proceedings.mlr.press/v202/zhang23ay.html"
+  },
+  {
+   "key": "e_1_3_2_1_45_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/ARXIV.2309.01219showeprint[arXiv]2309.01219"
+  },
+  {
+   "key": "e_1_3_2_1_46_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.14778/3467861.3467867"
+  },
+  {
+   "key": "e_1_3_2_1_47_1",
+   "volume-title": "International Conference on Automated Machine Learning. PMLR, 17--1.",
+   "author": "Zhu Guanghui",
+   "year": "2022",
+   "unstructured": "Guanghui Zhu, Zhuoer Xu, Chunfeng Yuan, and Yihua Huang. 2022. DIFER: differentiable automated feature engineering. In International Conference on Automated Machine Learning. PMLR, 17--1."
+  },
+  {
+   "key": "e_1_3_2_1_48_1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1145/3544903.3544905"
+  }
+ ],
+ "event": {
+  "name": "WWW '25: The ACM Web Conference 2025",
+  "location": "Sydney NSW Australia",
+  "acronym": "WWW '25",
+  "sponsor": [
+   "SIGWEB ACM Special Interest Group on Hypertext, Hypermedia, and Web"
+  ]
+ },
+ "container-title": [
+  "Proceedings of the ACM on Web Conference 2025"
+ ],
+ "link": [
+  {
+   "URL": "https://dl.acm.org/doi/10.1145/3696410.3714720",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://dl.acm.org/doi/pdf/10.1145/3696410.3714720",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    18
+   ]
+  ],
+  "date-time": "2025-06-18T21:18:57Z",
+  "timestamp": 1750281537000
+ },
+ "score": 28.737045,
+ "resource": {
+  "primary": {
+   "URL": "https://dl.acm.org/doi/10.1145/3696410.3714720"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2025,
+    4,
+    22
+   ]
+  ]
+ },
+ "references-count": 47,
+ "alternative-id": [
+  "10.1145/3696410.3714720",
+  "10.1145/3696410"
+ ],
+ "URL": "https://doi.org/10.1145/3696410.3714720",
+ "published": {
+  "date-parts": [
+   [
+    2025,
+    4,
+    22
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "2025-04-22",
+   "order": 3,
+   "name": "published",
+   "label": "Published",
+   "group": {
+    "name": "publication_history",
+    "label": "Publication History"
+   }
+  }
+ ]
+}

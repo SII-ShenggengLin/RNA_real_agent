@@ -97,13 +97,17 @@ def txt(ax, x, y, s, *, size=6, weight="normal", color=INK, ha="center",
 
 
 def card(ax, x, y, w, h, *, face="#FFFFFF", alpha=0.18, edge=None, lw=0.8,
-         radius=0.9, dashed=False, zorder=3, fill=True):
+         radius=0.9, dashed=False, zorder=3, fill=None):
     """Rounded card in mm; edge defaults to the face colour at full strength.
-    edge=False draws no border (soft background zone)."""
+    edge=False draws no border and keeps the tinted fill (semantic marks);
+    edged structural cards default to no fill — colour lives on the lines
+    (2026-10-07 user direction: no grey fill haze, lines carry the colour)."""
     if edge is False:
         edge = "none"
+        fill = True if fill is None else fill
     else:
         edge = edge or face
+        fill = False if fill is None else fill
     box = FancyBboxPatch((x + radius, y + radius), w - 2 * radius, h - 2 * radius,
                          boxstyle=f"round,pad={radius}",
                          facecolor=to_rgba(face, alpha) if fill else "none",
@@ -126,13 +130,47 @@ def zone(ax, x, y, w, h, *, face, alpha=0.07, radius=1.4, lw=0.0, zorder=1):
 
 def flow(ax, p0, p1, *, kind="data", lw=1.0, ms=7.5, rad=0.0,
          both=False, zorder=4, shrink=0.6):
-    """Semantic arrows. kind: data | gate | advisory."""
+    """Semantic arrows. kind: data | gate | advisory.
+
+    Shaft and head are two artists: the (possibly patterned) shaft stops at
+    the head's base and the head segment is drawn solid, so a dash/dot
+    pattern never runs underneath the arrowhead (2026-10-07 panel-b batch —
+    the short gate arrow and the dotted advisory arrows showed the head
+    sitting on top of the pattern). Straight arrows only; curved (rad != 0)
+    or degenerate arrows fall back to a single patch.
+    """
     styles = {
         "data": dict(color=C_SLATE, linestyle="solid"),
         "gate": dict(color=C_TERRACOTTA, linestyle=(0, (2.6, 1.6))),
         "advisory": dict(color=C_DARK, linestyle=(0, (1.0, 1.5))),
     }
     kw = styles[kind]
+    PT = 25.4 / 72.0
+    head = ms * 0.4 * PT            # "-|>" head length = 0.4 x mutation scale
+    sh = shrink * PT
+    vx, vy = p1[0] - p0[0], p1[1] - p0[1]
+    L = math.hypot(vx, vy)
+    if rad == 0.0 and L > 2 * (sh + head):
+        ux, uy = vx / L, vy / L
+        tip = (p1[0] - ux * sh, p1[1] - uy * sh)
+        base = (tip[0] - ux * head, tip[1] - uy * head)
+        start = (p0[0] + ux * sh, p0[1] + uy * sh)
+        shaft_start = start
+        if both:
+            tail_base = (start[0] + ux * head, start[1] + uy * head)
+            ax.add_patch(FancyArrowPatch(start, tail_base, arrowstyle="<|-",
+                                         mutation_scale=ms, linewidth=lw,
+                                         shrinkA=0, shrinkB=0, zorder=zorder,
+                                         color=kw["color"], linestyle="solid"))
+            shaft_start = tail_base
+        ax.add_patch(FancyArrowPatch(shaft_start, base, arrowstyle="-",
+                                     mutation_scale=ms, linewidth=lw,
+                                     shrinkA=0, shrinkB=0, zorder=zorder, **kw))
+        arr = FancyArrowPatch(base, tip, arrowstyle="-|>", mutation_scale=ms,
+                              linewidth=lw, shrinkA=0, shrinkB=0, zorder=zorder,
+                              color=kw["color"], linestyle="solid")
+        ax.add_patch(arr)
+        return arr
     arr = FancyArrowPatch(p0, p1, arrowstyle="-|>" if not both else "<|-|>",
                           mutation_scale=ms, linewidth=lw, shrinkA=shrink,
                           shrinkB=shrink, connectionstyle=f"arc3,rad={rad}",
@@ -270,9 +308,20 @@ class MplBackend:
         self.ax = ax
 
     def card(self, x, y, w, h, *, face, alpha=0.16, edge=None, dashed=False,
-             lw=0.8, radius=0.9):
+             lw=0.8, radius=0.9, fill=None):
         return card(self.ax, x, y, w, h, face=face, alpha=alpha, edge=edge,
-                    lw=lw, radius=radius, dashed=dashed)
+                    lw=lw, radius=radius, dashed=dashed, fill=fill)
+
+    def measure(self, s, size=6, weight="normal", style=None):
+        """Width (mm) of a single-line string rendered at the given size."""
+        fig = self.ax.figure
+        fig.canvas.draw()
+        renderer = fig.canvas.get_renderer()
+        t = self.ax.text(0, 0, s, fontsize=size, fontweight=weight,
+                         fontstyle=style or "normal", alpha=0)
+        bb = t.get_window_extent(renderer=renderer)
+        t.remove()
+        return bb.width / fig.dpi * 25.4
 
     def txt(self, x, y, s, *, size=6, weight="normal", color=INK, ha="center",
             va="center", style=None, rotation=0):
@@ -284,10 +333,11 @@ class MplBackend:
         return flow(self.ax, (x0, y0), (x1, y1), kind=kind, lw=lw, both=both,
                     ms=ms, rad=rad)
 
-    def line(self, x0, y0, x1, y1, *, color=C_SLATE, lw=0.5, dash=None):
+    def line(self, x0, y0, x1, y1, *, color=C_SLATE, lw=0.5, dash=None,
+             zorder=4):
         ls = {"dash": (0, (2.6, 1.6)), "dot": (0, (1.0, 1.5))}.get(dash, "solid")
         return plain_line(self.ax, (x0, y0), (x1, y1), color=color, lw=lw,
-                          linestyle=ls)
+                          linestyle=ls, zorder=zorder)
 
     def dot(self, cx, cy, r, *, face, edge=None, lw=0.5):
         return dot(self.ax, cx, cy, r, face, edge=edge, lw=lw)

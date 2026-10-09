@@ -48,6 +48,14 @@ provenance lives in the caption); the chance line retained
 is the panel's failure evidence (unlike fig2g/fig4a, whose dropped chance
 lines carried no below-chance point).
 
+2026-10-02 text sync (user-adjudicated, the Fig. 4 figure-by-figure pass):
+the in-figure legend re-labelled "Pre-repair tool" / "Repaired tool,
+normalized input" / "Repaired tool, verbatim input" — "pre-repair" takes
+the polished caption's term, and both live arms are the repaired tool,
+distinguished by input treatment (the agent tool path applies the
+case-preserving normalization per pair; the endpoint receives verbatim
+inputs). Measured one-row legend width 82.1 mm against the 88-mm canvas.
+
 Data  : experiments/results/exp15_rnasmol_fidelity/summary.json (live arms)
         + experiments/results/exp15_rnasmol_v020_sandbox/summary.json
         (the git-recovered v0.2.0 pre-fix arm, re-measured)
@@ -210,13 +218,13 @@ def main() -> int:
     handles = [
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor="white", markeredgecolor=C_PRE,
-               markeredgewidth=0.8, label="Pre-fix preprocessing"),
+               markeredgewidth=0.8, label="Pre-repair tool"),
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor=C_PRE, markeredgecolor="white",
-               markeredgewidth=0.4, label="Tool-path normalization"),
+               markeredgewidth=0.4, label="Repaired tool, normalized input"),
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor=C_POST, markeredgecolor="white",
-               markeredgewidth=0.4, label="Verbatim input"),
+               markeredgewidth=0.4, label="Repaired tool, verbatim input"),
     ]
     fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.074),
                frameon=False, fontsize=FONT, ncols=3, handlelength=1.0,

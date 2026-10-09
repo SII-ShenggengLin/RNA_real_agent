@@ -1,0 +1,929 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    6
+   ]
+  ],
+  "date-time": "2026-10-06T21:30:27Z",
+  "timestamp": 1791322227379,
+  "version": "4.3.1"
+ },
+ "reference-count": 53,
+ "publisher": "Elsevier BV",
+ "issue": "12",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/legal/tdmrep-license"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2013,
+      7,
+      17
+     ]
+    ],
+    "date-time": "2013-07-17T00:00:00Z",
+    "timestamp": 1374019200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 3150,
+   "URL": "http://www.elsevier.com/open-access/userlicense/1.0/"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "cell.com",
+   "elsevier.com",
+   "sciencedirect.com"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Chemistry &amp; Biology"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2004,
+    12
+   ]
+  ]
+ },
+ "DOI": "10.1016/j.chembiol.2004.11.018",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2004,
+    12,
+    19
+   ]
+  ],
+  "date-time": "2004-12-19T08:30:12Z",
+  "timestamp": 1103445012000
+ },
+ "page": "1729-1741",
+ "update-policy": "https://doi.org/10.1016/elsevier_cm_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 524,
+ "title": [
+  "Structural Basis for Discriminative Regulation of Gene Expression by Adenine- and Guanine-Sensing mRNAs"
+ ],
+ "prefix": "10.1016",
+ "volume": "11",
+ "author": [
+  {
+   "given": "Alexander",
+   "family": "Serganov",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yu-Ren",
+   "family": "Yuan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Olga",
+   "family": "Pikovskaya",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Anna",
+   "family": "Polonskaia",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lucy",
+   "family": "Malinina",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Anh Tuân",
+   "family": "Phan",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Claudia",
+   "family": "Hobartner",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ronald",
+   "family": "Micura",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ronald R.",
+   "family": "Breaker",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Dinshaw J.",
+   "family": "Patel",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "78",
+ "reference": [
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib1",
+   "doi-asserted-by": "crossref",
+   "first-page": "2326",
+   "DOI": "10.1002/(SICI)1521-3773(19990816)38:16<2326::AID-ANIE2326>3.0.CO;2-3",
+   "article-title": "Tertiary motifs in RNA structure and folding",
+   "volume": "38",
+   "author": "Batey",
+   "year": "1999",
+   "journal-title": "Angew. Chem. Int. Ed. Engl."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib2",
+   "doi-asserted-by": "crossref",
+   "first-page": "829",
+   "DOI": "10.1006/jmbi.1999.3312",
+   "article-title": "Stitching together RNA tertiary architectures",
+   "volume": "294",
+   "author": "Hermann",
+   "year": "1999",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib3",
+   "doi-asserted-by": "crossref",
+   "first-page": "457",
+   "DOI": "10.1146/annurev.biophys.30.1.457",
+   "article-title": "Ribozyme structure and mechanisms",
+   "volume": "30",
+   "author": "Doherty",
+   "year": "2001",
+   "journal-title": "Annu. Rev. Biophys. Biomol. Struct."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib4",
+   "doi-asserted-by": "crossref",
+   "first-page": "330",
+   "DOI": "10.1016/S0959-440X(99)80044-X",
+   "article-title": "Structure, folding and catalysis of the small nucleolytic ribozymes",
+   "volume": "9",
+   "author": "Lilley",
+   "year": "1999",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib5",
+   "doi-asserted-by": "crossref",
+   "first-page": "321",
+   "DOI": "10.1016/S0959-440X(00)00208-6",
+   "article-title": "Artificial ribozymes and deoxyribozymes",
+   "volume": "11",
+   "author": "Jaschke",
+   "year": "2001",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib6",
+   "series-title": "Oxford Handbook of Nucleic Acid Structure",
+   "first-page": "567",
+   "article-title": "RNA structure in solution",
+   "author": "Nowakowski",
+   "year": "1999"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib7",
+   "doi-asserted-by": "crossref",
+   "first-page": "74",
+   "DOI": "10.1016/S0959-440X(99)80010-4",
+   "article-title": "Adaptive recognition in RNA complexes with peptide and protein molecules",
+   "volume": "9",
+   "author": "Patel",
+   "year": "1999",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib8",
+   "doi-asserted-by": "crossref",
+   "first-page": "7947",
+   "DOI": "10.1021/bi010680y",
+   "article-title": "Current topics in RNA-protein recognition: Control of specificity and biological function through induced fit and conformational capture",
+   "volume": "40",
+   "author": "Leulliot",
+   "year": "2001",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib9",
+   "doi-asserted-by": "crossref",
+   "first-page": "591",
+   "DOI": "10.1021/ar960167q",
+   "article-title": "Nucleic acid aptamers: From selection in vitro to applications in vivo",
+   "volume": "33",
+   "author": "Famulok",
+   "year": "2000",
+   "journal-title": "Acc. Chem. Res."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib10",
+   "doi-asserted-by": "crossref",
+   "first-page": "820",
+   "DOI": "10.1126/science.287.5454.820",
+   "article-title": "Adaptive recognition by nucleic acid aptamers",
+   "volume": "287",
+   "author": "Hermann",
+   "year": "2000",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib11",
+   "doi-asserted-by": "crossref",
+   "first-page": "469",
+   "DOI": "10.1016/S0167-7799(99)01383-9",
+   "article-title": "Nucleic acid molecular switches",
+   "volume": "17",
+   "author": "Soukup",
+   "year": "1999",
+   "journal-title": "Trends Biotechnol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib12",
+   "doi-asserted-by": "crossref",
+   "first-page": "318",
+   "DOI": "10.1016/S0959-440X(00)00090-7",
+   "article-title": "Allosteric nucleic acid catalysts",
+   "volume": "10",
+   "author": "Soukup",
+   "year": "2000",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib13",
+   "doi-asserted-by": "crossref",
+   "first-page": "31",
+   "DOI": "10.1016/S0958-1669(02)00281-1",
+   "article-title": "Engineered allosteric ribozymes as biosensor components",
+   "volume": "13",
+   "author": "Breaker",
+   "year": "2002",
+   "journal-title": "Curr. Opin. Biotechnol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib14",
+   "doi-asserted-by": "crossref",
+   "first-page": "3584",
+   "DOI": "10.1073/pnas.96.7.3584",
+   "article-title": "Engineering precision molecular switches",
+   "volume": "96",
+   "author": "Soukup",
+   "year": "1999",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib15",
+   "doi-asserted-by": "crossref",
+   "first-page": "1043",
+   "DOI": "10.1038/sj.embor.7400005",
+   "article-title": "RNA sensors: Novel regulators for gene expression",
+   "volume": "4",
+   "author": "Kaempfer",
+   "year": "2003",
+   "journal-title": "EMBO Rep."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib16",
+   "doi-asserted-by": "crossref",
+   "first-page": "1043",
+   "DOI": "10.1016/S1074-5521(02)00224-7",
+   "article-title": "Genetic control by a metabolite-binding RNA",
+   "volume": "9",
+   "author": "Nahvi",
+   "year": "2002",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib17",
+   "doi-asserted-by": "crossref",
+   "first-page": "747",
+   "DOI": "10.1016/S0092-8674(02)01134-0",
+   "article-title": "Sensing small molecules by nascent RNA: A mechanism to control transcription in bacteria",
+   "volume": "111",
+   "author": "Mironov",
+   "year": "2002",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib18",
+   "doi-asserted-by": "crossref",
+   "first-page": "15908",
+   "DOI": "10.1073/pnas.212628899",
+   "article-title": "An mRNA structure that controls gene expression by binding FMN",
+   "volume": "99",
+   "author": "Winkler",
+   "year": "2002",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib19",
+   "doi-asserted-by": "crossref",
+   "first-page": "952",
+   "DOI": "10.1038/nature01145",
+   "article-title": "Thiamine derivatives bind mRNAs directly to regulate bacterial gene expression",
+   "volume": "419",
+   "author": "Winkler",
+   "year": "2002",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib20",
+   "doi-asserted-by": "crossref",
+   "first-page": "3083",
+   "DOI": "10.1073/pnas.0630422100",
+   "article-title": "Transcription termination control of the S box system: Direct measurement of S-adenosylmethionine by the leader RNA",
+   "volume": "100",
+   "author": "McDaniel",
+   "year": "2003",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib21",
+   "doi-asserted-by": "crossref",
+   "first-page": "5052",
+   "DOI": "10.1073/pnas.0531307100",
+   "article-title": "The riboswitch-mediated control of sulfur metabolism in bacteria",
+   "volume": "100",
+   "author": "Epshtein",
+   "year": "2003",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib22",
+   "doi-asserted-by": "crossref",
+   "first-page": "701",
+   "DOI": "10.1038/nsb967",
+   "article-title": "An mRNA structure that controls gene expression by binding S-adenosylmethionine",
+   "volume": "10",
+   "author": "Winkler",
+   "year": "2003",
+   "journal-title": "Nat. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib23",
+   "doi-asserted-by": "crossref",
+   "first-page": "577",
+   "DOI": "10.1016/S0092-8674(03)00391-X",
+   "article-title": "Riboswitches control fundamental biochemical pathways in Bacillus subtilisis and other bacteria",
+   "volume": "113",
+   "author": "Mandal",
+   "year": "2003",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib24",
+   "doi-asserted-by": "crossref",
+   "first-page": "29",
+   "DOI": "10.1038/nsmb710",
+   "article-title": "Adenine riboswitches and gene activation by disruption of a transcription terminator",
+   "volume": "11",
+   "author": "Mandal",
+   "year": "2004",
+   "journal-title": "Nat. Struct. Mol. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib25",
+   "doi-asserted-by": "crossref",
+   "first-page": "12057",
+   "DOI": "10.1073/pnas.2133705100",
+   "article-title": "The L box regulon: Lysine sensing by leader RNAs of bacterial lysine biosynthesis genes",
+   "volume": "100",
+   "author": "Grundy",
+   "year": "2003",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib26",
+   "doi-asserted-by": "crossref",
+   "first-page": "2688",
+   "DOI": "10.1101/gad.1140003",
+   "article-title": "An mRNA structure in bacteria that controls gene expression by binding lysine",
+   "volume": "17",
+   "author": "Sudarsan",
+   "year": "2003",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib27",
+   "doi-asserted-by": "crossref",
+   "first-page": "275",
+   "DOI": "10.1126/science.1100829",
+   "article-title": "A glycine-depedent riboswitch that uses cooperative binding to control gene expression",
+   "volume": "306",
+   "author": "Mandal",
+   "year": "2004",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib28",
+   "doi-asserted-by": "crossref",
+   "first-page": "11",
+   "DOI": "10.1016/j.tibs.2003.11.004",
+   "article-title": "The riboswitch control of bacterial metabolism",
+   "volume": "29",
+   "author": "Nudler",
+   "year": "2004",
+   "journal-title": "Trends Biochem. Sci."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib29",
+   "doi-asserted-by": "crossref",
+   "first-page": "451",
+   "DOI": "10.1038/nrm1403",
+   "article-title": "Gene regulation by riboswitches",
+   "volume": "5",
+   "author": "Mandal",
+   "year": "2004",
+   "journal-title": "Nat. Rev. Mol. Cell Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib30",
+   "doi-asserted-by": "crossref",
+   "first-page": "281",
+   "DOI": "10.1038/nature02362",
+   "article-title": "Control of gene expression by a natural metabolite-responsive ribozyme",
+   "volume": "428",
+   "author": "Winkler",
+   "year": "2004",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib31",
+   "doi-asserted-by": "crossref",
+   "first-page": "6421",
+   "DOI": "10.1073/pnas.0308014101",
+   "article-title": "New RNA motifs suggest an expanded scope for riboswitches in bacterial genetic control",
+   "volume": "101",
+   "author": "Barrick",
+   "year": "2004",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib32",
+   "doi-asserted-by": "crossref",
+   "first-page": "644",
+   "DOI": "10.1261/rna.5090103",
+   "article-title": "Metabolite-binding RNA domains are present in the genes of eukaryotes",
+   "volume": "9",
+   "author": "Sudarsan",
+   "year": "2003",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib33",
+   "doi-asserted-by": "crossref",
+   "first-page": "411",
+   "DOI": "10.1038/nature03037",
+   "article-title": "Structure of a natural guanine-responsive riboswitch complexed with the metabolite hypoxanthine",
+   "volume": "432",
+   "author": "Batey",
+   "year": "2004",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib34",
+   "doi-asserted-by": "crossref",
+   "first-page": "3497",
+   "DOI": "10.1093/nar/gkf481",
+   "article-title": "The non-Watson-Crick base pairs and their associated isostericity matrices",
+   "volume": "30",
+   "author": "Leontis",
+   "year": "2002",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib35",
+   "doi-asserted-by": "crossref",
+   "first-page": "300",
+   "DOI": "10.1016/S0959-440X(03)00076-9",
+   "article-title": "Analysis of RNA motifs",
+   "volume": "13",
+   "author": "Leontis",
+   "year": "2003",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib36",
+   "doi-asserted-by": "crossref",
+   "first-page": "285",
+   "DOI": "10.1038/6722",
+   "article-title": "Minor groove RNA triplex in the crystal structure of a ribosomal frameshifting viral pseudoknot",
+   "volume": "6",
+   "author": "Su",
+   "year": "1999",
+   "journal-title": "Nat. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib37",
+   "doi-asserted-by": "crossref",
+   "first-page": "339",
+   "DOI": "10.1038/86221",
+   "article-title": "A universal mode of helix packing in RNA",
+   "volume": "8",
+   "author": "Doherty",
+   "year": "2001",
+   "journal-title": "Nat. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib38",
+   "doi-asserted-by": "crossref",
+   "first-page": "53",
+   "DOI": "10.1038/71253",
+   "article-title": "The structural basis for molecular recognition by the vitamin B12 RNA aptamer",
+   "volume": "7",
+   "author": "Sussman",
+   "year": "2000",
+   "journal-title": "Nat. Struct. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib39",
+   "doi-asserted-by": "crossref",
+   "first-page": "4899",
+   "DOI": "10.1073/pnas.081082398",
+   "article-title": "RNA tertiary interactions in the large ribosomal subunit: The A-minor motif",
+   "volume": "98",
+   "author": "Nissen",
+   "year": "2001",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib40",
+   "doi-asserted-by": "crossref",
+   "first-page": "11676",
+   "DOI": "10.1073/pnas.182221799",
+   "article-title": "Specificity of RNA-RNA helix recognition",
+   "volume": "99",
+   "author": "Battle",
+   "year": "2002",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib41",
+   "doi-asserted-by": "crossref",
+   "first-page": "1696",
+   "DOI": "10.1126/science.273.5282.1696",
+   "article-title": "RNA tertiary structure mediation by adenosine platforms",
+   "volume": "20",
+   "author": "Cate",
+   "year": "1996",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib42",
+   "doi-asserted-by": "crossref",
+   "first-page": "166",
+   "DOI": "10.1016/S1367-5931(99)00071-X",
+   "article-title": "Metal ions in ribozyme folding and catalysis",
+   "volume": "4",
+   "author": "Hanna",
+   "year": "2000",
+   "journal-title": "Curr. Opin. Chem. Biol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib43",
+   "doi-asserted-by": "crossref",
+   "first-page": "4302",
+   "DOI": "10.1073/pnas.062055599",
+   "article-title": "Metal ions and flexibility in a viral pseudoknot at atomic resolution",
+   "volume": "99",
+   "author": "Egli",
+   "year": "2002",
+   "journal-title": "Proc. Natl. Acad. Sci. USA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib44",
+   "doi-asserted-by": "crossref",
+   "first-page": "1366",
+   "DOI": "10.1261/rna.7390804",
+   "article-title": "The contribution of metal ions to the structural stability of the large ribosomal subunit",
+   "volume": "10",
+   "author": "Klein",
+   "year": "2004",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib45",
+   "doi-asserted-by": "crossref",
+   "first-page": "291",
+   "DOI": "10.1111/j.1432-1033.1997.00291.x",
+   "article-title": "Ribosomal protein S15 from Thermus thermophilus. Cloning, sequencing, overexpression of the gene and RNA-binding properties of the protein",
+   "volume": "246",
+   "author": "Serganov",
+   "year": "1997",
+   "journal-title": "Eur. J. Biochem."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib46",
+   "doi-asserted-by": "crossref",
+   "first-page": "1772",
+   "DOI": "10.1107/S0907444902011678",
+   "article-title": "Substructure solution with SHELXD",
+   "volume": "58",
+   "author": "Schneider",
+   "year": "2002",
+   "journal-title": "Acta Crystallogr. D Biol. Crystallogr."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib47",
+   "doi-asserted-by": "crossref",
+   "first-page": "760",
+   "DOI": "10.1107/S0907444994003112",
+   "article-title": "The CCP4 suite: programs for protein crystallography",
+   "volume": "50",
+   "year": "1994",
+   "journal-title": "Acta Crystallogr. D Biol. Crystallogr."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib48",
+   "doi-asserted-by": "crossref",
+   "first-page": "472",
+   "DOI": "10.1016/S0076-6879(97)76073-7",
+   "article-title": "Maximum-likelihood heavy-atom parameter refinement for multiple isomorphous and multiwavelength anomalous diffraction methods",
+   "volume": "276",
+   "author": "De La Fortelle",
+   "year": "1997",
+   "journal-title": "Methods Enzymol."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib49",
+   "doi-asserted-by": "crossref",
+   "first-page": "30",
+   "DOI": "10.1107/S0907444995008754",
+   "article-title": "Methods used in the structure determination of bovine mitochondrial F1 ATPase",
+   "volume": "52",
+   "author": "Abrahams",
+   "year": "1996",
+   "journal-title": "Acta Crystallogr. D Biol. Crystallogr."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib50",
+   "doi-asserted-by": "crossref",
+   "first-page": "110",
+   "DOI": "10.1107/S0108767390010224",
+   "article-title": "Improved methods for building protein models in electron density maps and the location of errors in these models",
+   "volume": "47",
+   "author": "Jones",
+   "year": "1991",
+   "journal-title": "Acta Crystallogr. A"
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib51",
+   "doi-asserted-by": "crossref",
+   "first-page": "905",
+   "DOI": "10.1107/S0907444998003254",
+   "article-title": "Crystallography and NMR system: A new software suite for macromolecular structure determination",
+   "volume": "5",
+   "author": "Brunger",
+   "year": "1998",
+   "journal-title": "Acta Crystallogr. D Biol. Crystallogr."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib52",
+   "doi-asserted-by": "crossref",
+   "first-page": "240",
+   "DOI": "10.1107/S0907444996012255",
+   "article-title": "Refinement of macromolecular structures by the maximum-likelihood method",
+   "volume": "53",
+   "author": "Murshudov",
+   "year": "1997",
+   "journal-title": "Acta Crystallogr. D Biol. Crystallogr."
+  },
+  {
+   "key": "10.1016/j.chembiol.2004.11.018_bib53",
+   "doi-asserted-by": "crossref",
+   "first-page": "341",
+   "DOI": "10.1016/S0076-6879(02)38228-4",
+   "article-title": "Investigation of unusual DNA motifs",
+   "volume": "338",
+   "author": "Phan",
+   "year": "2001",
+   "journal-title": "Methods Enzymol."
+  }
+ ],
+ "container-title": [
+  "Chemistry &amp; Biology"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S1074552104003436?httpAccept=text/xml",
+   "content-type": "text/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S1074552104003436?httpAccept=text/plain",
+   "content-type": "text/plain",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    10,
+    21
+   ]
+  ],
+  "date-time": "2025-10-21T07:05:03Z",
+  "timestamp": 1761030303000
+ },
+ "score": 83.444496,
+ "resource": {
+  "primary": {
+   "URL": "https://linkinghub.elsevier.com/retrieve/pii/S1074552104003436"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2004,
+    12
+   ]
+  ]
+ },
+ "references-count": 53,
+ "journal-issue": {
+  "issue": "12",
+  "published-print": {
+   "date-parts": [
+    [
+     2004,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S1074552104003436"
+ ],
+ "URL": "https://doi.org/10.1016/j.chembiol.2004.11.018",
+ "relation": {
+  "has-review": [
+   {
+    "id-type": "doi",
+    "id": "10.3410/f.1023468.270748",
+    "asserted-by": "object"
+   }
+  ]
+ },
+ "ISSN": [
+  "1074-5521"
+ ],
+ "issn-type": [
+  {
+   "value": "1074-5521",
+   "type": "print"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2004,
+    12
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "Elsevier",
+   "name": "publisher",
+   "label": "This article is maintained by"
+  },
+  {
+   "value": "Structural Basis for Discriminative Regulation of Gene Expression by Adenine- and Guanine-Sensing mRNAs",
+   "name": "articletitle",
+   "label": "Article Title"
+  },
+  {
+   "value": "Chemistry & Biology",
+   "name": "journaltitle",
+   "label": "Journal Title"
+  },
+  {
+   "value": "https://doi.org/10.1016/j.chembiol.2004.11.018",
+   "name": "articlelink",
+   "label": "CrossRef DOI link to publisher maintained version"
+  },
+  {
+   "value": "article",
+   "name": "content_type",
+   "label": "Content Type"
+  },
+  {
+   "value": "Copyright © 2004 Elsevier Ltd. All rights reserved.",
+   "name": "copyright",
+   "label": "Copyright"
+  }
+ ]
+}

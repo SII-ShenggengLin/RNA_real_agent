@@ -1,0 +1,1344 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T18:54:42Z",
+  "timestamp": 1791485682477,
+  "version": "4.3.4"
+ },
+ "reference-count": 98,
+ "publisher": "Royal Society of Chemistry (RSC)",
+ "issue": "7",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2024,
+      5,
+      17
+     ]
+    ],
+    "date-time": "2024-05-17T00:00:00Z",
+    "timestamp": 1715904000000
+   },
+   "content-version": "vor",
+   "delay-in-days": 137,
+   "URL": "http://creativecommons.org/licenses/by-nc/3.0/"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/100000199",
+   "name": "U.S. Department of Agriculture",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "2021-69012-35978"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "2021-69012-35978"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000199",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000015",
+   "name": "U.S. Department of Energy",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "WP22-S1-3475"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "WP22-S1-3475"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000015",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100013316",
+   "name": "Strategic Environmental Research and Development Program",
+   "doi-asserted-by": "publisher",
+   "id": [
+    {
+     "id": "10.13039/100013316",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000183",
+   "name": "Army Research Office",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "79058LSCSB"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "79058LSCSB"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000183",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000183",
+   "name": "Army Research Office",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "W911NF-22-2-0213"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "W911NF-22-2-0213"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000183",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000183",
+   "name": "Army Research Office",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "W911NF2120130"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "W911NF2120130"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000183",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000002",
+   "name": "National Institutes of Health",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "U01EB014976"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "U01EB014976"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000002",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000002",
+   "name": "National Institutes of Health",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "R01AR077793"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "R01AR077793"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000002",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000006",
+   "name": "Office of Naval Research",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "N00014-19-1-2375"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "N00014-19-1-2375"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000006",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000006",
+   "name": "Office of Naval Research",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "N00014-20-1-2189"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "N00014-20-1-2189"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000006",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100001711",
+   "name": "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "#P500PT_214448"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "#P500PT_214448"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001711",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "rsc.org"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Digital Discovery"
+ ],
+ "abstract": "<jats:p>\n                    ProtAgents is a\n                    <jats:italic>de novo</jats:italic>\n                    protein design platform based on multimodal LLMs, where distinct AI agents with expertise in knowledge retrieval, protein structure analysis, physics-based simulations, and results analysis tackle tasks in a dynamic setting.\n                  </jats:p>",
+ "DOI": "10.1039/d4dd00013g",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2024,
+    5,
+    17
+   ]
+  ],
+  "date-time": "2024-05-17T09:20:48Z",
+  "timestamp": 1715937648000
+ },
+ "page": "1389-1409",
+ "update-policy": "https://doi.org/10.1039/rsc_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 114,
+ "title": [
+  "ProtAgents: protein discovery\n                    <i>via</i>\n                    large language model multi-agent collaborations combining physics and machine learning"
+ ],
+ "prefix": "10.1039",
+ "volume": "3",
+ "author": [
+  {
+   "given": "Alireza",
+   "family": "Ghafarollahi",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Laboratory for Atomistic and Molecular Mechanics (LAMM), Massachusetts Institute of Technology, 77 Massachusetts Ave., Cambridge, MA 02139, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-4173-9659",
+   "authenticated-orcid": false,
+   "given": "Markus J.",
+   "family": "Buehler",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Laboratory for Atomistic and Molecular Mechanics (LAMM), Massachusetts Institute of Technology, 77 Massachusetts Ave., Cambridge, MA 02139, USA"
+    },
+    {
+     "name": "Center for Computational Science and Engineering, Schwarzman College of Computing, Massachusetts Institute of Technology, 77 Massachusetts Ave., Cambridge, MA 02139, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "292",
+ "published-online": {
+  "date-parts": [
+   [
+    2024
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "issue": "7620",
+   "key": "D4DD00013G/cit1/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "320",
+   "DOI": "10.1038/nature19946",
+   "volume": "537",
+   "author": "Huang",
+   "year": "2016",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "D4DD00013G/cit2/1",
+   "author": "Notin",
+   "year": "2022",
+   "unstructured": "P.Notin ,  M.Dias ,  J.Frazer ,  J. M.Hurtado ,  A. N.Gomez ,  D.Marks  and  Y.Gal ,  Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval ,  2022 ,  https://proceedings.mlr.press/v162/notin22a.html"
+  },
+  {
+   "key": "D4DD00013G/cit3/1",
+   "first-page": "1",
+   "volume": "32",
+   "author": "Ingraham",
+   "year": "2019",
+   "journal-title": "Adv. Neural Inf. Process. Syst."
+  },
+  {
+   "key": "D4DD00013G/cit4/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2209.15611",
+   "volume-title": "arXiv",
+   "author": "Wu",
+   "year": "2022",
+   "unstructured": "K. E.Wu ,  K. K.Yang ,  R.vanden Berg ,  J. Y.Zou ,  A. X.Lu  and  A. P.Amini ,  arXiv ,  2022 , preprint, arXiv:2209.15611v2,  10.48550/arXiv.2209.15611"
+  },
+  {
+   "key": "D4DD00013G/cit5/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2205.15019",
+   "volume-title": "arXiv",
+   "author": "Anand",
+   "year": "2022",
+   "unstructured": "N.Anand  and  T.Achim ,  arXiv ,  2022 , preprint, arXiv:2205.15019,  10.48550/arXiv.2205.15019"
+  },
+  {
+   "key": "D4DD00013G/cit6/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "e1010271",
+   "DOI": "10.1371/journal.pcbi.1010271",
+   "volume": "18",
+   "author": "Eguchi",
+   "year": "2022",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "D4DD00013G/cit7/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "e2016239118",
+   "DOI": "10.1073/pnas.2016239118",
+   "volume": "118",
+   "author": "Rives",
+   "year": "2021",
+   "journal-title": "Proc. Natl. Acad. Sci. U. S. A."
+  },
+  {
+   "key": "D4DD00013G/cit8/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2004.03497",
+   "volume-title": "arXiv",
+   "author": "Madani",
+   "year": "2020",
+   "unstructured": "A.Madani ,  B.McCann ,  N.Naik ,  N. S.Keskar ,  N.Anand ,  R. R.Eguchi ,  P.-S.Huang  and  R.Socher ,  arXiv ,  2020 , preprint, arXiv:2004.03497,  10.48550/arXiv.2004.03497"
+  },
+  {
+   "issue": "1",
+   "key": "D4DD00013G/cit9/1",
+   "first-page": "1",
+   "volume": "13",
+   "author": "Anand",
+   "year": "2022",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "issue": "1",
+   "key": "D4DD00013G/cit10/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1038/s41598-018-34533-1",
+   "volume": "8",
+   "author": "Greener",
+   "year": "2018",
+   "journal-title": "Sci. Rep."
+  },
+  {
+   "issue": "10",
+   "key": "D4DD00013G/cit11/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "816",
+   "DOI": "10.1038/s41592-018-0138-4",
+   "volume": "15",
+   "author": "Riesselman",
+   "year": "2018",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "issue": "12",
+   "key": "D4DD00013G/cit12/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1315",
+   "DOI": "10.1038/s41592-019-0598-1",
+   "volume": "16",
+   "author": "Alley",
+   "year": "2019",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "issue": "7976",
+   "key": "D4DD00013G/cit13/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1089",
+   "DOI": "10.1038/s41586-023-06415-8",
+   "volume": "620",
+   "author": "Watson",
+   "year": "2023",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "7889",
+   "key": "D4DD00013G/cit14/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "547",
+   "DOI": "10.1038/s41586-021-04184-w",
+   "volume": "600",
+   "author": "Anishchenko",
+   "year": "2021",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "D4DD00013G/cit15/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1070",
+   "DOI": "10.1038/s41586-023-06728-8",
+   "volume": "623",
+   "author": "Ingraham",
+   "year": "2023",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "7873",
+   "key": "D4DD00013G/cit16/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "583",
+   "DOI": "10.1038/s41586-021-03819-2",
+   "volume": "596",
+   "author": "Jumper",
+   "year": "2021",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "D4DD00013G/cit17/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1156",
+   "DOI": "10.1021/acsbiomaterials.1c01343",
+   "volume": "8",
+   "author": "Yu",
+   "year": "2022",
+   "journal-title": "ACS Biomater. Sci. Eng."
+  },
+  {
+   "key": "D4DD00013G/cit18/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "7112",
+   "DOI": "10.1109/TPAMI.2021.3095381",
+   "volume": "44",
+   "author": "Elnaggar",
+   "year": "2022",
+   "journal-title": "IEEE Trans. Pattern Anal. Mach. Intell."
+  },
+  {
+   "key": "D4DD00013G/cit19/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "2056",
+   "DOI": "10.1093/bioinformatics/btt344",
+   "volume": "29",
+   "author": "Mirabello",
+   "year": "2013",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "D4DD00013G/cit20/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "228",
+   "DOI": "10.1002/prot.10082",
+   "volume": "47",
+   "author": "Pollastri",
+   "year": "2002",
+   "journal-title": "Proteins: Struct., Funct., Bioinf."
+  },
+  {
+   "key": "D4DD00013G/cit21/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1186/s12859-017-2006-0",
+   "volume": "19",
+   "author": "Zhang",
+   "year": "2018",
+   "journal-title": "BMC Bioinf."
+  },
+  {
+   "key": "D4DD00013G/cit22/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1719",
+   "DOI": "10.1093/bioinformatics/bti203",
+   "volume": "21",
+   "author": "Pollastri",
+   "year": "2005",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "D4DD00013G/cit23/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "277",
+   "DOI": "10.1039/D1DD00007A",
+   "volume": "1",
+   "author": "Guo",
+   "year": "2022",
+   "journal-title": "Digital Discovery"
+  },
+  {
+   "key": "D4DD00013G/cit24/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "20656",
+   "DOI": "10.1021/acsnano.2c07681",
+   "volume": "16",
+   "author": "Hu",
+   "year": "2022",
+   "journal-title": "ACS Nano"
+  },
+  {
+   "key": "D4DD00013G/cit25/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2206.07682",
+   "volume-title": "arXiv",
+   "author": "Wei",
+   "year": "2022",
+   "unstructured": "J.Wei ,  Y.Tay ,  R.Bommasani ,  C.Raffel ,  B.Zoph ,  S.Borgeaud ,  D.Yogatama ,  M.Bosma ,  D.Zhou ,  D.Metzler ,  E. H.Chi ,  T.Hashimoto ,  O.Vinyals ,  P.Liang ,  J.Dean  and  W.Fedus ,  arXiv ,  2022 , preprint, arXiv:2206.07682,  10.48550/arXiv.2206.07682"
+  },
+  {
+   "key": "D4DD00013G/cit26/1",
+   "first-page": "42",
+   "volume": "37",
+   "author": "Chang",
+   "year": "2023",
+   "journal-title": "J. ACM"
+  },
+  {
+   "key": "D4DD00013G/cit27/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1233",
+   "DOI": "10.1039/D3DD00113J",
+   "volume": "2",
+   "author": "Jablonka",
+   "year": "2023",
+   "journal-title": "Digital Discovery"
+  },
+  {
+   "key": "D4DD00013G/cit28/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "105454",
+   "DOI": "10.1016/j.jmps.2023.105454",
+   "volume": "181",
+   "author": "Buehler",
+   "year": "2023",
+   "journal-title": "J. Mech. Phys. Solids"
+  },
+  {
+   "key": "D4DD00013G/cit29/1",
+   "first-page": "1",
+   "author": "Buehler",
+   "year": "2023",
+   "journal-title": "Appl. Mech. Rev."
+  },
+  {
+   "key": "D4DD00013G/cit30/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2311.04929",
+   "volume-title": "arXiv",
+   "author": "Boyko",
+   "year": "2023",
+   "unstructured": "J.Boyko ,  J.Cohen ,  N.Fox ,  M. H.Veiga ,  J. I.-H.Li ,  J.Liu ,  B.Modenesi ,  A. H.Rauch ,  K. N.Reid ,  S.Tribedi ,  A.Visheratina  and  X.Xie ,  arXiv ,  2023 , preprint, arXiv:2311.04929,  10.48550/arXiv.2311.04929"
+  },
+  {
+   "key": "D4DD00013G/cit31/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "102131",
+   "DOI": "10.1016/j.eml.2024.102131",
+   "author": "Ni",
+   "year": "2024",
+   "journal-title": "Extreme Mech. Lett."
+  },
+  {
+   "key": "D4DD00013G/cit32/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "101008",
+   "DOI": "10.1115/1.4062773",
+   "volume": "90",
+   "author": "Brodnik",
+   "year": "2023",
+   "journal-title": "J. Appl. Mech."
+  },
+  {
+   "key": "D4DD00013G/cit33/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "100729",
+   "DOI": "10.1016/j.patter.2023.100729",
+   "volume": "4",
+   "author": "Tinn",
+   "year": "2023",
+   "journal-title": "Patterns"
+  },
+  {
+   "key": "D4DD00013G/cit34/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "10901",
+   "DOI": "10.1063/5.0134317",
+   "volume": "1",
+   "author": "Hu",
+   "year": "2023",
+   "journal-title": "APL Mach. Learn."
+  },
+  {
+   "key": "D4DD00013G/cit35/1",
+   "first-page": "1",
+   "author": "Buehler",
+   "year": "2023",
+   "journal-title": "ACS Eng. Au"
+  },
+  {
+   "key": "D4DD00013G/cit36/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "090801",
+   "DOI": "10.1115/1.4062310",
+   "volume": "90",
+   "author": "Luu",
+   "year": "2023",
+   "journal-title": "J. Appl. Mech."
+  },
+  {
+   "key": "D4DD00013G/cit37/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1017",
+   "DOI": "10.1007/s11831-020-09405-5",
+   "volume": "28",
+   "author": "Peng",
+   "year": "2021",
+   "journal-title": "Arch. Comput. Methods Eng."
+  },
+  {
+   "key": "D4DD00013G/cit38/1",
+   "first-page": "1877",
+   "volume": "33",
+   "author": "Brown",
+   "year": "2020",
+   "journal-title": "Adv. Neural Inf. Process. Syst."
+  },
+  {
+   "key": "D4DD00013G/cit39/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "9977",
+   "DOI": "10.1073/pnas.92.22.9977",
+   "volume": "92",
+   "author": "Bates",
+   "year": "1995",
+   "journal-title": "Proc. Natl. Acad. Sci. U. S. A."
+  },
+  {
+   "key": "D4DD00013G/cit40/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2201.08239",
+   "volume-title": "arXiv",
+   "author": "Thoppilan",
+   "year": "2022",
+   "unstructured": "R.Thoppilan ,  D. D.Freitas ,  J.Hall ,  N.Shazeer ,  A.Kulshreshtha ,  H.-T.Cheng ,  A.Jin ,  T.Bos ,  L.Baker ,  Y.Du ,  Y.Li ,  H.Lee ,  H. S.Zheng ,  A.Ghafouri ,  M.Menegali ,  Y.Huang ,  M.Krikun ,  D.Lepikhin ,  J.Qin ,  D.Chen ,  Y.Xu ,  Z.Chen ,  A.Roberts ,  M.Bosma ,  V.Zhao ,  Y.Zhou ,  C.-C.Chang ,  I.Krivokon ,  W.Rusch ,  M.Pickett ,  P.Srinivasan ,  L.Man ,  K.Meier-Hellstern ,  M. R.Morris ,  T.Doshi ,  R. D.Santos ,  T.Duke ,  J.Soraker ,  B.Zevenbergen ,  V.Prabhakaran ,  M.Diaz ,  B.Hutchinson ,  K.Olson ,  A.Molina ,  E.Hoffman-John ,  J.Lee ,  L.Aroyo ,  R.Rajakumar ,  A.Butryna ,  M.Lamm ,  V.Kuzmina ,  J.Fenton ,  A.Cohen ,  R.Bernstein ,  R.Kurzweil ,  B.Aguera-Arcas ,  C.Cui ,  M.Croak ,  E.Chi  and  Q.Le ,  arXiv ,  2022 , preprint, arXiv:2201.08239,  10.48550/arXiv.2201.08239"
+  },
+  {
+   "key": "D4DD00013G/cit41/1",
+   "first-page": "1",
+   "volume": "24",
+   "author": "Chowdhery",
+   "year": "2023",
+   "journal-title": "J. Mach. Learn. Res."
+  },
+  {
+   "key": "D4DD00013G/cit42/1",
+   "first-page": "1",
+   "volume": "30",
+   "author": "Vaswani",
+   "year": "2017",
+   "journal-title": "Adv. Neural Inf. Process. Syst."
+  },
+  {
+   "key": "D4DD00013G/cit43/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2303.08774",
+   "volume-title": "arXiv",
+   "author": "OpenAI",
+   "year": "2023",
+   "unstructured": "OpenAI ,  J.Achiam ,  S.Adler ,  S.Agarwal ,  L.Ahmad ,  I.Akkaya ,  F. L.Aleman ,  D.Almeida ,  J.Altenschmidt ,  S.Altman ,  S.Anadkat ,  R.Avila ,  I.Babuschkin ,  S.Balaji ,  V.Balcom ,  P.Baltescu ,  H.Bao ,  M.Bavarian ,  J.Belgum ,  I.Bello ,  J.Berdine ,  G.Bernadett-Shapiro ,  C.Berner ,  L.Bogdonoff ,  O.Boiko ,  M.Boyd ,  A.-L.Brakman ,  G.Brockman ,  T.Brooks ,  M.Brundage ,  K.Button ,  T.Cai ,  R.Campbell ,  A.Cann ,  B.Carey ,  C.Carlson ,  R.Carmichael ,  B.Chan ,  C.Chang ,  F.Chantzis ,  D.Chen ,  S.Chen ,  R.Chen ,  J.Chen ,  M.Chen ,  B.Chess ,  C.Cho ,  C.Chu ,  H. W.Chung ,  D.Cummings ,  J.Currier ,  Y.Dai ,  C.Decareaux ,  T.Degry ,  N.Deutsch ,  D.Deville ,  A.Dhar ,  D.Dohan ,  S.Dowling ,  S.Dunning ,  A.Ecoffet ,  A.Eleti ,  T.Eloundou ,  D.Farhi ,  L.Fedus ,  N.Felix ,  S. P.Fishman ,  J.Forte ,  I.Fulford ,  L.Gao ,  E.Georges ,  C.Gibson ,  V.Goel ,  T.Gogineni ,  G.Goh ,  R.Gontijo-Lopes ,  J.Gordon ,  M.Grafstein ,  S.Gray ,  R.Greene ,  J.Gross ,  S. S.Gu ,  Y.Guo ,  C.Hallacy ,  J.Han ,  J.Harris ,  Y.He ,  M.Heaton ,  J.Heidecke  and  C.Hesse ,  arXiv ,  2023 , preprint, arXiv:2303.08774,  10.48550/arXiv.2303.08774"
+  },
+  {
+   "key": "D4DD00013G/cit44/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2107.03374",
+   "volume-title": "arXiv",
+   "author": "Chen",
+   "year": "2021",
+   "unstructured": "M.Chen ,  J.Tworek ,  H.Jun ,  Q.Yuan ,  H. P.deOliveiraPinto ,  J.Kaplan ,  H.Edwards ,  Y.Burda ,  N.Joseph ,  G.Brockman ,  A.Ray ,  R.Puri ,  G.Krueger ,  M.Petrov ,  H.Khlaaf ,  G.Sastry ,  P.Mishkin ,  B.Chan ,  S.Gray ,  N.Ryder ,  M.Pavlov ,  A.Power ,  L.Kaiser ,  M.Bavarian ,  C.Winter ,  P.Tillet ,  F. P.Such ,  D.Cummings ,  M.Plappert ,  F.Chantzis ,  E.Barnes ,  A.Herbert-Voss ,  W. H.Guss ,  A.Nichol ,  A.Paino ,  N.Tezak ,  J.Tang ,  I.Babuschkin ,  S.Balaji ,  S.Jain ,  W.Saunders ,  C.Hesse ,  A. N.Carr ,  J.Leike ,  J.Achiam ,  V.Misra ,  E.Morikawa ,  A.Radford ,  M.Knight ,  M.Brundage ,  M.Murati ,  K.Mayer ,  P.Welinder ,  B.McGrew ,  D.Amodei ,  S.McCandlish ,  I.Sutskever  and  W.Zaremba ,  arXiv ,  2021 , preprint, arXiv:2107.03374,  10.48550/arXiv.2107.03374"
+  },
+  {
+   "key": "D4DD00013G/cit45/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2303.12712",
+   "volume-title": "arXiv",
+   "author": "Bubeck",
+   "year": "2023",
+   "unstructured": "S.Bubeck ,  V.Chandrasekaran ,  R.Eldan ,  J.Gehrke ,  E.Horvitz ,  E.Kamar ,  P.Lee ,  Y. T.Lee ,  Y.Li ,  S.Lundberg ,  H.Nori ,  H.Palangi ,  M. T.Ribeiro  and  Y.Zhang ,  arXiv ,  2023 , preprint, arXiv:2303.12712,  10.48550/arXiv.2303.12712"
+  },
+  {
+   "key": "D4DD00013G/cit46/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2108.07732",
+   "volume-title": "arXiv",
+   "author": "Austin",
+   "year": "2021",
+   "unstructured": "J.Austin ,  A.Odena ,  M.Nye ,  M.Bosma ,  H.Michalewski ,  D.Dohan ,  E.Jiang ,  C.Cai ,  M.Terry ,  Q.Le ,  et al. ,  arXiv ,  2021 , preprint arXiv:2108.07732,  10.48550/arXiv.2108.07732"
+  },
+  {
+   "key": "D4DD00013G/cit47/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1153",
+   "DOI": "10.1039/D0MH01451F",
+   "volume": "8",
+   "author": "Guo",
+   "year": "2021",
+   "journal-title": "Mater. Horiz."
+  },
+  {
+   "key": "D4DD00013G/cit48/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "6999",
+   "DOI": "10.1109/TNNLS.2021.3084827",
+   "volume": "33",
+   "author": "Li",
+   "year": "2022",
+   "journal-title": "IEEE Trans. Neural Netw. Learn. Syst."
+  },
+  {
+   "key": "D4DD00013G/cit49/1",
+   "first-page": "943",
+   "volume": "10",
+   "author": "O'Shea",
+   "year": "2015",
+   "journal-title": "Int. J. Res. Appl. Sci. Eng. Technol."
+  },
+  {
+   "key": "D4DD00013G/cit50/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "100038",
+   "DOI": "10.1016/j.bea.2022.100038",
+   "volume": "4",
+   "author": "Buehler",
+   "year": "2022",
+   "journal-title": "Biomed. Eng. Adv."
+  },
+  {
+   "key": "D4DD00013G/cit51/1",
+   "first-page": "1",
+   "volume": "7",
+   "author": "Yang",
+   "year": "2021",
+   "journal-title": "Sci. Adv."
+  },
+  {
+   "key": "D4DD00013G/cit52/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "324",
+   "DOI": "10.1038/s42256-021-00310-5",
+   "volume": "3",
+   "author": "Repecka",
+   "year": "2021",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "D4DD00013G/cit53/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1732",
+   "DOI": "10.3390/molecules22101732",
+   "volume": "22",
+   "author": "Cao",
+   "year": "2017",
+   "journal-title": "Molecules"
+  },
+  {
+   "key": "D4DD00013G/cit54/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "197",
+   "DOI": "10.1016/j.matt.2020.04.019",
+   "volume": "3",
+   "author": "Hsu",
+   "year": "2020",
+   "journal-title": "Matter"
+  },
+  {
+   "key": "D4DD00013G/cit55/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "74703",
+   "DOI": "10.1063/5.0097589",
+   "volume": "132",
+   "author": "Lu",
+   "year": "2022",
+   "journal-title": "J. Appl. Phys."
+  },
+  {
+   "key": "D4DD00013G/cit56/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "402",
+   "DOI": "10.1016/j.cels.2020.08.016",
+   "volume": "11",
+   "author": "Strokach",
+   "year": "2020",
+   "journal-title": "Cell Syst."
+  },
+  {
+   "key": "D4DD00013G/cit57/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "i262",
+   "DOI": "10.1093/bioinformatics/btab270",
+   "volume": "37",
+   "author": "You",
+   "year": "2021",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "issue": "1",
+   "key": "D4DD00013G/cit58/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1038/s41524-021-00695-2",
+   "volume": "8",
+   "author": "Yang",
+   "year": "2022",
+   "journal-title": "npj Comput. Mater."
+  },
+  {
+   "key": "D4DD00013G/cit59/1",
+   "first-page": "2311324",
+   "author": "Lu",
+   "year": "2023",
+   "journal-title": "Adv. Funct. Mater."
+  },
+  {
+   "key": "D4DD00013G/cit60/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2307.02485",
+   "volume-title": "arXiv",
+   "author": "Zhang",
+   "year": "2023",
+   "unstructured": "H.Zhang ,  W.Du ,  J.Shan ,  Q.Zhou ,  Y.Du ,  J. B.Tenenbaum ,  T.Shu  and  C.Gan ,  arXiv ,  2023 , preprint, arXiv:2307.02485,  10.48550/arXiv.2307.02485"
+  },
+  {
+   "key": "D4DD00013G/cit61/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "186345",
+   "DOI": "10.1007/s11704-024-40231-1",
+   "volume": "18",
+   "author": "Wang",
+   "year": "2024",
+   "journal-title": "Front. Comput. Sci."
+  },
+  {
+   "key": "D4DD00013G/cit62/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2309.07864",
+   "volume-title": "arXiv",
+   "author": "Xi",
+   "year": "2023",
+   "unstructured": "Z.Xi ,  W.Chen ,  X.Guo ,  W.He ,  Y.Ding ,  B.Hong ,  M.Zhang ,  J.Wang ,  S.Jin ,  E.Zhou ,  R.Zheng ,  X.Fan ,  X.Wang ,  L.Xiong ,  Y.Zhou ,  W.Wang ,  C.Jiang ,  Y.Zou ,  X.Liu ,  Z.Yin ,  S.Dou ,  R.Weng ,  W.Cheng ,  Q.Zhang ,  W.Qin ,  Y.Zheng ,  X.Qiu ,  X.Huang  and  T.Gui ,  arXiv ,  2023 , preprint,\narXiv:2309.07864,  10.48550/arXiv.2309.07864"
+  },
+  {
+   "key": "D4DD00013G/cit63/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "570",
+   "DOI": "10.1038/s41586-023-06792-0",
+   "volume": "624",
+   "author": "Boiko",
+   "year": "2023",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "D4DD00013G/cit64/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "525",
+   "DOI": "10.1038/s42256-024-00832-8",
+   "volume": "6",
+   "author": "Bran",
+   "year": "2024",
+   "journal-title": "Nat. Mach. Intell."
+  },
+  {
+   "key": "D4DD00013G/cit65/1",
+   "volume-title": "Empowering Biomedical Discovery with AI Agents",
+   "author": "Gao",
+   "year": "2024",
+   "unstructured": "S.Gao ,  A.Fang ,  Y.Huang ,  V.Giunchiglia ,  A.Noori ,  J. R.Schwarz ,  Y.Ektefaie ,  J.Kondic  and  M.Zitnik ,  Empowering Biomedical Discovery with AI Agents ,  2024"
+  },
+  {
+   "key": "D4DD00013G/cit66/1",
+   "author": "OpenAI API",
+   "unstructured": "OpenAI API ,  https://openai.com/blog/openai-api"
+  },
+  {
+   "key": "D4DD00013G/cit67/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "e1000547",
+   "DOI": "10.1371/journal.pcbi.1000547",
+   "volume": "5",
+   "author": "Sikora",
+   "year": "2009",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "D4DD00013G/cit68/1",
+   "first-page": "283201",
+   "volume": "19",
+   "author": "Sułkowska",
+   "year": "2007",
+   "journal-title": "J. Phys.: Condens. Matter"
+  },
+  {
+   "key": "D4DD00013G/cit69/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "16410",
+   "DOI": "10.1073/pnas.0705759104",
+   "volume": "104",
+   "author": "Ackbarow",
+   "year": "2007",
+   "journal-title": "Proc. Natl. Acad. Sci. U. S. A."
+  },
+  {
+   "issue": "8",
+   "key": "D4DD00013G/cit70/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "469",
+   "DOI": "10.1038/nnano.2011.102",
+   "volume": "6",
+   "author": "Knowles",
+   "year": "2011",
+   "journal-title": "Nat. Nanotechnol."
+  },
+  {
+   "key": "D4DD00013G/cit71/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "061910",
+   "DOI": "10.1103/PhysRevE.81.061910",
+   "volume": "81",
+   "author": "Xu",
+   "year": "2010",
+   "journal-title": "Phys. Rev. E: Stat., Nonlinear, Soft Matter Phys."
+  },
+  {
+   "key": "D4DD00013G/cit72/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "061906",
+   "DOI": "10.1103/PhysRevE.82.061906",
+   "volume": "82",
+   "author": "Qin",
+   "year": "2010",
+   "journal-title": "Phys. Rev. E: Stat., Nonlinear, Soft Matter Phys."
+  },
+  {
+   "key": "D4DD00013G/cit73/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2402.01680",
+   "volume-title": "arXiv",
+   "author": "Guo",
+   "year": "2024",
+   "unstructured": "T.Guo ,  X.Chen ,  Y.Wang ,  R.Chang ,  S.Pei ,  N. V.Chawla ,  O.Wiest  and  X.Zhang ,  Large Language Model based Multi-Agents: A Survey of Progress and Challenges ,  arXiv ,  2024 , preprint, arXiv:2402.01680,  10.48550/arXiv.2402.01680"
+  },
+  {
+   "key": "D4DD00013G/cit74/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2311.05232",
+   "volume-title": "arXiv",
+   "author": "Huang",
+   "year": "2023",
+   "unstructured": "L.Huang ,  W.Yu ,  W.Ma ,  W.Zhong ,  Z.Feng ,  H.Wang ,  Q.Chen ,  W.Peng ,  X.Feng ,  B.Qin  and  T.Liu ,  A Survey on Hallucination in Large Language Models: Principles, Taxonomy, Challenges, and Open Questions ,  arXiv ,  2023 , preprint, arXiv:2311.05232,  10.48550/arXiv.2311.05232"
+  },
+  {
+   "key": "D4DD00013G/cit75/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "28573",
+   "DOI": "10.1109/ACCESS.2018.2831228",
+   "volume": "6",
+   "author": "Dorri",
+   "year": "2018",
+   "journal-title": "IEEE Access"
+  },
+  {
+   "key": "D4DD00013G/cit76/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "600",
+   "DOI": "10.1557/mrc.2019.50",
+   "volume": "9",
+   "author": "Gomes",
+   "year": "2019",
+   "journal-title": "MRS Commun."
+  },
+  {
+   "key": "D4DD00013G/cit77/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "8517",
+   "DOI": "10.1039/D0SC01101K",
+   "volume": "11",
+   "author": "Montoya",
+   "year": "2020",
+   "journal-title": "Chem. Sci."
+  },
+  {
+   "key": "D4DD00013G/cit78/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1880",
+   "DOI": "10.1016/j.matt.2023.03.022",
+   "volume": "6",
+   "author": "Kusne",
+   "year": "2023",
+   "journal-title": "Matter"
+  },
+  {
+   "key": "D4DD00013G/cit79/1",
+   "first-page": "1",
+   "volume": "10",
+   "author": "Yang",
+   "year": "2019",
+   "journal-title": "ACM Trans. Intell. Syst. Technol."
+  },
+  {
+   "key": "D4DD00013G/cit80/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "106775",
+   "DOI": "10.1016/j.knosys.2021.106775",
+   "volume": "216",
+   "author": "Zhang",
+   "year": "2021",
+   "journal-title": "Knowl.-Based Syst."
+  },
+  {
+   "key": "D4DD00013G/cit81/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "987",
+   "DOI": "10.1109/72.712178",
+   "volume": "9",
+   "author": "Lagaris",
+   "year": "1998",
+   "journal-title": "IEEE Trans. Neural Netw."
+  },
+  {
+   "key": "D4DD00013G/cit82/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "686",
+   "DOI": "10.1016/j.jcp.2018.10.045",
+   "volume": "378",
+   "author": "Raissi",
+   "year": "2019",
+   "journal-title": "J. Comput. Phys."
+  },
+  {
+   "key": "D4DD00013G/cit83/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "101803",
+   "DOI": "10.1016/j.eml.2022.101803",
+   "volume": "55",
+   "author": "Liu",
+   "year": "2022",
+   "journal-title": "Extreme Mech. Lett."
+  },
+  {
+   "key": "D4DD00013G/cit84/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "16108",
+   "DOI": "10.1063/1.5133026",
+   "volume": "4",
+   "author": "Yu",
+   "year": "2020",
+   "journal-title": "APL Bioeng."
+  },
+  {
+   "key": "D4DD00013G/cit85/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "084902",
+   "DOI": "10.1063/5.0157367",
+   "volume": "134",
+   "author": "Buehler",
+   "year": "2023",
+   "journal-title": "J. Appl. Phys."
+  },
+  {
+   "key": "D4DD00013G/cit86/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1828",
+   "DOI": "10.1016/j.chempr.2023.03.020",
+   "volume": "9",
+   "author": "Ni",
+   "year": "2023",
+   "journal-title": "Chem"
+  },
+  {
+   "key": "D4DD00013G/cit87/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1016/j.cbpa.2021.04.005",
+   "volume": "65",
+   "author": "AlQuraishi",
+   "year": "2021",
+   "journal-title": "Curr. Opin. Chem. Biol."
+  },
+  {
+   "key": "D4DD00013G/cit88/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "100142",
+   "DOI": "10.1016/j.patter.2020.100142",
+   "volume": "1",
+   "author": "Gao",
+   "year": "2020",
+   "journal-title": "Patterns"
+  },
+  {
+   "key": "D4DD00013G/cit89/1",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.48550/arXiv.2308.08155",
+   "volume-title": "arXiv",
+   "author": "Wu",
+   "year": "2023",
+   "unstructured": "Q.Wu ,  G.Bansal ,  J.Zhang ,  Y.Wu ,  B.Li ,  E.Zhu ,  L.Jiang ,  X.Zhang ,  S.Zhang ,  J.Liu ,  A.Awadallah ,  R. W.White ,  D.Burger  and  C.Wang ,  arXiv ,  2023 , preprint, arXiv:2308.08155,  10.48550/arXiv.2308.08155"
+  },
+  {
+   "key": "D4DD00013G/cit90/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "127063",
+   "DOI": "10.1016/j.neucom.2023.127063",
+   "volume": "568",
+   "author": "Su",
+   "year": "2024",
+   "journal-title": "Neurocomputing"
+  },
+  {
+   "key": "D4DD00013G/cit91/1",
+   "first-page": "1",
+   "author": "Ni",
+   "year": "2023",
+   "journal-title": "Sci. Adv."
+  },
+  {
+   "key": "D4DD00013G/cit92/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1322",
+   "DOI": "10.1093/bioinformatics/btu829",
+   "volume": "31",
+   "author": "Rego",
+   "year": "2015",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "D4DD00013G/cit93/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "2577",
+   "DOI": "10.1002/bip.360221211",
+   "volume": "22",
+   "author": "Kabsch",
+   "year": "1983",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "D4DD00013G/cit94/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1422",
+   "DOI": "10.1093/bioinformatics/btp163",
+   "volume": "25",
+   "author": "Cock",
+   "year": "2009",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "D4DD00013G/cit95/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "505",
+   "DOI": "10.1016/S0006-3495(01)76033-X",
+   "author": "Atilgan",
+   "year": "2001",
+   "journal-title": "Biophys. J."
+  },
+  {
+   "key": "D4DD00013G/cit96/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "512",
+   "DOI": "10.1002/1097-0134(20000815)40:3<512::AID-PROT180>3.0.CO;2-M",
+   "author": "Doruker",
+   "year": "2000",
+   "journal-title": "Proteins: Struct., Funct., Bioinf."
+  },
+  {
+   "key": "D4DD00013G/cit97/1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1575",
+   "DOI": "10.1093/bioinformatics/btr168",
+   "volume": "27",
+   "author": "Bakan",
+   "year": "2011",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "D4DD00013G/cit98/1",
+   "unstructured": "LlamaIndex (formerly GPT Index), a data framework for LLM applications ,  https://github.com/run-llama/llama_index"
+  }
+ ],
+ "container-title": [
+  "Digital Discovery"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://pubs.rsc.org/en/content/articlepdf/2024/DD/D4DD00013G",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "http://pubs.rsc.org/en/content/articlepdf/2024/DD/D4DD00013G",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2026,
+    7,
+    1
+   ]
+  ],
+  "date-time": "2026-07-01T05:02:41Z",
+  "timestamp": 1782882161000
+ },
+ "score": 64.7543,
+ "resource": {
+  "primary": {
+   "URL": "https://pubs.rsc.org/dd/article/3/7/1389-1409/846019"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2024
+   ]
+  ]
+ },
+ "references-count": 98,
+ "journal-issue": {
+  "issue": "7",
+  "published-print": {
+   "date-parts": [
+    [
+     2024,
+     7,
+     10
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1039/d4dd00013g",
+ "ISSN": [
+  "2635-098X"
+ ],
+ "issn-type": [
+  {
+   "value": "2635-098X",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2024
+   ]
+  ]
+ }
+}

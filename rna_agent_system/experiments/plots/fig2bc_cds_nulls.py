@@ -4,7 +4,9 @@
 2b: CAI per arm (violin + jitter; medians marked and printed above each arm,
     n carried by the tick labels; pairwise Mann–Whitney P and Cliff's δ live
     in the manuscript legend, not on the panel — Nature panel style).
-2c: MFE/nt per arm (same geometry; more negative = more structured).
+2c: folding energy per nucleotide per arm (same geometry; more negative =
+    more structured; the panel spells out the manuscript's "folding energy
+    per nucleotide" — the MFE abbreviation lives in the SI only).
 
 Data  : experiments/results/exp2_cds_nulls/fig2_cds_nulls.jsonl
         (+ summary.json for the annotated statistics)
@@ -46,7 +48,7 @@ plt.rcParams.update({
 })
 
 ARMS = ["designed", "wt", "random"]
-ARM_LABELS = {"designed": "Designed", "wt": "Wild-type", "random": "Random synonymous"}
+ARM_LABELS = {"designed": "Designed", "wt": "Wild type", "random": "Random synonymous sequences"}
 
 
 def load_records() -> list[dict]:
@@ -168,7 +170,7 @@ def main() -> int:
 
     rc = draw(cai_arrays, summary.get("cai", {}), "CAI", "fig2b_cai")
     rc += draw(mfe_arrays, summary.get("mfe_per_nt", {}),
-               "MFE per nucleotide (kcal/mol/nt)", "fig2c_mfe_per_nt")
+               "Folding energy per nucleotide (kcal/mol/nt)", "fig2c_mfe_per_nt")
     for a in ARMS:
         print(f"{a:8s} CAI n={len(cai_arrays[a]):3d} "
               f"median={np.median(cai_arrays[a]) if len(cai_arrays[a]) else float('nan'):.4f}   "

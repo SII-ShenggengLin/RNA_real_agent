@@ -1,0 +1,985 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    9
+   ]
+  ],
+  "date-time": "2026-10-09T06:43:58Z",
+  "timestamp": 1791528238689,
+  "version": "4.3.4"
+ },
+ "reference-count": 36,
+ "publisher": "Massachusetts Medical Society",
+ "issue": "3",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2021,
+      1,
+      21
+     ]
+    ],
+    "date-time": "2021-01-21T00:00:00Z",
+    "timestamp": 1611187200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "http://www.nejmgroup.org/legal/terms-of-use.htm"
+  }
+ ],
+ "funder": [
+  {
+   "name": "CRISPR Therapeutics AG"
+  },
+  {
+   "name": "Vertex Pharmaceuticals Incorporated"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "N Engl J Med"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2021,
+    1,
+    21
+   ]
+  ]
+ },
+ "DOI": "10.1056/nejmoa2031054",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2020,
+    12,
+    5
+   ]
+  ],
+  "date-time": "2020-12-05T12:30:17Z",
+  "timestamp": 1607171417000
+ },
+ "page": "252-260",
+ "source": "Crossref",
+ "is-referenced-by-count": 1917,
+ "title": [
+  "CRISPR-Cas9 Gene Editing for Sickle Cell Disease and β-Thalassemia"
+ ],
+ "prefix": "10.1056",
+ "volume": "384",
+ "author": [
+  {
+   "given": "Haydar",
+   "family": "Frangoul",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David",
+   "family": "Altshuler",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "M. Domenica",
+   "family": "Cappellini",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yi-Shan",
+   "family": "Chen",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jennifer",
+   "family": "Domm",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Brenda K.",
+   "family": "Eustace",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Juergen",
+   "family": "Foell",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Josu",
+   "family": "de la Fuente",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Stephan",
+   "family": "Grupp",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Rupert",
+   "family": "Handgretinger",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tony W.",
+   "family": "Ho",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Antonis",
+   "family": "Kattamis",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Andrew",
+   "family": "Kernytsky",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Julie",
+   "family": "Lekstrom-Himes",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Amanda M.",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Franco",
+   "family": "Locatelli",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Markus Y.",
+   "family": "Mapara",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Mariane",
+   "family": "de Montalembert",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Damiano",
+   "family": "Rondelli",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Akshay",
+   "family": "Sharma",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Sujit",
+   "family": "Sheth",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Sandeep",
+   "family": "Soni",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Martin H.",
+   "family": "Steinberg",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Donna",
+   "family": "Wall",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Angela",
+   "family": "Yen",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Selim",
+   "family": "Corbacioglu",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "From the Sarah Cannon Center for Blood Cancer at the Children’s Hospital at TriStar Centennial, Nashville (H.F., J.D.), and St. Jude Children’s Research Hospital, Memphis (A.S.) — both in Tennessee; Vertex Pharmaceuticals (D.A., B.K.E., J.L.-H., A.Y.) and Boston University School of Medicine (M.H.S.), Boston, and CRISPR Therapeutics, Cambridge (Y.-S.C., T.W.H., A. Kernytsky, S. Soni) — both in Massachusetts; the University of Milan, Milan (M.D.C.), and Ospedale Pediatrico Bambino Gesù Rome, Sapienza..."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "150",
+ "reference": [
+  {
+   "key": "e_1_3_5_2_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "62",
+   "DOI": "10.1016/j.gde.2015.08.001",
+   "article-title": "Hemoglobin switching’s surprise: the versatile transcription factor BCL11A is a master repressor of fetal hemoglobin.",
+   "volume": "33",
+   "author": "Bauer DE",
+   "year": "2015",
+   "unstructured": "Bauer DE, Orkin SH. Hemoglobin switching’s surprise: the versatile transcription factor BCL11A is a master repressor of fetal hemoglobin. Curr Opin Genet Dev 2015;33:62-70.26375765",
+   "journal-title": "Curr Opin Genet Dev"
+  },
+  {
+   "key": "e_1_3_5_3_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1561",
+   "DOI": "10.1056/NEJMra1510865",
+   "article-title": "Sickle cell disease.",
+   "volume": "376",
+   "author": "Piel FB",
+   "year": "2017",
+   "unstructured": "Piel FB, Steinberg MH, Rees DC. Sickle cell disease. N Engl J Med 2017;376:1561-1573.28423290",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_4_2",
+   "first-page": "4",
+   "article-title": "Differences in the clinical and genotypic presentation of sickle cell disease around the world.",
+   "volume": "15",
+   "author": "Saraf SL",
+   "year": "2014",
+   "unstructured": "Saraf SL, Molokie RE, Nouraie M, et al. Differences in the clinical and genotypic presentation of sickle cell disease around the world. Paediatr Respir Rev 2014;15:4-12.24361300",
+   "journal-title": "Paediatr Respir Rev"
+  },
+  {
+   "key": "e_1_3_5_5_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "61",
+   "DOI": "10.1097/GIM.0b013e3181cd68ed",
+   "article-title": "Beta-thalassemia.",
+   "volume": "12",
+   "author": "Cao A",
+   "year": "2010",
+   "unstructured": "Cao A, Galanello R. Beta-thalassemia. Genet Med 2010;12:61-76.20098328",
+   "journal-title": "Genet Med"
+  },
+  {
+   "key": "e_1_3_5_6_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1675",
+   "DOI": "10.1056/NEJMcibr1809628",
+   "article-title": "Hemoglobinopathies in the fetal position.",
+   "volume": "379",
+   "author": "Pasricha SR",
+   "year": "2018",
+   "unstructured": "Pasricha SR, Drakesmith H. Hemoglobinopathies in the fetal position. N Engl J Med 2018;379:1675-1677.30354961",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_7_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "100588",
+   "DOI": "10.1016/j.blre.2019.100588",
+   "article-title": "Challenges of blood transfusions in β-thalassemia.",
+   "volume": "37",
+   "author": "Shah FT",
+   "year": "2019",
+   "unstructured": "Shah FT, Sayani F, Trompeter S, Drasar E, Piga A. Challenges of blood transfusions in β-thalassemia. Blood Rev 2019;37:100588-100588.31324412",
+   "journal-title": "Blood Rev"
+  },
+  {
+   "key": "e_1_3_5_8_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "115",
+   "DOI": "10.3324/haematol.2015.136739",
+   "article-title": "The European Hematology Association Roadmap for European Hematology Research: a consensus document.",
+   "volume": "101",
+   "author": "Engert A",
+   "year": "2016",
+   "unstructured": "Engert A, Balduini C, Brand A, et al. The European Hematology Association Roadmap for European Hematology Research: a consensus document. Haematologica 2016;101:115-208.26819058",
+   "journal-title": "Haematologica"
+  },
+  {
+   "key": "e_1_3_5_9_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "652",
+   "DOI": "10.1172/JCI111464",
+   "article-title": "Hydroxyurea enhances fetal hemoglobin production in sickle cell anemia.",
+   "volume": "74",
+   "author": "Platt OS",
+   "year": "1984",
+   "unstructured": "Platt OS, Orkin SH, Dover G, Beardsley GP, Miller B, Nathan DG. Hydroxyurea enhances fetal hemoglobin production in sickle cell anemia. J Clin Invest 1984;74:652-656.6205021",
+   "journal-title": "J Clin Invest"
+  },
+  {
+   "key": "e_1_3_5_10_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1219",
+   "DOI": "10.1056/NEJMoa1910182",
+   "article-title": "A phase 3 trial of luspatercept in patients with transfusion-dependent β-thalassemia.",
+   "volume": "382",
+   "author": "Cappellini MD",
+   "year": "2020",
+   "unstructured": "Cappellini MD, Viprakasit V, Taher AT, et al. A phase 3 trial of luspatercept in patients with transfusion-dependent β-thalassemia. N Engl J Med 2020;382:1219-1231.32212518",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_11_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "429",
+   "DOI": "10.1056/NEJMoa1611770",
+   "article-title": "Crizanlizumab for the prevention of pain crises in sickle cell disease.",
+   "volume": "376",
+   "author": "Ataga KI",
+   "year": "2017",
+   "unstructured": "Ataga KI, Kutlar A, Kanter J, et al. Crizanlizumab for the prevention of pain crises in sickle cell disease. N Engl J Med 2017;376:429-439.27959701",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_12_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "536",
+   "DOI": "10.1038/bmt.2015.293",
+   "article-title": "Hemopoietic stem cell transplantation in thalassemia: a report from the European Society for Blood and Bone Marrow Transplantation Hemoglobinopathy Registry, 2000-2010.",
+   "volume": "51",
+   "author": "Baronciani D",
+   "year": "2016",
+   "unstructured": "Baronciani D, Angelucci E, Potschger U, et al. Hemopoietic stem cell transplantation in thalassemia: a report from the European Society for Blood and Bone Marrow Transplantation Hemoglobinopathy Registry, 2000-2010. Bone Marrow Transplant 2016;51:536-541.26752139",
+   "journal-title": "Bone Marrow Transplant"
+  },
+  {
+   "issue": "11",
+   "key": "e_1_3_5_13_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "e585",
+   "DOI": "10.1016/S2352-3026(19)30154-1",
+   "article-title": "Effect of donor type and conditioning regimen intensity on allogeneic transplantation outcomes in patients with sickle cell disease: a retrospective multicentre, cohort study.",
+   "volume": "6",
+   "author": "Eapen M",
+   "year": "2019",
+   "unstructured": "Eapen M, Brazauskas R, Walters MC, et al. Effect of donor type and conditioning regimen intensity on allogeneic transplantation outcomes in patients with sickle cell disease: a retrospective multicentre, cohort study. Lancet Haematol 2019;6(11):e585-e596.31495699",
+   "journal-title": "Lancet Haematol"
+  },
+  {
+   "key": "e_1_3_5_14_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1548",
+   "DOI": "10.1182/blood-2016-10-745711",
+   "article-title": "Sickle cell disease: an international survey of results of HLA-identical sibling hematopoietic stem cell transplantation.",
+   "volume": "129",
+   "author": "Gluckman E",
+   "year": "2017",
+   "unstructured": "Gluckman E, Cappelli B, Bernaudin F, et al. Sickle cell disease: an international survey of results of HLA-identical sibling hematopoietic stem cell transplantation. Blood 2017;129:1548-1556.27965196",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "e_1_3_5_15_2",
+   "unstructured": "European Medicines Agency. Zynteglo: summary of product characteristics (https://www.ema.europa.eu/en/documents/product-information/zynteglo-epar-product-information_en.pdf)."
+  },
+  {
+   "key": "e_1_3_5_16_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1479",
+   "DOI": "10.1056/NEJMoa1705342",
+   "article-title": "Gene therapy in patients with transfusion-dependent β-thalassemia.",
+   "volume": "378",
+   "author": "Thompson AA",
+   "year": "2018",
+   "unstructured": "Thompson AA, Walters MC, Kwiatkowski J, et al. Gene therapy in patients with transfusion-dependent β-thalassemia. N Engl J Med 2018;378:1479-1493.29669226",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_17_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "848",
+   "DOI": "10.1056/NEJMoa1609677",
+   "article-title": "Gene therapy in a patient with sickle cell disease.",
+   "volume": "376",
+   "author": "Ribeil JA",
+   "year": "2017",
+   "unstructured": "Ribeil JA, Hacein-Bey-Abina S, Payen E, et al. Gene therapy in a patient with sickle cell disease. N Engl J Med 2017;376:848-855.28249145",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_18_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "3868",
+   "DOI": "10.1172/JCI87885",
+   "article-title": "Lineage-specific BCL11A knockdown circumvents toxicities and reverses sickle phenotype.",
+   "volume": "126",
+   "author": "Brendel C",
+   "year": "2016",
+   "unstructured": "Brendel C, Guda S, Renella R, et al. Lineage-specific BCL11A knockdown circumvents toxicities and reverses sickle phenotype. J Clin Invest 2016;126:3868-3878.27599293",
+   "journal-title": "J Clin Invest"
+  },
+  {
+   "key": "e_1_3_5_19_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "589",
+   "DOI": "10.1016/j.omtm.2020.03.015",
+   "article-title": "Preclinical evaluation of a novel lentiviral vector driving lineage-specific BCL11A knockdown for sickle cell gene therapy.",
+   "volume": "17",
+   "author": "Brendel C",
+   "year": "2020",
+   "unstructured": "Brendel C, Negre O, Rothe M, et al. Preclinical evaluation of a novel lentiviral vector driving lineage-specific BCL11A knockdown for sickle cell gene therapy. Mol Ther Methods Clin Dev 2020;17:589-600.32300607",
+   "journal-title": "Mol Ther Methods Clin Dev"
+  },
+  {
+   "key": "e_1_3_5_20_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1056/NEJMoa2029392"
+  },
+  {
+   "key": "e_1_3_5_21_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "364",
+   "DOI": "10.1182/blood-2011-09-382408",
+   "article-title": "Fetal hemoglobin levels and morbidity in untransfused patients with β-thalassemia intermedia.",
+   "volume": "119",
+   "author": "Musallam KM",
+   "year": "2012",
+   "unstructured": "Musallam KM, Sankaran VG, Cappellini MD, Duca L, Nathan DG, Taher AT. Fetal hemoglobin levels and morbidity in untransfused patients with β-thalassemia intermedia. Blood 2012;119:364-367.22096240",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "e_1_3_5_22_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1639",
+   "DOI": "10.1056/NEJM199406093302303",
+   "article-title": "Mortality in sickle cell disease: life expectancy and risk factors for early death.",
+   "volume": "330",
+   "author": "Platt OS",
+   "year": "1994",
+   "unstructured": "Platt OS, Brambilla DJ, Rosse WF, et al. Mortality in sickle cell disease: life expectancy and risk factors for early death. N Engl J Med 1994;330:1639-1644.7993409",
+   "journal-title": "N Engl J Med"
+  },
+  {
+   "key": "e_1_3_5_23_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "921",
+   "DOI": "10.1182/blood.V63.4.921.921",
+   "article-title": "Is there a threshold level of fetal hemoglobin that ameliorates morbidity in sickle cell anemia?",
+   "volume": "63",
+   "author": "Powars DR",
+   "year": "1984",
+   "unstructured": "Powars DR, Weiss JN, Chan LS, Schroeder WA. Is there a threshold level of fetal hemoglobin that ameliorates morbidity in sickle cell anemia? Blood 1984;63:921-926.6200161",
+   "journal-title": "Blood"
+  },
+  {
+   "issue": "1",
+   "key": "e_1_3_5_24_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "a011643",
+   "DOI": "10.1101/cshperspect.a011643",
+   "article-title": "The switch from fetal to adult hemoglobin.",
+   "volume": "3",
+   "author": "Sankaran VG",
+   "year": "2013",
+   "unstructured": "Sankaran VG, Orkin SH. The switch from fetal to adult hemoglobin. Cold Spring Harb Perspect Med 2013;3(1):a011643-a011643.23209159",
+   "journal-title": "Cold Spring Harb Perspect Med"
+  },
+  {
+   "key": "e_1_3_5_25_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "2536",
+   "DOI": "10.1182/blood-2016-01-678128",
+   "article-title": "Customizing the genome as therapy for the β-hemoglobinopathies.",
+   "volume": "127",
+   "author": "Canver MC",
+   "year": "2016",
+   "unstructured": "Canver MC, Orkin SH. Customizing the genome as therapy for the β-hemoglobinopathies. Blood 2016;127:2536-2545.27053533",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "e_1_3_5_26_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "2392",
+   "DOI": "10.1182/blood.2020007645",
+   "article-title": "Fetal hemoglobin in sickle cell anemia.",
+   "volume": "136",
+   "author": "Steinberg MH",
+   "year": "2020",
+   "unstructured": "Steinberg MH. Fetal hemoglobin in sickle cell anemia. Blood 2020;136:2392-2400.32808012",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "e_1_3_5_27_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "253",
+   "DOI": "10.1126/science.1242088",
+   "article-title": "An erythroid enhancer of BCL11A subject to genetic variation determines fetal hemoglobin level.",
+   "volume": "342",
+   "author": "Bauer DE",
+   "year": "2013",
+   "unstructured": "Bauer DE, Kamran SC, Lessard S, et al. An erythroid enhancer of BCL11A subject to genetic variation determines fetal hemoglobin level. Science 2013;342:253-257.24115442",
+   "journal-title": "Science"
+  },
+  {
+   "key": "e_1_3_5_28_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1620",
+   "DOI": "10.1073/pnas.0711566105",
+   "article-title": "Genome-wide association study shows BCL11A associated with persistent fetal hemoglobin and amelioration of the phenotype of β-thalassemia.",
+   "volume": "105",
+   "author": "Uda M",
+   "year": "2008",
+   "unstructured": "Uda M, Galanello R, Sanna S, et al. Genome-wide association study shows BCL11A associated with persistent fetal hemoglobin and amelioration of the phenotype of β-thalassemia. Proc Natl Acad Sci U S A 2008;105:1620-1625.18245381",
+   "journal-title": "Proc Natl Acad Sci U S A"
+  },
+  {
+   "key": "e_1_3_5_29_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "358",
+   "DOI": "10.1038/nprot.2017.143",
+   "article-title": "CRISPR/Cas9 genome editing in human hematopoietic stem cells.",
+   "volume": "13",
+   "author": "Bak RO",
+   "year": "2018",
+   "unstructured": "Bak RO, Dever DP, Porteus MH. CRISPR/Cas9 genome editing in human hematopoietic stem cells. Nat Protoc 2018;13:358-376.29370156",
+   "journal-title": "Nat Protoc"
+  },
+  {
+   "key": "e_1_3_5_30_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "985",
+   "DOI": "10.1038/nbt.3290",
+   "article-title": "Chemically modified guide RNAs enhance CRISPR-Cas genome editing in human primary cells.",
+   "volume": "33",
+   "author": "Hendel A",
+   "year": "2015",
+   "unstructured": "Hendel A, Bak RO, Clark JT, et al. Chemically modified guide RNAs enhance CRISPR-Cas genome editing in human primary cells. Nat Biotechnol 2015;33:985-989.26121415",
+   "journal-title": "Nat Biotechnol"
+  },
+  {
+   "key": "e_1_3_5_31_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "192",
+   "DOI": "10.1038/nature15521",
+   "article-title": "BCL11A enhancer dissection by Cas9-mediated in situ saturating mutagenesis.",
+   "volume": "527",
+   "author": "Canver MC",
+   "year": "2015",
+   "unstructured": "Canver MC, Smith EC, Sher F, et al. BCL11A enhancer dissection by Cas9-mediated in situ saturating mutagenesis. Nature 2015;527:192-197.26375006",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "e_1_3_5_32_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "776",
+   "DOI": "10.1038/s41591-019-0401-y",
+   "article-title": "Highly efficient therapeutic gene editing of human hematopoietic stem cells.",
+   "volume": "25",
+   "author": "Wu Y",
+   "year": "2019",
+   "unstructured": "Wu Y, Zeng J, Roscoe BP, et al. Highly efficient therapeutic gene editing of human hematopoietic stem cells. Nat Med 2019;25:776-783.30911135",
+   "journal-title": "Nat Med"
+  },
+  {
+   "key": "e_1_3_5_33_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "400",
+   "DOI": "10.1016/j.bbmt.2015.09.024",
+   "article-title": "Hepatic veno-occlusive disease after hematopoietic stem cell transplantation: risk factors and stratification, prophylaxis, and treatment.",
+   "volume": "22",
+   "author": "Dalle JH",
+   "year": "2016",
+   "unstructured": "Dalle JH, Giralt SA. Hepatic veno-occlusive disease after hematopoietic stem cell transplantation: risk factors and stratification, prophylaxis, and treatment. Biol Blood Marrow Transplant 2016;22:400-409.26431626",
+   "journal-title": "Biol Blood Marrow Transplant"
+  },
+  {
+   "key": "e_1_3_5_34_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "2588",
+   "DOI": "10.1182/blood.V91.7.2588",
+   "article-title": "Lymphoid reconstitution after autologous PBSC transplantation with FACS-sorted CD34+ hematopoietic progenitors.",
+   "volume": "91",
+   "author": "Bomberger C",
+   "year": "1998",
+   "unstructured": "Bomberger C, Singh-Jairam M, Rodey G, et al. Lymphoid reconstitution after autologous PBSC transplantation with FACS-sorted CD34+ hematopoietic progenitors. Blood 1998;91:2588-2600.9516161",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "e_1_3_5_35_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "727",
+   "DOI": "10.1089/15258160050196777",
+   "article-title": "Phenotypic and functional lymphocyte recovery after CD34+-enriched versus non-T cell-depleted autologous peripheral blood stem cell transplantation.",
+   "volume": "9",
+   "author": "Nachbaur D",
+   "year": "2000",
+   "unstructured": "Nachbaur D, Kropshofer G, Heitger A, et al. Phenotypic and functional lymphocyte recovery after CD34+-enriched versus non-T cell-depleted autologous peripheral blood stem cell transplantation. J Hematother Stem Cell Res 2000;9:727-736.11091497",
+   "journal-title": "J Hematother Stem Cell Res"
+  },
+  {
+   "key": "e_1_3_5_36_2",
+   "unstructured": "Corbacioglu S Cappellini MD Chapin J et al. Initial safety and efficacy results with a single dose of autologous CRISPR-CAS9 modified CD34+ hematopoietic stem and progenitor cells in transfusion-dependent β-thalassemia and sickle cell disease. Presented at the virtual European Hematology Association Congress June 11–14 2020. abstract."
+  },
+  {
+   "key": "e_1_3_5_37_2",
+   "unstructured": "Frangoul H Bobruff Y Cappellini MD et al. Safety and efficacy of CTX001 in patients with transfusion-dependent β-thalassemia or sickle cell disease: early results from the CLIMB THAL-111 and CLIMB SCD-121 studies of autologous CRISPR-CAS9-modified CD34+ hematopoietic stem and progenitor cells. Presented at the American Society of Hematology Annual Meeting December 5–8 2020. abstract."
+  }
+ ],
+ "container-title": [
+  "New England Journal of Medicine"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.nejm.org/doi/pdf/10.1056/NEJMoa2031054",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    3,
+    26
+   ]
+  ],
+  "date-time": "2024-03-26T20:35:00Z",
+  "timestamp": 1711485300000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "http://www.nejm.org/doi/10.1056/NEJMoa2031054"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2021,
+    1,
+    21
+   ]
+  ]
+ },
+ "references-count": 36,
+ "journal-issue": {
+  "issue": "3",
+  "published-print": {
+   "date-parts": [
+    [
+     2021,
+     1,
+     21
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1056/NEJMoa2031054"
+ ],
+ "URL": "https://doi.org/10.1056/nejmoa2031054",
+ "relation": {},
+ "ISSN": [
+  "0028-4793",
+  "1533-4406"
+ ],
+ "issn-type": [
+  {
+   "value": "0028-4793",
+   "type": "print"
+  },
+  {
+   "value": "1533-4406",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2021,
+    1,
+    21
+   ]
+  ]
+ }
+}

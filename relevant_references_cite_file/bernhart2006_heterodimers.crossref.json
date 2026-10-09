@@ -1,0 +1,821 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    3
+   ]
+  ],
+  "date-time": "2026-10-03T07:23:40Z",
+  "timestamp": 1791012220145,
+  "version": "4.1.0"
+ },
+ "reference-count": 54,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "1",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2006,
+      1,
+      1
+     ]
+    ],
+    "date-time": "2006-01-01T00:00:00Z",
+    "timestamp": 1136073600000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://creativecommons.org/licenses/by/2.0"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Algorithms Mol Biol"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2006,
+    1
+   ]
+  ]
+ },
+ "DOI": "10.1186/1748-7188-1-3",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2006,
+    4,
+    6
+   ]
+  ],
+  "date-time": "2006-04-06T09:28:13Z",
+  "timestamp": 1144315693000
+ },
+ "source": "Crossref",
+ "is-referenced-by-count": 263,
+ "title": [
+  "Partition function and base pairing probabilities of RNA heterodimers"
+ ],
+ "prefix": "10.1186",
+ "volume": "1",
+ "author": [
+  {
+   "given": "Stephan H",
+   "family": "Bernhart",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Hakim",
+   "family": "Tafer",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ulrike",
+   "family": "Mückstein",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Christoph",
+   "family": "Flamm",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Peter F",
+   "family": "Stadler",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ivo L",
+   "family": "Hofacker",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2006,
+    3,
+    16
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "3_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "350",
+   "DOI": "10.1038/nature02871",
+   "volume": "431",
+   "author": "V Ambros",
+   "year": "2004",
+   "unstructured": "Ambros V: The functions of animal microRNAs. Nature. 2004, 431: 350-355. 10.1038/nature02871",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "3_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "38",
+   "DOI": "10.1016/j.pbi.2004.11.008",
+   "volume": "8",
+   "author": "CA Kidner",
+   "year": "2005",
+   "unstructured": "Kidner CA, Martienssen RA: The developmental role of microRNA in plants. Curr Opin Plant Biol. 2005, 8: 38-44. 10.1016/j.pbi.2004.11.008",
+   "journal-title": "Curr Opin Plant Biol"
+  },
+  {
+   "key": "3_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "1369",
+   "DOI": "10.1016/S0960-9822(01)00401-8",
+   "volume": "11",
+   "author": "E Rivas",
+   "year": "2001",
+   "unstructured": "Rivas E, Klein RJ, Jones TA, Eddy SR: Computational identification of noncoding RNAs in E. coli by comparative genomics. Curr Biol. 2001, 11: 1369-1373. 10.1016/S0960-9822(01)00401-8",
+   "journal-title": "Curr Biol"
+  },
+  {
+   "key": "3_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "4119",
+   "DOI": "10.1093/nar/gkg438",
+   "volume": "31",
+   "author": "JP McCutcheon",
+   "year": "2003",
+   "unstructured": "McCutcheon JP, Eddy SR: Computational identification of non-coding RNAs in Saccharomyces cerevisiae by comparative genomics. Nucl Acids Res. 2003, 31: 4119-4128. 10.1093/nar/gkg438",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "7542",
+   "DOI": "10.1073/pnas.112063799",
+   "volume": "99",
+   "author": "RJ Klein",
+   "year": "2002",
+   "unstructured": "Klein RJ, Misulovin Z, Eddy SR: Noncoding RNA genes identified in AT-rich hyperthermophiles. Proc Natl Acad Sci USA. 2002, 99: 7542-7547. 10.1073/pnas.112063799",
+   "journal-title": "Proc Natl Acad Sci USA"
+  },
+  {
+   "key": "3_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "1383",
+   "DOI": "10.1038/nbt1144",
+   "volume": "23",
+   "author": "S Washietl",
+   "year": "2005",
+   "unstructured": "Washietl S, Hofacker IL, Lukasser M, Hüttenhofer A, F SP: Genome-wide mapping of conserved RNA Secondary Structures Reveals Evidence for Thousands of functional Non-Coding RNAs in Human. Nature Biotech. 2005, 23: 1383-1390. 10.1038/nbt1144. 10.1038/nbt1144",
+   "journal-title": "Nature Biotech"
+  },
+  {
+   "issue": "S2",
+   "key": "3_CR7",
+   "doi-asserted-by": "crossref",
+   "first-page": "i77",
+   "DOI": "10.1093/bioinformatics/bti1113",
+   "volume": "21",
+   "author": "K Missal",
+   "year": "2005",
+   "unstructured": "Missal K, Rose D, Stadler PF: Non-coding RNAs in Ciona intestinalis. Bioinformatics. 2005, 21 (S2): i77-i78. [ECCB 2005 Supplement].",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "3_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "2242",
+   "DOI": "10.1126/science.1103388",
+   "volume": "306",
+   "author": "P Bertone",
+   "year": "2004",
+   "unstructured": "Bertone P, Stoc V, Royce TE, Rozowsky JS, Urban AE, Zhu X, Rinn JL, Tongprasit W, Samanta M, Weissman S, Gerstein M, Snyder M: Global Identification of Human Transcribed Sequences with Genome Tiling Arrays. Science. 2004, 306: 2242-2246. 10.1126/science.1103388",
+   "journal-title": "Science"
+  },
+  {
+   "key": "3_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "499",
+   "DOI": "10.1016/S0092-8674(04)00127-8",
+   "volume": "116",
+   "author": "S Cawley",
+   "year": "2004",
+   "unstructured": "Cawley S, Bekiranov S, Ng HH, Kapranov P, Sekinger EA, Kampa D, Piccolboni A, Sementchenko V, Cheng J, Williams AJ, Wheeler R, Wong B, Drenkow J, Yamanaka M, Patel S, Brubaker S, Tammana H, Helt G, Struhl K, Gingeras TR: Unbiased mapping of transcription factor binding sites along human chromosomes 21 and 22 points to widespread regulation of noncoding. RNAs Cell. 2004, 116: 499-509. 10.1016/S0092-8674(04)00127-8.",
+   "journal-title": "RNAs Cell"
+  },
+  {
+   "key": "3_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "331",
+   "DOI": "10.1101/gr.2094104",
+   "volume": "14",
+   "author": "D Kampa",
+   "year": "2004",
+   "unstructured": "Kampa D, Cheng J, Kapranov P, Yamanaka M, Brubaker S, Cawley S, Drenkow J, Piccolboni A, Bekiranov S, Helt G, Tammana H, Gingeras TR: Novel RNAs identified from an in-depth analysis of the transcriptome of human chromosomes 21 and 22. Genome Res. 2004, 14: 331-342. 10.1101/gr.2094104",
+   "journal-title": "Genome Res"
+  },
+  {
+   "key": "3_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "1149",
+   "DOI": "10.1126/science.1108625",
+   "volume": "308",
+   "author": "J Cheng",
+   "year": "2005",
+   "unstructured": "Cheng J, Kapranov P, Drenkow J, Dike S, Brubaker S, Patel S, Long J, Stern D, Tammana H, Helt G, Sementchenko V, Piccolboni A, Bekiranov S, Bailey DK, Ganesh M, Ghosh S, Bell I, Gerhard DS, Gingeras TR: Transcriptional Maps of 10 Human Chromosomes at 5-Nucleotide Resolution. Science. 2005, 308: 1149-1154. 10.1126/science.1108625",
+   "journal-title": "Science"
+  },
+  {
+   "key": "3_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "396",
+   "DOI": "10.1038/nrg1328",
+   "volume": "5",
+   "author": "DP Bartel",
+   "year": "2004",
+   "unstructured": "Bartel DP, Chen CZ: Micromanagers of gene expression: the potentially wide-spread influence of metazoan microRNAs. Nature Genetics. 2004, 5: 396-400.",
+   "journal-title": "Nature Genetics"
+  },
+  {
+   "key": "3_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "462",
+   "DOI": "10.1016/j.tibs.2004.07.001",
+   "volume": "29",
+   "author": "O Hobert",
+   "year": "2004",
+   "unstructured": "Hobert O: Common logic of transcription factor and microRNA action. Trends Biochem Sci. 2004, 29: 462-468. 10.1016/j.tibs.2004.07.001",
+   "journal-title": "Trends Biochem Sci"
+  },
+  {
+   "key": "3_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "930",
+   "DOI": "10.1002/bies.10332",
+   "volume": "25",
+   "author": "JS Mattick",
+   "year": "2003",
+   "unstructured": "Mattick JS: Challenging the dogma: the hidden layer of non-protein-coding RNAs in complex organisms. Bioessays. 2003, 25: 930-939. 10.1002/bies.10332",
+   "journal-title": "Bioessays"
+  },
+  {
+   "key": "3_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "316",
+   "DOI": "10.1038/nrg1321",
+   "volume": "5",
+   "author": "JS Mattick",
+   "year": "2004",
+   "unstructured": "Mattick JS: RNA regulation: a new genetics?. Nature Genetics. 2004, 5: 316-323. 10.1038/nrg1321. 10.1038/nrg1321",
+   "journal-title": "Nature Genetics"
+  },
+  {
+   "key": "3_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "301",
+   "DOI": "10.1016/j.thbio.2005.01.002",
+   "volume": "123",
+   "author": "AF Bompfünewerer",
+   "year": "2005",
+   "unstructured": "Bompfünewerer AF, Flamm C, Fried C, Fritzsch G, Hofacker IL, Lehmann J, Missal K, Mosig A, Müller B, Prohaska SJ, Stadler BMR, Stadler PF, Tanzer A, Washietl S, Witwer C: Evolutionary Patterns of Non-Coding RNAs. Th Biosci. 2005, 123: 301-369. 10.1016/j.thbio.2005.01.002. 10.1016/j.thbio.2005.01.002",
+   "journal-title": "Th Biosci"
+  },
+  {
+   "key": "3_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "534",
+   "DOI": "10.1016/j.tibs.2003.08.005",
+   "volume": "28",
+   "author": "P Nelson",
+   "year": "2003",
+   "unstructured": "Nelson P, Kiriakidou M, Sharma A, Maniataki E, Mourelatos Z: The microRNA world: small is mighty. Trends Biochem Sci. 2003, 28: 534-540. 10.1016/j.tibs.2003.08.005",
+   "journal-title": "Trends Biochem Sci"
+  },
+  {
+   "key": "3_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "499",
+   "DOI": "10.1146/annurev.genet.34.1.499",
+   "volume": "34",
+   "author": "JM Gott",
+   "year": "2000",
+   "unstructured": "Gott JM, Emeson RB: Functions and Mechanisms of RNA Editing. Annu Rev Genet. 2000, 34: 499-531. 10.1146/annurev.genet.34.1.499",
+   "journal-title": "Annu Rev Genet"
+  },
+  {
+   "key": "3_CR19",
+   "doi-asserted-by": "crossref",
+   "first-page": "105",
+   "DOI": "10.1128/.61.1.105-120.1997",
+   "volume": "61",
+   "author": "K Stuart",
+   "year": "1997",
+   "unstructured": "Stuart K, Allen TE, Heidmann S, Seiwert SD: RNA editing in kinetoplastid protozoa. Microbiol Mol Biol Rev. 1997, 61: 105-120.",
+   "journal-title": "Microbiol Mol Biol Rev"
+  },
+  {
+   "key": "3_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "188",
+   "DOI": "10.1101/gad.862301",
+   "volume": "15",
+   "author": "WS Elbashir Lendeckel",
+   "year": "2001",
+   "unstructured": "Elbashir Lendeckel WS, Tuschl T: RNA interference is mediated by 21- and 22-nucleotide RNAs. Genes Dev. 2001, 15: 188-200. 10.1101/gad.862301",
+   "journal-title": "Genes Dev"
+  },
+  {
+   "key": "3_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "11091",
+   "DOI": "10.1073/pnas.172391199",
+   "volume": "99",
+   "author": "JL Childs",
+   "year": "2002",
+   "unstructured": "Childs JL, Disney MD, Turner DH: Oligonucleotide directed misfolding of RNA inhibits Candida albicans group I intron splicing. Proc Natl Acad Sci USA. 2002, 99: 11091-11096. 10.1073/pnas.172391199",
+   "journal-title": "Proc Natl Acad Sci USA"
+  },
+  {
+   "key": "3_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "1432",
+   "DOI": "10.1002/cbic.200400219",
+   "volume": "5",
+   "author": "NC Meisner",
+   "year": "2004",
+   "unstructured": "Meisner NC, Hackermüller J, Uhl V, Aszódi A, Jaritz M, Auer M: mRNA openers and closers: A methodology to modulate AU-rich element controlled mRNA stability by a molecular switch in mRNA conformation. Chembiochem. 2004, 5: 1432-1447. 10.1002/cbic.200400219",
+   "journal-title": "Chembiochem"
+  },
+  {
+   "key": "3_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "3792",
+   "DOI": "10.1093/nar/gkh706",
+   "volume": "32",
+   "author": "CJ Nulf",
+   "year": "2004",
+   "unstructured": "Nulf CJ, Corey D: Intracellular inhibition of hepatitis C virus (HCV) internal ribosomal entry site (IRES)-dependent translation by peptide nucleic acids (PNAs) and locked nucleic acids (LNAs). Nucl Acids Res. 2004, 32: 3792-3798. 10.1093/nar/gkh706",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "issue": "9",
+   "key": "3_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "e78",
+   "DOI": "10.1093/nar/gnh076",
+   "volume": "32",
+   "author": "M Paulus",
+   "year": "2004",
+   "unstructured": "Paulus M, Haslbeck M, Watzele M: RNA stem-loop enhanced expression of previously non-expressible genes. Nucl Acids Res. 2004, 32 (9): e78-[Doi 10.1093/nar/gnh076]",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "174",
+   "DOI": "10.1038/nsb0398-174",
+   "volume": "5",
+   "author": "OC Uhlenbeck",
+   "year": "1998",
+   "unstructured": "Uhlenbeck OC: A coat for all Sequences. Nature Struct Biol. 1998, 5: 174-176. 10.1038/nsb0398-174",
+   "journal-title": "Nature Struct Biol"
+  },
+  {
+   "key": "3_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "1507",
+   "DOI": "10.1261/rna.5248604",
+   "volume": "10",
+   "author": "M Rehmsmeier",
+   "year": "2004",
+   "unstructured": "Rehmsmeier M, Steffen P, Höchsmann M, Giegerich R: Fast and effective prediction of microRNA/target duplexes. RNA. 2004, 10: 1507-1517. 10.1261/rna.5248604",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "3_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "215",
+   "DOI": "10.1529/biophysj.103.020743",
+   "volume": "87",
+   "author": "RA Dimitrov",
+   "year": "2004",
+   "unstructured": "Dimitrov RA, Zuker M: Prediction of Hybridization and Melting for Double-Stranded Nucleic Acids. Biophys J. 2004, 87: 215-226. 10.1529/biophysj.103.020743",
+   "journal-title": "Biophys J"
+  },
+  {
+   "key": "3_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "987",
+   "DOI": "10.1016/j.jmb.2004.10.082",
+   "volume": "345",
+   "author": "M Andronescu",
+   "year": "2005",
+   "unstructured": "Andronescu M, Zhang ZC, Condon A: Secondary Structure Prediction of Interacting RNA Molecules. J Mol Biol. 2005, 345: 987-1001. 10.1016/j.jmb.2004.10.082",
+   "journal-title": "J Mol Biol"
+  },
+  {
+   "key": "3_CR29",
+   "first-page": "3",
+   "volume-title": "German Conference on Bioinformatics",
+   "author": "U Mückstein",
+   "year": "2005",
+   "unstructured": "Mückstein U, Tafer H, Hackermüller J, Bernhard SB, Stadler PF, Hofacker IL: Thermodynamics of RNA-RNA Binding. German Conference on Bioinformatics. Edited by: Torda A, Kurtz S, Rarey M. 2005, P-71: 3-13. Bonn: Gesellschaft f. Informatik"
+  },
+  {
+   "key": "3_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "145",
+   "DOI": "10.1002/(SICI)1097-0282(199902)49:2<145::AID-BIP4>3.0.CO;2-G",
+   "volume": "49",
+   "author": "S Wuchty",
+   "year": "1999",
+   "unstructured": "Wuchty S, Fontana W, Hofacker IL, Schuster P: Complete Suboptimal Folding of RNA and the Stability of Secondary Structures. Biopolymers. 1999, 49: 145-165. 10.1002/(SICI)1097-0282(199902)49:2<145::AID-BIP4>3.0.CO;2-G",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "3_CR31",
+   "doi-asserted-by": "publisher",
+   "first-page": "1105",
+   "DOI": "10.1002/bip.360290621",
+   "volume": "29",
+   "author": "JS McCaskill",
+   "year": "1990",
+   "unstructured": "McCaskill JS: The Equilibrium Partition Function and Base Pair Binding Probabilities for RNA Secondary Structure. Biopolymers. 1990, 29: 1105-1119. 10.1002/bip.360290621",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "3_CR32",
+   "first-page": "167",
+   "volume": "1",
+   "author": "MS Waterman",
+   "year": "1978",
+   "unstructured": "Waterman MS: Secondary structure of single-stranded nucleic acids. Adv Math Suppl Studies. 1978, 1: 167-212.",
+   "journal-title": "Adv Math Suppl Studies"
+  },
+  {
+   "key": "3_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "68",
+   "DOI": "10.1137/0135006",
+   "volume": "35",
+   "author": "R Nussinov",
+   "year": "1978",
+   "unstructured": "Nussinov R, Piecznik G, Griggs JR, Kleitman DJ: Algorithms for Loop Matching. SIAM J Appl Math. 1978, 35: 68-82. 10.1137/0135006.",
+   "journal-title": "SIAM J Appl Math"
+  },
+  {
+   "key": "3_CR34",
+   "first-page": "209",
+   "volume": "5",
+   "author": "J Leydold",
+   "year": "1998",
+   "unstructured": "Leydold J, Stadler PF: Minimal Cycle Basis of Outerplanar Graphs. Elec J Comb. 1998, 5: 209-222. [R16:14 p.]. [See http://www.combinatorics.org/R16 and Santa Fe Institute Preprint 98-01-011]., [R16:14 p.]. [See and Santa Fe Institute Preprint 98-01-011].",
+   "journal-title": "Elec J Comb"
+  },
+  {
+   "key": "3_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "911",
+   "DOI": "10.1006/jmbi.1999.2700",
+   "volume": "288",
+   "author": "DH Mathews",
+   "year": "1999",
+   "unstructured": "Mathews DH, Sabina J, Zuker M, Turner DH: Expanded Sequence Dependence of Thermodynamic Parameters Improves Prediction of RNA Secondary Structure. J Mol Biol. 1999, 288: 911-940. 10.1006/jmbi.1999.2700",
+   "journal-title": "J Mol Biol"
+  },
+  {
+   "key": "3_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "1460",
+   "DOI": "10.1073/pnas.95.4.1460",
+   "volume": "95",
+   "author": "J SantaLucia jr",
+   "year": "1998",
+   "unstructured": "SantaLucia J: A Unified View of Polymer, Dumbbell, and Oligonucleotide DNA Nearest-Neighbor Thermodynamics. Proc Natl Acad Sci USA. 1998, 95: 1460-1465. 10.1073/pnas.95.4.1460",
+   "journal-title": "Proc Natl Acad Sci USA"
+  },
+  {
+   "key": "3_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "133",
+   "DOI": "10.1093/nar/9.1.133",
+   "volume": "9",
+   "author": "M Zuker",
+   "year": "1981",
+   "unstructured": "Zuker M, Stiegler P: Optimal computer folding of larger RNA sequences using thermodynamics and auxiliary information. Nucl Acids Res. 1981, 9: 133-148.",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "issue": "5",
+   "key": "3_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "2053",
+   "DOI": "10.1006/jmbi.1998.2436",
+   "volume": "85",
+   "author": "E Rivas",
+   "year": "1999",
+   "unstructured": "Rivas E, Eddy SR: A dynamic programming algorithm for RNA structure prediction including pseudoknots. J Mol Biol. 1999, 85 (5): 2053-2068. 10.1006/jmbi.1998.2436.",
+   "journal-title": "J Mol Biol"
+  },
+  {
+   "key": "3_CR39",
+   "volume-title": "BMC Bioinformatics",
+   "author": "J Reeder",
+   "year": "2004",
+   "unstructured": "Reeder J, Giegerich R: Design, implementation and evaluation of a practical pseudoknot folding algorithm based on thermodynamics. BMC Bioinformatics. 2004, 5:"
+  },
+  {
+   "key": "3_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "1664",
+   "DOI": "10.1002/jcc.10296",
+   "volume": "24",
+   "author": "RM Dirks",
+   "year": "2003",
+   "unstructured": "Dirks RM, Pierce NA: A parition function algorithm for nucleic acid secondary structure including pseudoknots. J Comput Chem. 2003, 24: 1664-1677. 10.1002/jcc.10296",
+   "journal-title": "J Comput Chem"
+  },
+  {
+   "issue": "2",
+   "key": "3_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "167",
+   "DOI": "10.1007/BF00818163",
+   "volume": "125",
+   "author": "IL Hofacker",
+   "year": "1994",
+   "unstructured": "Hofacker IL, Fontana W, Stadler PF, Bonhoeffer S, Tacker M, Schuster P: Fast Folding and Comparison of RNA Secondary Structures. Monatsh Chemie. 1994, 125 (2): 167-188. 10.1007/BF00818163.",
+   "journal-title": "Monatsh Chemie"
+  },
+  {
+   "key": "3_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "3429",
+   "DOI": "10.1093/nar/gkg599",
+   "volume": "31",
+   "author": "IL Hofacker",
+   "year": "2003",
+   "unstructured": "Hofacker IL: Vienna RNA secondary structure server. Nucl Acids Res. 2003, 31: 3429-3431. 10.1093/nar/gkg599",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "591",
+   "DOI": "10.1007/BF02459506",
+   "volume": "46",
+   "author": "M Zuker",
+   "year": "1984",
+   "unstructured": "Zuker M, Sankoff D: RNA secondary structures and their prediction. Bull Math Biol. 1984, 46: 591-621. 10.1016/S0092-8240(84)80062-2.",
+   "journal-title": "Bull Math Biol"
+  },
+  {
+   "key": "3_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "48",
+   "DOI": "10.1126/science.2468181",
+   "volume": "244",
+   "author": "M Zuker",
+   "year": "1989",
+   "unstructured": "Zuker M: On finding all suboptimal foldings of an RNA molecule. Science. 1989, 244: 48-52.",
+   "journal-title": "Science"
+  },
+  {
+   "key": "3_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "3406",
+   "DOI": "10.1093/nar/gkg595",
+   "volume": "31",
+   "author": "M Zuker",
+   "year": "2003",
+   "unstructured": "Zuker M: Mfold web server for nucleic acid folding and hybridization prediction. Nucl Acids Res. 2003, 31: 3406-3415. 10.1093/nar/gkg595",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "5126",
+   "DOI": "10.1093/nar/gkh841",
+   "volume": "32",
+   "author": "A Weixlbaumer",
+   "year": "2004",
+   "unstructured": "Weixlbaumer A, Werner A, Flamm C, Westhof E, Schroeder R: Determination of thermodynamic parameters for HIV DIS type loop-loop kissing complexes. Nucl Acids Res. 2004, 32: 5126-5133. 10.1093/nar/gkh841",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "7287",
+   "DOI": "10.1073/pnas.0401799101",
+   "volume": "101",
+   "author": "DH Mathews",
+   "year": "2004",
+   "unstructured": "Mathews DH, Disney MD, Childs JL, Schroeder SJ, Zuker M, Turner DH: Incorporating chemical modification constraints into a dynamic programming algorithm for prediction of RNA secondary structure. Proc Natl Acad Sci USA. 2004, 101: 7287-6297. 10.1073/pnas.0401799101",
+   "journal-title": "Proc Natl Acad Sci USA"
+  },
+  {
+   "key": "3_CR48",
+   "volume-title": "Numerische Mathematik",
+   "author": "HR Schwarz",
+   "year": "1986",
+   "unstructured": "Schwarz HR: Numerische Mathematik. 1986, Stuttgart: B.G. Teubner"
+  },
+  {
+   "key": "3_CR49",
+   "doi-asserted-by": "publisher",
+   "first-page": "2821",
+   "DOI": "10.1046/j.1432-1033.2002.02970.x",
+   "volume": "269",
+   "author": "P Wu",
+   "year": "2002",
+   "unstructured": "Wu P, Nakano Si, Sugimoto N: Temperature dependence of thermodynamic properties for DNA/DNA and RNA/DNA duplex formation. Eur J Biochem. 2002, 269: 2821-2830. 10.1046/j.1432-1033.2002.02970.x",
+   "journal-title": "Eur J Biochem"
+  },
+  {
+   "key": "3_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "3",
+   "DOI": "10.1016/j.gene.2004.11.043",
+   "volume": "345",
+   "author": "J Hackermüller",
+   "year": "2005",
+   "unstructured": "Hackermüller J, Meisner NC, Auer M, Jaritz M, Stadler PF: The Effect of RNA Secondary Structures on RNA-Ligand Binding and the Modifier RNA Mechanism: A Quantitative Model. Gene. 2005, 345: 3-12. 10.1016/j.gene.2004.11.043",
+   "journal-title": "Gene"
+  },
+  {
+   "key": "3_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "1034",
+   "DOI": "10.1093/nar/29.5.1034",
+   "volume": "29",
+   "author": "Y Ding",
+   "year": "2001",
+   "unstructured": "Ding Y, Lawrence CE: Statistical prediction of single-stranded regions in RNA secondary structure and application to predicting effective antisense target sites and beyond. Nucl Acids Res. 2001, 29: 1034-1046. 10.1093/nar/29.5.1034",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR52",
+   "first-page": "7180",
+   "volume": "31",
+   "author": "Y Ding",
+   "year": "2003",
+   "unstructured": "Ding Y, Lawrence CE: A statistical sampling algorithm for RNA secondary structure prediction. Nucl Acids Res. 2003, 31: 7180-7301.",
+   "journal-title": "Nucl Acids Res"
+  },
+  {
+   "key": "3_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "504",
+   "DOI": "10.1101/gad.1184404",
+   "volume": "18",
+   "author": "JG Doench",
+   "year": "2004",
+   "unstructured": "Doench JG, Sharp PA: Specificity of microRNA target selection in translational repression. Genes Devel. 2004, 18: 504-511. 10.1101/gad.1184404",
+   "journal-title": "Genes Devel"
+  },
+  {
+   "issue": "4",
+   "key": "3_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "883",
+   "DOI": "10.1016/j.jmb.2005.03.011",
+   "volume": "348",
+   "author": "S Schubert",
+   "year": "2005",
+   "unstructured": "Schubert S, Grunweller A, Erdmann V, Kurreck J: Local RNA Target Structure Influences siRNA Efficacy: Systematic Analysis of Intentionally Designed Binding Regions. J Mol Biol. 2005, 348 (4): 883-93. 10.1016/j.jmb.2005.03.011",
+   "journal-title": "J Mol Biol"
+  }
+ ],
+ "container-title": [
+  "Algorithms for Molecular Biology"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1186/1748-7188-1-3.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/article/10.1186/1748-7188-1-3/fulltext.html",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://link.springer.com/content/pdf/10.1186/1748-7188-1-3.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    2,
+    3
+   ]
+  ],
+  "date-time": "2024-02-03T11:20:59Z",
+  "timestamp": 1706959259000
+ },
+ "score": 86.66372,
+ "resource": {
+  "primary": {
+   "URL": "https://almob.biomedcentral.com/articles/10.1186/1748-7188-1-3"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2006,
+    1
+   ]
+  ]
+ },
+ "references-count": 54,
+ "journal-issue": {
+  "issue": "1",
+  "published-print": {
+   "date-parts": [
+    [
+     2006,
+     1
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "3"
+ ],
+ "URL": "https://doi.org/10.1186/1748-7188-1-3",
+ "ISSN": [
+  "1748-7188"
+ ],
+ "issn-type": [
+  {
+   "value": "1748-7188",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2006,
+    1
+   ]
+  ]
+ },
+ "article-number": "3"
+}

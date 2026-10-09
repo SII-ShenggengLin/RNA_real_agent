@@ -28,6 +28,6 @@
     "mean_plddt_threshold": 65.0,
     "rmsd_threshold": 3.0
   },
-  "source": "Group I intron (Tetrahymena thermophila)",
+  "source": "Group I intron P4-P6 domain (Tetrahymena thermophila)",
   "paper_reference": "1GID"
 }

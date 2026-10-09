@@ -6,12 +6,15 @@ Panel composition follows the Nature conventions surveyed in
 strict reading order, rows top-aligned).  Every panel is rendered at scale
 1.0 (uniform 6-pt text across the figure).
 
-Layout (2026-09-14 user-directed re-arrangement, the compact form): the
-tall delivery mosaic a (89 x 109 mm) fills the full-height left column;
-the right block (90.1 mm) stacks the failure-mode decomposition b
-(89 x 50.5 mm) on top and pairs the claim adjudication c with the
-cost-delivery frontier d (43.1 x 55 mm each) side by side below it, the
-c/d row bottom-aligned with a.
+Layout (2026-09-14 user-directed re-arrangement, the compact form;
+panel widths updated 2026-10-07): the tall delivery mosaic a
+(79 x 109 mm) fills the full-height left column; the right block
+(100.1 mm) stacks the failure-mode decomposition b (100.12 x 50.5 mm)
+on top and pairs the claim adjudication c with the cost-delivery
+frontier d (48.12 x 55 mm each) side by side below it, the c/d row
+bottom-aligned with a.  Panel sizes are read from the PDFs, so the
+2026-10-07 re-widths (a 89 -> 79 mm, b 89 -> 100.12 mm, c/d
+43.12 -> 48.12 mm, heights unchanged) needed no layout-code change.
 
 Letters: Helvetica-Bold 8 pt, ink black, drawn by this assembler.
 

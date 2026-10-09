@@ -1,0 +1,504 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    17
+   ]
+  ],
+  "date-time": "2026-08-17T21:08:40Z",
+  "timestamp": 1787000920398,
+  "version": "build-2736575974"
+ },
+ "reference-count": 35,
+ "publisher": "American Chemical Society (ACS)",
+ "issue": "6",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "J. Am. Chem. Soc."
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2003,
+    2,
+    1
+   ]
+  ]
+ },
+ "DOI": "10.1021/ja028383j",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2003,
+    2,
+    5
+   ]
+  ],
+  "date-time": "2003-02-05T01:17:40Z",
+  "timestamp": 1044407860000
+ },
+ "page": "1518-1525",
+ "source": "Crossref",
+ "is-referenced-by-count": 79,
+ "title": [
+  "Improving the Accuracy of NMR Structures of RNA by Means of Conformational Database Potentials of Mean Force as Assessed by Complete Dipolar Coupling Cross-Validation"
+ ],
+ "prefix": "10.1021",
+ "volume": "125",
+ "author": [
+  {
+   "given": "G. Marius",
+   "family": "Clore",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Contribution from Laboratory of Chemical Physics, Building 5, National Institute of Diabetes and Digestive and Kidney Diseases, National Institutes of Health, Bethesda, Maryland 20892-0510 and Division of Computational Bioscience, Building 12A, Center for Information Technology, National Institutes of Health, Bethesda, Maryland 20892-5624"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "John",
+   "family": "Kuszewski",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Contribution from Laboratory of Chemical Physics, Building 5, National Institute of Diabetes and Digestive and Kidney Diseases, National Institutes of Health, Bethesda, Maryland 20892-0510 and Division of Computational Bioscience, Building 12A, Center for Information Technology, National Institutes of Health, Bethesda, Maryland 20892-5624"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "316",
+ "published-online": {
+  "date-parts": [
+   [
+    2003,
+    1,
+    16
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "ja028383jb00001/ja028383jb00001_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "5898",
+   "DOI": "10.1073/pnas.95.11.5891",
+   "volume": "95",
+   "author": "Clore G. M.",
+   "year": "1998",
+   "journal-title": "Proc. Natl. Acad. Sci. U.S.A."
+  },
+  {
+   "key": "ja028383jb00002/ja028383jb00002_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "2338",
+   "DOI": "10.1021/ja9843730",
+   "volume": "121",
+   "author": "Kuszewski J.",
+   "year": "1999",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "ja028383jb00003/ja028383jb00003_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "3918",
+   "DOI": "10.1021/ja010033u",
+   "volume": "123",
+   "author": "Kuszewski J.",
+   "year": "2001",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "ja028383jb00004/ja028383jb00004_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "1080",
+   "DOI": "10.1002/pro.5560050609",
+   "volume": "5",
+   "author": "Kuszewski J.",
+   "year": "1996",
+   "journal-title": "Protein Sci."
+  },
+  {
+   "key": "ja028383jb00005/ja028383jb00005_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "153",
+   "DOI": "10.1016/S0959-440X(02)00302-0",
+   "volume": "12",
+   "author": "Clore G. M.",
+   "year": "2002",
+   "journal-title": "Curr. Op. Struct. Biol."
+  },
+  {
+   "key": "ja028383jb00006/ja028383jb00006_1",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Berman, H. M.; Gelbin, A.; Westbrook, J.\n                      Prog.\n                      Biophys. Mol. Biol.\n                      1996\n                      ,\n                      66\n                      , 255−288",
+   "DOI": "10.1016/S0079-6107(97)00019-9"
+  },
+  {
+   "key": "ja028383jb00007/ja028383jb00007_1",
+   "first-page": "236",
+   "volume": "10",
+   "author": "Kallenbach N. R.",
+   "year": "1997",
+   "journal-title": "Quart. Rev. Biophys."
+  },
+  {
+   "key": "ja028383jb00008/ja028383jb00008_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "956",
+   "DOI": "10.1038/80729",
+   "volume": "7",
+   "author": "Doudna J. A.",
+   "year": "2000",
+   "journal-title": "Nature Struct. Biol."
+  },
+  {
+   "key": "ja028383jb00009/ja028383jb00009_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "302",
+   "DOI": "10.1016/S0959-440X(00)00087-7",
+   "volume": "10",
+   "author": "Mollova E. T.",
+   "year": "2000",
+   "journal-title": "Curr. Op. Struct. Biol."
+  },
+  {
+   "key": "ja028383jb00010/ja028383jb00010_1",
+   "first-page": "9012",
+   "volume": "121",
+   "author": "Clore G. M.",
+   "year": "1999",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "ja028383jb00011/ja028383jb00011_1",
+   "first-page": "649",
+   "volume": "4",
+   "author": "Zimmerman G. R.",
+   "year": "1997",
+   "journal-title": "Nature Struct. Biol."
+  },
+  {
+   "key": "ja028383jb00012/ja028383jb00012_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "146",
+   "DOI": "10.1021/ja011646+",
+   "volume": "123",
+   "author": "Sibille N.",
+   "year": "2001",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "ja028383jb00013/ja028383jb00013_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "759",
+   "DOI": "10.1016/S0006-3495(92)81649-1",
+   "volume": "63",
+   "author": "Berman H. M.",
+   "year": "1992",
+   "journal-title": "Biophys. J."
+  },
+  {
+   "key": "ja028383jb00014/ja028383jb00014_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "74",
+   "DOI": "10.1016/S1090-7807(02)00014-9",
+   "volume": "160",
+   "author": "Schwieters C. D.",
+   "year": "2003",
+   "journal-title": "J. Magn. Reson."
+  },
+  {
+   "key": "ja028383jb00015/ja028383jb00015_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "2867",
+   "DOI": "10.1021/ja017712p",
+   "volume": "124",
+   "author": "Clore G. M.",
+   "year": "2002",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "ja028383jb00015/ja028383jb00015_2",
+   "first-page": "254",
+   "volume": "146",
+   "author": "Clore G. M.",
+   "year": "2000",
+   "journal-title": "J. Magn. Reson."
+  },
+  {
+   "key": "ja028383jb00016/ja028383jb00016_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "302",
+   "DOI": "10.1006/jmre.2001.2413",
+   "volume": "152",
+   "author": "Schwieters C. D.",
+   "year": "2001",
+   "journal-title": "J. Magn. Reson."
+  },
+  {
+   "key": "ja028383jb00017/ja028383jb00017_1",
+   "first-page": "38",
+   "volume": "2",
+   "author": "Nilges M.",
+   "year": "1998",
+   "journal-title": "Prot. Eng."
+  },
+  {
+   "key": "ja028383jb00018/ja028383jb00018_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "162",
+   "DOI": "10.1006/jmre.1997.1345",
+   "volume": "131",
+   "author": "Clore G. M.",
+   "year": "1998",
+   "journal-title": "J. Magn. Reson."
+  },
+  {
+   "key": "ja028383jb00019/ja028383jb00019_1",
+   "first-page": "716",
+   "volume": "7",
+   "author": "Nillson L.",
+   "year": "1986",
+   "journal-title": "J. Comput. Chem."
+  },
+  {
+   "key": "ja028383jb00020/ja028383jb00020_1",
+   "first-page": "217",
+   "volume": "74",
+   "author": "Brooks B. R.",
+   "year": "1993",
+   "journal-title": "J. Comput. Chem."
+  },
+  {
+   "key": "ja028383jb00021/ja028383jb00021_1",
+   "first-page": "475",
+   "volume": "188",
+   "author": "Nillson L.",
+   "year": "1986",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "ja028383jb00022/ja028383jb00022_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "920",
+   "DOI": "10.1126/science.289.5481.920",
+   "volume": "289",
+   "author": "Ban N.",
+   "year": "2000",
+   "journal-title": "Science"
+  },
+  {
+   "key": "ja028383jb00023/ja028383jb00023_1",
+   "first-page": "339",
+   "volume": "407",
+   "author": "Wimberley B. T.",
+   "year": "2000",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "ja028383jb00024/ja028383jb00024_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "786",
+   "DOI": "10.1016/0022-2836(81)90357-0",
+   "volume": "149",
+   "author": "Dickerson R. E.",
+   "year": "1981",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "ja028383jb00025/ja028383jb00025_1",
+   "first-page": "8355",
+   "volume": "37",
+   "author": "Shui X.",
+   "year": "1998",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "ja028383jb00026/ja028383jb00026_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "6200",
+   "DOI": "10.1021/ja000324n",
+   "volume": "122",
+   "author": "Tjandra N.",
+   "year": "2000",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "ja028383jb00027/ja028383jb00027_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "475",
+   "DOI": "10.1038/355472a0",
+   "volume": "355",
+   "author": "Brünger A. T.",
+   "year": "1992",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "ja028383jb00027/ja028383jb00027_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "36",
+   "DOI": "10.1107/S0108767378098591",
+   "volume": "49",
+   "author": "Brünger A. T.",
+   "year": "1993",
+   "journal-title": "Acta Crystallogr."
+  },
+  {
+   "key": "ja028383jb00028/ja028383jb00028_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "331",
+   "DOI": "10.1126/science.8332897",
+   "volume": "261",
+   "author": "Brünger A. T.",
+   "year": "1993",
+   "journal-title": "Science"
+  },
+  {
+   "key": "ja028383jb00029/ja028383jb00029_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "174",
+   "DOI": "10.1016/S0076-6879(01)39314-X",
+   "volume": "339",
+   "author": "Bax A.",
+   "year": "2001",
+   "journal-title": "Methods Enzymol."
+  },
+  {
+   "key": "ja028383jb00030/ja028383jb00030_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "590",
+   "DOI": "10.1016/S1367-5931(00)00247-7",
+   "volume": "5",
+   "author": "Prestegard J. H.",
+   "year": "2001",
+   "journal-title": "Curr. Op. Chem. Biol."
+  },
+  {
+   "key": "ja028383jb00031/ja028383jb00031_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "225",
+   "DOI": "10.1023/A:1019875223132",
+   "volume": "23",
+   "author": "Schwieters C. D.",
+   "year": "2002",
+   "journal-title": "J. Biomol. NMR."
+  },
+  {
+   "key": "ja028383jb00032/ja028383jb00032_1",
+   "volume-title": "University of California",
+   "author": "Pearlman D. A."
+  },
+  {
+   "key": "ja028383jb00033/ja028383jb00033_1",
+   "doi-asserted-by": "crossref",
+   "first-page": "221",
+   "DOI": "10.1006/jmre.1998.1419",
+   "volume": "133",
+   "author": "Clore G. M.",
+   "year": "1998",
+   "journal-title": "J. Magn. Reson."
+  }
+ ],
+ "container-title": [
+  "Journal of the American Chemical Society"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://pubs.acs.org/doi/pdf/10.1021/ja028383j",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    3,
+    30
+   ]
+  ],
+  "date-time": "2023-03-30T16:57:36Z",
+  "timestamp": 1680195456000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://pubs.acs.org/doi/10.1021/ja028383j"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2003,
+    1,
+    16
+   ]
+  ]
+ },
+ "references-count": 35,
+ "journal-issue": {
+  "issue": "6",
+  "published-print": {
+   "date-parts": [
+    [
+     2003,
+     2,
+     1
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1021/ja028383j"
+ ],
+ "URL": "https://doi.org/10.1021/ja028383j",
+ "relation": {},
+ "ISSN": [
+  "0002-7863",
+  "1520-5126"
+ ],
+ "issn-type": [
+  {
+   "value": "0002-7863",
+   "type": "print"
+  },
+  {
+   "value": "1520-5126",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2003,
+    1,
+    16
+   ]
+  ]
+ }
+}

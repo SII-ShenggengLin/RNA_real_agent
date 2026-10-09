@@ -16,13 +16,19 @@ skipped (the task input disabled the scan), diamonds = transcriptome scan
 executed (BLAST/bowtie2, trace-verified). Legend entries are built from
 the marker/colour combos actually present in the data.
 
-Figure revision 2026-08-28 (user-directed): replaced the per-task lollipop
-with the fig2d stacked-dot encoding — 21 identical zeros spread along a
-task axis read as noise at first glance, while stacking one dot per task
-above its hit count makes the distribution itself the headline. In-figure
-title removed (Nature style — the headline lives in the caption, panels
-carry letters only); every text element shares one font size and colour;
-legend labels shortened to "<hits> hits, <scan status> (n)".
+Figure revision 2026-10-02 (user-adjudicated, text-consistency pass): the
+"013 · bowtie2" annotation on the sole nonzero task removed — internal
+task ids and tool names stay out of the figures (the de-coding house
+rule); the manuscript text explains the exception in prose (the DDX11L2
+locus) and the legend's "3 hits, scanned (1)" entry plus the stack count
+already carry the point. (Earlier revision 2026-08-28 replaced the
+per-task lollipop with the fig2d stacked-dot encoding — 21 identical
+zeros spread along a task axis read as noise at first glance, while
+stacking one dot per task above its hit count makes the distribution
+itself the headline. In-figure title removed — Nature style, the headline
+lives in the caption, panels carry letters only; every text element
+shares one font size and colour; legend labels "<hits> hits, <scan
+status> (n)".)
 
 Data  : experiments/results/exp6_sirna_offtarget/records.jsonl
         (+ summary.json for the annotated counts)
@@ -33,7 +39,6 @@ Output : experiments/plots/output/fig2e_sirna_offtarget.{pdf,png}
 from __future__ import annotations
 
 import json
-import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -113,10 +118,6 @@ def main() -> int:
         (fig_w - 0.46) / fig_w, (fig_h - 0.38) / fig_h,
     ])
 
-    def short_id(task_id: str) -> str:
-        m = re.search(r"_(\d{3})_", task_id)
-        return m.group(1) if m else task_id
-
     # ── stacked dots: one per task, stack count printed on top ──
     combo_counts: dict[tuple[str, bool], int] = {}
     for c, recs in sorted(by_count.items()):
@@ -132,16 +133,6 @@ def main() -> int:
             )
             key = ("zero" if zero else "nonzero", scanned)
             combo_counts[key] = combo_counts.get(key, 0) + 1
-            if c > 0:  # name nonzero tasks (index + scan tool)
-                label = short_id(r["task_id"]) + " · " + "/".join(
-                    t.removeprefix("run_").split("_")[0]
-                    for t in (r.get("scan_tools") or ["noscan"])
-                )
-                ax.annotate(
-                    label, xy=(c, y), xytext=(-4, -1),
-                    textcoords="offset points", fontsize=FONT,
-                    ha="right", va="center", color=TEXT, zorder=4,
-                )
         ax.text(c, len(recs) + 0.7, str(len(recs)), ha="center", va="bottom",
                 fontsize=FONT, color=TEXT, zorder=4)
 

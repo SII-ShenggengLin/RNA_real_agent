@@ -1,0 +1,1027 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    18
+   ]
+  ],
+  "date-time": "2026-09-18T06:06:53Z",
+  "timestamp": 1789711613989,
+  "version": "4.0.1"
+ },
+ "reference-count": 62,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "12",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      12,
+      12
+     ]
+    ],
+    "date-time": "2025-12-12T00:00:00Z",
+    "timestamp": 1765497600000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2025,
+      12,
+      12
+     ]
+    ],
+    "date-time": "2025-12-12T00:00:00Z",
+    "timestamp": 1765497600000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/100007219",
+   "name": "Natural Science Foundation of Shanghai",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "24ZR1440600"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "24ZR1440600"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100007219",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100001809",
+   "name": "National Natural Science Foundation of China",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "62402314"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "62402314"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001809",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100001809",
+   "name": "National Natural Science Foundation of China",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "62072243"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "62072243"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001809",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100001809",
+   "name": "National Natural Science Foundation of China",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "22207135"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "22207135"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100001809",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Mach Intell"
+ ],
+ "DOI": "10.1038/s42256-025-01154-z",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2025,
+    12,
+    12
+   ]
+  ],
+  "date-time": "2025-12-12T10:03:58Z",
+  "timestamp": 1765533838000
+ },
+ "page": "1996-2008",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 5,
+ "title": [
+  "Deciphering RNA–ligand binding specificity with GerNA-Bind"
+ ],
+ "prefix": "10.1038",
+ "volume": "7",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0009-0000-7567-6978",
+   "authenticated-orcid": false,
+   "given": "Yunpeng",
+   "family": "Xia",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0009-0004-0037-0850",
+   "authenticated-orcid": false,
+   "given": "Jiayi",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Yi-Ting",
+   "family": "Chu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-6840-8198",
+   "authenticated-orcid": false,
+   "given": "Jiahua",
+   "family": "Rao",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jing",
+   "family": "Chen",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Chenqing",
+   "family": "Hua",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-6786-8053",
+   "authenticated-orcid": false,
+   "given": "Dong-Jun",
+   "family": "Yu",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-6411-9711",
+   "authenticated-orcid": false,
+   "given": "Xiu-Cai",
+   "family": "Chen",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-9747-4285",
+   "authenticated-orcid": false,
+   "given": "Shuangjia",
+   "family": "Zheng",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2025,
+    12,
+    12
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "1154_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "547",
+   "DOI": "10.1038/nrd.2018.93",
+   "volume": "17",
+   "author": "KD Warner",
+   "year": "2018",
+   "unstructured": "Warner, K. D., Hajdin, C. E. & Weeks, K. M. Principles for targeting RNA with drug-like small molecules. Nat. Rev. Drug Discov. 17, 547–558 (2018).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "1154_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "736",
+   "DOI": "10.1038/s41573-022-00521-4",
+   "volume": "21",
+   "author": "JL Childs-Disney",
+   "year": "2022",
+   "unstructured": "Childs-Disney, J. L. et al. Targeting RNA structures with small molecules. Nat. Rev. Drug Discov. 21, 736–762 (2022).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "1154_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "727",
+   "DOI": "10.1038/nrd892",
+   "volume": "1",
+   "author": "AL Hopkins",
+   "year": "2002",
+   "unstructured": "Hopkins, A. L. & Groom, C. R. The druggable genome. Nat. Rev. Drug Discov. 1, 727–730 (2002).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "1154_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "9",
+   "DOI": "10.1016/j.molcel.2020.03.011",
+   "volume": "78",
+   "author": "M Corley",
+   "year": "2020",
+   "unstructured": "Corley, M., Burns, M. C. & Yeo, G. W. How RNA-binding proteins interact with RNA: molecules and mechanisms. Mol. Cell 78, 9–29 (2020).",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "key": "1154_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "6471",
+   "DOI": "10.1093/nar/gkaa428",
+   "volume": "48",
+   "author": "Y-c Xie",
+   "year": "2020",
+   "unstructured": "Xie, Y.-c, Eriksson, L. A. & Zhang, R.-b Molecular dynamics study of the recognition of ATP by nucleic acid aptamers. Nucleic Acids Res. 48, 6471–6480 (2020).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "1154_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "169",
+   "DOI": "10.1038/s41586-023-06091-8",
+   "volume": "618",
+   "author": "Y Tong",
+   "year": "2023",
+   "unstructured": "Tong, Y. et al. Programming inactive RNA-binding small molecules into bioactive degraders. Nature 618, 169–179 (2023).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "1154_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "102550",
+   "DOI": "10.1016/j.sbi.2023.102550",
+   "volume": "79",
+   "author": "JT Koehn",
+   "year": "2023",
+   "unstructured": "Koehn, J. T., Felder, S. & Weeks, K. M. Innovations in targeting RNA by fragment-based ligand discovery. Curr. Opin. Struct. Biol. 79, 102550 (2023).",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "1154_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "1720",
+   "DOI": "10.1021/acschembio.6b00001",
+   "volume": "11",
+   "author": "MD Disney",
+   "year": "2016",
+   "unstructured": "Disney, M. D. et al. InfoRNA 2.0: a platform for the sequence-based design of small molecules targeting structured RNAs. ACS Chem. Biol. 11, 1720–1728 (2016).",
+   "journal-title": "ACS Chem. Biol."
+  },
+  {
+   "key": "1154_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "115",
+   "DOI": "10.1261/rna.078889.121",
+   "volume": "28",
+   "author": "S Sun",
+   "year": "2022",
+   "unstructured": "Sun, S., Yang, J. & Zhang, Z. RNAligands: a database and web server for RNA–ligand interactions. RNA 28, 115–122 (2022).",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "1154_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "1556",
+   "DOI": "10.1021/acschembio.2c00224",
+   "volume": "17",
+   "author": "A Donlic",
+   "year": "2022",
+   "unstructured": "Donlic, A. et al. R-bind 2.0: an updated database of bioactive RNA-targeting small molecules and associated RNA secondary structures. ACS Chem. Biol. 17, 1556–1566 (2022).",
+   "journal-title": "ACS Chem. Biol."
+  },
+  {
+   "key": "1154_CR11",
+   "doi-asserted-by": "publisher",
+   "first-page": "7262",
+   "DOI": "10.1021/acs.jmedchem.2c00254",
+   "volume": "65",
+   "author": "Z Cai",
+   "year": "2022",
+   "unstructured": "Cai, Z., Zafferani, M., Akande, O. M. & Hargrove, A. E. Quantitative structure–activity relationship (qSAR) study predicts small-molecule binding to RNA structure. J. Med. Chem. 65, 7262–7277 (2022).",
+   "journal-title": "J. Med. Chem."
+  },
+  {
+   "key": "1154_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "4068",
+   "DOI": "10.1021/acs.jcim.1c00155",
+   "volume": "61",
+   "author": "IH Rekand",
+   "year": "2021",
+   "unstructured": "Rekand, I. H. & Brenk, R. Drugpred_rna—a tool for structure-based druggability predictions for RNA binding sites. J. Chem. Inf. Model. 61, 4068–4081 (2021).",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "1154_CR13",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1186/s13321-022-00583-x",
+   "volume": "14",
+   "author": "H Grimberg",
+   "year": "2022",
+   "unstructured": "Grimberg, H. et al. Machine learning approaches to optimize small-molecule inhibitors for RNA targeting. J. Cheminform. 14, 4 (2022).",
+   "journal-title": "J. Cheminform."
+  },
+  {
+   "key": "1154_CR14",
+   "unstructured": "Deng, Z. et al. Predicting ligand–RNA binding using E3-equivariant network and pretraining. In Proc. Machine Learning for Structural Biology Workshop (NeurIPS, 2022)."
+  },
+  {
+   "key": "1154_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "e202211358",
+   "DOI": "10.1002/ange.202211358",
+   "volume": "135",
+   "author": "K Yazdani",
+   "year": "2023",
+   "unstructured": "Yazdani, K. et al. Machine learning informs RNA-binding chemical space. Angewandte Chemie 135, e202211358 (2023).",
+   "journal-title": "Angewandte Chemie"
+  },
+  {
+   "key": "1154_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "btae155",
+   "DOI": "10.1093/bioinformatics/btae155",
+   "volume": "40",
+   "author": "S Sun",
+   "year": "2024",
+   "unstructured": "Sun, S. & Gao, L. Contrastive pre-training and 3D convolution neural network for RNA and small molecule bindingaffinity prediction. Bioinformatics 40, btae155 (2024).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "1154_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "117",
+   "DOI": "10.1038/s41592-023-02086-5",
+   "volume": "21",
+   "author": "M Baek",
+   "year": "2024",
+   "unstructured": "Baek, M. et al. Accurate prediction of protein–nucleic acid complexes using RoseTTAFoldNA. Nat. Methods 21, 117–121 (2024).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "1154_CR18",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Abramson, J. et al. Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature 630, 493–500 (2024).",
+   "DOI": "10.1038/s41586-024-07487-w"
+  },
+  {
+   "key": "1154_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "143308",
+   "DOI": "10.1016/j.ijbiomac.2025.143308",
+   "volume": "310",
+   "author": "C Sang",
+   "year": "2025",
+   "unstructured": "Sang, C. et al. The prediction of RNA–small molecule binding sites in RNA structures based on geometric deep learning. Int. J. Biol. Macromol. 310, 143308 (2025).",
+   "journal-title": "Int. J. Biol. Macromol."
+  },
+  {
+   "key": "1154_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "eadl2528",
+   "DOI": "10.1126/science.adl2528",
+   "volume": "384",
+   "author": "R Krishna",
+   "year": "2024",
+   "unstructured": "Krishna, R. et al. Generalized biomolecular modeling and design with RoseTTAFold all-atom. Science 384, eadl2528 (2024).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "1154_CR21",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Patel, S. et al. Evoflow-RNA: generating and representing non-coding RNA with a language model. In Proc. ICLR Workshop on AI for Nucleic Acids (PMLR, 2025); https://openreview.net/forum?id=oDTBI7z52K",
+   "DOI": "10.1101/2025.02.25.639942"
+  },
+  {
+   "key": "1154_CR22",
+   "unstructured": "Chen, T., Zhang, Y., Tang, S. & Chatterjee, P. Multi-objective-guided discrete flow matching for controllable biological sequence design. In Proc. ICML 2nd Generative AI for Biology Workshop (PMLR, 2025); https://openreview.net/forum?id=8YIMLoHP9J"
+  },
+  {
+   "key": "1154_CR23",
+   "unstructured": "Tang, S., Zhang, Y., Tong, A. & Chatterjee, P. Gumbel-softmax score and flow matching for discrete biological sequence generation. In Proc. ICLR Deep Generation Model in Machine Learning: Theory, Principle and Efficacy (PMLR, 2025); https://openreview.net/forum?id=HnYSy4W0Vo"
+  },
+  {
+   "key": "1154_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "eado9336",
+   "DOI": "10.1126/science.ado9336",
+   "volume": "386",
+   "author": "E Nguyen",
+   "year": "2024",
+   "unstructured": "Nguyen, E. et al. Sequence modeling and design from molecular to genome scale with evo. Science 386, eado9336 (2024).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "1154_CR25",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Brixi, G. et al. Genome modeling and design across all domains of life with Evo 2. Preprint at bioRxiv https://doi.org/10.1101/2025.02.18.638918 (2025).",
+   "DOI": "10.1101/2025.02.18.638918"
+  },
+  {
+   "key": "1154_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "2287",
+   "DOI": "10.1038/s41592-024-02487-0",
+   "volume": "21",
+   "author": "T Shen",
+   "year": "2024",
+   "unstructured": "Shen, T. et al. Accurate RNA 3D structure prediction using a language model-based deep learning approach. Nat. Methods 21, 2287–2298 (2024).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "1154_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "e0273381",
+   "DOI": "10.1371/journal.pone.0273381",
+   "volume": "17",
+   "author": "B Townshend",
+   "year": "2022",
+   "unstructured": "Townshend, B., Kaplan, M. & Smolke, C. D. Highly multiplexed selection of RNA aptamers against a small molecule library. PLoS ONE 17, e0273381 (2022).",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "1154_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "bbae002",
+   "DOI": "10.1093/bib/bbae002",
+   "volume": "25",
+   "author": "SR Krishnan",
+   "year": "2024",
+   "unstructured": "Krishnan, S. R., Roy, A. & Gromiha, M. M. Reliable method for predicting the binding affinity of RNA–small molecule interactions using machine learning. Brief. Bioinform. 25, bbae002 (2024).",
+   "journal-title": "Brief. Bioinform."
+  },
+  {
+   "key": "1154_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "1401",
+   "DOI": "10.1021/acs.jproteome.6b00618",
+   "volume": "16",
+   "author": "M Wen",
+   "year": "2017",
+   "unstructured": "Wen, M. et al. Deep-learning-based drug–target interaction prediction. J. Proteome Res. 16, 1401–1409 (2017).",
+   "journal-title": "J. Proteome Res."
+  },
+  {
+   "key": "1154_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "e1007129",
+   "DOI": "10.1371/journal.pcbi.1007129",
+   "volume": "15",
+   "author": "I Lee",
+   "year": "2019",
+   "unstructured": "Lee, I., Keum, J. & Nam, H. Deepconv-dti: prediction of drug–target interactions via deep learning with convolution on protein sequences. PLoS Comput. Biol. 15, e1007129 (2019).",
+   "journal-title": "PLoS Comput. Biol."
+  },
+  {
+   "key": "1154_CR31",
+   "doi-asserted-by": "publisher",
+   "first-page": "1140",
+   "DOI": "10.1093/bioinformatics/btaa921",
+   "volume": "37",
+   "author": "T Nguyen",
+   "year": "2021",
+   "unstructured": "Nguyen, T. et al. Graphdta: predicting drug–target binding affinity with graph neural networks. Bioinformatics 37, 1140–1147 (2021).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "1154_CR32",
+   "doi-asserted-by": "publisher",
+   "first-page": "4185",
+   "DOI": "10.1093/bioinformatics/btac483",
+   "volume": "38",
+   "author": "FP Panei",
+   "year": "2022",
+   "unstructured": "Panei, F. P., Torchet, R., Menager, H., Gkeka, P. & Bonomi, M. Hariboss: a curated database of RNA–small molecules structures to aid rational drug design. Bioinformatics 38, 4185–4193 (2022).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "1154_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "36",
+   "DOI": "10.1093/bioinformatics/btaa1092",
+   "volume": "37",
+   "author": "H Su",
+   "year": "2021",
+   "unstructured": "Su, H., Peng, Z. & Yang, J. Recognition of small molecule–RNA binding sites using RNA sequence and structure. Bioinformatics 37, 36–42 (2021).",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "1154_CR34",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Discovery, C. et al. Chai-1: decoding the molecular interactions of life. Preprint at bioRxiv https://doi.org/10.1101/2024.10.10.615955 (2024).",
+   "DOI": "10.1101/2024.10.10.615955"
+  },
+  {
+   "key": "1154_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "1180",
+   "DOI": "10.1158/0008-5472.CAN-12-2850",
+   "volume": "73",
+   "author": "T Gutschner",
+   "year": "2013",
+   "unstructured": "Gutschner, T. et al. The noncoding RNA MALAT1 is a critical regulator of the metastasis phenotype of lung cancer cells. Cancer Res. 73, 1180–1189 (2013).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "1154_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "8031",
+   "DOI": "10.1038/sj.onc.1206928",
+   "volume": "22",
+   "author": "P Ji",
+   "year": "2003",
+   "unstructured": "Ji, P. et al. Malat-1, a novel noncoding RNA, and thymosin β4 predict metastasis and survival in early-stage non-small cell lung cancer. Oncogene 22, 8031–8041 (2003).",
+   "journal-title": "Oncogene"
+  },
+  {
+   "key": "1154_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "224",
+   "DOI": "10.1093/abbs/gmq008",
+   "volume": "42",
+   "author": "F Guo",
+   "year": "2010",
+   "unstructured": "Guo, F. et al. Inhibition of metastasis-associated lung adenocarcinoma transcript 1 in caski human cervical cancer cells suppresses cell proliferation and invasion. Acta Biochim. Biophys. Sin. 42, 224–229 (2010).",
+   "journal-title": "Acta Biochim. Biophys. Sin."
+  },
+  {
+   "key": "1154_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "4575",
+   "DOI": "10.1016/j.febslet.2010.10.008",
+   "volume": "584",
+   "author": "K Tano",
+   "year": "2010",
+   "unstructured": "Tano, K. et al. Malat-1 enhances cell motility of lung adenocarcinoma cells by influencing the expression of motility-related genes. FEBS Lett. 584, 4575–4580 (2010).",
+   "journal-title": "FEBS Lett."
+  },
+  {
+   "key": "1154_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "34",
+   "DOI": "10.1101/gad.270959.115",
+   "volume": "30",
+   "author": "G Arun",
+   "year": "2016",
+   "unstructured": "Arun, G. et al. Differentiation of mammary tumors and reduction in metastasis upon MALAT1 lncRNA loss. Genes Dev. 30, 34–51 (2016).",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "1154_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "2392",
+   "DOI": "10.1101/gad.204438.112",
+   "volume": "26",
+   "author": "JE Wilusz",
+   "year": "2012",
+   "unstructured": "Wilusz, J. E. et al. A triple helix stabilizes the 3 ends of long noncoding RNAs that lack poly(A) tails. Genes Dev. 26, 2392–2407 (2012).",
+   "journal-title": "Genes Dev."
+  },
+  {
+   "key": "1154_CR41",
+   "doi-asserted-by": "publisher",
+   "first-page": "633",
+   "DOI": "10.1038/nsmb.2844",
+   "volume": "21",
+   "author": "JA Brown",
+   "year": "2014",
+   "unstructured": "Brown, J. A. et al. Structural insights into the stabilization of MALAT1 noncoding RNA by a bipartite triple helix. Nat. Struct. Mol. Biol. 21, 633–640 (2014).",
+   "journal-title": "Nat. Struct. Mol. Biol."
+  },
+  {
+   "key": "1154_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "13426",
+   "DOI": "10.1002/ange.201808823",
+   "volume": "130",
+   "author": "A Donlic",
+   "year": "2018",
+   "unstructured": "Donlic, A. et al. Discovery of small molecule ligands for MALAT1 by tuning an RNA-binding scaffold. Angewandte Chemie 130, 13426–13431 (2018).",
+   "journal-title": "Angewandte Chemie"
+  },
+  {
+   "key": "1154_CR43",
+   "unstructured": "Topscience Compound Library (Topscience Corporation, accessed May 2025); https://www.targetmol.cn/service/topscience-database"
+  },
+  {
+   "key": "1154_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "1068",
+   "DOI": "10.1021/acschembio.5c00061",
+   "volume": "20",
+   "author": "M Pernak",
+   "year": "2025",
+   "unstructured": "Pernak, M. et al. Development of comprehensive screening and assessment assays for small-molecule ligands of MALAT1 lncRNA. ACS Chem. Biol. 20, 1068–1076 (2025).",
+   "journal-title": "ACS Chem. Biol."
+  },
+  {
+   "key": "1154_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "223",
+   "DOI": "10.1021/acschembio.8b00807",
+   "volume": "14",
+   "author": "FA Abulwerdi",
+   "year": "2019",
+   "unstructured": "Abulwerdi, F. A. et al. Selective small-molecule targeting of a triple helix encoded by the long noncoding RNA, MALAT1. ACS Chem. Biol. 14, 223–235 (2019).",
+   "journal-title": "ACS Chem. Biol."
+  },
+  {
+   "key": "1154_CR46",
+   "doi-asserted-by": "publisher",
+   "first-page": "2300134",
+   "DOI": "10.1002/ardp.202300134",
+   "volume": "356",
+   "author": "R Rocca",
+   "year": "2023",
+   "unstructured": "Rocca, R. et al. Hit identification of novel small molecules interfering with MALAT1 triplex by a structure-based virtual screening. Archiv der Pharmazie 356, 2300134 (2023).",
+   "journal-title": "Archiv der Pharmazie"
+  },
+  {
+   "key": "1154_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "8914",
+   "DOI": "10.1016/j.bmc.2008.08.066",
+   "volume": "16",
+   "author": "M Krishnamurthy",
+   "year": "2008",
+   "unstructured": "Krishnamurthy, M., Schirle, N. T. & Beal, P. A. Screening helix-threading peptides for RNA binding using a thiazole orange displacement assay. Bioorganic Med. Chem. 16, 8914–8921 (2008).",
+   "journal-title": "Bioorganic Med. Chem."
+  },
+  {
+   "key": "1154_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "179",
+   "DOI": "10.1016/j.chembiol.2018.10.018",
+   "volume": "26",
+   "author": "Z-F Wang",
+   "year": "2019",
+   "unstructured": "Wang, Z.-F. et al. The hairpin form of r(G4C2)expin c9als/FTD is repeat-associated non-ATG translated and a target for bioactive small molecules. Cell Chem. Biol. 26, 179–190 (2019).",
+   "journal-title": "Cell Chem. Biol."
+  },
+  {
+   "key": "1154_CR49",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/ncomms2119",
+   "volume": "3",
+   "author": "T Tran",
+   "year": "2012",
+   "unstructured": "Tran, T. & Disney, M. D. Identifying the preferred RNA motifs and chemotypes that interact by probing millions of combinations. Nat. Commun. 3, 1125 (2012).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "1154_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "6970",
+   "DOI": "10.1021/jacs.9b13159",
+   "volume": "142",
+   "author": "X Liu",
+   "year": "2020",
+   "unstructured": "Liu, X. et al. Targeted degradation of the oncogenic microRNA 17-92 cluster by structure-targeting ligands. J. Am. Chem. Soc. 142, 6970–6982 (2020).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "1154_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "11620",
+   "DOI": "10.1021/jacs.2c01929",
+   "volume": "144",
+   "author": "Y Tong",
+   "year": "2022",
+   "unstructured": "Tong, Y. et al. Transcriptome-wide mapping of small-molecule RNA-binding sites in cells informs an isoform-specific degrader of qsox1 mRNA. J. Am. Chem. Soc. 144, 11620–11625 (2022).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "1154_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "13044",
+   "DOI": "10.1021/jacs.1c02248",
+   "volume": "143",
+   "author": "P Zhang",
+   "year": "2021",
+   "unstructured": "Zhang, P. et al. Reprogramming of protein-targeted small-molecule medicines to RNA by ribonuclease recruitment. J. Am. Chem. Soc. 143, 13044–13055 (2021).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "1154_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "1071",
+   "DOI": "10.1038/nature08975",
+   "volume": "464",
+   "author": "RA Gupta",
+   "year": "2010",
+   "unstructured": "Gupta, R. A. et al. Long non-coding RNA hotair reprograms chromatin state to promote cancer metastasis. Nature 464, 1071–1076 (2010).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "1154_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "3304",
+   "DOI": "10.1093/nar/gkz1222",
+   "volume": "48",
+   "author": "A Ruszkowska",
+   "year": "2020",
+   "unstructured": "Ruszkowska, A., Ruszkowski, M., Hulewicz, J. P., Dauter, Z. & Brown, J. A. Molecular structure of a U•AU-rich RNA triple helix with 11 consecutive base triples. Nucleic Acids Res. 48, 3304–3314 (2020).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "1154_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "W530",
+   "DOI": "10.1093/nar/gkab294",
+   "volume": "49",
+   "author": "MF Adasme",
+   "year": "2021",
+   "unstructured": "Adasme, M. F. et al. Plip 2021: expanding the scope of the protein–ligand interaction profiler to DNA and RNA. Nucleic Acids Res. 49, W530–W534 (2021).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "1154_CR56",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Chen, J. et al. Interpretable RNA foundation model from unannotated data for highly accurate RNA structure and function predictions. Preprint at https://arxiv.org/abs/2204.00300 (2022).",
+   "DOI": "10.1101/2022.08.06.503062"
+  },
+  {
+   "key": "1154_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1186/1748-7188-6-26",
+   "volume": "6",
+   "author": "R Lorenz",
+   "year": "2011",
+   "unstructured": "Lorenz, R. et al. ViennaRNA package 2.0. Algorithms Mol. Biol. 6, 1–14 (2011).",
+   "journal-title": "Algorithms Mol. Biol."
+  },
+  {
+   "key": "1154_CR58",
+   "unstructured": "Kipf, T. N. & Welling, M. Semi-supervised classification with graph convolutional networks. In Proc. International Conference on Learning Representations (ICLR, 2017); https://openreview.net/forum?id=SJU4ayYgl"
+  },
+  {
+   "key": "1154_CR59",
+   "unstructured": "Liao, Y.-L. & Smidt, T. Equiformer: equivariant graph attention transformer for 3D atomistic graphs. In Proc. International Conference on Learning Representations (ICLR, 2023); https://openreview.net/forum?id=KwmPfARgOTD"
+  },
+  {
+   "key": "1154_CR60",
+   "unstructured": "Sensoy, M., Kaplan, L. & Kandemir, M. Evidential deep learning to quantify classification uncertainty. In Proc. Advances in Neural Information Processing Systems (NeurIPS, 2018); https://dl.acm.org/doi/pdf/10.5555/3327144.3327239"
+  },
+  {
+   "key": "1154_CR61",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Yunpeng, X. Data of GerNA-Bind. Zenodo https://doi.org/10.5281/zenodo.14808549 (2025).",
+   "DOI": "10.5281/zenodo.14808549"
+  },
+  {
+   "key": "1154_CR62",
+   "doi-asserted-by": "publisher",
+   "unstructured": "Yunpeng, X. Gentel-lab/gerna-bind: v.1.0.0. Zenodo https://doi.org/10.5281/zenodo.17509647 (2025).",
+   "DOI": "10.5281/zenodo.17509647"
+  }
+ ],
+ "container-title": [
+  "Nature Machine Intelligence"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.nature.com/articles/s42256-025-01154-z.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s42256-025-01154-z",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s42256-025-01154-z.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    12,
+    21
+   ]
+  ],
+  "date-time": "2025-12-21T17:01:57Z",
+  "timestamp": 1766336517000
+ },
+ "score": 68.70332,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/s42256-025-01154-z"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2025,
+    12,
+    12
+   ]
+  ]
+ },
+ "references-count": 62,
+ "journal-issue": {
+  "issue": "12",
+  "published-online": {
+   "date-parts": [
+    [
+     2025,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "1154"
+ ],
+ "URL": "https://doi.org/10.1038/s42256-025-01154-z",
+ "ISSN": [
+  "2522-5839"
+ ],
+ "issn-type": [
+  {
+   "value": "2522-5839",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2025,
+    12,
+    12
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "26 February 2025",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "5 November 2025",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "12 December 2025",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "The authors declare no competing interests.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  }
+ ]
+}

@@ -5,7 +5,7 @@ re-run).
 One row per workflow (canonical order), one tile per task in task-id order,
 filled with the workflow colour on success (a failed tile would be drawn
 white with a grey edge). Row labels carry the per-workflow task count as
-"label (n=…)" in the same colour and size as every other in-figure text;
+"label (n = …)" in the same colour and size as every other in-figure text;
 each row end carries the per-workflow success count "ok/n", anchored by a
 tile-semantics legend in the empty bottom-right corner (black swatch =
 filled tile, task succeeded; white swatch = task failed). The
@@ -141,7 +141,7 @@ def main() -> int:
             else:
                 ax.add_patch(Rectangle((ci, y), TILE, TILE, facecolor="white",
                                        edgecolor=NEUTRAL_GRID, linewidth=0.4))
-        ax.text(-0.55, y + TILE / 2, f"{WORKFLOW_LABELS[wf]} (n={len(recs)})",
+        ax.text(-0.55, y + TILE / 2, f"{WORKFLOW_LABELS[wf]} (n = {len(recs)})",
                 ha="right", va="center", fontsize=FONT)
         n_ok_row = sum(1 for r in recs if r.get("success"))
         ax.text(len(recs) + 0.3, y + TILE / 2, f"{n_ok_row}/{len(recs)}",

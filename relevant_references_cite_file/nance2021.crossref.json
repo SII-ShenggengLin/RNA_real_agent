@@ -1,0 +1,1062 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T12:07:00Z",
+  "timestamp": 1791461220586,
+  "version": "4.3.4"
+ },
+ "reference-count": 73,
+ "publisher": "American Chemical Society (ACS)",
+ "issue": "5",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2021,
+      4,
+      6
+     ]
+    ],
+    "date-time": "2021-04-06T00:00:00Z",
+    "timestamp": 1617667200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/100000054",
+   "name": "National Cancer Institute",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "ZIA BC011488"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "ZIA BC011488"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000054",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "published-print": {
+  "date-parts": [
+   [
+    2021,
+    5,
+    26
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:p>The novel coronavirus SARS-CoV-2, the cause of the COVID-19 pandemic, has inspired one of the most efficient vaccine development campaigns in human history. A key aspect of COVID-19 mRNA vaccines is the use of the modified nucleobase N1-methylpseudouridine (m1Ψ) to increase their effectiveness. In this Outlook, we summarize the development and function of m1Ψ in synthetic mRNAs. By demystifying how a novel element within these medicines works, we aim to foster understanding and highlight future opportunities for chemical innovation.</jats:p>",
+ "DOI": "10.1021/acscentsci.1c00197",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2021,
+    4,
+    6
+   ]
+  ],
+  "date-time": "2021-04-06T11:16:12Z",
+  "timestamp": 1617707772000
+ },
+ "page": "748-756",
+ "source": "Crossref",
+ "is-referenced-by-count": 450,
+ "title": [
+  "Modifications in an Emergency: The Role of N1-Methylpseudouridine\nin COVID-19 Vaccines"
+ ],
+ "prefix": "10.1021",
+ "volume": "7",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0002-4396-9124",
+   "authenticated-orcid": true,
+   "given": "Kellie\nD.",
+   "family": "Nance",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "National Institutes of Health , , 538 Chandler Street , , ,",
+     "place": [
+      "Frederick, Maryland, United States, 21702"
+     ]
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-0537-7101",
+   "authenticated-orcid": true,
+   "given": "Jordan L.",
+   "family": "Meier",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "National Institutes of Health , , 538 Chandler Street , , ,",
+     "place": [
+      "Frederick, Maryland, United States, 21702"
+     ]
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "316",
+ "published-online": {
+  "date-parts": [
+   [
+    2021,
+    4,
+    6
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2026081711255718000_cit1",
+   "unstructured": "Pfizer-BioNTech COVID-19\nVaccine EUA Letter of Authorization; U.S.\nFood and Drug Administration, 2021."
+  },
+  {
+   "key": "2026081711255718000_cit2",
+   "unstructured": "Moderna COVID-19 Vaccine EUA Letter of Authorization; U.S. Food and Drug Administration, 2021."
+  },
+  {
+   "issue": "13",
+   "key": "2026081711255718000_cit3",
+   "doi-asserted-by": "publisher",
+   "first-page": "759",
+   "DOI": "10.1038/nrd4278",
+   "article-title": "mRNA-Based Therapeutics \nDeveloping a New Class of Drugs",
+   "volume": "13",
+   "author": "Sahin",
+   "year": "2014",
+   "journal-title": "Nat. Rev. Drug\nDiscovery"
+  },
+  {
+   "issue": "9",
+   "key": "2026081711255718000_cit4",
+   "doi-asserted-by": "publisher",
+   "first-page": "1141",
+   "DOI": "10.1038/s41401-020-0485-4",
+   "article-title": "Structural\nand Functional Properties of SARS-CoV-2 Spike Protein: Potential Antivirus\nDrug Development for COVID-19",
+   "volume": "41",
+   "author": "Huang",
+   "year": "2020",
+   "journal-title": "Acta Pharmacol.\nSin."
+  },
+  {
+   "issue": "6510",
+   "key": "2026081711255718000_cit5",
+   "doi-asserted-by": "publisher",
+   "first-page": "1501",
+   "DOI": "10.1126/science.abd0826",
+   "article-title": "Structure-Based Design\nof Prefusion-Stabilized SARS-CoV-2\nSpikes",
+   "volume": "369",
+   "author": "Hsieh",
+   "year": "2020",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "3",
+   "key": "2026081711255718000_cit6",
+   "doi-asserted-by": "publisher",
+   "first-page": "311",
+   "DOI": "10.1016/j.molmed.2019.10.002",
+   "article-title": "Tailoring mRNA Vaccine\nto Balance Innate/Adaptive Immune Response",
+   "volume": "26",
+   "author": "Linares-Fernández",
+   "year": "2020",
+   "journal-title": "Trends Mol. Med."
+  },
+  {
+   "key": "2026081711255718000_cit7",
+   "doi-asserted-by": "publisher",
+   "first-page": "14",
+   "DOI": "10.1016/j.coi.2020.01.008",
+   "article-title": "Recent Advances in\nmRNA Vaccine Technology",
+   "volume": "65",
+   "author": "Pardi",
+   "year": "2020",
+   "journal-title": "Curr. Opin. Immunol."
+  },
+  {
+   "issue": "10",
+   "key": "2026081711255718000_cit8",
+   "doi-asserted-by": "publisher",
+   "first-page": "12522",
+   "DOI": "10.1021/acsnano.0c07197",
+   "article-title": "COVID-19\nVaccine Frontrunners and Their Nanotechnology Design",
+   "volume": "14",
+   "author": "Chung",
+   "year": "2020",
+   "journal-title": "ACS Nano"
+  },
+  {
+   "issue": "5",
+   "key": "2026081711255718000_cit9",
+   "doi-asserted-by": "publisher",
+   "first-page": "4787",
+   "DOI": "10.1021/acsnano.8b01516",
+   "article-title": "On the Formation\nand Morphology of Lipid Nanoparticles Containing Ionizable Cationic\nLipids and siRNA",
+   "volume": "12",
+   "author": "Kulkarni",
+   "year": "2018",
+   "journal-title": "ACS Nano"
+  },
+  {
+   "key": "2026081711255718000_cit10",
+   "unstructured": "World\nHealth Organization:\nInternational Nonproprietary Names Programme\n          . Messenger RNA Encoding the Full-Length SARS-CoV-2 Spike\nGlycoprotein; 11889; 2020."
+  },
+  {
+   "key": "2026081711255718000_cit11",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1038/s41586-021-03275-y",
+   "article-title": "BNT162b Vaccines Protect Rhesus Macaques\nfrom SARS-CoV-2",
+   "author": "Vogel",
+   "year": "2021",
+   "journal-title": "Nature"
+  },
+  {
+   "issue": "2",
+   "key": "2026081711255718000_cit12",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1002/cpz1.39",
+   "article-title": "Cap 1 Messenger\nRNA Synthesis with Co-Transcriptional CleanCap® Analog by In\nVitro Transcription",
+   "volume": "1",
+   "author": "Henderson",
+   "year": "2021",
+   "journal-title": "Curr. Protoc"
+  },
+  {
+   "issue": "5",
+   "key": "2026081711255718000_cit13",
+   "doi-asserted-by": "publisher",
+   "first-page": "851",
+   "DOI": "10.1261/rna.2309906",
+   "article-title": "Control of Mammalian\nTranslation by mRNA Structure near Caps",
+   "volume": "12",
+   "author": "Babendure",
+   "year": "2006",
+   "journal-title": "RNA"
+  },
+  {
+   "issue": "4",
+   "key": "2026081711255718000_cit14",
+   "doi-asserted-by": "publisher",
+   "first-page": "824",
+   "DOI": "10.1016/j.ymthe.2018.12.011",
+   "article-title": "Improving mRNA-Based\nTherapeutic Gene Delivery by Expression-Augmenting 3′ UTRs\nIdentified by Cellular Library Screening",
+   "volume": "27",
+   "author": "Orlandini\nvon Niessen",
+   "year": "2019",
+   "journal-title": "Mol.\nTher."
+  },
+  {
+   "issue": "4",
+   "key": "2026081711255718000_cit15",
+   "doi-asserted-by": "publisher",
+   "first-page": "507",
+   "DOI": "10.1261/rna.069286.118",
+   "article-title": "Segmented\npoly­(A) Tails Significantly Reduce Recombination of Plasmid DNA without\nAffecting mRNA Translation Efficiency or Half-Life",
+   "volume": "25",
+   "author": "Trepotec",
+   "year": "2019",
+   "journal-title": "RNA"
+  },
+  {
+   "issue": "12",
+   "key": "2026081711255718000_cit16",
+   "doi-asserted-by": "publisher",
+   "first-page": "1125",
+   "DOI": "10.1001/jama.2020.16866",
+   "article-title": "COVID-19 and\nmRNA Vaccines-First Large Test for a New Approach",
+   "volume": "324",
+   "author": "Abbasi",
+   "year": "2020",
+   "journal-title": "JAMA"
+  },
+  {
+   "key": "2026081711255718000_cit17",
+   "unstructured": "Collins, F.\n          \n          Celebrating the\nGift of COVID-19 Vaccines. https://directorsblog.nih.gov/2020/12/22/celebrating-the-gift-of-covid-19-vaccines/."
+  },
+  {
+   "key": "2026081711255718000_cit18",
+   "doi-asserted-by": "publisher",
+   "first-page": "211",
+   "DOI": "10.1038/s41579-020-00462-y",
+   "article-title": "Learning from\nthe Past: Development of Safe and Effective\nCOVID-19 Vaccines",
+   "volume": "19",
+   "author": "Su",
+   "year": "2021",
+   "journal-title": "Nat. Rev. Microbiol."
+  },
+  {
+   "issue": "6494",
+   "key": "2026081711255718000_cit19",
+   "doi-asserted-by": "publisher",
+   "first-page": "945",
+   "DOI": "10.1126/science.abb8923",
+   "article-title": "Rapid COVID-19\nVaccine Development",
+   "volume": "368",
+   "author": "Graham",
+   "year": "2020",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "5268",
+   "key": "2026081711255718000_cit20",
+   "doi-asserted-by": "publisher",
+   "first-page": "227",
+   "DOI": "10.1038/228227a0",
+   "article-title": "New RNA Polymerase\nfrom Escherichia\nColi Infected with Bacteriophage T7",
+   "volume": "228",
+   "author": "Chamberlin",
+   "year": "1970",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2026081711255718000_cit21",
+   "doi-asserted-by": "publisher",
+   "first-page": "540",
+   "DOI": "10.1016/0076-6879(83)01037-X",
+   "article-title": "Isolation\nof Bacterial and Bacteriophage RNA Polymerases and Their Use in Synthesis\nof RNA in Vitro",
+   "volume": "101",
+   "author": "Chamberlin",
+   "year": "1983",
+   "journal-title": "Methods Enzymol."
+  },
+  {
+   "key": "2026081711255718000_cit22",
+   "doi-asserted-by": "publisher",
+   "first-page": "394",
+   "DOI": "10.1016/0006-291X(61)90152-8",
+   "article-title": "The Incorporation\nof 5-Ribosyluracil Triphosphate into\nRNA in Nuclear Extracts of Mammalian Cells",
+   "volume": "6",
+   "author": "Goldberg",
+   "year": "1961",
+   "journal-title": "Biochem. Biophys. Res. Commun."
+  },
+  {
+   "key": "2026081711255718000_cit23",
+   "doi-asserted-by": "publisher",
+   "first-page": "1793",
+   "DOI": "10.1016/S0021-9258(18)81139-5",
+   "article-title": "Comparative Utilization of Pseudouridine\nTriphosphate\nand Uridine Triphosphate by Ribonucleic Acid Polymerase",
+   "volume": "238",
+   "author": "Goldberg",
+   "year": "1963",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "2026081711255718000_cit24",
+   "doi-asserted-by": "publisher",
+   "first-page": "51",
+   "DOI": "10.1016/0076-6879(89)80091-6",
+   "article-title": "Synthesis of Small RNAs Using T7\nRNA Polymerase",
+   "volume": "180",
+   "author": "Milligan",
+   "year": "1989",
+   "journal-title": "Methods Enzymol."
+  },
+  {
+   "issue": "3",
+   "key": "2026081711255718000_cit25",
+   "doi-asserted-by": "publisher",
+   "first-page": "849",
+   "DOI": "10.1021/acs.bioconjchem.6b00090",
+   "article-title": "Effects of\nChemically Modified Messenger RNA on Protein\nExpression",
+   "volume": "27",
+   "author": "Li",
+   "year": "2016",
+   "journal-title": "Bioconjugate Chem."
+  },
+  {
+   "issue": "12",
+   "key": "2026081711255718000_cit26",
+   "doi-asserted-by": "publisher",
+   "first-page": "2922",
+   "DOI": "10.1021/acschembio.7b00734",
+   "article-title": "Profiling Cytidine Acetylation with\nSpecific Affinity and Reactivity",
+   "volume": "12",
+   "author": "Sinclair",
+   "year": "2017",
+   "journal-title": "ACS Chem.\nBiol."
+  },
+  {
+   "issue": "91",
+   "key": "2026081711255718000_cit27",
+   "doi-asserted-by": "publisher",
+   "first-page": "12309",
+   "DOI": "10.1039/C7CC06661A",
+   "article-title": "Genetic\nAlphabet Expansion Transcription Generating Functional RNA Molecules\nContaining a Five-Letter Alphabet Including Modified Unnatural and\nNatural Base Nucleotides by Thermostable T7 RNA Polymerase Variants",
+   "volume": "53",
+   "author": "Kimoto",
+   "year": "2017",
+   "journal-title": "Chem. Commun."
+  },
+  {
+   "issue": "32",
+   "key": "2026081711255718000_cit28",
+   "doi-asserted-by": "publisher",
+   "first-page": "5800",
+   "DOI": "10.1039/C8OB01498A",
+   "article-title": "Enzymatic\nSynthesis of Base-Modified RNA by T7 RNA Polymerase. A Systematic\nStudy and Comparison of 5-Substituted Pyrimidine and 7-Substituted\n7-Deazapurine Nucleoside Triphosphates as Substrates",
+   "volume": "16",
+   "author": "Milisavljevič",
+   "year": "2018",
+   "journal-title": "Org. Biomol. Chem."
+  },
+  {
+   "issue": "3",
+   "key": "2026081711255718000_cit29",
+   "doi-asserted-by": "publisher",
+   "first-page": "684",
+   "DOI": "10.1039/C6OB02080A",
+   "article-title": "Enzymatic\nIncorporation and Utilization\nof an Emissive 6-Azauridine",
+   "volume": "15",
+   "author": "Hopkins",
+   "year": "2017",
+   "journal-title": "Org. Biomol. Chem."
+  },
+  {
+   "issue": "16",
+   "key": "2026081711255718000_cit30",
+   "doi-asserted-by": "publisher",
+   "first-page": "6077",
+   "DOI": "10.1073/pnas.86.16.6077",
+   "article-title": "Cationic Liposome-Mediated RNA Transfection",
+   "volume": "86",
+   "author": "Malone",
+   "year": "1989",
+   "journal-title": "Proc. Natl. Acad. Sci. U. S. A."
+  },
+  {
+   "issue": "4949",
+   "key": "2026081711255718000_cit31",
+   "doi-asserted-by": "publisher",
+   "first-page": "1465",
+   "DOI": "10.1126/science.1690918",
+   "article-title": "Direct\nGene Transfer into Mouse Muscle\nin Vivo",
+   "volume": "247",
+   "author": "Wolff",
+   "year": "1990",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "2",
+   "key": "2026081711255718000_cit32",
+   "doi-asserted-by": "publisher",
+   "first-page": "165",
+   "DOI": "10.1016/j.immuni.2005.06.008",
+   "article-title": "Suppression of RNA\nRecognition by Toll-like Receptors: The Impact of Nucleoside Modification\nand the Evolutionary Origin of RNA",
+   "volume": "23",
+   "author": "Karikó",
+   "year": "2005",
+   "journal-title": "Immunity"
+  },
+  {
+   "issue": "11",
+   "key": "2026081711255718000_cit33",
+   "doi-asserted-by": "publisher",
+   "first-page": "1833",
+   "DOI": "10.1038/mt.2008.200",
+   "article-title": "Incorporation of Pseudouridine into\nmRNA Yields Superior Nonimmunogenic Vector with Increased Translational\nCapacity and Biological Stability",
+   "volume": "16",
+   "author": "Karikó",
+   "year": "2008",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "issue": "21",
+   "key": "2026081711255718000_cit34",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1093/nar/gkr695",
+   "article-title": "Generating the Optimal\nmRNA for Therapy: HPLC Purification Eliminates Immune Activation and\nImproves Translation of Nucleoside-Modified, Protein-Encoding mRNA",
+   "volume": "39",
+   "author": "Karikó",
+   "year": "2011",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "issue": "17",
+   "key": "2026081711255718000_cit35",
+   "doi-asserted-by": "publisher",
+   "first-page": "5884",
+   "DOI": "10.1093/nar/gkq347",
+   "article-title": "Incorporation\nof Pseudouridine into mRNA Enhances Translation by Diminishing PKR\nActivation",
+   "volume": "38",
+   "author": "Anderson",
+   "year": "2010",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "issue": "5",
+   "key": "2026081711255718000_cit36",
+   "doi-asserted-by": "publisher",
+   "first-page": "618",
+   "DOI": "10.1016/j.stem.2010.08.012",
+   "article-title": "Highly Efficient Reprogramming to\nPluripotency and Directed Differentiation of Human Cells with Synthetic\nModified mRNA",
+   "volume": "7",
+   "author": "Warren",
+   "year": "2010",
+   "journal-title": "Cell Stem Cell"
+  },
+  {
+   "issue": "8",
+   "key": "2026081711255718000_cit37",
+   "doi-asserted-by": "publisher",
+   "first-page": "839",
+   "DOI": "10.1038/nbt.3301",
+   "article-title": "Mammalian\nSynthetic\nCircuits with RNA Binding Proteins for RNA-Only Delivery",
+   "volume": "33",
+   "author": "Wroblewska",
+   "year": "2015",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "issue": "2",
+   "key": "2026081711255718000_cit38",
+   "doi-asserted-by": "publisher",
+   "first-page": "154",
+   "DOI": "10.1038/nbt.1733",
+   "article-title": "Expression of Therapeutic Proteins after Delivery of\nChemically Modified mRNA in Mice",
+   "volume": "29",
+   "author": "Kormann",
+   "year": "2011",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "2026081711255718000_cit39",
+   "doi-asserted-by": "publisher",
+   "first-page": "337",
+   "DOI": "10.1016/j.jconrel.2015.08.051",
+   "article-title": "N­(1)-Methylpseudouridine-Incorporated\nmRNA Outperforms\nPseudouridine-Incorporated mRNA by Providing Enhanced Protein Expression\nand Reduced Immunogenicity in Mammalian Cell Lines and Mice",
+   "volume": "217",
+   "author": "Andries",
+   "year": "2015",
+   "journal-title": "J. Controlled Release"
+  },
+  {
+   "issue": "10",
+   "key": "2026081711255718000_cit40",
+   "doi-asserted-by": "publisher",
+   "first-page": "5239",
+   "DOI": "10.1093/nar/gky177",
+   "article-title": "An Origin of the Immunogenicity\nof in Vitro Transcribed RNA",
+   "volume": "46",
+   "author": "Mu",
+   "year": "2018",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "issue": "26",
+   "key": "2026081711255718000_cit41",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1126/sciadv.aaz6893",
+   "article-title": "Impact of mRNA Chemistry\nand Manufacturing Process on Innate Immune\nActivation",
+   "volume": "6",
+   "author": "Nelson",
+   "year": "2020",
+   "journal-title": "Sci. Adv."
+  },
+  {
+   "key": "2026081711255718000_cit42",
+   "doi-asserted-by": "publisher",
+   "first-page": "530",
+   "DOI": "10.1016/j.omtn.2018.06.010",
+   "article-title": "Uridine\nDepletion and\nChemical Modification Increase Cas9 mRNA Activity and Reduce Immunogenicity\nwithout HPLC Purification",
+   "volume": "12",
+   "author": "Vaidyanathan",
+   "year": "2018",
+   "journal-title": "Mol. Ther.--Nucleic\nAcids"
+  },
+  {
+   "issue": "13",
+   "key": "2026081711255718000_cit43",
+   "doi-asserted-by": "publisher",
+   "first-page": "12542",
+   "DOI": "10.1074/jbc.M310175200",
+   "article-title": "mRNA Is an Endogenous\nLigand for Toll-like Receptor 3",
+   "volume": "279",
+   "author": "Karikó",
+   "year": "2004",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "issue": "24",
+   "key": "2026081711255718000_cit44",
+   "doi-asserted-by": "publisher",
+   "first-page": "5020",
+   "DOI": "10.1093/nar/23.24.5020",
+   "article-title": "Stabilization\nof RNA Stacking by Pseudouridine",
+   "volume": "23",
+   "author": "Davis",
+   "year": "1995",
+   "journal-title": "Nucleic Acids\nRes."
+  },
+  {
+   "issue": "5",
+   "key": "2026081711255718000_cit45",
+   "doi-asserted-by": "publisher",
+   "first-page": "2676",
+   "DOI": "10.1016/j.bmc.2007.11.039",
+   "article-title": "Synthesis and Solution\nConformation Studies of 3-Substituted Uridine and Pseudouridine Derivatives",
+   "volume": "16",
+   "author": "Chang",
+   "year": "2008",
+   "journal-title": "Bioorg. Med. Chem."
+  },
+  {
+   "issue": "5",
+   "key": "2026081711255718000_cit46",
+   "doi-asserted-by": "publisher",
+   "first-page": "3492",
+   "DOI": "10.1093/nar/gkt1330",
+   "article-title": "The Contribution\nof Pseudouridine to Stabilities and\nStructure of RNAs",
+   "volume": "42",
+   "author": "Kierzek",
+   "year": "2014",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "issue": "48",
+   "key": "2026081711255718000_cit47",
+   "doi-asserted-by": "publisher",
+   "first-page": "24075",
+   "DOI": "10.1073/pnas.1908052116",
+   "article-title": "mRNA Structure Regulates Protein Expression\nthrough Changes in Functional Half-Life",
+   "volume": "116",
+   "author": "Mauger",
+   "year": "2019",
+   "journal-title": "Proc.\nNatl. Acad. Sci. U. S. A."
+  },
+  {
+   "issue": "5",
+   "key": "2026081711255718000_cit48",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1128/mBio.00833-16",
+   "article-title": "RNAs Containing Modified\nNucleotides Fail To Trigger RIG-I Conformational Changes for Innate\nImmune Signaling",
+   "volume": "7",
+   "author": "Durbin",
+   "year": "2016",
+   "journal-title": "mBio"
+  },
+  {
+   "issue": "5663",
+   "key": "2026081711255718000_cit49",
+   "doi-asserted-by": "publisher",
+   "first-page": "1526",
+   "DOI": "10.1126/science.1093620",
+   "article-title": "Species-Specific Recognition of Single-Stranded\nRNA via Toll-like\nReceptor 7 and 8",
+   "volume": "303",
+   "author": "Heil",
+   "year": "2004",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "12",
+   "key": "2026081711255718000_cit50",
+   "doi-asserted-by": "publisher",
+   "first-page": "3256",
+   "DOI": "10.1002/eji.200636617",
+   "article-title": "Nucleic Acid\nAgonists for Toll-like Receptor 7 Are\nDefined by the Presence of Uridine Ribonucleotides",
+   "volume": "36",
+   "author": "Diebold",
+   "year": "2006",
+   "journal-title": "Eur. J. Immunol."
+  },
+  {
+   "issue": "6",
+   "key": "2026081711255718000_cit51",
+   "doi-asserted-by": "publisher",
+   "first-page": "807",
+   "DOI": "10.1517/17425247.2016.1151871",
+   "article-title": "Liposomal Adjuvants\nfor Human Vaccines",
+   "volume": "13",
+   "author": "Alving",
+   "year": "2016",
+   "journal-title": "Expert Opin. Drug Delivery"
+  },
+  {
+   "key": "2026081711255718000_cit52",
+   "doi-asserted-by": "publisher",
+   "first-page": "85",
+   "DOI": "10.1016/j.addr.2015.11.005",
+   "article-title": "Designing Liposomal Adjuvants for\nthe next Generation of Vaccines",
+   "volume": "99",
+   "author": "Perrie",
+   "year": "2016",
+   "journal-title": "Adv. Drug Delivery\nRev."
+  },
+  {
+   "issue": "2",
+   "key": "2026081711255718000_cit53",
+   "doi-asserted-by": "publisher",
+   "first-page": "191",
+   "DOI": "10.1517/14712590903431014",
+   "article-title": "The Virosomal Adjuvanted Influenza Vaccine",
+   "volume": "10",
+   "author": "Calcagnile",
+   "year": "2010",
+   "journal-title": "Expert Opin. Biol. Ther."
+  },
+  {
+   "issue": "6525",
+   "key": "2026081711255718000_cit54",
+   "doi-asserted-by": "publisher",
+   "first-page": "145",
+   "DOI": "10.1126/science.aay3638",
+   "article-title": "A Noninflammatory mRNA Vaccine for Treatment of Experimental Autoimmune\nEncephalomyelitis",
+   "volume": "371",
+   "author": "Krienke",
+   "year": "2021",
+   "journal-title": "Science"
+  },
+  {
+   "issue": "9",
+   "key": "2026081711255718000_cit55",
+   "doi-asserted-by": "publisher",
+   "first-page": "2520",
+   "DOI": "10.1016/j.celrep.2018.08.049",
+   "article-title": "Systemic Messenger RNA Therapy as a Treatment\nfor Methylmalonic Acidemia",
+   "volume": "24",
+   "author": "An",
+   "year": "2018",
+   "journal-title": "Cell Rep."
+  },
+  {
+   "key": "2026081711255718000_cit56",
+   "doi-asserted-by": "publisher",
+   "first-page": "78",
+   "DOI": "10.1016/j.biomaterials.2016.09.006",
+   "article-title": "Efficacy\nand Immunogenicity\nof Unmodified and Pseudouridine-Modified mRNA Delivered Systemically\nwith Lipid Nanoparticles in Vivo",
+   "volume": "109",
+   "author": "Kauffman",
+   "year": "2016",
+   "journal-title": "Biomaterials"
+  },
+  {
+   "issue": "9",
+   "key": "2026081711255718000_cit57",
+   "doi-asserted-by": "crossref",
+   "first-page": "1456",
+   "DOI": "10.1038/mt.2015.103",
+   "article-title": "Sequence-Engineered mRNA Without\nChemical Nucleoside Modifications Enables an Effective Protein Therapy\nin Large Animals",
+   "volume": "23",
+   "author": "Thess",
+   "year": "2015",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "issue": "10",
+   "key": "2026081711255718000_cit58",
+   "doi-asserted-by": "publisher",
+   "first-page": "6023",
+   "DOI": "10.1093/nar/gkx135",
+   "article-title": "N1-Methyl-Pseudouridine\nin mRNA Enhances Translation\nthrough eIF2α-Dependent and Independent Mechanisms by Increasing\nRibosome Density",
+   "volume": "45",
+   "author": "Svitkin",
+   "year": "2017",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "issue": "3",
+   "key": "2026081711255718000_cit59",
+   "doi-asserted-by": "publisher",
+   "first-page": "400",
+   "DOI": "10.1038/s12276-020-0407-z",
+   "article-title": "The Emerging Role\nof RNA Modifications in the Regulation\nof mRNA Stability",
+   "volume": "52",
+   "author": "Boo",
+   "year": "2020",
+   "journal-title": "Exp. Mol. Med."
+  },
+  {
+   "issue": "4",
+   "key": "2026081711255718000_cit60",
+   "doi-asserted-by": "publisher",
+   "first-page": "640",
+   "DOI": "10.1016/j.molcel.2019.04.025",
+   "article-title": "Where, When,\nand How: Context-Dependent Functions of\nRNA Methylation Writers, Readers, and Erasers",
+   "volume": "74",
+   "author": "Shi",
+   "year": "2019",
+   "journal-title": "Mol. Cell"
+  },
+  {
+   "issue": "7",
+   "key": "2026081711255718000_cit61",
+   "doi-asserted-by": "publisher",
+   "first-page": "1187",
+   "DOI": "10.1016/j.cell.2017.05.045",
+   "article-title": "Dynamic RNA\nModifications\nin Gene Expression Regulation",
+   "volume": "169",
+   "author": "Roundtree",
+   "year": "2017",
+   "journal-title": "Cell"
+  },
+  {
+   "issue": "7",
+   "key": "2026081711255718000_cit62",
+   "doi-asserted-by": "publisher",
+   "first-page": "803",
+   "DOI": "10.1038/s41587-019-0164-5",
+   "article-title": "Human 5′ UTR Design and Variant\nEffect Prediction from a Massively Parallel Translation Assay",
+   "volume": "37",
+   "author": "Sample",
+   "year": "2019",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "2026081711255718000_cit63",
+   "doi-asserted-by": "publisher",
+   "first-page": "13",
+   "DOI": "10.1016/j.gene.2005.06.037",
+   "article-title": "Regulation\nof Translation via mRNA Structure in Prokaryotes and Eukaryotes",
+   "volume": "361",
+   "author": "Kozak",
+   "year": "2005",
+   "journal-title": "Gene"
+  },
+  {
+   "issue": "26",
+   "key": "2026081711255718000_cit64",
+   "doi-asserted-by": "publisher",
+   "first-page": "3537",
+   "DOI": "10.1021/acs.biochem.8b00395",
+   "article-title": "Messenger RNA Structure\nRegulates Translation Initiation: A Mechanism Exploited from Bacteria\nto Humans",
+   "volume": "57",
+   "author": "Mustoe",
+   "year": "2018",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "issue": "9",
+   "key": "2026081711255718000_cit65",
+   "doi-asserted-by": "publisher",
+   "first-page": "959",
+   "DOI": "10.1038/nmeth.3029",
+   "article-title": "RNA Motif\nDiscovery by SHAPE and Mutational Profiling (SHAPE-MaP)",
+   "volume": "11",
+   "author": "Siegfried",
+   "year": "2014",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "2026081711255718000_cit66",
+   "doi-asserted-by": "publisher",
+   "first-page": "794528",
+   "DOI": "10.1155/2015/794528",
+   "article-title": "RNA-Based Vaccines in Cancer Immunotherapy",
+   "volume": "2015",
+   "author": "McNamara",
+   "year": "2015",
+   "journal-title": "J. Immunol. Res."
+  },
+  {
+   "key": "2026081711255718000_cit67",
+   "doi-asserted-by": "publisher",
+   "first-page": "589959",
+   "DOI": "10.3389/fchem.2020.589959",
+   "article-title": "Advances in Lipid Nanoparticles for\nmRNA-Based Cancer Immunotherapy",
+   "volume": "8",
+   "author": "Guevara",
+   "year": "2020",
+   "journal-title": "Front. Chem."
+  },
+  {
+   "issue": "10",
+   "key": "2026081711255718000_cit68",
+   "doi-asserted-by": "publisher",
+   "first-page": "751",
+   "DOI": "10.1038/nrd.2018.132",
+   "article-title": "An RNA Toolbox for\nCancer Immunotherapy",
+   "volume": "17",
+   "author": "Pastor",
+   "year": "2018",
+   "journal-title": "Nat. Rev. Drug Discovery"
+  },
+  {
+   "issue": "6",
+   "key": "2026081711255718000_cit69",
+   "doi-asserted-by": "publisher",
+   "first-page": "756",
+   "DOI": "10.1080/15476286.2018.1450054",
+   "article-title": "Optimization of mRNA Untranslated\nRegions for Improved Expression of Therapeutic mRNA",
+   "volume": "15",
+   "author": "Asrani",
+   "year": "2018",
+   "journal-title": "RNA Biol."
+  },
+  {
+   "issue": "34",
+   "key": "2026081711255718000_cit70",
+   "doi-asserted-by": "publisher",
+   "first-page": "13286",
+   "DOI": "10.1021/jacs.9b04728",
+   "article-title": "P­(V) Reagents\nfor the Scalable Synthesis of Natural and Modified Nucleoside Triphosphates",
+   "volume": "141",
+   "author": "Liao",
+   "year": "2019",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "issue": "46",
+   "key": "2026081711255718000_cit71",
+   "doi-asserted-by": "publisher",
+   "first-page": "23068",
+   "DOI": "10.1073/pnas.1821754116",
+   "article-title": "Pseudouridinylation\nof mRNA Coding Sequences Alters\nTranslation",
+   "volume": "116",
+   "author": "Eyler",
+   "year": "2019",
+   "journal-title": "Proc. Natl. Acad. Sci. U. S. A."
+  },
+  {
+   "issue": "10",
+   "key": "2026081711255718000_cit72",
+   "doi-asserted-by": "publisher",
+   "first-page": "966",
+   "DOI": "10.1038/s41589-019-0353-z",
+   "article-title": "mRNA Structure Determines Modification\nby Pseudouridine Synthase 1",
+   "volume": "15",
+   "author": "Carlile",
+   "year": "2019",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "2026081711255718000_cit73",
+   "unstructured": "Jeong, D.; McCoy, M.; Artiles, K.; Ilbay, O.; Fire, A.; Nadeau, K.; Park, H.; Betts, B.; Boyd, S.; Hoh, R.; Shoura, M.\n          Assemblies-of-putative-SARS-CoV2-spike-encoding-mRNA-sequences-for-vaccines-BNT-162b2-and-mRNA-1273. https://github.com/NAalytics/Assemblies-of-putative-SARS-CoV2-spike-encoding-mRNA-sequences-for-vaccines-BNT-162b2-and-mRNA-1273/."
+  }
+ ],
+ "container-title": [
+  "ACS Central Science"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://pubs.acs.org/doi/pdf/10.1021/acscentsci.1c00197",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "unspecified"
+  },
+  {
+   "URL": "https://pubs.acs.org/acscii/article-pdf/7/5/748/4697839/oc1c00197.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "https://pubs.acs.org/acscii/article-pdf/7/5/748/4697839/oc1c00197.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    17
+   ]
+  ],
+  "date-time": "2026-08-17T15:26:04Z",
+  "timestamp": 1786980364000
+ },
+ "score": 45.520676,
+ "resource": {
+  "primary": {
+   "URL": "https://pubs.acs.org/acscii/article/7/5/748/451503/Modifications-in-an-Emergency-The-Role-of-N1"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2021,
+    4,
+    6
+   ]
+  ]
+ },
+ "references-count": 73,
+ "journal-issue": {
+  "issue": "5",
+  "published-online": {
+   "date-parts": [
+    [
+     2021,
+     4,
+     6
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2021,
+     5,
+     26
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1021/acscentsci.1c00197",
+ "ISSN": [
+  "2374-7943",
+  "2374-7951"
+ ],
+ "issn-type": [
+  {
+   "value": "2374-7943",
+   "type": "print"
+  },
+  {
+   "value": "2374-7951",
+   "type": "electronic"
+  }
+ ],
+ "published": {
+  "date-parts": [
+   [
+    2021,
+    4,
+    6
+   ]
+  ]
+ }
+}

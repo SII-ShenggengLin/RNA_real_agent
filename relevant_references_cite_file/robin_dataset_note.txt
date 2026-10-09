@@ -1,0 +1,5 @@
+ROBIN = "Repository Of Binders to Nucleic acids" (github.com/ky66/ROBIN).
+The ROBIN test split used in the manuscript is the RNAsmol paper's own published
+evaluation split ("robin_molperturbation"), so it is cited through Ma et al. 2025
+(Nat. Comput. Sci. 5, 648-660; doi:10.1038/s43588-025-00820-x). No separate ROBIN
+paper is registered with Crossref, so no standalone reference is made.

@@ -1,0 +1,2679 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T14:10:12Z",
+  "timestamp": 1791468612864,
+  "version": "4.3.4"
+ },
+ "reference-count": 250,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "3",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2016,
+      11,
+      3
+     ]
+    ],
+    "date-time": "2016-11-03T00:00:00Z",
+    "timestamp": 1478131200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2016,
+      11,
+      3
+     ]
+    ],
+    "date-time": "2016-11-03T00:00:00Z",
+    "timestamp": 1478131200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Rev Drug Discov"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2017,
+    3
+   ]
+  ]
+ },
+ "DOI": "10.1038/nrd.2016.199",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    3
+   ]
+  ],
+  "date-time": "2016-11-03T01:18:54Z",
+  "timestamp": 1478135934000
+ },
+ "page": "181-202",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 2074,
+ "title": [
+  "Aptamers as targeted therapeutics: current potential and challenges"
+ ],
+ "prefix": "10.1038",
+ "volume": "16",
+ "author": [
+  {
+   "given": "Jiehua",
+   "family": "Zhou",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "John",
+   "family": "Rossi",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    3
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "BFnrd2016199_CR1",
+   "doi-asserted-by": "crossref",
+   "first-page": "505",
+   "DOI": "10.1126/science.2200121",
+   "volume": "249",
+   "author": "C Tuerk",
+   "year": "1990",
+   "unstructured": "Tuerk, C. & Gold, L. Systematic evolution of ligands by exponential enrichment: RNA ligands to bacteriophage T4 DNA polymerase. Science 249, 505–510 (1990). One of the first three publications of the SELEX technology. A related smaller randomized library theoretically containing 48 individual sequences was used for the selection of RNA ligands for T4 DNA polymerase. This procedure was thus named 'systematic evolution of ligands by exponential enrichment' (SELEX).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2016199_CR2",
+   "doi-asserted-by": "crossref",
+   "first-page": "467",
+   "DOI": "10.1038/344467a0",
+   "volume": "344",
+   "author": "DL Robertson",
+   "year": "1990",
+   "unstructured": "Robertson, D. L. & Joyce, G. F. Selection in vitro of an RNA enzyme that specifically cleaves single-stranded DNA. Nature 344, 467–468 (1990). One of the first three publications of the SELEX technology. The first RNA enzyme that could cleave ssDNA specifically was selected via in vitro selection.",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR3",
+   "doi-asserted-by": "crossref",
+   "first-page": "818",
+   "DOI": "10.1038/346818a0",
+   "volume": "346",
+   "author": "AD Ellington",
+   "year": "1990",
+   "unstructured": "Ellington, A. D. & Szostak, J. W. In vitro selection of RNA molecules that bind specific ligands. Nature 346, 818–822 (1990). One of the first three publications of the SELEX technology. The first example of an RNA aptamer specific to small organic dyes.",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR4",
+   "doi-asserted-by": "crossref",
+   "first-page": "2672",
+   "DOI": "10.1002/anie.200804643",
+   "volume": "48",
+   "author": "G Mayer",
+   "year": "2009",
+   "unstructured": "Mayer, G. The chemical biology of aptamers. Angew. Chem. Int. Ed. 48, 2672–2689 (2009).",
+   "journal-title": "Angew. Chem. Int. Ed."
+  },
+  {
+   "key": "BFnrd2016199_CR5",
+   "doi-asserted-by": "crossref",
+   "first-page": "122",
+   "DOI": "10.1016/j.sbi.2016.01.009",
+   "volume": "36",
+   "author": "AD Gelinas",
+   "year": "2016",
+   "unstructured": "Gelinas, A. D., Davies, D. R. & Janjic, N. Embracing proteins: structural themes in aptamer–protein complexes. Curr. Opin. Struct. Biol. 36, 122–132 (2016).",
+   "journal-title": "Curr. Opin. Struct. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR6",
+   "doi-asserted-by": "crossref",
+   "first-page": "13581",
+   "DOI": "10.1074/jbc.270.23.13581",
+   "volume": "270",
+   "author": "L Gold",
+   "year": "1995",
+   "unstructured": "Gold, L. Oligonucleotides as research, diagnostic, and therapeutic agents. J. Biol. Chem. 270, 13581–13584 (1995).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR7",
+   "doi-asserted-by": "crossref",
+   "first-page": "1029",
+   "DOI": "10.1093/nar/24.6.1029",
+   "volume": "24",
+   "author": "A Geiger",
+   "year": "1996",
+   "unstructured": "Geiger, A., Burgstaller, P., von der Eltz, H., Roeder, A. & Famulok, M. RNA aptamers that bind L-arginine with sub-micromolar dissociation constants and high enantioselectivity. Nucleic Acids Res. 24, 1029–1036 (1996).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR8",
+   "doi-asserted-by": "crossref",
+   "first-page": "1425",
+   "DOI": "10.1126/science.7510417",
+   "volume": "263",
+   "author": "RD Jenison",
+   "year": "1994",
+   "unstructured": "Jenison, R. D., Gill, S. C., Pardi, A. & Polisky, B. High-resolution molecular discrimination by RNA. Science 263, 1425–1429 (1994).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2016199_CR9",
+   "doi-asserted-by": "crossref",
+   "first-page": "550",
+   "DOI": "10.1038/364550a0",
+   "volume": "364",
+   "author": "M Sassanfar",
+   "year": "1993",
+   "unstructured": "Sassanfar, M. & Szostak, J. W. An RNA motif that binds ATP. Nature 364, 550–553 (1993).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR10",
+   "doi-asserted-by": "crossref",
+   "first-page": "10002",
+   "DOI": "10.1073/pnas.1502159112",
+   "volume": "112",
+   "author": "L Chen",
+   "year": "2015",
+   "unstructured": "Chen, L. et al. The isolation of an RNA aptamer targeting to p53 protein with single amino acid mutation. Proc. Natl Acad. Sci. USA 112, 10002–10007 (2015). The first published RNA aptamer specific to a single-amino-acid mutation.",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2016199_CR11",
+   "doi-asserted-by": "crossref",
+   "first-page": "537",
+   "DOI": "10.1038/nrd3141",
+   "volume": "9",
+   "author": "AD Keefe",
+   "year": "2010",
+   "unstructured": "Keefe, A. D., Pai, S. & Ellington, A. Aptamers as therapeutics. Nat. Rev. Drug Discov. 9, 537–550 (2010).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "BFnrd2016199_CR12",
+   "doi-asserted-by": "crossref",
+   "first-page": "259",
+   "DOI": "10.1016/j.ejps.2012.10.014",
+   "volume": "48",
+   "author": "P Sundaram",
+   "year": "2013",
+   "unstructured": "Sundaram, P., Kurniawan, H., Byrne, M. E. & Wower, J. Therapeutic RNA aptamers in clinical trials. Eur. J. Pharm. Sci. 48, 259–271 (2013).",
+   "journal-title": "Eur. J. Pharm. Sci."
+  },
+  {
+   "key": "BFnrd2016199_CR13",
+   "doi-asserted-by": "crossref",
+   "first-page": "9",
+   "DOI": "10.4161/19420862.2015.989042",
+   "volume": "7",
+   "author": "DM Ecker",
+   "year": "2015",
+   "unstructured": "Ecker, D. M., Jones, S. D. & Levine, H. L. The therapeutic monoclonal antibody market. MAbs 7, 9–14 (2015).",
+   "journal-title": "MAbs"
+  },
+  {
+   "key": "BFnrd2016199_CR14",
+   "doi-asserted-by": "crossref",
+   "first-page": "123",
+   "DOI": "10.1038/nrd1955",
+   "volume": "5",
+   "author": "EW Ng",
+   "year": "2006",
+   "unstructured": "Ng, E. W. et al. Pegaptanib, a targeted anti-VEGF aptamer for ocular vascular disease. Nat. Rev. Drug Discov. 5, 123–132 (2006).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "BFnrd2016199_CR15",
+   "doi-asserted-by": "crossref",
+   "first-page": "1571",
+   "DOI": "10.2165/00003495-200565110-00010",
+   "volume": "65",
+   "author": "MA Siddiqui",
+   "year": "2005",
+   "unstructured": "Siddiqui, M. A. & Keating, G. M. Pegaptanib: in exudative age-related macular degeneration. Drugs 65, 1571–1577; discussion 1578–1579 (2005).",
+   "journal-title": "Drugs"
+  },
+  {
+   "key": "BFnrd2016199_CR16",
+   "doi-asserted-by": "crossref",
+   "first-page": "183",
+   "DOI": "10.2165/11318550-000000000-00000",
+   "volume": "24",
+   "author": "SA Mousa",
+   "year": "2010",
+   "unstructured": "Mousa, S. A. & Mousa, S. S. Current status of vascular endothelial growth factor inhibition in age-related macular degeneration. BioDrugs 24, 183–194 (2010).",
+   "journal-title": "BioDrugs"
+  },
+  {
+   "key": "BFnrd2016199_CR17",
+   "doi-asserted-by": "crossref",
+   "first-page": "385",
+   "DOI": "10.1038/nrd.2015.17",
+   "volume": "15",
+   "author": "N Ferrara",
+   "year": "2016",
+   "unstructured": "Ferrara, N. & Adamis, A. P. Ten years of anti-vascular endothelial growth factor therapy. Nat. Rev. Drug Discov. 15 385–403 (2016).",
+   "journal-title": "Nat. Rev. Drug Discov."
+  },
+  {
+   "key": "BFnrd2016199_CR18",
+   "doi-asserted-by": "crossref",
+   "first-page": "349",
+   "DOI": "10.1016/S0140-6736(15)00515-2",
+   "volume": "387",
+   "author": "AM Lincoff",
+   "year": "2016",
+   "unstructured": "Lincoff, A. M. et al. Effect of the REG1 anticoagulation system versus bivalirudin on outcomes after percutaneous coronary intervention (REGULATE-PCI): a randomised clinical trial. Lancet 387, 349–356 (2016). A recent update of the REG1 anticoagulation system in a randomized clinical trial. The severe allergic reactions observed in some patients have been linked to pre-existing antibodies against PEG.",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "BFnrd2016199_CR19",
+   "doi-asserted-by": "crossref",
+   "first-page": "314",
+   "DOI": "10.1016/S0140-6736(15)00727-8",
+   "volume": "387",
+   "author": "FW Verheugt",
+   "year": "2016",
+   "unstructured": "Verheugt, F. W. An anticoagulant too good to be true for revascularisation. Lancet 387, 314–315 (2016).",
+   "journal-title": "Lancet"
+  },
+  {
+   "key": "BFnrd2016199_CR20",
+   "doi-asserted-by": "crossref",
+   "first-page": "564",
+   "DOI": "10.1038/355564a0",
+   "volume": "355",
+   "author": "LC Bock",
+   "year": "1992",
+   "unstructured": "Bock, L. C., Griffin, L. C., Latham, J. A., Vermaas, E. H. & Toole, J. J. Selection of single-stranded DNA molecules that bind and inhibit human thrombin. Nature 355, 564–566 (1992). The first DNA aptamers targeting the protease thrombin of the blood coagulation cascade, identified through in vitro SELEX.",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR21",
+   "doi-asserted-by": "crossref",
+   "first-page": "74",
+   "DOI": "10.1016/j.addr.2013.11.006",
+   "volume": "66",
+   "author": "Y Shu",
+   "year": "2014",
+   "unstructured": "Shu, Y. et al. Stable RNA nanoparticles as potential new generation drugs for cancer therapy. Adv. Drug Deliv. Rev. 66, 74–89 (2014).",
+   "journal-title": "Adv. Drug Deliv. Rev."
+  },
+  {
+   "key": "BFnrd2016199_CR22",
+   "doi-asserted-by": "crossref",
+   "first-page": "1505",
+   "DOI": "10.1134/S000629790713007X",
+   "volume": "72",
+   "author": "AV Kulbachinskiy",
+   "year": "2007",
+   "unstructured": "Kulbachinskiy, A. V. Methods for selection of aptamers to protein targets. Biochemistry (Mosc.) 72, 1505–1518 (2007).",
+   "journal-title": "Biochemistry (Mosc.)"
+  },
+  {
+   "key": "BFnrd2016199_CR23",
+   "doi-asserted-by": "crossref",
+   "first-page": "e183",
+   "DOI": "10.1038/mtna.2014.34",
+   "volume": "3",
+   "author": "A Ozer",
+   "year": "2014",
+   "unstructured": "Ozer, A., Pagano, J. M. & Lis, J. T. New technologies provide quantum changes in the scale, speed, and success of SELEX methods and aptamer characterization. Mol. Ther. Nucleic Acids 3, e183 (2014).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2016199_CR24",
+   "doi-asserted-by": "crossref",
+   "first-page": "448",
+   "DOI": "10.1016/j.cbpa.2008.06.028",
+   "volume": "12",
+   "author": "AD Keefe",
+   "year": "2008",
+   "unstructured": "Keefe, A. D. & Cload, S. T. SELEX with modified nucleotides. Curr. Opin. Chem. Biol. 12, 448–456 (2008).",
+   "journal-title": "Curr. Opin. Chem. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR25",
+   "doi-asserted-by": "crossref",
+   "first-page": "314",
+   "DOI": "10.1126/science.1857967",
+   "volume": "253",
+   "author": "WA Pieken",
+   "year": "1991",
+   "unstructured": "Pieken, W. A., Olsen, D. B., Benseler, F., Aurup, H. & Eckstein, F. Kinetic characterization of ribonuclease-resistant 2′-modified hammerhead ribozymes. Science 253, 314–317 (1991).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd2016199_CR26",
+   "doi-asserted-by": "crossref",
+   "first-page": "555",
+   "DOI": "10.1146/annurev.med.56.062904.144915",
+   "volume": "56",
+   "author": "SM Nimjee",
+   "year": "2005",
+   "unstructured": "Nimjee, S. M., Rusconi, C. P. & Sullenger, B. A. Aptamers: an emerging class of therapeutics. Annu. Rev. Med. 56, 555–583 (2005).",
+   "journal-title": "Annu. Rev. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR27",
+   "doi-asserted-by": "crossref",
+   "first-page": "323",
+   "DOI": "10.1089/oli.2006.16.323",
+   "volume": "16",
+   "author": "C Pestourie",
+   "year": "2006",
+   "unstructured": "Pestourie, C. et al. Comparison of different strategies to select aptamers against a transmembrane protein target. Oligonucleotides 16, 323–335 (2006).",
+   "journal-title": "Oligonucleotides"
+  },
+  {
+   "key": "BFnrd2016199_CR28",
+   "doi-asserted-by": "crossref",
+   "first-page": "517",
+   "DOI": "10.1016/j.tibtech.2010.07.005",
+   "volume": "28",
+   "author": "L Cerchia",
+   "year": "2010",
+   "unstructured": "Cerchia, L. & de Franciscis, V. Targeting cancer cells with nucleic acid aptamers. Trends Biotechnol. 28, 517–525 (2010).",
+   "journal-title": "Trends Biotechnol."
+  },
+  {
+   "key": "BFnrd2016199_CR29",
+   "doi-asserted-by": "crossref",
+   "first-page": "e123",
+   "DOI": "10.1371/journal.pbio.0030123",
+   "volume": "3",
+   "author": "L Cerchia",
+   "year": "2005",
+   "unstructured": "Cerchia, L. et al. Neutralizing aptamers from whole-cell SELEX inhibit the RET receptor tyrosine kinase. PLoS Biol. 3, e123 (2005).",
+   "journal-title": "PLoS Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR30",
+   "doi-asserted-by": "crossref",
+   "first-page": "137",
+   "DOI": "10.1515/BC.2009.022",
+   "volume": "390",
+   "author": "Y Liu",
+   "year": "2009",
+   "unstructured": "Liu, Y. et al. Aptamers selected against the unglycosylated EGFRvIII ectodomain and delivered intracellularly reduce membrane-bound EGFRvIII and induce apoptosis. Biol. Chem. 390, 137–144 (2009).",
+   "journal-title": "Biol. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR31",
+   "doi-asserted-by": "crossref",
+   "first-page": "668",
+   "DOI": "10.3390/ijms9040668",
+   "volume": "9",
+   "author": "KT Guo",
+   "year": "2008",
+   "unstructured": "Guo, K. T., Paul, A., Schichor, C., Ziemer, G. & Wendel, H. P. Cell-SELEX: novel perspectives of aptamer-based therapeutics. Int. J. Mol. Sci. 9, 668–678 (2008).",
+   "journal-title": "Int. J. Mol. Sci."
+  },
+  {
+   "key": "BFnrd2016199_CR32",
+   "doi-asserted-by": "crossref",
+   "first-page": "265",
+   "DOI": "10.1089/biores.2012.0253",
+   "volume": "1",
+   "author": "S Ohuchi",
+   "year": "2012",
+   "unstructured": "Ohuchi, S. Cell-SELEX technology. Biores Open Access 1, 265–272 (2012).",
+   "journal-title": "Biores Open Access"
+  },
+  {
+   "key": "BFnrd2016199_CR33",
+   "doi-asserted-by": "crossref",
+   "first-page": "59",
+   "DOI": "10.1007/978-1-59745-557-2_5",
+   "volume": "535",
+   "author": "L Cerchia",
+   "year": "2009",
+   "unstructured": "Cerchia, L., Giangrande, P. H., McNamara, J. O. & de Franciscis, V. Cell-specific aptamers for targeted therapies. Methods Mol. Biol. 535, 59–78 (2009).",
+   "journal-title": "Methods Mol. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR34",
+   "doi-asserted-by": "crossref",
+   "first-page": "4900",
+   "DOI": "10.1021/ac070189y",
+   "volume": "79",
+   "author": "Z Tang",
+   "year": "2007",
+   "unstructured": "Tang, Z. et al. Selection of aptamers for molecular recognition and characterization of cancer cells. Anal. Chem. 79, 4900–4907 (2007).",
+   "journal-title": "Anal. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR35",
+   "doi-asserted-by": "crossref",
+   "first-page": "1769",
+   "DOI": "10.1002/chem.200701330",
+   "volume": "14",
+   "author": "Z Xiao",
+   "year": "2008",
+   "unstructured": "Xiao, Z., Shangguan, D., Cao, Z., Fang, X. & Tan, W. Cell-specific internalization study of an aptamer from whole cell selection. Chemistry 14, 1769–1775 (2008).",
+   "journal-title": "Chemistry"
+  },
+  {
+   "key": "BFnrd2016199_CR36",
+   "doi-asserted-by": "crossref",
+   "first-page": "101",
+   "DOI": "10.1016/j.aca.2008.05.031",
+   "volume": "621",
+   "author": "JA Phillips",
+   "year": "2008",
+   "unstructured": "Phillips, J. A., Lopez-Colon, D., Zhu, Z., Xu, Y. & Tan, W. Applications of aptamers in cancer cell biology. Anal. Chim. Acta 621, 101–108 (2008).",
+   "journal-title": "Anal. Chim. Acta"
+  },
+  {
+   "key": "BFnrd2016199_CR37",
+   "doi-asserted-by": "crossref",
+   "first-page": "317",
+   "DOI": "10.1089/oli.2010.0253",
+   "volume": "20",
+   "author": "M Avci-Adali",
+   "year": "2010",
+   "unstructured": "Avci-Adali, M., Metzger, M., Perle, N., Ziemer, G. & Wendel, H. P. Pitfalls of cell-systematic evolution of ligands by exponential enrichment (SELEX): existing dead cells during in vitro selection anticipate the enrichment of specific aptamers. Oligonucleotides 20, 317–323 (2010).",
+   "journal-title": "Oligonucleotides"
+  },
+  {
+   "key": "BFnrd2016199_CR38",
+   "doi-asserted-by": "crossref",
+   "first-page": "5190",
+   "DOI": "10.1002/anie.200800216",
+   "volume": "47",
+   "author": "MS Raddatz",
+   "year": "2008",
+   "unstructured": "Raddatz, M. S. et al. Enrichment of cell-targeting and population-specific aptamers by fluorescence-activated cell sorting. Angew. Chem. Int. Ed. 47, 5190–5193 (2008).",
+   "journal-title": "Angew. Chem. Int. Ed."
+  },
+  {
+   "key": "BFnrd2016199_CR39",
+   "doi-asserted-by": "crossref",
+   "first-page": "2234",
+   "DOI": "10.1007/s11095-004-7676-4",
+   "volume": "21",
+   "author": "JM Healy",
+   "year": "2004",
+   "unstructured": "Healy, J. M. et al. Pharmacokinetics and biodistribution of novel aptamer compositions. Pharm. Res. 21, 2234–2246 (2004).",
+   "journal-title": "Pharm. Res."
+  },
+  {
+   "key": "BFnrd2016199_CR40",
+   "doi-asserted-by": "crossref",
+   "first-page": "22",
+   "DOI": "10.1038/nchembio.277",
+   "volume": "6",
+   "author": "J Mi",
+   "year": "2010",
+   "unstructured": "Mi, J. et al. In vivo selection of tumor-targeting RNA motifs. Nat. Chem. Biol. 6, 22–24 (2010). The first published RNA aptamers in vivo isolated from mice bearing liver tumours. The target protein of the selected aptamer is p68, an RNA helicase.",
+   "journal-title": "Nat. Chem. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR41",
+   "doi-asserted-by": "crossref",
+   "first-page": "e67",
+   "DOI": "10.1038/mtna.2012.59",
+   "volume": "2",
+   "author": "C Cheng",
+   "year": "2013",
+   "unstructured": "Cheng, C., Chen, Y. H., Lennox, K. A., Behlke, M. A. & Davidson, B. L. In vivo SELEX for identification of brain-penetrating aptamers. Mol. Ther. Nucleic Acids 2, e67 (2013). The first brain-penetrating RNA aptamer to be identified via in vivo SELEX.",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2016199_CR42",
+   "doi-asserted-by": "crossref",
+   "first-page": "1141",
+   "DOI": "10.1016/j.biotechadv.2015.02.008",
+   "volume": "33",
+   "author": "M Darmostuk",
+   "year": "2015",
+   "unstructured": "Darmostuk, M., Rimpelova, S., Gbelcova, H. & Ruml, T. Current approaches in SELEX: an update to aptamer selection technology. Biotechnol. Adv. 33, 1141–1161 (2015).",
+   "journal-title": "Biotechnol. Adv."
+  },
+  {
+   "key": "BFnrd2016199_CR43",
+   "doi-asserted-by": "crossref",
+   "first-page": "850",
+   "DOI": "10.1038/355850a0",
+   "volume": "355",
+   "author": "AD Ellington",
+   "year": "1992",
+   "unstructured": "Ellington, A. D. & Szostak, J. W. Selection in vitro of single-stranded DNA molecules that fold into specific ligand-binding structures. Nature 355, 850–852 (1992).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR44",
+   "doi-asserted-by": "crossref",
+   "first-page": "3171",
+   "DOI": "10.1021/ac060144h",
+   "volume": "78",
+   "author": "AP Drabovich",
+   "year": "2006",
+   "unstructured": "Drabovich, A. P., Berezovski, M., Okhonin, V. & Krylov, S. N. Selection of smart aptamers by methods of kinetic capillary electrophoresis. Anal. Chem. 78, 3171–3178 (2006).",
+   "journal-title": "Anal. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR45",
+   "doi-asserted-by": "crossref",
+   "first-page": "1411",
+   "DOI": "10.1021/ac5044187",
+   "volume": "87",
+   "author": "R Yufa",
+   "year": "2015",
+   "unstructured": "Yufa, R. et al. Emulsion PCR significantly improves nonequilibrium capillary electrophoresis of equilibrium mixtures-based aptamer selection: allowing for efficient and rapid selection of aptamer to unmodified ABH2 protein. Anal. Chem. 87, 1411–1419 (2015).",
+   "journal-title": "Anal. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR46",
+   "doi-asserted-by": "crossref",
+   "first-page": "6107",
+   "DOI": "10.1021/ac050836q",
+   "volume": "77",
+   "author": "RK Mosing",
+   "year": "2005",
+   "unstructured": "Mosing, R. K., Mendonsa, S. D. & Bowser, M. T. Capillary electrophoresis-SELEX selection of aptamers with affinity for HIV-1 reverse transcriptase. Anal. Chem. 77, 6107–6112 (2005).",
+   "journal-title": "Anal. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR47",
+   "doi-asserted-by": "crossref",
+   "first-page": "e21",
+   "DOI": "10.1093/nar/gkp1101",
+   "volume": "38",
+   "author": "Y Miyachi",
+   "year": "2010",
+   "unstructured": "Miyachi, Y., Shimizu, N., Ogino, C. & Kondo, A. Selection of DNA aptamers using atomic force microscopy. Nucleic Acids Res. 38, e21 (2010).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR48",
+   "doi-asserted-by": "crossref",
+   "first-page": "372",
+   "DOI": "10.1002/jemt.20421",
+   "volume": "70",
+   "author": "L Peng",
+   "year": "2007",
+   "unstructured": "Peng, L., Stephens, B. J., Bonin, K., Cubicciotti, R. & Guthold, M. A combined atomic force/fluorescence microscopy technique to select aptamers in a single cycle from a small pool of random oligonucleotides. Microsc. Res. Tech. 70, 372–381 (2007).",
+   "journal-title": "Microsc. Res. Tech."
+  },
+  {
+   "key": "BFnrd2016199_CR49",
+   "doi-asserted-by": "crossref",
+   "first-page": "1993",
+   "DOI": "10.1038/nprot.2010.163",
+   "volume": "5",
+   "author": "G Mayer",
+   "year": "2010",
+   "unstructured": "Mayer, G. et al. Fluorescence-activated cell sorting for aptamer SELEX with cell mixtures. Nat. Protoc. 5, 1993–2004 (2010).",
+   "journal-title": "Nat. Protoc."
+  },
+  {
+   "key": "BFnrd2016199_CR50",
+   "doi-asserted-by": "crossref",
+   "first-page": "1761",
+   "DOI": "10.1016/j.bios.2009.12.029",
+   "volume": "25",
+   "author": "CJ Huang",
+   "year": "2010",
+   "unstructured": "Huang, C. J., Lin, H. I., Shiesh, S. C. & Lee, G. B. Integrated microfluidic system for rapid screening of CRP aptamers utilizing systematic evolution of ligands by exponential enrichment (SELEX). Biosens. Bioelectron. 25, 1761–1766 (2010).",
+   "journal-title": "Biosens. Bioelectron."
+  },
+  {
+   "key": "BFnrd2016199_CR51",
+   "doi-asserted-by": "crossref",
+   "first-page": "15373",
+   "DOI": "10.1073/pnas.1009331107",
+   "volume": "107",
+   "author": "M Cho",
+   "year": "2010",
+   "unstructured": "Cho, M. et al. Quantitative selection of DNA aptamers through microfluidic selection and high-throughput sequencing. Proc. Natl Acad. Sci. USA 107, 15373–15378 (2010).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2016199_CR52",
+   "doi-asserted-by": "crossref",
+   "first-page": "924",
+   "DOI": "10.1016/S0006-291X(02)00308-X",
+   "volume": "293",
+   "author": "N Sayer",
+   "year": "2002",
+   "unstructured": "Sayer, N., Ibrahim, J., Turner, K., Tahiri-Alaoui, A. & James, W. Structural characterization of a 2'F-RNA aptamer that binds a HIV-1 SU glycoprotein, gp120. Biochem. Biophys. Res. Commun. 293, 924–931 (2002).",
+   "journal-title": "Biochem. Biophys. Res. Commun."
+  },
+  {
+   "key": "BFnrd2016199_CR53",
+   "doi-asserted-by": "crossref",
+   "first-page": "317",
+   "DOI": "10.1016/S1389-1723(03)90130-7",
+   "volume": "96",
+   "author": "T Kanagawa",
+   "year": "2003",
+   "unstructured": "Kanagawa, T. Bias and artifacts in multitemplate polymerase chain reactions (PCR). J. Biosci. Bioeng. 96, 317–323 (2003).",
+   "journal-title": "J. Biosci. Bioeng."
+  },
+  {
+   "key": "BFnrd2016199_CR54",
+   "doi-asserted-by": "crossref",
+   "first-page": "91",
+   "DOI": "10.1016/j.aca.2005.09.069",
+   "volume": "564",
+   "author": "MU Musheev",
+   "year": "2006",
+   "unstructured": "Musheev, M. U. & Krylov, S. N. Selection of aptamers by systematic evolution of ligands by exponential enrichment: addressing the polymerase chain reaction issue. Anal. Chim. Acta 564, 91–96 (2006).",
+   "journal-title": "Anal. Chim. Acta"
+  },
+  {
+   "key": "BFnrd2016199_CR55",
+   "doi-asserted-by": "crossref",
+   "first-page": "155",
+   "DOI": "10.1016/j.ab.2010.11.029",
+   "volume": "410",
+   "author": "T Schutze",
+   "year": "2011",
+   "unstructured": "Schutze, T. et al. A streamlined protocol for emulsion polymerase chain reaction and subsequent purification. Anal. Biochem. 410, 155–157 (2011).",
+   "journal-title": "Anal. Biochem."
+  },
+  {
+   "key": "BFnrd2016199_CR56",
+   "doi-asserted-by": "crossref",
+   "first-page": "e24910",
+   "DOI": "10.1371/journal.pone.0024910",
+   "volume": "6",
+   "author": "K Shao",
+   "year": "2011",
+   "unstructured": "Shao, K. et al. Emulsion PCR: a high efficient way of PCR amplification of random DNA libraries in aptamer selection. PLoS ONE 6, e24910 (2011).",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "BFnrd2016199_CR57",
+   "doi-asserted-by": "crossref",
+   "first-page": "117",
+   "DOI": "10.1016/S0168-1656(03)00023-3",
+   "volume": "102",
+   "author": "M Nakano",
+   "year": "2003",
+   "unstructured": "Nakano, M. et al. Single-molecule PCR using water-in-oil emulsion. J. Biotechnol. 102, 117–124 (2003).",
+   "journal-title": "J. Biotechnol."
+  },
+  {
+   "key": "BFnrd2016199_CR58",
+   "doi-asserted-by": "crossref",
+   "first-page": "1506",
+   "DOI": "10.1002/bit.25581",
+   "volume": "112",
+   "author": "E Ouellet",
+   "year": "2015",
+   "unstructured": "Ouellet, E., Foley, J. H., Conway, E. M. & Haynes, C. Hi-fi SELEX: a high-fidelity digital-PCR based therapeutic aptamer discovery platform. Biotechnol. Bioeng. 112, 1506–1522 (2015).",
+   "journal-title": "Biotechnol. Bioeng."
+  },
+  {
+   "key": "BFnrd2016199_CR59",
+   "doi-asserted-by": "crossref",
+   "first-page": "e82",
+   "DOI": "10.1093/nar/gkv534",
+   "volume": "43",
+   "author": "A Levay",
+   "year": "2015",
+   "unstructured": "Levay, A. et al. Identifying high-affinity aptamer ligands with defined cross-reactivity using high-throughput guided systematic evolution of ligands by exponential enrichment. Nucleic Acids Res. 43, e82 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR60",
+   "doi-asserted-by": "crossref",
+   "first-page": "413",
+   "DOI": "10.2144/000113786",
+   "volume": "51",
+   "author": "S Hoon",
+   "year": "2011",
+   "unstructured": "Hoon, S., Zhou, B., Janda, K. D., Brenner, S. & Scolnick, J. Aptamer selection by high-throughput sequencing and informatic analysis. BioTechniques 51, 413–416 (2011).",
+   "journal-title": "BioTechniques"
+  },
+  {
+   "key": "BFnrd2016199_CR61",
+   "doi-asserted-by": "crossref",
+   "first-page": "5699",
+   "DOI": "10.1093/nar/gkv308",
+   "volume": "43",
+   "author": "J Hoinka",
+   "year": "2015",
+   "unstructured": "Hoinka, J. et al. Large scale analysis of the mutational landscape in HT-SELEX improves aptamer discovery. Nucleic Acids Res. 43, 5699–5707 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR62",
+   "doi-asserted-by": "crossref",
+   "first-page": "253",
+   "DOI": "10.1089/nat.2011.0288",
+   "volume": "21",
+   "author": "WH Thiel",
+   "year": "2011",
+   "unstructured": "Thiel, W. H. et al. Nucleotide bias observed with a short SELEX RNA aptamer library. Nucleic Acid. Ther. 21, 253–263 (2011).",
+   "journal-title": "Nucleic Acid. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR63",
+   "doi-asserted-by": "crossref",
+   "first-page": "e43836",
+   "DOI": "10.1371/journal.pone.0043836",
+   "volume": "7",
+   "author": "WH Thiel",
+   "year": "2012",
+   "unstructured": "Thiel, W. H. et al. Rapid identification of cell-specific, internalizing RNA aptamers with bioinformatics analyses of a cell-based aptamer selection. PLoS ONE 7, e43836 (2012).",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "BFnrd2016199_CR64",
+   "doi-asserted-by": "crossref",
+   "first-page": "5423",
+   "DOI": "10.3390/molecules15085423",
+   "volume": "15",
+   "author": "M Kuwahara",
+   "year": "2010",
+   "unstructured": "Kuwahara, M. & Sugimoto, N. Molecular evolution of functional nucleic acids with chemical modifications. Molecules 15, 5423–5444 (2010).",
+   "journal-title": "Molecules"
+  },
+  {
+   "key": "BFnrd2016199_CR65",
+   "doi-asserted-by": "crossref",
+   "first-page": "15071",
+   "DOI": "10.1021/ja051725b",
+   "volume": "127",
+   "author": "S Jager",
+   "year": "2005",
+   "unstructured": "Jager, S. et al. A versatile toolbox for variable DNA functionalization at high density. J. Am. Chem. Soc. 127, 15071–15082 (2005).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnrd2016199_CR66",
+   "doi-asserted-by": "crossref",
+   "first-page": "729",
+   "DOI": "10.1038/nmeth915",
+   "volume": "3",
+   "author": "I Hirao",
+   "year": "2006",
+   "unstructured": "Hirao, I. et al. An unnatural hydrophobic base pair system: site-specific incorporation of nucleotide analogs into DNA and RNA. Nat. Methods 3, 729–735 (2006).",
+   "journal-title": "Nat. Methods"
+  },
+  {
+   "key": "BFnrd2016199_CR67",
+   "doi-asserted-by": "crossref",
+   "first-page": "5229",
+   "DOI": "10.1093/nar/22.24.5229",
+   "volume": "22",
+   "author": "Y Lin",
+   "year": "1994",
+   "unstructured": "Lin, Y., Qiu, Q., Gill, S. C. & Jayasena, S. D. Modified RNA sequence pools for in vitro selection. Nucleic Acids Res. 22, 5229–5234 (1994).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR68",
+   "doi-asserted-by": "crossref",
+   "first-page": "20556",
+   "DOI": "10.1074/jbc.273.32.20556",
+   "volume": "273",
+   "author": "J Ruckman",
+   "year": "1998",
+   "unstructured": "Ruckman, J. et al. 2′-fluoropyrimidine RNA-based aptamers to the 165-amino acid form of vascular endothelial growth factor (VEGF165). Inhibition of receptor binding and VEGF-induced vascular permeability through interactions requiring the exon 7-encoded domain. J. Biol. Chem. 273, 20556–20567 (1998).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR69",
+   "doi-asserted-by": "crossref",
+   "first-page": "25",
+   "DOI": "10.1016/j.chembiol.2004.10.017",
+   "volume": "12",
+   "author": "PE Burmeister",
+   "year": "2005",
+   "unstructured": "Burmeister, P. E. et al. Direct in vitro selection of a 2′-O-methyl aptamer to VEGF. Chem. Biol. 12, 25–33 (2005).",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR70",
+   "doi-asserted-by": "crossref",
+   "first-page": "39",
+   "DOI": "10.4161/adna.25786",
+   "volume": "4",
+   "author": "M Kuwahara",
+   "year": "2013",
+   "unstructured": "Kuwahara, M. & Obika, S. In vitro selection of BNA (LNA) aptamers. Artif. DNA PNA XNA 4, 39–48 (2013).",
+   "journal-title": "Artif. DNA PNA XNA"
+  },
+  {
+   "key": "BFnrd2016199_CR71",
+   "doi-asserted-by": "crossref",
+   "first-page": "787",
+   "DOI": "10.1039/b905513b",
+   "volume": "5",
+   "author": "RN Veedu",
+   "year": "2009",
+   "unstructured": "Veedu, R. N. & Wengel, J. Locked nucleic acid nucleoside triphosphates and polymerases: on the way towards evolution of LNA aptamers. Mol. Biosyst. 5, 787–792 (2009).",
+   "journal-title": "Mol. Biosyst."
+  },
+  {
+   "key": "BFnrd2016199_CR72",
+   "doi-asserted-by": "crossref",
+   "first-page": "e15004",
+   "DOI": "10.1371/journal.pone.0015004",
+   "volume": "5",
+   "author": "L Gold",
+   "year": "2010",
+   "unstructured": "Gold, L. et al. Aptamer-based multiplexed proteomic technology for biomarker discovery. PLoS ONE 5, e15004 (2010).",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "BFnrd2016199_CR73",
+   "doi-asserted-by": "crossref",
+   "first-page": "4141",
+   "DOI": "10.1021/ja908035g",
+   "volume": "132",
+   "author": "JD Vaught",
+   "year": "2010",
+   "unstructured": "Vaught, J. D. et al. Expanding the chemistry of DNA for in vitro selection. J. Am. Chem. Soc. 132, 4141–4151 (2010).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnrd2016199_CR74",
+   "doi-asserted-by": "crossref",
+   "first-page": "61",
+   "DOI": "10.1093/nass/nrn031",
+   "volume": "52",
+   "author": "C Maasch",
+   "year": "2008",
+   "unstructured": "Maasch, C., Buchner, K., Eulberg, D., Vonhoff, S. & Klussmann, S. Physicochemical stability of NOX-E36, a 40mer l-RNA (Spiegelmer) for therapeutic applications. Nucleic Acids Symp. Ser. (Oxf.) 52, 61–62 (2008).",
+   "journal-title": "Nucleic Acids Symp. Ser. (Oxf.)"
+  },
+  {
+   "key": "BFnrd2016199_CR75",
+   "first-page": "253",
+   "volume": "6",
+   "author": "A Vater",
+   "year": "2003",
+   "unstructured": "Vater, A. & Klussmann, S. Toward third-generation aptamers: Spiegelmers and their therapeutic prospects. Curr. Opin. Drug Discov. Devel. 6, 253–261 (2003).",
+   "journal-title": "Curr. Opin. Drug Discov. Devel."
+  },
+  {
+   "key": "BFnrd2016199_CR76",
+   "doi-asserted-by": "crossref",
+   "first-page": "173",
+   "DOI": "10.1089/nat.2015.0575",
+   "volume": "26",
+   "author": "Y Lee",
+   "year": "2016",
+   "unstructured": "Lee, Y., Urban, J. H., Xu, L., Sullenger, B. A. & Lee, J. 2′fluoro modification differentially modulates the ability of RNAs to activate pattern recognition receptors. Nucleic Acid Ther. 26, 173–182 (2016). RNAs containing 2′-fluoropyrimidines differentially controlled the activation of pattern recognition receptors. The results demonstrate that RNAs containing 2′-fluoropyrimidine and 5′-triphosphate increased cell death and IFNβ expression in human cancer cells.",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR77",
+   "doi-asserted-by": "crossref",
+   "first-page": "412",
+   "DOI": "10.1080/15476286.2015.1017234",
+   "volume": "12",
+   "author": "LJ Aaldering",
+   "year": "2015",
+   "unstructured": "Aaldering, L. J. et al. Smart functional nucleic acid chimeras: enabling tissue specific RNA targeting therapy. RNA Biol. 12, 412–425 (2015).",
+   "journal-title": "RNA Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR78",
+   "doi-asserted-by": "crossref",
+   "first-page": "833",
+   "DOI": "10.1038/nnano.2010.231",
+   "volume": "5",
+   "author": "P Guo",
+   "year": "2010",
+   "unstructured": "Guo, P. The emerging field of RNA nanotechnology. Nat. Nanotechnol. 5, 833–842 (2010).",
+   "journal-title": "Nat. Nanotechnol."
+  },
+  {
+   "key": "BFnrd2016199_CR79",
+   "doi-asserted-by": "crossref",
+   "first-page": "1423",
+   "DOI": "10.1038/nbt1023",
+   "volume": "22",
+   "author": "CP Rusconi",
+   "year": "2004",
+   "unstructured": "Rusconi, C. P. et al. Antidote-mediated control of an anticoagulant aptamer in vivo. Nat. Biotechnol. 22, 1423–1428 (2004).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnrd2016199_CR80",
+   "doi-asserted-by": "crossref",
+   "first-page": "e254",
+   "DOI": "10.1038/mtna.2015.30",
+   "volume": "4",
+   "author": "CH Lee",
+   "year": "2015",
+   "unstructured": "Lee, C. H. et al. Pharmacokinetics of a cholesterol-conjugated aptamer against the hepatitis C virus (HCV) NS5B protein. Mol. Ther. Nucleic Acids 4, e254 (2015).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2016199_CR81",
+   "doi-asserted-by": "crossref",
+   "first-page": "289",
+   "DOI": "10.1016/S0969-8051(99)00103-1",
+   "volume": "27",
+   "author": "H Dougan",
+   "year": "2000",
+   "unstructured": "Dougan, H. et al. Extending the lifetime of anticoagulant oligodeoxynucleotide aptamers in blood. Nucl. Med. Biol. 27, 289–297 (2000).",
+   "journal-title": "Nucl. Med. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR82",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1016/j.jconrel.2016.03.006",
+   "volume": "229",
+   "author": "K Heo",
+   "year": "2016",
+   "unstructured": "Heo, K. et al. An aptamer-antibody complex (oligobody) as a novel delivery platform for targeted cancer therapies. J. Control. Release 229, 1–9 (2016).",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "BFnrd2016199_CR83",
+   "doi-asserted-by": "crossref",
+   "first-page": "573",
+   "DOI": "10.1021/bc980002x",
+   "volume": "9",
+   "author": "MC Willis",
+   "year": "1998",
+   "unstructured": "Willis, M. C. et al. Liposome-anchored vascular endothelial growth factor aptamers. Bioconjug. Chem. 9, 573–582 (1998).",
+   "journal-title": "Bioconjug. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR84",
+   "doi-asserted-by": "crossref",
+   "first-page": "831",
+   "DOI": "10.1002/mabi.200900046",
+   "volume": "9",
+   "author": "J Zhou",
+   "year": "2009",
+   "unstructured": "Zhou, J. et al. A hybrid DNA aptamer-dendrimer nanomaterial for targeted cell labeling. Macromol. Biosci. 9, 831–835 (2009).",
+   "journal-title": "Macromol. Biosci."
+  },
+  {
+   "key": "BFnrd2016199_CR85",
+   "doi-asserted-by": "crossref",
+   "first-page": "202",
+   "DOI": "10.1016/j.pharmthera.2012.07.011",
+   "volume": "136",
+   "author": "D Musumeci",
+   "year": "2012",
+   "unstructured": "Musumeci, D. & Montesarchio, D. Polyvalent nucleic acid aptamers and modulation of their activity: a focus on the thrombin binding aptamer. Pharmacol. Ther. 136, 202–215 (2012).",
+   "journal-title": "Pharmacol. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR86",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1089/nat.2015.0565",
+   "volume": "26",
+   "author": "EE Soule",
+   "year": "2016",
+   "unstructured": "Soule, E. E., Bompiani, K. M., Woodruff, R. S. & Sullenger, B. A. Targeting two coagulation cascade proteases with a bivalent aptamer yields a potent and antidote-controllable anticoagulant. Nucleic Acid Ther. 26, 1–9 (2016).",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR87",
+   "doi-asserted-by": "crossref",
+   "first-page": "56",
+   "DOI": "10.1002/asia.200900421",
+   "volume": "5",
+   "author": "Y Kim",
+   "year": "2010",
+   "unstructured": "Kim, Y., Dennis, D. M., Morey, T., Yang, L. & Tan, W. Engineering dendritic aptamer assemblies as superior inhibitors of protein function. Chem. Asian J. 5, 56–59 (2010).",
+   "journal-title": "Chem. Asian J."
+  },
+  {
+   "key": "BFnrd2016199_CR88",
+   "doi-asserted-by": "crossref",
+   "first-page": "1503",
+   "DOI": "10.1023/A:1007657109012",
+   "volume": "17",
+   "author": "DW Drolet",
+   "year": "2000",
+   "unstructured": "Drolet, D. W. et al. Pharmacokinetics and safety of an anti-vascular endothelial growth factor aptamer (NX1838) following injection into the vitreous humor of rhesus monkeys. Pharm. Res. 17, 1503–1510 (2000).",
+   "journal-title": "Pharm. Res."
+  },
+  {
+   "key": "BFnrd2016199_CR89",
+   "doi-asserted-by": "crossref",
+   "first-page": "203",
+   "DOI": "10.1016/S0378-4347(99)00285-6",
+   "volume": "732",
+   "author": "CE Tucker",
+   "year": "1999",
+   "unstructured": "Tucker, C. E. et al. Detection and plasma pharmacokinetics of an anti-vascular endothelial growth factor oligonucleotide-aptamer (NX1838) in rhesus monkeys. J. Chromatogr. B Biomed. Sci. Appl. 732, 203–212 (1999).",
+   "journal-title": "J. Chromatogr. B Biomed. Sci. Appl."
+  },
+  {
+   "key": "BFnrd2016199_CR90",
+   "doi-asserted-by": "crossref",
+   "first-page": "1205",
+   "DOI": "10.1021/bc0700741",
+   "volume": "18",
+   "author": "KE Borbas",
+   "year": "2007",
+   "unstructured": "Borbas, K. E., Ferreira, C. S., Perkins, A., Bruce, J. I. & Missailidis, S. Design and synthesis of mono- and multimeric targeted radiopharmaceuticals based on novel cyclen ligands coupled to anti-MUC1 aptamers for the diagnostic imaging and targeted radiotherapy of cancer. Bioconjug. Chem. 18, 1205–1212 (2007).",
+   "journal-title": "Bioconjug. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR91",
+   "doi-asserted-by": "crossref",
+   "first-page": "1028",
+   "DOI": "10.1097/IAE.0b013e318217ffde",
+   "volume": "31",
+   "author": "DY Choi",
+   "year": "2011",
+   "unstructured": "Choi, D. Y. et al. Sustained elevated intraocular pressures after intravitreal injection of bevacizumab, ranibizumab, and pegaptanib. Retina 31, 1028–1035 (2011).",
+   "journal-title": "Retina"
+  },
+  {
+   "key": "BFnrd2016199_CR92",
+   "doi-asserted-by": "crossref",
+   "first-page": "512",
+   "DOI": "10.1016/j.ajo.2006.10.007",
+   "volume": "143",
+   "author": "AC Steffensmeier",
+   "year": "2007",
+   "unstructured": "Steffensmeier, A. C., Azar, A. E., Fuller, J. J., Muller, B. A. & Russell, S. R. Vitreous injections of pegaptanib sodium triggering allergic reactions. Am. J. Ophthalmol. 143, 512–513 (2007).",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd2016199_CR93",
+   "doi-asserted-by": "crossref",
+   "first-page": "943409",
+   "DOI": "10.1155/2013/943409",
+   "volume": "2013",
+   "author": "S Agrawal",
+   "year": "2013",
+   "unstructured": "Agrawal, S., Joshi, M. & Christoforidis, J. B. Vitreous inflammation associated with intravitreal anti-VEGF pharmacotherapy. Mediators Inflamm. 2013, 943409 (2013).",
+   "journal-title": "Mediators Inflamm."
+  },
+  {
+   "key": "BFnrd2016199_CR94",
+   "doi-asserted-by": "crossref",
+   "first-page": "787",
+   "DOI": "10.1038/eye.2013.107",
+   "volume": "27",
+   "author": "KG Falavarjani",
+   "year": "2013",
+   "unstructured": "Falavarjani, K. G. & Nguyen, Q. D. Adverse events and complications associated with intravitreal injection of anti-VEGF agents: a review of literature. Eye (Lond.) 27, 787–794 (2013).",
+   "journal-title": "Eye (Lond.)"
+  },
+  {
+   "key": "BFnrd2016199_CR95",
+   "doi-asserted-by": "crossref",
+   "first-page": "1543",
+   "DOI": "10.1136/bjophthalmol-2013-304075",
+   "volume": "98",
+   "author": "DS Boyer",
+   "year": "2014",
+   "unstructured": "Boyer, D. S., Goldbaum, M., Leys, A. M., Starita, C. & V.I.S.I.O.N. Study Group. Effect of pegaptanib sodium 0.3 mg intravitreal injections (Macugen) in intraocular pressure: posthoc analysis from V.I.S.I.O.N. study. Br. J. Ophthalmol. 98, 1543–1546 (2014).",
+   "journal-title": "Br. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd2016199_CR96",
+   "doi-asserted-by": "crossref",
+   "first-page": "810",
+   "DOI": "10.1016/S0022-3565(24)36667-4",
+   "volume": "281",
+   "author": "SP Henry",
+   "year": "1997",
+   "unstructured": "Henry, S. P. et al. Activation of the alternative pathway of complement by a phosphorothioate oligonucleotide: potential mechanism of action. J. Pharmacol. Exp. Ther. 281, 810–816 (1997).",
+   "journal-title": "J. Pharmacol. Exp. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR97",
+   "first-page": "S119",
+   "volume": "31",
+   "author": "CA Farman",
+   "year": "2003",
+   "unstructured": "Farman, C. A. & Kornbrust, D. J. Oligodeoxynucleotide studies in primates: antisense and immune stimulatory indications. Toxicol. Pathol. 31, S119–S122 (2003).",
+   "journal-title": "Toxicol. Pathol."
+  },
+  {
+   "key": "BFnrd2016199_CR98",
+   "doi-asserted-by": "crossref",
+   "first-page": "687",
+   "DOI": "10.1093/nar/gkl1071",
+   "volume": "35",
+   "author": "EE Swayze",
+   "year": "2007",
+   "unstructured": "Swayze, E. E. et al. Antisense oligonucleotides containing locked nucleic acid improve potency but cause significant hepatotoxicity in animals. Nucleic Acids Res. 35, 687–700 (2007).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR99",
+   "doi-asserted-by": "crossref",
+   "first-page": "1610",
+   "DOI": "10.1016/j.jaci.2015.10.034",
+   "volume": "137",
+   "author": "NJ Ganson",
+   "year": "2016",
+   "unstructured": "Ganson, N. J. et al. Pre-existing anti-polyethylene glycol antibody linked to first-exposure allergic reactions to pegnivacogin, a PEGylated RNA aptamer. J. Allergy Clin. Immunol. 137, 1610–1613.e7 (2016).",
+   "journal-title": "J. Allergy Clin. Immunol."
+  },
+  {
+   "key": "BFnrd2016199_CR100",
+   "doi-asserted-by": "crossref",
+   "first-page": "235",
+   "DOI": "10.1517/17460441003605098",
+   "volume": "5",
+   "author": "MJ Waring",
+   "year": "2010",
+   "unstructured": "Waring, M. J. Lipophilicity in drug discovery. Expert Opin. Drug Discov. 5, 235–248 (2010).",
+   "journal-title": "Expert Opin. Drug Discov."
+  },
+  {
+   "key": "BFnrd2016199_CR101",
+   "doi-asserted-by": "crossref",
+   "first-page": "e169",
+   "DOI": "10.1038/mtna.2014.21",
+   "volume": "3",
+   "author": "J Zhou",
+   "year": "2014",
+   "unstructured": "Zhou, J. & Rossi, J. J. Cell-type-specific, aptamer-functionalized agents for targeted disease therapy. Mol. Ther. Nucleic Acids 3, e169 (2014).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2016199_CR102",
+   "doi-asserted-by": "crossref",
+   "first-page": "1507",
+   "DOI": "10.3390/ph6121507",
+   "volume": "6",
+   "author": "KT Shum",
+   "year": "2013",
+   "unstructured": "Shum, K. T., Zhou, J. & Rossi, J. J. Aptamer-based therapeutics: new approaches to combat human viral diseases. Pharmaceuticals (Basel) 6, 1507–1542 (2013).",
+   "journal-title": "Pharmaceuticals (Basel)"
+  },
+  {
+   "key": "BFnrd2016199_CR103",
+   "doi-asserted-by": "crossref",
+   "first-page": "368",
+   "DOI": "10.1182/blood.V94.1.368.413a47_368_371",
+   "volume": "94",
+   "author": "DB Kohn",
+   "year": "1999",
+   "unstructured": "Kohn, D. B. et al. A clinical trial of retroviral-mediated transfer of a rev-responsive element decoy gene into CD34+ cells from the bone marrow of human immunodeficiency virus-1-infected children. Blood 94, 368–371 (1999).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2016199_CR104",
+   "doi-asserted-by": "crossref",
+   "first-page": "36ra43",
+   "DOI": "10.1126/scitranslmed.3000931",
+   "volume": "2",
+   "author": "DL DiGiusto",
+   "year": "2010",
+   "unstructured": "DiGiusto, D. L. et al. RNA-based gene therapy for HIV with lentiviral vector-modified CD34+ cells in patients undergoing transplantation for AIDS-related lymphoma. Sci. Transl Med. 2, 36ra43 (2010).",
+   "journal-title": "Sci. Transl Med."
+  },
+  {
+   "key": "BFnrd2016199_CR105",
+   "doi-asserted-by": "crossref",
+   "first-page": "14047",
+   "DOI": "10.1073/pnas.212229599",
+   "volume": "99",
+   "author": "A Michienzi",
+   "year": "2002",
+   "unstructured": "Michienzi, A., Li, S., Zaia, J. A. & Rossi, J. J. A nucleolar TAR decoy inhibitor of HIV-1 replication. Proc. Natl Acad. Sci. USA 99, 14047–14052 (2002).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2016199_CR106",
+   "doi-asserted-by": "crossref",
+   "first-page": "33",
+   "DOI": "10.1186/1743-422X-7-33",
+   "volume": "7",
+   "author": "HJ Unwalla",
+   "year": "2010",
+   "unstructured": "Unwalla, H. J. & Rossi, J. J. A dual function TAR decoy serves as an anti-HIV siRNA delivery vehicle. Virol. J. 7, 33 (2010).",
+   "journal-title": "Virol. J."
+  },
+  {
+   "key": "BFnrd2016199_CR107",
+   "doi-asserted-by": "crossref",
+   "first-page": "127",
+   "DOI": "10.1089/nat.2015.0573",
+   "volume": "26",
+   "author": "DW Drolet",
+   "year": "2016",
+   "unstructured": "Drolet, D. W., Green, L. S., Gold, L. & Janjic, N. Fit for the eye: aptamers in ocular disorders. Nucleic Acid Ther. 26, 127–146 (2016). A comprehensive review about the development and current progress of three aptamers in ophthalmology.",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR108",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Eyetech Study Group. Preclinical and phase 1A clinical evaluation of an anti-VEGF pegylated aptamer (EYE001) for the treatment of exudative age-related macular degeneration. Retina 22, 143–152 (2002).",
+   "DOI": "10.1097/00006982-200204000-00002"
+  },
+  {
+   "key": "BFnrd2016199_CR109",
+   "doi-asserted-by": "crossref",
+   "first-page": "68",
+   "DOI": "10.1038/35094077",
+   "volume": "1",
+   "author": "AN Bullock",
+   "year": "2001",
+   "unstructured": "Bullock, A. N. & Fersht, A. R. Rescuing the function of mutant p53. Nat. Rev. Cancer 1, 68–76 (2001).",
+   "journal-title": "Nat. Rev. Cancer"
+  },
+  {
+   "key": "BFnrd2016199_CR110",
+   "doi-asserted-by": "crossref",
+   "first-page": "636",
+   "DOI": "10.1161/01.CIR.96.2.636",
+   "volume": "96",
+   "author": "DI Axel",
+   "year": "1997",
+   "unstructured": "Axel, D. I. et al. Paclitaxel inhibits arterial smooth muscle cell proliferation and migration in vitro and in vivo using local drug delivery. Circulation 96, 636–645 (1997).",
+   "journal-title": "Circulation"
+  },
+  {
+   "key": "BFnrd2016199_CR111",
+   "doi-asserted-by": "crossref",
+   "first-page": "779",
+   "DOI": "10.1038/mt.2015.235",
+   "volume": "24",
+   "author": "WH Thiel",
+   "year": "2016",
+   "unstructured": "Thiel, W. H. et al. Smooth muscle cell-targeted RNA aptamer inhibits neointimal formation. Mol. Ther. 24, 779–787 (2016).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR112",
+   "doi-asserted-by": "crossref",
+   "first-page": "41",
+   "DOI": "10.1016/j.tcm.2005.01.002",
+   "volume": "15",
+   "author": "SM Nimjee",
+   "year": "2005",
+   "unstructured": "Nimjee, S. M., Rusconi, C. P., Harrington, R. A. & Sullenger, B. A. The potential of aptamers as anticoagulants. Trends Cardiovasc. Med. 15, 41–45 (2005).",
+   "journal-title": "Trends Cardiovasc. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR113",
+   "doi-asserted-by": "crossref",
+   "first-page": "935",
+   "DOI": "10.1016/j.chembiol.2014.05.016",
+   "volume": "21",
+   "author": "KM Bompiani",
+   "year": "2014",
+   "unstructured": "Bompiani, K. M. et al. Probing the coagulation pathway with aptamers identifies combinations that synergistically inhibit blood clot formation. Chem. Biol. 21, 935–944 (2014).",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR114",
+   "doi-asserted-by": "crossref",
+   "first-page": "2105",
+   "DOI": "10.1261/rna.1240109",
+   "volume": "15",
+   "author": "SM Nimjee",
+   "year": "2009",
+   "unstructured": "Nimjee, S. M. et al. Synergistic effect of aptamers that inhibit exosites 1 and 2 on thrombin. RNA 15, 2105–2111 (2009).",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "BFnrd2016199_CR115",
+   "doi-asserted-by": "crossref",
+   "first-page": "2490",
+   "DOI": "10.1161/CIRCULATIONAHA.106.668434",
+   "volume": "114",
+   "author": "CK Dyke",
+   "year": "2006",
+   "unstructured": "Dyke, C. K. et al. First-in-human experience of an antidote-controlled anticoagulant using RNA aptamer technology: a phase 1a pharmacodynamic evaluation of a drug-antidote pair for the controlled regulation of factor IXa activity. Circulation 114, 2490–2497 (2006).",
+   "journal-title": "Circulation"
+  },
+  {
+   "key": "BFnrd2016199_CR116",
+   "doi-asserted-by": "crossref",
+   "first-page": "9226",
+   "DOI": "10.1073/pnas.1332660100",
+   "volume": "100",
+   "author": "CH Chen",
+   "year": "2003",
+   "unstructured": "Chen, C. H., Chernis, G. A., Hoang, V. Q. & Landgraf, R. Inhibition of heregulin signaling by an aptamer that preferentially binds to the oligomeric form of human epidermal growth factor receptor-3. Proc. Natl Acad. Sci. USA 100, 9226–9231 (2003).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2016199_CR117",
+   "doi-asserted-by": "crossref",
+   "first-page": "675",
+   "DOI": "10.1016/j.chembiol.2008.05.016",
+   "volume": "15",
+   "author": "CM Dollins",
+   "year": "2008",
+   "unstructured": "Dollins, C. M. et al. Assembling OX40 aptamers on a molecular scaffold to create a receptor-activating aptamer. Chem. Biol. 15, 675–682 (2008). One of the first two studies using aptamers as agonists. A bivalent aptamer was created to achieve an agonistic effect.",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR118",
+   "doi-asserted-by": "crossref",
+   "first-page": "35",
+   "DOI": "10.1089/nat.2012.0388",
+   "volume": "23",
+   "author": "ED Pratico",
+   "year": "2013",
+   "unstructured": "Pratico, E. D., Sullenger, B. A. & Nair, S. K. Identification and characterization of an agonistic aptamer against the T cell costimulatory receptor, OX40. Nucleic Acid Ther. 23, 35–43 (2013).",
+   "journal-title": "Nucleic Acid Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR119",
+   "doi-asserted-by": "crossref",
+   "first-page": "376",
+   "DOI": "10.1172/JCI33365",
+   "volume": "118",
+   "author": "JO McNamara",
+   "year": "2008",
+   "unstructured": "McNamara, J. O. et al. Multivalent 4-1BB binding aptamers costimulate CD8+ T cells and inhibit tumor growth in mice. J. Clin. Invest. 118, 376–386 (2008). One of the first two studies using aptamers as agonists. A bivalent aptamer was created to achieve an agonistic effect.",
+   "journal-title": "J. Clin. Invest."
+  },
+  {
+   "key": "BFnrd2016199_CR120",
+   "doi-asserted-by": "crossref",
+   "first-page": "274",
+   "DOI": "10.1016/j.biomaterials.2015.07.020",
+   "volume": "67",
+   "author": "MM Soldevilla",
+   "year": "2015",
+   "unstructured": "Soldevilla, M. M. et al. 2-Fluoro-RNA oligonucleotide CD40 targeted aptamers for the control of B lymphoma and bone-marrow aplasia. Biomaterials 67, 274–285 (2015).",
+   "journal-title": "Biomaterials"
+  },
+  {
+   "key": "BFnrd2016199_CR121",
+   "doi-asserted-by": "crossref",
+   "first-page": "e98",
+   "DOI": "10.1038/mtna.2013.26",
+   "volume": "2",
+   "author": "F Pastor",
+   "year": "2013",
+   "unstructured": "Pastor, F. et al. CD28 aptamers as powerful immune response modulators. Mol. Ther. Nucleic Acids 2, e98 (2013).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2016199_CR122",
+   "doi-asserted-by": "crossref",
+   "first-page": "227",
+   "DOI": "10.1089/nat.2014.0519",
+   "volume": "25",
+   "author": "V Ramaswamy",
+   "year": "2015",
+   "unstructured": "Ramaswamy, V. et al. DNA aptamer assembly as a vascular endothelial growth factor receptor agonist. Nucleic Acid. Ther. 25, 227–234 (2015).",
+   "journal-title": "Nucleic Acid. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR123",
+   "doi-asserted-by": "crossref",
+   "first-page": "7688",
+   "DOI": "10.1093/nar/gkv767",
+   "volume": "43",
+   "author": "NO Yunn",
+   "year": "2015",
+   "unstructured": "Yunn, N. O. et al. Agonistic aptamer to the insulin receptor leads to biased signaling and functional selectivity through allosteric modulation. Nucleic Acids Res. 43, 7688–7701 (2015).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR124",
+   "doi-asserted-by": "crossref",
+   "first-page": "1054",
+   "DOI": "10.1158/1078-0432.CCR-12-2067",
+   "volume": "19",
+   "author": "E Gilboa",
+   "year": "2013",
+   "unstructured": "Gilboa, E., McNamara, J. & Pastor, F. Use of oligonucleotide aptamer ligands to modulate the function of immune receptors. Clin. Cancer Res. 19, 1054–1062 (2013).",
+   "journal-title": "Clin. Cancer Res."
+  },
+  {
+   "key": "BFnrd2016199_CR125",
+   "doi-asserted-by": "crossref",
+   "first-page": "926",
+   "DOI": "10.1016/j.intimp.2015.10.013",
+   "volume": "29",
+   "author": "M Khedri",
+   "year": "2015",
+   "unstructured": "Khedri, M., Rafatpanah, H., Abnous, K., Ramezani, P. & Ramezani, M. Cancer immunotherapy via nucleic acid aptamers. Int. Immunopharmacol. 29, 926–936 (2015).",
+   "journal-title": "Int. Immunopharmacol."
+  },
+  {
+   "key": "BFnrd2016199_CR126",
+   "doi-asserted-by": "crossref",
+   "first-page": "1321",
+   "DOI": "10.1016/j.str.2006.06.015",
+   "volume": "14",
+   "author": "DM Compaan",
+   "year": "2006",
+   "unstructured": "Compaan, D. M. & Hymowitz, S. G. The crystal structure of the costimulatory OX40-OX40L complex. Structure 14, 1321–1330 (2006).",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "BFnrd2016199_CR127",
+   "doi-asserted-by": "crossref",
+   "first-page": "249",
+   "DOI": "10.1615/CritRevImmunol.v21.i1-3.160",
+   "volume": "21",
+   "author": "J Tasch",
+   "year": "2001",
+   "unstructured": "Tasch, J., Gong, M., Sadelain, M. & Heston, W. D. A unique folate hydrolase, prostate-specific membrane antigen (PSMA): a target for immunotherapy? Crit. Rev. Immunol. 21, 249–261 (2001).",
+   "journal-title": "Crit. Rev. Immunol."
+  },
+  {
+   "key": "BFnrd2016199_CR128",
+   "doi-asserted-by": "crossref",
+   "first-page": "1005",
+   "DOI": "10.1038/nbt1223",
+   "volume": "24",
+   "author": "JO McNamara",
+   "year": "2006",
+   "unstructured": "McNamara, J. O. et al. Cell type-specific delivery of siRNAs with aptamer-siRNA chimeras. Nat. Biotechnol. 24, 1005–1015 (2006). One of the first two studies using PSMA aptamers for siRNA delivery.",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnrd2016199_CR129",
+   "doi-asserted-by": "crossref",
+   "first-page": "839",
+   "DOI": "10.1038/nbt.1560",
+   "volume": "27",
+   "author": "JP Dassie",
+   "year": "2009",
+   "unstructured": "Dassie, J. P. et al. Systemic administration of optimized aptamer-siRNA chimeras promotes regression of PSMA-expressing tumors. Nat. Biotechnol. 27, 839–849 (2009).",
+   "journal-title": "Nat. Biotechnol."
+  },
+  {
+   "key": "BFnrd2016199_CR130",
+   "doi-asserted-by": "crossref",
+   "first-page": "227",
+   "DOI": "10.1038/nature08999",
+   "volume": "465",
+   "author": "F Pastor",
+   "year": "2010",
+   "unstructured": "Pastor, F., Kolonias, D., Giangrande, P. H. & Gilboa, E. Induction of tumour immunity by targeted inhibition of nonsense-mediated mRNA decay. Nature 465, 227–230 (2010).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR131",
+   "doi-asserted-by": "crossref",
+   "first-page": "2383",
+   "DOI": "10.1172/JCI45109",
+   "volume": "121",
+   "author": "X Ni",
+   "year": "2011",
+   "unstructured": "Ni, X. et al. Prostate-targeted radiosensitization via aptamer-shRNA chimeras in human tumor xenografts. J. Clin. Invest. 121, 2383–2390 (2011).",
+   "journal-title": "J. Clin. Invest."
+  },
+  {
+   "key": "BFnrd2016199_CR132",
+   "doi-asserted-by": "crossref",
+   "first-page": "554",
+   "DOI": "10.2174/156800908786241078",
+   "volume": "8",
+   "author": "U Wullner",
+   "year": "2008",
+   "unstructured": "Wullner, U. et al. Cell-specific induction of apoptosis by rationally designed bivalent aptamer-siRNA transcripts silencing eukaryotic elongation factor 2. Curr. Cancer Drug Targets 8, 554–565 (2008).",
+   "journal-title": "Curr. Cancer Drug Targets"
+  },
+  {
+   "key": "BFnrd2016199_CR133",
+   "doi-asserted-by": "crossref",
+   "first-page": "e73",
+   "DOI": "10.1093/nar/gkl388",
+   "volume": "34",
+   "author": "TC Chu",
+   "year": "2006",
+   "unstructured": "Chu, T. C., Twu, K. Y., Ellington, A. D. & Levy, M. Aptamer mediated siRNA delivery. Nucleic Acids Res. 34, e73 (2006).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR134",
+   "doi-asserted-by": "crossref",
+   "first-page": "1878",
+   "DOI": "10.1038/mt.2011.145",
+   "volume": "19",
+   "author": "F Pastor",
+   "year": "2011",
+   "unstructured": "Pastor, F., Kolonias, D., McNamara, J. O. II & Gilboa, E. Targeting 4-1BB costimulation to disseminated tumor lesions with bi-specific oligonucleotide aptamers. Mol. Ther. 19, 1878–1886 (2011).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR135",
+   "doi-asserted-by": "crossref",
+   "first-page": "3094",
+   "DOI": "10.1093/nar/gkp185",
+   "volume": "37",
+   "author": "J Zhou",
+   "year": "2009",
+   "unstructured": "Zhou, J. et al. Selection, characterization and application of new RNA HIV gp 120 aptamers for facile delivery of Dicer substrate siRNAs into HIV infected cells. Nucleic Acids Res. 37, 3094–3109 (2009).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR136",
+   "doi-asserted-by": "crossref",
+   "first-page": "1481",
+   "DOI": "10.1038/mt.2008.92",
+   "volume": "16",
+   "author": "J Zhou",
+   "year": "2008",
+   "unstructured": "Zhou, J., Li, H., Li, S., Zaia, J. & Rossi, J. J. Novel dual inhibitory function aptamer-siRNA delivery system for HIV-1 therapy. Mol. Ther. 16, 1481–1489 (2008).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR137",
+   "doi-asserted-by": "crossref",
+   "first-page": "192",
+   "DOI": "10.1038/mt.2012.226",
+   "volume": "21",
+   "author": "J Zhou",
+   "year": "2013",
+   "unstructured": "Zhou, J. et al. Functional in vivo delivery of multiplexed anti-HIV-1 siRNAs via a chemically synthesized aptamer with a sticky bridge. Mol. Ther. 21, 192–200 (2013).",
+   "journal-title": "Mol. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR138",
+   "first-page": "66ra6",
+   "volume": "3",
+   "author": "CP Neff",
+   "year": "2011",
+   "unstructured": "Neff, C. P. et al. An aptamer-siRNA chimera suppresses HIV-1 viral loads and protects from helper CD4+ T cell decline in humanized mice. Sci. Transl Med. 3, 66ra6 (2011).",
+   "journal-title": "Sci. Transl Med."
+  },
+  {
+   "key": "BFnrd2016199_CR139",
+   "doi-asserted-by": "crossref",
+   "first-page": "147",
+   "DOI": "10.1016/j.jconrel.2015.05.276",
+   "volume": "210",
+   "author": "S Catuogno",
+   "year": "2015",
+   "unstructured": "Catuogno, S., Rienzo, A., Di Vito, A., Esposito, C. L. & de Franciscis, V. Selective delivery of therapeutic single strand antimiRs by aptamer-based conjugates. J. Control. Release 210, 147–159 (2015).",
+   "journal-title": "J. Control. Release"
+  },
+  {
+   "key": "BFnrd2016199_CR140",
+   "doi-asserted-by": "crossref",
+   "first-page": "9731",
+   "DOI": "10.1021/acsnano.5b02471",
+   "volume": "9",
+   "author": "D Shu",
+   "year": "2015",
+   "unstructured": "Shu, D. et al. Systemic delivery of anti-miRNA for suppression of triple negative breast cancer utilizing RNA nanotechnology. ACS Nano 9, 9731–9740 (2015).",
+   "journal-title": "ACS Nano"
+  },
+  {
+   "key": "BFnrd2016199_CR141",
+   "doi-asserted-by": "crossref",
+   "first-page": "5989",
+   "DOI": "10.1158/0008-5472.CAN-05-4583",
+   "volume": "66",
+   "author": "TC Chu",
+   "year": "2006",
+   "unstructured": "Chu, T. C. et al. Aptamer:toxin conjugates that specifically target prostate tumor cells. Cancer Res. 66, 5989–5992 (2006). The first study using PSMA aptamers for toxin delivery.",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2016199_CR142",
+   "doi-asserted-by": "crossref",
+   "first-page": "295",
+   "DOI": "10.3390/ph6030295",
+   "volume": "6",
+   "author": "LI Hernandez",
+   "year": "2013",
+   "unstructured": "Hernandez, L. I. et al. Methods for evaluating cell-specific, cell-internalizing RNA aptamers. Pharmaceuticals (Basel) 6, 295–319 (2013).",
+   "journal-title": "Pharmaceuticals (Basel)"
+  },
+  {
+   "key": "BFnrd2016199_CR143",
+   "doi-asserted-by": "crossref",
+   "first-page": "e107",
+   "DOI": "10.1038/mtna.2013.37",
+   "volume": "2",
+   "author": "O Boyacioglu",
+   "year": "2013",
+   "unstructured": "Boyacioglu, O., Stuart, C. H., Kulik, G. & Gmeiner, W. H. Dimeric DNA aptamer complexes for high-capacity-targeted drug delivery using pH-sensitive covalent linkages. Mol. Ther. Nucleic Acids 2, e107 (2013).",
+   "journal-title": "Mol. Ther. Nucleic Acids"
+  },
+  {
+   "key": "BFnrd2016199_CR144",
+   "doi-asserted-by": "crossref",
+   "first-page": "8149",
+   "DOI": "10.1002/anie.200602251",
+   "volume": "45",
+   "author": "V Bagalkot",
+   "year": "2006",
+   "unstructured": "Bagalkot, V., Farokhzad, O. C., Langer, R. & Jon, S. An aptamer–doxorubicin physical conjugate as a novel targeted drug-delivery platform. Angew. Chem. Int. Ed. 45, 8149–8152 (2006).",
+   "journal-title": "Angew. Chem. Int. Ed."
+  },
+  {
+   "key": "BFnrd2016199_CR145",
+   "doi-asserted-by": "crossref",
+   "first-page": "253",
+   "DOI": "10.1016/j.nucmedbio.2015.09.005",
+   "volume": "43",
+   "author": "M Gijs",
+   "year": "2016",
+   "unstructured": "Gijs, M., Aerts, A., Impens, N., Baatout, S. & Luxen, A. Aptamers as radiopharmaceuticals for nuclear imaging and therapy. Nucl. Med. Biol. 43, 253–271 (2016).",
+   "journal-title": "Nucl. Med. Biol."
+  },
+  {
+   "key": "BFnrd2016199_CR146",
+   "doi-asserted-by": "crossref",
+   "first-page": "1451",
+   "DOI": "10.2174/1381612023394467",
+   "volume": "8",
+   "author": "CK Younes",
+   "year": "2002",
+   "unstructured": "Younes, C. K., Boisgard, R. & Tavitian, B. Labelled oligonucleotides as radiopharmaceuticals: pitfalls, problems and perspectives. Curr. Pharm. Des. 8, 1451–1466 (2002).",
+   "journal-title": "Curr. Pharm. Des."
+  },
+  {
+   "key": "BFnrd2016199_CR147",
+   "doi-asserted-by": "crossref",
+   "first-page": "2135",
+   "DOI": "10.3390/molecules19022135",
+   "volume": "19",
+   "author": "G Sugiura",
+   "year": "2014",
+   "unstructured": "Sugiura, G., Kuhn, H., Sauter, M., Haberkorn, U. & Mier, W. Radiolabeling strategies for tumor-targeting proteinaceous drugs. Molecules 19, 2135–2165 (2014).",
+   "journal-title": "Molecules"
+  },
+  {
+   "key": "BFnrd2016199_CR148",
+   "doi-asserted-by": "crossref",
+   "first-page": "48644",
+   "DOI": "10.1074/jbc.M104651200",
+   "volume": "276",
+   "author": "BJ Hicke",
+   "year": "2001",
+   "unstructured": "Hicke, B. J. et al. Tenascin-C aptamers are generated using tumor cells and purified protein. J. Biol. Chem. 276, 48644–48654 (2001).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR149",
+   "first-page": "668",
+   "volume": "47",
+   "author": "BJ Hicke",
+   "year": "2006",
+   "unstructured": "Hicke, B. J. et al. Tumor targeting by an aptamer. J. Nucl. Med. 47, 668–678 (2006).",
+   "journal-title": "J. Nucl. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR150",
+   "doi-asserted-by": "crossref",
+   "first-page": "2235",
+   "DOI": "10.1021/nn507494p",
+   "volume": "9",
+   "author": "YH Lao",
+   "year": "2015",
+   "unstructured": "Lao, Y. H., Phua, K. K. & Leong, K. W. Aptamer nanomedicine for cancer therapeutics: barriers and potential for translation. ACS Nano 9, 2235–2254 (2015).",
+   "journal-title": "ACS Nano"
+  },
+  {
+   "key": "BFnrd2016199_CR151",
+   "doi-asserted-by": "crossref",
+   "first-page": "7668",
+   "DOI": "10.1158/0008-5472.CAN-04-2550",
+   "volume": "64",
+   "author": "OC Farokhzad",
+   "year": "2004",
+   "unstructured": "Farokhzad, O. C. et al. Nanoparticle-aptamer bioconjugates: a new approach for targeting prostate cancer cells. Cancer Res. 64, 7668–7672 (2004).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2016199_CR152",
+   "doi-asserted-by": "crossref",
+   "first-page": "288",
+   "DOI": "10.1038/nm.3791",
+   "volume": "21",
+   "author": "C Liang",
+   "year": "2015",
+   "unstructured": "Liang, C. et al. Aptamer-functionalized lipid nanoparticles targeting osteoblasts as a novel RNA interference-based bone anabolic strategy. Nat. Med. 21, 288–294 (2015).",
+   "journal-title": "Nat. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR153",
+   "doi-asserted-by": "crossref",
+   "first-page": "637",
+   "DOI": "10.1517/13543780902855316",
+   "volume": "18",
+   "author": "MR Barakat",
+   "year": "2009",
+   "unstructured": "Barakat, M. R. & Kaiser, P. K. VEGF inhibitors for the treatment of neovascular age-related macular degeneration. Expert Opin. Investig. Drugs 18, 637–646 (2009).",
+   "journal-title": "Expert Opin. Investig. Drugs"
+  },
+  {
+   "key": "BFnrd2016199_CR154",
+   "doi-asserted-by": "crossref",
+   "unstructured": "VEGF Inhibition Study in Oracular Neovascularization (V. I. S. I. O. N.) Clinical Trial Group et al. Year 2 efficacy results of 2 randomized controlled clinical trials of pegaptanib for neovascular age-related macular degeneration. Ophthalmology 113, 1508.e1–1508.e25 (2006).",
+   "DOI": "10.1016/j.ophtha.2006.02.064"
+  },
+  {
+   "key": "BFnrd2016199_CR155",
+   "doi-asserted-by": "crossref",
+   "first-page": "11227",
+   "DOI": "10.1073/pnas.90.23.11227",
+   "volume": "90",
+   "author": "D Jellinek",
+   "year": "1993",
+   "unstructured": "Jellinek, D., Lynott, C. K., Rifkin, D. B. & Janjic, N. High-affinity RNA ligands to basic fibroblast growth factor inhibit receptor binding. Proc. Natl Acad. Sci. USA 90, 11227–11231 (1993).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd2016199_CR156",
+   "doi-asserted-by": "crossref",
+   "first-page": "747",
+   "DOI": "10.1093/nar/19.4.747",
+   "volume": "19",
+   "author": "JP Shaw",
+   "year": "1991",
+   "unstructured": "Shaw, J. P., Kent, K., Bird, J., Fishback, J. & Froehler, B. Modified deoxyoligonucleotides stable to exonuclease degradation in serum. Nucleic Acids Res. 19, 747–750 (1991).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR157",
+   "doi-asserted-by": "crossref",
+   "first-page": "11363",
+   "DOI": "10.1021/bi00036a009",
+   "volume": "34",
+   "author": "D Jellinek",
+   "year": "1995",
+   "unstructured": "Jellinek, D. et al. Potent 2′-amino-2′-deoxypyrimidine RNA inhibitors of basic fibroblast growth factor. Biochemistry 34, 11363–11372 (1995).",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "BFnrd2016199_CR158",
+   "doi-asserted-by": "crossref",
+   "first-page": "4810",
+   "DOI": "10.1093/nar/22.22.4810",
+   "volume": "22",
+   "author": "A Jaschke",
+   "year": "1994",
+   "unstructured": "Jaschke, A. et al. Synthesis and properties of oligodeoxyribonucleotide-polyethylene glycol conjugates. Nucleic Acids Res. 22, 4810–4817 (1994).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd2016199_CR159",
+   "doi-asserted-by": "crossref",
+   "first-page": "474",
+   "DOI": "10.1248/bpb.18.474",
+   "volume": "18",
+   "author": "T Kawaguchi",
+   "year": "1995",
+   "unstructured": "Kawaguchi, T., Asakawa, H., Tashiro, Y., Juni, K. & Sueishi, T. Stability, specific binding activity, and plasma concentration in mice of an oligodeoxynucleotide modified at 5′-terminal with poly(ethylene glycol). Biol. Pharm. Bull. 18, 474–476 (1995).",
+   "journal-title": "Biol. Pharm. Bull."
+  },
+  {
+   "key": "BFnrd2016199_CR160",
+   "doi-asserted-by": "crossref",
+   "unstructured": "CATT Research Group et al. Ranibizumab and bevacizumab for neovascular age-related macular degeneration. N. Engl. J. Med. 364, 1897–1908 (2011).",
+   "DOI": "10.1056/NEJMoa1102673"
+  },
+  {
+   "key": "BFnrd2016199_CR161",
+   "doi-asserted-by": "crossref",
+   "first-page": "1432",
+   "DOI": "10.1056/NEJMoa062655",
+   "volume": "355",
+   "author": "DM Brown",
+   "year": "2006",
+   "unstructured": "Brown, D. M. et al. Ranibizumab versus verteporfin for neovascular age-related macular degeneration. N. Engl. J. Med. 355, 1432–1444 (2006).",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR162",
+   "doi-asserted-by": "crossref",
+   "first-page": "1419",
+   "DOI": "10.1056/NEJMoa054481",
+   "volume": "355",
+   "author": "PJ Rosenfeld",
+   "year": "2006",
+   "unstructured": "Rosenfeld, P. J. et al. Ranibizumab for neovascular age-related macular degeneration. N. Engl. J. Med. 355, 1419–1431 (2006).",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR163",
+   "doi-asserted-by": "crossref",
+   "first-page": "2537",
+   "DOI": "10.1016/j.ophtha.2012.09.006",
+   "volume": "119",
+   "author": "JS Heier",
+   "year": "2012",
+   "unstructured": "Heier, J. S. et al. Intravitreal aflibercept (VEGF trap-eye) in wet age-related macular degeneration. Ophthalmology 119, 2537–2548 (2012).",
+   "journal-title": "Ophthalmology"
+  },
+  {
+   "key": "BFnrd2016199_CR164",
+   "doi-asserted-by": "crossref",
+   "first-page": "14",
+   "DOI": "10.2353/ajpath.2007.070385",
+   "volume": "171",
+   "author": "PA D'Amore",
+   "year": "2007",
+   "unstructured": "D'Amore, P. A. Vascular endothelial cell growth factor-a: not just for endothelial cells anymore. Am. J. Pathol. 171, 14–18 (2007).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd2016199_CR165",
+   "doi-asserted-by": "crossref",
+   "first-page": "99",
+   "DOI": "10.3109/1547691X.2013.821564",
+   "volume": "11",
+   "author": "KD Ratanji",
+   "year": "2014",
+   "unstructured": "Ratanji, K. D., Derrick, J. P., Dearman, R. J. & Kimber, I. Immunogenicity of therapeutic proteins: influence of aggregation. J. Immunotoxicol. 11, 99–109 (2014).",
+   "journal-title": "J. Immunotoxicol."
+  },
+  {
+   "key": "BFnrd2016199_CR166",
+   "first-page": "483960",
+   "volume": "2014",
+   "author": "MP Kawa",
+   "year": "2014",
+   "unstructured": "Kawa, M. P., Machalinska, A., Roginska, D. & Machalinski, B. Complement system in pathogenesis of AMD: dual player in degeneration and protection of retinal tissue. J. Immunol. Res. 2014, 483960 (2014).",
+   "journal-title": "J. Immunol. Res."
+  },
+  {
+   "key": "BFnrd2016199_CR167",
+   "doi-asserted-by": "crossref",
+   "first-page": "500",
+   "DOI": "10.1016/j.ophtha.2009.08.032",
+   "volume": "117",
+   "author": "DC Baas",
+   "year": "2010",
+   "unstructured": "Baas, D. C. et al. The complement component 5 gene and age-related macular degeneration. Ophthalmology 117, 500–511 (2010).",
+   "journal-title": "Ophthalmology"
+  },
+  {
+   "key": "BFnrd2016199_CR168",
+   "doi-asserted-by": "crossref",
+   "first-page": "219",
+   "DOI": "10.1016/S0162-3109(99)00020-X",
+   "volume": "42",
+   "author": "G Biesecker",
+   "year": "1999",
+   "unstructured": "Biesecker, G., Dihel, L., Enney, K. & Bendele, R. A. Derivation of RNA aptamer inhibitors of human complement C5. Immunopharmacology 42, 219–230 (1999).",
+   "journal-title": "Immunopharmacology"
+  },
+  {
+   "key": "BFnrd2016199_CR169",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT02397954?term=NCT02397954&rank=1 (2016)."
+  },
+  {
+   "key": "BFnrd2016199_CR170",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT02686658?term=NCT02686658&rank=1 (2016)."
+  },
+  {
+   "key": "BFnrd2016199_CR171",
+   "doi-asserted-by": "crossref",
+   "first-page": "287",
+   "DOI": "10.1016/j.sjopt.2015.05.005",
+   "volume": "29",
+   "author": "MA Sadiq",
+   "year": "2015",
+   "unstructured": "Sadiq, M. A. et al. Platelet derived growth factor inhibitors: a potential therapeutic approach for ocular neovascularization. Saudi J. Ophthalmol. 29, 287–291 (2015).",
+   "journal-title": "Saudi J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd2016199_CR172",
+   "doi-asserted-by": "crossref",
+   "first-page": "20",
+   "DOI": "10.4161/mabs.2.1.10498",
+   "volume": "2",
+   "author": "R Mabry",
+   "year": "2010",
+   "unstructured": "Mabry, R. et al. A dual-targeting PDGFRβ/VEGF-A molecule assembled from stable antibody fragments demonstrates anti-angiogenic activity in vitro and in vivo. MAbs 2, 20–34 (2010).",
+   "journal-title": "MAbs"
+  },
+  {
+   "key": "BFnrd2016199_CR173",
+   "doi-asserted-by": "crossref",
+   "first-page": "2036",
+   "DOI": "10.2353/ajpath.2006.050588",
+   "volume": "168",
+   "author": "N Jo",
+   "year": "2006",
+   "unstructured": "Jo, N. et al. Inhibition of platelet-derived growth factor B signaling enhances the efficacy of anti-vascular endothelial growth factor therapy in multiple models of ocular neovascularization. Am. J. Pathol. 168, 2036–2053 (2006).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd2016199_CR174",
+   "unstructured": "Boyer, D. S. Phase 2b study of Fovista™, a platelet derived growth factor (PDGF) inhibitor in combination with a vascular endothelial growth factor (VEGF) inhibitor for neovascular age-related macular degeneration (AMD). Invest. Ophthalmol. Vis. Sci. 54, abstr. 2175 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR175",
+   "unstructured": "Boyer, D. S. Combined inhibition of platelet derived (PDGF) and vascular endothelial (VEGF) growth factors for the treatment of neovascular age-related macular degeration (NV-AMD) - results of a Phase I study. Invest. Ophthalmol. Vis. Sci. 50, abstr. 1260 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR176",
+   "doi-asserted-by": "crossref",
+   "first-page": "14413",
+   "DOI": "10.1021/bi961544+",
+   "volume": "35",
+   "author": "LS Green",
+   "year": "1996",
+   "unstructured": "Green, L. S. et al. Inhibitory DNA ligands to platelet-derived growth factor B-chain. Biochemistry 35, 14413–14424 (1996).",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "BFnrd2016199_CR177",
+   "doi-asserted-by": "crossref",
+   "first-page": "169",
+   "DOI": "10.1016/S0002-9440(10)65263-7",
+   "volume": "154",
+   "author": "J Floege",
+   "year": "1999",
+   "unstructured": "Floege, J. et al. Novel approach to specific growth factor inhibition in vivo: antagonism of platelet-derived growth factor in glomerulonephritis by aptamers. Am. J. Pathol. 154, 169–179 (1999).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd2016199_CR178",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01089517?term=NCT01089517&rank=1 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR179",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01944839?term=NCT01944839&rank=1 (2005)."
+  },
+  {
+   "key": "BFnrd2016199_CR180",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01940900?term=NCT01940900&rank=1 (2015)."
+  },
+  {
+   "key": "BFnrd2016199_CR181",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01940887?term=NCT01940887&rank=1 (2016)."
+  },
+  {
+   "key": "BFnrd2016199_CR182",
+   "doi-asserted-by": "crossref",
+   "first-page": "1445",
+   "DOI": "10.1016/j.drudis.2014.06.028",
+   "volume": "19",
+   "author": "DA Smiley",
+   "year": "2014",
+   "unstructured": "Smiley, D. A. & Becker, R. C. Factor IXa as a target for anticoagulation in thrombotic disorders and conditions. Drug Discov. Today 19, 1445–1453 (2014).",
+   "journal-title": "Drug Discov. Today"
+  },
+  {
+   "key": "BFnrd2016199_CR183",
+   "doi-asserted-by": "crossref",
+   "first-page": "90",
+   "DOI": "10.1038/nature00963",
+   "volume": "419",
+   "author": "CP Rusconi",
+   "year": "2002",
+   "unstructured": "Rusconi, C. P. et al. RNA aptamers as reversible antagonists of coagulation factor IXa. Nature 419, 90–94 (2002).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd2016199_CR184",
+   "doi-asserted-by": "crossref",
+   "first-page": "431",
+   "DOI": "10.4244/EIJY14M06_01",
+   "volume": "10",
+   "author": "TJ Povsic",
+   "year": "2014",
+   "unstructured": "Povsic, T. J. et al. Use of the REG1 anticoagulation system in patients with acute coronary syndromes undergoing percutaneous coronary intervention: results from the phase II RADAR-PCI study. EuroIntervention 10, 431–438 (2014).",
+   "journal-title": "EuroIntervention"
+  },
+  {
+   "key": "BFnrd2016199_CR185",
+   "doi-asserted-by": "crossref",
+   "first-page": "2481",
+   "DOI": "10.1093/eurheartj/ehs232",
+   "volume": "34",
+   "author": "TJ Povsic",
+   "year": "2013",
+   "unstructured": "Povsic, T. J. et al. A Phase 2, randomized, partially blinded, active-controlled study assessing the efficacy and safety of variable anticoagulation reversal using the REG1 system in patients with acute coronary syndromes: results of the RADAR trial. Eur. Heart J. 34, 2481–2489 (2013).",
+   "journal-title": "Eur. Heart J."
+  },
+  {
+   "key": "BFnrd2016199_CR186",
+   "doi-asserted-by": "crossref",
+   "first-page": "2412",
+   "DOI": "10.1093/eurheartj/ehr179",
+   "volume": "32",
+   "author": "TJ Povsic",
+   "year": "2011",
+   "unstructured": "Povsic, T. J. et al. Pegnivacogin results in near complete FIX inhibition in acute coronary syndrome patients: RADAR pharmacokinetic and pharmacodynamic substudy. Eur. Heart J. 32, 2412–2419 (2011).",
+   "journal-title": "Eur. Heart J."
+  },
+  {
+   "key": "BFnrd2016199_CR187",
+   "doi-asserted-by": "crossref",
+   "first-page": "614",
+   "DOI": "10.1161/CIRCULATIONAHA.109.927756",
+   "volume": "122",
+   "author": "MG Cohen",
+   "year": "2010",
+   "unstructured": "Cohen, M. G. et al. First clinical application of an actively reversible direct factor IXa inhibitor as an anticoagulation strategy in patients undergoing percutaneous coronary intervention. Circulation 122, 614–622 (2010).",
+   "journal-title": "Circulation"
+  },
+  {
+   "key": "BFnrd2016199_CR188",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00932100?term=NCT00932100&rank=1 (2012)."
+  },
+  {
+   "key": "BFnrd2016199_CR189",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00715455?term=NCT00715455&rank=1 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR190",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01872572?term=NCT01872572&rank=1 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR191",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01848106?term=NCT01848106&rank=1 (2014)."
+  },
+  {
+   "key": "BFnrd2016199_CR192",
+   "doi-asserted-by": "crossref",
+   "first-page": "1155",
+   "DOI": "10.1111/j.1538-7836.2009.03459.x",
+   "volume": "7",
+   "author": "JL Diener",
+   "year": "2009",
+   "unstructured": "Diener, J. L. et al. Inhibition of von Willebrand factor-mediated platelet activation and thrombosis by the anti-von Willebrand factor A1-domain aptamer ARC1779. J. Thromb. Haemost. 7, 1155–1162 (2009).",
+   "journal-title": "J. Thromb. Haemost."
+  },
+  {
+   "key": "BFnrd2016199_CR193",
+   "doi-asserted-by": "crossref",
+   "first-page": "563",
+   "DOI": "10.1160/TH10-01-0027",
+   "volume": "104",
+   "author": "B Jilma",
+   "year": "2010",
+   "unstructured": "Jilma, B. et al. A randomised pilot trial of the anti-von Willebrand factor aptamer ARC1779 in patients with type 2b von Willebrand disease. Thromb. Haemost. 104, 563–570 (2010).",
+   "journal-title": "Thromb. Haemost."
+  },
+  {
+   "key": "BFnrd2016199_CR194",
+   "doi-asserted-by": "crossref",
+   "first-page": "2678",
+   "DOI": "10.1161/CIRCULATIONAHA.107.724864",
+   "volume": "116",
+   "author": "JC Gilbert",
+   "year": "2007",
+   "unstructured": "Gilbert, J. C. et al. First-in-human evaluation of anti von Willebrand factor therapeutic aptamer ARC1779 in healthy volunteers. Circulation 116, 2678–2686 (2007).",
+   "journal-title": "Circulation"
+  },
+  {
+   "key": "BFnrd2016199_CR195",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00432770?term=ARC1779&rank=6 (2007)."
+  },
+  {
+   "key": "BFnrd2016199_CR196",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00632242?term=ARC1779&rank=1 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR197",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00742612?term=ARC1779&rank=2 (2010)."
+  },
+  {
+   "key": "BFnrd2016199_CR198",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00507338?term=ARC1779&rank=5 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR199",
+   "doi-asserted-by": "crossref",
+   "first-page": "683",
+   "DOI": "10.1111/j.1538-7836.2009.03538.x",
+   "volume": "7",
+   "author": "EK Waters",
+   "year": "2009",
+   "unstructured": "Waters, E. K., Richardson, J., Schaub, R. G. & Kurz, J. C. Effect of NU172 and bivalirudin on ecarin clotting time in human plasma and whole blood. J. Thromb. Haemost. 7, 683 (2009).",
+   "journal-title": "J. Thromb. Haemost."
+  },
+  {
+   "key": "BFnrd2016199_CR200",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00808964?term=00808964&rank=1 (2011)."
+  },
+  {
+   "key": "BFnrd2016199_CR201",
+   "doi-asserted-by": "crossref",
+   "first-page": "5514",
+   "DOI": "10.1182/blood-2010-10-311936",
+   "volume": "117",
+   "author": "EK Waters",
+   "year": "2011",
+   "unstructured": "Waters, E. K. et al. Aptamer ARC19499 mediates a procoagulant hemostatic effect by inhibiting tissue factor pathway inhibitor. Blood 117, 5514–5522 (2011).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2016199_CR202",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Gorczyca, M. E. et al. Inhibition of tissue factor pathway inhibitor (TFPI) by ARC19499 improves clotting of hemophiliac blood. BMC Pharmacol. 10, abstr. A44 (2010).",
+   "DOI": "10.1186/1471-2210-10-S1-A44"
+  },
+  {
+   "key": "BFnrd2016199_CR203",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01191372?term=NCT01191372&rank=1 (2015)."
+  },
+  {
+   "key": "BFnrd2016199_CR204",
+   "doi-asserted-by": "crossref",
+   "first-page": "984",
+   "DOI": "10.1124/mol.109.055947",
+   "volume": "76",
+   "author": "S Soundararajan",
+   "year": "2009",
+   "unstructured": "Soundararajan, S. et al. Plasma membrane nucleolin is a receptor for the anticancer aptamer AS1411 in MV4-11 leukemia cells. Mol. Pharmacol. 76, 984–991 (2009).",
+   "journal-title": "Mol. Pharmacol."
+  },
+  {
+   "key": "BFnrd2016199_CR205",
+   "doi-asserted-by": "crossref",
+   "first-page": "26369",
+   "DOI": "10.1074/jbc.274.37.26369",
+   "volume": "274",
+   "author": "PJ Bates",
+   "year": "1999",
+   "unstructured": "Bates, P. J., Kahlon, J. B., Thomas, S. D., Trent, J. O. & Miller, D. M. Antiproliferative activity of G-rich oligonucleotides correlates with protein binding. J. Biol. Chem. 274, 26369–26377 (1999).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd2016199_CR206",
+   "doi-asserted-by": "crossref",
+   "first-page": "2358",
+   "DOI": "10.1158/0008-5472.CAN-07-5723",
+   "volume": "68",
+   "author": "S Soundararajan",
+   "year": "2008",
+   "unstructured": "Soundararajan, S., Chen, W., Spicer, E. K., Courtenay-Luck, N. & Fernandes, D. J. The nucleolin targeting aptamer AS1411 destabilizes Bcl-2 messenger RNA in human breast cancer cells. Cancer Res. 68, 2358–2365 (2008).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2016199_CR207",
+   "doi-asserted-by": "crossref",
+   "first-page": "78",
+   "DOI": "10.1016/j.biochi.2015.03.023",
+   "volume": "113",
+   "author": "CM Berger",
+   "year": "2015",
+   "unstructured": "Berger, C. M., Gaume, X. & Bouvet, P. The roles of nucleolin subcellular localization in cancer. Biochimie 113, 78–85 (2015).",
+   "journal-title": "Biochimie"
+  },
+  {
+   "key": "BFnrd2016199_CR208",
+   "first-page": "107",
+   "volume": "12",
+   "author": "F Mongelard",
+   "year": "2010",
+   "unstructured": "Mongelard, F. & Bouvet, P. AS-1411, a guanosine-rich oligonucleotide aptamer targeting nucleolin for the potential treatment of cancer, including acute myeloid leukemia. Curr. Opin. Mol. Ther. 12, 107–114 (2010).",
+   "journal-title": "Curr. Opin. Mol. Ther."
+  },
+  {
+   "key": "BFnrd2016199_CR209",
+   "doi-asserted-by": "crossref",
+   "first-page": "8617",
+   "DOI": "10.1158/0008-5472.CAN-10-0920",
+   "volume": "70",
+   "author": "EM Reyes-Reyes",
+   "year": "2010",
+   "unstructured": "Reyes-Reyes, E. M., Teng, Y. & Bates, P. J. A new paradigm for aptamer therapeutic AS1411 action: uptake by macropinocytosis and its stimulation by a nucleolin-dependent mechanism. Cancer Res. 70, 8617–8629 (2010).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd2016199_CR210",
+   "doi-asserted-by": "crossref",
+   "first-page": "151",
+   "DOI": "10.1016/j.yexmp.2009.01.004",
+   "volume": "86",
+   "author": "PJ Bates",
+   "year": "2009",
+   "unstructured": "Bates, P. J., Laber, D. A., Miller, D. M., Thomas, S. D. & Trent, J. O. Discovery and development of the G-rich oligonucleotide AS1411 as a novel treatment for cancer. Exp. Mol. Pathol. 86, 151–164 (2009).",
+   "journal-title": "Exp. Mol. Pathol."
+  },
+  {
+   "key": "BFnrd2016199_CR211",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00881244?term=NCT00881244&rank=1 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR212",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00512083?term=NCT00512083&rank=1 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR213",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00740441?term=NCT00740441&rank=1 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR214",
+   "doi-asserted-by": "crossref",
+   "first-page": "1032",
+   "DOI": "10.1182/blood-2013-03-493924",
+   "volume": "123",
+   "author": "J Hoellenriegel",
+   "year": "2014",
+   "unstructured": "Hoellenriegel, J. et al. The Spiegelmer NOX-A12, a novel CXCL12 inhibitor, interferes with chronic lymphocytic leukemia cell motility and causes chemosensitization. Blood 123, 1032–1039 (2014).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2016199_CR215",
+   "doi-asserted-by": "crossref",
+   "first-page": "952",
+   "DOI": "10.1182/blood-2013-12-542480",
+   "volume": "123",
+   "author": "R Marasca",
+   "year": "2014",
+   "unstructured": "Marasca, R. & Maffei, R. NOX-A12: mobilizing CLL away from home. Blood 123, 952–953 (2014).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2016199_CR216",
+   "first-page": "21",
+   "volume": "16",
+   "author": "SC Liu",
+   "year": "2014",
+   "unstructured": "Liu, S. C. et al. Blockade of SDF-1 after irradiation inhibits tumor recurrences of autochthonous brain tumors in rats. Neuro Oncol. 16, 21–28 (2014).",
+   "journal-title": "Neuro Oncol."
+  },
+  {
+   "key": "BFnrd2016199_CR217",
+   "doi-asserted-by": "crossref",
+   "first-page": "2445",
+   "DOI": "10.1007/s00125-009-1493-6",
+   "volume": "52",
+   "author": "SG Sayyed",
+   "year": "2009",
+   "unstructured": "Sayyed, S. G. et al. Podocytes produce homeostatic chemokine stromal cell-derived factor-1/CXCL12, which contributes to glomerulosclerosis, podocyte loss and albuminuria in a mouse model of type 2 diabetes. Diabetologia 52, 2445–2454 (2009).",
+   "journal-title": "Diabetologia"
+  },
+  {
+   "key": "BFnrd2016199_CR218",
+   "doi-asserted-by": "crossref",
+   "first-page": "2201",
+   "DOI": "10.1084/jem.20052144",
+   "volume": "203",
+   "author": "JM Burns",
+   "year": "2006",
+   "unstructured": "Burns, J. M. et al. A novel chemokine receptor for SDF-1 and I-TAC involved in cell survival, cell adhesion, and tumor development. J. Exp. Med. 203, 2201–2213 (2006).",
+   "journal-title": "J. Exp. Med."
+  },
+  {
+   "key": "BFnrd2016199_CR219",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00976378?term=NCT00976378&rank=1 (2014)."
+  },
+  {
+   "key": "BFnrd2016199_CR220",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01194934?term=NCT01194934&rank=1 (2014)."
+  },
+  {
+   "key": "BFnrd2016199_CR221",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01486797?term=NCT01486797&rank=1 (2016)."
+  },
+  {
+   "key": "BFnrd2016199_CR222",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01521533?term=NCT01521533&rank=1 (2015)."
+  },
+  {
+   "key": "BFnrd2016199_CR223",
+   "doi-asserted-by": "crossref",
+   "first-page": "6923",
+   "DOI": "10.1038/ncomms7923",
+   "volume": "6",
+   "author": "D Oberthur",
+   "year": "2015",
+   "unstructured": "Oberthur, D. et al. Crystal structure of a mirror-image l-RNA aptamer (Spiegelmer) in complex with the natural l-protein target CCL2. Nat. Commun. 6, 6923 (2015).",
+   "journal-title": "Nat. Commun."
+  },
+  {
+   "key": "BFnrd2016199_CR224",
+   "doi-asserted-by": "crossref",
+   "first-page": "628",
+   "DOI": "10.2353/ajpath.2008.070601",
+   "volume": "172",
+   "author": "V Ninichuk",
+   "year": "2008",
+   "unstructured": "Ninichuk, V. et al. Late onset of Ccl2 blockade with the Spiegelmer mNOX-E36-3'PEG prevents glomerulosclerosis and improves glomerular filtration rate in db/db mice. Am. J. Pathol. 172, 628–637 (2008).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd2016199_CR225",
+   "doi-asserted-by": "crossref",
+   "first-page": "2350",
+   "DOI": "10.1681/ASN.2006121348",
+   "volume": "18",
+   "author": "O Kulkarni",
+   "year": "2007",
+   "unstructured": "Kulkarni, O. et al. Spiegelmer inhibition of CCL2/MCP-1 ameliorates lupus nephritis in MRL-(Fas)lpr mice. J. Am. Soc. Nephrol. 18, 2350–2358 (2007).",
+   "journal-title": "J. Am. Soc. Nephrol."
+  },
+  {
+   "key": "BFnrd2016199_CR226",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01085292?term=NCT01085292&rank=1 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR227",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01547897?term=NCT01547897&rank=1 (2014)."
+  },
+  {
+   "key": "BFnrd2016199_CR228",
+   "doi-asserted-by": "crossref",
+   "first-page": "2311",
+   "DOI": "10.1182/blood-2012-09-456756",
+   "volume": "121",
+   "author": "F Schwoebel",
+   "year": "2013",
+   "unstructured": "Schwoebel, F. et al. The effects of the anti-hepcidin Spiegelmer NOX-H94 on inflammation-induced anemia in cynomolgus monkeys. Blood 121, 2311–2315 (2013).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2016199_CR229",
+   "doi-asserted-by": "crossref",
+   "first-page": "783",
+   "DOI": "10.1182/blood-2003-03-0672",
+   "volume": "102",
+   "author": "T Ganz",
+   "year": "2003",
+   "unstructured": "Ganz, T. Hepcidin, a key regulator of iron metabolism and mediator of anemia of inflammation. Blood 102, 783–788 (2003).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd2016199_CR230",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01372137?term=NCT01372137&rank=1 (2016)."
+  },
+  {
+   "key": "BFnrd2016199_CR231",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01691040?term=NCT01691040&rank=1 (2014)."
+  },
+  {
+   "key": "BFnrd2016199_CR232",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT02079896?term=NCT02079896&rank=1 (2015)."
+  },
+  {
+   "key": "BFnrd2016199_CR233",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00021736?term=NCT00021736&rank=1 (2005)."
+  },
+  {
+   "key": "BFnrd2016199_CR234",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00040313?term=00040313&rank=1 (2006)."
+  },
+  {
+   "key": "BFnrd2016199_CR235",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00056199?term=00056199&rank=1 (2008)."
+  },
+  {
+   "key": "BFnrd2016199_CR236",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00312351?term=00312351&rank=1 (2007)."
+  },
+  {
+   "key": "BFnrd2016199_CR237",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00321997?term=NCT00321997&rank=1 (2006)."
+  },
+  {
+   "key": "BFnrd2016199_CR238",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01487070?term=NCT01487070&rank=1 (2011)."
+  },
+  {
+   "key": "BFnrd2016199_CR239",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00709527?term=NCT00709527&rank=1 (2012)."
+  },
+  {
+   "key": "BFnrd2016199_CR240",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00950638?term=NCT00950638&rank=1 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR241",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00569140?term=NCT00569140&rank=1 (2010)."
+  },
+  {
+   "key": "BFnrd2016199_CR242",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT02387957?term=NCT02387957&rank=1 (2016)."
+  },
+  {
+   "key": "BFnrd2016199_CR243",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT02591914?term=NCT02591914&rank=1 (2005)."
+  },
+  {
+   "key": "BFnrd2016199_CR244",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00113997?term=NCT00113997&rank=1 (2008)."
+  },
+  {
+   "key": "BFnrd2016199_CR245",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00694785?term=ARC1779&rank=3 (2009)."
+  },
+  {
+   "key": "BFnrd2016199_CR246",
+   "doi-asserted-by": "crossref",
+   "first-page": "545",
+   "DOI": "10.1160/TH10-08-0520",
+   "volume": "105",
+   "author": "P Jilma-Stohlawetz",
+   "year": "2011",
+   "unstructured": "Jilma-Stohlawetz, P. et al. Inhibition of von Willebrand factor by ARC1779 in patients with acute thrombotic thrombocytopenic purpura. Thromb. Haemost. 105, 545–552 (2011).",
+   "journal-title": "Thromb. Haemost."
+  },
+  {
+   "key": "BFnrd2016199_CR247",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01034410?term=NCT01034410&rank=1 (2011)."
+  },
+  {
+   "key": "BFnrd2016199_CR248",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT00976729?term=NCT00976729&rank=1 (2013)."
+  },
+  {
+   "key": "BFnrd2016199_CR249",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01372124?term=NCT01372124&rank=1 (2012)."
+  },
+  {
+   "key": "BFnrd2016199_CR250",
+   "unstructured": "US National Library of Medicine. Clinicaltrials.gov https://clinicaltrials.gov/ct2/show/NCT01522794?term=NCT01522794&rank=1 (2014)."
+  }
+ ],
+ "updated-by": [
+  {
+   "DOI": "10.1038/nrd.2017.86",
+   "type": "erratum",
+   "label": "Erratum",
+   "source": "publisher",
+   "updated": {
+    "date-parts": [
+     [
+      2017,
+      4,
+      28
+     ]
+    ],
+    "date-time": "2017-04-28T00:00:00Z",
+    "timestamp": 1493337600000
+   }
+  }
+ ],
+ "container-title": [
+  "Nature Reviews Drug Discovery"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.nature.com/articles/nrd.2016.199.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nrd.2016.199",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nrd.2016.199.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    6,
+    11
+   ]
+  ],
+  "date-time": "2025-06-11T19:39:12Z",
+  "timestamp": 1749670752000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/nrd.2016.199"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    3
+   ]
+  ]
+ },
+ "references-count": 250,
+ "journal-issue": {
+  "issue": "3",
+  "published-print": {
+   "date-parts": [
+    [
+     2017,
+     3
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "BFnrd2016199"
+ ],
+ "URL": "https://doi.org/10.1038/nrd.2016.199",
+ "relation": {},
+ "ISSN": [
+  "1474-1776",
+  "1474-1784"
+ ],
+ "issn-type": [
+  {
+   "value": "1474-1776",
+   "type": "print"
+  },
+  {
+   "value": "1474-1784",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    3
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "3 November 2016",
+   "order": 1,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "28 April 2017",
+   "order": 2,
+   "name": "change_date",
+   "label": "Change Date",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "Correction",
+   "order": 3,
+   "name": "change_type",
+   "label": "Change Type",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "Base Pair Biotechnologies and Apterna were omitted from Table 3 in this article. These have now been included.",
+   "order": 4,
+   "name": "change_details",
+   "label": "Change Details",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "J.J.R. and J.Z. have an issued patent entitled “Cell-type specific aptamer-siRNA delivery system for HIV-1 therapy” [USPTO, No. US 8, 222, 226 B2, July 17, 2012]. J.J.R., J.Z., Marco S. Weinberg and Kevin V. Morris have a patent pending on “Cell-specific internalizing RNA aptamers against human CCR5 and used therefore” [United States Patent, application number: 62/025, 368, filed on July 16, 2014].",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  }
+ ]
+}

@@ -26,6 +26,6 @@
   "evaluation_rubric": {
     "mean_plddt_threshold": 65.0
   },
-  "source": "Theophylline aptamer",
+  "source": "tRNA-Arg (yeast)",
   "paper_reference": "1F7U"
 }

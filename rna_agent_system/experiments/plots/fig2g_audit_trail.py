@@ -8,11 +8,26 @@ out of Fig. 2 to Supplementary Fig. S1; data and rendering unchanged.
 Single panel: the session selected by the pre-registered rule (multi-turn PA
 sessions; most distinct gate verdict types; ties → median event count;
 residual ties → lowest PA number) — one lane per form turn, one dot per
-audited tool call (status-coloured), one diamond per gate decision
+audited tool call (status-coloured), one square per gate decision
 (verdict-coloured), small triangles for ranking-objective assemblies. Turn
 lanes are split at idle gaps > 60 s between consecutive audit events
 (cross-checked against the registry's turn count by the analyzer).
 Everything drawn derives from the frozen audit records alone.
+
+Figure revision 2026-10-02 (user-raised, rendering fix + text-consistency
+pass): (i) the "<" arrows a reader saw were an overlap artifact, not
+data — at this density (median gate gap ~1 s against a marker width
+covering ~40 s of axis) every diamond's white edge cut its predecessor
+into a crescent, and even edgeless offset diamonds expose each
+predecessor's left tip, so the track read as trains of left-pointing
+chevrons. Markers now draw solid and edgeless in one chronological pass,
+gate decisions as squares: dense stretches merge into an interleaved
+event strip (the latest event at each pixel wins — the honest trace of
+the stream; overlapping squares stripe vertically instead of tipping
+into chevrons) and sparse stretches keep individual shapes. Zero data
+change; per-class counts live in the legend. (ii) Legend texts follow
+the manuscript — "tool call" for "call ok", "require-profiling" for
+"require_profiling", counts with the text's thousands separator (1,853).
 
 Exp-24 shared-instrument re-measurement (2026-09-01): the corpus is the
 frozen audit slice of the registered third-reset production campaign
@@ -109,23 +124,36 @@ def draw_track(ax, rep: dict) -> None:
         if et == "tool_call":
             ok = bool(ev.get("success"))
             mark = {"x": x, "marker": "o", "s": 7,
-                    "c": C_CALL if ok else C_FAIL, "key": "call ok" if ok else "call failed",
-                    "alpha": 0.75}  # dense same-second bursts stay readable
+                    "c": C_CALL if ok else C_FAIL,
+                    "key": "call ok" if ok else "call failed"}
         elif et == "gate_decision":
             v = ev.get("verdict")
-            mark = {"x": x, "marker": "D", "s": 13,
-                    "c": VERDICT_COLOR.get(v, C_REJECT), "key": v, "alpha": 1.0}
+            # squares, not diamonds: overlapping offset diamonds expose
+            # each predecessor's left tip, a herringbone texture that
+            # reads as "<" arrows; squares stripe vertically instead
+            mark = {"x": x, "marker": "s", "s": 11,
+                    "c": VERDICT_COLOR.get(v, C_REJECT), "key": v}
         else:
             mark = {"x": x, "marker": "v", "s": 10, "c": C_RANKING,
-                    "key": "ranking assembly", "alpha": 1.0}
+                    "key": "ranking assembly"}
         lane_marks[ev["turn"] - 1].append(mark)
         n_marks[mark["key"]] = n_marks.get(mark["key"], 0) + 1
 
     for lane, marks in enumerate(lane_marks):
         y = n_lanes - lane  # turn 1 on top
+        # One chronological pass, every marker solid and edgeless: dense
+        # stretches merge into an interleaved event strip (the latest
+        # event at each pixel wins — the honest trace of the stream) and
+        # sparse stretches keep individual shapes. White edges and
+        # semi-transparent fills were the arrow artifact — at this
+        # density (median gate gap ~1 s against a marker width covering
+        # ~40 s of axis) every white edge cut its predecessor into a
+        # crescent that read as a spurious "<" arrow, and alpha blends
+        # would leave off-palette pixels. Per-class counts live in the
+        # legend.
         for m in marks:
             ax.scatter(m["x"], y, s=m["s"], marker=m["marker"], c=m["c"],
-                       alpha=m["alpha"], edgecolors="white", linewidths=0.3, zorder=4)
+                       alpha=1.0, edgecolors="none", zorder=4)
         ax.axhline(y - 0.5, color=NEUTRAL_GRID, linewidth=0.4, zorder=1)
     ax.set_ylim(0.3, n_lanes + 1.0)  # headroom: legend clears the top lane line
     ax.set_yticks([n_lanes - i for i in range(n_lanes)])
@@ -142,20 +170,32 @@ def draw_track(ax, rep: dict) -> None:
 
     # Legend from the mark kinds actually present, in reading order, inside
     # the empty upper-right of the track (turn 1 occupies only x <~ 0.5).
-    order = ["call ok", "reject", "require_profiling", "downgrade", "allow", "ranking assembly"]
+    # Display names follow the manuscript ("tool calls", "require-profiling")
+    # and counts print with the text's thousands separator.
+    order = ["call ok", "call failed", "reject", "require_profiling",
+             "downgrade", "allow", "ranking assembly"]
+    display = {
+        "call ok": "tool call",
+        "call failed": "tool call failed",
+        "reject": "reject",
+        "require_profiling": "require-profiling",
+        "downgrade": "downgrade",
+        "allow": "allow",
+        "ranking assembly": "ranking assembly",
+    }
     style = {
         "call ok": ("o", 7, C_CALL),
         "call failed": ("o", 7, C_FAIL),
-        "reject": ("D", 13, C_REJECT),
-        "require_profiling": ("D", 13, C_REQPROF),
-        "downgrade": ("D", 13, C_DOWNGRADE),
-        "allow": ("D", 13, C_ALLOW),
+        "reject": ("s", 11, C_REJECT),
+        "require_profiling": ("s", 11, C_REQPROF),
+        "downgrade": ("s", 11, C_DOWNGRADE),
+        "allow": ("s", 11, C_ALLOW),
         "ranking assembly": ("v", 10, C_RANKING),
     }
     handles = [
         plt.Line2D([], [], marker=style[k][0], linestyle="", markersize=4.2,
-                   markerfacecolor=style[k][2], markeredgecolor="white",
-                   markeredgewidth=0.3, label=f"{k} ({n_marks[k]})")
+                   markerfacecolor=style[k][2], markeredgecolor="none",
+                   label=f"{display[k]} ({n_marks[k]:,})")
         for k in order if k in n_marks
     ]
     leg = ax.legend(handles=handles, loc="upper right", bbox_to_anchor=(0.99, 0.98),

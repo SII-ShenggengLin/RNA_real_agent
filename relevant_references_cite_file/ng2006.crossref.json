@@ -1,0 +1,1271 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T01:33:38Z",
+  "timestamp": 1791423218306,
+  "version": "4.3.3"
+ },
+ "reference-count": 98,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "2",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2006,
+      2,
+      1
+     ]
+    ],
+    "date-time": "2006-02-01T00:00:00Z",
+    "timestamp": 1138752000000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "http://www.springer.com/tdm"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nat Rev Drug Discov"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2006,
+    2
+   ]
+  ]
+ },
+ "DOI": "10.1038/nrd1955",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2006,
+    5,
+    10
+   ]
+  ],
+  "date-time": "2006-05-10T12:31:12Z",
+  "timestamp": 1147264272000
+ },
+ "page": "123-132",
+ "source": "Crossref",
+ "is-referenced-by-count": 1389,
+ "title": [
+  "Pegaptanib, a targeted anti-VEGF aptamer for ocular vascular disease"
+ ],
+ "prefix": "10.1038",
+ "volume": "5",
+ "author": [
+  {
+   "given": "Eugene W. M.",
+   "family": "Ng",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David T.",
+   "family": "Shima",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Perry",
+   "family": "Calias",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "suffix": "Jr.",
+   "given": "Emmett T.",
+   "family": "Cunningham",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David R.",
+   "family": "Guyer",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Anthony P.",
+   "family": "Adamis",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "reference": [
+  {
+   "key": "BFnrd1955_CR1",
+   "doi-asserted-by": "publisher",
+   "first-page": "391",
+   "DOI": "10.1038/nrd1381",
+   "volume": "3",
+   "author": "N Ferrara",
+   "year": "2004",
+   "unstructured": "Ferrara, N., Hillan, K. J., Gerber, H. P. & Novotny, W. Discovery and development of bevacizumab, an anti-VEGF antibody for treating cancer. Nature Rev. Drug Discov. 3, 391–400 (2004). This review provides a comprehensive overview of VEGF and its role in angiogenesis.",
+   "journal-title": "Nature Rev. Drug Discov."
+  },
+  {
+   "key": "BFnrd1955_CR2",
+   "doi-asserted-by": "publisher",
+   "first-page": "195",
+   "DOI": "10.1016/0092-8674(86)90383-1",
+   "volume": "45",
+   "author": "J Kitajewski",
+   "year": "1986",
+   "unstructured": "Kitajewski, J. et al. Adenovirus VAI RNA antagonizes the antiviral action of interferon by preventing activation of the interferon-induced eIF-2 α kinase. Cell 45, 195–200 (1986).",
+   "journal-title": "Cell"
+  },
+  {
+   "key": "BFnrd1955_CR3",
+   "doi-asserted-by": "publisher",
+   "first-page": "34314",
+   "DOI": "10.1074/jbc.M006804200",
+   "volume": "275",
+   "author": "J Zhang",
+   "year": "2000",
+   "unstructured": "Zhang, J. et al. HIV-1 TAR RNA enhances the interaction between Tat and cyclin T1. J. Biol. Chem. 275, 34314–34319 (2000).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd1955_CR4",
+   "doi-asserted-by": "publisher",
+   "first-page": "818",
+   "DOI": "10.1038/346818a0",
+   "volume": "346",
+   "author": "AD Ellington",
+   "year": "1990",
+   "unstructured": "Ellington, A. D. & Szostak, J. W. In vitro selection of RNA molecules that bind specific ligands. Nature 346, 818–822 (1990).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd1955_CR5",
+   "doi-asserted-by": "publisher",
+   "first-page": "669",
+   "DOI": "10.1007/s00432-003-0489-8",
+   "volume": "129",
+   "author": "C Buerger",
+   "year": "2003",
+   "unstructured": "Buerger, C. & Groner, B. Bifunctional recombinant proteins in cancer therapy: cell penetrating peptide aptamers as inhibitors of growth factor signaling. J. Cancer Res. Clin. Oncol. 129, 669–675 (2003).",
+   "journal-title": "J. Cancer Res. Clin. Oncol."
+  },
+  {
+   "key": "BFnrd1955_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "72",
+   "DOI": "10.1093/bfgp/2.1.72",
+   "volume": "2",
+   "author": "M Crawford",
+   "year": "2003",
+   "unstructured": "Crawford, M., Woodman, R. & Ko Ferrigno, P. Peptide aptamers: tools for biology and drug discovery. Brief. Funct. Genomic. Proteomic. 2, 72–79 (2003).",
+   "journal-title": "Brief. Funct. Genomic. Proteomic."
+  },
+  {
+   "key": "BFnrd1955_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "10",
+   "DOI": "10.1016/S1367-5931(97)80103-2",
+   "volume": "1",
+   "author": "B Eaton",
+   "year": "2005",
+   "unstructured": "Eaton, B. The joys of in vitro selection: chemically dressing oligonucleotides to satiate protein targets. Curr. Opin. Chem. Biol. 1, 10–16 (2005).",
+   "journal-title": "Curr. Opin. Chem. Biol."
+  },
+  {
+   "key": "BFnrd1955_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "505",
+   "DOI": "10.1126/science.2200121",
+   "volume": "249",
+   "author": "C Tuerk",
+   "year": "1990",
+   "unstructured": "Tuerk, C. & Gold, L. Systematic evolution of ligands by exponential enrichment: RNA ligands to bacteriophage T4 DNA polymerase. Science 249, 505–510 (1990). These investigators were the first to describe the use of SELEX technology in developing targeted aptamers.",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd1955_CR9",
+   "doi-asserted-by": "crossref",
+   "first-page": "1628",
+   "DOI": "10.1093/clinchem/45.9.1628",
+   "volume": "45",
+   "author": "SD Jayasena",
+   "year": "1999",
+   "unstructured": "Jayasena, S. D. Aptamers: an emerging class of molecules that rival antibodies in diagnostics. Clin. Chem. 45, 1628–1650 (1999).",
+   "journal-title": "Clin. Chem."
+  },
+  {
+   "key": "BFnrd1955_CR10",
+   "doi-asserted-by": "publisher",
+   "first-page": "4695",
+   "DOI": "10.1093/nar/19.17.4695",
+   "volume": "19",
+   "author": "PC de Smidt",
+   "year": "1991",
+   "unstructured": "de Smidt, P. C., Le Doan, T., de Falco, S. & van Berkel, T. J. Association of antisense oligonucleotides with lipoproteins prolongs the plasma half-life and modifies the tissue distribution. Nucleic Acids Res. 19, 4695–4700 (1991).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd1955_CR11",
+   "doi-asserted-by": "crossref",
+   "first-page": "3271",
+   "DOI": "10.1182/blood.V81.12.3271.3271",
+   "volume": "81",
+   "author": "LC Griffin",
+   "year": "1993",
+   "unstructured": "Griffin, L. C., Tidmarsh, G. F., Bock, L. C., Toole, J. J. & Leung, L. L. In vivo anticoagulant properties of a novel nucleotide-based thrombin inhibitor and demonstration of regional anticoagulation in extracorporeal circuits. Blood 81, 3271–3276 (1993).",
+   "journal-title": "Blood"
+  },
+  {
+   "key": "BFnrd1955_CR12",
+   "doi-asserted-by": "publisher",
+   "first-page": "314",
+   "DOI": "10.1126/science.1857967",
+   "volume": "253",
+   "author": "WA Pieken",
+   "year": "1991",
+   "unstructured": "Pieken, W. A., Olsen, D. B., Benseler, F., Aurup, H. & Eckstein, F. Kinetic characterization of ribonuclease-resistant 2′-modified hammerhead ribozymes. Science 253, 314–317 (1991).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd1955_CR13",
+   "doi-asserted-by": "publisher",
+   "first-page": "683",
+   "DOI": "10.1016/1074-5521(95)90032-2",
+   "volume": "2",
+   "author": "LS Green",
+   "year": "1995",
+   "unstructured": "Green, L. S. et al. Nuclease-resistant nucleic acid ligands to vascular permeability factor/vascular endothelial growth factor. Chem. Biol. 2, 683–695 (1995).",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd1955_CR14",
+   "doi-asserted-by": "publisher",
+   "first-page": "20556",
+   "DOI": "10.1074/jbc.273.32.20556",
+   "volume": "273",
+   "author": "J Ruckman",
+   "year": "1998",
+   "unstructured": "Ruckman, J. et al. 2′-Fluoropyrimidine RNA-based aptamers to the 165-amino acid form of vascular endothelial growth factor (VEGF 165). Inhibition of receptor binding and VEGF-induced vascular permeability through interactions requiring the exon 7-encoded domain. J. Biol. Chem. 273, 20556–20567 (1998). These studies performed extensive in vitro characterization of three candidate aptamers, one of which ultimately was developed as pegaptanib.",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd1955_CR15",
+   "doi-asserted-by": "publisher",
+   "first-page": "25",
+   "DOI": "10.1016/j.chembiol.2004.10.017",
+   "volume": "12",
+   "author": "PE Burmeister",
+   "year": "2005",
+   "unstructured": "Burmeister, P. E. et al. Direct in vitro selection of a 2′-O-methyl aptamer to VEGF. Chem. Biol. 12, 25–33 (2005).",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd1955_CR16",
+   "doi-asserted-by": "publisher",
+   "first-page": "963",
+   "DOI": "10.1002/cbic.200300648",
+   "volume": "4",
+   "author": "M Rimmele",
+   "year": "2003",
+   "unstructured": "Rimmele, M. Nucleic acid aptamers as tools and drugs: recent developments. Chembiochem. 4, 963–971 (2003).",
+   "journal-title": "Chembiochem."
+  },
+  {
+   "key": "BFnrd1955_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "555",
+   "DOI": "10.1146/annurev.med.56.062904.144915",
+   "volume": "56",
+   "author": "SM Nimjee",
+   "year": "2005",
+   "unstructured": "Nimjee, S. M., Rusconi, C. P. & Sullenger, B. A. Aptamers: an emerging class of therapeutics. Annu. Rev. Med. 56, 555–583 (2005).",
+   "journal-title": "Annu. Rev. Med."
+  },
+  {
+   "key": "BFnrd1955_CR18",
+   "volume-title": "DrugPlus International",
+   "author": "G Mayor",
+   "year": "2003",
+   "unstructured": "Mayor, G., Grattinger, M. & Blind, M. Aptamers: multifunctional tools for target validation and drug discovery. DrugPlus International Nov /Dec (2003)."
+  },
+  {
+   "key": "BFnrd1955_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "220",
+   "DOI": "10.1002/cyto.a.20056",
+   "volume": "59",
+   "author": "H Ulrich",
+   "year": "2004",
+   "unstructured": "Ulrich, H., Martins, A. H. & Pesquero, J. B. RNA and DNA aptamers in cytomics analysis. Cytometry A 59, 220–231 (2004).",
+   "journal-title": "Cytometry A"
+  },
+  {
+   "key": "BFnrd1955_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "3606",
+   "DOI": "10.1073/pnas.96.7.3606",
+   "volume": "96",
+   "author": "M Blind",
+   "year": "1999",
+   "unstructured": "Blind, M., Kolanus, W. & Famulok, M. Cytoplasmic RNA modulators of an inside-out signal-transduction cascade. Proc. Natl Acad. Sci. USA 96, 3606–3610 (1999).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd1955_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "931",
+   "DOI": "10.1016/S1074-5521(01)00070-9",
+   "volume": "8",
+   "author": "M Famulok",
+   "year": "2001",
+   "unstructured": "Famulok, M., Blind, M. & Mayer, G. Intramers as promising new tools in functional proteomics. Chem. Biol. 8, 931–939 (2001).",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd1955_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "2355",
+   "DOI": "10.1073/pnas.92.6.2355",
+   "volume": "92",
+   "author": "JA Doudna",
+   "year": "1995",
+   "unstructured": "Doudna, J. A., Cech, T. R. & Sullenger, B. A. Selection of an RNA molecule that mimics a major autoantigenic epitope of human insulin receptor. Proc. Natl Acad. Sci. USA 92, 2355–2359 (1995).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd1955_CR23",
+   "doi-asserted-by": "publisher",
+   "first-page": "8672",
+   "DOI": "10.1021/ja034483t",
+   "volume": "125",
+   "author": "M Michaud",
+   "year": "2003",
+   "unstructured": "Michaud, M. et al. A DNA aptamer as a new target-specific chiral selector for HPLC. J. Am. Chem. Soc. 125, 8672–8679 (2003).",
+   "journal-title": "J. Am. Chem. Soc."
+  },
+  {
+   "key": "BFnrd1955_CR24",
+   "doi-asserted-by": "publisher",
+   "first-page": "820",
+   "DOI": "10.1126/science.287.5454.820",
+   "volume": "287",
+   "author": "T Hermann",
+   "year": "2000",
+   "unstructured": "Hermann, T. & Patel, D. J. Adaptive recognition by nucleic acid aptamers. Science 287, 820–825 (2000).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd1955_CR25",
+   "doi-asserted-by": "publisher",
+   "first-page": "838",
+   "DOI": "10.1038/nature03195",
+   "volume": "432",
+   "author": "RR Breaker",
+   "year": "2004",
+   "unstructured": "Breaker, R. R. Natural and engineered nucleic acids as tools to explore biology. Nature 432, 838–845 (2004).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "BFnrd1955_CR26",
+   "doi-asserted-by": "publisher",
+   "first-page": "47",
+   "DOI": "10.1002/rmv.415",
+   "volume": "14",
+   "author": "A Peracchi",
+   "year": "2004",
+   "unstructured": "Peracchi, A. Prospects for antiviral ribozymes and deoxyribozymes. Rev. Med. Virol. 14, 47–64 (2004).",
+   "journal-title": "Rev. Med. Virol."
+  },
+  {
+   "key": "BFnrd1955_CR27",
+   "doi-asserted-by": "publisher",
+   "first-page": "1",
+   "DOI": "10.1186/1472-6769-4-1",
+   "volume": "4",
+   "author": "P Hendry",
+   "year": "2004",
+   "unstructured": "Hendry, P., McCall, M. J., Stewart, T. S. & Lockett, T. J. Redesigned and chemically-modified hammerhead ribozymes with improved activity and serum stability. BMC Chem. Biol. 4, 1 (2004).",
+   "journal-title": "BMC Chem. Biol."
+  },
+  {
+   "key": "BFnrd1955_CR28",
+   "doi-asserted-by": "publisher",
+   "first-page": "66",
+   "DOI": "10.1016/j.taap.2004.04.017",
+   "volume": "201",
+   "author": "TL Jason",
+   "year": "2004",
+   "unstructured": "Jason, T. L., Koropatnick, J., Berg, R. W. Toxicology of antisense therapeutics. Toxicol. Appl. Pharmacol. 201, 66–83 (2004).",
+   "journal-title": "Toxicol. Appl. Pharmacol."
+  },
+  {
+   "key": "BFnrd1955_CR29",
+   "doi-asserted-by": "publisher",
+   "first-page": "929",
+   "DOI": "10.1172/JCI11325",
+   "volume": "106",
+   "author": "RR White",
+   "year": "2000",
+   "unstructured": "White, R. R., Sullenger, B. A. & Rusconi, C. P. Developing aptamers into therapeutics. J. Clin. Invest. 106, 929–934 (2000).",
+   "journal-title": "J. Clin. Invest."
+  },
+  {
+   "key": "BFnrd1955_CR30",
+   "doi-asserted-by": "publisher",
+   "first-page": "8898",
+   "DOI": "10.1073/pnas.132067399",
+   "volume": "99",
+   "author": "B Wlotzka",
+   "year": "2002",
+   "unstructured": "Wlotzka, B. et al. In vivo properties of an anti-GnRH Spiegelmer: an example of an oligonucleotide-based therapeutic substance class. Proc. Natl Acad. Sci. USA 99, 8898–8902 (2002).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd1955_CR31",
+   "doi-asserted-by": "publisher",
+   "first-page": "502",
+   "DOI": "10.1097/00005176-200405000-00008",
+   "volume": "38",
+   "author": "E Miele",
+   "year": "2004",
+   "unstructured": "Miele, E., Markowitz, J. E., Mamula, P. & Baldassano, R. N. Human antichimeric antibody in children and young adults with inflammatory bowel disease receiving infliximab. J. Pediatr. Gastroenterol. Nutr. 38, 502–508 (2004).",
+   "journal-title": "J. Pediatr. Gastroenterol. Nutr."
+  },
+  {
+   "key": "BFnrd1955_CR32",
+   "first-page": "2096",
+   "volume": "59",
+   "author": "J Richards",
+   "year": "1999",
+   "unstructured": "Richards, J. et al. Phase I evaluation of humanized OKT3: toxicity and immunomodulatory effects of hOKT3gamma4. Cancer Res. 59, 2096–2101 (1999).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd1955_CR33",
+   "doi-asserted-by": "publisher",
+   "first-page": "10450",
+   "DOI": "10.1021/bi00200a028",
+   "volume": "33",
+   "author": "D Jellinek",
+   "year": "1994",
+   "unstructured": "Jellinek, D., Green, L. S., Bell, C. & Janjic, N. Inhibition of receptor binding by high-affinity RNA ligands to vascular endothelial growth factor. Biochemistry 33, 10450–10456 (1994).",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "BFnrd1955_CR34",
+   "doi-asserted-by": "publisher",
+   "first-page": "581",
+   "DOI": "10.1210/er.2003-0027",
+   "volume": "25",
+   "author": "N Ferrara",
+   "year": "2004",
+   "unstructured": "Ferrara, N. Vascular endothelial growth factor: basic science and clinical progress. Endocr. Rev. 25, 581–611 (2004).",
+   "journal-title": "Endocr. Rev."
+  },
+  {
+   "key": "BFnrd1955_CR35",
+   "doi-asserted-by": "publisher",
+   "first-page": "983",
+   "DOI": "10.1126/science.6823562",
+   "volume": "219",
+   "author": "DR Senger",
+   "year": "1983",
+   "unstructured": "Senger, D. R. et al. Tumor cells secrete a vascular permeability factor that promotes accumulation of ascites fluid. Science 219, 983–985 (1983).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd1955_CR36",
+   "doi-asserted-by": "publisher",
+   "first-page": "1306",
+   "DOI": "10.1126/science.2479986",
+   "volume": "246",
+   "author": "DW Leung",
+   "year": "1989",
+   "unstructured": "Leung, D. W., Cachianes, G., Kuang, W. J., Goeddel, D. V. & Ferrara, N. Vascular endothelial growth factor is a secreted angiogenic mitogen. Science 246, 1306–1309 (1989).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd1955_CR37",
+   "doi-asserted-by": "publisher",
+   "first-page": "1309",
+   "DOI": "10.1126/science.2479987",
+   "volume": "246",
+   "author": "PJ Keck",
+   "year": "1989",
+   "unstructured": "Keck, P. J. et al. Vascular permeability factor, an endothelial cell mitogen related to PDGF. Science 246, 1309–1312 (1989).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "BFnrd1955_CR38",
+   "doi-asserted-by": "publisher",
+   "first-page": "20",
+   "DOI": "10.1093/nar/22.1.20",
+   "volume": "22",
+   "author": "H Aurup",
+   "year": "1994",
+   "unstructured": "Aurup, H., Tuschl, T., Benseler, F., Ludwig, J. & Eckstein, F. Oligonucleotide duplexes containing 2′-amino-2′-deoxycytidines: thermal stability and chemical reactivity. Nucleic Acids Res. 22, 20–24 (1994).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd1955_CR39",
+   "doi-asserted-by": "publisher",
+   "first-page": "7832",
+   "DOI": "10.1021/bi00081a031",
+   "volume": "32",
+   "author": "EA Lesnik",
+   "year": "1993",
+   "unstructured": "Lesnik, E. A. et al. Oligodeoxynucleotides containing 2′-O-modified adenosine: synthesis and effects on stability of DNA:RNA duplexes. Biochemistry 32, 7832–7838 (1993).",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "BFnrd1955_CR40",
+   "doi-asserted-by": "publisher",
+   "first-page": "2019",
+   "DOI": "10.1093/nar/23.11.2019",
+   "volume": "23",
+   "author": "LL Cummins",
+   "year": "1995",
+   "unstructured": "Cummins, L. L. et al. Characterization of fully 2′-modified oligoribonucleotide hetero- and homoduplex hybridization and nuclease sensitivity. Nucleic Acids Res. 23, 2019–2024 (1995).",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "BFnrd1955_CR41",
+   "first-page": "818",
+   "volume": "346",
+   "author": "BE Eaton",
+   "year": "1995",
+   "unstructured": "Eaton, B. E., Gold, L. & Zichi, D. A. Let's get specific: the relationship between specificity and affinity. Chem. Biol. 346, 818–822 (1995).",
+   "journal-title": "Chem. Biol."
+  },
+  {
+   "key": "BFnrd1955_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "2234",
+   "DOI": "10.1007/s11095-004-7676-4",
+   "volume": "21",
+   "author": "JM Healy",
+   "year": "2004",
+   "unstructured": "Healy, J. M. et al. Pharmacokinetics and biodistribution of novel aptamer compositions. Pharm. Res. 21, 2234–2246 (2004).",
+   "journal-title": "Pharm. Res."
+  },
+  {
+   "key": "BFnrd1955_CR43",
+   "doi-asserted-by": "publisher",
+   "first-page": "533",
+   "DOI": "10.1007/s11626-999-0064-y",
+   "volume": "35",
+   "author": "C Bell",
+   "year": "1999",
+   "unstructured": "Bell, C., Lynam, E., Landfair, D. J., Janjic, N. & Wiles, M. E. Oligonucleotide NX1838 inhibits VEGF165-mediated cellular responses in vitro. In Vitro Cell. Dev. Biol. Anim. 35, 533–542 (1999). Studies established the abilities of pegaptanib to block binding of VEGF to receptors on endothelial cells and to interfere with VEGF-mediated signal transduction.",
+   "journal-title": "In Vitro Cell. Dev. Biol. Anim."
+  },
+  {
+   "key": "BFnrd1955_CR44",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Eyetech Study Group. Preclinical and phase 1A clinical evaluation of an anti-VEGF pegylated aptamer (EYE001) for the treatment of exudative age-related macular degeneration. Retina 22, 143–152 (2002).",
+   "DOI": "10.1097/00006982-200204000-00002"
+  },
+  {
+   "key": "BFnrd1955_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "637",
+   "DOI": "10.1016/S0969-2126(98)00065-3",
+   "volume": "6",
+   "author": "WJ Fairbrother",
+   "year": "1998",
+   "unstructured": "Fairbrother, W. J., Champe, M. A., Christinger, H. W., Keyt, B. A. & Starovasnik, M. A. Solution structure of the heparin-binding domain of vascular endothelial growth factor. Structure 6, 637–648 (1998).",
+   "journal-title": "Structure"
+  },
+  {
+   "key": "BFnrd1955_CR46",
+   "unstructured": "Lee, J.-H. et al. A therapeutic aptamer inhibits angiogenesis by specifically targeting the heparin binding domain of VEGF165 . Proc. Natl Acad. Sci. USA [epub ahead of print]."
+  },
+  {
+   "key": "BFnrd1955_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "203",
+   "DOI": "10.1016/S0378-4347(99)00285-6",
+   "volume": "732",
+   "author": "CE Tucker",
+   "year": "1999",
+   "unstructured": "Tucker, C. E. et al. Detection and plasma pharmacokinetics of an anti-vascular endothelial growth factor oligonucleotide-aptamer (NX1838) in rhesus monkeys. J. Chromatogr. B. Biomed. Sci. Appl. 732, 203–212 (1999).",
+   "journal-title": "J. Chromatogr. B. Biomed. Sci. Appl."
+  },
+  {
+   "key": "BFnrd1955_CR48",
+   "doi-asserted-by": "publisher",
+   "first-page": "1503",
+   "DOI": "10.1023/A:1007657109012",
+   "volume": "17",
+   "author": "DW Drolet",
+   "year": "2000",
+   "unstructured": "Drolet, D. W. et al. Pharmacokinetics and safety of an anti-vascular endothelial growth factor aptamer (NX1838) following injection into the vitreous humor of rhesus monkeys. Pharm. Res. 17, 1503–1510 (2000).",
+   "journal-title": "Pharm. Res."
+  },
+  {
+   "key": "BFnrd1955_CR49",
+   "doi-asserted-by": "publisher",
+   "first-page": "3964",
+   "DOI": "10.1093/emboj/18.14.3964",
+   "volume": "18",
+   "author": "T Asahara",
+   "year": "1999",
+   "unstructured": "Asahara, T. et al. VEGF contributes to postnatal neovascularization by mobilizing bone marrow-derived endothelial progenitor cells. EMBO J. 18, 3964–3972 (1999).",
+   "journal-title": "EMBO J."
+  },
+  {
+   "key": "BFnrd1955_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "1107",
+   "DOI": "10.1016/j.exer.2004.01.010",
+   "volume": "78",
+   "author": "KG Csaky",
+   "year": "2004",
+   "unstructured": "Csaky, K. G. et al. Recruitment of marrow-derived endothelial cells to experimental choroidal neovascularization by local expression of vascular endothelial growth factor. Exp. Eye. Res. 78, 1107–1116 (2004).",
+   "journal-title": "Exp. Eye. Res."
+  },
+  {
+   "key": "BFnrd1955_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "1024",
+   "DOI": "10.1038/nm1095-1024",
+   "volume": "1",
+   "author": "T Alon",
+   "year": "1995",
+   "unstructured": "Alon, T. et al. Vascular endothelial growth factor acts as a survival factor for newly formed retinal vessels and has implications for retinopathy of prematurity. Nat. Med. 1, 1024–1028 (1995).",
+   "journal-title": "Nat. Med."
+  },
+  {
+   "key": "BFnrd1955_CR52",
+   "doi-asserted-by": "publisher",
+   "first-page": "29",
+   "DOI": "10.1006/mvre.1997.2056",
+   "volume": "55",
+   "author": "WJ Lamoreaux",
+   "year": "1998",
+   "unstructured": "Lamoreaux, W. J., Fitzgerald, M. E., Reiner, A., Hasty, K. A. & Charles, S. T. Vascular endothelial growth factor increases release of gelatinase A and decreases release of tissue inhibitor of metalloproteinases by microvascular endothelial cells in vitro. Microvasc. Res. 55, 29–42 (1998).",
+   "journal-title": "Microvasc. Res."
+  },
+  {
+   "key": "BFnrd1955_CR53",
+   "doi-asserted-by": "publisher",
+   "first-page": "1733",
+   "DOI": "10.1016/S0002-9440(10)65044-4",
+   "volume": "156",
+   "author": "K Miyamoto",
+   "year": "2000",
+   "unstructured": "Miyamoto, K. et al. Vascular endothelial growth factor (VEGF)-induced retinal vascular permeability is mediated by intercellular adhesion molecule-1 (ICAM-1). Am. J. Pathol. 156, 1733–1739 (2000).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd1955_CR54",
+   "doi-asserted-by": "publisher",
+   "first-page": "2155",
+   "DOI": "10.1167/iovs.02-0807",
+   "volume": "44",
+   "author": "S Ishida",
+   "year": "2003",
+   "unstructured": "Ishida, S. et al. VEGF164 is proinflammatory in the diabetic retina. Invest. Ophthalmol. Vis. Sci. 44, 2155–2162 (2003).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR55",
+   "doi-asserted-by": "publisher",
+   "first-page": "23463",
+   "DOI": "10.1074/jbc.274.33.23463",
+   "volume": "274",
+   "author": "DA Antonetti",
+   "year": "1999",
+   "unstructured": "Antonetti, D. A., Barber, A. J., Hollinger, L. A., Wolpert, E. B. & Gardner, T. W. Vascular endothelial growth factor induces rapid phosphorylation of tight junction proteins occludin and zonula occluden 1. A potential mechanism for vascular permeability in diabetic retinopathy and tumors. J. Biol. Chem. 274, 23463–23467 (1999).",
+   "journal-title": "J. Biol. Chem."
+  },
+  {
+   "key": "BFnrd1955_CR56",
+   "first-page": "765",
+   "volume": "57",
+   "author": "WG Roberts",
+   "year": "1997",
+   "unstructured": "Roberts, W. G. & Palade, G. E. Neovasculature induced by vascular endothelial growth factor is fenestrated. Cancer Res. 57, 765–772 (1997).",
+   "journal-title": "Cancer Res."
+  },
+  {
+   "key": "BFnrd1955_CR57",
+   "doi-asserted-by": "publisher",
+   "first-page": "14",
+   "DOI": "10.1172/JCI20682",
+   "volume": "113",
+   "author": "E Storkebaum",
+   "year": "2004",
+   "unstructured": "Storkebaum, E. & Carmeliet, P. VEGF: a critical player in neurodegeneration. J. Clin. Invest. 113, 14–18 (2004).",
+   "journal-title": "J. Clin. Invest."
+  },
+  {
+   "key": "BFnrd1955_CR58",
+   "doi-asserted-by": "publisher",
+   "first-page": "197",
+   "DOI": "10.1385/JMN:14:3:197",
+   "volume": "14",
+   "author": "KL Jin",
+   "year": "2000",
+   "unstructured": "Jin, K. L., Mao, X. O. & Greenberg, D. A. Vascular endothelial growth factor rescues HN33 neural cells from death induced by serum withdrawal. J. Mol. Neurosci. 14, 197–203 (2000).",
+   "journal-title": "J. Mol. Neurosci."
+  },
+  {
+   "key": "BFnrd1955_CR59",
+   "first-page": "3270",
+   "volume": "45",
+   "author": "DT Shima",
+   "year": "2004",
+   "unstructured": "Shima, D. T., Nishijima, K., Jo, N. & Adamis, A. P. VEGF-mediated neuroprotection in ischemic retina. Invest. Ophthalmol. Vis. Sci. 45, E-abstract 3270 (2004).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR60",
+   "doi-asserted-by": "publisher",
+   "first-page": "1480",
+   "DOI": "10.1056/NEJM199412013312203",
+   "volume": "331",
+   "author": "LP Aiello",
+   "year": "1994",
+   "unstructured": "Aiello, L. P. et al. Vascular endothelial growth factor in ocular fluid of patients with diabetic retinopathy and other retinal disorders. N. Engl. J. Med. 331, 1480–1487 (1994).",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "BFnrd1955_CR61",
+   "doi-asserted-by": "publisher",
+   "first-page": "445",
+   "DOI": "10.1016/S0002-9394(14)75794-0",
+   "volume": "118",
+   "author": "AP Adamis",
+   "year": "1994",
+   "unstructured": "Adamis, A. P. et al. Increased vascular endothelial growth factor levels in the vitreous of eyes with proliferative diabetic retinopathy. Am. J. Ophthalmol. 118, 445–450 (1994).",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR62",
+   "doi-asserted-by": "publisher",
+   "first-page": "393",
+   "DOI": "10.1016/S0002-9394(14)72066-5",
+   "volume": "122",
+   "author": "RN Frank",
+   "year": "1996",
+   "unstructured": "Frank, R. N., Amin, R. H., Eliott, D., Puklin, J. E. & Abrams, G. W. Basic fibroblast growth factor and vascular endothelial growth factor are present in epiretinal and choroidal neovascular membranes. Am. J. Ophthalmol. 122, 393–403 (1996).",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR63",
+   "doi-asserted-by": "publisher",
+   "first-page": "964",
+   "DOI": "10.1001/archopht.1996.01100140172010",
+   "volume": "114",
+   "author": "MJ Tolentino",
+   "year": "1996",
+   "unstructured": "Tolentino, M. J. et al. Vascular endothelial growth factor is sufficient to produce iris neovascularization and neovascular glaucoma in a nonhuman primate. Arch. Ophthalmol. 114, 964–970 (1996).",
+   "journal-title": "Arch. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR64",
+   "doi-asserted-by": "publisher",
+   "first-page": "1820",
+   "DOI": "10.1016/S0161-6420(96)30420-X",
+   "volume": "103",
+   "author": "MJ Tolentino",
+   "year": "1996",
+   "unstructured": "Tolentino, M. J. et al. Intravitreous injections of vascular endothelial growth factor produce retinal ischemia and microangiopathy in an adult primate. Ophthalmology 103, 1820–1828 (1996).",
+   "journal-title": "Ophthalmology"
+  },
+  {
+   "key": "BFnrd1955_CR65",
+   "doi-asserted-by": "publisher",
+   "first-page": "373",
+   "DOI": "10.1016/S0002-9394(01)01381-2",
+   "volume": "133",
+   "author": "MJ Tolentino",
+   "year": "2002",
+   "unstructured": "Tolentino, M. J. et al. Pathologic features of vascular endothelial growth factor-induced retinopathy in the nonhuman primate. Am. J. Ophthalmol. 133, 373–385 (2002).",
+   "journal-title": "Am. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR66",
+   "first-page": "3582",
+   "volume": "41",
+   "author": "J Baffi",
+   "year": "2000",
+   "unstructured": "Baffi, J., Byrnes, G., Chan, C. C. & Csaky, K. G. Choroidal neovascularization in the rat induced by adenovirus mediated expression of vascular endothelial growth factor. Invest. Ophthalmol. Vis. Sci. 41, 3582–3589 (2000).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR67",
+   "doi-asserted-by": "publisher",
+   "first-page": "135",
+   "DOI": "10.1016/S0002-9440(10)64525-7",
+   "volume": "157",
+   "author": "K Spilsbury",
+   "year": "2000",
+   "unstructured": "Spilsbury, K., Garrett, K. L., Shen, W. Y., Constable, I. J. & Rakoczy, P. E. Overexpression of vascular endothelial growth factor (VEGF) in the retinal pigment epithelium leads to the development of choroidal neovascularization. Am. J. Pathol. 157, 135–144 (2000).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd1955_CR68",
+   "doi-asserted-by": "publisher",
+   "first-page": "711",
+   "DOI": "10.1016/S0002-9440(10)64891-2",
+   "volume": "160",
+   "author": "K Ohno-Matsui",
+   "year": "2002",
+   "unstructured": "Ohno-Matsui, K. et al. Inducible expression of vascular endothelial growth factor in adult mice causes severe proliferative retinopathy and retinal detachment. Am. J. Pathol. 160, 711–719 (2002).",
+   "journal-title": "Am. J. Pathol."
+  },
+  {
+   "key": "BFnrd1955_CR69",
+   "doi-asserted-by": "publisher",
+   "first-page": "10457",
+   "DOI": "10.1073/pnas.92.23.10457",
+   "volume": "92",
+   "author": "LP Aiello",
+   "year": "1995",
+   "unstructured": "Aiello, L. P. et al. Suppression of retinal neovascularization in vivo by inhibition of vascular endothelial growth factor (VEGF) using soluble VEGF-receptor chimeric proteins. Proc. Natl Acad. Sci. USA 92, 10457–10461 (1995).",
+   "journal-title": "Proc. Natl Acad. Sci. USA"
+  },
+  {
+   "key": "BFnrd1955_CR70",
+   "doi-asserted-by": "publisher",
+   "first-page": "66",
+   "DOI": "10.1001/archopht.1996.01100130062010",
+   "volume": "114",
+   "author": "AP Adamis",
+   "year": "1996",
+   "unstructured": "Adamis, A. P. et al. Inhibition of vascular endothelial growth factor prevents retinal ischemia-associated iris neovascularization in a nonhuman primate. Arch. Ophthalmol. 114, 66–71 (1996).",
+   "journal-title": "Arch. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR71",
+   "doi-asserted-by": "publisher",
+   "first-page": "338",
+   "DOI": "10.1001/archopht.120.3.338",
+   "volume": "120",
+   "author": "MG Krzystolik",
+   "year": "2002",
+   "unstructured": "Krzystolik, M. G. et al. Prevention of experimental choroidal neovascularization with intravitreal anti-vascular endothelial growth factor antibody fragment. Arch. Ophthalmol. 120, 338–346 (2002).",
+   "journal-title": "Arch. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR72",
+   "first-page": "18",
+   "volume": "39",
+   "author": "S Amano",
+   "year": "1998",
+   "unstructured": "Amano, S., Rohan, R., Kuroki, M., Tolentino, M. & Adamis, A. P. Requirement for vascular endothelial growth factor in wound- and inflammation-related corneal neovascularization. Invest. Ophthalmol. Vis. Sci. 39, 18–22 (1998).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR73",
+   "doi-asserted-by": "publisher",
+   "first-page": "368",
+   "DOI": "10.1167/iovs.03-0106",
+   "volume": "45",
+   "author": "T Usui",
+   "year": "2004",
+   "unstructured": "Usui, T. et al. VEGF 164(165) as the pathological isoform: differential leukocyte and endothelial responses through VEGFR1 and VEGFR2. Invest. Ophthalmol. Vis. Sci. 45, 368–374 (2004).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR74",
+   "doi-asserted-by": "publisher",
+   "first-page": "483",
+   "DOI": "10.1084/jem.20022027",
+   "volume": "198",
+   "author": "S Ishida",
+   "year": "2003",
+   "unstructured": "Ishida, S. et al. VEGF164-mediated inflammation is required for pathological, but not physiological, ischemia-induced retinal neovascularization. J. Exp. Med. 198, 483–489 (2003).",
+   "journal-title": "J. Exp. Med."
+  },
+  {
+   "key": "BFnrd1955_CR75",
+   "first-page": "844",
+   "volume": "82",
+   "author": "S Resnikoff",
+   "year": "2004",
+   "unstructured": "Resnikoff, S. et al. Global data on visual impairment in the year 2002. Bull. World Health Organ. 82, 844–851 (2004).",
+   "journal-title": "Bull. World Health Organ."
+  },
+  {
+   "key": "BFnrd1955_CR76",
+   "doi-asserted-by": "publisher",
+   "first-page": "257",
+   "DOI": "10.1016/S0039-6257(03)00030-4",
+   "volume": "48",
+   "author": "J Ambati",
+   "year": "2003",
+   "unstructured": "Ambati, J., Ambati, B. K., Yoo, S. H., Ianchulev, S. & Adamis, A. P. Age-related macular degeneration: etiology, pathogenesis, and therapeutic strategies. Surv. Ophthalmol. 48, 257–293 (2003).",
+   "journal-title": "Surv. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR77",
+   "doi-asserted-by": "publisher",
+   "first-page": "2805",
+   "DOI": "10.1056/NEJMoa042760",
+   "volume": "351",
+   "author": "ES Gragoudas",
+   "year": "2004",
+   "unstructured": "Gragoudas, E. S., Adamis, A. P., Cunningham, E. T. Jr., Feinsod, M. & Guyer, D. R. Pegaptanib for neovascular age-related macular degeneration. N. Engl. J. Med. 351, 2805–2816 (2004). Two concurrent, prospective, randomized, double-blind, multicentre, dose-ranging, controlled clinical trials using broad entry criteria demonstrated efficacy and safety in patients with age-related macular degeneration.",
+   "journal-title": "N. Engl. J. Med."
+  },
+  {
+   "key": "BFnrd1955_CR78",
+   "first-page": "2309",
+   "volume": "46",
+   "author": "DJ D'Amico",
+   "year": "2005",
+   "unstructured": "D'Amico, D. J. & VEGF Inhibition Study in Ocular Neovascularization (VISION) Clinical Trial Group. VEGF inhibition study in ocular neovascularization (VISION): Second year efficacy data. Invest. Ophthalmol. Vis. Sci. 46, E-abstract 2309 (2005).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR79",
+   "doi-asserted-by": "publisher",
+   "first-page": "352",
+   "DOI": "10.1016/S0008-4182(05)80078-X",
+   "volume": "40",
+   "author": "EW Ng",
+   "year": "2005",
+   "unstructured": "Ng, E. W. & Adamis, A. P. Targeting angiogenesis, the underlying disorder in neovascular age-related macular degeneration. Can. J. Ophthalmol. 40, 352–368 (2005).",
+   "journal-title": "Can. J. Ophthalmol."
+  },
+  {
+   "key": "BFnrd1955_CR80",
+   "unstructured": "D'Amico, D. J. et al. Pegaptanib sodium, an anti-VEGF aptamer, for neovascular age-related macular degeneration: safety results of the 2 prospective, multicenter, controlled trials. Ophthalmology (in the press)."
+  },
+  {
+   "key": "BFnrd1955_CR81",
+   "doi-asserted-by": "publisher",
+   "first-page": "815",
+   "DOI": "10.1097/00006982-200510000-00001",
+   "volume": "25",
+   "author": "CR Gonzales",
+   "year": "2005",
+   "unstructured": "Gonzales, C. R. et al. Enhanced efficacy associated with early treatment of neovascular age-related macular degeneration with pegaptanib sodium: an exploratory analysis. Retina. 25, 815–827 (2005).",
+   "journal-title": "Retina."
+  },
+  {
+   "key": "BFnrd1955_CR82",
+   "doi-asserted-by": "publisher",
+   "first-page": "2653",
+   "DOI": "10.2337/diacare.26.9.2653",
+   "volume": "26",
+   "author": "TA Ciulla",
+   "year": "2003",
+   "unstructured": "Ciulla, T. A., Amador, A. G. & Zinman, B. Diabetic retinopathy and diabetic macular edema: pathophysiology, screening, and novel therapies. Diabetes Care 26, 2653–2664 (2003).",
+   "journal-title": "Diabetes Care"
+  },
+  {
+   "key": "BFnrd1955_CR83",
+   "first-page": "2408",
+   "volume": "42",
+   "author": "T Qaum",
+   "year": "2001",
+   "unstructured": "Qaum, T. et al. VEGF-initiated blood-retinal barrier breakdown in early diabetes. Invest. Ophthalmol. Vis. Sci. 42, 2408–2413 (2001).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR84",
+   "doi-asserted-by": "publisher",
+   "first-page": "1747",
+   "DOI": "10.1016/j.ophtha.2005.06.007",
+   "volume": "112",
+   "author": "ET Cunningham Jr",
+   "year": "2005",
+   "unstructured": "Cunningham, E. T. Jr et al. A phase II randomized double-masked trial of pegaptanib, an anti-vascular endothelial growth factor aptamer, for diabetic macular edema. Ophthalmology 112, 1747–1757 (2005). A multicentre, Phase II trial of patients with diabetic macular oedema demonstrated efficacy across a spectrum of patients.",
+   "journal-title": "Ophthalmology"
+  },
+  {
+   "key": "BFnrd1955_CR85",
+   "doi-asserted-by": "publisher",
+   "first-page": "676",
+   "DOI": "10.1097/00006982-200410000-00002",
+   "volume": "24",
+   "author": "RD Jager",
+   "year": "2004",
+   "unstructured": "Jager, R. D., Aiello, L. P., Patel, S. C. & Cunningham, E. T. Jr. Risks of intravitreous injection: a comprehensive review. Retina 24, 676–698 (2004).",
+   "journal-title": "Retina"
+  },
+  {
+   "key": "BFnrd1955_CR86",
+   "doi-asserted-by": "publisher",
+   "first-page": "107",
+   "DOI": "10.1016/0169-409X(95)00018-3",
+   "volume": "16",
+   "author": "GA Peyman",
+   "year": "1995",
+   "unstructured": "Peyman, G. A. & Ganiban, G. J. Delivery systems for intraocular routes. Adv. Drug Del. Rev. 16, 107 (1995).",
+   "journal-title": "Adv. Drug Del. Rev."
+  },
+  {
+   "key": "BFnrd1955_CR87",
+   "first-page": "229",
+   "volume-title": "Controlled Drug Delivery: Challenges and Strategies",
+   "author": "S Schwendeman",
+   "year": "1997",
+   "unstructured": "Schwendeman, S., Costantino, H., Gupta, R. & Langer, R. In Controlled Drug Delivery: Challenges and Strategies (ed. Park, K.) 229–268 (American Chemical Society, Washington, DC, 1997)."
+  },
+  {
+   "key": "BFnrd1955_CR88",
+   "doi-asserted-by": "publisher",
+   "first-page": "290",
+   "DOI": "10.1167/iovs.01-1156",
+   "volume": "44",
+   "author": "KG Carrasquillo",
+   "year": "2003",
+   "unstructured": "Carrasquillo, K. G. et al. Controlled delivery of the anti-VEGF aptamer EYE001 with poly(lactic-co-glycolic) acid microspheres. Invest. Ophthalmol. Vis. Sci. 44, 290–299 (2003).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR89",
+   "first-page": "1181",
+   "volume": "41",
+   "author": "J Ambati",
+   "year": "2000",
+   "unstructured": "Ambati, J. et al. Diffusion of high molecular weight compounds through sclera. Invest. Ophthalmol. Vis. Sci. 41, 1181–1185 (2000).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR90",
+   "first-page": "1186",
+   "volume": "41",
+   "author": "J Ambati",
+   "year": "2000",
+   "unstructured": "Ambati, J. et al. Transscleral delivery of bioactive protein to the choroid and retina. Invest. Ophthalmol. Vis. Sci. 41, 1186–1191 (2000).",
+   "journal-title": "Invest. Ophthalmol. Vis. Sci."
+  },
+  {
+   "key": "BFnrd1955_CR91",
+   "doi-asserted-by": "publisher",
+   "first-page": "159",
+   "DOI": "10.1089/108076804773710830",
+   "volume": "20",
+   "author": "RK Shuler Jr.",
+   "year": "2004",
+   "unstructured": "Shuler, R. K. Jr. et al. Scleral permeability of a small, single-stranded oligonucleotide. J. Ocul. Pharmacol. Ther. 20, 159–168 (2004).",
+   "journal-title": "J. Ocul. Pharmacol. Ther."
+  },
+  {
+   "key": "BFnrd1955_CR92",
+   "doi-asserted-by": "publisher",
+   "first-page": "979",
+   "DOI": "10.1002/cbic.200300663",
+   "volume": "4",
+   "author": "D Eulberg",
+   "year": "2003",
+   "unstructured": "Eulberg, D. & Klussmann, S. Spiegelmers: biostable aptamers. Chembiochem. 4, 979–983 (2003).",
+   "journal-title": "Chembiochem."
+  },
+  {
+   "key": "BFnrd1955_CR93",
+   "doi-asserted-by": "publisher",
+   "first-page": "1287",
+   "DOI": "10.1172/JCI200317929",
+   "volume": "111",
+   "author": "G Bergers",
+   "year": "2003",
+   "unstructured": "Bergers, G., Song, S., Meyer-Morse, N., Bergsland, E. & Hanahan, D. Benefits of targeting both pericytes and endothelial cells in the tumor vasculature with kinase inhibitors. J. Clin. Invest. 111, 1287–1295 (2003).",
+   "journal-title": "J. Clin. Invest."
+  },
+  {
+   "key": "BFnrd1955_CR94",
+   "doi-asserted-by": "publisher",
+   "first-page": "870",
+   "DOI": "10.1038/ncb1288",
+   "volume": "7",
+   "author": "S Song",
+   "year": "2005",
+   "unstructured": "Song, S., Ewald, A. J., Stallcup, W., Werb, Z. & Bergers, G. PDGFRβ(+) perivascular progenitor cells in tumours regulate pericyte differentiation and vascular survival. Nature Cell Biol. 7, 870–879 (2005).",
+   "journal-title": "Nature Cell Biol."
+  },
+  {
+   "key": "BFnrd1955_CR95",
+   "doi-asserted-by": "publisher",
+   "first-page": "14413",
+   "DOI": "10.1021/bi961544+",
+   "volume": "35",
+   "author": "LS Green",
+   "year": "1996",
+   "unstructured": "Green, L. S. et al. Inhibitory DNA ligands to platelet-derived growth factor B-chain. Biochemistry 35, 14413–14424 (1996).",
+   "journal-title": "Biochemistry"
+  },
+  {
+   "key": "BFnrd1955_CR96",
+   "doi-asserted-by": "crossref",
+   "first-page": "909",
+   "DOI": "10.1681/ASN.V125909",
+   "volume": "12",
+   "author": "T Ostendorf",
+   "year": "2001",
+   "unstructured": "Ostendorf, T. et al. Specific antagonism of PDGF prevents renal scarring in experimental glomerulonephritis. J. Am. Soc. Nephrol. 12, 909–918 (2001).",
+   "journal-title": "J. Am. Soc. Nephrol."
+  },
+  {
+   "key": "BFnrd1955_CR97",
+   "doi-asserted-by": "publisher",
+   "first-page": "L826",
+   "DOI": "10.1152/ajplung.00199.2002",
+   "volume": "284",
+   "author": "V Balasubramaniam",
+   "year": "2003",
+   "unstructured": "Balasubramaniam, V. et al. Role of platelet-derived growth factor in vascular remodeling during pulmonary hypertension in the ovine fetus. Am. J. Physiol. Lung Cell. Mol. Physiol. 284, L826–833 (2003).",
+   "journal-title": "Am. J. Physiol. Lung Cell. Mol. Physiol."
+  },
+  {
+   "key": "BFnrd1955_CR98",
+   "doi-asserted-by": "publisher",
+   "first-page": "1423",
+   "DOI": "10.1038/nbt1023",
+   "volume": "22",
+   "author": "CP Rusconi",
+   "year": "2004",
+   "unstructured": "Rusconi, C. P. et al. Antidote-mediated control of an anticoagulant aptamer in vivo. Nature Biotechnol. 22, 1423–1428 (2004).",
+   "journal-title": "Nature Biotechnol."
+  }
+ ],
+ "container-title": [
+  "Nature Reviews Drug Discovery"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.nature.com/articles/nrd1955",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nrd1955.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "http://www.nature.com/articles/nrd1955.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    5,
+    18
+   ]
+  ],
+  "date-time": "2023-05-18T23:51:17Z",
+  "timestamp": 1684453877000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/nrd1955"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2006,
+    2
+   ]
+  ]
+ },
+ "references-count": 98,
+ "journal-issue": {
+  "issue": "2",
+  "published-print": {
+   "date-parts": [
+    [
+     2006,
+     2
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "BFnrd1955"
+ ],
+ "URL": "https://doi.org/10.1038/nrd1955",
+ "relation": {},
+ "ISSN": [
+  "1474-1776",
+  "1474-1784"
+ ],
+ "issn-type": [
+  {
+   "value": "1474-1776",
+   "type": "print"
+  },
+  {
+   "value": "1474-1784",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2006,
+    2
+   ]
+  ]
+ }
+}

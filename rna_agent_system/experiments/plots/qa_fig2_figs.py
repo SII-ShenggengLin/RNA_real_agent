@@ -12,7 +12,7 @@ fig5 QA scripts does not apply here; the PNG/PDF size agreement check takes
 its place (both derive from the same tight bbox at save time).
 
 Registered 2026-09-11 for the 8-panel re-lettering (a-h; the IRES panel
-moved to Supplementary Fig. S1, rendered by figS1_ires_panel.py).
+moved to Supplementary Fig. S3, rendered by figS3_ires_panel.py).
 
 Usage: python experiments/plots/qa_fig2_figs.py
 """
@@ -42,8 +42,8 @@ FIGS = [
     ("fig2g_audit_trail.png", "fig2g_audit_trail.pdf"),
     ("fig2h_runtime_ecdf.png", "fig2h_runtime_ecdf.pdf"),
     ("fig2_composite.png", "fig2_composite.pdf"),
-    ("figS1_ires_panel.png", "figS1_ires_panel.pdf"),
-    ("figS1_ires_panel_mode0.png", "figS1_ires_panel_mode0.pdf"),
+    ("figS3_ires_panel.png", "figS3_ires_panel.pdf"),
+    ("figS3_ires_panel_mode0.png", "figS3_ires_panel_mode0.pdf"),
 ]
 
 PALETTE_RGB = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in PALETTE]

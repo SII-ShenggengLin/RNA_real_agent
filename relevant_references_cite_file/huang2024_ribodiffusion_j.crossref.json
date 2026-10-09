@@ -1,0 +1,941 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    1
+   ]
+  ],
+  "date-time": "2026-10-01T02:44:23Z",
+  "timestamp": 1790822663661,
+  "version": "4.1.0"
+ },
+ "reference-count": 59,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "Supplement_1",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2024,
+      6,
+      28
+     ]
+    ],
+    "date-time": "2024-06-28T00:00:00Z",
+    "timestamp": 1719532800000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0/"
+  }
+ ],
+ "funder": [
+  {
+   "DOI": "10.13039/501100004853",
+   "name": "Chinese University of Hong Kong",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "4937025"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "4937025"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100004853",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100004853",
+   "name": "Chinese University of Hong Kong",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "4937026"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "4937026"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100004853",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100004853",
+   "name": "Chinese University of Hong Kong",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "5501517"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "5501517"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100004853",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100004853",
+   "name": "Chinese University of Hong Kong",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "5501517"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "5501517"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100004853",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "name": "Research Grants Council of the Hong Kong Special Administrative Region",
+   "award": [
+    "CUHK 24204023"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "CUHK 24204023"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Innovation and Technology Commission of the Hong Kong Special Administrative Region",
+   "award": [
+    "GHP/065/21SZ"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "GHP/065/21SZ"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "RMGS"
+  },
+  {
+   "DOI": "10.13039/501100004853",
+   "name": "CUHK",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "8601603"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "8601603"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100004853",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/501100004853",
+   "name": "CUHK",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "8601663"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "8601663"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/501100004853",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "published-print": {
+  "date-parts": [
+   [
+    2024,
+    6,
+    28
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>Motivation</jats:title>\n                    <jats:p>RNA design shows growing applications in synthetic biology and therapeutics, driven by the crucial role of RNA in various biological processes. A fundamental challenge is to find functional RNA sequences that satisfy given structural constraints, known as the inverse folding problem. Computational approaches have emerged to address this problem based on secondary structures. However, designing RNA sequences directly from 3D structures is still challenging, due to the scarcity of data, the nonunique structure-sequence mapping, and the flexibility of RNA conformation.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>In this study, we propose RiboDiffusion, a generative diffusion model for RNA inverse folding that can learn the conditional distribution of RNA sequences given 3D backbone structures. Our model consists of a graph neural network-based structure module and a Transformer-based sequence module, which iteratively transforms random sequences into desired sequences. By tuning the sampling weight, our model allows for a trade-off between sequence recovery and diversity to explore more candidates. We split test sets based on RNA clustering with different cut-offs for sequence or structure similarity. Our model outperforms baselines in sequence recovery, with an average relative improvement of 11% for sequence similarity splits and 16% for structure similarity splits. Moreover, RiboDiffusion performs consistently well across various RNA length categories and RNA types. We also apply in silico folding to validate whether the generated sequences can fold into the given 3D RNA backbones. Our method could be a powerful tool for RNA design that explores the vast sequence space and finds novel solutions to 3D structural constraints.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Availability and implementation</jats:title>\n                    <jats:p>The source code is available at https://github.com/ml4bio/RiboDiffusion.</jats:p>\n                  </jats:sec>",
+ "DOI": "10.1093/bioinformatics/btae259",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2024,
+    4,
+    12
+   ]
+  ],
+  "date-time": "2024-04-12T03:50:25Z",
+  "timestamp": 1712893825000
+ },
+ "page": "i347-i356",
+ "source": "Crossref",
+ "is-referenced-by-count": 32,
+ "title": [
+  "RiboDiffusion: tertiary structure-based RNA inverse folding with generative diffusion models"
+ ],
+ "prefix": "10.1093",
+ "volume": "40",
+ "author": [
+  {
+   "given": "Han",
+   "family": "Huang",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science and Engineering, CUHK , Hong Kong SAR, 999077, China"
+    },
+    {
+     "name": "School of Computer Science and Engineering, Beihang University , Beijing, 100191, China"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ziqian",
+   "family": "Lin",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science and Engineering, CUHK , Hong Kong SAR, 999077, China"
+    },
+    {
+     "name": "School of Artificial Intelligence, Nanjing University , Nanjing, 210023, China"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0009-0004-4400-1133",
+   "authenticated-orcid": false,
+   "given": "Dongchen",
+   "family": "He",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science and Engineering, CUHK , Hong Kong SAR, 999077, China"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Liang",
+   "family": "Hong",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science and Engineering, CUHK , Hong Kong SAR, 999077, China"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-3664-6722",
+   "authenticated-orcid": false,
+   "given": "Yu",
+   "family": "Li",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Computer Science and Engineering, CUHK , Hong Kong SAR, 999077, China"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "published-online": {
+  "date-parts": [
+   [
+    2024,
+    6,
+    28
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2024062809054306400_btae259-B1",
+   "doi-asserted-by": "crossref",
+   "first-page": "607",
+   "DOI": "10.1016/j.jmb.2003.12.041",
+   "article-title": "A new algorithm for RNA secondary structure design",
+   "volume": "336",
+   "author": "Andronescu",
+   "year": "2004",
+   "journal-title": "J Mol Biol"
+  },
+  {
+   "key": "2024062809054306400_btae259-B2",
+   "doi-asserted-by": "crossref",
+   "first-page": "117",
+   "DOI": "10.1038/s41592-023-02086-5",
+   "article-title": "Accurate prediction of protein-nucleic acid complexes using rosettafoldna",
+   "volume": "21",
+   "author": "Baek",
+   "year": "2024",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "key": "2024062809054306400_btae259-B3",
+   "doi-asserted-by": "crossref",
+   "first-page": "223",
+   "DOI": "10.1038/newbio233223b0",
+   "article-title": "Protein data bank",
+   "volume": "233",
+   "author": "Bank",
+   "year": "1971",
+   "journal-title": "Nature New Biol"
+  },
+  {
+   "key": "2024062809054306400_btae259-B4",
+   "author": "Benhenda",
+   "year": "2017"
+  },
+  {
+   "key": "2024062809054306400_btae259-B5",
+   "doi-asserted-by": "crossref",
+   "first-page": "1823",
+   "DOI": "10.1093/bioinformatics/btl194",
+   "article-title": "Info-RNA – a fast approach to inverse RNA folding",
+   "volume": "22",
+   "author": "Busch",
+   "year": "2006",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2024062809054306400_btae259-B6",
+   "doi-asserted-by": "crossref",
+   "first-page": "47",
+   "DOI": "10.1016/j.cbpa.2015.05.018",
+   "article-title": "A renaissance in RNA synthetic biology: new mechanisms, applications and tools for the future",
+   "volume": "28",
+   "author": "Chappell",
+   "year": "2015",
+   "journal-title": "Curr Opin Chem Biol"
+  },
+  {
+   "key": "2024062809054306400_btae259-B7",
+   "doi-asserted-by": "crossref",
+   "first-page": "1051",
+   "DOI": "10.1038/s41467-017-01082-6",
+   "article-title": "Computational design of small transcription activating RNAs for versatile and dynamic gene regulation",
+   "volume": "8",
+   "author": "Chappell",
+   "year": "2017",
+   "journal-title": "Nat Commun"
+  },
+  {
+   "key": "2024062809054306400_btae259-B8",
+   "author": "Chen",
+   "year": "2023"
+  },
+  {
+   "key": "2024062809054306400_btae259-B9",
+   "first-page": "350",
+   "article-title": "Design of RNAs: comparing programs for inverse RNA folding",
+   "volume": "19",
+   "author": "Churkin",
+   "year": "2018",
+   "journal-title": "Brief Bioinformatics"
+  },
+  {
+   "key": "2024062809054306400_btae259-B10",
+   "doi-asserted-by": "crossref",
+   "first-page": "49",
+   "DOI": "10.1126/science.add2187",
+   "article-title": "Robust deep learning–based protein sequence design using ProteinMPNN",
+   "volume": "378",
+   "author": "Dauparas",
+   "year": "2022",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2024062809054306400_btae259-B11",
+   "doi-asserted-by": "crossref",
+   "first-page": "138",
+   "DOI": "10.1016/j.ymeth.2016.04.026",
+   "article-title": "Coarse-grained modeling of RNA 3D structure",
+   "volume": "103",
+   "author": "Dawson",
+   "year": "2016",
+   "journal-title": "Methods"
+  },
+  {
+   "key": "2024062809054306400_btae259-B12",
+   "first-page": "8780",
+   "article-title": "Diffusion models beat GANs on image synthesis",
+   "volume": "34",
+   "author": "Dhariwal",
+   "year": "2021",
+   "journal-title": "NeurIPS"
+  },
+  {
+   "key": "2024062809054306400_btae259-B13",
+   "author": "Dieleman",
+   "year": "2022"
+  },
+  {
+   "key": "2024062809054306400_btae259-B14",
+   "doi-asserted-by": "crossref",
+   "first-page": "11752",
+   "DOI": "10.1093/nar/gku740",
+   "article-title": "Complete RNA inverse folding: computational design of functional hammerhead ribozymes",
+   "volume": "42",
+   "author": "Dotu",
+   "year": "2014",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B15",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1093/nar/gkv1289",
+   "article-title": "Automated physics-based design of synthetic riboswitches from diverse RNA aptamers",
+   "volume": "44",
+   "author": "Espah Borujeni",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B16",
+   "doi-asserted-by": "crossref",
+   "first-page": "1990",
+   "DOI": "10.3390/s17091990",
+   "article-title": "Design of artificial riboswitches as biosensors",
+   "volume": "17",
+   "author": "Findeiß",
+   "year": "2017",
+   "journal-title": "Sensors"
+  },
+  {
+   "key": "2024062809054306400_btae259-B17",
+   "doi-asserted-by": "crossref",
+   "first-page": "3150",
+   "DOI": "10.1093/bioinformatics/bts565",
+   "article-title": "CD-HIT: accelerated for clustering the next-generation sequencing data",
+   "volume": "28",
+   "author": "Fu",
+   "year": "2012",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2024062809054306400_btae259-B18",
+   "author": "Gao",
+   "year": "2023"
+  },
+  {
+   "key": "2024062809054306400_btae259-B19",
+   "doi-asserted-by": "crossref",
+   "first-page": "1350001",
+   "DOI": "10.1142/S0219720013500017",
+   "article-title": "RNAiFold: a constraint programming algorithm for RNA inverse folding and molecular design",
+   "volume": "11",
+   "author": "Garcia-Martin",
+   "year": "2013",
+   "journal-title": "J Bioinform Comput Biol"
+  },
+  {
+   "key": "2024062809054306400_btae259-B20",
+   "author": "Gilmer"
+  },
+  {
+   "key": "2024062809054306400_btae259-B21",
+   "doi-asserted-by": "crossref",
+   "first-page": "W70",
+   "DOI": "10.1093/nar/gkn188",
+   "article-title": "The Vienna RNA websuite",
+   "volume": "36",
+   "author": "Gruber",
+   "year": "2008",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B22",
+   "first-page": "6840",
+   "article-title": "Denoising diffusion probabilistic models",
+   "volume": "33",
+   "author": "Ho",
+   "year": "2020",
+   "journal-title": "NeurIPS"
+  },
+  {
+   "key": "2024062809054306400_btae259-B23",
+   "author": "Ho",
+   "year": "2022"
+  },
+  {
+   "key": "2024062809054306400_btae259-B24",
+   "doi-asserted-by": "crossref",
+   "first-page": "167",
+   "DOI": "10.1007/BF00818163",
+   "article-title": "Fast folding and comparison of RNA secondary structures",
+   "volume": "125",
+   "author": "Hofacker",
+   "year": "1994",
+   "journal-title": "Monatsh Chem"
+  },
+  {
+   "key": "2024062809054306400_btae259-B25",
+   "author": "Hsu"
+  },
+  {
+   "key": "2024062809054306400_btae259-B26",
+   "first-page": "201",
+   "author": "Huang",
+   "year": "2022"
+  },
+  {
+   "key": "2024062809054306400_btae259-B27",
+   "doi-asserted-by": "crossref",
+   "first-page": "4302",
+   "DOI": "10.1609/aaai.v37i4.25549",
+   "article-title": "Conditional diffusion based on discrete graph structures for molecular graph generation",
+   "volume": "37",
+   "author": "Huang",
+   "year": "2023",
+   "journal-title": "AAAI"
+  },
+  {
+   "key": "2024062809054306400_btae259-B28",
+   "author": "Huang",
+   "year": "2023"
+  },
+  {
+   "key": "2024062809054306400_btae259-B29",
+   "first-page": "15820",
+   "author": "Ingraham"
+  },
+  {
+   "key": "2024062809054306400_btae259-B30",
+   "author": "Jing"
+  },
+  {
+   "key": "2024062809054306400_btae259-B31",
+   "author": "Joshi",
+   "year": "2023"
+  },
+  {
+   "key": "2024062809054306400_btae259-B32",
+   "doi-asserted-by": "crossref",
+   "first-page": "583",
+   "DOI": "10.1038/s41586-021-03819-2",
+   "article-title": "Highly accurate protein structure prediction with AlphaFold",
+   "volume": "596",
+   "author": "Jumper",
+   "year": "2021",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2024062809054306400_btae259-B33",
+   "doi-asserted-by": "crossref",
+   "first-page": "D192",
+   "DOI": "10.1093/nar/gkaa1047",
+   "article-title": "Rfam 14: expanded coverage of metagenomic, viral and microRNA families",
+   "volume": "49",
+   "author": "Kalvari",
+   "year": "2021",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B34",
+   "first-page": "21696",
+   "author": "Kingma"
+  },
+  {
+   "key": "2024062809054306400_btae259-B35",
+   "doi-asserted-by": "crossref",
+   "first-page": "389",
+   "DOI": "10.1186/s12859-015-0815-6",
+   "article-title": "antaRNA–multi-objective inverse folding of pseudoknot RNA using ant-colony optimization",
+   "volume": "16",
+   "author": "Kleinkauf",
+   "year": "2015",
+   "journal-title": "BMC Bioinformatics"
+  },
+  {
+   "key": "2024062809054306400_btae259-B36",
+   "doi-asserted-by": "crossref",
+   "first-page": "393",
+   "DOI": "10.1007/978-1-4939-2291-8_25",
+   "article-title": "Computational design of artificial RNA molecules for gene regulation",
+   "volume": "1269",
+   "author": "Laganà",
+   "year": "2015",
+   "journal-title": "RNA Bioinformatics"
+  },
+  {
+   "key": "2024062809054306400_btae259-B37",
+   "doi-asserted-by": "crossref",
+   "first-page": "5745",
+   "DOI": "10.1038/s41467-023-41303-9",
+   "article-title": "Integrating end-to-end learning with deep geometrical potentials for ab initio RNA structure prediction",
+   "volume": "14",
+   "author": "Li",
+   "year": "2023",
+   "journal-title": "Nat Commun"
+  },
+  {
+   "key": "2024062809054306400_btae259-B38",
+   "doi-asserted-by": "crossref",
+   "first-page": "1123",
+   "DOI": "10.1126/science.ade2574",
+   "article-title": "Evolutionary-scale prediction of atomic-level protein structure with a language model",
+   "volume": "379",
+   "author": "Lin",
+   "year": "2023",
+   "journal-title": "Science"
+  },
+  {
+   "key": "2024062809054306400_btae259-B39",
+   "first-page": "e142",
+   "article-title": "DSSR: an integrated software tool for dissecting the spatial structure of RNA",
+   "volume": "43",
+   "author": "Lu",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B40",
+   "doi-asserted-by": "crossref",
+   "first-page": "2987",
+   "DOI": "10.1093/nar/gkw151",
+   "article-title": "Opportunities in the design and application of RNA for gene expression control",
+   "volume": "44",
+   "author": "McKeague",
+   "year": "2016",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B41",
+   "doi-asserted-by": "crossref",
+   "first-page": "107452",
+   "DOI": "10.1016/j.biotechadv.2019.107452",
+   "article-title": "Catalytic RNA, ribozyme, and its applications in synthetic biology",
+   "volume": "37",
+   "author": "Park",
+   "year": "2019",
+   "journal-title": "Biotechnol Adv"
+  },
+  {
+   "key": "2024062809054306400_btae259-B42",
+   "first-page": "4195",
+   "author": "Peebles",
+   "year": "2023"
+  },
+  {
+   "key": "2024062809054306400_btae259-B43",
+   "author": "Runge"
+  },
+  {
+   "key": "2024062809054306400_btae259-B44",
+   "first-page": "36479",
+   "article-title": "Photorealistic text-to-image diffusion models with deep language understanding",
+   "volume": "35",
+   "author": "Saharia",
+   "year": "2022",
+   "journal-title": "NeurIPS"
+  },
+  {
+   "key": "2024062809054306400_btae259-B45",
+   "author": "Shen",
+   "year": "2022"
+  },
+  {
+   "key": "2024062809054306400_btae259-B46",
+   "first-page": "2256",
+   "author": "Sohl-Dickstein",
+   "year": "2015"
+  },
+  {
+   "key": "2024062809054306400_btae259-B47",
+   "author": "Song"
+  },
+  {
+   "key": "2024062809054306400_btae259-B48",
+   "doi-asserted-by": "crossref",
+   "first-page": "D221",
+   "DOI": "10.1093/nar/gky1034",
+   "article-title": "RNAcentral: a hub of information for non-coding RNA sequences",
+   "volume": "47",
+   "author": "Sweeney",
+   "year": "2019",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B49",
+   "first-page": "1",
+   "article-title": "MODENA: a multi-objective RNA inverse folding",
+   "volume": "4",
+   "author": "Taneda",
+   "year": "2011",
+   "journal-title": "Adv Appl Bioinform Chem"
+  },
+  {
+   "key": "2024062809054306400_btae259-B50",
+   "first-page": "6000",
+   "author": "Vaswani"
+  },
+  {
+   "key": "2024062809054306400_btae259-B51",
+   "doi-asserted-by": "crossref",
+   "first-page": "e2112677119",
+   "DOI": "10.1073/pnas.2112677119",
+   "article-title": "Thoughts on how to think (and talk) about RNA structure",
+   "volume": "119",
+   "author": "Vicens",
+   "year": "2022",
+   "journal-title": "Proc Natl Acad Sci USA"
+  },
+  {
+   "key": "2024062809054306400_btae259-B52",
+   "doi-asserted-by": "crossref",
+   "first-page": "261",
+   "DOI": "10.1038/s41592-019-0686-2",
+   "article-title": "SciPy 1.0: fundamental algorithms for scientific computing in Python",
+   "volume": "17",
+   "author": "Virtanen",
+   "year": "2020",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "key": "2024062809054306400_btae259-B53",
+   "doi-asserted-by": "crossref",
+   "first-page": "1089",
+   "DOI": "10.1038/s41586-023-06415-8",
+   "article-title": "De novo design of protein structure and function with RFdiffusion",
+   "volume": "620",
+   "author": "Watson",
+   "year": "2023",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "2024062809054306400_btae259-B54",
+   "author": "Yang",
+   "year": "2022"
+  },
+  {
+   "key": "2024062809054306400_btae259-B55",
+   "doi-asserted-by": "crossref",
+   "first-page": "468",
+   "DOI": "10.1186/s12859-017-1882-7",
+   "article-title": "RNA inverse folding using Monte Carlo tree search",
+   "volume": "18",
+   "author": "Yang",
+   "year": "2017",
+   "journal-title": "BMC Bioinformatics"
+  },
+  {
+   "key": "2024062809054306400_btae259-B56",
+   "doi-asserted-by": "crossref",
+   "first-page": "W498",
+   "DOI": "10.1093/nar/gkv465",
+   "article-title": "RNA-Redesign: a web server for fixed-backbone 3D design of RNA",
+   "volume": "43",
+   "author": "Yesselman",
+   "year": "2015",
+   "journal-title": "Nucleic Acids Res"
+  },
+  {
+   "key": "2024062809054306400_btae259-B57",
+   "doi-asserted-by": "crossref",
+   "first-page": "1109",
+   "DOI": "10.1038/s41592-022-01585-1",
+   "article-title": "US-Align: universal structure alignments of proteins, nucleic acids, and macromolecular complexes",
+   "volume": "19",
+   "author": "Zhang",
+   "year": "2022",
+   "journal-title": "Nat Methods"
+  },
+  {
+   "key": "2024062809054306400_btae259-B58",
+   "author": "Zheng",
+   "year": "2023"
+  },
+  {
+   "key": "2024062809054306400_btae259-B59",
+   "doi-asserted-by": "crossref",
+   "first-page": "644",
+   "DOI": "10.1038/s41419-022-05075-2",
+   "article-title": "RNA-based therapeutics: an overview and prospectus",
+   "volume": "13",
+   "author": "Zhu",
+   "year": "2022",
+   "journal-title": "Cell Death Dis"
+  }
+ ],
+ "container-title": [
+  "Bioinformatics"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://academic.oup.com/bioinformatics/article-pdf/40/Supplement_1/i347/58355115/btae259.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "https://academic.oup.com/bioinformatics/article-pdf/40/Supplement_1/i347/58355115/btae259.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    6,
+    28
+   ]
+  ],
+  "date-time": "2024-06-28T05:31:26Z",
+  "timestamp": 1719552686000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/bioinformatics/article/40/Supplement_1/i347/7700903"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2024,
+    6,
+    28
+   ]
+  ]
+ },
+ "references-count": 59,
+ "journal-issue": {
+  "issue": "Supplement_1",
+  "published-print": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     28
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1093/bioinformatics/btae259",
+ "relation": {},
+ "ISSN": [
+  "1367-4803",
+  "1367-4811"
+ ],
+ "issn-type": [
+  {
+   "value": "1367-4803",
+   "type": "print"
+  },
+  {
+   "value": "1367-4811",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published-other": {
+  "date-parts": [
+   [
+    2024,
+    7
+   ]
+  ]
+ },
+ "published": {
+  "date-parts": [
+   [
+    2024,
+    6,
+    28
+   ]
+  ]
+ }
+}

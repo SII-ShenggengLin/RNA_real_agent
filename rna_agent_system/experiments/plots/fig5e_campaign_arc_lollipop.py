@@ -2,16 +2,40 @@
 campaign, one lollipop pair per segment (Experiment 29 + Experiment 40
 deployment completion).
 
-One lollipop pair per campaign (x): the navigation-only discordant cells b
-(sage stem-and-head) and the static-grid-only discordant cells c
-(terracotta), with the exact two-sided McNemar P annotated above each pair
-and the campaign's cell count n beneath the phase label.  The four
-campaigns follow the arc order — initial migration (delivery-easy matrix
-v0) → re-anchoring (production scarce matrix v3) → decisive (the shipped
-production mode; the pre-registered primary endpoint panel) → confirmation
-(the scarcity-complement panel).  The pooled decisive+confirmation
-discordance is annotated as one line in the reserved strip above the
-axes; the key is a one-column legend inside the axes' upper-left corner.
+One lollipop pair per campaign (x): the navigation-only discordant pairs
+(sage stem-and-head) and the static-only discordant pairs (terracotta),
+with the count printed above each head, the exact two-sided McNemar P
+annotated above each pair and the campaign's pair count n beneath the
+campaign label.  The five campaigns follow the arc order — delivery-easy
+matrix (v0) → scarce matrix (production v3) → delivery-scarce targets
+(the shipped production mode; the pre-registered primary endpoint panel)
+→ confirmation (the scarcity-complement panel) → deployment (the six
+form-entry targets completed by Exp 40).  The key is a one-column legend
+inside the axes' upper-left corner.
+
+2026-10-06 follow-up (user-directed): (i) the two pooled strip lines
+above the axes deleted — the pooled 26-target result is carried verbatim
+by the Fig. 5e legend ("Pooled over 26 targets, navigation delivers 48
+pairs to 42 (18:12, P = 0.36)"), so the panel keeps only the per-campaign
+annotations; (ii) the panel narrowed 89 → 80.5 mm and shortened 62 →
+54 mm (the strip's reservation released) to share the d|e|f group row;
+text unchanged at 6 pt, zero number changes.
+
+2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch): (i)
+the "Pooled decisive + confirmation (20 targets)" strip line deleted —
+the paper reports the final pooled 26-target result only (the Fig. 5e
+legend carries the same single pooled line); (ii) the McNemar b/c
+notation decoded — the per-campaign "b = …   c = …" annotation replaced
+by the bare counts printed above each lollipop head (the fig5f bar-count
+convention) and the key's "(b)"/"(c)" letter tags dropped; (iii) "cells"
+→ "pairs" on the y axis and in the pooled strip (the §2.5/legend term);
+(iv) the key's "static-grid-only" → "static-only" (the legend's class
+name); (v) the campaign labels aligned to the legend's names —
+"Initial migration" → "Delivery-easy matrix", "Re-anchoring" → "Scarce
+matrix", "Decisive (primary)" → "Delivery-scarce (primary)"; (vi) the
+printed P values aligned to the legend verbatim — deployment "P = 0.07"
+→ "P = 0.070" and the pooled "P = 0.362" → "P = 0.36"; no frozen number,
+colour or geometry changed.
 
 2026-09-08 figure-repair pass (user direction): the five-line tick blocks
 (phase name + two lever-ladder descriptor lines + cell count) collided
@@ -62,10 +86,10 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 62.0
+W_MM, H_MM = 80.5, 54.0
 
-C_NAV = PALETTE_BY_NAME["sage_green"]    # navigation-only discordance (b)
-C_RULE = PALETTE_BY_NAME["terracotta"]   # static-grid-only discordance (c)
+C_NAV = PALETTE_BY_NAME["sage_green"]    # navigation-only discordance
+C_RULE = PALETTE_BY_NAME["terracotta"]   # static-only discordance
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -86,17 +110,28 @@ W_PX = round(W_MM / 25.4 * DPI)   # exact 1200-dpi canvas pixels
 H_PX = round(H_MM / 25.4 * DPI)
 
 SEGMENTS = [
-    ("seg1_migration", "Initial\nmigration"),
-    ("seg2_reanchor", "Re-anchoring"),
-    ("seg3_decisive", "Decisive\n(primary)"),
+    ("seg1_migration", "Delivery-easy\nmatrix"),
+    ("seg2_reanchor", "Scarce\nmatrix"),
+    ("seg3_decisive", "Delivery-scarce\n(primary)"),
     ("seg4_confirmation", "Confirmation"),
-    ("deployment", "Deployment\n(new targets)"),
+    ("deployment", "Form entry\n(new targets)"),
 ]
+
+# 2026-10-09 terminology retirement (user-directed, M2 polish round): the
+# cohort label "Deployment (new targets)" → "Form entry (new targets)" —
+# the entry path names the cohort (§2.5 "entered through the production
+# form entry", M2 "entered through the user form"), retiring the third
+# name for the same eleven targets and the collision with the registered
+# tool sense "deployed tools/service".  The segment key "deployment" stays
+# (it addresses the frozen arc.json cohort_splits["deployment_6"]); no
+# number, colour or geometry changed.
 
 
 def fmt_p(p: float) -> str:
+    if p >= 0.9995:
+        return "P = 1"
     if p >= 0.01:
-        return f"P = {p:.3f}".rstrip("0").rstrip(".")
+        return f"P = {p:.3f}"
     return f"P = {p:.2e}" if p > 0 else "P < 1e-300"
 
 
@@ -111,8 +146,11 @@ def main() -> int:
                     "p_exact": dep["p"]},
     }
 
-    fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI))
-    ax = fig.add_axes([0.080, 0.185, 0.900, 0.640])
+    # +1e-9 in: defeat float truncation so the saved canvas is exactly
+    # W_PX × H_PX (matplotlib takes int(figsize × dpi); the fig5c
+    # convention)
+    fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
+    ax = fig.add_axes([8.0 / W_MM, 10.0 / H_MM, 71.0 / W_MM, 41.0 / H_MM])
     ymax = 1
     for i, (key, _) in enumerate(SEGMENTS):
         v = segs.get(key)
@@ -127,11 +165,10 @@ def main() -> int:
             ax.plot([x + dx, x + dx], [0, val], color=color, lw=1.1,
                     solid_capstyle="butt", zorder=2)
             ax.plot(x + dx, val, "o", ms=2.8, mfc=color, mec=color, zorder=3)
-        ax.annotate(f"b = {b}   c = {c_}",
-                    (x, max(b, c_)), textcoords="offset points",
-                    xytext=(0, 3), ha="center", fontsize=FONT, color=INK)
+            ax.annotate(str(val), (x + dx, val), textcoords="offset points",
+                        xytext=(0, 2), ha="center", fontsize=FONT, color=INK)
         ax.annotate(fmt_p(p), (x, max(b, c_)), textcoords="offset points",
-                    xytext=(0, 10.5), ha="center", fontsize=FONT, color=INK)
+                    xytext=(0, 12), ha="center", fontsize=FONT, color=INK)
     ax.set_xlim(-0.62, len(SEGMENTS) - 0.38)
     ax.set_ylim(0, max(13.2, ymax + 2.5))
     ax.set_yticks([0, 2, 4, 6, 8, 10, 12])
@@ -140,15 +177,15 @@ def main() -> int:
         [f"{name}\nn = {segs[key]['n_cells']}" if key in segs else name
          for key, name in SEGMENTS],
         fontsize=FONT, linespacing=1.25)
-    ax.set_ylabel("Discordant cells", fontsize=FONT)
+    ax.set_ylabel("Discordant pairs", fontsize=FONT)
     ax.tick_params(length=2.0, pad=1.8)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
     # ── legend: one column inside the axes' upper-left corner (the seg-1
     #    region above the two count-1 lollipops is empty) ──
-    key_items = [(C_NAV, "navigation-only (b)"),
-                 (C_RULE, "static-grid-only (c)")]
+    key_items = [(C_NAV, "navigation-only"),
+                 (C_RULE, "static-only")]
     lx, sw_w, sw_h = 0.015, 0.016, 0.020
     for (color, label), yc in zip(key_items, (0.955, 0.885)):
         ax.add_patch(Rectangle((lx, yc - sw_h / 2), sw_w, sw_h,
@@ -158,31 +195,11 @@ def main() -> int:
                 transform=ax.transAxes, va="center",
                 fontsize=FONT, color=INK)
 
-    # ── pooled notes: two lines in the reserved strip above the axes (the
-    #    fig5b/5d stat-strip convention) ──
-    strip_texts = []
-    pooled = arc.get("pooled_seg3_seg4")
-    if pooled:
-        strip_texts.append(fig.text(
-            0.5, 0.918,
-            f"Pooled decisive + confirmation (20 targets): "
-            f"b = {pooled['b']}, c = {pooled['c']}, "
-            f"{fmt_p(pooled['p_exact'])}",
-            ha="center", va="bottom", fontsize=FONT, color=INK))
-    mc_all = pooled_doc["mcnemar_nav_vs_static"]
-    strip_texts.append(fig.text(
-        0.5, 0.862,
-        f"Pooled all 26 targets: b = {mc_all['b']}, c = {mc_all['c']}, "
-        f"{fmt_p(mc_all['p'])}  (delivered cells "
-        f"{pooled_doc['delivered_nav']} navigation vs "
-        f"{pooled_doc['delivered_static']} static)",
-        ha="center", va="bottom", fontsize=FONT, color=INK))
-
     # ── renderer-measured guards (the fig5d house pattern): every text
     #    inside the canvas, no text–text collision anywhere ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    texts = (list(ax.texts) + strip_texts + [ax.yaxis.label]
+    texts = (list(ax.texts) + [ax.yaxis.label]
              + list(ax.get_xticklabels()) + list(ax.get_yticklabels()))
     boxes = []
     for t in texts:

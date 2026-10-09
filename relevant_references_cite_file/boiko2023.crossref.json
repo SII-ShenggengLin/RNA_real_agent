@@ -1,0 +1,633 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    10,
+    8
+   ]
+  ],
+  "date-time": "2026-10-08T21:24:38Z",
+  "timestamp": 1791494678654,
+  "version": "4.3.4"
+ },
+ "reference-count": 52,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "7992",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2023,
+      12,
+      20
+     ]
+    ],
+    "date-time": "2023-12-20T00:00:00Z",
+    "timestamp": 1703030400000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2023,
+      12,
+      20
+     ]
+    ],
+    "date-time": "2023-12-20T00:00:00Z",
+    "timestamp": 1703030400000
+   },
+   "content-version": "vor",
+   "delay-in-days": 0,
+   "URL": "https://creativecommons.org/licenses/by/4.0"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "link.springer.com"
+  ],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Nature"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2023,
+    12,
+    21
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:p>\n                    Transformer-based large language models are making significant strides in various fields, such as natural language processing\n                    <jats:sup>1–5</jats:sup>\n                    , biology\n                    <jats:sup>6,7</jats:sup>\n                    , chemistry\n                    <jats:sup>8–10</jats:sup>\n                    and computer programming\n                    <jats:sup>11,12</jats:sup>\n                    . Here, we show the development and capabilities of Coscientist, an artificial intelligence system driven by GPT-4 that autonomously designs, plans and performs complex experiments by incorporating large language models empowered by tools such as internet and documentation search, code execution and experimental automation. Coscientist showcases its potential for accelerating research across six diverse tasks, including the successful reaction optimization of palladium-catalysed cross-couplings, while exhibiting advanced capabilities for (semi-)autonomous experimental design and execution. Our findings demonstrate the versatility, efficacy and explainability of artificial intelligence systems like Coscientist in advancing research.\n                  </jats:p>",
+ "DOI": "10.1038/s41586-023-06792-0",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2023,
+    12,
+    20
+   ]
+  ],
+  "date-time": "2023-12-20T12:02:31Z",
+  "timestamp": 1703073751000
+ },
+ "page": "570-578",
+ "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 1073,
+ "title": [
+  "Autonomous chemical research with large language models"
+ ],
+ "prefix": "10.1038",
+ "volume": "624",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0003-4140-4645",
+   "authenticated-orcid": false,
+   "given": "Daniil A.",
+   "family": "Boiko",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Robert",
+   "family": "MacKnight",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ben",
+   "family": "Kline",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-8235-5969",
+   "authenticated-orcid": false,
+   "given": "Gabe",
+   "family": "Gomes",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "published-online": {
+  "date-parts": [
+   [
+    2023,
+    12,
+    20
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "6792_CR1",
+   "unstructured": "Brown, T. et al. in Advances in Neural Information Processing Systems Vol. 33 (eds Larochelle, H. et al.) 1877–1901 (Curran Associates, 2020)."
+  },
+  {
+   "key": "6792_CR2",
+   "unstructured": "Thoppilan, R. et al. LaMDA: language models for dialog applications. Preprint at https://arxiv.org/abs/2201.08239 (2022)."
+  },
+  {
+   "key": "6792_CR3",
+   "unstructured": "Touvron, H. et al. LLaMA: open and efficient foundation language models. Preprint at https://arxiv.org/abs/2302.13971 (2023)."
+  },
+  {
+   "key": "6792_CR4",
+   "unstructured": "Hoffmann, J. et al. Training compute-optimal large language models. In Advances in Neural Information Processing Systems 30016–30030 (NeurIPS, 2022)."
+  },
+  {
+   "key": "6792_CR5",
+   "unstructured": "Chowdhery, A. et al. PaLM: scaling language modeling with pathways. J. Mach. Learn. Res. 24, 1–113 (2022)."
+  },
+  {
+   "key": "6792_CR6",
+   "doi-asserted-by": "publisher",
+   "first-page": "1123",
+   "DOI": "10.1126/science.ade2574",
+   "volume": "379",
+   "author": "Z Lin",
+   "year": "2023",
+   "unstructured": "Lin, Z. et al. Evolutionary-scale prediction of atomic-level protein structure with a language model. Science 379, 1123–1130 (2023).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "6792_CR7",
+   "doi-asserted-by": "publisher",
+   "first-page": "bbac409",
+   "DOI": "10.1093/bib/bbac409",
+   "volume": "23",
+   "author": "R Luo",
+   "year": "2022",
+   "unstructured": "Luo, R. et al. BioGPT: generative pre-trained transformer for biomedical text generation and mining. Brief Bioinform. 23, bbac409 (2022).",
+   "journal-title": "Brief Bioinform."
+  },
+  {
+   "key": "6792_CR8",
+   "doi-asserted-by": "publisher",
+   "first-page": "015022",
+   "DOI": "10.1088/2632-2153/ac3ffb",
+   "volume": "3",
+   "author": "R Irwin",
+   "year": "2022",
+   "unstructured": "Irwin, R., Dimitriadis, S., He, J. & Bjerrum, E. J. Chemformer: a pre-trained transformer for computational chemistry. Mach. Learn. Sci. Technol. 3, 015022 (2022).",
+   "journal-title": "Mach. Learn. Sci. Technol."
+  },
+  {
+   "key": "6792_CR9",
+   "doi-asserted-by": "publisher",
+   "first-page": "5804",
+   "DOI": "10.1021/acs.jcim.1c01289",
+   "volume": "61",
+   "author": "H Kim",
+   "year": "2021",
+   "unstructured": "Kim, H., Na, J. & Lee, W. B. Generative chemical transformer: neural machine learning of molecular geometric structures from chemical language via attention. J. Chem. Inf. Model. 61, 5804–5814 (2021).",
+   "journal-title": "J. Chem. Inf. Model."
+  },
+  {
+   "key": "6792_CR10",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Jablonka, K. M., Schwaller, P., Ortega-Guerrero, A. & Smit, B. Leveraging large language models for predictive chemistry. Preprint at https://chemrxiv.org/engage/chemrxiv/article-details/652e50b98bab5d2055852dde (2023).",
+   "DOI": "10.26434/chemrxiv-2023-fw8n4-v3"
+  },
+  {
+   "key": "6792_CR11",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Xu, F. F., Alon, U., Neubig, G. & Hellendoorn, V. J. A systematic evaluation of large language models of code. In Proc. 6th ACM SIGPLAN International Symposium on Machine Programming 1–10 (ACM, 2022).",
+   "DOI": "10.1145/3520312.3534862"
+  },
+  {
+   "key": "6792_CR12",
+   "unstructured": "Nijkamp, E. et al. CodeGen: an open large language model for code with multi-turn program synthesis. In Proc. 11th International Conference on Learning Representations (ICLR, 2022)."
+  },
+  {
+   "key": "6792_CR13",
+   "unstructured": "Kaplan, J. et al. Scaling laws for neural language models. Preprint at https://arxiv.org/abs/2001.08361 (2020)."
+  },
+  {
+   "key": "6792_CR14",
+   "unstructured": "OpenAI. GPT-4 Technical Report (OpenAI, 2023)."
+  },
+  {
+   "key": "6792_CR15",
+   "unstructured": "Ziegler, D. M. et al. Fine-tuning language models from human preferences. Preprint at https://arxiv.org/abs/1909.08593 (2019)."
+  },
+  {
+   "key": "6792_CR16",
+   "unstructured": "Ouyang, L. et al. Training language models to follow instructions with human feedback. In Advances in Neural Information Processing Systems 27730–27744 (NeurIPS, 2022)."
+  },
+  {
+   "key": "6792_CR17",
+   "doi-asserted-by": "publisher",
+   "first-page": "377",
+   "DOI": "10.1038/s41586-018-0307-8",
+   "volume": "559",
+   "author": "JM Granda",
+   "year": "2018",
+   "unstructured": "Granda, J. M., Donina, L., Dragone, V., Long, D.-L. & Cronin, L. Controlling an organic synthesis robot with machine learning to search for new reactivity. Nature 559, 377–381 (2018).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "6792_CR18",
+   "doi-asserted-by": "publisher",
+   "first-page": "1821",
+   "DOI": "10.1021/acscentsci.1c00435",
+   "volume": "7",
+   "author": "D Caramelli",
+   "year": "2021",
+   "unstructured": "Caramelli, D. et al. Discovering new chemistry with an autonomous robotic platform driven by a reactivity-seeking neural network. ACS Cent. Sci. 7, 1821–1830 (2021).",
+   "journal-title": "ACS Cent. Sci."
+  },
+  {
+   "key": "6792_CR19",
+   "doi-asserted-by": "publisher",
+   "first-page": "399",
+   "DOI": "10.1126/science.adc8743",
+   "volume": "378",
+   "author": "NH Angello",
+   "year": "2022",
+   "unstructured": "Angello, N. H. et al. Closed-loop optimization of general reaction conditions for heteroaryl Suzuki–Miyaura coupling. Science 378, 399–405 (2022).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "6792_CR20",
+   "doi-asserted-by": "publisher",
+   "first-page": "61",
+   "DOI": "10.1126/science.aaf1337",
+   "volume": "352",
+   "author": "A Adamo",
+   "year": "2016",
+   "unstructured": "Adamo, A. et al. On-demand continuous-flow production of pharmaceuticals in a compact, reconfigurable system. Science 352, 61–67 (2016).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "6792_CR21",
+   "doi-asserted-by": "publisher",
+   "first-page": "eaax1566",
+   "DOI": "10.1126/science.aax1566",
+   "volume": "365",
+   "author": "CW Coley",
+   "year": "2019",
+   "unstructured": "Coley, C. W. et al. A robotic platform for flow synthesis of organic compounds informed by AI planning. Science 365, eaax1566 (2019).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "6792_CR22",
+   "doi-asserted-by": "publisher",
+   "first-page": "237",
+   "DOI": "10.1038/s41586-020-2442-2",
+   "volume": "583",
+   "author": "B Burger",
+   "year": "2020",
+   "unstructured": "Burger, B. et al. A mobile robotic chemist. Nature 583, 237–241 (2020).",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "6792_CR23",
+   "unstructured": "Auto-GPT: the heart of the open-source agent ecosystem. GitHub https://github.com/Significant-Gravitas/AutoGPT (2023)."
+  },
+  {
+   "key": "6792_CR24",
+   "unstructured": "BabyAGI. GitHub https://github.com/yoheinakajima/babyagi (2023)."
+  },
+  {
+   "key": "6792_CR25",
+   "unstructured": "Chase, H. LangChain. GitHub https://github.com/langchain-ai/langchain (2023)."
+  },
+  {
+   "key": "6792_CR26",
+   "unstructured": "Bran, A. M., Cox, S., White, A. D. & Schwaller, P. ChemCrow: augmenting large-language models with chemistry tools. Preprint at https://arxiv.org/abs/2304.05376 (2023)."
+  },
+  {
+   "key": "6792_CR27",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Liu, P. et al. Pre-train, prompt, and predict: a systematic survey of prompting methods in natural language processing. ACM Comput. Surv. 55, 195 (2021).",
+   "DOI": "10.1145/3560815"
+  },
+  {
+   "key": "6792_CR28",
+   "unstructured": "Bai, Y. et al. Constitutional AI: harmlessness from AI feedback. Preprint at https://arxiv.org/abs/2212.08073 (2022)."
+  },
+  {
+   "key": "6792_CR29",
+   "unstructured": "Falcon LLM. TII https://falconllm.tii.ae (2023)."
+  },
+  {
+   "key": "6792_CR30",
+   "unstructured": "Open LLM Leaderboard. Hugging Face https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard (2023)."
+  },
+  {
+   "key": "6792_CR31",
+   "doi-asserted-by": "publisher",
+   "first-page": "248",
+   "DOI": "10.1145/3571730",
+   "volume": "55",
+   "author": "Z Ji",
+   "year": "2023",
+   "unstructured": "Ji, Z. et al. Survey of hallucination in natural language generation. ACM Comput. Surv. 55, 248 (2023).",
+   "journal-title": "ACM Comput. Surv."
+  },
+  {
+   "key": "6792_CR32",
+   "unstructured": "Reaxys https://www.reaxys.com (2023)."
+  },
+  {
+   "key": "6792_CR33",
+   "unstructured": "SciFinder https://scifinder.cas.org (2023)."
+  },
+  {
+   "key": "6792_CR34",
+   "unstructured": "Yao, S. et al. ReAct: synergizing reasoning and acting in language models. In Proc.11th International Conference on Learning Representations (ICLR, 2022)."
+  },
+  {
+   "key": "6792_CR35",
+   "unstructured": "Wei, J. et al. Chain-of-thought prompting elicits reasoning in large language models. In Advances in Neural Information Processing Systems 24824–24837 (NeurIPS, 2022)."
+  },
+  {
+   "key": "6792_CR36",
+   "unstructured": "Long, J. Large language model guided tree-of-thought. Preprint at https://arxiv.org/abs/2305.08291 (2023)."
+  },
+  {
+   "key": "6792_CR37",
+   "unstructured": "Opentrons Python Protocol API. Opentrons https://docs.opentrons.com/v2/ (2023)."
+  },
+  {
+   "key": "6792_CR38",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Tu, Z. et al. Approximate nearest neighbor search and lightweight dense vector reranking in multi-stage retrieval architectures. In Proc. 2020 ACM SIGIR on International Conference on Theory of Information Retrieval 97–100 (ACM, 2020).",
+   "DOI": "10.1145/3409256.3409818"
+  },
+  {
+   "key": "6792_CR39",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Lin, J. et al. Pyserini: a python toolkit for reproducible information retrieval research with sparse and dense representations. In Proc. 44th International ACM SIGIR Conference on Research and Development in Information Retrieval 2356–2362 (ACM, 2021).",
+   "DOI": "10.1145/3404835.3463238"
+  },
+  {
+   "key": "6792_CR40",
+   "unstructured": "Qadrud-Din, J. et al. Transformer based language models for similar text retrieval and ranking. Preprint at https://arxiv.org/abs/2005.04588 (2020)."
+  },
+  {
+   "key": "6792_CR41",
+   "unstructured": "Paper QA. GitHub https://github.com/whitead/paper-qa (2023)."
+  },
+  {
+   "key": "6792_CR42",
+   "doi-asserted-by": "publisher",
+   "first-page": "333",
+   "DOI": "10.1561/1500000019",
+   "volume": "3",
+   "author": "S Robertson",
+   "year": "2009",
+   "unstructured": "Robertson, S. & Zaragoza, H. The probabilistic relevance framework: BM25 and beyond. Found. Trends Inf. Retrieval 3, 333–389 (2009).",
+   "journal-title": "Found. Trends Inf. Retrieval"
+  },
+  {
+   "key": "6792_CR43",
+   "unstructured": "Data Mining. Mining of Massive Datasets (Cambridge Univ., 2011)."
+  },
+  {
+   "key": "6792_CR44",
+   "doi-asserted-by": "publisher",
+   "first-page": "535",
+   "DOI": "10.1109/TBDATA.2019.2921572",
+   "volume": "7",
+   "author": "J Johnson",
+   "year": "2021",
+   "unstructured": "Johnson, J., Douze, M. & Jegou, H. Billion-scale similarity search with GPUs. IEEE Trans. Big Data 7, 535–547 (2021).",
+   "journal-title": "IEEE Trans. Big Data"
+  },
+  {
+   "key": "6792_CR45",
+   "doi-asserted-by": "publisher",
+   "first-page": "324",
+   "DOI": "10.1177/0165551506065787",
+   "volume": "32",
+   "author": "O Vechtomova",
+   "year": "2006",
+   "unstructured": "Vechtomova, O. & Wang, Y. A study of the effect of term proximity on query expansion. J. Inf. Sci. 32, 324–333 (2006).",
+   "journal-title": "J. Inf. Sci."
+  },
+  {
+   "key": "6792_CR46",
+   "unstructured": "Running experiments. Emerald Cloud Lab https://www.emeraldcloudlab.com/guides/runningexperiments (2023)."
+  },
+  {
+   "key": "6792_CR47",
+   "doi-asserted-by": "publisher",
+   "first-page": "103",
+   "DOI": "10.1039/D2DD00071G",
+   "volume": "2",
+   "author": "R Sanchez-Garcia",
+   "year": "2023",
+   "unstructured": "Sanchez-Garcia, R. et al. CoPriNet: graph neural networks provide accurate and rapid compound price prediction for molecule prioritisation. Digital Discov. 2, 103–111 (2023).",
+   "journal-title": "Digital Discov."
+  },
+  {
+   "key": "6792_CR48",
+   "unstructured": "Bubeck, S. et al. Sparks of artificial general intelligence: early experiments with GPT-4. Preprint at https://arxiv.org/abs/2303.12712 (2023)."
+  },
+  {
+   "key": "6792_CR49",
+   "unstructured": "Ramos, M. C., Michtavy, S. S., Porosoff, M. D. & White, A. D. Bayesian optimization of catalysts with in-context learning. Preprint at https://arxiv.org/abs/2304.05341 (2023)."
+  },
+  {
+   "key": "6792_CR50",
+   "doi-asserted-by": "publisher",
+   "first-page": "429",
+   "DOI": "10.1126/science.aap9112",
+   "volume": "359",
+   "author": "D Perera",
+   "year": "2018",
+   "unstructured": "Perera, D. et al. A platform for automated nanomole-scale reaction screening and micromole-scale synthesis in flow. Science 359, 429–434 (2018).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "6792_CR51",
+   "doi-asserted-by": "publisher",
+   "first-page": "186",
+   "DOI": "10.1126/science.aar5169",
+   "volume": "360",
+   "author": "DT Ahneman",
+   "year": "2018",
+   "unstructured": "Ahneman, D. T., Estrada, J. G., Lin, S., Dreher, S. D. & Doyle, A. G. Predicting reaction performance in C–N cross-coupling using machine learning. Science 360, 186–190 (2018).",
+   "journal-title": "Science"
+  },
+  {
+   "key": "6792_CR52",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Hickman, R. et al. Atlas: a brain for self-driving laboratories. Preprint at https://chemrxiv.org/engage/chemrxiv/article-details/64f6560579853bbd781bcef6 (2023).",
+   "DOI": "10.26434/chemrxiv-2023-8nrxx"
+  }
+ ],
+ "container-title": [
+  "Nature"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.nature.com/articles/s41586-023-06792-0.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s41586-023-06792-0",
+   "content-type": "text/html",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://www.nature.com/articles/s41586-023-06792-0.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    12,
+    21
+   ]
+  ],
+  "date-time": "2023-12-21T02:11:29Z",
+  "timestamp": 1703124689000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.nature.com/articles/s41586-023-06792-0"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2023,
+    12,
+    20
+   ]
+  ]
+ },
+ "references-count": 52,
+ "journal-issue": {
+  "issue": "7992",
+  "published-print": {
+   "date-parts": [
+    [
+     2023,
+     12,
+     21
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "6792"
+ ],
+ "URL": "https://doi.org/10.1038/s41586-023-06792-0",
+ "relation": {},
+ "ISSN": [
+  "0028-0836",
+  "1476-4687"
+ ],
+ "issn-type": [
+  {
+   "value": "0028-0836",
+   "type": "print"
+  },
+  {
+   "value": "1476-4687",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2023,
+    12,
+    20
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "20 April 2023",
+   "order": 1,
+   "name": "received",
+   "label": "Received",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "27 October 2023",
+   "order": 2,
+   "name": "accepted",
+   "label": "Accepted",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "20 December 2023",
+   "order": 3,
+   "name": "first_online",
+   "label": "First Online",
+   "group": {
+    "name": "ArticleHistory",
+    "label": "Article History"
+   }
+  },
+  {
+   "value": "G.G. is part of the AI Scientific Advisory Board of Emerald Cloud Lab. Experiments and conclusions in this manuscript were made before G.G.’s appointment to this role. B.K. is an employee of Emerald Cloud Lab. D.A.B. and G.G. are co-founders of aithera.ai, a company focusing on responsible use of artificial intelligence for research.",
+   "order": 1,
+   "name": "Ethics",
+   "group": {
+    "name": "EthicsHeading",
+    "label": "Competing interests"
+   }
+  }
+ ]
+}

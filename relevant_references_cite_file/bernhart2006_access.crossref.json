@@ -1,0 +1,309 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    24
+   ]
+  ],
+  "date-time": "2026-09-24T14:48:34Z",
+  "timestamp": 1790261314424,
+  "version": "4.1.0"
+ },
+ "reference-count": 9,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "5",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "published-print": {
+  "date-parts": [
+   [
+    2006,
+    3,
+    1
+   ]
+  ]
+ },
+ "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:p>Summary: The genome-wide search for non-coding RNAs requires efficient methods to compute and compare local secondary structures. Since the exact boundaries of such putative transcripts are typically unknown, arbitrary sequence windows have to be used in practice. Here we present a method for robustly computing the probabilities of local base pairs from long RNA sequences independent of the exact positions of the sequence window.</jats:p>\n                  <jats:p>Availability: The program RNAplfold is part of the Vienna RNA Package and can be downloaded from</jats:p>\n                  <jats:p>Contact:  ivo@tbi.univie.ac.at</jats:p>",
+ "DOI": "10.1093/bioinformatics/btk014",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2005,
+    12,
+    20
+   ]
+  ],
+  "date-time": "2005-12-20T21:18:10Z",
+  "timestamp": 1135113490000
+ },
+ "page": "614-615",
+ "source": "Crossref",
+ "is-referenced-by-count": 215,
+ "title": [
+  "Local RNA base pairing probabilities in large sequences"
+ ],
+ "prefix": "10.1093",
+ "volume": "22",
+ "author": [
+  {
+   "given": "Stephan H.",
+   "family": "Bernhart",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Institut für Theoretische Chemie, Universität Wien 1   1     Währingerstr. 17, A-1090 Wien, Austria"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ivo L.",
+   "family": "Hofacker",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Institut für Theoretische Chemie, Universität Wien 1   1     Währingerstr. 17, A-1090 Wien, Austria"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Peter F.",
+   "family": "Stadler",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Institut für Theoretische Chemie, Universität Wien 1   1     Währingerstr. 17, A-1090 Wien, Austria"
+    },
+    {
+     "name": "Bioinformatics Group, Department of Computer Science and Interdisciplinary Center for Bioinformatics, University of Leipzig 2   2     Härtelstr. 16-18, D-04107 Leipzig, Germany"
+    },
+    {
+     "name": "Santa Fe Institute 3   3     1399 Hyde Park Road, Santa Fe, NM 87501, USA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "published-online": {
+  "date-parts": [
+   [
+    2005,
+    12,
+    20
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2023012408524091700_b1",
+   "doi-asserted-by": "crossref",
+   "first-page": "325",
+   "DOI": "10.1017/S1355838200992161",
+   "article-title": "RNA folding at elementary step resolution",
+   "volume": "6",
+   "author": "Flamm",
+   "year": "2000",
+   "journal-title": "RNA"
+  },
+  {
+   "key": "2023012408524091700_b2",
+   "doi-asserted-by": "crossref",
+   "first-page": "D109",
+   "DOI": "10.1093/nar/gkh023",
+   "article-title": "The microRNA Registry",
+   "volume": "32",
+   "author": "Griffiths-Jones",
+   "year": "2004",
+   "journal-title": "Nucleic Acids Res."
+  },
+  {
+   "key": "2023012408524091700_b3",
+   "doi-asserted-by": "crossref",
+   "first-page": "2222",
+   "DOI": "10.1093/bioinformatics/bth229",
+   "article-title": "Alignment of RNA base pairing probability matrices",
+   "volume": "20",
+   "author": "Hofacker",
+   "year": "2004",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2023012408524091700_b4",
+   "doi-asserted-by": "crossref",
+   "first-page": "186",
+   "DOI": "10.1093/bioinformatics/btg388",
+   "article-title": "Prediction of locally stable RNA secondary structures for genome-wide surveys",
+   "volume": "20",
+   "author": "Hofacker",
+   "year": "2004",
+   "journal-title": "Bioinformatics"
+  },
+  {
+   "key": "2023012408524091700_b5",
+   "doi-asserted-by": "crossref",
+   "first-page": "911",
+   "DOI": "10.1006/jmbi.1999.2700",
+   "article-title": "Expanded sequence dependence of thermodynamic parameters improves prediction of RNA secondary structure",
+   "volume": "288",
+   "author": "Mathews",
+   "year": "1999",
+   "journal-title": "J. Mol. Biol."
+  },
+  {
+   "key": "2023012408524091700_b6",
+   "doi-asserted-by": "crossref",
+   "first-page": "1105",
+   "DOI": "10.1002/bip.360290621",
+   "article-title": "The equilibrium partition function and base pair binding probabilities for RNA secondary structure",
+   "volume": "29",
+   "author": "McCaskill",
+   "year": "1990",
+   "journal-title": "Biopolymers"
+  },
+  {
+   "key": "2023012408524091700_b7",
+   "doi-asserted-by": "crossref",
+   "first-page": "269",
+   "DOI": "10.1038/nmeth746",
+   "article-title": "Identification of microRNAs of the herpesvirus family",
+   "volume": "2",
+   "author": "Pfeffer",
+   "year": "2005",
+   "journal-title": "Nat. Methods."
+  },
+  {
+   "key": "2023012408524091700_b8",
+   "doi-asserted-by": "crossref",
+   "first-page": "267",
+   "DOI": "10.1186/1471-2105-6-267",
+   "article-title": "Identification of clustered microRNAs using ab initio prediction method",
+   "volume": "6",
+   "author": "Sewer",
+   "year": "2005",
+   "journal-title": "BMC Bioinformatics"
+  },
+  {
+   "key": "2023012408524091700_b9",
+   "doi-asserted-by": "crossref",
+   "first-page": "3352",
+   "DOI": "10.1093/bioinformatics/bti550",
+   "article-title": "MARNA: multiple alignment and consensus structure prediction of RNAs based on sequencestructure comparisons",
+   "volume": "21",
+   "author": "Siebert",
+   "year": "2005",
+   "journal-title": "Bioinformatics"
+  }
+ ],
+ "container-title": [
+  "Bioinformatics"
+ ],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://academic.oup.com/bioinformatics/article-pdf/22/5/614/48839117/bioinformatics_22_5_614.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "https://academic.oup.com/bioinformatics/article-pdf/22/5/614/48839117/bioinformatics_22_5_614.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    1,
+    24
+   ]
+  ],
+  "date-time": "2023-01-24T04:29:56Z",
+  "timestamp": 1674534596000
+ },
+ "score": 76.581406,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/bioinformatics/article/22/5/614/205542"
+  }
+ },
+ "issued": {
+  "date-parts": [
+   [
+    2005,
+    12,
+    20
+   ]
+  ]
+ },
+ "references-count": 9,
+ "journal-issue": {
+  "issue": "5",
+  "published-print": {
+   "date-parts": [
+    [
+     2006,
+     3,
+     1
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1093/bioinformatics/btk014",
+ "ISSN": [
+  "1367-4811",
+  "1367-4803"
+ ],
+ "issn-type": [
+  {
+   "value": "1367-4811",
+   "type": "electronic"
+  },
+  {
+   "value": "1367-4803",
+   "type": "print"
+  }
+ ],
+ "published-other": {
+  "date-parts": [
+   [
+    2006,
+    3,
+    1
+   ]
+  ]
+ },
+ "published": {
+  "date-parts": [
+   [
+    2005,
+    12,
+    20
+   ]
+  ]
+ }
+}

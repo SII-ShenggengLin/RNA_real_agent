@@ -57,7 +57,7 @@ All other 14 targets: identity = 1.000.
   type II IRES), human rhinovirus A1 (NC_038311.1:1-626, picornavirus type I),
   BVDV-1 (NC_001461.1:1-385, pestivirus HCV-like IRES), human MYC transcript variant 1
   (NM_002467.6:1-363; IRES: Stoneley 1998 Oncogene 16:423, Nanbru 1997 Oncogene 14:881),
-  human HSPA5/Bip (NM_005347.5:1-217; IRES: Yang & Sarnow 1997 J Virol 71:2840), human
+  human HSPA5/Bip (NM_005347.5:1-217; IRES: Yang & Sarnow 1997 Nucleic Acids Res 25:2800), human
   VEGFA transcript variant 1 (NM_001025366.3:1-496; IRES: Stein 1998 MCB 18:3112, Akiri
   1998 Oncogene 17:227). Panel composition registered for Exp 5 / Fig 2e (user-approved
   expansion from 3 to 9 positives, 2026-08-25).
