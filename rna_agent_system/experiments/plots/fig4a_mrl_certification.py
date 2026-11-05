@@ -37,6 +37,23 @@ second line "(high vs low MRL tier)" lost "tier" — the word is retired
 paper-wide, and the Methods text's "split into high and low" carries the
 split semantics.
 
+2026-10-10 label-column fix (user-directed): the row labels dropped the
+shared "5′UTRs" token — the right-aligned three-line labels were ragged
+(one 20.3-mm line set a 22-mm column, the other lines 6.5–14.1 mm, leaving
+the left of the label block blank); the caption's registered first sentence
+("three 5′UTR libraries, the random 50-nucleotide library and two
+never-trained varying-length libraries") carries the library identity, the
+in-distribution marker and the n = counts stay. The label column narrowed
+22 → 15 mm and the freed width went to the two axes (29 → 32.5 mm).
+
+2026-10-10 composite-grid batch (user-directed row/column alignment): the
+canvas is now an exact 82.5 x 72.0 mm cell of the Fig. 4 two-column grid
+(column 1; row 1 shares its height with fig4b) saved without the tight
+crop, so the assembler places it at scale 1.0 with the canvas edges and
+the 6-pt text size shared across the whole composite. The two axes re-fit
+the narrower cell (32.5 → 29.75 mm each) and stretch to the taller row
+(37 → 51 mm, y0 13); labels, gates and values unchanged.
+
 Data  : experiments/results/exp14_mrl_oracle_certification/summary.json
 Usage : python experiments/plots/fig4a_mrl_certification.py
 Output : experiments/plots/output/fig4a_mrl_certification.{pdf,png}
@@ -65,9 +82,9 @@ C_ORACLE = PALETTE_BY_NAME["grey_blue"]       # #8FA6BB — GEMORNA MRL oracle
 C_GATE = PALETTE_BY_NAME["dark_warm_grey"]    # #7A7672 — gate lines (fig3a/3b)
 
 FAMILIES = [
-    ("sample2019_egfp_random50", "Random 50-nt 5′UTRs\n(in-distribution)"),
-    ("sample2019_varying_length_random", "Varying-length\nrandom 5′UTRs"),
-    ("sample2019_varying_length_human", "Varying-length\nhuman 5′UTRs"),
+    ("sample2019_egfp_random50", "Random 50-nt\n(in-distribution)"),
+    ("sample2019_varying_length_random", "Varying-length\nrandom"),
+    ("sample2019_varying_length_human", "Varying-length\nhuman"),
 ]
 
 plt.rcParams.update({
@@ -131,14 +148,17 @@ def main() -> int:
         for key, name in FAMILIES
     ]
 
-    fig_w, fig_h = 88 / 25.4, 52 / 25.4  # single-column panel
+    fig_w, fig_h = 82.5 / 25.4, 72.0 / 25.4  # exact grid cell (composite batch)
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    # absolute-mm geometry: 22 mm label column | two 29-mm axes | 6 mm gap
-    label_mm, ax_w, gap_mm = 22, 29, 6
-    y0_mm, h_mm = 10, 37
-    ax1 = fig.add_axes([label_mm / 25.4 / fig_w, y0_mm / 25.4 / fig_h,
+    # absolute-mm geometry: 1 mm margin | 15 mm label column | two 29.75-mm
+    # axes | 6 mm gap | 1 mm margin = 82.5 mm; axes 51 mm tall, y0 13 so the
+    # top ink sits ~8 mm below the canvas top (the letter hugs the row's
+    # highest ink at assembly; bottom margin ~5 mm matches fig4b's)
+    x_m, label_mm, ax_w, gap_mm = 1.0, 15, 29.75, 6
+    y0_mm, h_mm = 13, 51
+    ax1 = fig.add_axes([(x_m + label_mm) / 25.4 / fig_w, y0_mm / 25.4 / fig_h,
                         ax_w / 25.4 / fig_w, h_mm / 25.4 / fig_h])
-    ax2 = fig.add_axes([(label_mm + ax_w + gap_mm) / 25.4 / fig_w,
+    ax2 = fig.add_axes([(x_m + label_mm + ax_w + gap_mm) / 25.4 / fig_w,
                         y0_mm / 25.4 / fig_h, ax_w / 25.4 / fig_w,
                         h_mm / 25.4 / fig_h])
 
@@ -181,7 +201,7 @@ def main() -> int:
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig4a_mrl_certification.{ext}"
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white")
         print(f"written {out}")
     for row in rows:
         print(f"{row['label'].splitlines()[0]}: AUROC {row['auroc']} "

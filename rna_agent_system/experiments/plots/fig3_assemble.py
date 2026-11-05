@@ -35,6 +35,16 @@ Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
 placed just above-left of each panel corner (Nature style — no period, no
 brackets); drawn by this assembler, so they keep one size at any row scale.
 
+Row gaps are ink-measured (2026-10-10 alignment batch, user-directed):
+each row advances by the distance from its panels' top edge to their
+lowest ink plus one fixed gap, not by the bounding-box height.  Panel a
+keeps ~13 pt of designed blank below its rotated x labels (its exact-mm
+canvas), the row-2 panels ~3 pt — the box-height rule had made the
+a→b/c gap 10 pt larger than the b/c→d/e/f gap; the ink rule makes both
+transitions equal.  Same batch: d, e and f re-rendered on the shared
+exact-mm row-3 geometry (`fig3_row3_layout.py`), so the three axes land
+on the same lines in their grid3 columns.
+
 Assembly preserves vectors: each panel PDF is embedded as a Form XObject
 via PyMuPDF `show_pdf_page` (no rasterization); the PNG is rendered from
 the finished composite at 1200 dpi (Nature Methods line-art minimum at
@@ -49,6 +59,7 @@ import sys
 from pathlib import Path
 
 import fitz  # PyMuPDF
+import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import TEXT  # noqa: E402
@@ -92,7 +103,10 @@ ROWS: list[tuple[str, list[str]]] = [
 
 # Grid constants (PDF points) — identical to the fig2 composite.
 COL_GAP = 11.0
-ROW_GAP = 16.0          # hosts the 8 pt label band above each row
+INK_ROW_GAP = 19.0      # lowest ink of a row → top edge of the next row;
+                        # hosts the 8 pt label band above each row (2026-10-10:
+                        # measured on ink, not bounding boxes — see module
+                        # docstring; 19 pt ≈ the previous b/c→d/e/f spacing)
 MARGIN_L = 14.0         # labels hang 11 pt left of their panel
 MARGIN_R = 6.0
 MARGIN_T = 12.0         # label band for row 1
@@ -101,6 +115,23 @@ LABEL_SIZE = 8.0
 LABEL_DX = -11.0        # letter anchor relative to the panel corner
 LABEL_DY = -4.0         # baseline this far above the panel top edge
 INK = tuple(int(TEXT[i : i + 2], 16) / 255 for i in (1, 3, 5))
+
+
+def ink_bottom_extent(doc: fitz.Document) -> float:
+    """Distance from a panel's top edge to its lowest ink, in points.
+
+    Renders the panel's first page and scans for non-paper pixels (any
+    channel below 245 — the light NEUTRAL_GRID grey still counts).  A
+    panel's bounding box can trail its ink by designed bottom margins, so
+    equal visual row gaps are measured on the ink, not the box.
+    """
+    pix = doc[0].get_pixmap(dpi=150)
+    arr = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
+        pix.height, pix.width, pix.n)[:, :, :3]
+    rows = np.where((arr < 245).any(axis=(1, 2)))[0]
+    if len(rows) == 0:
+        return doc[0].rect.height
+    return (rows[-1] + 1) * 72.0 / 150.0
 
 
 def main() -> None:
@@ -122,7 +153,9 @@ def main() -> None:
 
     # Lay out rows top to bottom; each placed panel is
     # (letter, x, y, w, h) — all panels at scale 1.0 (uniform text scale).
-    # Rows are top-aligned so the panel letters sit on one line per row.
+    # Rows are top-aligned so the panel letters sit on one line per row;
+    # each row advances by its lowest ink (see ink_bottom_extent), so the
+    # visual gap between rows is the same at every transition.
     placed: list[tuple[str, float, float, float, float]] = []
     y = MARGIN_T
     for mode, letters in ROWS:
@@ -181,10 +214,10 @@ def main() -> None:
                 x0 = MARGIN_L + col_idx * (col_w + COL_GAP) + (col_w - w) / 2.0
                 row_placed.append((letter, x0, y, w, h))
         placed.extend(row_placed)
-        y += max(p[4] for p in row_placed) + ROW_GAP
+        y += max(ink_bottom_extent(sources[l]) for l in letters) + INK_ROW_GAP
 
     page_w = MARGIN_L + content_w + MARGIN_R
-    page_h = y - ROW_GAP + MARGIN_B
+    page_h = y - INK_ROW_GAP + MARGIN_B
 
     out = fitz.open()
     page = out.new_page(width=page_w, height=page_h)

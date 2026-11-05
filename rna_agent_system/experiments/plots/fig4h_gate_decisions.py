@@ -136,12 +136,14 @@ def main() -> int:
     )
 
     # ---- geometry (absolute mm) -----------------------------------------
-    fig_w_mm = 112.8                      # 2026-10-07: 88.0 → 112.8, the
+    fig_w_mm = 96.5                       # 2026-10-07: 88.0 → 112.8, the
                                           # equal-width four-row composite
-                                          # layout (g|h row spans the full
-                                          # content width)
+                                          # layout; 2026-10-10 composite-grid
+                                          # batch: → 96.5, the exact column-2
+                                          # cell of the Fig. 4 two-column
+                                          # grid (scale-1.0 assembly)
     left_mm = 25.0                        # concise oracle row labels
-    right_mm = 6.0
+    right_mm = 5.0
     row_mm = 5.4
     top_mm = 5.0
     bottom_mm = 8.0                       # x tick labels + axis title (key in-panel)

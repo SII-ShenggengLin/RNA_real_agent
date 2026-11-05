@@ -30,6 +30,17 @@ and the key labels synced to the caption's "ranking and screening use";
 the canvas narrowed to 57.2 mm so d, e and f share one three-column row
 (the user-directed 2026-10-02 layout; fonts unchanged 6-pt, no data
 change).
+2026-10-10 revision (Fig. 3 row-3 alignment batch, user-directed): the
+canvas and axes moved to the shared exact-millimetre row-3 geometry
+(`fig3_row3_layout.py` — 54.0 x 52.0 mm canvas, axes 12.0/12.0/41.0/36.0,
+identical with panels d and f so the three axes land on the same lines at
+assembly) and the tight-crop save retired (the figS house convention).
+The taller shared axes (24 → 36 mm) spreads the six bars; the style-key
+row below was tightened (swatch 2.4 → 2.2 mm, pitch 3.0 → 2.7, gaps
+1.4/3.0 → 1.2/2.2, label widths re-measured) so it stays a single row
+within the 54.0 mm canvas, clamped to the canvas edge after centring on
+the axes (1.0 mm residual offset, imperceptible); fonts unchanged 6-pt,
+no data change.
 
 Data: experiments/results/exp5_claim_overreach/runs.jsonl (+
 _summary.json). Output: experiments/plots/output/fig3e_claim_overreach.
@@ -49,6 +60,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fig3_row3_layout import (  # noqa: E402
+    AX_B_MM, AX_H_MM, AX_L_MM, AX_W_MM, CANVAS_H_MM, CANVAS_W_MM)
 from palette import PALETTE_BY_NAME  # noqa: E402
 
 RESULTS = PROJECT_ROOT / "experiments" / "results" / "exp5_claim_overreach"
@@ -135,28 +148,32 @@ def main() -> int:
     results_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else RESULTS
     summary, runs_rows = load_data(results_dir)
 
-    # absolute-mm geometry (the fig3f convention); 2026-10-02 second pass:
-    # 57.2 → 54.2 mm, tracking the composite's narrowed three-column width;
-    # fonts, bar geometry and the style-key row unchanged in kind, no data
-    # change
-    fig_w, fig_h = 54.2 / 25.4, 36.5 / 25.4
+    # shared row-3 geometry (fig3_row3_layout.py) — exact canvas, no tight
+    # crop, so the axes rectangle is identical in panels d, e and f
+    fig_w, fig_h = CANVAS_W_MM / 25.4, CANVAS_H_MM / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_b = fig.add_axes([10 / 25.4 / fig_w, 11 / 25.4 / fig_h,
-                         40.2 / 25.4 / fig_w, 24 / 25.4 / fig_h])
+    ax_b = fig.add_axes([AX_L_MM / CANVAS_W_MM, AX_B_MM / CANVAS_H_MM,
+                         AX_W_MM / CANVAS_W_MM, AX_H_MM / CANVAS_H_MM])
 
     draw_bars(ax_b, runs_rows)
 
     # style key under the panel, one row centred on the axes (2026-08-30 user
     # direction): one swatch per bar style — the three oracle colours solid
-    # (ranking objective) then light (screening evaluation)
+    # (ranking objective) then light (screening evaluation).  2026-10-10:
+    # metrics tightened for the shared row-3 canvas (swatch 2.4 → 2.2 mm,
+    # pitch 3.0 → 2.7, gap 1.4 → 1.2, group gap 3.0 → 2.2, label widths
+    # re-measured at 6 pt) and the centred position clamped to the canvas —
+    # the axes sit right of the canvas centre (the y-label stack), so the
+    # 44 mm key row can no longer centre on them unclamped
     def _fx(v: float) -> float: return v / 25.4 / fig_w   # mm → figure frac
     def _fy(v: float) -> float: return v / 25.4 / fig_h
-    sw_w, sw_h, pitch, gap, group_gap = 2.4, 1.6, 3.0, 1.4, 3.0
+    sw_w, sw_h, pitch, gap, group_gap = 2.2, 1.6, 2.7, 1.2, 2.2
     trio_w = sw_w + 2 * pitch
-    label_w = {"ranking_objective": 10.5, "screening_evaluation": 13.0}
+    label_w = {"ranking_objective": 11.0, "screening_evaluation": 13.2}
     row_w = 2 * (trio_w + gap) + group_gap + sum(label_w.values())
-    x0 = (10 + 40.2 / 2) - row_w / 2                      # row centred on the axes
-    assert x0 >= 0.5 and x0 + row_w <= 54.2 - 0.5, (
+    x0 = (AX_L_MM + AX_W_MM / 2) - row_w / 2              # row centred on the axes
+    x0 = min(x0, CANVAS_W_MM - 0.5 - row_w)               # …clamped to the canvas
+    assert x0 >= 0.5, (
         f"style key overflows the canvas: {x0:.2f} .. {x0 + row_w:.2f} mm")
     x = x0
     for use in ("ranking_objective", "screening_evaluation"):
@@ -174,8 +191,9 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig3e_claim_overreach.{ext}"
+        # exact-canvas save (no tight crop) — the row-3 alignment convention
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white")
     plt.close(fig)
     ov = summary["overall"]
     print(f"fig3e -> {OUT_DIR / 'fig3e_claim_overreach.pdf'} "

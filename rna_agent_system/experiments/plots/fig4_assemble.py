@@ -13,31 +13,45 @@ Panel composition follows the Nature conventions surveyed in
 lowercase panel letters at the top-left corner of each panel (no period,
 no brackets), panels lettered in strict reading order (left to right, top
 to bottom), rows top-aligned so the letters sit on one line per row.
-Every panel carries the reset programme's single 6-pt text style, so
-panels are placed at scale 1.0 unless a row must shrink to fit (the one
-exception below).
 
-Layout: row 1 pairs the subsection's two evidence-semantics panels — a (MRL
-certification) and b (selective-gating matrix) — one equal-height fit row
-(the 2026-09-11 merged-narrative band); row 2 pairs fidelity c with the
-gating headline d as a second equal-height fit row. 2026-10-02
-(user-directed figure-by-figure pass): the bottom half was re-paired by
-panel kind (e|g verdict panels over f|h gate-activity panels, f after g in
-visual reading order). 2026-10-07 (user-directed): rows 3–4 restored to
-strict citation order — row 3 groups the aptamer verdict bars e with the
-overreach events f, row 4 the mRNA verdict bars g with the production gate
-verdicts h (the tall-layout render, `FIG4F_LAYOUT=tall python
-experiments/plots/fig4f_overreach_events.py`, same frozen data — the fig3c
-composite-layout convention), closing the f-after-g deviation; and all
-four panels re-rendered wider so the two group rows span the same content
-width as the fit rows (e 90.3 + f 88.8 = g 66.3 + h 112.8 = 179.1 mm +
-one COL_GAP ≈ 183 mm). All rows are top-aligned; content width = 183 mm
-(Nature double column, the fig3 composite width); every gutter is one
-COL_GAP.
+2026-10-10 composite-grid batch (user-directed row/column alignment): the
+former "fit"/"group" row machinery is retired — it fit-scaled each row to
+the content width, so the sibling panels rendered at different text sizes
+(panel b at 73%, panel d at 146%) and the second column's left edges
+trailed by up to 32 mm across rows. Every panel now re-renders on an
+exact cell of a strict two-column grid (see the panel scripts) and this
+assembler places them all at scale 1.0, so the 6-pt text size, every row's
+top and bottom edges, every column's left and right edges, and the panel
+letters' per-row baselines and per-column x positions all align:
+
+    column 1 (a, c, e, g)   82.5 mm
+    gutter                   4.0 mm
+    column 2 (b, d, f, h)   96.5 mm
+                             ------
+    content width          183.0 mm  (Nature double column)
+    row heights            72.0 / 50.0 / 66.2 / 72.4 mm
+
+Rows pair the subsection's evidence-semantics panels a|b, fidelity c with
+the gating headline d, the aptamer verdict bars e with the overreach
+events f (the tall-layout render, `FIG4F_LAYOUT=tall python
+experiments/plots/fig4f_overreach_events.py`, same frozen data — the
+fig3c composite-layout convention), and the mRNA verdict bars g with the
+production gate verdicts h. A per-panel assert pins every panel PDF to
+its grid cell (±0.05 mm), so a drifted render fails the assembly.
 
 Letters: Helvetica-Bold 8 pt (Arial-equivalent), ink black (palette TEXT),
-placed just above-left of each panel corner (Nature style — no period, no
-brackets); drawn by this assembler, so they keep one size at any row scale.
+placed up-left of each panel corner (Nature style — no period, no
+brackets). 2026-10-10 tightening (user-directed, the fig5 convention):
+each ROW's letters share one baseline placed ~0.7 mm above the row's
+highest first-ink row (detected on each panel's own 1200-dpi PNG), so no
+letter floats far above blank canvas bands; 'g' carries a descender,
+compensated so its glyph bottom — not its baseline — clears the ink.
+Column 1 letters hang the classic 11 pt left of their panels (into the
+page margin); column 2 letters hang only 1.5 mm (user-directed: the 4-mm
+grid gutter is too narrow for the classic hang — the letters read as
+belonging to the previous column), keeping one x per column. A
+post-placement assert pins every letter's glyph bottom 0.3–12 mm above
+its panel's first ink.
 
 Assembly preserves vectors: each panel PDF is embedded as a Form XObject
 via PyMuPDF `show_pdf_page` (no rasterization); the PNG is rendered from
@@ -67,10 +81,8 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 # certification panel (a) whose capability grades it exercises; fidelity
 # b→c, headline c→d, claim matrix d→e, overreach e→f, mRNA strip f→g;
 # h/i/j keep their letters. No panel content changed, only letters and
-# file names (the 2026-09-11 first re-lettering had moved a/b in from
-# Fig. 3's 3g/3h and shifted the gating panels +2; frozen data files keep
-# their as-written names). 2026-10-02: i/j left for Supplementary
-# Figs. S5/S6 (see the module docstring); a–h unchanged.
+# file names. 2026-10-02: i/j left for Supplementary Figs. S5/S6 (see the
+# module docstring); a–h unchanged.
 PANELS: dict[str, str] = {
     "a": "fig4a_mrl_certification.pdf",
     "b": "fig4b_selective_gating.pdf",
@@ -82,136 +94,113 @@ PANELS: dict[str, str] = {
     "h": "fig4h_gate_decisions.pdf",
 }
 
-# Row plan in strict reading order. "stack" piles the left-column letters
-# top-to-bottom (one ROW_GAP between them, each centred on the column
-# centreline) beside the single right-column panel, the two columns joined
-# by one COL_GAP and the whole block centred on the content width; "group"
-# places the letters left to right with one COL_GAP between them, the whole
-# row centred; "fit" draws the whole row at one equal height and lets the
-# leftover width become the gutter (the fig2/fig3 fgh-row convention);
-# "full" centres one panel on the content width.
-ROWS: list[tuple[str, object]] = [
-    ("fit", ["a", "b"]),
-    ("fit", ["c", "d"]),
-    ("group", ["e", "f"]),
-    ("group", ["g", "h"]),
+# The strict two-column grid (mm): rows in reading order, each row one
+# shared canvas height, both columns one shared width each — every panel
+# drawn at scale 1.0 (the fig5 "grid" convention, hardened to equal
+# heights and asserted cell sizes).
+MM = 25.4 / 72
+COL1_W, COL2_W, COL_GAP_MM = 82.5, 96.5, 4.0
+ROWS: list[tuple[str, str, float]] = [   # (left letter, right letter, row height mm)
+    ("a", "b", 72.0),
+    ("c", "d", 50.0),
+    ("e", "f", 66.2),
+    ("g", "h", 72.4),
 ]
+COL_W = {0: COL1_W, 1: COL2_W}
 
-# Grid constants (PDF points) — identical to the fig2/fig3 composites.
-CONTENT_W = 183.0 / 25.4 * 72   # Nature double column (fig3 composite width)
-COL_GAP = 11.0
+# Grid constants (PDF points) — the fig2/fig3/fig4 composite frame.
+CONTENT_W = (COL1_W + COL_GAP_MM + COL2_W) * 72 / 25.4   # = 183 mm
+COL_GAP = COL_GAP_MM * 72 / 25.4
 ROW_GAP = 16.0          # hosts the 8 pt label band above each row
 MARGIN_L = 14.0         # labels hang 11 pt left of their panel
 MARGIN_R = 6.0
 MARGIN_T = 12.0         # label band for row 1
 MARGIN_B = 8.0
 LABEL_SIZE = 8.0
-LABEL_DX = -11.0        # letter anchor relative to the panel corner
-LABEL_DY = -4.0         # baseline this far above the panel top edge
+LETTER_GAP_PT = 2.0     # glyph bottom → panel first-ink clearance (~0.7 mm)
+DESCENT_PT = {"g": 2.0}  # Helvetica-Bold descender at 8 pt (letters a-f/h sit
+                         # on the baseline; only g dips below it)
+SIZE_TOL = 0.05 * 72 / 25.4   # panel-vs-cell tolerance (0.05 mm)
 INK = tuple(int(TEXT[i : i + 2], 16) / 255 for i in (1, 3, 5))
+
+
+def first_ink_pt(png: Path) -> float:
+    """Distance (pt) from a panel PNG's top edge to its first ink row —
+    the panel's own top blank band, measured on the 1200-dpi raster."""
+    import numpy as np
+    from PIL import Image
+
+    img = np.asarray(Image.open(png).convert("L"))
+    inked = (img < 250).any(axis=1)
+    assert inked.any(), f"blank raster: {png}"
+    return float(np.argmax(inked)) / 1200.0 * 72.0
 
 
 def main() -> None:
     # every lettered panel must be placed exactly once (guards the row plan
     # against dropped panels when letters shift)
-    placed_letters: list[str] = []
-    for mode, spec in ROWS:
-        if mode == "stack":
-            col_letters, right = spec  # type: ignore[misc]
-            placed_letters.extend([*col_letters, right])
-        else:
-            placed_letters.extend(spec)  # type: ignore[arg-type]
+    placed_letters: list[str] = [l for row in ROWS for l in row[:2]]
     assert sorted(placed_letters) == sorted(PANELS), (
         f"row plan places {sorted(placed_letters)} but panels are {sorted(PANELS)}"
     )
 
     sources: dict[str, fitz.Document] = {}
-    sizes: dict[str, tuple[float, float]] = {}
     for letter, name in PANELS.items():
-        doc = fitz.open(OUT_DIR / name)
-        sources[letter] = doc
-        r = doc[0].rect
-        sizes[letter] = (r.width, r.height)
+        sources[letter] = fitz.open(OUT_DIR / name)
 
-    content_w = CONTENT_W
-
-    # Lay out rows top to bottom; each placed panel is
-    # (letter, x, y, w, h). Rows are top-aligned so the panel letters sit
-    # on one line per row.
+    # strict grid: every panel must match its cell exactly (a drifted
+    # render fails the assembly instead of silently scaling)
     placed: list[tuple[str, float, float, float, float]] = []
     y = MARGIN_T
-    for mode, spec in ROWS:
-        row_placed: list[tuple[str, float, float, float, float]] = []
-        if mode == "stack":
-            col_letters, right = spec  # type: ignore[misc]
-            col1_w = max(sizes[l][0] for l in col_letters)
-            block_w = col1_w + COL_GAP + sizes[right][0]
-            x1 = MARGIN_L + max(0.0, (content_w - block_w) / 2.0)
-            yy = y
-            for letter in col_letters:
-                w, h = sizes[letter]
-                row_placed.append((letter, x1 + (col1_w - w) / 2.0, yy, w, h))
-                yy += h + ROW_GAP
-            stack_h = yy - ROW_GAP - y
-            wr, hr = sizes[right]
-            row_placed.append((right, x1 + col1_w + COL_GAP, y, wr, hr))
-            row_h = max(stack_h, hr)
-        elif mode == "group":
-            letters = spec  # type: ignore[assignment]
-            total = sum(sizes[l][0] for l in letters) + COL_GAP * (len(letters) - 1)
-            x = MARGIN_L + max(0.0, (content_w - total) / 2.0)
-            for letter in letters:
-                w, h = sizes[letter]
-                row_placed.append((letter, x, y, w, h))
-                x += w + COL_GAP
-            row_h = max(p[4] for p in row_placed)
-        elif mode == "fit":
-            # Equal-size row (the fig2/fig3 fgh-row convention): one drawn
-            # height for every panel, so the row reads as a band of
-            # identical panels. Per-panel scales differ — the aspects
-            # differ — so widths vary slightly; leftover width becomes the
-            # gutter. Height = the median panel height at the uniform fit
-            # scale, so no panel is squeezed to the smallest one's
-            # proportions.
-            letters = spec  # type: ignore[assignment]
-            n = len(letters)
-            s0 = (content_w - (n - 1) * COL_GAP) / sum(sizes[l][0] for l in letters)
-            row_h = sorted(sizes[l][1] * s0 for l in letters)[n // 2]
-            total_w = sum(sizes[l][0] * (row_h / sizes[l][1]) for l in letters)
-            gap = (content_w - total_w) / (n - 1)
-            if gap < 6.0:  # keep the gutters sane if aspects ever widen
-                row_h *= (content_w - (n - 1) * 6.0) / total_w
-                total_w = sum(sizes[l][0] * (row_h / sizes[l][1]) for l in letters)
-                gap = (content_w - total_w) / (n - 1)
-            x = MARGIN_L + max(0.0, (content_w - total_w - (n - 1) * gap) / 2.0)
-            for letter in letters:
-                w, h = sizes[letter]
-                s = row_h / h
-                row_placed.append((letter, x, y, w * s, h * s))
-                x += w * s + gap
-        else:  # full
-            (letter,) = spec  # type: ignore[misc]
-            w, h = sizes[letter]
-            x0 = MARGIN_L + max(0.0, (content_w - w) / 2.0)
-            row_placed.append((letter, x0, y, w, h))
-            row_h = h
-        placed.extend(row_placed)
+    for left, right, row_h_mm in ROWS:
+        row_h = row_h_mm * 72 / 25.4
+        for col_idx, letter in enumerate((left, right)):
+            r = sources[letter][0].rect
+            cell_w = COL_W[col_idx] * 72 / 25.4
+            assert abs(r.width - cell_w) <= SIZE_TOL, (
+                f"panel {letter} width {r.width / 72 * 25.4:.2f} mm "
+                f"!= cell {COL_W[col_idx]:.2f} mm")
+            assert abs(r.height - row_h) <= SIZE_TOL, (
+                f"panel {letter} height {r.height / 72 * 25.4:.2f} mm "
+                f"!= row {row_h_mm:.2f} mm")
+            x0 = MARGIN_L + sum(COL_W[c] * 72 / 25.4 for c in range(col_idx)) \
+                + col_idx * COL_GAP
+            placed.append((letter, x0, y, r.width, r.height))
         y += row_h + ROW_GAP
 
-    page_w = MARGIN_L + content_w + MARGIN_R
+    page_w = MARGIN_L + CONTENT_W + MARGIN_R
     page_h = y - ROW_GAP + MARGIN_B
 
     out = fitz.open()
     page = out.new_page(width=page_w, height=page_h)
-    for letter, x0, y0, w, h in placed:
-        page.show_pdf_page(fitz.Rect(x0, y0, x0 + w, y0 + h), sources[letter], 0)
-        page.insert_text(
-            (x0 + LABEL_DX, y0 + LABEL_DY),
-            letter,
-            fontname="hebo",
-            fontsize=LABEL_SIZE,
-            color=INK,
-        )
+    ink_offsets = {letter: first_ink_pt(OUT_DIR / name.replace(".pdf", ".png"))
+                   for letter, name in PANELS.items()}
+    pos = {letter: (x0, y0, w, h) for letter, x0, y0, w, h in placed}
+    # one letter baseline per row (the fig5 convention): the line sits
+    # LETTER_GAP_PT above the row's HIGHEST first-ink row, so the letters
+    # share one horizontal line while hugging the row's content. Column 1
+    # letters hang the classic 11 pt into the page margin; column 2 letters
+    # hang 1.5 mm (the 4-mm grid gutter cannot host the classic hang).
+    for left, right, _row_h in ROWS:
+        for letter in (left, right):
+            x0, y0, w, h = pos[letter]
+            page.show_pdf_page(fitz.Rect(x0, y0, x0 + w, y0 + h),
+                               sources[letter], 0)
+            label_dx = -11.0 if letter == left else -1.5 * 72 / 25.4
+            descent = DESCENT_PT.get(letter, 0.0)
+            baseline_y = y0 + min(ink_offsets[left], ink_offsets[right]) \
+                - LETTER_GAP_PT - descent
+            page.insert_text(
+                (x0 + label_dx, baseline_y),
+                letter,
+                fontname="hebo",
+                fontsize=LABEL_SIZE,
+                color=INK,
+            )
+            glyph_bottom = baseline_y + descent
+            gap_mm = (y0 + ink_offsets[letter] - glyph_bottom) / 72 * 25.4
+            assert 0.3 <= gap_mm <= 12.0, \
+                f"letter {letter} sits {gap_mm:.2f} mm from its panel's ink"
 
     pdf_path = OUT_DIR / "fig4_composite.pdf"
     png_path = OUT_DIR / "fig4_composite.png"

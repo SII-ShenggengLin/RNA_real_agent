@@ -5,14 +5,28 @@ completion — the pooled 25-target analysis).
 One tile per (target, profile) pair, coloured by the paired delivery
 outcome of the two conditions — navigation-only (sage), both-pass (grey
 blue), static-only (terracotta), both-fail (dark warm grey; the Fig. 5c
-legend's class names).  A right-hand marker column carries the target-level
-navigation end-to-end delivery glyph (filled = navigation delivered a
+legend's class names).  A marker row underneath the mosaic carries the
+target-level navigation end-to-end glyph (filled = navigation delivered a
 passing batch in all three profiles — the primary endpoint's c_e2e_gene
-term).  Rows follow the registered target order (alphabetical) with the
-five deployment targets (Exp-30 form-entry campaigns, static arm completed
-by Exp 40) below a divider; the three profile columns are headed
-Expression / Stability / Balanced; the key below carries the per-class
-pair counts and a second row explaining the end-to-end glyph.
+term).  Columns follow the registered target order (alphabetical) with
+the five deployment targets (Exp-30 form-entry campaigns, static arm
+completed by Exp 40) right of a divider; the three profile rows are
+labelled Expression / Stability / Balanced down the left edge; the key
+below carries the per-class pair counts and a second row explaining the
+end-to-end glyph.
+
+2026-10-10 transposed re-render (user-directed Fig. 5 composite-length
+batch): the mosaic transposed to a full-width, short panel — targets on
+the x axis (25 columns, 45°-rotated labels — the fig3a house idiom),
+profiles on the y axis, the end-to-end marker column becoming a marker
+row (the legend's "end-to-end column" wording became "end-to-end row" in
+the same batch); canvas 89 × 127.8 → 183 × 50 mm so the panel takes a
+full composite row at a third of its former height.  One shared axes
+now carries the three profile rows and the marker row (uniform 4.6-mm
+unit row pitch, a 0.3-unit gap band between mosaic and marker row), so
+all four left row labels align on one right edge by construction.  No
+number, colour or class assignment changed; every tile, divider, glyph
+and key item is the same information re-oriented.
 
 2026-10-03 figure-by-figure text sync (user-directed Fig. 5 batch): the
 one-line context strip deleted (the key's class names now self-decode the
@@ -48,17 +62,21 @@ under the identical full-length stack); canvas 89 × 106 → 89 × 127.8 mm
 asterisks removed — the row-label "*"-suffix and the context strip's
 "* marks the five deployment targets" clause lost their legend referent
 when the cohort disclosure retired to the Methods and frozen records (the
-2026-10-02 legend batches); the cohort divider line stays (the rows still
-group registered 20 above, deployment 5 below).  No number, colour or
-geometry changed.
+2026-10-02 legend batches); the cohort divider line stays (the columns
+still group registered 20 left, deployment 5 right).  No number, colour
+or geometry changed.
 
 Style (the fig4d/fig4g carpet house style): no in-figure title (the panel
 letter is added at assembly); every text element one 6-pt pure-black
 style; colours exclusively from palette rev 7; absolute-mm geometry,
-single column; 1200-dpi PNG + vector PDF (fonttype 42).  Programmatic
-guards: every text in-canvas, pairwise text non-collision, header-baseline
-equality, row-label/mosaic clearance, exact canvas pixels, raster palette
-purity (greys + palette↔white/black blends only), white outer border.
+double column; 1200-dpi PNG + vector PDF (fonttype 42).  Programmatic
+guards: every text in-canvas, pairwise text non-collision (rotated
+column labels checked by the pitch-clearance and key-clearance asserts —
+their axis-aligned boxes overlap by construction at a 6.5-mm pitch while
+the labels themselves stay 4.6 mm apart perpendicular), left row labels
+clear of the mosaic, exact canvas pixels, the frozen legend counts, raster
+palette purity (greys + palette↔white/black blends only), white outer
+border.
 
 Data  : experiments/results/exp28_gennav_mrna_endpoint_v2/full/runs.jsonl
         + experiments/results/exp40_static_completion/mrna/runs.jsonl
@@ -66,6 +84,15 @@ Data  : experiments/results/exp28_gennav_mrna_endpoint_v2/full/runs.jsonl
           mrna_pooled_verdict.json
 Usage : python experiments/plots/fig5c_delivery_mosaic.py
 Output : experiments/plots/output/fig5c_delivery_mosaic.{pdf,png}
+
+2026-10-10 tile colours: back to the original pairing (user-directed,
+after five exploration rounds — lighter tints, a sand/mauve ladder, a
+cool-trio candidate, an f-harmonised grey-blue/terracotta set and a
+mauve-grey swap, all user-rejected): sage navigation-only, grey-blue
+both-pass, terracotta static-only, dark-warm-grey both-fail, light
+warm-grey cohort dividers and open marker outlines — the constants the
+2026-09 carpet shipped with.  The transposed layout above is unaffected;
+no number, class assignment or geometry change.
 """
 
 from __future__ import annotations
@@ -96,7 +123,7 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 
 INK = "#000000"
 FONT = 6
-W_MM, H_MM = 89.0, 127.8
+W_MM, H_MM = 183.0, 50.0
 
 C_BOTH = PALETTE_BY_NAME["grey_blue"]       # both-pass
 C_NAV = PALETTE_BY_NAME["sage_green"]       # navigation-only
@@ -123,18 +150,22 @@ H_PX = round(H_MM / 25.4 * DPI)
 PROFILES = ["expression", "stability", "balanced"]
 PROFILE_LABELS = ["Expression", "Stability", "Balanced"]
 
-# absolute-mm horizontal layout
-GAP_LABEL_MM = 1.2    # row-label block → mosaic
-MOSAIC_W_MM = 50.0
-GAP_MID_MM = 3.5      # mosaic → marker column
-MARK_W_MM = 4.5
-# absolute-mm vertical layout
-MOSAIC_BOT_MM = 12.5
-MOSAIC_H_MM = 108.75
-LEG1_Y_MM = 8.6       # key row 1 (tile outcomes) baseline
-LEG2_Y_MM = 4.8       # key row 2 (end-to-end glyph) baseline
+# absolute-mm horizontal layout (transposed: one target per column)
+MOSAIC_W_MM = 162.0     # 25 columns ≈ 6.5 mm each
+GAP_LABEL_MM = 1.2      # left row-label block → mosaic
+# absolute-mm vertical layout (data units are 4.6 mm each; y grows down)
+UNIT_MM = 4.6
+Y_MARK0 = 3.3           # marker row band [3.3, 4.3); gap band [3.0, 3.3)
+Y_LIM = 4.3
+LEG1_Y_MM = 7.8         # key row 1 (tile outcomes) baseline
+LEG2_Y_MM = 3.9         # key row 2 (end-to-end glyph) baseline
+TOP_MM = 1.3            # white above the mosaic
+XLBL_PAD_PT = 2.8       # mosaic bottom → rotated-label anchors
 
 N_REGISTERED = 20
+# the legend's frozen counts (Fig. 5c legend, verbatim)
+FROZEN_COUNTS = {"nav": 20, "both": 26, "rule": 6, "none": 23}
+FROZEN_E2E = 12
 
 
 def main() -> int:
@@ -153,43 +184,43 @@ def main() -> int:
     # W_PX × H_PX (matplotlib takes int(figsize × dpi))
     fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
 
-    # provisional mosaic axes — drawn once to measure the real row-label
+    # provisional axes — drawn once to measure the real left row-label
     # widths, then repositioned so the whole content block is centred
-    ax = fig.add_axes([0.3, MOSAIC_BOT_MM / H_MM, 0.5, MOSAIC_H_MM / H_MM])
-    ax.set_xlim(0, 3)
-    ax.set_ylim(0, n)
+    ax = fig.add_axes([0.3, 0.3, 0.5, 0.4])
+    ax.set_xlim(0, n)
+    ax.set_ylim(0, Y_LIM)
     ax.invert_yaxis()
     ax.set_aspect("auto")
-    ax.set_xticks([0.5, 1.5, 2.5])
-    ax.set_xticklabels(PROFILE_LABELS)
-    ax.xaxis.set_ticks_position("top")
-    ax.set_yticks([i + 0.5 for i in range(n)])
-    ax.set_yticklabels([short_name(t) for t in targets])
+    ax.set_yticks([0.5, 1.5, 2.5, Y_MARK0 + 0.5])
+    ax.set_yticklabels(PROFILE_LABELS + ["End-to-end"])
+    ax.set_xticks([i + 0.5 for i in range(n)])
+    ax.set_xticklabels(
+        [short_name(t) for t in targets],
+        rotation=45, ha="right", rotation_mode="anchor")
     ax.tick_params(length=0, pad=1.8)
+    ax.tick_params(axis="x", pad=XLBL_PAD_PT)
     for s in ax.spines.values():
         s.set_visible(False)
-    ax.tick_params(axis="x", pad=2.2)
 
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
     label_w_mm = max(t.get_window_extent(renderer).width
                      for t in ax.get_yticklabels()) / fig.bbox.width * W_MM
 
-    content_mm = (label_w_mm + GAP_LABEL_MM + MOSAIC_W_MM
-                  + GAP_MID_MM + MARK_W_MM)
+    content_mm = label_w_mm + GAP_LABEL_MM + MOSAIC_W_MM
     left0_mm = (W_MM - content_mm) / 2
     mosaic_left = (left0_mm + label_w_mm + GAP_LABEL_MM) / W_MM
-    mark_left = (left0_mm + label_w_mm + GAP_LABEL_MM
-                 + MOSAIC_W_MM + GAP_MID_MM) / W_MM
-    ax.set_position([mosaic_left, MOSAIC_BOT_MM / H_MM,
-                     MOSAIC_W_MM / W_MM, MOSAIC_H_MM / H_MM])
+    axes_h_mm = Y_LIM * UNIT_MM
+    axes_bot_mm = (H_MM - TOP_MM - axes_h_mm)
+    ax.set_position([mosaic_left, axes_bot_mm / H_MM,
+                     MOSAIC_W_MM / W_MM, axes_h_mm / H_MM])
 
     counts = {"both": 0, "nav": 0, "rule": 0, "none": 0}
-    for row, target in enumerate(targets):
+    for col, target in enumerate(targets):
         rec = records[target]
         jc = {p["profile"]: p["JCD"] for p in rec["evaluations"]["C"]["profiles"]}
         ja = {p["profile"]: p["JCD"] for p in rec["evaluations"]["A"]["profiles"]}
-        for col, profile in enumerate(PROFILES):
+        for row, profile in enumerate(PROFILES):
             c_pass = jc.get(profile, False)
             a_pass = ja.get(profile, False)
             if c_pass and a_pass:
@@ -204,46 +235,25 @@ def main() -> int:
             ax.add_patch(Rectangle((col + 0.06, row + 0.14), 0.88, 0.72,
                                    facecolor=color, edgecolor="none"))
 
-    # gene-level navigation e2e marker column (right) — own y axis, no
-    # sharing (a shared axis's set_yticks([]) would wipe the row labels)
-    axg = fig.add_axes([mark_left, MOSAIC_BOT_MM / H_MM,
-                        MARK_W_MM / W_MM, MOSAIC_H_MM / H_MM])
-    axg.set_xlim(0, 1)
-    axg.set_ylim(0, n)
-    axg.invert_yaxis()
+    # gene-level navigation end-to-end marker row (underneath the mosaic)
     n_e2e = 0
-    for row, target in enumerate(targets):
+    for col, target in enumerate(targets):
         rec = records[target]
         e2e_all = all(p["e2e_pass"] for p in rec["evaluations"]["C"]["profiles"])
         n_e2e += e2e_all
-        axg.add_patch(Rectangle((0.12, row + 0.28), 0.76, 0.44,
-                                facecolor=(C_NAV if e2e_all else "white"),
-                                edgecolor=(INK if e2e_all else C_OPEN),
-                                linewidth=0.6))
-    axg.set_xticks([])
-    axg.set_yticks([])
-    for s in axg.spines.values():
-        s.set_visible(False)
+        ax.add_patch(Rectangle((col + 0.12, Y_MARK0 + 0.28), 0.76, 0.44,
+                               facecolor=(C_NAV if e2e_all else "white"),
+                               edgecolor=(INK if e2e_all else C_OPEN),
+                               linewidth=0.6))
 
     # cohort divider between the registered 20 and the deployment 5 (the
-    # inter-row gap: registered tiles end at row 19.86, deployment start 20.14)
+    # inter-column gap: registered tiles end at 19.94, deployment start
+    # 20.06) — spanning mosaic + marker row
     if n > N_REGISTERED:
-        ax.plot([-0.02, 3.02], [N_REGISTERED, N_REGISTERED],
+        ax.plot([N_REGISTERED, N_REGISTERED], [-0.02, Y_LIM + 0.02],
                 color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
-        axg.plot([-0.06, 1.06], [N_REGISTERED, N_REGISTERED],
-                 color=C_OPEN, lw=0.6, zorder=4, clip_on=False)
 
-    # ── headers: "End-to-end" as a fourth column header on the same
-    #    baseline as the three profile headers (measured, not a floating
-    #    title) ──
-    fig.canvas.draw()
-    renderer = fig.canvas.get_renderer()
-    hdr_bb = ax.get_xticklabels()[1].get_window_extent(renderer)  # Stability
-    e2e_hdr = fig.text(mark_left + 0.5 * MARK_W_MM / W_MM,
-                       hdr_bb.y0 / fig.bbox.height, "End-to-end",
-                       ha="center", va="bottom", fontsize=FONT, color=INK)
-
-    # ── key: two centred rows under the mosaic, renderer-measured widths
+    # ── key: two centred rows under the labels, renderer-measured widths
     #    under a canvas-overflow assert (the fig4g house convention) ──
     def text_w(s: str) -> float:
         t = fig.text(0, 0, s, fontsize=FONT)
@@ -301,29 +311,57 @@ def main() -> int:
                                              color=INK, va="baseline"))
                 x += w
 
-    # ── programmatic guards: every text in-canvas and pairwise
-    #    non-colliding, header baselines equal, row labels clear of the
-    #    mosaic (the fig5b/fig4e house assertions) ──
+    # ── programmatic guards: every text in-canvas; the left row labels
+    #    clear of the mosaic and right-aligned; the frozen legend counts;
+    #    rotated column labels clear of the key by pitch geometry (their
+    #    axis-aligned boxes overlap by construction at a 6.5-mm pitch —
+    #    adjacent 45° baselines stay pitch × sin 45° ≈ 4.6 mm apart,
+    #    twice the 6-pt cap height, so only the global clearances are
+    #    asserted) ──
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    texts = ([e2e_hdr] + legend_texts
-             + list(ax.get_xticklabels()) + list(ax.get_yticklabels()))
-    boxes = []
-    for t in texts:
+    ylabels = list(ax.get_yticklabels())
+    xlabels = list(ax.get_xticklabels())
+    for t in ylabels + legend_texts + xlabels:
         bb = t.get_window_extent(renderer)
         assert (bb.x0 >= 0 and bb.y0 >= 0
                 and bb.x1 <= fig.bbox.width and bb.y1 <= fig.bbox.height), \
             f"text outside canvas: {t.get_text()!r}"
-        boxes.append(bb)
-    for i in range(len(boxes)):
-        for j in range(i + 1, len(boxes)):
-            assert not boxes[i].overlaps(boxes[j]), \
-                f"text collision: {texts[i].get_text()!r} x {texts[j].get_text()!r}"
-    assert abs(boxes[0].y0 - ax.get_xticklabels()[1]
-               .get_window_extent(renderer).y0) <= 2, \
-        "End-to-end header off the profile-header baseline"
-    assert max(b.x1 for b in boxes[-n:]) < ax.bbox.x0, \
-        "row labels cross into the mosaic"
+    yb = [t.get_window_extent(renderer) for t in ylabels]
+    for i in range(len(yb)):
+        for j in range(i + 1, len(yb)):
+            assert not yb[i].overlaps(yb[j]), \
+                f"row-label collision: {ylabels[i].get_text()!r} x {ylabels[j].get_text()!r}"
+    lb = [t.get_window_extent(renderer) for t in legend_texts]
+    for i in range(len(lb)):
+        for j in range(i + 1, len(lb)):
+            assert not lb[i].overlaps(lb[j]), \
+                f"key collision: {legend_texts[i].get_text()!r} x {legend_texts[j].get_text()!r}"
+    assert max(b.x1 for b in yb) < ax.bbox.x0, \
+        "left row labels cross into the mosaic"
+    right_edges = [b.x1 for b in yb]
+    assert max(right_edges) - min(right_edges) <= 2, \
+        "row labels not right-aligned on one edge"
+    # "End-to-end" vertically centred on its marker row
+    mark_centre_px = (ax.bbox.y0 + (1 - (Y_MARK0 + 0.5) / Y_LIM) * ax.bbox.height)
+    e2e_bb = ylabels[3].get_window_extent(renderer)
+    assert abs((e2e_bb.y0 + e2e_bb.y1) / 2 - mark_centre_px) <= ax.bbox.height * 0.06, \
+        "End-to-end label off its marker-row centre"
+    # rotated labels: lowest box clears key row 1, adjacent baselines
+    # stay pitch × sin 45° apart
+    key1_top = max(lb[i].y1 for i in range(4))  # row 1 labels come first
+    x_bottom = min(t.get_window_extent(renderer).y0 for t in xlabels)
+    # display y grows upward, so the labels clearing the key means their
+    # lowest box edge sits above the key's highest box edge
+    gap_mm = (x_bottom - key1_top) * H_MM / fig.bbox.height
+    assert gap_mm >= 0.3, \
+        f"rotated labels reach into the key (gap {gap_mm:.2f} mm)"
+    pitch_mm = MOSAIC_W_MM / n
+    assert pitch_mm * np.sin(np.deg2rad(45)) > 2.4, \
+        "column pitch too tight for 45° labels (perpendicular gap < cap height)"
+
+    assert counts == FROZEN_COUNTS, f"counts {counts} != frozen {FROZEN_COUNTS}"
+    assert n_e2e == FROZEN_E2E, f"e2e {n_e2e} != frozen {FROZEN_E2E}"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):

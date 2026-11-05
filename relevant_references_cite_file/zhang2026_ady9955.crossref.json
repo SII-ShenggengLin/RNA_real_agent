@@ -1,0 +1,922 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          9,
+          14
+        ]
+      ],
+      "date-time": "2026-09-14T10:25:38Z",
+      "timestamp": 1789381538985,
+      "version": "build-2803163510"
+    },
+    "reference-count": 62,
+    "publisher": "American Association for the Advancement of Science (AAAS)",
+    "issue": "16",
+    "funder": [
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "No. 32170589"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "No. 32170589"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "No. 32370616"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "No. 32370616"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "No. 22074105"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "No. 22074105"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "62506263"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "62506263"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "32488201"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "32488201"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "32330030"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "32330030"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100002858",
+        "name": "China Postdoctoral Science Foundation",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "No.2025M771539"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "No.2025M771539"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100002858",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100002858",
+        "name": "China Postdoctoral Science Foundation",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "GZB20250385"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "GZB20250385"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100002858",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "name": "National Key Research and Development Program of China",
+        "award": [
+          "No. 2022YFA1103102"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "No. 2022YFA1103102"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "European Union\u2019s Horizon 2020 Framework Programme",
+        "award": [
+          "No. 945539"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "No. 945539"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Xiaomi Young Talents Program"
+      }
+    ],
+    "content-domain": {
+      "domain": [
+        "www.science.org"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Sci. Adv."
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          17
+        ]
+      ]
+    },
+    "abstract": "<jats:p>Current structure-based molecular generation faces a fundamental dilemma: While static ligand modeling dominates computational approaches, real-world molecular interactions are inherently dynamic. Inspired by the conformational changes ligands undergo during semi-flexible docking, we propose a reinforcement learning (RL)\u2013steered diffusion framework for semi-flexible molecular generation in protein pockets. By defining the denoising process as a Markov decision process, RL dynamically adjusts molecular structures through iterative exploration. Simultaneously, we incorporate multiple molecular properties as conditions to constrain the denoising policy to drug-like regions and perform self-supervised rigid training on both target-free and target-specific molecules. In addition, we propose a fast sampling strategy that accelerates sampling by 20 times, thereby improving the efficiency of training and sampling. Experiments demonstrate that our method outperforms state-of-the-art methods with a Vina score of \u22127.23 kcal/mol and an 11.53% success rate. Targeting unseen real-world proteins, the generated molecules preserve canonical interaction patterns while discovering previously unknown binding chemotypes.</jats:p>",
+    "DOI": "10.1126/sciadv.ady9955",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          15
+        ]
+      ],
+      "date-time": "2026-04-15T17:58:57Z",
+      "timestamp": 1776275937000
+    },
+    "update-policy": "https://doi.org/10.34133/aaas_crossmark",
+    "source": "Crossref",
+    "is-referenced-by-count": 2,
+    "title": [
+      "Steering semi-flexible molecular diffusion model for structure-based drug design with reinforcement learning"
+    ],
+    "prefix": "10.1126",
+    "volume": "12",
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-2671-8275",
+        "authenticated-orcid": true,
+        "given": "Xudong",
+        "family": "Zhang",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine, Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, School of Computer Science and Technology, Tongji University, Shanghai 200092, China."
+          },
+          {
+            "name": "Shanghai Innovation Institute, Shanghai, China."
+          },
+          {
+            "name": "MOE Key Laboratory of Embedded System and Service Computing, School of Computer Science and Technology, Tongji University, Shanghai, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sanqing",
+        "family": "Qu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "MOE Key Laboratory of Embedded System and Service Computing, School of Computer Science and Technology, Tongji University, Shanghai, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4932-3850",
+        "authenticated-orcid": true,
+        "given": "Fan",
+        "family": "Lu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "MOE Key Laboratory of Embedded System and Service Computing, School of Computer Science and Technology, Tongji University, Shanghai, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8910-0929",
+        "authenticated-orcid": true,
+        "given": "Jianmin",
+        "family": "Wang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Interdisciplinary Graduate Program in Integrative Biotechnology, Yonsei University, Incheon, Republic of Korea."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2877-8282",
+        "authenticated-orcid": true,
+        "given": "Zhixin",
+        "family": "Tian",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Chemical Science &amp; Engineering and Shanghai Key Laboratory of Chemical Assessment and Sustainability, Tongji University, Shanghai, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Shangding",
+        "family": "Gu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Electrical Engineering and Computer Sciences, University of California, Berkeley, CA, USA."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3565-8120",
+        "authenticated-orcid": true,
+        "given": "Yanping",
+        "family": "Zhang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine, Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, Frontier Science Center for Stem Cell Research, School of Life Sciences and Technology, Tongji University, Shanghai 200092, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4840-076X",
+        "authenticated-orcid": true,
+        "given": "Alois",
+        "family": "Knoll",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Informatics, Technical University of Munich, Munich, Germany."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1041-3928",
+        "authenticated-orcid": true,
+        "given": "Shaorong",
+        "family": "Gao",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine, Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, Frontier Science Center for Stem Cell Research, School of Life Sciences and Technology, Tongji University, Shanghai 200092, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-7416-592X",
+        "authenticated-orcid": true,
+        "given": "Guang",
+        "family": "Chen",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine, Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, School of Computer Science and Technology, Tongji University, Shanghai 200092, China."
+          },
+          {
+            "name": "Shanghai Innovation Institute, Shanghai, China."
+          },
+          {
+            "name": "MOE Key Laboratory of Embedded System and Service Computing, School of Computer Science and Technology, Tongji University, Shanghai, China."
+          },
+          {
+            "name": "Department of Informatics, Technical University of Munich, Munich, Germany."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Changjun",
+        "family": "Jiang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "MOE Key Laboratory of Embedded System and Service Computing, School of Computer Science and Technology, Tongji University, Shanghai, China."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "221",
+    "reference": [
+      {
+        "key": "e_1_3_2_2_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nmeth.3694"
+      },
+      {
+        "key": "e_1_3_2_3_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nmeth.2472"
+      },
+      {
+        "key": "e_1_3_2_4_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41586-021-03819-2"
+      },
+      {
+        "key": "e_1_3_2_5_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nature03197"
+      },
+      {
+        "key": "e_1_3_2_6_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/sciadv.adj3010"
+      },
+      {
+        "key": "e_1_3_2_7_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.adn6354"
+      },
+      {
+        "key": "e_1_3_2_8_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/wcms.1637"
+      },
+      {
+        "key": "e_1_3_2_9_2",
+        "unstructured": "Y. Luo K. Yan S. Ji Graphdf: A discrete flow model for molecular graph generation. International conference on machine learning (PMLR 2021) pp. 7192\u20137203."
+      },
+      {
+        "key": "e_1_3_2_10_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s42256-023-00764-9"
+      },
+      {
+        "key": "e_1_3_2_11_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s42256-025-00982-3"
+      },
+      {
+        "key": "e_1_3_2_12_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/acs.jcim.1c00600"
+      },
+      {
+        "key": "e_1_3_2_13_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s42256-023-00636-2"
+      },
+      {
+        "key": "e_1_3_2_14_2",
+        "first-page": "6410",
+        "article-title": "Graph convolutional policy network for goal-directed molecular graph generation",
+        "volume": "31",
+        "author": "You J.",
+        "year": "2018",
+        "unstructured": "J. You, B. Liu, Z. Ying, V. Pande, J. Leskovec, Graph convolutional policy network for goal-directed molecular graph generation. Adv. Neural Inf. Process. Syst. 31, 6410\u20136421 (2018).",
+        "journal-title": "Adv. Neural Inf. Process. Syst."
+      },
+      {
+        "key": "e_1_3_2_15_2",
+        "unstructured": "W. Jin R. Barzilay T. Jaakkola Hierarchical generation of molecular graphs using structural motifs. International conference on machine learning (PMLR 2020) pp. 4839\u20134848."
+      },
+      {
+        "key": "e_1_3_2_16_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-021-23415-2"
+      },
+      {
+        "key": "e_1_3_2_17_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-022-35692-6"
+      },
+      {
+        "key": "e_1_3_2_18_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-022-28526-y"
+      },
+      {
+        "key": "e_1_3_2_19_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/acs.jcim.0c00411"
+      },
+      {
+        "key": "e_1_3_2_20_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1039/D1SC04444C"
+      },
+      {
+        "key": "e_1_3_2_21_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s43588-023-00530-2"
+      },
+      {
+        "key": "e_1_3_2_22_2",
+        "first-page": "6229",
+        "article-title": "A 3D generative model for structure-based drug design",
+        "volume": "34",
+        "author": "Luo S.",
+        "year": "2021",
+        "unstructured": "S. Luo, J. Guan, J. Ma, J. Peng, A 3D generative model for structure-based drug design. Adv. Neural Inf. Process. Syst. 34, 6229\u20136239 (2021).",
+        "journal-title": "Adv. Neural Inf. Process. Syst."
+      },
+      {
+        "key": "e_1_3_2_23_2",
+        "unstructured": "X. Peng S. Luo J. Guan Q. Xie J. Peng J. Ma Pocket2mol: efficient molecular sampling based on 3d protein pockets. International Conference on Machine Learning (PMLR 2022) pp. 17644\u201317655."
+      },
+      {
+        "key": "e_1_3_2_24_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s42256-023-00712-7"
+      },
+      {
+        "key": "e_1_3_2_25_2",
+        "unstructured": "Z. Zhang Y. Min S. Zheng Q. Liu Molecule generation for target protein binding with structural motifs. International Conference on Learning Representations (ICLR 2023)."
+      },
+      {
+        "key": "e_1_3_2_26_2",
+        "first-page": "6840",
+        "article-title": "Denoising diffusion probabilistic models",
+        "volume": "33",
+        "author": "Ho J.",
+        "year": "2020",
+        "unstructured": "J. Ho, A. Jain, P. Abbeel, Denoising diffusion probabilistic models. Adv. Neural Inf. Process. Syst. 33, 6840\u20136851 (2020).",
+        "journal-title": "Adv. Neural Inf. Process. Syst."
+      },
+      {
+        "key": "e_1_3_2_27_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s43588-023-00532-0"
+      },
+      {
+        "key": "e_1_3_2_28_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/sciadv.adp7171"
+      },
+      {
+        "key": "e_1_3_2_29_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/sciadv.adv0778"
+      },
+      {
+        "key": "e_1_3_2_30_2",
+        "unstructured": "J. Guan W. W. Qian X. Peng Y. Su J. Peng J. Ma 3D equivariant diffusion for target-aware molecule generation and affinity prediction. International Conference on Learning Representations (ICLR 2023)."
+      },
+      {
+        "key": "e_1_3_2_31_2",
+        "unstructured": "J. Guan X. Zhou Y. Yang Y. Bao J. Peng J. Ma Q. Liu L. Wang Q. Gu Decompdiff: Diffusion models with decomposed priors for structure-based drug design. arXiv:2403.07902 (2024)."
+      },
+      {
+        "key": "e_1_3_2_32_2",
+        "unstructured": "Z. Huang L. Yang X. Zhou Z. Zhang W. Zhang X. Zheng J. Chen Y. Wang C. Bin W. Yang Protein-ligand interaction prior for binding-aware 3d molecule diffusion models. International Conference on Learning Representations (ICLR 2024)."
+      },
+      {
+        "key": "e_1_3_2_33_2",
+        "unstructured": "Y. Qu K. Qiu Y. Song J. Gong J. Han M. Zheng H. Zhou W.-Y. Ma MolCRAFT: structure-based drug design in continuous parameter space. International Conference on Machine Learning (PMLR 2024) pp. 41749\u201341768."
+      },
+      {
+        "key": "e_1_3_2_34_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nprot.2010.32"
+      },
+      {
+        "key": "e_1_3_2_35_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.compbiomed.2024.108963"
+      },
+      {
+        "key": "e_1_3_2_36_2",
+        "unstructured": "Z. Xu Y. Luo X. Zhang X. Xu Y. Xie M. Liu K. Dickerson C. Deng M. Nakata S. Ji Molecule3D: A benchmark for predicting 3D geometries from molecular graphs. arXiv:2110.01717 [cs.LG] (2021)."
+      },
+      {
+        "key": "e_1_3_2_37_2",
+        "first-page": "51",
+        "article-title": "An open source chemical structure curation pipeline using rdkit",
+        "volume": "12",
+        "author": "Bento A. P.",
+        "year": "2020",
+        "unstructured": "A. P. Bento, A. Hersey, E. F\u00e9lix, G. Landrum, A. Gaulton, F. Atkinson, L. J. Bellis, M. De Veij, A. R. Leach, An open source chemical structure curation pipeline using rdkit. J. Chem. 12, 51 (2020).",
+        "journal-title": "J. Chem."
+      },
+      {
+        "key": "e_1_3_2_38_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/js9804011"
+      },
+      {
+        "key": "e_1_3_2_39_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/jcc.21334"
+      },
+      {
+        "key": "e_1_3_2_40_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkab294"
+      },
+      {
+        "key": "e_1_3_2_41_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkv315"
+      },
+      {
+        "key": "e_1_3_2_42_2",
+        "unstructured": "H. Lin G. Zhao O. Zhang Y. Huang L. Wu C. Tan Z. Liu Z. Gao S. Z. Li CBGBench: fill in the blank of protein-molecule complex binding graph. International Conference on Learning Representations (ICLR 2025)."
+      },
+      {
+        "key": "e_1_3_2_43_2",
+        "unstructured": "S. Lee J. Jo S. J. Hwang Exploring chemical space with score-based out-of-distribution generation. International Conference on Machine Learning (PMLR 2023) pp. 18872\u201318892."
+      },
+      {
+        "key": "e_1_3_2_44_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/wics.101"
+      },
+      {
+        "key": "e_1_3_2_45_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkac1077"
+      },
+      {
+        "key": "e_1_3_2_46_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/acs.jcim.7b00083"
+      },
+      {
+        "key": "e_1_3_2_47_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-024-46569-1"
+      },
+      {
+        "key": "e_1_3_2_48_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/acs.jcim.1c01341"
+      },
+      {
+        "key": "e_1_3_2_49_2",
+        "first-page": "79858",
+        "article-title": "Dpok: Reinforcement learning for fine-tuning text-to-image diffusion models",
+        "volume": "36",
+        "author": "Fan Y.",
+        "year": "2023",
+        "unstructured": "Y. Fan, O. Watkins, Y. Du, H. Liu, M. Ryu, C. Boutilier, P. Abbeel, M. Ghavamzadeh, K. Lee, K. Lee, Dpok: Reinforcement learning for fine-tuning text-to-image diffusion models. Adv. Neural Inf. Process. Syst. 36, 79858\u201379885 (2023).",
+        "journal-title": "Adv. Neural Inf. Process. Syst."
+      },
+      {
+        "key": "e_1_3_2_50_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.52202/075280-0325"
+      },
+      {
+        "key": "e_1_3_2_51_2",
+        "unstructured": "J. Schulman F. Wolski P. Dhariwal A. Radford O. Klimov Proximal policy optimization algorithms. arXiv:1707.06347 [cs.LG] (2017)."
+      },
+      {
+        "key": "e_1_3_2_52_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/S0169-409X(96)00423-1"
+      },
+      {
+        "key": "e_1_3_2_53_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/jm020017n"
+      },
+      {
+        "key": "e_1_3_2_54_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/cc9800071"
+      },
+      {
+        "key": "e_1_3_2_55_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.drudis.2020.07.017"
+      },
+      {
+        "key": "e_1_3_2_56_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2307/3001968"
+      },
+      {
+        "key": "e_1_3_2_57_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1037/0033-2909.111.2.361"
+      },
+      {
+        "key": "e_1_3_2_58_2",
+        "doi-asserted-by": "crossref",
+        "unstructured": "J. Cohen Statistical power analysis for the behavioral sciences (Taylor & Francis 2013); 10.4324/9780203771587.",
+        "DOI": "10.4324/9780203771587"
+      },
+      {
+        "key": "e_1_3_2_59_2",
+        "doi-asserted-by": "crossref",
+        "unstructured": "J. L. Hodges Jr E. L. Lehmann in Selected works of EL Lehmann (Springer 2012) pp. 287\u2013300.",
+        "DOI": "10.1007/978-1-4614-1412-4_25"
+      },
+      {
+        "key": "e_1_3_2_60_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/bioinformatics/btv082"
+      },
+      {
+        "key": "e_1_3_2_61_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41598-017-15571-7"
+      },
+      {
+        "key": "e_1_3_2_62_2",
+        "first-page": "43",
+        "article-title": "Gnina 1.0: Molecular docking with deep learning",
+        "volume": "13",
+        "author": "McNutt A. T.",
+        "year": "2021",
+        "unstructured": "A. T. McNutt, P. Francoeur, R. Aggarwal, T. Masuda, R. Meli, M. Ragoza, J. Sunseri, D. R. Koes, Gnina 1.0: Molecular docking with deep learning. J. Chem. 13, 43 (2021).",
+        "journal-title": "J. Chem."
+      },
+      {
+        "key": "e_1_3_2_63_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021/acs.jcim.8b00234"
+      }
+    ],
+    "container-title": [
+      "Science Advances"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://www.science.org/doi/pdf/10.1126/sciadv.ady9955",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          15
+        ]
+      ],
+      "date-time": "2026-04-15T18:01:09Z",
+      "timestamp": 1776276069000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://www.science.org/doi/10.1126/sciadv.ady9955"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          17
+        ]
+      ]
+    },
+    "references-count": 62,
+    "journal-issue": {
+      "issue": "16",
+      "published-print": {
+        "date-parts": [
+          [
+            2026,
+            4,
+            17
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "10.1126/sciadv.ady9955"
+    ],
+    "URL": "https://doi.org/10.1126/sciadv.ady9955",
+    "relation": {},
+    "ISSN": [
+      "2375-2548"
+    ],
+    "issn-type": [
+      {
+        "value": "2375-2548",
+        "type": "electronic"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          17
+        ]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "2025-05-16",
+        "order": 0,
+        "name": "received",
+        "label": "Received",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2026-03-18",
+        "order": 2,
+        "name": "accepted",
+        "label": "Accepted",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2026-04-15",
+        "order": 3,
+        "name": "published",
+        "label": "Published",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      }
+    ],
+    "article-number": "eady9955"
+  }
+}

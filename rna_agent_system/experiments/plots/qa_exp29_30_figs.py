@@ -26,11 +26,11 @@ DPI = 1200
 
 FIGS = [
     ("fig5b_gennav_mcnemar.png", 89.0),
-    ("fig5c_delivery_mosaic.png", 89.0),
+    ("fig5c_delivery_mosaic.png", 183.0),
     ("fig5d_secondary_endpoint.png", 45.0),
     ("fig5e_campaign_arc_lollipop.png", 80.5),
     ("fig5f_decisive_grouped_bars.png", 48.5),
-    ("fig5g_decisive_mosaic.png", 89.0),
+    ("fig5g_decisive_mosaic.png", 183.0),
 ]
 
 PALETTE_RGB = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in PALETTE]

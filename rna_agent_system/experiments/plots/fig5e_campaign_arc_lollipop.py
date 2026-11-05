@@ -59,6 +59,12 @@ column; 1200-dpi PNG + vector PDF (fonttype 42).
 Data  : experiments/results/exp29_aptamer_campaign_arc/arc.json
 Usage : python experiments/plots/fig5e_campaign_arc_lollipop.py
 Output : experiments/plots/output/fig5e_campaign_arc_lollipop.{pdf,png}
+
+2026-10-10 row-alignment polish (user-directed Fig. 5 batch): axes bottom
+10.0 -> 9.1 mm and height 41.0 -> 41.9 mm (top edge anchored unchanged at
+3.0 mm from the canvas top) so the x-axis spine lands on panel d's spine
+line (9.1 mm from the canvas bottom) — row 3's three axes baselines now
+align exactly; no number, colour or text change.
 """
 
 from __future__ import annotations
@@ -150,7 +156,7 @@ def main() -> int:
     # W_PX × H_PX (matplotlib takes int(figsize × dpi); the fig5c
     # convention)
     fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
-    ax = fig.add_axes([8.0 / W_MM, 10.0 / H_MM, 71.0 / W_MM, 41.0 / H_MM])
+    ax = fig.add_axes([8.0 / W_MM, 9.1 / H_MM, 71.0 / W_MM, 41.9 / H_MM])
     ymax = 1
     for i, (key, _) in enumerate(SEGMENTS):
         v = segs.get(key)

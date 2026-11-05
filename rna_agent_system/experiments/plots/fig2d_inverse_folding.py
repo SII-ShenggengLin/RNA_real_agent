@@ -18,6 +18,13 @@ with this stacked-dot encoding and removed the in-figure title — Nature
 style, the headline lives in the caption, panels carry letters only;
 every text element shares one font size and colour.)
 
+Geometry (2026-10-10, user-directed three-column relayout of the Fig. 2
+composite): exact 57 x 57 mm canvas (no tight crop), absolute-mm axes
+placement shared with panels b, c and e–g (axes bottom 12 mm, top 3 mm,
+left 12 mm) so the three-per-row panels align; the x-axis label wraps to
+two lines — same words — because the three-column width cannot carry it
+on one; the 6-pt text scale is unchanged.
+
 Data  : experiments/results/exp4_inverse_folding/records.jsonl
         (+ summary.json for the annotated counts)
 
@@ -68,6 +75,14 @@ plt.rcParams.update({
 C_EXACT = WORKFLOW_COLORS["rna_secondary_structure_design"]      # #8DA290
 C_MISS = PALETTE_BY_NAME["dark_warm_grey"]                        # #7A7672
 
+# Shared three-column geometry (panels b–g, 2026-10-10): exact canvas,
+# axes placed in absolute mm so every panel in a composite row aligns.
+W_MM, H_MM = 57.0, 57.0
+DPI = 1200
+W_PX = round(W_MM / 25.4 * DPI)
+H_PX = round(H_MM / 25.4 * DPI)
+AX_L, AX_BOT, AX_R, AX_TOP = 12.0, 12.0, 2.0, 3.0
+
 
 def load_records() -> list[dict]:
     recs: dict[str, dict] = {}
@@ -99,11 +114,11 @@ def main() -> int:
     n_exact = int(np.sum(dists == 0))
     by_dist = Counter(int(d) for d in dists)
 
-    fig_w, fig_h = 88 / 25.4, 58 / 25.4  # single-column panel (fig2b–g geometry)
+    fig_w, fig_h = W_PX / DPI + 1e-9, H_PX / DPI + 1e-9
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([
-        0.40 / fig_w, 0.32 / fig_h,
-        (fig_w - 0.46) / fig_w, (fig_h - 0.38) / fig_h,
+        AX_L / W_MM, AX_BOT / H_MM,
+        (W_MM - AX_L - AX_R) / W_MM, (H_MM - AX_BOT - AX_TOP) / H_MM,
     ])
 
     xmax = max(int(dists.max()), 1)
@@ -111,6 +126,7 @@ def main() -> int:
     ticks = list(range(0, xmax + 1))
 
     # ── stacked dots: one per benchmark, count printed above each stack ──
+    count_texts = []
     for d, c in sorted(by_dist.items()):
         ys = np.arange(1, c + 1)
         ax.scatter(
@@ -118,8 +134,9 @@ def main() -> int:
             c=C_EXACT if d == 0 else C_MISS,
             edgecolors="white", linewidths=0.35, zorder=3,
         )
-        ax.text(d, c + 0.7, str(c), ha="center", va="bottom",
-                fontsize=FONT, color=TEXT, zorder=4)
+        count_texts.append(ax.text(d, c + 0.7, str(c), ha="center",
+                                   va="bottom", fontsize=FONT, color=TEXT,
+                                   zorder=4))
 
     # legend in the empty upper-right region (all stacks are short there)
     ax.scatter([], [], s=12, c=C_EXACT, edgecolors="white",
@@ -136,7 +153,7 @@ def main() -> int:
     ax.set_ylim(0, n_total + 2.2)
     ax.set_xticks(ticks)
     ax.set_yticks(list(range(0, n_total + 1, 5)))
-    ax.set_xlabel("base-pair distance to the target structure",
+    ax.set_xlabel("base-pair distance\nto the target structure",
                   fontsize=FONT, labelpad=2)
     ax.set_ylabel("number of benchmarks", fontsize=FONT, labelpad=2)
     ax.tick_params(axis="both", labelsize=FONT, length=1.5, pad=1)
@@ -145,11 +162,39 @@ def main() -> int:
     ax.grid(axis="y", color=NEUTRAL_GRID, linewidth=0.4, alpha=0.6)
     ax.set_axisbelow(True)
 
+    # Guards (house convention): the legend must sit clear of every drawn
+    # marker and count label (its upper-right pocket), and every text
+    # element must sit fully inside the fixed canvas.
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    leg_box = leg.get_window_extent(renderer)
+    dot_r_px = fig.dpi / 72.0 * (12.0 ** 0.5) / 2.0  # marker radius (s=12)
+    for coll in ax.collections:
+        for px, py in coll.get_offsets():
+            cx, cy = ax.transData.transform((px, py))
+            dot_box = matplotlib.transforms.Bbox(
+                [[cx - dot_r_px, cy - dot_r_px],
+                 [cx + dot_r_px, cy + dot_r_px]])
+            if matplotlib.transforms.Bbox.intersection(dot_box, leg_box):
+                raise AssertionError(
+                    f"a stack dot at ({px:g}, {py:g}) falls under the legend")
+    for t in count_texts:
+        if matplotlib.transforms.Bbox.intersection(
+                t.get_window_extent(renderer).expanded(1.05, 1.2), leg_box):
+            raise AssertionError("a stack count label falls under the legend")
+    fw, fh = fig_w * fig.dpi, fig_h * fig.dpi
+    for t in (ax.xaxis.label, ax.yaxis.label, *ax.get_xticklabels(),
+              *ax.get_yticklabels(), *leg.get_texts()):
+        tb = t.get_window_extent(renderer)
+        if tb.x0 < -0.5 or tb.y0 < -0.5 or tb.x1 > fw + 0.5 or tb.y1 > fh + 0.5:
+            raise AssertionError(f"text element {t.get_text()!r} leaves "
+                                 f"the canvas")
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig2d_inverse_folding.{ext}"
-        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+        fig.savefig(out, format=ext, dpi=DPI if ext == "png" else None,
+                    facecolor="white")
         print(f"written {out}")
     print(f"n = {n_total}, exact = {n_exact}, "
           f"distances = {sorted(int(d) for d in dists)}")

@@ -48,6 +48,12 @@ exclusively from palette rev 7; absolute-mm geometry, single column;
 Data  : experiments/results/exp29_aptamer_campaign_arc/seg3_decisive/verdict.json
 Usage : python experiments/plots/fig5f_decisive_grouped_bars.py
 Output : experiments/plots/output/fig5f_decisive_grouped_bars.{pdf,png}
+
+2026-10-10 row-alignment polish (user-directed Fig. 5 batch): axes bottom
+10.6 -> 9.1 mm and height 41.0 -> 42.5 mm (top edge anchored unchanged at
+2.4 mm from the canvas top) so the x-axis spine lands on panel d's spine
+line (9.1 mm from the canvas bottom) — row 3's three axes baselines now
+align exactly; no number, colour or text change.
 """
 
 from __future__ import annotations
@@ -118,7 +124,7 @@ def main() -> int:
     # W_PX × H_PX (matplotlib takes int(figsize × dpi); the fig5c
     # convention)
     fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9))
-    ax = fig.add_axes([8.0 / W_MM, 10.6 / H_MM, 39.3 / W_MM, 41.0 / H_MM])
+    ax = fig.add_axes([8.0 / W_MM, 9.1 / H_MM, 39.3 / W_MM, 42.5 / H_MM])
     groups = [
         (f"Delivered\npairs (of {n_cells})", del_c, del_a),
         (f"End-to-end\ntargets\n(of {n_targets})", e2e_c, e2e_a),
@@ -161,7 +167,7 @@ def main() -> int:
     gap_in = 0.006
     block_w = swatch_w + gap_in + max(text_w(s) for _, s in key_items)
     ax_r = (8.0 + 39.3) / W_MM         # axes right edge, fig fraction
-    ax_t = (10.6 + 41.0) / H_MM        # axes top edge, fig fraction
+    ax_t = (9.1 + 42.5) / H_MM         # axes top edge, fig fraction
     x_sw = ax_r - 1.0 / W_MM - block_w  # block sits 1 mm inside the axes
     x_tx = x_sw + swatch_w + gap_in
     key_texts, swatches = [], []

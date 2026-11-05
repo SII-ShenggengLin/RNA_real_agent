@@ -35,6 +35,17 @@ workflow's khaki; out-of-distribution rows in the held-out dark warm grey
 (the palette's neutral-dark semantic for undemonstrated power, matching the
 fig2d miss / fig2e nonzero convention).
 
+Geometry (2026-10-10, user-directed three-column relayout of the Fig. 2
+composite): exact 57 x 57 mm canvas (no tight crop, the shared explicit
+crop retired with it), absolute-mm axes placement shared with panels
+b–e and g (axes bottom 12 mm, top 3 mm) so the three-per-row panels
+align; the left label column takes 23 mm (the four-line
+out-of-distribution labels are the widest element), the point-plus-CI
+annotation prints on two lines — same values — because one line no
+longer fits beside its dot at the three-column plot width, and the row
+labels draw at linespacing 1.1 so the four-line blocks clear each other
+at the shorter row pitch; the 6-pt text scale is unchanged.
+
 Data  : experiments/results/exp7_rnasmol_boundary/summary.json
 Usage : python experiments/plots/fig2f_rnasmol_boundary.py
 Output : experiments/plots/output/fig2f_rnasmol_boundary.{pdf,png}
@@ -74,6 +85,15 @@ plt.rcParams.update({
 
 C_IN_DIST = WORKFLOW_COLORS["rna_small_molecule_interaction"]  # khaki #CDBF9E
 C_OOD = PALETTE_BY_NAME["dark_warm_grey"]                      # #7A7672
+
+# Shared three-column geometry (panels b–g, 2026-10-10): exact canvas,
+# axes placed in absolute mm so every panel in a composite row aligns.
+# f's left band is wider — the four-line out-of-distribution labels.
+W_MM, H_MM = 57.0, 57.0
+DPI = 1200
+W_PX = round(W_MM / 25.4 * DPI)
+H_PX = round(H_MM / 25.4 * DPI)
+AX_L, AX_BOT, AX_R, AX_TOP = 23.0, 12.0, 2.0, 3.0
 
 X_MAX = 1.08  # headroom so the hi = 1.0 CI caps clear the panel edge
 
@@ -131,21 +151,18 @@ def main() -> int:
         },
     ]
 
-    fig_w, fig_h = 88 / 25.4, 62 / 25.4  # single-column panel (62 mm: the
-    # four-line out-of-distribution row labels need the extra height)
+    fig_w, fig_h = W_PX / DPI + 1e-9, H_PX / DPI + 1e-9
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    # absolute-mm geometry: 24 mm label column | plot to the right edge
+    # absolute-mm geometry shared with panels b–e/g; wider label column
     ax = fig.add_axes([
-        24 / 25.4 / fig_w, 9 / 25.4 / fig_h,
-        ((88 - 27) / 25.4) / fig_w, (62 - 9 - 7) / 25.4 / fig_h,
+        AX_L / W_MM, AX_BOT / H_MM,
+        (W_MM - AX_L - AX_R) / W_MM, (H_MM - AX_BOT - AX_TOP) / H_MM,
     ])
 
     ys = list(range(len(rows)))[::-1]  # first row on top
+    ax_w_mm = W_MM - AX_L - AX_R
 
-    # annotation width in axis units (19 chars at FONT pt over the axis width)
-    ax_w_mm = (88 - 27)
-    half_w = (19 * FONT * 0.5 / 25.4 * 1.15) / ax_w_mm * (X_MAX - 0.0) / 1.0
-
+    ann_texts = []
     for y, row in zip(ys, rows):
         ax.plot([row["lo"], row["hi"]], [y, y], color=row["color"],
                 linewidth=1.4, solid_capstyle="butt", zorder=3)
@@ -154,18 +171,33 @@ def main() -> int:
                     linewidth=0.9, zorder=3)
         ax.scatter(row["auroc"], y, s=22, c=row["color"],
                    edgecolors="white", linewidths=0.4, zorder=4)
-        # point estimate (95% CI) above the dot, clamped inside the axis
-        x_text = min(max(row["auroc"], half_w + 0.01), X_MAX - half_w - 0.01)
-        ax.text(x_text, y + 0.16,
-                f"{fmt3(row['auroc'])} ({fmt3(row['lo'])}–{fmt3(row['hi'])})",
-                fontsize=FONT, va="bottom", ha="center", color=TEXT)
+        # point estimate over its 95% CI, both above the dot
+        ann_texts.append(ax.text(
+            row["auroc"], y + 0.16,
+            f"{fmt3(row['auroc'])}\n({fmt3(row['lo'])}–{fmt3(row['hi'])})",
+            fontsize=FONT, va="bottom", ha="center", color=TEXT,
+            linespacing=1.1))
+
+    # Clamp each annotation inside the axis: measure its real width with
+    # the renderer (multi-line extents report the widest line), convert
+    # to axis units, then shift the centre. (The old closed-form half
+    # width divided by 25.4 instead of 72 — a pt/mm slip that the wide
+    # 61-mm axis hid as a tiny nudge and the three-column axis exposes.)
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    for t, row in zip(ann_texts, rows):
+        bb = t.get_window_extent(renderer)
+        half_units = (bb.width / 2.0 / fig.dpi * 25.4) / ax_w_mm * X_MAX
+        x_new = min(max(row["auroc"], half_units + 0.01),
+                    X_MAX - half_units - 0.01)
+        t.set_position((x_new, t.get_position()[1]))
 
     ax.set_yticks(ys)
     ax.set_yticklabels([r["label"] for r in rows], fontsize=FONT,
-                       linespacing=1.2, color=TEXT)
+                       linespacing=1.05, color=TEXT)
 
     ax.set_xlim(0.0, X_MAX)
-    ax.set_ylim(-0.5, len(rows) - 0.35)
+    ax.set_ylim(-0.45, len(rows) - 0.40)
     ax.set_xticks([0.0, 0.25, 0.5, 0.75, 1.0])
     ax.set_xticklabels(["0", "0.25", "0.5", "0.75", "1"], fontsize=FONT)
     ax.tick_params(axis="x", labelsize=FONT, length=1.5, pad=1)
@@ -174,25 +206,39 @@ def main() -> int:
     for s_name in ("top", "right"):
         ax.spines[s_name].set_visible(False)
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    # Pin one explicit crop box for both backends: the raster and vector
-    # tight bboxes measure text extents at their own dpi and can disagree
-    # by a few px at 1200 dpi (the right-hand CI annotations reach past
-    # the axes' right edge); a shared box keeps the two canvases identical
-    # by construction (the qa_fig2_figs.py PNG/PDF agreement check).
-    # pad_inches is ignored for an explicit bbox, so the box is padded
-    # here, and measured at the save dpi to avoid the 100-dpi pixel
-    # quantization showing up at the canvas border.
-    fig.set_dpi(1200)
+    # Guards (house convention): neighbouring row-label blocks and
+    # neighbouring point-plus-CI annotations must keep clear vertical
+    # gaps (analytic heights — renderer extents under-report multi-line
+    # text), and every text element must sit fully inside the fixed
+    # canvas (the top row's two-line annotation may ride the hidden top
+    # spine by design, but not the canvas edge).
+    axes_h_mm = H_MM - AX_BOT - AX_TOP
+    y_span = -0.45 - (len(rows) - 0.40)
+    pitch_mm = axes_h_mm / abs(y_span)
+    worst_block = max(len(r["label"].splitlines()) for r in rows)
+    lbl_block_mm = worst_block * FONT * 1.05 / 72 * 25.4
+    if pitch_mm - lbl_block_mm < 0.5:
+        raise AssertionError(
+            f"row labels gap {pitch_mm - lbl_block_mm:.2f} mm < 0.5 mm")
+    ann_block_mm = 2 * FONT * 1.1 / 72 * 25.4
+    if pitch_mm - ann_block_mm < 1.0:
+        raise AssertionError(
+            f"annotation gap {pitch_mm - ann_block_mm:.2f} mm < 1.0 mm")
     fig.canvas.draw()
-    tb = fig.get_tightbbox(fig.canvas.get_renderer())  # inches
-    pad = 0.02
-    crop = matplotlib.transforms.Bbox(
-        [[tb.x0 - pad, tb.y0 - pad], [tb.x1 + pad, tb.y1 + pad]])
+    renderer = fig.canvas.get_renderer()
+    fw, fh = fig_w * fig.dpi, fig_h * fig.dpi
+    for t in (*ax.get_yticklabels(), *ax.get_xticklabels(),
+              ax.xaxis.label, *ann_texts):
+        tb = t.get_window_extent(renderer).expanded(1.0, 1.35)
+        if tb.x0 < -0.5 or tb.y0 < -0.5 or tb.x1 > fw + 0.5 or tb.y1 > fh + 0.5:
+            raise AssertionError(f"text element {t.get_text()!r} leaves "
+                                 f"the canvas")
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig2f_rnasmol_boundary.{ext}"
-        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches=crop)
+        fig.savefig(out, format=ext, dpi=DPI if ext == "png" else None,
+                    facecolor="white")
         print(f"written {out}")
     for row in rows:
         print(f"{row['label'].splitlines()[0]}: {row['auroc']} "

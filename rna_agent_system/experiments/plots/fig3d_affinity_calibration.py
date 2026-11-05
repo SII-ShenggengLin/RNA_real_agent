@@ -60,6 +60,14 @@ entry reworded "thrombin series" to "thrombin Kd anchors" (the anchors
 vocabulary, body §2.3 synced the same day) and wrapped to two lines; the
 canvas narrowed to 57.2 mm so d, e and f share one three-column row (the
 user-directed 2026-10-02 layout; fonts unchanged 6-pt, no data change).
+2026-10-10 revision (Fig. 3 row-3 alignment batch, user-directed): the
+canvas and axes moved to the shared exact-millimetre row-3 geometry
+(`fig3_row3_layout.py` — 54.0 x 52.0 mm canvas, axes 12.0/12.0/41.0/36.0,
+identical with panels e and f so the three axes land on the same lines at
+assembly); the tight-crop save retired (the figS house convention) and the
+x-limit's right headroom extended 1.2e3 -> 1.6e3 nM so the rightmost 10^3
+tick label clears the canvas edge at the narrower axes (no point moves,
+all 62 Kd binders stay on-panel; fonts unchanged 6-pt, no data change).
 
 Data  : experiments/results/exp13_affinity_calibration/{records.jsonl,summary.json}
 Usage : python experiments/plots/fig3d_affinity_calibration.py
@@ -78,6 +86,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fig3_row3_layout import (  # noqa: E402
+    AX_B_MM, AX_H_MM, AX_L_MM, AX_W_MM, CANVAS_H_MM, CANVAS_W_MM)
 from palette import NEUTRAL_GRID, PALETTE_BY_NAME, TEXT  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -128,11 +138,12 @@ def main() -> int:
     # 2026-10-02: raised from 0.9 so the single-line legend entry clears the
     # topmost (score ≈ 1) points at the narrowed 45-mm axes width
 
-    fig_w, fig_h = 55.8 / 25.4, 44.0 / 25.4  # inches (2026-10-02 second
-    # pass: 57.2 → 55.8 mm, tracking the composite's narrowed three-column
-    # width; fonts unchanged 6-pt, no data change)
+    # shared row-3 geometry (fig3_row3_layout.py) — exact canvas, no tight
+    # crop, so the axes rectangle is identical in panels d, e and f
+    fig_w, fig_h = CANVAS_W_MM / 25.4, CANVAS_H_MM / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_s = fig.add_axes([10.5 / 55.8, 10.0 / 44.0, 43.8 / 55.8, 32.0 / 44.0])
+    ax_s = fig.add_axes([AX_L_MM / CANVAS_W_MM, AX_B_MM / CANVAS_H_MM,
+                         AX_W_MM / CANVAS_W_MM, AX_H_MM / CANVAS_H_MM])
 
     # ── left: Kd–score scatter ──────────────────────────────────────────────
     ax_s.scatter([r["kd_nm"] for r in other_pts],
@@ -154,7 +165,9 @@ def main() -> int:
 
     ax_s.set_xscale("log")
     ax_s.set_yscale("log")
-    ax_s.set_xlim(0.02, 1200)
+    # 2026-10-10: right headroom 1.2e3 → 1.6e3 nM (pure headroom — no point
+    # moves) so the rightmost 10^3 tick label clears the 54.0 mm canvas edge
+    ax_s.set_xlim(0.02, 1600)
     ax_s.set_ylim(10**ymin, 10**ymax)
     ax_s.set_xlabel("Measured K$_d$ (nM)", fontsize=FONT, labelpad=2)
     ax_s.set_ylabel("EGARPS+ native probability", fontsize=FONT, labelpad=2)
@@ -167,8 +180,11 @@ def main() -> int:
     thr_handle = Line2D([0], [0], marker="o", linestyle="None",
                         markerfacecolor=C_BINDER, markeredgecolor=EMPH_EDGE,
                         markeredgewidth=0.6, markersize=4,
-                        label=(f"thrombin Kd anchors ρ = "
-                               f"{thr['spearman_rho_vs_neglog_kd']:+.2f} "
+                        # two lines (the 2026-10-02 registered wrap, restored
+                        # 2026-10-10: the one-line form outgrew the shared
+                        # 41 mm axes and clipped at the 54.0 mm canvas edge)
+                        label=(f"thrombin Kd anchors\n"
+                               f"ρ = {thr['spearman_rho_vs_neglog_kd']:+.2f} "
                                f"(n = {thr['n_points']})"))
     ax_s.legend(handles=[thr_handle], loc="upper left",
                 bbox_to_anchor=(0.015, 1.0), frameon=False, fontsize=FONT,
@@ -177,8 +193,9 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig3d_affinity_calibration.{ext}"
+        # exact-canvas save (no tight crop) — the row-3 alignment convention
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white")
         print(f"saved -> {out}")
     return 0
 

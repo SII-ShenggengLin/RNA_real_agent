@@ -20,7 +20,11 @@ outlined empty cell). The ungated false positives read off directly as the
 terracotta segments on the 3′UTR-stability (3), junction (2) and
 MRL-optimum (1) rows, and the one surviving gated false positive stays
 visible on the MRL-optimum row. Panels e and g share one
-4.0-mm-per-claim bar scale, so lengths compare across the pair.
+3.5-mm-per-claim bar scale, so lengths compare across the pair (the
+2026-10-10 composite-grid batch moved the shared scale 4.0 -> 3.5 and
+re-rendered both panels on their exact grid cells — 82.5 x 72.4 mm here,
+the column-1 cell whose height fig4h shares — so the Fig. 4 assembler
+places every panel at scale 1.0; the shared-scale contract is unchanged).
 
 Data are aggregated per family from the same frozen per-task matrix the
 retired panel drew; built-in asserts re-derive the per-family and per-arm
@@ -64,11 +68,14 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 INK = "#000000"
 FONT = 6
 
-MM_PER_CLAIM = 4.0                # shared with fig4e — lengths compare
+MM_PER_CLAIM = 3.5                # shared with fig4e — lengths compare
                                   # (2026-10-07: 3.0 → 4.0, widening the
                                   # panel for the g|h row's equal-width
-                                  # four-row composite layout)
+                                  # four-row composite layout; 2026-10-10
+                                  # composite-grid batch: → 3.5, the
+                                  # column-1 grid cell is 82.5 mm)
 BAR_H = 3.0
+TARGET_W_MM = 82.5                # the Fig. 4 grid's column-1 cell width
 TARGET_H_MM = 72.4                # fig4h's canvas height — the composite's
                                   # g|h row draws both panels at one height
                                   # (2026-10-07, user-directed: g stood at
@@ -184,9 +191,13 @@ def main() -> int:
 
     ML = 1.2
     GAP_LB = 2.2
-    zone_w = max_count * MM_PER_CLAIM + 1.0
+    # the bar zones fill the grid cell: zone_w solved from the target width
+    # (bars unchanged — the per-claim scale stays MM_PER_CLAIM)
+    zone_w = (TARGET_W_MM - 2 * ML - GAP_LB - label_w) / 2.0
+    assert zone_w >= max_count * MM_PER_CLAIM + 0.5, \
+        f"bar zone {zone_w:.2f} mm cannot hold the {max_count}-claim bar"
     spine_x = ML + label_w + GAP_LB + zone_w
-    fig_w = spine_x + zone_w + ML
+    fig_w = TARGET_W_MM
 
     header_cy = 2.3
     caption_h = 2.8

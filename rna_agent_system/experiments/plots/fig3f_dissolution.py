@@ -31,6 +31,13 @@ nothing about the inset, so the panel text decodes itself; "null
 distribution" retired after one render); the canvas narrowed again to
 55.8 mm and the x-limits widened to (−0.45, 2.45) so the apparent-advantage
 label stays inside the left spine (the figure's moderate-narrowing pass).
+2026-10-10 revision (Fig. 3 row-3 alignment batch, user-directed): the
+canvas and axes moved to the shared exact-millimetre row-3 geometry
+(`fig3_row3_layout.py` — 54.0 x 52.0 mm canvas, axes 12.0/12.0/41.0/36.0,
+identical with panels d and e so the three axes land on the same lines at
+assembly; the audited 36 mm axes height is what the shared rectangle
+adopts) and the tight-crop save retired (the figS house convention); the
+axes narrow 43.9 → 41.0 mm, fonts unchanged 6-pt, no data change.
 
 2026-08-31 user-directed repair: every text element pure black #000000 (the
 fig3e convention — the gate tag had been dark warm grey and the observed-δ
@@ -71,6 +78,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fig3_row3_layout import (  # noqa: E402
+    AX_B_MM, AX_H_MM, AX_L_MM, AX_W_MM, CANVAS_H_MM, CANVAS_W_MM)
 from palette import NEUTRAL_GRID, PALETTE_BY_NAME  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -125,13 +134,13 @@ def main() -> int:
     vals = [an[k]["delta"] for k, _, _ in STAGES]
     ps = [an[k].get("p_wilcoxon") for k, _, _ in STAGES]
 
-    fig_w, fig_h = 55.8 / 25.4, 50.0 / 25.4
+    # shared row-3 geometry (fig3_row3_layout.py) — exact canvas, no tight
+    # crop, so the axes rectangle is identical in panels d, e and f
+    fig_w, fig_h = CANVAS_W_MM / 25.4, CANVAS_H_MM / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
 
-    # main axes (mm geometry)
-    x0_mm, w_mm, y0_mm, h_mm = 9.5, 43.9, 10, 36
-    ax = fig.add_axes([x0_mm / 25.4 / fig_w, y0_mm / 25.4 / fig_h,
-                       w_mm / 25.4 / fig_w, h_mm / 25.4 / fig_h])
+    ax = fig.add_axes([AX_L_MM / CANVAS_W_MM, AX_B_MM / CANVAS_H_MM,
+                       AX_W_MM / CANVAS_W_MM, AX_H_MM / CANVAS_H_MM])
 
     xs = [0, 1, 2]
     ax.plot(xs, vals, color=C_LINE, linewidth=0.9, zorder=2)
@@ -207,9 +216,10 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
+        # exact-canvas save (no tight crop) — the row-3 alignment convention
         fig.savefig(OUT_DIR / f"fig3f_dissolution.{ext}",
                     dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white")
     print(f"written: {OUT_DIR}/fig3f_dissolution.{{pdf,png}}")
     return 0
 

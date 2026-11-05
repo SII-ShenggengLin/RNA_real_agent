@@ -36,6 +36,13 @@ composition numbers stated in the paper text / caption come from the
 analyzer's stats.json — not drawn. No in-figure titles (Nature style — the
 headline lives in the caption); every text element one 6-pt ink-black style.
 
+Geometry (2026-10-10, user-directed three-column relayout of the Fig. 2
+composite): exact 57 x 57 mm canvas (no tight crop), absolute-mm axes
+placement shared with panels b–f (axes bottom 12 mm, top 3 mm, left
+12 mm) so the three-per-row panels align; the taller canvas gives the
+seven-entry legend a taller empty pocket over the top lane; the 6-pt
+text scale is unchanged.
+
 Colours (palette rev 7): tool calls grey blue; gate decisions by verdict
 (reject terracotta, require_profiling sand, downgrade mauve grey, allow sage green); ranking
 assemblies khaki; failed calls the held-out dark warm grey; lane/gap
@@ -85,6 +92,14 @@ C_DOWNGRADE = PALETTE_BY_NAME["mauve_grey"]  # #A99AAF — gate: downgrade
 C_ALLOW = PALETTE_BY_NAME["sage_green"]      # #A3B18A — gate: allow (fig4e convention)
 C_RANKING = PALETTE_BY_NAME["khaki"]         # #CDBF9E — ranking assemblies
 C_FAIL = PALETTE_BY_NAME["dark_warm_grey"]   # #7A7672 — failed calls
+
+# Shared three-column geometry (panels b–g, 2026-10-10): exact canvas,
+# axes placed in absolute mm so every panel in a composite row aligns.
+W_MM, H_MM = 57.0, 57.0
+DPI = 1200
+W_PX = round(W_MM / 25.4 * DPI)
+H_PX = round(H_MM / 25.4 * DPI)
+AX_L, AX_BOT, AX_R, AX_TOP = 12.0, 12.0, 2.0, 3.0
 
 VERDICT_COLOR = {
     "reject": C_REJECT,
@@ -198,27 +213,67 @@ def draw_track(ax, rep: dict) -> None:
                    label=f"{display[k]} ({n_marks[k]:,})")
         for k in order if k in n_marks
     ]
+    # Opaque white legend ground: at the three-column width the legend
+    # reaches down across a lane separator hairline, and a frameless
+    # legend let the line strike through the last text row (2026-10-10
+    # visual acceptance); the white patch hides no data — the guard in
+    # main() keeps every marker clear of the legend box.
     leg = ax.legend(handles=handles, loc="upper right", bbox_to_anchor=(0.99, 0.98),
-                    fontsize=FONT, frameon=False, handletextpad=0.2,
-                    labelspacing=0.35, markerfirst=True, borderaxespad=0.1)
+                    fontsize=FONT, frameon=True, facecolor="white",
+                    edgecolor="none", handletextpad=0.2,
+                    labelspacing=0.3, markerfirst=True, borderaxespad=0.1)
     for t in leg.get_texts():
         t.set_color(TEXT)
+    return leg
 
 
 def main() -> int:
     rep = _load("representative_session.json")
 
-    fig_w, fig_h = 88 / 25.4, 50 / 25.4  # single-column panel (fig2b–g geometry)
+    fig_w, fig_h = W_PX / DPI + 1e-9, H_PX / DPI + 1e-9
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax_track = fig.add_axes([0.42 / fig_w, 0.34 / fig_h,
-                             (fig_w - 0.50) / fig_w, (fig_h - 0.42) / fig_h])
-    draw_track(ax_track, rep)
+    ax_track = fig.add_axes([
+        AX_L / W_MM, AX_BOT / H_MM,
+        (W_MM - AX_L - AX_R) / W_MM, (H_MM - AX_BOT - AX_TOP) / H_MM,
+    ])
+    leg = draw_track(ax_track, rep)
+
+    # Guards (house convention): no event marker may sit under the legend
+    # (its pocket is the top lane's empty right stretch — turn 1 ends
+    # early), and every text element stays inside the fixed canvas.
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    leg_box = leg.get_window_extent(renderer)
+    for coll in ax_track.collections:
+        sizes = coll.get_sizes()
+        for (px, py), area in zip(coll.get_offsets(), sizes):
+            cx, cy = ax_track.transData.transform((px, py))
+            r_px = fig.dpi / 72.0 * (float(area) ** 0.5) / 2.0
+            m_box = matplotlib.transforms.Bbox(
+                [[cx - r_px, cy - r_px], [cx + r_px, cy + r_px]])
+            if matplotlib.transforms.Bbox.intersection(m_box, leg_box):
+                raise AssertionError(
+                    f"track marker at ({px:.1f} min, lane {py:g}) falls "
+                    f"under the legend")
+    fw, fh = fig_w * fig.dpi, fig_h * fig.dpi
+    # (x-tick labels outside the view interval are never drawn — skip
+    # them, the auto locator emits them past xlim for padding.)
+    x0, x1 = sorted(ax_track.get_xlim())
+    in_view = [t for loc, t in zip(ax_track.get_xticks(),
+                                   ax_track.get_xticklabels())
+               if x0 <= loc <= x1]
+    for t in (*in_view, *ax_track.get_yticklabels(),
+              ax_track.xaxis.label, *leg.get_texts()):
+        tb = t.get_window_extent(renderer)
+        if tb.x0 < -0.5 or tb.y0 < -0.5 or tb.x1 > fw + 0.5 or tb.y1 > fh + 0.5:
+            raise AssertionError(f"text element {t.get_text()!r} leaves "
+                                 f"the canvas")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig2g_audit_trail.{ext}"
-        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+        fig.savefig(out, format=ext, dpi=DPI if ext == "png" else None,
+                    facecolor="white")
         print(f"written {out}")
     print(f"representative: {rep['session_id']} ({rep['workflow']}, "
           f"{rep['n_turns_gap_rule']} turns by gap rule / "

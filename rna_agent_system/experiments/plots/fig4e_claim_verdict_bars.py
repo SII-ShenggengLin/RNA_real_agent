@@ -15,8 +15,12 @@ task group × condition adjudicated no claim at all (the gated arm's
 plan-level blocks; the retired panel's outlined empty cell). The class
 selectivity reads directly off the geometry: the trusted block is all-sage
 on both sides, the untrusted block carries terracotta only on the ungated
-side. Panels e and g share one 4.0-mm-per-claim bar scale, so lengths
-compare across the pair.
+side. Panels e and g share one 3.5-mm-per-claim bar scale, so lengths
+compare across the pair (the 2026-10-10 composite-grid batch moved the
+shared scale 4.0 -> 3.5 and re-rendered both panels on their exact grid
+cells — 82.5 x 66.2 mm here, the column-1 cell whose height fig4f's tall
+variant shares — so the Fig. 4 assembler places every panel at scale 1.0;
+the shared-scale contract itself is unchanged).
 
 Data are aggregated per task group from the same frozen per-task matrix
 the retired panel drew; built-in asserts re-derive the per-category and
@@ -60,12 +64,15 @@ OUT_DIR = PROJECT_ROOT / "experiments" / "plots" / "output"
 INK = "#000000"
 FONT = 6
 
-MM_PER_CLAIM = 4.0                # shared with fig4g — lengths compare
+MM_PER_CLAIM = 3.5                # shared with fig4g — lengths compare
                                   # (2026-10-07: 3.0 → 4.0, widening the
                                   # panel for the e|f row's equal-width
-                                  # four-row composite layout)
+                                  # four-row composite layout; 2026-10-10
+                                  # composite-grid batch: → 3.5, the
+                                  # column-1 grid cell is 82.5 mm)
 BAR_H = 2.0                       # bar thickness
-ROW_PITCH = 3.4                   # bar + gap per task-group row
+TARGET_W_MM = 82.5                # the Fig. 4 grid's column-1 cell width
+TARGET_H_MM = 66.2                # row 3's shared height (fig4f tall)
 
 VERDICT_COLORS = {
     "TP": PALETTE_BY_NAME["sage_green"],
@@ -175,15 +182,26 @@ def main() -> int:
 
     ML = 1.2                        # outer margin (left = right)
     GAP_LB = 2.2                    # label column -> bar zone
-    zone_w = max_count * MM_PER_CLAIM + 1.0
+    # the bar zones fill the grid cell: zone_w solved from the target width
+    # (bars unchanged — the per-claim scale stays MM_PER_CLAIM)
+    zone_w = (TARGET_W_MM - 2 * ML - GAP_LB - label_w) / 2.0
+    assert zone_w >= max_count * MM_PER_CLAIM + 0.5, \
+        f"bar zone {zone_w:.2f} mm cannot hold the {max_count}-claim bar"
     spine_x = ML + label_w + GAP_LB + zone_w
-    fig_w = spine_x + zone_w + ML
+    fig_w = TARGET_W_MM
 
     header_cy = 2.3                 # arm-header centre
     caption_h = 2.4                 # block-caption line
     cap_gap = 1.0                   # caption -> first row
     div_gap = 1.8                   # extra gap at the block divider
     y0 = header_cy + 1.1 + 1.6      # top of the first block caption
+    key_gap = 3.0                   # content -> verdict key
+    key_pitch = 3.2                 # verdict-key row pitch
+    bottom = 1.2                    # canvas floor margin
+    # row pitch solved from the target height (the fig4g convention): the
+    # vertical walk contributes (n-1)*pitch + BAR_H between y0 and the key
+    row_pitch = (TARGET_H_MM - y0 - (2 * (caption_h + cap_gap) + div_gap)
+                 - BAR_H - (key_gap + 2 * key_pitch + bottom)) / (len(rows) - 1)
 
     # ── vertical walk: caption + rows per block, divider between blocks ────
     layout: list[tuple[dict, float]] = []       # (row, bar-top y)
@@ -200,12 +218,13 @@ def main() -> int:
             y += caption_h + cap_gap
             prev_cat = row["category"]
         layout.append((row, y))
-        y += ROW_PITCH
-    content_bottom = y - (ROW_PITCH - BAR_H)
+        y += row_pitch
+    content_bottom = y - (row_pitch - BAR_H)
 
-    key_top = content_bottom + 3.0
+    key_top = content_bottom + key_gap
     key_rows = (("TP", "FP"), ("suppressed", "borderline"))
-    fig_h = key_top + len(key_rows) * 3.2 + 1.2
+    fig_h = key_top + len(key_rows) * key_pitch + bottom
+    assert abs(fig_h - TARGET_H_MM) < 0.02, f"panel height {fig_h:.2f} != {TARGET_H_MM}"
 
     fig = plt.figure(figsize=(fig_w / 25.4, fig_h / 25.4), facecolor="white")
 

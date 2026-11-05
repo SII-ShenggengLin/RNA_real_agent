@@ -11,6 +11,14 @@
 Data  : experiments/results/exp2_cds_nulls/fig2_cds_nulls.jsonl
         (+ summary.json for the annotated statistics)
 
+Geometry (2026-10-10, user-directed three-column relayout of the Fig. 2
+composite): exact 57 x 57 mm canvas (no tight crop), absolute-mm axes
+placement shared with panels d–g so the three-per-row panels align (axes
+bottom 12 mm, top 3 mm, left 12 mm); the random-synonymous arm's tick
+label wraps to four lines — same words, rewrapped — because the
+three-column width cannot carry it on one line beside its neighbours'
+labels; the 6-pt text scale is unchanged (no panel is scaled at assembly).
+
 Usage : python experiments/plots/fig2bc_cds_nulls.py
 Output : experiments/plots/output/fig2b_cai.{pdf,png}
          experiments/plots/output/fig2c_mfe_per_nt.{pdf,png}
@@ -49,6 +57,22 @@ plt.rcParams.update({
 
 ARMS = ["designed", "wt", "random"]
 ARM_LABELS = {"designed": "Designed", "wt": "Wild type", "random": "Random synonymous sequences"}
+# Tick-label wraps at the three-column width: the random arm's two-line
+# label ("Random synonymous sequences" on one line) is wider than the
+# arm pitch, so it wraps further; the words are the manuscript's own.
+ARM_TICK_WRAP = {
+    "designed": ("Designed", "(n = {n})"),
+    "wt": ("Wild type", "(n = {n})"),
+    "random": ("Random", "synonymous", "sequences", "(n = {n})"),
+}
+
+# Shared three-column geometry (panels b–g, 2026-10-10): exact canvas,
+# axes placed in absolute mm so every panel in a composite row aligns.
+W_MM, H_MM = 57.0, 57.0
+DPI = 1200
+W_PX = round(W_MM / 25.4 * DPI)
+H_PX = round(H_MM / 25.4 * DPI)
+AX_L, AX_BOT, AX_R, AX_TOP = 12.0, 12.0, 2.0, 3.0
 
 
 def load_records() -> list[dict]:
@@ -115,7 +139,8 @@ def violin_jitter(ax, data: list[np.ndarray], stats: dict) -> None:
     tick_labels = []
     for i, a in enumerate(ARMS):
         arm_n = stats.get("arms", {}).get(a, {}).get("n", len(data[i]))
-        tick_labels.append(f"{ARM_LABELS[a]}\n(n = {arm_n})")
+        tick_labels.append("\n".join(line.format(n=arm_n)
+                                     for line in ARM_TICK_WRAP[a]))
     ax.set_xticklabels(tick_labels)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -135,17 +160,38 @@ def violin_jitter(ax, data: list[np.ndarray], stats: dict) -> None:
 
 def draw(values_by_arm: dict[str, np.ndarray],
          stats: dict, ylabel: str, stem: str) -> int:
-    fig_w, fig_h = 88 / 25.4, 66 / 25.4  # single-column panel
-    fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    ax = fig.add_axes([0.14, 0.19, 0.82, 0.76])
+    fig = plt.figure(figsize=(W_PX / DPI + 1e-9, H_PX / DPI + 1e-9),
+                     facecolor="white")
+    ax = fig.add_axes([(AX_L / W_MM), (AX_BOT / H_MM),
+                       ((W_MM - AX_L - AX_R) / W_MM),
+                       ((H_MM - AX_BOT - AX_TOP) / H_MM)])
     data = [values_by_arm[a] for a in ARMS]
     violin_jitter(ax, data, stats)
     ax.set_ylabel(ylabel, fontsize=6, labelpad=2)
+
+    # Guards (house convention): neighbouring tick labels must not touch,
+    # and the rotated ylabel must fit the axes height (plus the small
+    # symmetric overhang the top/bottom margins can host).
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    boxes = [lbl.get_window_extent(renderer) for lbl in ax.get_xticklabels()]
+    for b1, b2 in zip(boxes, boxes[1:]):
+        if b1.x1 >= b2.x0 - 2.0:  # >=2 px (~0.5 mm) clearance at draw dpi
+            raise AssertionError(
+                f"{stem}: x-tick labels collide ({b1.x1:.0f} >= {b2.x0:.0f} px)")
+    yl_box = ax.yaxis.label.get_window_extent(renderer)
+    ax_box = ax.get_window_extent(renderer)
+    overhang = (yl_box.height - ax_box.height) / 2.0
+    if overhang > 2.0 / 25.4 * fig.dpi:  # 2 mm of margin on each side
+        raise AssertionError(
+            f"{stem}: rotated ylabel {yl_box.height / fig.dpi * 25.4:.1f} mm "
+            f"exceeds the axes plus margin budget")
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"{stem}.{ext}"
-        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+        fig.savefig(out, format=ext, dpi=DPI if ext == "png" else None,
+                    facecolor="white")
         print(f"written {out}")
     return 0
 

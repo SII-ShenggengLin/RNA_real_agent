@@ -30,6 +30,13 @@ lives in the caption, panels carry letters only; every text element
 shares one font size and colour; legend labels "<hits> hits, <scan
 status> (n)".)
 
+Geometry (2026-10-10, user-directed three-column relayout of the Fig. 2
+composite): exact 57 x 57 mm canvas (no tight crop), absolute-mm axes
+placement shared with panels b–d and f–g (axes bottom 12 mm, top 3 mm,
+left 12 mm) so the three-per-row panels align; the x-axis label wraps to
+two lines — same words — because the three-column width cannot carry it
+on one; the 6-pt text scale is unchanged.
+
 Data  : experiments/results/exp6_sirna_offtarget/records.jsonl
         (+ summary.json for the annotated counts)
 
@@ -79,6 +86,14 @@ plt.rcParams.update({
 C_ZERO = WORKFLOW_COLORS["sirna_design"]          # #6B7B8D
 C_NONZERO = PALETTE_BY_NAME["dark_warm_grey"]      # #7A7672
 
+# Shared three-column geometry (panels b–g, 2026-10-10): exact canvas,
+# axes placed in absolute mm so every panel in a composite row aligns.
+W_MM, H_MM = 57.0, 57.0
+DPI = 1200
+W_PX = round(W_MM / 25.4 * DPI)
+H_PX = round(H_MM / 25.4 * DPI)
+AX_L, AX_BOT, AX_R, AX_TOP = 12.0, 12.0, 2.0, 3.0
+
 
 def load_records() -> list[dict]:
     recs: dict[str, dict] = {}
@@ -111,15 +126,16 @@ def main() -> int:
     for r in records:
         by_count[int(r["best_off_target_count"])].append(r)
 
-    fig_w, fig_h = 88 / 25.4, 58 / 25.4  # single-column panel (fig2b–g geometry)
+    fig_w, fig_h = W_PX / DPI + 1e-9, H_PX / DPI + 1e-9
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([
-        0.40 / fig_w, 0.32 / fig_h,
-        (fig_w - 0.46) / fig_w, (fig_h - 0.38) / fig_h,
+        AX_L / W_MM, AX_BOT / H_MM,
+        (W_MM - AX_L - AX_R) / W_MM, (H_MM - AX_BOT - AX_TOP) / H_MM,
     ])
 
     # ── stacked dots: one per task, stack count printed on top ──
     combo_counts: dict[tuple[str, bool], int] = {}
+    count_texts = []
     for c, recs in sorted(by_count.items()):
         zero = c == 0
         color = C_ZERO if zero else C_NONZERO
@@ -133,14 +149,15 @@ def main() -> int:
             )
             key = ("zero" if zero else "nonzero", scanned)
             combo_counts[key] = combo_counts.get(key, 0) + 1
-        ax.text(c, len(recs) + 0.7, str(len(recs)), ha="center", va="bottom",
-                fontsize=FONT, color=TEXT, zorder=4)
+        count_texts.append(ax.text(c, len(recs) + 0.7, str(len(recs)),
+                                   ha="center", va="bottom", fontsize=FONT,
+                                   color=TEXT, zorder=4))
 
     ax.set_xlim(-0.6, nz_hits + 0.6)
     ax.set_ylim(0, n_total + 2.2)
     ax.set_xticks(list(range(0, nz_hits + 1)))
     ax.set_yticks(list(range(0, n_total + 1, 5)))
-    ax.set_xlabel("predicted off-target hits (best candidate)",
+    ax.set_xlabel("predicted off-target hits\n(best candidate)",
                   fontsize=FONT, labelpad=2)
     ax.set_ylabel("number of tasks", fontsize=FONT, labelpad=2)
     ax.tick_params(axis="both", labelsize=FONT, length=1.5, pad=1)
@@ -177,11 +194,38 @@ def main() -> int:
     for t in leg.get_texts():
         t.set_color(TEXT)
 
+    # Guards (house convention): the legend must sit clear of every drawn
+    # marker and count label (its upper-right pocket), and every text
+    # element must sit fully inside the fixed canvas.
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    leg_box = leg.get_window_extent(renderer)
+    for coll in ax.collections:
+        for px, py in coll.get_offsets():
+            cx, cy = ax.transData.transform((px, py))
+            r_px = fig.dpi / 72.0 * (float(coll.get_sizes()[0]) ** 0.5) / 2.0
+            dot_box = matplotlib.transforms.Bbox(
+                [[cx - r_px, cy - r_px], [cx + r_px, cy + r_px]])
+            if matplotlib.transforms.Bbox.intersection(dot_box, leg_box):
+                raise AssertionError(
+                    f"a stack dot at ({px:g}, {py:g}) falls under the legend")
+    for t in count_texts:
+        if matplotlib.transforms.Bbox.intersection(
+                t.get_window_extent(renderer).expanded(1.05, 1.2), leg_box):
+            raise AssertionError("a stack count label falls under the legend")
+    fw, fh = fig_w * fig.dpi, fig_h * fig.dpi
+    for t in (ax.xaxis.label, ax.yaxis.label, *ax.get_xticklabels(),
+              *ax.get_yticklabels(), *leg.get_texts()):
+        tb = t.get_window_extent(renderer)
+        if tb.x0 < -0.5 or tb.y0 < -0.5 or tb.x1 > fw + 0.5 or tb.y1 > fh + 0.5:
+            raise AssertionError(f"text element {t.get_text()!r} leaves "
+                                 f"the canvas")
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
         out = OUT_DIR / f"fig2e_sirna_offtarget.{ext}"
-        fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+        fig.savefig(out, format=ext, dpi=DPI if ext == "png" else None,
+                    facecolor="white")
         print(f"written {out}")
     print(f"n = {n_total}, zero = {n_zero}, counts = {counts}")
     return 0

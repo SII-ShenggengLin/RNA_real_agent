@@ -16,6 +16,18 @@ the headline numbers live in the Fig. 4d caption; every text element one
 6-pt pure-black style; colours only from palette rev 7; 1200-dpi PNG +
 vector PDF (fonttype 42); absolute-mm geometry, single-column width.
 
+2026-10-10 composite-grid batch (user-directed row/column alignment): the
+canvas is now an exact 96.5 x 50.0 mm cell of the Fig. 4 two-column grid
+(column 2; row 2 shares its height with fig4c) saved without the tight
+crop, so the assembler places it at scale 1.0 beside c with both canvas
+edges and the 6-pt text size shared across the whole composite. The two
+axes re-centre on the wider cell (24 -> 32.5 mm each, 11-mm gap hosting
+the right axis's y-label, the pair centred on the canvas); 2026-10-10
+row-alignment follow-up (user-directed: d's plot box sat lower than c's):
+the axes band is 13-45 mm from the canvas floor — fig4c's own band — so
+the row's two plot boxes share one top and bottom edge; no data, colour
+or wording change.
+
 Data  : experiments/results/exp17_claim_gating/summary.json
 Usage : python experiments/plots/fig4d_claim_gating_headline.py
 Output : experiments/plots/output/fig4d_claim_gating.{pdf,png}
@@ -65,18 +77,21 @@ def main() -> int:
     arms = summary["arms"]
     n_claims = {arm: arms[arm]["TP"] + arms[arm]["FP"] for arm in ("ungated", "gated")}
 
-    fig_w, fig_h = 89 / 25.4, 46 / 25.4
+    fig_w, fig_h = 96.5 / 25.4, 50.0 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
 
+    # axes box 13–45 mm from the canvas floor — the same band fig4c's axes
+    # occupy, so the row's two plot boxes share one top and bottom edge
+    # (user-directed 2026-10-10: d's box sat ~4 mm lower than c's)
     def _ax(x0_mm: float, w_mm: float) -> plt.Axes:
         return fig.add_axes([x0_mm / 25.4 / fig_w, 13 / 25.4 / fig_h,
-                             w_mm / 25.4 / fig_w, 26 / 25.4 / fig_h])
+                             w_mm / 25.4 / fig_w, 32.0 / 25.4 / fig_h])
 
     xs = [0, 1]
     arm_order = ("ungated", "gated")
     tick_labels = [f"{ARM_LABELS[a]}\n(n = {n_claims[a]})" for a in arm_order]
     # ── left: false-positive claim rate (%), Wilson CI whiskers ──────────
-    ax_l = _ax(26, 24)
+    ax_l = _ax(13.75, 32.5)
     for x, arm in zip(xs, arm_order):
         rate = arms[arm]["fp_rate"]
         lo, hi = arms[arm]["fp_rate_ci95"]
@@ -104,7 +119,7 @@ def main() -> int:
     ax_l.spines["right"].set_visible(False)
 
     # ── right: true-positive claim counts ────────────────────────────────
-    ax_r = _ax(59, 24)
+    ax_r = _ax(57.25, 32.5)
     tp = {a: arms[a]["TP"] for a in ("ungated", "gated")}
     y_max = max(tp.values())
     step = 5 if y_max <= 25 else 10
@@ -127,7 +142,7 @@ def main() -> int:
     for ext in ("pdf", "png"):
         fig.savefig(OUT_DIR / f"fig4d_claim_gating.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white")
     plt.close(fig)
     print(f"fig4d -> {OUT_DIR / 'fig4d_claim_gating.pdf'} (+png 1200 dpi); "
           f"FP rate {100 * arms['ungated']['fp_rate']:.1f}% -> "

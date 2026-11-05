@@ -32,6 +32,16 @@ and everything sits on the canvas; 1200-dpi PNG + vector PDF (fonttype 42)
 at a content-measured width x 72 mm — within Nature Methods resolution and
 size guidance.
 
+2026-10-10 composite-grid batch (user-directed row/column alignment): the
+canvas is now the exact 96.5 x 72 mm column-2 cell of the Fig. 4
+two-column grid, placed at scale 1.0 by the assembler (shared 6-pt text
+size across the whole composite). To fit the cell at the frozen wording,
+the two long "certified · varying-length …" row labels and the two long
+right-hand annotations wrap to two lines (the characters are unchanged;
+ROW_H 4.8 -> 5.4 funds the taller rows, the ClaimGate block shifts down
+accordingly) and the tile columns solve their pitch from the leftover
+width; all verdicts, labels and numbers are frozen as before.
+
 Data  : experiments/results/exp23_selective_gating/cells.jsonl (frozen)
 Usage : python experiments/plots/fig4b_selective_gating_matrix.py
 Output : experiments/plots/output/fig4b_selective_gating.{pdf,png}
@@ -81,11 +91,13 @@ ORACLE_ROTATED = {"mrl": "5′UTR MRL", "utr3": "3′UTR"}
 
 # cell, block, oracle, row label (the library names follow the Fig. 4a
 # panel; unprofiled is the polished-text term); the one-line annotation is
-# built from the frozen cells below
+# built from the frozen cells below. The two long varying-length labels
+# wrap after the "·" so the label column fits the 96.5-mm grid cell
+# (characters unchanged).
 ROWS = [
     ("D1", "decision", "mrl", "certified · random 50-nt"),
-    ("D2", "decision", "mrl", "certified · varying-length random"),
-    ("D3", "decision", "mrl", "certified · varying-length human"),
+    ("D2", "decision", "mrl", "certified ·\nvarying-length random"),
+    ("D3", "decision", "mrl", "certified ·\nvarying-length human"),
     ("D4", "decision", "mrl", "unprofiled family"),
     ("D5", "decision", "utr3", "certified family"),
     ("D6", "decision", "utr3", "unprofiled family"),
@@ -101,24 +113,24 @@ KEY_ITEMS = [  # verdict legend, one centred row under the panel
     (VERDICT_COLOR["reject"], "reject"),
 ]
 
-# mm geometry (canvas H 72 mm, y up; W derived from the measured content)
+# mm geometry (canvas H 72 mm, y up; W = the Fig. 4 grid's column-2 cell)
 H = 72.0
+TARGET_W = 96.5          # the composite two-column grid's column-2 cell
 X_ROT_C = 2.2            # rotated oracle group-label centre
-X_LABEL = 5.0            # row-label left edge
+X_LABEL = 4.5            # row-label left edge
 TILE_W, TILE_H = 8.0, 3.4
-COL_PITCH = 14.5         # tile-column pitch
-GAP_LABEL = 2.5          # longest row label -> first tile column
+GAP_LABEL = 3.0          # longest row label -> first tile column
 GAP_TILE_ANN = 3.5       # last tile column -> annotations
 MARGIN_R = 1.5           # right margin past the longest annotation
-ROW_H = 4.8
+ROW_H = 5.4              # funds the two-line labels/annotations
 Y_HDR1 = 68.6            # column-header line 1 centre
 Y_HDR2 = 66.2            # column-header line 2 (cell counts) centre
 Y_HDRRULE = 64.2
 Y_DHDR = 61.8            # DecisionGate block label centre
 Y_D1 = 57.4              # first DecisionGate row centre
-Y_SEP = 29.6             # block separator rule
-Y_CHDR = 27.0            # ClaimGate block label centre
-Y_C1 = 22.6              # first ClaimGate row centre
+Y_SEP = 27.4             # block separator rule
+Y_CHDR = 24.8            # ClaimGate block label centre
+Y_C1 = 20.4              # first ClaimGate row centre
 Y_LEG = 5.2              # legend row centre
 
 plt.rcParams.update({
@@ -131,11 +143,16 @@ plt.rcParams.update({
 
 
 def annotation(cid: str, cells: dict) -> str:
-    """One-line right-hand annotation; numbers come from the frozen cells."""
+    """One-line right-hand annotation; numbers come from the frozen cells.
+    D1's is the one long annotation — its "(as profiled)" qualifier wraps
+    to a second line so the annotation column fits the 96.5-mm grid cell
+    (characters unchanged)."""
     if cid == "D1":  # E1: allow executed, MRL bit-identical to the certification cache
-        return f"executed · MRL {cells['E1']['detail']['predicted_mrl']:g} (as profiled)"
+        return f"executed · MRL {cells['E1']['detail']['predicted_mrl']:g}\n(as profiled)"
     if cid == "D4":  # E2: downgrade executed on the unprofiled family
         return f"executed · MRL {cells['E2']['detail']['predicted_mrl']:g}"
+    if cid == "C2":  # two lines so the annotation column fits the grid cell
+        return "same-target relative\nscope"
     return {
         "D2": "not blocked",
         "D3": "not blocked",
@@ -178,11 +195,18 @@ def main() -> int:
     key_w = {lab: w_mm(lab) for _c, lab in KEY_ITEMS}
     plt.close(probe)
 
-    # horizontal layout follows the measured text: row labels -> tile
-    # columns -> annotations -> right margin, fixed clearances between zones
-    X_COL = [X_LABEL + label_w + GAP_LABEL + i * COL_PITCH for i in range(3)]
+    # horizontal layout follows the measured text into the grid cell: row
+    # labels -> tile columns -> annotations -> right margin, the tile-column
+    # pitch solved from the leftover width (the header-clearance assert
+    # below guards its floor)
+    fixed_w = (X_LABEL + label_w + GAP_LABEL + TILE_W + GAP_TILE_ANN
+               + ann_w + MARGIN_R)
+    col_pitch = (TARGET_W - fixed_w) / 2.0
+    assert col_pitch >= TILE_W + 2.0, \
+        f"tile columns collide at pitch {col_pitch:.2f} mm"
+    X_COL = [X_LABEL + label_w + GAP_LABEL + i * col_pitch for i in range(3)]
     X_ANN = X_COL[2] + TILE_W + GAP_TILE_ANN
-    W = X_ANN + ann_w + MARGIN_R
+    W = TARGET_W
     for ka, kb in zip(COL_KEYS, COL_KEYS[1:]):
         ca = X_COL[COL_KEYS.index(ka)] + TILE_W / 2
         cb = X_COL[COL_KEYS.index(kb)] + TILE_W / 2

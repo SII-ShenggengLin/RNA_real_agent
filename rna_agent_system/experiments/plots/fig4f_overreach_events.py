@@ -71,13 +71,18 @@ USE_LABELS = {"ranking_objective": "Ranking", "screening_evaluation": "Screening
 # stack (d over f) flush with panel e's height; 2026-10-07 (user-directed
 # equal-width four-row layout, panels re-ordered e|f / g|h): the tall
 # variant's axes also widen 72.0 → 83.1 mm so the e|f row spans the same
-# content width as the other rows. The standalone render is the default and
-# is untouched. Output goes to a separate _tall file pair.
+# content width as the other rows. 2026-10-10 composite-grid batch
+# (user-directed row/column alignment): the tall variant re-renders on an
+# exact 96.5 x 66.2 mm cell of the Fig. 4 two-column grid (column 2; row
+# 3 shares its height with fig4e), saved without the tight crop so the
+# assembler places it at scale 1.0 (axes 82.0 x 49.2 mm). The standalone
+# render is the default and is untouched. Output goes to a separate _tall
+# file pair.
 LAYOUT = os.environ.get("FIG4F_LAYOUT", "standalone")
-FIG_H_MM = 71.7 if LAYOUT == "tall" else 40.5
-AX_H_MM = 54.7 if LAYOUT == "tall" else 23.5
-FIG_W_MM = 100.1 if LAYOUT == "tall" else 89.0
-AX_W_MM = 83.1 if LAYOUT == "tall" else 72.0
+FIG_H_MM = 66.2 if LAYOUT == "tall" else 40.5
+AX_H_MM = 49.2 if LAYOUT == "tall" else 23.5
+FIG_W_MM = 96.5 if LAYOUT == "tall" else 89.0
+AX_W_MM = 82.0 if LAYOUT == "tall" else 72.0
 OUT_STEM = "fig4f_overreach_events_tall" if LAYOUT == "tall" else "fig4f_overreach_events"
 
 plt.rcParams.update({
@@ -171,9 +176,13 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
+        # the tall grid cell saves exact (the composite places it 1:1); the
+        # standalone render keeps the tight crop
+        save_kw = ({} if LAYOUT == "tall"
+                   else {"bbox_inches": "tight", "pad_inches": 0.02})
         fig.savefig(OUT_DIR / f"{OUT_STEM}.{ext}", format=ext,
                     dpi=1200 if ext == "png" else None,
-                    facecolor="white", bbox_inches="tight", pad_inches=0.02)
+                    facecolor="white", **save_kw)
     plt.close(fig)
     print(f"fig4f ({LAYOUT}) -> {OUT_DIR / f'{OUT_STEM}.pdf'} (+png 1200 dpi); "
           f"overreach {sum(ungated)} -> 0 by oracle x use "

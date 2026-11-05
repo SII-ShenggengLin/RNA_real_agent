@@ -1,0 +1,48 @@
+Provenance note for the two RL-steered molecular design references (added 2026-10-10)
+=====================================================================================
+
+1. Zhang, X. et al. Deep reinforcement learning as an interaction agent to steer
+   fragment-based 3D molecular generation for protein pockets.
+   Briefings in Bioinformatics 26(4), bbae531 (2025). DOI: 10.1093/bib/bbae531
+2. Zhang, X. et al. Steering semi-flexible molecular diffusion model for
+   structure-based drug design with reinforcement learning.
+   Science Advances 12(16), eady9955 (2026). DOI: 10.1126/sciadv.ady9955
+
+Verification trail
+------------------
+* Google Scholar search performed for both exact titles (2026-10-10):
+  - paper 1 is the sole hit, cluster Wu32-SBBJ6EJ; its "Cite" popup was
+    retrieved and is archived as zhang2025_bbae531.scholar_cite_popup.html
+    (contains Scholar's MLA/APA/ISO-rendered citations:
+    "Briefings in bioinformatics. 2025 Jul;26(4):bbae531").
+  - paper 2 is the top hit, cluster 0sNtoN2Vmh4J; the search results page is
+    archived as zhang2026_ady9955.scholar_search.html (its cite popup was
+    rate-limited with HTTP 403 on retry).
+* The BibTeX files served by Scholar live on scholar.googleusercontent.com,
+  which this machine's network cannot reach (TLS handshake blocked). The .bib
+  files stored here were therefore fetched by DOI content negotiation from
+  Crossref (curl -LH "Accept: application/x-bibtex" https://doi.org/<DOI>),
+  i.e. the publisher-deposited records — same convention as the 2026-10-09
+  reference-insertion batch (.bib + .crossref.json pairs).
+* Crossref API JSON for both DOIs is archived alongside (zhang2025_bbae531.
+  crossref.json, zhang2026_ady9955.crossref.json). Author lists, titles,
+  volumes, issues, article numbers and years were checked against the
+  user-supplied citations and match exactly (9 and 11 authors respectively;
+  both >5 authors, hence Nature style "Zhang, X. et al.").
+
+PDFs
+----
+* Paper 2 PDF: relevant_references/"Steering semi-flexible molecular diffusion
+  model for structure-based drug design with reinforcement learning.pdf"
+  (Science Advances is open access; file verified to contain the DOI, title and
+  author list).
+* Paper 1 PDF: NOT DOWNLOADED (2026-10-10). The article is gold open access
+  (CC BY-NC, per Unpaywall/Semantic Scholar), but every public endpoint is
+  bot-gated from this machine's network: academic.oup.com and europepmc.org
+  serve Cloudflare "Just a moment" JS challenges, pmc.ncbi.nlm.nih.gov and
+  www.ncbi.nlm.nih.gov serve reCAPTCHA challenge pages, archive.org/
+  web.archive.org are unreachable (network timeouts), and no browser backend
+  is available in this environment. Unpaywall and Semantic Scholar list no
+  mirror other than the OUP URL. Per the user's rule ("if it cannot be
+  downloaded, let it go") the PDF was skipped; citation metadata above is
+  complete without it.

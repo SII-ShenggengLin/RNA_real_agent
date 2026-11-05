@@ -32,8 +32,8 @@ connector + gate line in the held-out dark warm grey.
 
 Style: the fig2d–fig4a conventions — no in-figure title (the headline lives
 in the caption; Nature panels carry letters only), every text element one
-font size, single-column geometry, legend as a centred row block under the
-axis (the fig2i convention).
+font size, single-column geometry, legend as centred rows under the axes
+box (two rows; see the 2026-10-10 note below).
 
 Figure revision 2026-08-30 (user-directed): every text element pure black
 #000000 (the fig3e convention — the chance tag was dark warm grey and the
@@ -56,6 +56,32 @@ distinguished by input treatment (the agent tool path applies the
 case-preserving normalization per pair; the endpoint receives verbatim
 inputs). Measured one-row legend width 82.1 mm against the 88-mm canvas.
 
+2026-10-10 legend rework (user-directed figure-repair pass, three rounds):
+the one-row legend spanned 82 mm — wider than the axes box — so centring it
+on the canvas pushed its left edge ~19 mm left of the axes into the
+label-column gutter, leaving a detached blank band lower-left. The legend
+is now TWO single-row legends sharing one left anchor: "Pre-repair tool"
+(row 1) and "Repaired tool, verbatim input" (row 2) start at the same x
+(user-directed column alignment), row 1's second entry ("Repaired tool,
+normalized input") follows at the standard ~2.6-mm entry spacing (a
+two-column grid instead sized column 1 to its wider row-2 entry, opening a
+~15-mm gap inside row 1 — user-directed tightening), and the block is
+centred on the axes box by row 1's ink width (user-directed centring).
+Labels verbatim, one 6-pt size. The label column also tightened 22 ->
+13.5 mm with the axes widened 61 -> 71 mm (a ~10-mm blank strip ran down
+the canvas's left edge; the 88 x 50-mm canvas is unchanged so composite
+scaling keeps the sibling panels' font parity), and the axes box moved up
+1 mm (y0 12 -> 13 mm) to fund the second row. Renderer-bbox guards (canvas
+containment, axes-span containment, column alignment, no overlap with the
+x-axis label or between the rows) and a post-save raster QA carry the
+layout.
+
+2026-10-10 composite-grid batch (user-directed row/column alignment): the
+canvas narrows to an exact 82.5 x 50 mm cell of the Fig. 4 two-column grid
+(column 1; row 2 shares its height with fig4d), axes 71 -> 67 mm, saved
+exact as before — the assembler now places every panel at scale 1.0, so
+the 6-pt text size is shared across the whole composite without scaling.
+
 Data  : experiments/results/exp15_rnasmol_fidelity/summary.json (live arms)
         + experiments/results/exp15_rnasmol_v020_sandbox/summary.json
         (the git-recovered v0.2.0 pre-fix arm, re-measured)
@@ -72,7 +98,9 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
+from PIL import Image  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from palette import NEUTRAL_GRID, PALETTE_BY_NAME  # noqa: E402
@@ -153,9 +181,13 @@ def main() -> int:
             "endpoint": (post["point_auroc"], *post["auroc_ci95"]),
         })
 
-    fig_w, fig_h = 88 / 25.4, 50 / 25.4  # single-column panel
+    fig_w, fig_h = 82.5 / 25.4, 50 / 25.4  # exact grid cell (composite batch)
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    label_mm, ax_w, y0_mm, h_mm = 22, 61, 12, 32
+    # 2026-10-10 pass two: label column 22 -> 13.5 mm and axes 61 -> 71 mm
+    # (the 22-mm column left a ~10-mm blank strip down the canvas's left
+    # edge); y0 12 -> 13 mm funds the second legend row (pass one);
+    # 2026-10-10 composite-grid batch: canvas 88 -> 82.5 mm, axes 71 -> 67
+    label_mm, ax_w, y0_mm, h_mm = 13.5, 67, 13, 32
     ax = fig.add_axes([label_mm / 25.4 / fig_w, y0_mm / 25.4 / fig_h,
                        ax_w / 25.4 / fig_w, h_mm / 25.4 / fig_h])
 
@@ -212,23 +244,93 @@ def main() -> int:
     for s_name in ("top", "right"):
         ax.spines[s_name].set_visible(False)
 
-    # legend: centred row block under the panel (the fig2i convention); on the
-    # fixed canvas it is figure-centred, not axes-centred (the axes box is
-    # shifted right by the label column)
-    handles = [
+    # legend: two single-row legends sharing ONE left anchor (2026-10-10 pass
+    # three). Row 1 = "Pre-repair tool" | "Repaired tool, normalized input"
+    # at the standard ~2.6-mm entry spacing; row 2 = "Repaired tool, verbatim
+    # input" starting at the same x as "Pre-repair tool" (user-directed
+    # column alignment). The block is centred on the axes box by row 1's ink
+    # width below (a two-column grid instead sized column 1 to its wider
+    # row-2 entry, opening a ~15-mm gap inside row 1 — user-directed
+    # tightening). Labels verbatim, one 6-pt size, entry spacing unchanged.
+    handles_row1 = [
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor="white", markeredgecolor=C_PRE,
                markeredgewidth=0.8, label="Pre-repair tool"),
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor=C_PRE, markeredgecolor="white",
                markeredgewidth=0.4, label="Repaired tool, normalized input"),
+    ]
+    handles_row2 = [
         Line2D([], [], marker="o", linestyle="", markersize=3.4,
                markerfacecolor=C_POST, markeredgecolor="white",
                markeredgewidth=0.4, label="Repaired tool, verbatim input"),
     ]
-    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.074),
-               frameon=False, fontsize=FONT, ncols=3, handlelength=1.0,
-               handletextpad=0.35, columnspacing=0.9, borderaxespad=0.0)
+    # anchor tops place the row inks at ~5.1-7.0 / ~2.3-4.2 mm from the
+    # canvas floor; the legend frames pad ~0.85 mm around the ink (measured)
+    ANCHOR_Y1, ANCHOR_Y2 = 0.1575, 0.102
+    anchor_x = 0.27  # provisional; re-centred on the measured row-1 ink
+    legend_kw = dict(loc="upper left", frameon=False, fontsize=FONT,
+                     handlelength=1.0, handletextpad=0.35, columnspacing=0.9,
+                     borderaxespad=0.0)
+    leg_row1 = fig.legend(handles=handles_row1, ncols=2,
+                          bbox_to_anchor=(anchor_x, ANCHOR_Y1), **legend_kw)
+    leg_row2 = fig.legend(handles=handles_row2, ncols=1,
+                          bbox_to_anchor=(anchor_x, ANCHOR_Y2), **legend_kw)
+
+    # ---- layout guards (the figS1 convention) ------------------------------
+    # Collision checks run on INK extents, not the padded legend frames: the
+    # frames pad ~0.85 mm around the rows, so adjacent rows' frames would
+    # touch even with a healthy ink gap. Markers sit ~3 mm left of the first
+    # text (handle + handletextpad + outer pad), so each row's ink box
+    # extends that far left of its text.
+    fig.canvas.draw()
+
+    def px2mm(v: float) -> float:
+        return v * 25.4 / fig.dpi
+
+    def ink_box(leg) -> tuple[float, float, float, float]:
+        renderer = fig.canvas.get_renderer()
+        bbs = [t.get_window_extent(renderer) for t in leg.get_texts()]
+        return (min(b.x0 for b in bbs) - 3.0 / 25.4 * fig.dpi,
+                min(b.y0 for b in bbs), max(b.x1 for b in bbs),
+                max(b.y1 for b in bbs))
+
+    # recentre the block: shift both anchors so row 1's ink (the wider row)
+    # centres on the axes box, keeping the shared left anchor
+    target_c = label_mm + ax_w / 2.0
+    cur_c = px2mm(sum(ink_box(leg_row1)[::2]) / 2)
+    anchor_x += (target_c - cur_c) / (fig_w * 25.4)
+    leg_row1.set_bbox_to_anchor((anchor_x, ANCHOR_Y1))
+    leg_row2.set_bbox_to_anchor((anchor_x, ANCHOR_Y2))
+    fig.canvas.draw()
+
+    fig_w_px, fig_h_px = fig.get_size_inches() * fig.dpi
+    ink1 = ink_box(leg_row1)   # legend row 1 (pre | normalized)
+    ink2 = ink_box(leg_row2)   # legend row 2 (verbatim, under pre)
+    for name, (x0, y0, x1, y1) in (("legend row 1", ink1),
+                                   ("legend row 2", ink2)):
+        assert x0 >= 0 and y0 >= 0 and x1 <= fig_w_px and y1 <= fig_h_px, \
+            f"{name} escapes the canvas"
+        assert px2mm(x0) >= label_mm - 0.2, \
+            f"{name} reaches {px2mm(x0):.2f} mm, left of the axes"
+        assert px2mm(x1) <= label_mm + ax_w + 0.2, \
+            f"{name} reaches {px2mm(x1):.2f} mm, right of the axes"
+    # the shared anchor: row 2 sits directly under row 1's first entry
+    assert abs(px2mm(ink1[0] - ink2[0])) <= 0.15, \
+        (f"left edges misaligned: row 1 at {px2mm(ink1[0]):.2f} mm, "
+         f"row 2 at {px2mm(ink2[0]):.2f} mm")
+    # the block centred on the axes box (by row 1, the wider row)
+    assert abs(px2mm((ink1[0] + ink1[2]) / 2) - target_c) <= 0.3, \
+        f"legend block centre {px2mm((ink1[0] + ink1[2]) / 2):.2f} mm " \
+        f"vs axes centre {target_c:.2f} mm"
+    # display y grows upwards: gaps are lower element's top to upper's bottom
+    assert px2mm(ink1[1] - ink2[3]) >= 0.4, "legend ink rows under 0.4 mm apart"
+    renderer = fig.canvas.get_renderer()
+    x_lab = ax.xaxis.label.get_window_extent(renderer)
+    assert px2mm(x_lab.y0 - ink1[3]) >= 0.5, \
+        "x-axis label to legend row 1 under 0.5 mm"
+    assert px2mm(ink2[1]) >= 1.0, \
+        "legend ink under 1.0 mm from the canvas floor"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     # save at the true 88 x 50 mm single-column canvas — the panel is sparse,
@@ -240,6 +342,57 @@ def main() -> int:
         fig.savefig(out, format=ext, dpi=1200 if ext == "png" else None,
                     facecolor="white")
         print(f"written {out}")
+
+    # ---- raster QA on the saved PNG (the figS1 convention) -----------------
+    # exact 88 x 50 mm at 1200 dpi; below the axes bottom (37 mm) the bands
+    # are x-tick labels, x-axis label, then the two legend rows — the legend
+    # rows must sit inside the axes span and keep >= 0.4 mm separation.
+    img = np.array(Image.open(OUT_DIR / "fig4c_rnasmol_fidelity.png")
+                   .convert("L"))
+    assert img.shape == (int(50 / 25.4 * 1200), int(82.5 / 25.4 * 1200)), \
+        img.shape
+    ink = img < 250
+    prof = ink.sum(axis=1)
+    bands: list[tuple[float, float]] = []
+    start = None
+    for ypx in range(int(39.5 / 25.4 * 1200), img.shape[0]):
+        if prof[ypx] > 0 and start is None:
+            start = ypx
+        elif prof[ypx] == 0 and start is not None:
+            bands.append((start / 1200 * 25.4, ypx / 1200 * 25.4))
+            start = None
+    if start is not None:
+        bands.append((start / 1200 * 25.4, img.shape[0] / 1200 * 25.4))
+    assert len(bands) == 3, \
+        f"expected x-label + two legend rows below the ticks, got {bands}"
+    gaps = [bands[i + 1][0] - bands[i][1] for i in range(2)]
+    assert min(gaps) >= 0.4, f"bottom-band gaps under 0.4 mm: {gaps}"
+    assert 50.0 - bands[-1][1] >= 0.7, "legend under 0.7 mm from the floor"
+    lefts: list[float] = []
+    for name, (b0, b1) in zip(("x-axis label", "legend row 1", "legend row 2"),
+                              bands):
+        cc = np.where(ink[int(b0 / 25.4 * 1200):int(b1 / 25.4 * 1200), :]
+                      .any(axis=0))[0]
+        c0, c1 = cc.min() / 1200 * 25.4, cc.max() / 1200 * 25.4
+        if name != "x-axis label":
+            assert c0 >= label_mm - 0.2 and c1 <= label_mm + ax_w + 0.2, \
+                f"{name} spans {c0:.2f}-{c1:.2f} mm, outside the axes"
+            lefts.append(c0)
+        print(f"QA {name}: rows {b0:.2f}-{b1:.2f} mm, cols {c0:.2f}-{c1:.2f} mm")
+    # 0.3 mm tolerance: the markers share their column anchor, but the open
+    # marker's 0.8-pt edge draws ~0.15 mm wider than the filled marker's
+    # 0.4-pt edge, so the ink extents differ by a hair (the text-anchored
+    # renderer guard keeps the strict 0.15-mm bound)
+    assert abs(lefts[0] - lefts[1]) <= 0.3, \
+        f"legend rows not first-column aligned: {lefts[0]:.2f} vs {lefts[1]:.2f} mm"
+    # block centring: row 1 (the wider row) centres on the axes box
+    r1 = bands[1]
+    cc1 = np.where(ink[int(r1[0] / 25.4 * 1200):int(r1[1] / 25.4 * 1200), :]
+                   .any(axis=0))[0]
+    centre = (cc1.min() + cc1.max()) / 2 / 1200 * 25.4
+    target_c = label_mm + ax_w / 2.0
+    assert abs(centre - target_c) <= 0.4, \
+        f"legend block centre {centre:.2f} mm vs axes centre {target_c:.2f} mm"
     for row in rows:
         print(f"{row['label'].splitlines()[0]}: v0.2.0 {row['hist']:.4f} | "
               f"tool_layer {row['tool'][0]} {tuple(row['tool'][1:])} | "

@@ -30,6 +30,11 @@ panel b's height, with the axes' bottom edge moved 11 → 8.7 mm to sit on
 panel b's axes baseline (8.68 mm) — row 1's two axes boxes now align;
 text unchanged at 6 pt, zero number changes.
 
+2026-10-10 row-alignment polish (user-directed Fig. 5 batch): axes height
+38.5 → 38.06 mm so the axes TOP also lands on panel b's top edge
+(9.24 mm from the canvas top) — row 1's two axes rectangles now share
+both edges exactly; no number, colour or text change.
+
 2026-10-07 terminology unification (user-adjudicated): the line tag
 "diversity floor" → "diversity threshold" — the paper-wide term
 (body §2.5, Methods, the Fig. 1d legend and panel); no number, colour or
@@ -108,7 +113,7 @@ def main() -> int:
     fig_w, fig_h = 89 / 25.4, 56 / 25.4
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([16 / 25.4 / fig_w, 8.7 / 25.4 / fig_h,
-                       67 / 25.4 / fig_w, 38.5 / 25.4 / fig_h])
+                       67 / 25.4 / fig_w, 38.06 / 25.4 / fig_h])
 
     ax.axhline(GATE, color=C_GATE, linestyle=(0, (3, 2)), linewidth=0.6,
                zorder=1)

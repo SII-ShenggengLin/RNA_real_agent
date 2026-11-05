@@ -1,0 +1,1097 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          9,
+          29
+        ]
+      ],
+      "date-time": "2026-09-29T15:23:02Z",
+      "timestamp": 1790695382302,
+      "version": "4.1.0"
+    },
+    "reference-count": 71,
+    "publisher": "Oxford University Press (OUP)",
+    "issue": "4",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2025,
+              8,
+              5
+            ]
+          ],
+          "date-time": "2025-08-05T00:00:00Z",
+          "timestamp": 1754352000000
+        },
+        "content-version": "vor",
+        "delay-in-days": 35,
+        "URL": "https://creativecommons.org/licenses/by-nc/4.0/"
+      }
+    ],
+    "funder": [
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "32170589"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "32170589"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "32370616"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "32370616"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "92168205"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "92168205"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100001809",
+        "name": "National Natural Science Foundation of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "22074105"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "22074105"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100001809",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100012166",
+        "name": "National Key Research and Development Program of China",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "2022YFA1103102"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "2022YFA1103102"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100012166",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "name": "Shanghai Rising Star Program",
+        "award": [
+          "21QC1400900"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "21QC1400900"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Xiaomi Young Talents Program and the European Union' s Horizon 2020 Framework Programme for Research and Innovation",
+        "award": [
+          "945539"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "945539"
+            ]
+          }
+        ]
+      }
+    ],
+    "content-domain": {
+      "domain": [],
+      "crossmark-restriction": false
+    },
+    "short-container-title": [],
+    "published-print": {
+      "date-parts": [
+        [
+          2025,
+          7,
+          2
+        ]
+      ]
+    },
+    "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:p>Designing high-affinity molecules for protein targets (especially novel protein families) is a crucial yet challenging task in drug discovery. Recently, there has been tremendous progress in structure-based 3D molecular generative models that incorporate structural information of protein pockets. However, the capacity for molecular representation learning and the generalization for capturing interaction patterns need substantial further developments. Here, we propose AMG, a framework that leverages deep reinforcement learning as a pocket\u2013ligand interaction agent (IA) to gradually steer fragment-based 3D molecular generation targeting protein pockets. AMG is trained using a two-stage strategy to capture interaction features and explicitly optimize the IA. The framework also introduces a pair of separate encoders for pockets and ligands, coupled with a dedicated pre-training strategy. This enables AMG to enhance its generalization ability by leveraging a vast repository of undocked pockets and molecules, thus mitigating the constraints posed by the limited quantity and quality of available datasets. Extensive evaluations demonstrate that AMG significantly outperforms five state-of-the-art baselines in affinity performance while maintaining proper drug-likeness properties. Furthermore, visual analysis confirms the superiority of AMG at capturing 3D molecular geometrical features and interaction patterns within pocket\u2013ligand complexes, indicating its considerable promise for various structure-based downstream tasks.</jats:p>",
+    "DOI": "10.1093/bib/bbae531",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2024,
+          11,
+          2
+        ]
+      ],
+      "date-time": "2024-11-02T00:21:11Z",
+      "timestamp": 1730506871000
+    },
+    "source": "Crossref",
+    "is-referenced-by-count": 6,
+    "title": [
+      "Deep reinforcement learning as an interaction agent to steer fragment-based 3D molecular generation for protein pockets"
+    ],
+    "prefix": "10.1093",
+    "volume": "26",
+    "author": [
+      {
+        "given": "Xudong",
+        "family": "Zhang",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine , Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, School of Computer Science and Technology, Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Jing",
+        "family": "Hou",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Technology , Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sanqing",
+        "family": "Qu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Technology , Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Fan",
+        "family": "Lu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Technology , Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Zhixin",
+        "family": "Tian",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Chemical Science and Engineering , Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Alois",
+        "family": "Knoll",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computation , Information and Technology, Technical University of Munich, 85748, Garching b. M\u00fcnchen"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Guang",
+        "family": "Chen",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Technology , Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Shaorong",
+        "family": "Gao",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine , Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, Frontier Science Center for Stem Cell Research, School of Life Sciences and Technology, Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Yanping",
+        "family": "Zhang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Shanghai Key Laboratory of Maternal Fetal Medicine , Clinical and Translational Research Center of Shanghai First Maternity and Infant Hospital, Frontier Science Center for Stem Cell Research, School of Life Sciences and Technology, Tongji University, Shanghai 200092,",
+            "place": [
+              "China"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "286",
+    "published-online": {
+      "date-parts": [
+        [
+          2025,
+          8,
+          5
+        ]
+      ]
+    },
+    "reference": [
+      {
+        "key": "2025122100415456400_ref1",
+        "doi-asserted-by": "publisher",
+        "first-page": "882",
+        "DOI": "10.1038/nrd941",
+        "article-title": "Integration of virtual and high-throughput screening",
+        "volume": "1",
+        "author": "Bajorath",
+        "year": "2002",
+        "journal-title": "Nat Rev Drug Discov"
+      },
+      {
+        "key": "2025122100415456400_ref2",
+        "doi-asserted-by": "publisher",
+        "first-page": "273",
+        "DOI": "10.1038/nrd3139",
+        "article-title": "Virtual screening: an endless staircase?",
+        "volume": "9",
+        "author": "Schneider",
+        "year": "2010",
+        "journal-title": "Nat Rev Drug Discov"
+      },
+      {
+        "key": "2025122100415456400_ref3",
+        "doi-asserted-by": "crossref",
+        "first-page": "1047",
+        "DOI": "10.1016/S1359-6446(02)02483-2",
+        "article-title": "Structure-based virtual screening: an overview",
+        "volume": "7",
+        "author": "Lyne",
+        "year": "2002",
+        "journal-title": "Drug Discov Today"
+      },
+      {
+        "key": "2025122100415456400_ref4",
+        "doi-asserted-by": "publisher",
+        "first-page": "935",
+        "DOI": "10.1038/nrd1549",
+        "article-title": "Docking and scoring in virtual screening for drug discovery: methods and applications",
+        "volume": "3",
+        "author": "Kitchen",
+        "year": "2004",
+        "journal-title": "Nat Rev Drug Discov"
+      },
+      {
+        "key": "2025122100415456400_ref5",
+        "doi-asserted-by": "publisher",
+        "first-page": "194",
+        "DOI": "10.1016/j.cbpa.2006.04.002",
+        "article-title": "Structure-based virtual screening of chemical libraries for drug discovery",
+        "volume": "10",
+        "author": "Ghosh",
+        "year": "2006",
+        "journal-title": "Curr Opin Chem Biol"
+      },
+      {
+        "key": "2025122100415456400_ref6",
+        "doi-asserted-by": "publisher",
+        "first-page": "e1637",
+        "DOI": "10.1002/wcms.1637",
+        "article-title": "Efficient and enhanced sampling of drug-like chemical space for virtual screening and molecular design using modern machine learning methods",
+        "volume": "13",
+        "author": "Goel",
+        "year": "2023",
+        "journal-title": "Wiley Interdiscip Rev: Comput Mol Sci"
+      },
+      {
+        "key": "2025122100415456400_ref7",
+        "doi-asserted-by": "publisher",
+        "first-page": "862",
+        "DOI": "10.1038/nature03197",
+        "article-title": "Virtual screening of chemical libraries",
+        "volume": "432",
+        "author": "Shoichet",
+        "year": "2004",
+        "journal-title": "Nature"
+      },
+      {
+        "key": "2025122100415456400_ref8",
+        "doi-asserted-by": "publisher",
+        "first-page": "268",
+        "DOI": "10.1021/acscentsci.7b00572",
+        "article-title": "Automatic chemical design using a data-driven continuous representation of molecules",
+        "volume": "4",
+        "author": "G\u00f3mez-Bombarelli",
+        "year": "2018",
+        "journal-title": "ACS Cent Sci"
+      },
+      {
+        "key": "2025122100415456400_ref9",
+        "volume-title": "International Conference on Learning Representations"
+      },
+      {
+        "key": "2025122100415456400_ref10",
+        "doi-asserted-by": "publisher",
+        "first-page": "565644",
+        "DOI": "10.3389/fphar.2020.565644",
+        "article-title": "Molecular Sets (MOSES): a benchmarking platform for molecular generation models",
+        "volume": "11",
+        "author": "Polykovskiy",
+        "year": "2020",
+        "journal-title": "Front Pharmacol"
+      },
+      {
+        "key": "2025122100415456400_ref11",
+        "doi-asserted-by": "publisher",
+        "first-page": "2064",
+        "DOI": "10.1021/acs.jcim.1c00600",
+        "article-title": "MolGPT: molecular generation using a transformer-decoder model",
+        "volume": "62",
+        "author": "Bagal",
+        "year": "2021",
+        "journal-title": "J Chem Inf Model"
+      },
+      {
+        "key": "2025122100415456400_ref12",
+        "volume-title": "International Conference on Machine Learning"
+      },
+      {
+        "key": "2025122100415456400_ref13",
+        "doi-asserted-by": "publisher",
+        "first-page": "973",
+        "DOI": "10.1038/s41467-022-28526-y",
+        "article-title": "Inverse design of 3D molecular structures with conditional generative neural networks",
+        "volume": "13",
+        "author": "Gebauer",
+        "year": "2022",
+        "journal-title": "Nat Commun"
+      },
+      {
+        "key": "2025122100415456400_ref14",
+        "first-page": "2550",
+        "article-title": "Molecule generation by principal subgraph mining and assembling",
+        "volume": "35",
+        "author": "Kong",
+        "year": "2022",
+        "journal-title": "Adv Neural Inf Process Syst"
+      },
+      {
+        "key": "2025122100415456400_ref15",
+        "first-page": "36533",
+        "article-title": "Diffusion-based molecule generation with informative prior bridges",
+        "volume": "35",
+        "author": "Lemeng",
+        "year": "2022",
+        "journal-title": "Adv Neural Inf Process Syst"
+      },
+      {
+        "key": "2025122100415456400_ref16",
+        "doi-asserted-by": "publisher",
+        "first-page": "114",
+        "DOI": "10.1038/s41467-022-35692-6",
+        "article-title": "Leveraging molecular structure and bioactivity with chemical language models for de novo drug design",
+        "volume": "14",
+        "author": "Moret",
+        "year": "2023",
+        "journal-title": "Nat Commun"
+      },
+      {
+        "key": "2025122100415456400_ref17",
+        "volume-title": "International Conference on Machine Learning"
+      },
+      {
+        "key": "2025122100415456400_ref18",
+        "doi-asserted-by": "publisher",
+        "first-page": "2701",
+        "DOI": "10.1039/D1SC05976A",
+        "article-title": "Generating 3D molecules conditional on receptor binding sites with deep generative models",
+        "volume": "13",
+        "author": "Ragoza",
+        "year": "2022",
+        "journal-title": "Chem Sci"
+      },
+      {
+        "key": "2025122100415456400_ref19",
+        "volume-title": "International Conference on Machine Learning"
+      },
+      {
+        "key": "2025122100415456400_ref20",
+        "doi-asserted-by": "publisher",
+        "first-page": "1020",
+        "DOI": "10.1038/s42256-023-00712-7",
+        "article-title": "ResGen is a pocket-aware 3D molecular generation model based on parallel multiscale modelling",
+        "volume": "5",
+        "author": "Zhang",
+        "year": "2023",
+        "journal-title": "Nat Mach Intell"
+      },
+      {
+        "key": "2025122100415456400_ref21",
+        "volume-title": "International Conference on Learning Representations"
+      },
+      {
+        "key": "2025122100415456400_ref22",
+        "volume-title": "International Conference on Machine Learning"
+      },
+      {
+        "key": "2025122100415456400_ref23",
+        "volume-title": "International Conference on Learning Representations"
+      },
+      {
+        "key": "2025122100415456400_ref24",
+        "doi-asserted-by": "publisher",
+        "first-page": "120",
+        "DOI": "10.1021/acscentsci.7b00512",
+        "article-title": "Generating focused molecule libraries for drug discovery with recurrent neural networks",
+        "volume": "4",
+        "author": "Segler",
+        "year": "2018",
+        "journal-title": "ACS Cent Sci"
+      },
+      {
+        "key": "2025122100415456400_ref25",
+        "doi-asserted-by": "publisher",
+        "first-page": "1146",
+        "DOI": "10.3390/ijms24021146",
+        "article-title": "PETrans: de novo drug design with protein-specific encoding based on transfer learning",
+        "volume": "24",
+        "author": "Wang",
+        "year": "2023",
+        "journal-title": "Int J Mol Sci"
+      },
+      {
+        "key": "2025122100415456400_ref26",
+        "doi-asserted-by": "publisher",
+        "first-page": "5100",
+        "DOI": "10.1021/acs.jcim.1c01319",
+        "article-title": "De novo structure-based drug design using deep learning",
+        "volume": "62",
+        "author": "Krishnan",
+        "year": "2021",
+        "journal-title": "J Chem Inf Model"
+      },
+      {
+        "key": "2025122100415456400_ref27",
+        "doi-asserted-by": "publisher",
+        "first-page": "13664",
+        "DOI": "10.1039/D1SC04444C",
+        "article-title": "Structure-based de novo drug design using 3D deep generative models",
+        "volume": "12",
+        "author": "Li",
+        "year": "2021",
+        "journal-title": "Chem Sci"
+      },
+      {
+        "key": "2025122100415456400_ref28",
+        "doi-asserted-by": "publisher",
+        "first-page": "787",
+        "DOI": "10.1016/j.chembiol.2003.09.002",
+        "article-title": "The process of structure-based drug design",
+        "volume": "10",
+        "author": "Anderson",
+        "year": "2003",
+        "journal-title": "Chem Biol"
+      },
+      {
+        "key": "2025122100415456400_ref29",
+        "doi-asserted-by": "publisher",
+        "first-page": "1023",
+        "DOI": "10.1038/s42256-021-00418-8",
+        "article-title": "Geometric deep learning on molecular representations",
+        "volume": "3",
+        "author": "Atz",
+        "year": "2021",
+        "journal-title": "Nat Mach Intell"
+      },
+      {
+        "key": "2025122100415456400_ref30",
+        "doi-asserted-by": "publisher",
+        "first-page": "102548",
+        "DOI": "10.1016/j.sbi.2023.102548",
+        "article-title": "Structure-based drug design with geometric deep learning",
+        "volume": "79",
+        "author": "Isert",
+        "year": "2023",
+        "journal-title": "Curr Opin Struct Biol"
+      },
+      {
+        "key": "2025122100415456400_ref31",
+        "doi-asserted-by": "publisher",
+        "first-page": "4200",
+        "DOI": "10.1021/acs.jcim.0c00411",
+        "article-title": "Three-dimensional convolutional neural networks and a cross-docked data set for structure-based drug design",
+        "volume": "60",
+        "author": "Francoeur",
+        "year": "2020",
+        "journal-title": "J Chem Inf Model"
+      },
+      {
+        "key": "2025122100415456400_ref32",
+        "doi-asserted-by": "publisher",
+        "first-page": "D488",
+        "DOI": "10.1093/nar/gkac1077",
+        "article-title": "RCSB Protein Data Bank (rcsb.org): Delivery of experimentally-determined PDB structures alongside one million computed structure models of proteins from artificial intelligence/machine learning",
+        "volume": "51",
+        "author": "Burley",
+        "year": "2023",
+        "journal-title": "Nucleic Acids Res"
+      },
+      {
+        "key": "2025122100415456400_ref33",
+        "first-page": "1",
+        "article-title": "Coconut online: collection of open natural products database",
+        "volume": "13",
+        "author": "Sorokina",
+        "year": "2021",
+        "journal-title": "J Chem"
+      },
+      {
+        "key": "2025122100415456400_ref34",
+        "doi-asserted-by": "crossref",
+        "first-page": "1",
+        "DOI": "10.1186/1471-2105-10-168",
+        "article-title": "Fpocket: an open source platform for ligand pocket detection",
+        "volume": "10",
+        "author": "Le Guilloux",
+        "year": "2009",
+        "journal-title": "BMC Bioinform"
+      },
+      {
+        "key": "2025122100415456400_ref35",
+        "doi-asserted-by": "publisher",
+        "first-page": "1026",
+        "DOI": "10.1038/nbt.3988",
+        "article-title": "MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets",
+        "volume": "35",
+        "author": "Steinegger",
+        "year": "2017",
+        "journal-title": "Nat Biotechnol"
+      },
+      {
+        "key": "2025122100415456400_ref36",
+        "volume-title": "The Semantic Web: 15th International Conference"
+      },
+      {
+        "key": "2025122100415456400_ref37",
+        "volume": "30"
+      },
+      {
+        "key": "2025122100415456400_ref38",
+        "doi-asserted-by": "publisher",
+        "first-page": "455",
+        "DOI": "10.1002/jcc.21334",
+        "article-title": "AutoDock Vina: improving the speed and accuracy of docking with a new scoring function, efficient optimization, and multithreading",
+        "volume": "31",
+        "author": "Trott",
+        "year": "2010",
+        "journal-title": "J Comput Chem"
+      },
+      {
+        "key": "2025122100415456400_ref39",
+        "doi-asserted-by": "publisher",
+        "first-page": "12899",
+        "DOI": "10.1039/c0cp00151a",
+        "article-title": "Scoring functions and their evaluation methods for protein\u2013ligand docking: recent advances and future directions",
+        "volume": "12",
+        "author": "Huang",
+        "year": "2010",
+        "journal-title": "Phys Chem Chem Phys"
+      },
+      {
+        "key": "2025122100415456400_ref40",
+        "doi-asserted-by": "publisher",
+        "first-page": "3661",
+        "DOI": "10.1039/D1SC06946B",
+        "article-title": "PigNet: a physics-informed deep learning model toward generalized drug\u2013target interaction predictions",
+        "volume": "13",
+        "author": "Moon",
+        "year": "2022",
+        "journal-title": "Chem Sci"
+      },
+      {
+        "key": "2025122100415456400_ref41",
+        "volume": "12"
+      },
+      {
+        "key": "2025122100415456400_ref42"
+      },
+      {
+        "key": "2025122100415456400_ref43",
+        "doi-asserted-by": "publisher",
+        "first-page": "5815",
+        "DOI": "10.1021/acs.jcim.1c01341",
+        "article-title": "Molegular: molecule generation using reinforcement learning with alternating rewards",
+        "volume": "61",
+        "author": "Goel",
+        "year": "2021",
+        "journal-title": "J Chem Inf Model"
+      },
+      {
+        "key": "2025122100415456400_ref44",
+        "volume-title": "International Conference on Learning Representations"
+      },
+      {
+        "key": "2025122100415456400_ref45"
+      },
+      {
+        "key": "2025122100415456400_ref46",
+        "doi-asserted-by": "publisher",
+        "first-page": "279",
+        "DOI": "10.1038/s42256-022-00447-x",
+        "article-title": "Molecular contrastive learning of representations via graph neural networks",
+        "volume": "4",
+        "author": "Wang",
+        "year": "2022",
+        "journal-title": "Nat Mach Intell"
+      },
+      {
+        "key": "2025122100415456400_ref47",
+        "doi-asserted-by": "publisher",
+        "first-page": "706",
+        "DOI": "10.1038/s41586-019-1923-7",
+        "article-title": "Improved protein structure prediction using potentials from deep learning",
+        "volume": "577",
+        "author": "Senior",
+        "year": "2020",
+        "journal-title": "Nature"
+      },
+      {
+        "key": "2025122100415456400_ref48",
+        "doi-asserted-by": "publisher",
+        "first-page": "1291",
+        "DOI": "10.1109/TSMCC.2012.2218595",
+        "article-title": "A survey of actor-critic reinforcement learning: standard and natural policy gradients",
+        "volume": "42",
+        "author": "Grondman",
+        "year": "2012",
+        "journal-title": "IEEE Trans Syst Man Cybern C (Appl Rev)"
+      },
+      {
+        "key": "2025122100415456400_ref49"
+      },
+      {
+        "key": "2025122100415456400_ref50",
+        "volume-title": "2022 IEEE 65th International Midwest Symposium on Circuits and Systems"
+      },
+      {
+        "key": "2025122100415456400_ref51",
+        "doi-asserted-by": "publisher",
+        "first-page": "2214",
+        "DOI": "10.1093/bioinformatics/btv082",
+        "article-title": "Fast, accurate, and reliable molecular docking with Quickvina 2",
+        "volume": "31",
+        "author": "Alhossary",
+        "year": "2015",
+        "journal-title": "Bioinformatics"
+      },
+      {
+        "key": "2025122100415456400_ref52",
+        "volume-title": "Journal of Open Source Software"
+      },
+      {
+        "key": "2025122100415456400_ref53"
+      },
+      {
+        "key": "2025122100415456400_ref54",
+        "doi-asserted-by": "publisher",
+        "first-page": "1",
+        "DOI": "10.1186/s13321-020-00456-1",
+        "article-title": "An open source chemical structure curation pipeline using RDKit",
+        "volume": "12",
+        "author": "Patr\u00edcia Bento",
+        "year": "2020",
+        "journal-title": "J Chem"
+      },
+      {
+        "key": "2025122100415456400_ref55",
+        "doi-asserted-by": "publisher",
+        "first-page": "3",
+        "DOI": "10.1016/S0169-409X(96)00423-1",
+        "article-title": "Experimental and computational approaches to estimate solubility and permeability in drug discovery and development settings",
+        "volume": "23",
+        "author": "Lipinski",
+        "year": "1997",
+        "journal-title": "Adv Drug Deliv Rev"
+      },
+      {
+        "key": "2025122100415456400_ref56",
+        "doi-asserted-by": "publisher",
+        "first-page": "1",
+        "DOI": "10.1186/s13321-015-0069-3",
+        "article-title": "Why is Tanimoto index an appropriate choice for fingerprint-based similarity calculations?",
+        "volume": "7",
+        "author": "Bajusz",
+        "year": "2015",
+        "journal-title": "J Chem"
+      },
+      {
+        "key": "2025122100415456400_ref57",
+        "doi-asserted-by": "publisher",
+        "first-page": "1503",
+        "DOI": "10.1002/cmdc.200800178",
+        "article-title": "On the art of compiling and using\u2019drug-like\u2019chemical fragment spaces",
+        "volume": "3",
+        "author": "Degen",
+        "year": "2008",
+        "journal-title": "Chem Med Chem"
+      },
+      {
+        "key": "2025122100415456400_ref58",
+        "doi-asserted-by": "publisher",
+        "first-page": "W159",
+        "DOI": "10.1093/nar/gkac394",
+        "article-title": "CB-Dock2: improved protein\u2013ligand blind docking by integrating cavity detection, docking and homologous template fitting",
+        "volume": "50",
+        "author": "Liu",
+        "year": "2022",
+        "journal-title": "Nucleic Acids Res"
+      },
+      {
+        "key": "2025122100415456400_ref59",
+        "doi-asserted-by": "publisher",
+        "first-page": "2562",
+        "DOI": "10.1021/acs.jcim.5b00654",
+        "article-title": "Better informed distance geometry: using what we know to improve conformation generation",
+        "volume": "55",
+        "author": "Riniker",
+        "year": "2015",
+        "journal-title": "J Chem Inf Model"
+      },
+      {
+        "key": "2025122100415456400_ref60",
+        "doi-asserted-by": "publisher",
+        "first-page": "10024",
+        "DOI": "10.1021/ja00051a040",
+        "article-title": "UFF, a full periodic table force field for molecular mechanics and molecular dynamics simulations",
+        "volume": "114",
+        "author": "Rapp\u00e9",
+        "year": "1992",
+        "journal-title": "J Am Chem Soc"
+      },
+      {
+        "key": "2025122100415456400_ref61",
+        "volume-title": "International Conference on Machine Learning"
+      },
+      {
+        "key": "2025122100415456400_ref62",
+        "doi-asserted-by": "publisher",
+        "first-page": "1",
+        "DOI": "10.1186/s13321-020-0416-x",
+        "article-title": "Visualization of very large high-dimensional data sets as minimum spanning trees",
+        "volume": "12",
+        "author": "Probst",
+        "year": "2020",
+        "journal-title": "J Chem"
+      },
+      {
+        "key": "2025122100415456400_ref63",
+        "volume": "9"
+      },
+      {
+        "key": "2025122100415456400_ref64",
+        "volume": "30"
+      },
+      {
+        "key": "2025122100415456400_ref65",
+        "first-page": "9323",
+        "article-title": "E (n) equivariant graph neural networks",
+        "volume-title": "International conference on machine learning",
+        "author": "Satorras",
+        "year": "2021"
+      },
+      {
+        "key": "2025122100415456400_ref66",
+        "doi-asserted-by": "publisher",
+        "first-page": "337",
+        "DOI": "10.1016/j.ddtec.2004.11.007",
+        "article-title": "Lead-and drug-like compounds: the rule-of-five revolution",
+        "volume": "1",
+        "author": "Lipinski",
+        "year": "2004",
+        "journal-title": "Drug Discov Today Technol"
+      },
+      {
+        "key": "2025122100415456400_ref67",
+        "doi-asserted-by": "publisher",
+        "first-page": "W443",
+        "DOI": "10.1093/nar/gkv315",
+        "article-title": "PLIP: fully automated protein\u2013ligand interaction profiler",
+        "volume": "43",
+        "author": "Salentin",
+        "year": "2015",
+        "journal-title": "Nucleic Acids Res"
+      },
+      {
+        "key": "2025122100415456400_ref68",
+        "volume": "6",
+        "journal-title": "Nat Mach Intell"
+      },
+      {
+        "key": "2025122100415456400_ref69",
+        "doi-asserted-by": "publisher",
+        "first-page": "bbab333",
+        "DOI": "10.1093/bib/bbab333",
+        "article-title": "De novo generation of dual-target ligands using adversarial training and reinforcement learning",
+        "volume": "22",
+        "author": "Fengqing",
+        "year": "2021",
+        "journal-title": "Brief Bioinform"
+      },
+      {
+        "key": "2025122100415456400_ref70",
+        "volume-title": "ICLR Workshop on Generative and Experimental Perspectives for Biomolecular Design"
+      },
+      {
+        "key": "2025122100415456400_ref71",
+        "volume": "36",
+        "journal-title": "Adv Neural Inf Process Syst"
+      }
+    ],
+    "container-title": [
+      "Briefings in Bioinformatics"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://academic.oup.com/bib/article-pdf/26/4/bbae531/63959033/bbae531.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "syndication"
+      },
+      {
+        "URL": "https://academic.oup.com/bib/article-pdf/26/4/bbae531/63959033/bbae531.pdf",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          21
+        ]
+      ],
+      "date-time": "2025-12-21T05:42:10Z",
+      "timestamp": 1766295730000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://academic.oup.com/bib/article/doi/10.1093/bib/bbae531/8222510"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          7
+        ]
+      ]
+    },
+    "references-count": 71,
+    "journal-issue": {
+      "issue": "4",
+      "published-print": {
+        "date-parts": [
+          [
+            2025,
+            7,
+            2
+          ]
+        ]
+      }
+    },
+    "URL": "https://doi.org/10.1093/bib/bbae531",
+    "relation": {},
+    "ISSN": [
+      "1467-5463",
+      "1477-4054"
+    ],
+    "issn-type": [
+      {
+        "value": "1467-5463",
+        "type": "print"
+      },
+      {
+        "value": "1477-4054",
+        "type": "electronic"
+      }
+    ],
+    "subject": [],
+    "published-other": {
+      "date-parts": [
+        [
+          2025,
+          7
+        ]
+      ]
+    },
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          7
+        ]
+      ]
+    },
+    "article-number": "bbae531"
+  }
+}
